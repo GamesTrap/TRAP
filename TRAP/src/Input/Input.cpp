@@ -250,11 +250,9 @@ void TRAP::Input::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// <summary>
-/// Get a string representation for a non printable key (space key for example).
-/// </summary>
-/// <param name="key">Key to get.</param>
-/// <returns>String representation.</returns>
+/// @brief Get a string representation for a non printable key (space key for example).
+/// @param key Key to get.
+/// @return String representation.
 [[nodiscard]] constexpr std::string NonPrintableKeyToString(const TRAP::Input::Key key) noexcept
 {
 	switch(key)

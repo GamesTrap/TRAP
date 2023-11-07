@@ -22,89 +22,67 @@ namespace TRAP
 	class BlockingQueue
 	{
 	public:
-		/// <summary>
-		/// Push a copy constructable item to the queue.
-		/// </summary>
-		/// <param name="item">Item to push.</param>
+		/// @brief Push a copy constructable item to the queue.
+		/// @param item Item to push.
 		template<typename Q = T>
 		requires std::copy_constructible<Q>
 		void Push(const T& item);
 
-		/// <summary>
-		/// Push a move constructable item to the queue.
-		/// </summary>
-		/// <param name="item">Item to push.</param>
+		/// @brief Push a move constructable item to the queue.
+		/// @param item Item to push.
 		template<typename Q = T>
 		requires std::move_constructible<Q>
 		void Push(T&& item);
 
-		/// <summary>
-		/// Try to push a copy constructable item to the queue.
-		/// </summary>
-		/// <param name="item">Item to push.</param>
-		/// <returns>True on success, false otherwise.</returns>
+		/// @brief Try to push a copy constructable item to the queue.
+		/// @param item Item to push.
+		/// @return True on success, false otherwise.
 		template<typename Q = T>
 		requires std::copy_constructible<Q>
 		bool TryPush(const T& item);
 
-		/// <summary>
-		/// Try to push a move constructable item to the queue.
-		/// </summary>
-		/// <param name="item">Item to push.</param>
-		/// <returns>True on success, false otherwise.</returns>
+		/// @brief Try to push a move constructable item to the queue.
+		/// @param item Item to push.
+		/// @return True on success, false otherwise.
 		template<typename Q = T>
 		requires std::move_constructible<Q>
 		bool TryPush(T&& item);
 
-		/// <summary>
-		/// Pop a copy assignable item from the queue.
-		/// </summary>
-		/// <param name="item">Item to pop.</param>
+		/// @brief Pop a copy assignable item from the queue.
+		/// @param item Item to pop.
 		template<typename Q = T>
 		requires (std::is_copy_assignable_v<Q> && !std::is_move_assignable_v<Q>)
 		bool Pop(T& item);
 
-		/// <summary>
-		/// Pop a move assignable item from the queue.
-		/// </summary>
-		/// <param name="item">Item to pop.</param>
+		/// @brief Pop a move assignable item from the queue.
+		/// @param item Item to pop.
 		template<typename Q = T>
 		requires std::is_move_assignable_v<Q>
 		bool Pop(T& item);
 
-		/// <summary>
-		/// Try to pop a copy assignable item from the queue.
-		/// </summary>
-		/// <param name="item">Item to pop.</param>
-		/// <returns>True on success, false otherwise.</returns>
+		/// @brief Try to pop a copy assignable item from the queue.
+		/// @param item Item to pop.
+		/// @return True on success, false otherwise.
 		template<typename Q = T>
 		requires (std::is_copy_assignable_v<Q> && !std::is_move_assignable_v<Q>)
 		bool TryPop(T& item);
 
-		/// <summary>
-		/// Try to pop a move assignable item from the queue.
-		/// </summary>
-		/// <param name="item">Item to pop.</param>
-		/// <returns>True on success, false otherwise.</returns>
+		/// @brief Try to pop a move assignable item from the queue.
+		/// @param item Item to pop.
+		/// @return True on success, false otherwise.
 		template<typename Q = T>
 		requires std::is_move_assignable_v<Q>
 		bool TryPop(T& item);
 
-		/// <summary>
-		/// Mark the queue as done.
-		/// </summary>
+		/// @brief Mark the queue as done.
 		void Done() noexcept;
 
-		/// <summary>
-		/// Check if queue is empty.
-		/// </summary>
-		/// <returns>True if queue is empty, false otherwise.</returns>
+		/// @brief Check if queue is empty.
+		/// @return True if queue is empty, false otherwise.
 		[[nodiscard]] bool Empty() const noexcept;
 
-		/// <summary>
-		/// Retrieve the size of the queue.
-		/// </summary>
-		/// <returns>Queue size.</returns>
+		/// @brief Retrieve the size of the queue.
+		/// @return Queue size.
 		[[nodiscard]] u32 Size() const noexcept;
 
 	private:

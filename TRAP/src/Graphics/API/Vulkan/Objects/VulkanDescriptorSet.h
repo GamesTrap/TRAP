@@ -10,85 +10,57 @@ namespace TRAP::Graphics::API
 	class VulkanDescriptorSet final : public DescriptorSet
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="device">Vulkan device.</param>
-		/// <param name="vkDescriptorSetHandles">Vulkan descriptor set handles.</param>
-		/// <param name="rootSignature">Root signature.</param>
-		/// <param name="updateData">Update template data.</param>
-		/// <param name="maxSets">Max number of sets for the descriptor set.</param>
-		/// <param name="dynamicOffsetCount">Number of dynamic offsets.</param>
-		/// <param name="set">Update frequency.</param>
+		/// @brief Constructor.
+		/// @param device Vulkan device.
+		/// @param vkDescriptorSetHandles Vulkan descriptor set handles.
+		/// @param rootSignature Root signature.
+		/// @param updateData Update template data.
+		/// @param maxSets Max number of sets for the descriptor set.
+		/// @param dynamicOffsetCount Number of dynamic offsets.
+		/// @param set Update frequency.
 		VulkanDescriptorSet(TRAP::Ref<VulkanDevice> device, std::vector<VkDescriptorSet> vkDescriptorSetHandles,
 		                    TRAP::Ref<VulkanRootSignature> rootSignature,
 		                    std::vector<std::vector<VulkanRenderer::DescriptorUpdateData>> updateData,
 		                    u32 maxSets, u8 dynamicOffsetCount,
 							u32 set);
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		VulkanDescriptorSet(const VulkanDescriptorSet&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanDescriptorSet& operator=(const VulkanDescriptorSet&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanDescriptorSet(VulkanDescriptorSet&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanDescriptorSet& operator=(VulkanDescriptorSet&&) noexcept = default;
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanDescriptorSet() override = default;
 
-		/// <summary>
-		/// Retrieve the VkDescriptorSet handles.
-		/// </summary>
-		/// <returns>VkDescriptorSet handles.</returns>
+		/// @brief Retrieve the VkDescriptorSet handles.
+		/// @return VkDescriptorSet handles.
 		[[nodiscard]] constexpr const std::vector<VkDescriptorSet>& GetVkDescriptorSets() const noexcept;
-		/// <summary>
-		/// Retrieve the root signature.
-		/// </summary>
-		/// <returns>Root signature.</returns>
+		/// @brief Retrieve the root signature.
+		/// @return Root signature.
 		[[nodiscard]] TRAP::Ref<VulkanRootSignature> GetRootSignature() const noexcept;
-		/// <summary>
-		/// Retrieve the update frequency used by the descriptor set.
-		/// </summary>
-		/// <returns>Update frequency.</returns>
+		/// @brief Retrieve the update frequency used by the descriptor set.
+		/// @return Update frequency.
 		[[nodiscard]] constexpr RendererAPI::DescriptorUpdateFrequency GetUpdateFrequency() const noexcept;
-		/// <summary>
-		/// Retrieve the amount of dynamic offsets used by the descriptor set.
-		/// </summary>
-		/// <returns>Amount of dynamic offsets.</returns>
+		/// @brief Retrieve the amount of dynamic offsets used by the descriptor set.
+		/// @return Amount of dynamic offsets.
 		[[nodiscard]] constexpr u8 GetDynamicOffsetCount() const noexcept;
-		/// <summary>
-		/// Retrieve the dynamic size offsets used by the descriptor set.
-		/// </summary>
-		/// <returns>Dynamic size offsets.</returns>
+		/// @brief Retrieve the dynamic size offsets used by the descriptor set.
+		/// @return Dynamic size offsets.
 		[[nodiscard]] constexpr const std::vector<VulkanRenderer::SizeOffset>& GetDynamicSizeOffsets() const noexcept;
-		/// <summary>
-		/// Retrieve the max number of sets for the descriptor set.
-		/// </summary>
-		/// <returns>Max number of sets.</returns>
+		/// @brief Retrieve the max number of sets for the descriptor set.
+		/// @return Max number of sets.
 		[[nodiscard]] constexpr u32 GetMaxSets() const noexcept;
-		/// <summary>
-		/// Retrieve the index of the set for the descriptor set.
-		/// </summary>
-		/// <returns>Index of the set.</returns>
+		/// @brief Retrieve the index of the set for the descriptor set.
+		/// @return Index of the set.
 		[[nodiscard]] constexpr u32 GetSet() const noexcept;
 
-		/// <summary>
-		/// Update the descriptor set.
-		/// </summary>
-		/// <param name="index">Index of the set to update.</param>
-		/// <param name="params">Data to update.</param>
+		/// @brief Update the descriptor set.
+		/// @param index Index of the set to update.
+		/// @param params Data to update.
 		void Update(u32 index, const std::vector<RendererAPI::DescriptorData>& params) override;
 
 	private:

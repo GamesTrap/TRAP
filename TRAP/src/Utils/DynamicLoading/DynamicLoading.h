@@ -19,23 +19,17 @@
 
 namespace TRAP::Utils::DynamicLoading
 {
-    /// <summary>
-    /// Loads a dynamic library into memory.
-    /// </summary>
-    /// <param name="path">Path to the library.</param>
-    /// <returns>Pointer to the loaded library.</returns>
+    /// @brief Loads a dynamic library into memory.
+    /// @param path Path to the library.
+    /// @return Pointer to the loaded library.
     [[nodiscard]] void* LoadLibrary(std::string_view path);
-    /// <summary>
-    /// Unloads a dynamic library from memory.
-    /// </summary>
-    /// <param name="module">Pointer to the library to unload.</param>
+    /// @brief Unloads a dynamic library from memory.
+    /// @param module Pointer to the library to unload.
     void FreeLibrary(void* module);
-    /// <summary>
-    /// Gets a function pointer from a dynamic library.
-    /// </summary>
-    /// <param name="module">Pointer to the library.</param>
-    /// <param name="name">Name of the function.</param>
-    /// <returns>Pointer to the function.</returns>
+    /// @brief Gets a function pointer from a dynamic library.
+    /// @param module Pointer to the library.
+    /// @param name Name of the function.
+    /// @return Pointer to the function.
     template<typename T>
     [[nodiscard]] T GetLibrarySymbol(void* module, std::string_view name);
 }

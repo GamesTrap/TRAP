@@ -33,9 +33,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 namespace
 {
-	/// <summary>
-	/// Data struct for an ImGuiViewport.
-	/// </summary>
+	/// @brief Data struct for an ImGuiViewport.
 	struct ImGuiViewportDataTRAP
 	{
 		TRAP::INTERNAL::WindowingAPI::InternalWindow* Window{};
@@ -43,14 +41,10 @@ namespace
 		std::optional<i32> IgnoreWindowPosEventFrame = std::nullopt;
 		std::optional<i32> IgnoreWindowSizeEventFrame = std::nullopt;
 
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		constexpr ImGuiViewportDataTRAP() noexcept = default;
 
-		/// <summary>
-		/// Destructor
-		/// </summary>
+		/// @brief Destructor
 		~ImGuiViewportDataTRAP()
 		{
 			TRAP_ASSERT(Window == nullptr, "ImGuiViewportDataTRAP: Window is not nullptr!");
@@ -65,9 +59,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Data struct for ImGui user data.
-	/// </summary>
+	/// @brief Data struct for ImGui user data.
 	struct ImGuiTRAPData
 	{
 		TRAP::INTERNAL::WindowingAPI::InternalWindow* Window{};
@@ -97,14 +89,12 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Get the backend data provided by user.
+	/// @brief Get the backend data provided by user.
 	///
 	/// Backend data stored in io.BackendPlatformUserData to allow support for multiple Dear ImGui context
 	/// It is STRONGLY preferred that you use docking branch with multi-viewports
 	/// (== single Dear ImGui context + multiple windows) instead of multiple Dear ImGui contexts.
-	/// </summary>
-	/// <returns>Pointer to backend data.</returns>
+	/// @return Pointer to backend data.
 	[[nodiscard]] ImGuiTRAPData* GetBackendData()
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -120,10 +110,8 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Update modifier keys.
-	/// </summary>
-	/// <param name="window">Window to check modifier keys on.</param>
+	/// @brief Update modifier keys.
+	/// @param window Window to check modifier keys on.
 	void UpdateKeyModifiers(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -141,12 +129,9 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Translate untranslated keys from the WindowingAPI
-	/// back to translated keys to be used by ImGui:
-	/// </summary>
-	/// <param name="key">Key to translate.</param>
-	/// <returns>Translated key.</returns>
+	/// @brief Translate untranslated keys from the WindowingAPI back to translated keys to be used by ImGui:
+	/// @param key Key to translate.
+	/// @return Translated key.
 	[[nodiscard]] TRAP::Input::Key TranslateUntranslateKey(TRAP::Input::Key key)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -182,11 +167,9 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Convert a TRAP::Input::Key into an ImGuiKey.
-	/// </summary>
-	/// <param name="key">Key to convert.</param>
-	/// <returns>Converted key.</returns>
+	/// @brief Convert a TRAP::Input::Key into an ImGuiKey.
+	/// @param key Key to convert.
+	/// @return Converted key.
 	[[nodiscard]] constexpr ImGuiKey KeyToImGuiKey(const TRAP::Input::Key key) noexcept
 	{
 		switch(key)
@@ -316,11 +299,9 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Window Focus callback.
-	/// </summary>
-	/// <param name="window">Affected window.</param>
-	/// <param name="focused">Is window focused or not.</param>
+	/// @brief Window Focus callback.
+	/// @param window Affected window.
+	/// @param focused Is window focused or not.
 	void WindowFocusCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window, const bool focused)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -335,14 +316,11 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Cursor enter callback.
-	///
-	/// Workaround: X11 seems to send spurious Leave/Enter events which would make us lose our position,
+	/// @brief Cursor enter callback.
+	/// @param window Affected window.
+	/// @param entered Cursor entered or leaved window.
+	/// @remark @x11 X11 seems to send spurious Leave/Enter events which would make us lose our position,
 	/// so we back it up and restore on Leave/Enter (see https://github.com/ocornut/imgui/issues/4984)
-	/// </summary>
-	/// <param name="window">Affected window.</param>
-	/// <param name="entered">Cursor entered or leaved window.</param>
 	void CursorEnterCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window, const bool entered)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -367,12 +345,10 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Cursor position callback.
-	/// </summary>
-	/// <param name="window">Affected window.</param>
-	/// <param name="xPos">Cursor x position of the window.</param>
-	/// <param name="yPos">Cursor y position of the window.</param>
+	/// @brief Cursor position callback.
+	/// @param window Affected window.
+	/// @param xPos Cursor x position of the window.
+	/// @param yPos Cursor y position of the window.
 	void CursorPosCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window, f64 xPos, f64 yPos)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -395,12 +371,10 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Mouse button callback.
-	/// </summary>
-	/// <param name="window">Affected window.</param>
-	/// <param name="mouseButton">Affected mouse button.</param>
-	/// <param name="state">Mouse button state (pressed or released).</param>
+	/// @brief Mouse button callback.
+	/// @param window Affected window.
+	/// @param mouseButton Affected mouse button.
+	/// @param state Mouse button state (pressed or released).
 	void MouseButtonCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window,
 	                         const TRAP::Input::MouseButton mouseButton, const TRAP::Input::KeyState state)
 	{
@@ -420,12 +394,10 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Scroll callback.
-	/// </summary>
-	/// <param name="window">Affected window.</param>
-	/// <param name="xOffset">Horizontal mouse wheel offset.</param>
-	/// <param name="yOffset">Vertical mouse wheel offset.</param>
+	/// @brief Scroll callback.
+	/// @param window Affected window.
+	/// @param xOffset Horizontal mouse wheel offset.
+	/// @param yOffset Vertical mouse wheel offset.
 	void ScrollCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window, const f64 xOffset,
 	                    const f64 yOffset)
 	{
@@ -441,12 +413,10 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Key callback.
-	/// </summary>
-	/// <param name="window">Affected window.</param>
-	/// <param name="key">Keyboard key.</param>
-	/// <param name="state">Key state (pressed, repeated or released).</param>
+	/// @brief Key callback.
+	/// @param window Affected window.
+	/// @param key Keyboard key.
+	/// @param state Key state (pressed, repeated or released).
 	void KeyCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window, TRAP::Input::Key key,
 	                 const TRAP::Input::KeyState state)
 	{
@@ -474,11 +444,9 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Char callback.
-	/// </summary>
-	/// <param name="window">Affected window.</param>
-	/// <param name="codePoint">UTF-32 code point.</param>
+	/// @brief Char callback.
+	/// @param window Affected window.
+	/// @param codePoint UTF-32 code point.
 	void CharCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window, const u32 codePoint)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -493,11 +461,9 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Monitor callback.
-	/// </summary>
-	/// <param name="monitor">Affected monitor.</param>
-	/// <param name="connected">Monitor connected or disconnected.</param>
+	/// @brief Monitor callback.
+	/// @param monitor Affected monitor.
+	/// @param connected Monitor connected or disconnected.
 	void MonitorCallback([[maybe_unused]] const TRAP::INTERNAL::WindowingAPI::InternalMonitor& monitor,
 	                     [[maybe_unused]] const bool connected)
 	{
@@ -511,11 +477,9 @@ namespace
 
 	std::string ClipboardText{};
 
-	/// <summary>
-	/// Get clipboard text.
-	/// </summary>
-	/// <param name="userData">Unused.</param>
-	/// <returns>Clipboard content.</returns>
+	/// @brief Get clipboard text.
+	/// @param userData Unused.
+	/// @return Clipboard content.
 	[[nodiscard]] const char* GetClipboardText([[maybe_unused]] void* const userData)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -526,11 +490,9 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Set the clipboard text.
-	/// </summary>
-	/// <param name="userData">Unused.</param>
-	/// <param name="text">Text to set on clipboard.</param>
+	/// @brief Set the clipboard text.
+	/// @param userData Unused.
+	/// @param text Text to set on clipboard.
 	void SetClipboardText([[maybe_unused]] void* const userData, const char* const text)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -540,9 +502,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Update the ImGui mouse data.
-	/// </summary>
+	/// @brief Update the ImGui mouse data.
 	void UpdateMouseData()
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -613,9 +573,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Update the ImGui mouse cursor.
-	/// </summary>
+	/// @brief Update the ImGui mouse cursor.
 	void UpdateMouseCursor()
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -670,9 +628,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Update the ImGui gamepad data.
-	/// </summary>
+	/// @brief Update the ImGui gamepad data.
 	void UpdateGamepads()
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -722,9 +678,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Update the ImGui monitor data.
-	/// </summary>
+	/// @brief Update the ImGui monitor data.
 	void UpdateMonitors()
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -774,10 +728,8 @@ namespace
 	//it is recommended that you completely ignore this section first...
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Window close callback.
-	/// </summary>
-	/// <param name="window">Affected window.</param>
+	/// @brief Window close callback.
+	/// @param window Affected window.
 	void WindowCloseCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -794,8 +746,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Window position callback.
+	/// @brief Window position callback.
 	///
 	/// WindowingAPI may dispatch window pos/size events after calling SetWindowPos()/SetWindowSize().
 	/// However: depending on the platform the callback may be invoked at different time:
@@ -803,10 +754,9 @@ namespace
 	///  - on Linux it is queued and invoked during PollEvents()
 	/// Because the event doesn't always fire on SetWindowXXX() we use a frame counter tag to only
 	/// ignore recent SetWindowXXX() calls.
-	/// </summary>
-	/// <param name="window">Affected window.</param>
-	/// <param name="xPos">New x position.</param>
-	/// <param name="yPos">New y position.</param>
+	/// @param window Affected window.
+	/// @param xPos New x position.
+	/// @param yPos New y position.
 	void WindowPosCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window,
 	                       [[maybe_unused]] const i32 xPos, [[maybe_unused]] const i32 yPos)
 	{
@@ -834,12 +784,10 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Window size callback.
-	/// </summary>
-	/// <param name="window">Affected window.</param>
-	/// <param name="width">New width.</param>
-	/// <param name="height">New height.</param>
+	/// @brief Window size callback.
+	/// @param window Affected window.
+	/// @param width New width.
+	/// @param height New height.
 	void WindowSizeCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window,
 	                        [[maybe_unused]] const i32 width, [[maybe_unused]] const i32 height)
 	{
@@ -866,10 +814,8 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Create a new ImGui Window.
-	/// </summary>
-	/// <param name="viewport">Viewport to create window for.</param>
+	/// @brief Create a new ImGui Window.
+	/// @param viewport Viewport to create window for.
 	void CreateWindow(ImGuiViewport* const viewport)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -909,10 +855,8 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Destroy an ImGui Window.
-	/// </summary>
-	/// <param name="viewport">Viewport to destroy window on.</param>
+	/// @brief Destroy an ImGui Window.
+	/// @param viewport Viewport to destroy window on.
 	void DestroyWindow(ImGuiViewport* const viewport)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -943,10 +887,8 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Show an ImGui Window.
-	/// </summary>
-	/// <param name="viewport">Viewport to show window for.</param>
+	/// @brief Show an ImGui Window.
+	/// @param viewport Viewport to show window for.
 	void ShowWindow(ImGuiViewport* const viewport)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -964,11 +906,9 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Retrieve the ImGui Window position.
-	/// </summary>
-	/// <param name="viewport">Viewport to retrieve position for.</param>
-	/// <returns>Window position.</returns>
+	/// @brief Retrieve the ImGui Window position.
+	/// @param viewport Viewport to retrieve position for.
+	/// @return Window position.
 	[[nodiscard]] ImVec2 GetWindowPos(ImGuiViewport* const viewport)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -986,11 +926,9 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Set the position for the ImGui Window.
-	/// </summary>
-	/// <param name="viewport">Viewport to set window position on.</param>
-	/// <param name="pos">Position to set.</param>
+	/// @brief Set the position for the ImGui Window.
+	/// @param viewport Viewport to set window position on.
+	/// @param pos Position to set.
 	void SetWindowPos(ImGuiViewport* const viewport, ImVec2 pos)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -1006,11 +944,9 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Retrieve the ImGui Window size.
-	/// </summary>
-	/// <param name="viewport">Viewport to retrieve size for.</param>
-	/// <returns>Window size.</returns>
+	/// @brief Retrieve the ImGui Window size.
+	/// @param viewport Viewport to retrieve size for.
+	/// @return Window size.
 	[[nodiscard]] ImVec2 GetWindowSize(ImGuiViewport* const viewport)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -1028,11 +964,9 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Set the size for the ImGui Window.
-	/// </summary>
-	/// <param name="viewport">Viewport to set window size on.</param>
-	/// <param name="size">Size to set.</param>
+	/// @brief Set the size for the ImGui Window.
+	/// @param viewport Viewport to set window size on.
+	/// @param size Size to set.
 	void SetWindowSize(ImGuiViewport* const viewport, ImVec2 size)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -1049,11 +983,9 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Set the title for the ImGui Window.
-	/// </summary>
-	/// <param name="viewport">Viewport to set window title on.</param>
-	/// <param name="title">Title to set.</param>
+	/// @brief Set the title for the ImGui Window.
+	/// @param viewport Viewport to set window title on.
+	/// @param title Title to set.
 	void SetWindowTitle(ImGuiViewport* const viewport, const char* title)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -1068,10 +1000,8 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Set focus for the ImGui Window.
-	/// </summary>
-	/// <param name="viewport">Viewport to set window focus on.</param>
+	/// @brief Set focus for the ImGui Window.
+	/// @param viewport Viewport to set window focus on.
 	void SetWindowFocus(ImGuiViewport* const viewport)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -1086,11 +1016,9 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Retrieve the ImGui Window focus state.
-	/// </summary>
-	/// <param name="viewport">Viewport to retrieve focus state for.</param>
-	/// <returns>Focus state.</returns>
+	/// @brief Retrieve the ImGui Window focus state.
+	/// @param viewport Viewport to retrieve focus state for.
+	/// @return Focus state.
 	[[nodiscard]] bool GetWindowFocus(ImGuiViewport* const viewport)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -1105,11 +1033,9 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Retrieve the ImGui Window minimization state.
-	/// </summary>
-	/// <param name="viewport">Viewport to retrieve minimization state for.</param>
-	/// <returns>Minimization state.</returns>
+	/// @brief Retrieve the ImGui Window minimization state.
+	/// @param viewport Viewport to retrieve minimization state for.
+	/// @return Minimization state.
 	[[nodiscard]] bool GetWindowMinimized(ImGuiViewport* const viewport)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -1124,11 +1050,9 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Set the alpha value for the ImGui Window.
-	/// </summary>
-	/// <param name="viewport">Viewport to set alpha value on.</param>
-	/// <param name="alpha">Alpha value.</param>
+	/// @brief Set the alpha value for the ImGui Window.
+	/// @param viewport Viewport to set alpha value on.
+	/// @param alpha Alpha value.
 	void SetWindowAlpha(ImGuiViewport* const viewport, f32 alpha)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -1145,14 +1069,12 @@ namespace
 	// Vulkan support (the Vulkan renderer needs to call a platform-side support function to create the surface)
 	//--------------------------------------------------------------------------------------------------------
 
-	/// <summary>
-	/// Create a Vulkan surface for ImGui.
-	/// </summary>
-	/// <param name="viewport">Viewport to create surface for.</param>
-	/// <param name="vkInstance">Vulkan instance.</param>
-	/// <param name="vkAllocator">Vulkan allocator.</param>
-	/// <param name="outVkSurface">Output for Vulkan surface.</param>
-	/// <returns>Vulkan error code.</returns>
+	/// @brief Create a Vulkan surface for ImGui.
+	/// @param viewport Viewport to create surface for.
+	/// @param vkInstance Vulkan instance.
+	/// @param vkAllocator Vulkan allocator.
+	/// @param outVkSurface Output for Vulkan surface.
+	/// @return Vulkan error code.
 	[[nodiscard]] i32 CreateVkSurface(ImGuiViewport* const viewport, const ImU64 vkInstance,
 	                                      const void* const vkAllocator, ImU64* const outVkSurface)
 	{
@@ -1174,9 +1096,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Initialize the platform interface.
-	/// </summary>
+	/// @brief Initialize the platform interface.
 	void InitPlatformInterface()
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -1214,9 +1134,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Shutdown the platform interface.
-	/// </summary>
+	/// @brief Shutdown the platform interface.
 	void ShutdownPlatformInterface()
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);

@@ -8,89 +8,63 @@ namespace TRAP::INTERNAL
 	class TGAImage final : public Image
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="filepath">File path of the image to load.</param>
+		/// @brief Constructor.
+		/// @param filepath File path of the image to load.
 		explicit TGAImage(std::filesystem::path filepath);
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		TGAImage(const TGAImage&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		TGAImage& operator=(const TGAImage&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		TGAImage(TGAImage&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		TGAImage& operator=(TGAImage&&) noexcept = default;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~TGAImage() override = default;
 
-		/// <summary>
-		/// Retrieve the raw pixel data of the image.
-		/// </summary>
-		/// <returns>Constant pointer to the raw pixel data.</returns>
+		/// @brief Retrieve the raw pixel data of the image.
+		/// @return Constant pointer to the raw pixel data.
 		[[nodiscard]] constexpr const void* GetPixelData() const noexcept override;
-		/// <summary>
-		/// Retrieve the size of the raw pixel data of the image.
-		/// </summary>
-		/// <returns>Size of the raw pixel data in bytes.</returns>
+		/// @brief Retrieve the size of the raw pixel data of the image.
+		/// @return Size of the raw pixel data in bytes.
 		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
 	private:
-		/// <summary>
-		/// Decode run length encoded indexed BGRA data.
+		/// @brief Decode run length encoded indexed BGRA data.
 		/// Output format depends on channel count, if it is 4, output is RGBA, if it is 3, output is RGB and so on.
-		/// </summary>
-		/// <param name="source">Run length encoded indexed BGRA data.</param>
-		/// <param name="width">Width of the image.</param>
-		/// <param name="height">Height of the image.</param>
-		/// <param name="channels">Amount of channels, i.e. 4 = RGBA, 3 = RGB and so on.</param>
-		/// <param name="colorMap">Color table.</param>
-		/// <returns>Decoded pixel data.</returns>
+		/// @param source Run length encoded indexed BGRA data.
+		/// @param width Width of the image.
+		/// @param height Height of the image.
+		/// @param channels Amount of channels, i.e. 4 = RGBA, 3 = RGB and so on.
+		/// @param colorMap Color table.
+		/// @return Decoded pixel data.
 		[[nodiscard]] static constexpr std::vector<u8> DecodeRLEBGRAMap(std::vector<u8>& source, u32 width, u32 height,
 		                                                                     u32 channels, std::vector<u8>& colorMap);
-		/// <summary>
-		/// Decode run length encoded grayscale data.
-		/// </summary>
-		/// <param name="source">Run length encoded grayscale data.</param>
-		/// <param name="width">Width of the image.</param>
-		/// <param name="height">Height of the image.</param>
-		/// <returns>Decoded grayscale pixel data.</returns>
+		/// @brief Decode run length encoded grayscale data.
+		/// @param source Run length encoded grayscale data.
+		/// @param width Width of the image.
+		/// @param height Height of the image.
+		/// @return Decoded grayscale pixel data.
 		[[nodiscard]] static constexpr std::vector<u8> DecodeRLEGrayScale(std::vector<u8>& source,
 		                                                                       u32 width, u32 height);
-		/// <summary>
-		/// Convert run length encoded BGR16 data to RGB24.
-		/// </summary>
-		/// <param name="source">Run length encoded BGR16 data.</param>
-		/// <param name="width">Width of the image.</param>
-		/// <param name="height">Height of the image.</param>
-		/// <returns>Decoded RGB24 pixel data.</returns>
+		/// @brief Convert run length encoded BGR16 data to RGB24.
+		/// @param source Run length encoded BGR16 data.
+		/// @param width Width of the image.
+		/// @param height Height of the image.
+		/// @return Decoded RGB24 pixel data.
 		[[nodiscard]] static constexpr std::vector<u8> ConvertRLEBGR16ToRGB24(std::vector<u8>& source,
 		                                                                           u32 width, u32 height);
-		/// <summary>
-		/// Convert run length encoded BGR24 data to RGB24.
-		/// </summary>
-		/// <param name="source">Run length encoded BGR24 data.</param>
-		/// <param name="width">Width of the image.</param>
-		/// <param name="height">Height of the image.</param>
-		/// <returns>Decoded RGB24 pixel data.</returns>
+		/// @brief Convert run length encoded BGR24 data to RGB24.
+		/// @param source Run length encoded BGR24 data.
+		/// @param width Width of the image.
+		/// @param height Height of the image.
+		/// @return Decoded RGB24 pixel data.
 		[[nodiscard]] static constexpr std::vector<u8> ConvertRLEBGR24ToRGB24(std::vector<u8>& source,
 		                                                                           u32 width, u32 height);
-		/// <summary>
-		/// Convert run length encoded BGRA32 data to RGBA32.
-		/// </summary>
-		/// <param name="source">Run length encoded BGRA32 data.</param>
-		/// <param name="width">Width of the image.</param>
-		/// <param name="height">Height of the image.</param>
-		/// <returns>Decoded RGBA32 pixel data.</returns>
+		/// @brief Convert run length encoded BGRA32 data to RGBA32.
+		/// @param source Run length encoded BGRA32 data.
+		/// @param width Width of the image.
+		/// @param height Height of the image.
+		/// @return Decoded RGBA32 pixel data.
 		[[nodiscard]] static constexpr std::vector<u8> ConvertRLEBGRA32ToRGBA(std::vector<u8>& source,
 		                                                                           u32 width, u32 height);
 

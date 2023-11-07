@@ -13,9 +13,7 @@ namespace TRAP::Events
 
 namespace TRAP::FileSystem
 {
-    /// <summary>
-    /// Specifies the status of a file.
-    /// </summary>
+    /// @brief Specifies the status of a file.
     enum class FileStatus
     {
         Created,
@@ -27,94 +25,64 @@ namespace TRAP::FileSystem
     class FileWatcher
     {
     public:
-        /// <summary>
-		/// Describes a callback function which gets called when an input event occurs.
-		/// </summary>
+        /// @brief Describes a callback function which gets called when a event occurs.
 		using EventCallbackFn = std::function<void(Events::Event&)>;
 
-        /// <summary>
-        /// Keeps track of the status of all files inside the added folders.
-        ///
-        /// Note: This class starts a new thread.
-        ///
-        /// Windows: Event-based via ReadDirectoryChangesW.
-        /// Linux: Event-based via inotify & eventfd.
-        /// </summary>
-        /// <param name="name">Name for the file watcher.</param>
-        /// <param name="recursive">Whether to also include sub-folders.</param>
+        /// @brief Keeps track of the status of all files inside the added folders.
+        /// @param name Name for the file watcher.
+        /// @param recursive Whether to also include sub-folders.
+        /// @note This class uses an extra thread for tracking files and folders.
+        /// @remark @win32 Event based via ReadDirectoryChangesW.
+        /// @remark @linux Event-based via inotify and eventfd.
         explicit FileWatcher(std::string name, bool recursive = true);
 
-        /// <summary>
-		/// Destructor.
-		/// </summary>
+        /// @brief Destructor.
 		~FileWatcher() = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		FileWatcher(const FileWatcher&) = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		FileWatcher(FileWatcher&&) = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		FileWatcher& operator=(const FileWatcher&) = delete;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		FileWatcher& operator=(FileWatcher&&) = default;
 
-        /// <summary>
-        /// Sets the callback function that is called when a file event occurs.
-        /// </summary>
-        /// <param name="callback">Callback function used to report events to.</param>
+        /// @brief Sets the callback function that is called when a file event occurs.
+        /// @param callback Callback function used to report events to.
         void SetEventCallback(const EventCallbackFn& callback) noexcept;
-		/// <summary>
-		/// Get the function to call when an file event occurred.
-		/// </summary>
-		/// <returns>EventCallbackFn.</returns>
+        /// @brief Get the function to call when an file event occurred.
+        /// @return EventCallbackFn.
 		[[nodiscard]] EventCallbackFn GetEventCallback() const noexcept;
 
-        /// <summary>Adds a new folder path to the tracked paths.</summary>
-        /// <param name="path">Folder path to track.</param>
+        /// @brief Adds a new folder path to the tracked paths.
+        /// @param path Folder path to track.
         void AddFolder(const std::filesystem::path& path);
-        /// <summary>Adds new folder paths to the tracked paths.</summary>
-        /// <param name="paths">Folder paths to track.</param>
+        /// @brief Adds new folder paths to the tracked paths.
+        /// @param paths Folder paths to track.
         void AddFolders(const std::vector<std::filesystem::path>& paths);
 
-        /// <summary>Removes a folder path from the tracked paths.</summary>
-        /// <param name="path">Folder path to untrack.</param>
+        /// @brief Removes a folder path from the tracked paths.
+        /// @param path Folder path to untrack.
         void RemoveFolder(const std::filesystem::path& path);
-        /// <summary>Removes folder paths from the tracked paths.</summary>
-        /// <param name="paths">Folder paths to untrack.</param>
+        /// @brief Removes folder paths from the tracked paths.
+        /// @param paths Folder paths to untrack.
         void RemoveFolders(const std::vector<std::filesystem::path>& paths);
 
-        /// <summary>
-        /// Returns the paths that are being watched.
-        /// </summary>
-        /// <returns>The paths that are being watched.</returns>
+        /// @brief Returns the paths that are being watched.
+        /// @return The paths that are being watched.
         [[nodiscard]] constexpr const std::vector<std::filesystem::path>& GetFolders() const noexcept;
 
     private:
-        /// <summary>
-        /// Initialize FileWatcher.
-        /// </summary>
+        /// @brief Initialize FileWatcher.
         void Init();
-        /// <summary>
-        /// Shutdown FileWatcher.
-        /// </summary>
+        /// @brief Shutdown FileWatcher.
         void Shutdown();
 
-        /// <summary>
-        /// Watch over files.
-        /// </summary>
-        /// <param name="stopToken">Token to use for stop request.</param>
+        /// @brief Watch over files.
+        /// @param stopToken Token to use for stop request.
         void Watch(const std::stop_token& stopToken);
 
-        /// <summary>
-        /// Callback to stop the running file watcher thread.
-        /// </summary>
+        /// @brief Callback to stop the running file watcher thread.
         void StopCallback() const;
 
         EventCallbackFn m_callback = nullptr;

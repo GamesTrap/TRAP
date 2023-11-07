@@ -127,11 +127,9 @@ void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::Socke
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// <summary>
-/// Windows needs some initialization and cleanup to get
+/// @brief Windows needs some initialization and cleanup to get
 /// sockets working properly... so let's create a class that will
 /// do it automatically
-/// </summary>
 struct SocketInitializer
 {
 	SocketInitializer()

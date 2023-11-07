@@ -14,74 +14,51 @@ namespace TRAP::Graphics
 	{
 	public:
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Create a new swap chain from the given description.
-		/// </summary>
-		/// <param name="desc">Swap chain description.</param>
-		/// <returns>Created swap chain.</returns>
+		/// @brief Create a new swap chain from the given description.
+		/// @param desc Swap chain description.
+		/// @return Created swap chain.
+		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] static TRAP::Ref<SwapChain> Create(RendererAPI::SwapChainDesc& desc);
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Retrieve the recommended swap chain image format.
-		/// </summary>
-		/// <param name="HDR">Use HDR?</param>
-		/// <param name="SRGB">Use SRGB?</param>
-		/// <returns>Recommended swap chain image format.</returns>
+		/// @brief Retrieve the recommended swap chain image format.
+		/// @param HDR Use HDR?
+		/// @param SRGB Use SRGB?
+		/// @return Recommended swap chain image format.
 		[[nodiscard]] static TRAP::Graphics::API::ImageFormat GetRecommendedSwapchainFormat(bool HDR, bool SRGB) noexcept;
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~SwapChain();
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr SwapChain(const SwapChain&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		SwapChain& operator=(const SwapChain&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr SwapChain(SwapChain&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		SwapChain& operator=(SwapChain&&) noexcept = default;
 
-		/// <summary>
-		/// Acquire the next presentable image from the swapchain to render to.
-		/// </summary>
-		/// <param name="signalSemaphore">Semaphore to signal when the image is ready to be presented.</param>
-		/// <param name="fence">Fence to wait for the image to be ready to be presented.</param>
-		/// <returns>Acuired image index.</returns>
+		/// @brief Acquire the next presentable image from the swapchain to render to.
+		/// @param signalSemaphore Semaphore to signal when the image is ready to be presented.
+		/// @param fence Fence to wait for the image to be ready to be presented.
+		/// @return Acuired image index.
 		[[nodiscard]] virtual std::optional<u32> AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
 		                                                               const TRAP::Ref<Fence>& fence) const = 0;
 
-		/// <summary>
-		/// Retrieve the render targets used by the swapchain.
-		/// </summary>
-		/// <returns>Render targets used by the swapchain.</returns>
+		/// @brief Retrieve the render targets used by the swapchain.
+		/// @return Render targets used by the swapchain.
 		[[nodiscard]] constexpr const std::vector<TRAP::Ref<RenderTarget>>& GetRenderTargets() const noexcept;
 
-		/// <summary>
-		/// Toggle Vsync on and off.
-		/// </summary>
+		/// @brief Toggle Vsync on and off.
 		virtual void ToggleVSync() = 0;
 
-		/// <summary>
-		/// Updates the framebuffer size and recreates the swap chain.
-		/// </summary>
+		/// @brief Updates the framebuffer size and recreates the swap chain.
 		virtual void UpdateFramebufferSize() = 0;
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		SwapChain();
 
 		//Render targets created from the swapchain back buffers

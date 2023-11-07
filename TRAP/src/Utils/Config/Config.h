@@ -10,99 +10,69 @@ namespace TRAP::Utils
 	class Config
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		constexpr Config() noexcept = default;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~Config() = default;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Config(const Config&) = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr Config(Config&&) = default;
 
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr Config& operator=(const Config&) = delete;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr Config& operator=(Config&&) = default;
 
-		/// <summary>
-		/// Load a config file from disk.
-		/// </summary>
-		/// <param name="file">File path to load.</param>
-		/// <returns>True if loading was successful, false otherwise.</returns>
+		/// @brief Load a config file from disk.
+		/// @param file File path to load.
+		/// @return True if loading was successful, false otherwise.
 		bool LoadFromFile(const std::filesystem::path& file);
-		/// <summary>
-		/// Save a config file to disk.
-		/// </summary>
-		/// <param name="file">File path to save to.</param>
-		/// <returns>True if saving was successful, false otherwise.</returns>
+		/// @brief Save a config file to disk.
+		/// @param file File path to save to.
+		/// @return True if saving was successful, false otherwise.
 		bool SaveToFile(const std::filesystem::path& file);
 
-		/// <summary>
-		/// Check if config has changed after last load/save.
-		/// </summary>
-		/// <returns>True if config has changed, false otherwise.</returns>
+		/// @brief Check if config has changed after last load/save.
+		/// @return True if config has changed, false otherwise.
 		[[nodiscard]] constexpr bool HasChanged() const noexcept;
 
-		/// <summary>
-		/// Retrieve the value of a specific key in the config.
-		/// </summary>
-		/// <typeparam name="T">Output variable.</typeparam>
-		/// <param name="key">Key to get value from.</param>
-		/// <returns>Found value or std::nullopt.</returns>
+		/// @brief Retrieve the value of a specific key in the config.
+		/// @tparam T Output variable.
+		/// @param key Key to get value from.
+		/// @return Found value or std::nullopt.
 		template<typename T>
 		[[nodiscard]] std::optional<T> Get(std::string_view key) const;
-		/// <summary>
-		/// Retrieve the values of a specific key in the config.
-		/// </summary>
-		/// <typeparam name="T">Output variable.</typeparam>
-		/// <param name="key">Key to get values from.</param>
-		/// <returns>Found values or std::nullopt.</returns>
+		/// @brief Retrieve the values of a specific key in the config.
+		/// @tparam T Output variable.
+		/// @param key Key to get values from.
+		/// @return Found values or std::nullopt.
 		template<typename T>
 		[[nodiscard]] std::optional<std::vector<T>> GetVector(std::string_view key) const;
 
-		/// <summary>
-		/// Set a value in the config.
-		/// </summary>
-		/// <typeparam name="T">Value type.</typeparam>
-		/// <param name="key">Key for the new or updated value.</param>
-		/// <param name="value">Value.</param>
+		/// @brief Set a value in the config.
+		/// @tparam T Value type.
+		/// @param key Key for the new or updated value.
+		/// @param value Value.
 		template<typename T>
 		void Set(const std::string& key, T value);
-		/// <summary>
-		/// Set values in the config.
-		/// </summary>
-		/// <typeparam name="T">Value type.</typeparam>
-		/// <param name="key">Key for the new or updated values.</param>
-		/// <param name="value">Values.</param>
+		/// @brief Set values in the config.
+		/// @tparam T Value type.
+		/// @param key Key for the new or updated values.
+		/// @param value Values.
 		template<typename T>
 		void Set(const std::string& key, const std::vector<T>& value);
 
-		/// <summary>
-		/// Print all stored values to the console.
-		/// </summary>
+		/// @brief Print all stored values to the console.
 		void Print() const;
 
 	private:
-		/// <summary>
-		/// Parse a line from the Config files.
+		/// @brief Parse a line from the Config files.
 		/// Splits keys from value(s).
 		/// Ignores lines starting with a '#'.
-		/// </summary>
-		/// <param name="line">Line to parse.</param>
-		/// <returns>Pair of key and value.</returns>
+		/// @param line Line to parse.
+		/// @return Pair of key and value.
 		[[nodiscard]] static constexpr std::pair<std::string, std::string> ParseLine(std::string_view line);
 
 		bool m_hasChanged = false;

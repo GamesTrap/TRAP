@@ -64,28 +64,18 @@ namespace std
 
 namespace TRAP::Math
 {
-	/// <summary>
-	/// Struct for a 3x3 matrix.
-	/// </summary>
+	/// @brief Struct for a 3x3 matrix.
 	template<typename T>
 	requires std::floating_point<T>
 	struct Mat<3, 3, T>
 	{
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr Mat(Mat&&) noexcept = default;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~Mat() = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr Mat<3, 3, T>& operator=(Mat&&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr Mat<3, 3, T>& operator=(const Mat&) noexcept = default;
 
 		using col_type = Vec<3, T>;
@@ -102,33 +92,21 @@ namespace TRAP::Math
 		std::array<col_type, 3> value{};
 
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		constexpr Mat() noexcept = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Mat(const Mat<3, 3, T> & m) noexcept = default;
 
-		/// <summary>
-		/// Scalar constructor.
-		/// </summary>
+		/// @brief Scalar constructor.
 		explicit constexpr Mat(T scalar) noexcept;
-		/// <summary>
-		/// Value constructor.
-		/// </summary>
+		/// @brief Value constructor.
 		constexpr Mat(T x0, T y0, T z0,
 			          T x1, T y1, T z1,
 			          T x2, T y2, T z2) noexcept;
-		/// <summary>
-		/// Column constructor.
-		/// </summary>
+		/// @brief Column constructor.
 		constexpr Mat(const col_type & v0, const col_type & v1, const col_type & v2) noexcept;
 
-		/// <summary>
-		/// Value conversion constructor.
-		/// </summary>
+		/// @brief Value conversion constructor.
 		template<typename X1, typename Y1, typename Z1,
 			     typename X2, typename Y2, typename Z2,
 			     typename X3, typename Y3, typename Z3>
@@ -139,66 +117,87 @@ namespace TRAP::Math
 			          X2 x2, Y2 y2, Z2 z2,
 			          X3 x3, Y3 y3, Z3 z3) noexcept;
 
-		/// <summary>
-		/// Column conversion constructor.
-		/// </summary>
+		/// @brief Column conversion constructor.
 		template<typename V1, typename V2, typename V3>
 		requires std::floating_point<V1> && std::floating_point<V2> && std::floating_point<V3>
 		constexpr Mat(const Vec<3, V1> & v1, const Vec<3, V2> & v2, const Vec<3, V3> & v3) noexcept;
 
-		/// <summary>
-		/// Copy conversion constructor.
-		/// </summary>
+		/// @brief Copy conversion constructor.
 		template<typename U>
 		requires std::floating_point<U>
 		constexpr Mat(const Mat<3, 3, U> & m) noexcept;
 
-		/// <summary>
-		/// Copy conversion constructor.
-		/// </summary>
+		/// @brief Copy conversion constructor.
 		constexpr Mat(const Mat<4, 4, T> & x) noexcept;
 
-		/// <summary>
-		/// Retrieve the length of the matrix.
-		/// </summary>
-		/// <returns>Length.</returns>
+		/// @brief Retrieve the length of the matrix.
+		/// @return Length.
 		[[nodiscard]] static constexpr usize Length() noexcept;
 
-		/// <summary>
-		/// Retrieve a column of the matrix.
-		/// </summary>
-		/// <param name="i">Column to retrieve.</param>
+		/// @brief Retrieve a column of the matrix.
+		/// @param i Column to retrieve.
 		[[nodiscard]] constexpr col_type& operator[](usize i);
-		/// <summary>
-		/// Retrieve a column of the matrix.
-		/// </summary>
-		/// <param name="i">Column to retrieve.</param>
+		/// @brief Retrieve a column of the matrix.
+		/// @param i Column to retrieve.
 		[[nodiscard]] constexpr const col_type& operator[](usize i) const;
 
 
-		/// <summary>
-		/// Retrieve a column of the matrix.
-		/// </summary>
-		/// <param name="i">Column to retrieve.</param>
+		/// @brief Retrieve a column of the matrix.
+		/// @param i Column to retrieve.
 		[[nodiscard]] col_type& at(usize i);
-		/// <summary>
-		/// Retrieve a column of the matrix.
-		/// </summary>
-		/// <param name="i">Column to retrieve.</param>
+		/// @brief Retrieve a column of the matrix.
+		/// @param i Column to retrieve.
 		[[nodiscard]] const col_type& at(usize i) const;
 
 		//Iterator
+
+		/// @brief Returns an iterator to the first element of the matrix.
+		/// @return Iterator to the first element.
 		[[nodiscard]] constexpr const_iterator begin() const noexcept;
+		/// @brief Returns an iterator to the first element of the matrix.
+		/// @return Iterator to the first element.
 		[[nodiscard]] constexpr iterator begin() noexcept;
+		/// @brief Returns an iterator to the first element of the matrix.
+		/// @return Iterator to the first element.
 		[[nodiscard]] constexpr const_iterator cbegin() const noexcept;
+		/// @brief Returns a reverse iterator to the first element of the reversed matrix.
+		///        It corresponds to the last element of the non-reversed matrix.
+		/// @return Reverse iterator to the first element.
 		[[nodiscard]] constexpr const_reverse_iterator rbegin() const noexcept;
+		/// @brief Returns a reverse iterator to the first element of the reversed matrix.
+		///        It corresponds to the last element of the non-reversed matrix.
+		/// @return Reverse iterator to the first element.
 		[[nodiscard]] constexpr reverse_iterator rbegin() noexcept;
+		/// @brief Returns a reverse iterator to the first element of the reversed matrix.
+		///        It corresponds to the last element of the non-reversed matrix.
+		/// @return Reverse iterator to the first element.
 		[[nodiscard]] constexpr const_reverse_iterator crbegin() const noexcept;
+		/// @brief Returns an iterator to the element following the last element of the matrix.
+		/// @return Iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
 		[[nodiscard]] constexpr const_iterator end() const noexcept;
+		/// @brief Returns an iterator to the element following the last element of the matrix.
+		/// @return Iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
 		[[nodiscard]] constexpr iterator end() noexcept;
+		/// @brief Returns an iterator to the element following the last element of the matrix.
+		/// @return Iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
 		[[nodiscard]] constexpr const_iterator cend() const noexcept;
+		/// @brief Returns a reverse iterator to the element following the last element of the reversed matrix.
+		///        It corresponds to the element preceding the first element of the non-reversed matrix.
+		/// @return Reverse iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
 		[[nodiscard]] constexpr const_reverse_iterator rend() const noexcept;
+		/// @brief Returns a reverse iterator to the element following the last element of the reversed matrix.
+		///        It corresponds to the element preceding the first element of the non-reversed matrix.
+		/// @return Reverse iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
 		[[nodiscard]] constexpr reverse_iterator rend() noexcept;
+		/// @brief Returns a reverse iterator to the element following the last element of the reversed matrix.
+		///        It corresponds to the element preceding the first element of the non-reversed matrix.
+		/// @return Reverse iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
 		[[nodiscard]] constexpr const_reverse_iterator crend() const noexcept;
 
 		//Unary arithmetic operators
@@ -236,6 +235,8 @@ namespace TRAP::Math
 		[[nodiscard]] constexpr bool operator==(const Mat<3, 3, T>& rhs) const noexcept = default;
 		[[nodiscard]] constexpr bool operator!=(const Mat<3, 3, T>& rhs) const noexcept = default;
 
+		/// @brief Retrieve a string representation of the matrix.
+		/// @return String representation of the matrix.
 		[[nodiscard]] std::string ToString() const;
 	};
 
@@ -910,13 +911,11 @@ constexpr bool TRAP::Math::operator!=(const Mat<3, 3, T>& m1, const Mat<3, 3, T>
 
 namespace std
 {
-	/// <summary>
-	/// Extracts the Ith element from the vector.
-	/// I must be an integer value in range [0, 4).
+	/// @brief Extracts the Ith element from the matrix.
+	/// I must be an integer value in range [0, 3).
 	/// This is enforced at compile time!
-	/// </summary>
-	/// <param name="v">Vector whose contents to extract.</param>
-	/// <returns>A reference to the Ith element of v.</returns>
+	/// @param m Matrix whose contents to extract.
+	/// @return A reference to the Ith element of v.
 	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::col_type& get(TRAP::Math::Mat<3, 3, T>& m) noexcept
@@ -926,13 +925,11 @@ namespace std
 		return m[I];
 	}
 
-	/// <summary>
-	/// Extracts the Ith element from the vector.
-	/// I must be an integer value in range [0, 4).
+	/// @brief Extracts the Ith element from the matrix.
+	/// I must be an integer value in range [0, 3).
 	/// This is enforced at compile time!
-	/// </summary>
-	/// <param name="v">Vector whose contents to extract.</param>
-	/// <returns>A reference to the Ith element of v.</returns>
+	/// @param m Matrix whose contents to extract.
+	/// @return A reference to the Ith element of v.
 	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::col_type&& get(TRAP::Math::Mat<3, 3, T>&& m) noexcept
@@ -942,13 +939,11 @@ namespace std
 		return std::move(m[I]);
 	}
 
-	/// <summary>
-	/// Extracts the Ith element from the vector.
-	/// I must be an integer value in range [0, 4).
+	/// @brief Extracts the Ith element from the matrix.
+	/// I must be an integer value in range [0, 3).
 	/// This is enforced at compile time!
-	/// </summary>
-	/// <param name="v">Vector whose contents to extract.</param>
-	/// <returns>A reference to the Ith element of v.</returns>
+	/// @param m Matrix whose contents to extract.
+	/// @return A reference to the Ith element of v.
 	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::col_type& get(const TRAP::Math::Mat<3, 3, T>& m) noexcept
@@ -958,13 +953,11 @@ namespace std
 		return m[I];
 	}
 
-	/// <summary>
-	/// Extracts the Ith element from the vector.
-	/// I must be an integer value in range [0, 4).
+	/// @brief Extracts the Ith element from the matrix.
+	/// I must be an integer value in range [0, 3).
 	/// This is enforced at compile time!
-	/// </summary>
-	/// <param name="v">Vector whose contents to extract.</param>
-	/// <returns>A reference to the Ith element of v.</returns>
+	/// @param m Matrix whose contents to extract.
+	/// @return A reference to the Ith element of v.
 	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::col_type&& get(const TRAP::Math::Mat<3, 3, T>&& m) noexcept

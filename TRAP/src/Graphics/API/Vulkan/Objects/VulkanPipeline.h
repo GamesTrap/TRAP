@@ -12,60 +12,38 @@ namespace TRAP::Graphics::API
 	class VulkanPipeline final : public Pipeline
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="desc">Pipeline description</param>
+		/// @brief Constructor.
+		/// @param desc Pipeline description
 		explicit VulkanPipeline(const RendererAPI::PipelineDesc& desc);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanPipeline() override;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		VulkanPipeline(const VulkanPipeline&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanPipeline& operator=(const VulkanPipeline&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanPipeline(VulkanPipeline&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanPipeline& operator=(VulkanPipeline&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the Vulkan pipeline handle.
-		/// </summary>
-		/// <returns>Vulkan pipeline handle</returns>
+		/// @brief Retrieve the Vulkan pipeline handle.
+		/// @return Vulkan pipeline handle
 		[[nodiscard]] constexpr VkPipeline GetVkPipeline() const noexcept;
-		/// <summary>
-		/// Retrieve the pipeline type.
-		/// </summary>
-		/// <returns>Pipeline type</returns>
+		/// @brief Retrieve the pipeline type.
+		/// @return Pipeline type
 		[[nodiscard]] constexpr RendererAPI::PipelineType GetPipelineType() const noexcept;
 
 	private:
-		/// <summary>
-		/// Initialize compute pipeline.
-		/// </summary>
-		/// <param name="desc">Pipeline description</param>
+		/// @brief Initialize compute pipeline.
+		/// @param desc Pipeline description
 		void InitComputePipeline(const RendererAPI::PipelineDesc& desc);
-		/// <summary>
-		/// Initialize graphics pipeline.
-		/// </summary>
-		/// <param name="desc">Pipeline description</param>
+		/// @brief Initialize graphics pipeline.
+		/// @param desc Pipeline description
 		void InitGraphicsPipeline(const RendererAPI::PipelineDesc& desc);
 
-		/// <summary>
-		/// Set a name for the pipeline.
-		/// </summary>
-		/// <param name="name">Name for the pipeline.</param>
+		/// @brief Set a name for the pipeline.
+		/// @param name Name for the pipeline.
 		void SetPipelineName(std::string_view name) const;
 
 		VkPipeline m_vkPipeline = VK_NULL_HANDLE;

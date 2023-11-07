@@ -12,59 +12,40 @@ namespace TRAP::Graphics::API
 	class VulkanDevice;
 	class VulkanInstance;
 
+	/// @remark @headless This class is not available in headless mode.
 	class VulkanSurface
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="instance">Vulkan instance.</param>
-		/// <param name="device">Vulkan device.</param>
-		/// <param name="window">Window to create surface for.</param>
+		/// @brief Constructor.
+		/// @param instance Vulkan instance.
+		/// @param device Vulkan device.
+		/// @param window Window to create surface for.
 		VulkanSurface(TRAP::Ref<VulkanInstance> instance,
 		              const TRAP::Ref<VulkanDevice>& device,
 		              const TRAP::Window* window);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanSurface();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		VulkanSurface(const VulkanSurface&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanSurface& operator=(const VulkanSurface&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanSurface(VulkanSurface&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanSurface& operator=(VulkanSurface&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the Vulkan surface handle.
-		/// </summary>
-		/// <returns>Vulkan surface handle.</returns>
+		/// @brief Retrieve the Vulkan surface handle.
+		/// @return Vulkan surface handle.
 		[[nodiscard]] constexpr VkSurfaceKHR GetVkSurface() const noexcept;
-		/// <summary>
-		/// Retrieve the Vulkan surface capabilities.
-		/// </summary>
-		/// <returns>Vulkan surface capabilities.</returns>
+		/// @brief Retrieve the Vulkan surface capabilities.
+		/// @return Vulkan surface capabilities.
 		[[nodiscard]] constexpr VkSurfaceCapabilitiesKHR GetVkSurfaceCapabilities() const noexcept;
-		/// <summary>
-		/// Retrieve all formats supported by the surface.
-		/// </summary>
-		/// <returns>All formats supported by the surface.</returns>
+		/// @brief Retrieve all formats supported by the surface.
+		/// @return All formats supported by the surface.
 		[[nodiscard]] constexpr const std::vector<VkSurfaceFormatKHR>& GetVkSurfaceFormats() const noexcept;
-		/// <summary>
-		/// Retrieve all present modes supported by the surface.
-		/// </summary>
-		/// <returns>All present modes supported by the surface.</returns>
+		/// @brief Retrieve all present modes supported by the surface.
+		/// @return All present modes supported by the surface.
 		[[nodiscard]] constexpr const std::vector<VkPresentModeKHR>& GetVkSurfacePresentModes() const noexcept;
 
 	private:

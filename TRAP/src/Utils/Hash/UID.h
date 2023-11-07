@@ -7,21 +7,30 @@
 
 namespace TRAP::Utils
 {
-    //Unique identifier, basically a randomly generated 64-bit number
+    /// @brief Unique identifier, basically a randomly generated 64-bit number
     class UID
     {
     public:
+        /// @brief Constructor. Generated a new unique identifier.
         UID();
+        /// @brief Constructor.
         constexpr explicit UID(u64 uid) noexcept;
 
+        /// @brief Destructor.
         constexpr ~UID() = default;
 
+        /// @brief Copy constructor.
         constexpr UID(const UID& other) noexcept = default;
+        /// @brief Move constructor.
         constexpr UID(UID&& other) noexcept = default;
 
+        /// @brief Copy assignment operator.
         constexpr UID& operator=(const UID& other) noexcept = default;
+        /// @brief Move assignment operator.
         constexpr UID& operator=(UID&& other) noexcept = default;
 
+        /// @brief Retrieve the unique identifier as a u64.
+        /// @return Unique identifier as u64.
         [[nodiscard]] constexpr operator u64() const noexcept;
 
     private:

@@ -9,17 +9,14 @@
 
 namespace TRAP::Utils
 {
-    /// <summary>
-    /// RAII wrapper class for exception handlers
-    /// </summary>
+    /// @brief RAII wrapper class for exception handlers
     class CrashHandler
     {
     public:
-        /// <summary>
-        /// Constructors.
+        /// @brief Constructors.
         /// Sets the user provided exception handler function.
-        /// </summary>
-        /// <param name="crashHandler">Exception handler function to use. Note: The function signature differs between operating systems.</param>
+        /// @param crashHandler Exception handler function to use.
+        /// @note The function signature differs between operating systems.
         template <typename F>
 #ifdef TRAP_PLATFORM_LINUX
         requires std::is_invocable_r_v<void, F, i32, siginfo_t*, void*>
@@ -28,35 +25,23 @@ namespace TRAP::Utils
 #endif
         explicit CrashHandler(const F& crashHandler);
 
-        /// <summary>
-        /// Constructor.
+        /// @brief Constructor.
         /// This sets the default TRAP exception handlers.
         /// The default exception handlers add exception information to the engine log file and then save it to disk.
-        /// </summary>
         CrashHandler();
 
-        /// <summary>
-        /// Destructor.
+        /// @brief Destructor.
         /// Removes currently set exception handlers.
         /// Sets previous handlers if there were any.
-        /// </summary>
         ~CrashHandler();
 
-        /// <summary>
-        /// Copy constructor.
-        /// </summary>
+        /// @brief Copy constructor.
         CrashHandler(const CrashHandler&) = delete;
-        /// <summary>
-        /// Move constructor.
-        /// </summary>
+        /// @brief Move constructor.
         CrashHandler(CrashHandler&&) = delete;
-        /// <summary>
-        /// Copy assignment operator.
-        /// </summary>
+        /// @brief Copy assignment operator.
         CrashHandler& operator=(const CrashHandler&) = delete;
-        /// <summary>
-        /// Move assignment operator.
-        /// </summary>
+        /// @brief Move assignment operator.
         CrashHandler& operator=(CrashHandler&&) = delete;
 
     private:

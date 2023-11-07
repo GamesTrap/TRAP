@@ -45,408 +45,290 @@ namespace TRAP
 	class Application
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="gameName">Name of the game.</param>
-		/// <param name="appID">
-		/// Optional: Steam AppID for this application.
-		/// If appID is a valid Steam AppID then the SteamAPI for clients will be initialized.
-		/// Headless mode: SteamAPI won't be initialized, users should manually initialize using TRAP::Utils::Steam::InitializeServer().
-		/// </param>
+		/// @brief Constructor.
+		/// @param gameName Name of the game.
+		/// @param appID Optional: Steam AppID for this application.
+		///              If appID is a valid Steam AppID then the SteamAPI for clients will be initialized.
+		/// @remark @headless SteamAPI won't be initialized automatically, clients should
+        ///                   manually initialize it using TRAP::Utils::Steam::InitializeServer().
 		explicit Application(std::string gameName, std::optional<u32> appID = std::nullopt);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~Application();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Application(const Application&) = delete;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr Application& operator=(const Application&) = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr Application(Application&&) = delete;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr Application& operator=(Application&&) = delete;
 
-		/// <summary>
-		/// Pushes a layer to the applications layer stack.
-		/// </summary>
-		/// <param name="layer">Unique ptr containing the layer to be pushed.</param>
+		/// @brief Pushes a layer to the applications layer stack.
+		/// @param layer Unique ptr containing the layer to be pushed.
 		void PushLayer(std::unique_ptr<Layer> layer);
-		/// <summary>
-		/// Pushes a layer to the applications layer stack.
-		/// </summary>
-		/// <param name="overlay">Unique ptr containing the layer to be pushed.</param>
+		/// @brief Pushes a layer to the applications layer stack.
+		/// @param overlay Unique ptr containing the layer to be pushed.
 		void PushOverlay(std::unique_ptr<Layer> overlay);
 
-		/// <summary>
-		/// Get the Engine.cfg config from the application.
-		/// </summary>
-		/// <returns>Constant reference to the config.</returns>
+		/// @brief Get the Engine.cfg config from the application.
+		/// @return Constant reference to the config.
 		[[nodiscard]] static const Utils::Config& GetConfig();
-		/// <summary>
-		/// Get the layer stack from the application.
-		/// </summary>
-		/// <returns>Reference to the layer stack.</returns>
+		/// @brief Get the layer stack from the application.
+		/// @return Reference to the layer stack.
 		[[nodiscard]] static LayerStack& GetLayerStack();
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Get the default ImGuiLayer
-		/// </summary>
-		/// <returns>Reference to ImGuiLayer.</returns>
+		/// @brief Get the default ImGuiLayer.
+		/// @return Reference to ImGuiLayer.
+		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] static ImGuiLayer& GetImGuiLayer();
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Get the current frames per second.
-		/// </summary>
-		/// <returns>Current frames per second.</returns>
-		[[nodiscard]] static u32 GetFPS();
-		/// <summary>
-		/// Set a FPS limit.
-		/// Note: Valid FPS range is 25 - 500. 0 sets unlimited FPS.
-		/// </summary>
-		/// <param name="targetFPS">FPS to limit to.</param>
+		/// @brief Set a FPS limit.
+		/// @param targetFPS FPS to limit to.
+		/// @note Valid FPS range is 25 - 500 (values outside this range are clamped). 0 sets unlimited FPS.
 		static void SetFPSLimit(u32 targetFPS);
-		/// <summary>
-		/// Retrieve the current FPS limit.
-		/// Note: 0 means unlimited FPS.
-		/// </summary>
-		/// <returns>Current FPS limit.</returns>
+		/// @brief Retrieve the current FPS limit.
+		/// @return Current FPS limit.
+		/// @note 0 means unlimited FPS.
 		[[nodiscard]] static u32 GetFPSLimit();
-		/// <summary>
-		/// Set a FPS limit when not focused.
-		/// Note: Valid FPS range is 10 - 500. 0 sets unlimited FPS.
-		/// </summary>
-		/// <param name="targetFPS">FPS to limit to.</param>
+		/// @brief Set a FPS limit when not focused.
+		/// @param targetFPS FPS to limit to.
+		/// @note Valid FPS range is 10 - 500 (values outside this range are clamped). 0 sets unlimited FPS.
 		static void SetUnfocusedFPSLimit(u32 targetFPS);
-		/// <summary>
-		/// Retrieve the current FPS limit when unfocused.
-		/// Note: 0 means unlimited FPS.
-		/// </summary>
-		/// <returns>Current FPS limit.</returns>
+		/// @brief Retrieve the current FPS limit when unfocused.
+		/// @return Current FPS limit.
+		/// @note 0 means unlimited FPS.
 		[[nodiscard]] static u32 GetUnfocusedFPSLimit();
-		/// <summary>
-		/// Get the current CPU frame time.
-		/// </summary>
-		/// <returns>Current CPU frame time.</returns>
+		/// @brief Get the current CPU frame time.
+		/// @return Current CPU frame time.
 		[[nodiscard]] static f32 GetCPUFrameTime();
-		/// <summary>
-		/// Get the current time scale.
-		/// </summary>
-		/// <returns>Current time scale.</returns>
+		/// @brief Get the current time scale.
+		/// @return Current time scale.
 		[[nodiscard]] static f32 GetTimeScale();
-		/// <summary>
-		/// Get the current tick rate (Default: 64).
-		/// </summary>
-		/// <returns>Current tick rate.</returns>
+		/// @brief Get the current tick rate (Default: 64).
+		/// @return Current tick rate.
 		[[nodiscard]] static u32 GetTickRate();
-		/// <summary>
-		/// Set the tick rate (fixed update interval for OnTick()).
-		/// </summary>
-		/// <param name="tickRate">New Tick rate.</param>
+		/// @brief Set the tick rate (fixed update interval for OnTick()).
+		/// @param tickRate New Tick rate.
 		static void SetTickRate(u32 tickRate);
-		/// <summary>
-		/// Set the time scale.
-		/// </summary>
-		/// <param name="timeScale">Time scale.</param>
+		/// @brief Set the time scale.
+		/// @param timeScale Time scale.
 		static void SetTimeScale(f32 timeScale);
 
-		/// <summary>
-		/// Sets the RenderAPI to be used on the next start of the engine.
-		/// </summary>
-		/// <param name="renderAPI">New RenderAPI to be used.</param>
+		/// @brief Sets the RenderAPI to be used on the next start of the engine.
+		/// @param renderAPI New RenderAPI to be used.
 		static void SetNewRenderAPI(Graphics::RenderAPI renderAPI);
 
-		/// <summary>
-		/// Shutdown the engine.
-		/// </summary>
+		/// @brief Shutdown the engine.
 		static void Shutdown();
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Get the Main Render window.
-		/// </summary>
-		/// <returns>Pointer to the main render window.</returns>
+		/// @brief Get the Main Render window.
+		/// @return Pointer to the main render window.
+		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] static Window* GetWindow();
 #endif /*TRAP_HEADLESS_MODE*/
-		/// <summary>
-		/// Get the Time since the Engine was started.
-		/// </summary>
-		/// <returns>Time step containing the passed time since the engine was started.</returns>
+		/// @brief Get the Time since the Engine was started.
+		/// @return Time step containing the passed time since the engine was started.
 		[[nodiscard]] static Utils::TimeStep GetTime();
-		/// <summary>
-		/// Get the thread pool to be used for small tasks that can be multi-threaded.
-		/// </summary>
-		/// <returns>Reference to the thread pool.</returns>
+		/// @brief Get the thread pool to be used for small tasks that can be multi-threaded.
+		/// @return Reference to the thread pool.
 		[[nodiscard]] static ThreadPool& GetThreadPool();
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the clipboard.
-		/// </summary>
-		/// <param name="string">String to be set.</param>
+		/// @brief Set the content of the clipboard.
+		/// @param string Content to set the clipboard to.
+		/// @remark @headless This function is not available in headless mode.
 		static void SetClipboardString(const std::string& string);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Get current content of the clipboard.
-		/// </summary>
-		/// <returns>String containing the clipboards content.</returns>
+		/// @brief Get current content of the clipboard.
+		/// @return Content of the clipboard as string.
+		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] static std::string GetClipboardString();
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Get the id of the main engine thread.
-		/// </summary>
-		/// <returns>Main thread ID.</returns>
+		/// @brief Get the id of the main engine thread.
+		/// @return Main thread ID.
 		[[nodiscard]] static std::thread::id GetMainThreadID();
 
-		/// <summary>
-		/// Get the name of the game.
-		/// </summary>
+		/// @brief Get the name of the game.
+		/// @return Name of the game.
 		[[nodiscard]] static std::string GetGameName();
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-		/// <summary>
-		/// Get the global counter.
-		/// The counter is incremented every frame.
-		/// Note: This is mainly used for NVIDIA-Reflex support.
-		/// </summary>
-		/// <returns>Global counter value.</returns>
+		/// @brief Get the global counter. The counter is incremented every frame.
+		/// @return Global counter value.
+		/// @remark This function is only available when NVIDIA Reflex SDK is provided.
+		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] static u64 GetGlobalCounter();
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Get the hot reloading file watcher.
-		/// </summary>
-		/// <returns>Reference to TRAP::FileSystem::FileWatcher if file watcher is running, empty optional otherwise.</returns>
-		[[nodiscard]] static std::optional<std::reference_wrapper<TRAP::FileSystem::FileWatcher>>  GetHotReloadingFileWatcher();
-		/// <summary>
-		/// Get whether hot reloading is enabled or not.
-		/// </summary>
-		/// <returns>True if hot reloading is enabled, false otherwise.</returns>
+		/// @brief Get the hot reloading file watcher.
+		/// @return Reference to TRAP::FileSystem::FileWatcher if file watcher is running, empty optional otherwise.
+		[[nodiscard]] static std::optional<std::reference_wrapper<TRAP::FileSystem::FileWatcher>> GetHotReloadingFileWatcher();
+		/// @brief Get whether hot reloading is enabled or not.
+		/// @return True if hot reloading is enabled, false otherwise.
 		[[nodiscard]] static bool IsHotReloadingEnabled();
-		/// <summary>
-		/// Set whether to enable or disable hot reloading.
-		/// </summary>
-		/// <param name="enable">True to enable hot reloading, false otherwise.</param>
+		/// @brief Set whether to enable or disable hot reloading.
+		/// @param enable True to enable hot reloading, false otherwise.
 		static void SetHotReloading(bool enable);
 
 	private:
-		/// <summary>
-		/// Game/Run loop.
-		/// </summary>
+		/// @brief Game/Run loop.
 		void Run();
-		/// <summary>
-		/// Runs the work for a single iteration of the Run() function.
-		/// </summary>
-		/// <param name="deltaTime">Delta time.</param>
-		/// <param name="tickTimerSeconds">Tick timer in seconds.</param>
+		/// @brief Runs the work for a single iteration of the Run() function.
+		/// @param deltaTime Delta time.
+		/// @param tickTimerSeconds Tick timer in seconds.
 		void RunWork(const Utils::TimeStep& deltaTime, f32& tickTimerSeconds);
 
-		/// <summary>
-		/// Handles all events for the main render window and the layer stack.
-		/// </summary>
-		/// <param name="event">Event that occurred.</param>
+		/// @brief Handles all events for the main render window and the layer stack.
+		/// @param event Event that occurred.
 		void OnEvent(Events::Event& event);
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Handles window close events for the main render window.
-		/// </summary>
-		/// <param name="event">Window close event that occurred.</param>
-		/// <returns>Always true.</returns>
+		/// @brief Handles window close events for the main render window.
+		/// @param event Window close event that occurred.
+		/// @return true.
+		/// @remark @headless This function is not available in headless mode.
 		bool OnWindowClose(Events::WindowCloseEvent& event) noexcept;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Handles window framebuffer resizes for the main render window.
-		/// </summary>
-		/// <param name="event">Framebuffer resize event that occurred.</param>
-		/// <returns>Always false.</returns>
+		/// @brief Handles window framebuffer resizes for the main render window.
+		/// @param event Framebuffer resize event that occurred.
+		/// @return false.
+		/// @remark @headless This function is not available in headless mode.
 		static bool OnFrameBufferResize(Events::FrameBufferResizeEvent& event);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Handles key presses(ALT+Enter) for the main render window.
-		/// </summary>
-		/// <param name="event">Key press event that occurred.</param>
-		/// <returns>Always false.</returns>
+		/// @brief Handles key presses for the main render window.
+		/// @param event Key press event that occurred.
+		/// @return false.
+		/// @remark @headless This function is not available in headless mode.
 		static bool OnKeyPress(Events::KeyPressEvent& event);
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Handles file change events for the application.
-		/// Used by Texture and Shader HotReloading.
-		/// </summary>
-		/// <param name="e">File change event that occurred.</param>
-		/// <returns>True if event was handled, false otherwise.</returns>
+		/// @brief Handles file change events for the application. Used by HotReloading.
+		/// @param event File change event that occurred.
+		/// @return True if event was handled, false otherwise.
 		bool OnFileChangeEvent(const Events::FileChangeEvent& event);
 
-		/// <summary>
-		/// Tries to reload every modified shader/texture that was set by the hot reloading file watcher.
-		/// </summary>
+		/// @brief Tries to reload every modified shader/texture that was set by the hot reloading file watcher.
 		void UpdateHotReloading();
 
-		/// <summary>
-		/// Update the time data of the run loop for a new frame.
-		/// </summary>
-		/// <param name="time">Timer with elapsed time since start of engine.</param>
-		/// <param name="lastFrameTime">Frame time of the last frame.</param>
-		/// <param name="tickTimerSeconds"></param>
-		/// <param name="timeScale">Scaling for time.</param>
-		/// <returns>Delta time between start of the last frame to the current time.</returns>
+		/// @brief Update the time data of the run loop for a new frame.
+		/// @param time Timer with elapsed time since start of engine.
+		/// @param lastFrameTime In/Out: Frame time of the last frame.
+		/// @param tickTimerSeconds Out: Tick timer to update in seconds.
+		/// @param timeScale Scaling for time.
+		/// @return Delta time between start of the last frame to the current time.
 		static Utils::TimeStep UpdateNewFrameTimeData(const Utils::Timer& time, f32& lastFrameTime,
 		                                              f32& tickTimerSeconds, f32 timeScale);
 
-		/// <summary>
-		/// Limit the FPS to fpsLimit.
-		/// </summary>
-		/// <param name="fpsLimit">Target FPS to limit to.</param>
-		/// <param name="limitTimer">Limiter timer.</param>
+		/// @brief Limit the FPS to fpsLimit.
+		/// @param fpsLimit Target FPS to limit to.
+		/// @param limitTimer In/Out: Limiter timer.
 		static void LimitFPS(u32 fpsLimit, Utils::Timer& limitTimer);
-		/// <summary>
-		/// Limit the FPS to fpsLimit.
-		///
-		/// This function is used to limit FPS when the main window is unfocused.
-		/// </summary>
-		/// <param name="fpsLimit">Target FPS to limit to.</param>
-		/// <param name="limitTimer">Limiter timer.</param>
+		/// @brief Limit the FPS to fpsLimit. This function is used to limit FPS when the main window is unfocused.
+		/// @param fpsLimit Target FPS to limit to.
+		/// @param limitTimer In/Out: Limiter timer.
 		static void UnfocusedLimitFPS(u32 fpsLimit, Utils::Timer& limitTimer);
 
-		/// <summary>
-		/// Retrieve the filepath of the engine.cfg file.
-		/// </summary>
-		/// <returns>Path of the config file.</returns>
+		/// @brief Retrieve the filepath of the engine.cfg file.
+		/// @return Path of the engine.cfg config file.
 		static std::filesystem::path GetTRAPConfigPath();
 
-		/// <summary>
-		/// Load the engine.cfg file.
-		/// </summary>
-		/// <returns>Loaded config.</returns>
+		/// @brief Load the engine.cfg file.
+		/// @return Loaded and parsed config.
 		static Utils::Config LoadTRAPConfig();
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Update the engine.cfg file.
-		/// </summary>
-		/// <param name="config">Config to update.</param>
-		/// <param name="window">Optional: Main Window to query data from.</param>
-		/// <param name="fpsLimit">FPS limit to save.</param>
-		/// <param name="unfocusedFPSLimit">Unfocused FPS limit to save.</param>
-		/// <param name="renderAPI">RenderAPI to save.</param>
+		/// @brief Update the engine.cfg file.
+		/// @param config Config to update.
+		/// @param window Optional: Main Window to query data from.
+		/// @param fpsLimit FPS limit to save.
+		/// @param unfocusedFPSLimit Unfocused FPS limit to save.
+		/// @param renderAPI RenderAPI to save.
+		/// @remark @headless This function is not available in headless mode.
 		static void UpdateTRAPConfig(Utils::Config& config, const Window* window, u32 fpsLimit,
 		                             u32 unfocusedFPSLimit, Graphics::RenderAPI renderAPI);
 #else
-		/// <summary>
-		/// Update the engine.cfg file.
-		/// </summary>
-		/// <param name="config">Config to update.</param>
-		/// <param name="fpsLimit">FPS limit to save.</param>
-		/// <param name="unfocusedFPSLimit">Unfocused FPS limit to save.</param>
-		/// <param name="renderAPI">RenderAPI to save.</param>
+		/// @brief Update the engine.cfg file.
+		/// @param config Config to update.
+		/// @param fpsLimit FPS limit to save.
+		/// @param unfocusedFPSLimit Unfocused FPS limit to save.
+		/// @param renderAPI RenderAPI to save.
+		/// @remark This function is only available in headless mode.
 		static void UpdateTRAPConfig(Utils::Config& config, u32 fpsLimit, u32 unfocusedFPSLimit,
 		                             Graphics::RenderAPI renderAPI);
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Save the engine.cfg file.
-		/// </summary>
-		/// <param name="config">Config to save.</param>
+		/// @brief Save the engine.cfg file.
+		/// @param config Config to save.
 		static void SaveTRAPConfig(Utils::Config& config);
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Load the advanced window properties from the given config.
-		/// </summary>
-		/// <param name="config">Config to load data from.</param>
-		/// <returns>Advanced Window properties.</returns>
+		/// @brief Load the advanced window properties from the given config.
+		/// @param config Config to load data from.
+		/// @return Advanced Window properties.
+		/// @remark @headless This function is not available in headless mode.
 		static WindowProps::AdvancedProps LoadAdvancedWindowProps(const TRAP::Utils::Config& config);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Load the window properties from the given config.
-		/// </summary>
-		/// <param name="config">Config to load data from.</param>
-		/// <returns>Window properties.</returns>
+		/// @brief Load the window properties from the given config.
+		/// @param config Config to load data from.
+		/// @return Window properties.
+		/// @remark @headless This function is not available in headless mode.
 		static WindowProps LoadWindowProps(const TRAP::Utils::Config& config);
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Select the RenderAPI to be used for rendering.
-		/// </summary>
-		/// <param name="config">Config to load data from.</param>
-		/// <returns>RenderAPI to use for rendering.</returns>
+		/// @brief Select the RenderAPI to be used for rendering.
+		/// @param config Config to load data from.
+		/// @return RenderAPI to use for rendering.
 		static Graphics::RenderAPI SelectRenderAPI(const TRAP::Utils::Config& config);
 
-		/// <summary>
-		/// Initialize the RendererAPI.
-		/// </summary>
-		/// <param name="gameName">Name of the game.</param>
-		/// <param name="renderAPI">RenderAPI to use.</param>
-		/// <param name="config">Config to load data from.</param>
+		/// @brief Initialize the RendererAPI.
+		/// @param gameName Name of the game.
+		/// @param renderAPI RenderAPI to use.
+		/// @param config Config to load data from.
 		static void InitializeRendererAPI(std::string_view gameName, const TRAP::Graphics::RenderAPI& renderAPI, const TRAP::Utils::Config& config);
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Create the main window.
-		///
-		/// Linux: If no known window manager can be found this function will close the engine.
-		/// </summary>
-		/// <param name="winProps">Properties for the window.</param>
-		/// <returns>Created main window or nullptr.</returns>
+		/// @brief Create the main window.
+		/// @param winProps Properties for the window.
+		/// @return Created main window or nullptr.
+		/// @remark @linux If no known window manager can be found this function will close the engine.
+		/// @remark @headless This function is not available in headless mode.
 		static std::unique_ptr<TRAP::Window> CreateMainWindow(const TRAP::WindowProps& winProps);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifdef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Create the main viewport.
-		/// </summary>
-		/// <param name="config">Config to load data from.</param>
+		/// @brief Create the main viewport.
+		/// @param config Config to load data from.
+		/// @remark This function is only available in headless mode.
 		static void CreateMainViewport(const TRAP::Utils::Config& config);
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Load fallback shaders.
-		/// </summary>
+		/// @brief Load fallback shaders.
 		static void LoadFallbackShaders();
-		/// <summary>
-		/// Load fallback textures.
-		/// </summary>
+		/// @brief Load fallback textures.
 		static void LoadFallbackTextures();
-		/// <summary>
-		/// Load fallback data.
-		///
-		/// This currently adds fallback shaders and textures.
-		/// </summary>
+		/// @brief Load fallback data.
 		static void LoadFallbackData();
 
-		/// <summary>
-		/// Apply RendererAPI specific settings from config file.
-		/// </summary>
-		/// <param name="config">Config to load data from.</param>
+		/// @brief Apply RendererAPI specific settings from config file.
+		/// @param config Config to load data from.
 		static void ApplyRendererAPISettings(const TRAP::Utils::Config& config);
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Initialize TRAP::Input.
-		/// </summary>
+		/// @brief Initialize TRAP::Input.
+		/// @remark @headless This function is not available in headless mode.
 		static void InitializeInput();
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Initialize ImGui Layer.
-		/// </summary>
-		/// <param name="layerStack">LayerStack to add ImGui to.</param>
-		/// <returns>ImGui Layer on success, nullptr otherwise.</returns>
+		/// @brief Initialize ImGui Layer.
+		/// @param layerStack LayerStack to add ImGui to.
+		/// @return ImGui Layer on success, nullptr otherwise.
+		/// @remark @headless This function is not available in headless mode.
 		static TRAP::ImGuiLayer* InitializeImGui(TRAP::LayerStack& layerStack);
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -497,11 +379,10 @@ namespace TRAP
 #endif /*TRAP_UNITTESTS*/
 	};
 
-	/// <summary>
-	/// This function will be called by TRAP engines main function to initialize the engine.
-	/// IT MUST BE IMPLEMENTED BY ANY CLIENT!
-	/// </summary>
-	/// <returns>A unique pointer containing a TRAP::Application</returns>
+	/// @brief This function will be called by TRAP engines main function to initialize the engine.
+	/// @param args Console arguments.
+	/// @return A unique pointer containing a TRAP::Application.
+	/// @note THIS FUNCTION MUST BE IMPLEMENTED BY THE CLIENT!
 	extern std::unique_ptr<Application> CreateApplication(std::span<const std::string_view> args);
 }
 

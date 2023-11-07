@@ -24,50 +24,33 @@ namespace TRAP
 		class Sampler;
 	}
 
+	/// @remark @headless This class is not available in headless mode.
 	class ImGuiLayer final : public Layer
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		constexpr ImGuiLayer();
 
-		/// <summary>
-		/// Called when pushed to a layer stack.
-		/// </summary>
+		/// @brief Called when pushed to a layer stack.
 		void OnAttach() override;
-		/// <summary>
-		/// Called when popped from a layer stack.
-		/// </summary>
+		/// @brief Called when popped from a layer stack.
 		void OnDetach() override;
-		/// <summary>
-		/// Called when an event occurs.
-		/// </summary>
-		/// <param name="event">Event that occurred.</param>
+		/// @brief Called when an event occurs.
+		/// @param event Event that occurred.
 		void OnEvent(Events::Event& event) override;
 
-		/// <summary>
-		/// Begin a new ImGui frame.
-		/// </summary>
+		/// @brief Begin a new ImGui frame.
 		static void Begin();
-		/// <summary>
-		/// End an ImGui frame.
-		/// </summary>
+		/// @brief End an ImGui frame.
 		static void End();
 
-		/// <summary>
-		/// Block ImGui event handling.
-		/// </summary>
-		/// <param name="block">Whether to block events or not</param>
+		/// @brief Block ImGui event handling.
+		/// @param block Whether to block events or not
 		constexpr void BlockEvents(bool block) noexcept;
 
-		/// <summary>
-		/// Sets a dark theme for ImGui.
-		/// </summary>
+		/// @brief Sets a dark theme for ImGui.
 		static void SetDarkThemeColors();
-		/// <summary>
-		/// Sets the style for ImGuizmo.
-		/// </summary>
+		/// @brief Sets the style for ImGuizmo.
 		static void SetImGuizmoStyle();
 	private:
 		bool m_blockEvents = true;
@@ -80,116 +63,106 @@ namespace TRAP
 
 namespace ImGui
 {
-	/// <summary>
-	/// Draw an image with ImGui.
-	/// </summary>
-	/// <param name="image">Image to draw.</param>
-	/// <param name="sampler">Sampler to use.</param>
-	/// <param name="size">Size for the image.</param>
-	/// <param name="uv0">UV0 coordinates.</param>
-	/// <param name="uv1">UV1 coordinates.</param>
-	/// <param name="tint_col">Tint color.</param>
-	/// <param name="border_col">Border color.</param>
+	/// @brief Draw an image with ImGui.
+	/// @param image Image to draw.
+	/// @param sampler Sampler to use.
+	/// @param size Size for the image.
+	/// @param uv0 UV0 coordinates.
+	/// @param uv1 UV1 coordinates.
+	/// @param tint_col Tint color.
+	/// @param border_col Border color.
+	/// @remark @headless This function is not available in headless mode.
 	void Image(const TRAP::Ref<TRAP::Graphics::Texture>& image,
 	           const TRAP::Ref<TRAP::Graphics::Sampler>& sampler,
 	           const ImVec2& size,
 	           const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1),
 			   const ImVec4& tint_col = ImVec4(1, 1, 1, 1),
 			   const ImVec4& border_col = ImVec4(0, 0, 0, 0));
-	/// <summary>
-	/// Draw an image with ImGui.
-	/// </summary>
-	/// <param name="image">Image to draw.</param>
-	/// <param name="size">Size for the image.</param>
-	/// <param name="uv0">UV0 coordinates.</param>
-	/// <param name="uv1">UV1 coordinates.</param>
-	/// <param name="tint_col">Tint color.</param>
-	/// <param name="border_col">Border color.</param>
+	/// @brief Draw an image with ImGui.
+	/// @param image Image to draw.
+	/// @param size Size for the image.
+	/// @param uv0 UV0 coordinates.
+	/// @param uv1 UV1 coordinates.
+	/// @param tint_col Tint color.
+	/// @param border_col Border color.
+	/// @remark @headless This function is not available in headless mode.
 	void Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const ImVec2& size,
 	           const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1),
 			   const ImVec4& tint_col = ImVec4(1, 1, 1, 1),
 			   const ImVec4& border_col = ImVec4(0, 0, 0, 0));
 
-	/// <summary>
-	/// Draw an image button with ImGui.
-	/// </summary>
-	/// <param name="image">Image to draw.</param>
-	/// <param name="size">Size for the image.</param>
-	/// <param name="uv0">UV0 coordinates.</param>
-	/// <param name="uv1">UV1 coordinates.</param>
-	/// <param name="bg_col">Background color.</param>
-	/// <param name="tint_col">Tint color.</param>
-	/// <returns>True if image button is pressed, false otherwise.</returns>
+	/// @brief Draw an image button with ImGui.
+	/// @param image Image to draw.
+	/// @param size Size for the image.
+	/// @param uv0 UV0 coordinates.
+	/// @param uv1 UV1 coordinates.
+	/// @param bg_col Background color.
+	/// @param tint_col Tint color.
+	/// @return True if image button is pressed, false otherwise.
+	/// @remark @headless This function is not available in headless mode.
     bool ImageButton(const TRAP::Ref<TRAP::Graphics::Texture>& image, const ImVec2& size,
 	                 const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1),
 					 const ImVec4& bg_col = ImVec4(0,0,0,0),
 					 const ImVec4& tint_col = ImVec4(1,1,1,1));
 
-	/// <summary>
-	/// Draw an input text field with ImGui.
-	/// </summary>
-	/// <param name="label">Label for the text field.</param>
-	/// <param name="str">String to store input to.</param>
-	/// <param name="flags">Additional flags for the input field.</param>
-	/// <param name="callback">Callback to implement additional functionality.</param>
-	/// <param name="userData">Pointer to provide user data.</param>
-	/// <returns>True if input text changed, false otherwise.</returns>
+	/// @brief Draw an input text field with ImGui.
+	/// @param label Label for the text field.
+	/// @param str String to store input to.
+	/// @param flags Additional flags for the input field.
+	/// @param callback Callback to implement additional functionality.
+	/// @param userData Pointer to provide user data.
+	/// @return True if input text changed, false otherwise.
+	/// @remark @headless This function is not available in headless mode.
 	bool InputText(std::string_view label, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
-	/// <summary>
-	/// Draw an multi-line input text field with ImGui.
-	/// </summary>
-	/// <param name="label">Label for the text field.</param>
-	/// <param name="str">String to store input to.</param>
-	/// <param name="size">Size for the text field.</param>
-	/// <param name="flags">Additional flags for the input field.</param>
-	/// <param name="callback">Callback to implement additional functionality.</param>
-	/// <param name="userData">Pointer to provide user data.</param>
-	/// <returns>True if input text changed, false otherwise.</returns>
+	/// @brief Draw an multi-line input text field with ImGui.
+	/// @param label Label for the text field.
+	/// @param str String to store input to.
+	/// @param size Size for the text field.
+	/// @param flags Additional flags for the input field.
+	/// @param callback Callback to implement additional functionality.
+	/// @param userData Pointer to provide user data.
+	/// @return True if input text changed, false otherwise.
+	/// @remark @headless This function is not available in headless mode.
 	bool InputTextMultiline(std::string_view label, std::string* str, const ImVec2& size = ImVec2(0.0f, 0.0f), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
-	/// <summary>
-	/// Draw an input text field with an additional hint with ImGui.
-	/// </summary>
-	/// <param name="label">Label for the text field.</param>
-	/// <param name="hint">Hint to display.</param>
-	/// <param name="str">String to store input to.</param>
-	/// <param name="flags">Additional flags for the input field.</param>
-	/// <param name="callback">Callback to implement additional functionality.</param>
-	/// <param name="userData">Pointer to provide user data.</param>
-	/// <returns>True if input text changed, false otherwise.</returns>
+	/// @brief Draw an input text field with an additional hint with ImGui.
+	/// @param label Label for the text field.
+	/// @param hint Hint to display.
+	/// @param str String to store input to.
+	/// @param flags Additional flags for the input field.
+	/// @param callback Callback to implement additional functionality.
+	/// @param userData Pointer to provide user data.
+	/// @return True if input text changed, false otherwise.
+	/// @remark @headless This function is not available in headless mode.
 	bool InputTextWithHint(std::string_view label, std::string_view hint, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
 
-	/// <summary>
-	/// Add a TTF font to ImGui from file.
-	/// </summary>
-	/// <param name="filename">Path to TTF file.</param>
-	/// <param name="sizePixels">Font size in pixels.</param>
-	/// <param name="fontCfgTemplate">Font configuration template.</param>
-	/// <param name="glyphRanges">Glyph ranges.</param>
-	/// <returns>Pointer to the new font.</returns>
+	/// @brief Add a TTF font to ImGui from file.
+	/// @param filename Path to TTF file.
+	/// @param sizePixels Font size in pixels.
+	/// @param fontCfgTemplate Font configuration template.
+	/// @param glyphRanges Glyph ranges.
+	/// @return Pointer to the new font.
+	/// @remark @headless This function is not available in headless mode.
 	ImFont* AddFontFromFileTTF(std::string_view filename, f32 sizePixels,
 		                       const ImFontConfig* fontCfgTemplate = nullptr,
 						       const ImWchar* glyphRanges = nullptr);
-	/// <summary>
-	/// Add a TTF font to ImGui from memory.
-	/// </summary>
-	/// <param name="fontData">Pointer to TTF data.</param>
-	/// <param name="sizePixels">Font size in pixels.</param>
-	/// <param name="fontCfg">Font configuration.</param>
-	/// <param name="glyphRanges">Glyph ranges.</param>
-	/// <returns>Pointer to the new font.</returns>
+	/// @brief Add a TTF font to ImGui from memory.
+	/// @param fontData Pointer to TTF data.
+	/// @param sizePixels Font size in pixels.
+	/// @param fontCfg Font configuration.
+	/// @param glyphRanges Glyph ranges.
+	/// @return Pointer to the new font.
+	/// @remark @headless This function is not available in headless mode.
 	ImFont* AddFontFromMemoryTTF(std::span<const u8> fontData, f32 sizePixels,
 							     const ImFontConfig* fontCfg = nullptr,
 							     const ImWchar* glyphRanges = nullptr);
 
-	/// <summary>
-	/// Retrieve whether ImGui input is enabled or not.
-	/// </summary>
-	/// <returns>True if input is enabled, false otherwise.</returns>
+	/// @brief Retrieve whether ImGui input is enabled or not.
+	/// @return True if input is enabled, false otherwise.
+	/// @remark @headless This function is not available in headless mode.
 	[[nodiscard]] bool IsInputEnabled();
-	/// <summary>
-	/// Enable or disable ImGui input.
-	/// </summary>
-	/// <param name="enable">Enable or disable.</param>
+	/// @brief Enable or disable ImGui input.
+	/// @param enable Enable or disable.
+	/// @remark @headless This function is not available in headless mode.
 	void SetInputEnabled(bool enable);
 }
 

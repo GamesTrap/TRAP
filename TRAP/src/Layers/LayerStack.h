@@ -11,78 +11,50 @@ namespace TRAP
 	class LayerStack
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		constexpr LayerStack() = default;
 
-		/// <summary>
-		/// Shut down the LayerStack.
+		/// @brief Shut down the LayerStack.
 		/// This detaches and destroys all Layers.
-		/// </summary>
 		void Shutdown();
 
-		/// <summary>
-		/// Push a layer to the layer stack.
-		/// </summary>
-		/// <param name="layer">Layer to push.</param>
+		/// @brief Push a layer to the layer stack.
+		/// @param layer Layer to push.
 		void PushLayer(std::unique_ptr<Layer> layer);
-		/// <summary>
-		/// Push an overlay to the layer stack.
-		/// </summary>
-		/// <param name="overlay">Overlay to push.</param>
+		/// @brief Push an overlay to the layer stack.
+		/// @param overlay Overlay to push.
 		void PushOverlay(std::unique_ptr<Layer> overlay);
-		/// <summary>
-		/// Pop a layer from the layer stack.
-		/// </summary>
-		/// <param name="layer">Layer to pop.</param>
+		/// @brief Pop a layer from the layer stack.
+		/// @param layer Layer to pop.
 		void PopLayer(Layer* layer);
-		/// <summary>
-		/// Pop an overlay from the layer stack.
-		/// </summary>
-		/// <param name="overlay">Overlay to pop.</param>
+		/// @brief Pop an overlay from the layer stack.
+		/// @param overlay Overlay to pop.
 		void PopOverlay(Layer* overlay);
 
-		/// <summary>
-		/// Layer stack begin iterator.
-		/// </summary>
-		/// <returns>Layer stack iterator.</returns>
+		/// @brief Layer stack begin iterator.
+		/// @return Layer stack iterator.
 		[[nodiscard]] constexpr std::vector<std::unique_ptr<Layer>>::iterator begin() noexcept;
-		/// <summary>
-		/// Layer stack end iterator.
-		/// </summary>
-		/// <returns>Layer stack iterator.</returns>
+		/// @brief Layer stack end iterator.
+		/// @return Layer stack iterator.
 		[[nodiscard]] constexpr std::vector<std::unique_ptr<Layer>>::iterator end() noexcept;
-		/// <summary>
-		/// Layer stack reverse begin iterator.
-		/// </summary>
-		/// <returns>Layer stack reverse iterator.</returns>
+		/// @brief Layer stack reverse begin iterator.
+		/// @return Layer stack reverse iterator.
 		[[nodiscard]] constexpr std::vector<std::unique_ptr<Layer>>::reverse_iterator rbegin() noexcept;
-		/// <summary>
-		/// Layer stack reverse end iterator.
-		/// </summary>
-		/// <returns>Layer stack reverse iterator.</returns>
+		/// @brief Layer stack reverse end iterator.
+		/// @return Layer stack reverse iterator.
 		[[nodiscard]] constexpr std::vector<std::unique_ptr<Layer>>::reverse_iterator rend() noexcept;
 
-		/// <summary>
-		/// Layer stack const begin iterator.
-		/// </summary>
-		/// <returns>Layer stack const iterator.</returns>
+		/// @brief Layer stack const begin iterator.
+		/// @return Layer stack const iterator.
 		[[nodiscard]] constexpr std::vector<std::unique_ptr<Layer>>::const_iterator begin() const noexcept;
-		/// <summary>
-		/// Layer stack const end iterator.
-		/// </summary>
-		/// <returns>Layer stack const iterator.</returns>
+		/// @brief Layer stack const end iterator.
+		/// @return Layer stack const iterator.
 		[[nodiscard]] constexpr std::vector<std::unique_ptr<Layer>>::const_iterator end() const noexcept;
-		/// <summary>
-		/// Layer stack const reverse begin iterator.
-		/// </summary>
-		/// <returns>Layer stack reverse iterator.</returns>
+		/// @brief Layer stack const reverse begin iterator.
+		/// @return Layer stack reverse iterator.
 		[[nodiscard]] constexpr std::vector<std::unique_ptr<Layer>>::const_reverse_iterator rbegin() const noexcept;
-		/// <summary>
-		/// Layer stack const reverse end iterator.
-		/// </summary>
-		/// <returns>Layer stack reverse iterator.</returns>
+		/// @brief Layer stack const reverse end iterator.
+		/// @return Layer stack reverse iterator.
 		[[nodiscard]] constexpr std::vector<std::unique_ptr<Layer>>::const_reverse_iterator rend() const noexcept;
 
 	private:

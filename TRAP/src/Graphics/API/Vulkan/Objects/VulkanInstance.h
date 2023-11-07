@@ -13,100 +13,64 @@ namespace TRAP::Graphics::API
 	class VulkanInstance
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="appName">Application name.</param>
-		/// <param name="instanceLayers">Instance layers to use.</param>
-		/// <param name="instanceExtensions">Instance extensions to use.</param>
+		/// @brief Constructor.
+		/// @param appName Application name.
+		/// @param instanceLayers Instance layers to use.
+		/// @param instanceExtensions Instance extensions to use.
 		VulkanInstance(std::string_view appName, std::vector<std::string> instanceLayers,
 		               std::vector<std::string> instanceExtensions);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanInstance();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr VulkanInstance(const VulkanInstance&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanInstance& operator=(const VulkanInstance&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr VulkanInstance(VulkanInstance&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanInstance& operator=(VulkanInstance&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the Vulkan instance handle.
-		/// </summary>
-		/// <returns>Vulkan instance handle.</returns>
+		/// @brief Retrieve the Vulkan instance handle.
+		/// @return Vulkan instance handle.
 		[[nodiscard]] constexpr VkInstance GetVkInstance() const noexcept;
-		/// <summary>
-		/// Retrieve a list of used instance layers.
-		/// </summary>
-		/// <returns>List of used instance layers.</returns>
+		/// @brief Retrieve a list of used instance layers.
+		/// @return List of used instance layers.
 		[[nodiscard]] constexpr const std::vector<std::string>& GetUsedInstanceLayers() const noexcept;
-		/// <summary>
-		/// Retrieve a list of used instance extensions.
-		/// </summary>
-		/// <returns>List of used instance extensions.</returns>
+		/// @brief Retrieve a list of used instance extensions.
+		/// @return List of used instance extensions.
 		[[nodiscard]] constexpr const std::vector<std::string>& GetUsedInstanceExtensions() const noexcept;
 
-		/// <summary>
-		/// Retrieve the Vulkan instance version packed by VK_MAKE_API_VERSION.
-		/// </summary>
-		/// <returns>Vulkan instance version if available, empty optional otherwise.</returns>
+		/// @brief Retrieve the Vulkan instance version packed by VK_MAKE_API_VERSION.
+		/// @return Vulkan instance version if available, empty optional otherwise.
 		[[nodiscard]] static std::optional<u32> GetInstanceVersion();
-		/// <summary>
-		/// Retrieve a list of available instance layers.
-		/// </summary>
-		/// <returns>List of available instance layers.</returns>
+		/// @brief Retrieve a list of available instance layers.
+		/// @return List of available instance layers.
 		[[nodiscard]] static const std::vector<VkLayerProperties>& GetAvailableInstanceLayers();
-		/// <summary>
-		/// Retrieve a list of available instance extensions.
-		/// </summary>
-		/// <returns>List of available instance extensions.</returns>
+		/// @brief Retrieve a list of available instance extensions.
+		/// @return List of available instance extensions.
 		[[nodiscard]] static const std::vector<VkExtensionProperties>& GetAvailableInstanceExtensions();
-		/// <summary>
-		/// Retrieve the properties for the given instance layer.
-		/// </summary>
-		/// <param name="instanceLayer">Instance layer to get properties from.</param>
-		/// <returns>Instance layer properties.</returns>
+		/// @brief Retrieve the properties for the given instance layer.
+		/// @param instanceLayer Instance layer to get properties from.
+		/// @return Instance layer properties.
 		[[nodiscard]] static std::optional<VkLayerProperties> GetInstanceLayerProperties(std::string_view instanceLayer);
-		/// <summary>
-		/// Retrieve the properties for the given instance extension.
-		/// </summary>
-		/// <param name="instanceLayer">Instance extension to get properties from.</param>
-		/// <returns>Instance extension properties.</returns>
+		/// @brief Retrieve the properties for the given instance extension.
+		/// @param instanceExtension Instance extension to get properties from.
+		/// @return Instance extension properties.
 		[[nodiscard]] static std::optional<VkExtensionProperties> GetInstanceExtensionProperties(std::string_view instanceExtension);
-		/// <summary>
-		/// Check whether an instance layer is supported or not.
-		/// </summary>
-		/// <param name="layer">Instance layer to check.</param>
-		/// <returns>True if the instance layer is supported, false otherwise.</returns>
+		/// @brief Check whether an instance layer is supported or not.
+		/// @param layer Instance layer to check.
+		/// @return True if the instance layer is supported, false otherwise.
 		[[nodiscard]] static bool IsLayerSupported(std::string_view layer);
-		/// <summary>
-		/// Check whether an instance extension is supported or not.
-		/// </summary>
-		/// <param name="extension">Instance extension to check.</param>
-		/// <returns>True if the instance extension is supported, false otherwise.</returns>
+		/// @brief Check whether an instance extension is supported or not.
+		/// @param extension Instance extension to check.
+		/// @return True if the instance extension is supported, false otherwise.
 		[[nodiscard]] static bool IsExtensionSupported(std::string_view extension);
 
 	private:
-		/// <summary>
-		/// Load a list of available instance layers.
-		/// </summary>
+		/// @brief Load a list of available instance layers.
 		static void LoadAllInstanceLayers();
-		/// <summary>
-		/// Load a list of available instance extensions.
-		/// </summary>
+		/// @brief Load a list of available instance extensions.
 		static void LoadAllInstanceExtensions();
 
 		inline constinit static std::optional<u32> s_instanceVersion = std::nullopt;

@@ -15,9 +15,7 @@ namespace TRAP::Events
 	//For the future, a better strategy might be to buffer events in an event bus and process
 	//them during the "event" part of the update stage.
 
-	/// <summary>
-	/// Different event types.
-	/// </summary>
+	/// @brief Different event types.
 	enum class EventType
 	{
 		None = 0,
@@ -30,9 +28,7 @@ namespace TRAP::Events
 		TextureReload, ShaderReload, FileChange
 	};
 
-	/// <summary>
-	/// Categories for events.
-	/// </summary>
+	/// @brief Categories for events.
 	enum class EventCategory : u32
 	{
 		None        = 0,
@@ -46,125 +42,82 @@ namespace TRAP::Events
 		FileChange  = BIT(7u)
 	};
 
-	/// <summary>
-	/// Event base class.
-	/// </summary>
+	/// @brief Event base class.
 	class Event
 	{
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		constexpr Event() noexcept = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Event(const Event&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr Event& operator=(const Event&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr Event(Event&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr Event& operator=(Event&&) noexcept = default;
 
 	public:
-		/// <summary>
-		/// Virtual destructor.
-		/// </summary>
+		/// @brief Virtual destructor.
 		constexpr virtual ~Event() = default;
 
-		/// <summary>
-		/// If set to true then this event won't be passed on to other event handlers.
-		/// </summary>
+		/// @brief If set to true then this event won't be passed on to other event handlers.
 		bool Handled = false;
 
-		/// <summary>
-		/// Get a string representation of the event.
-		/// </summary>
-		/// <returns>String representation.</returns>
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
 		[[nodiscard]] constexpr virtual std::string ToString() const;
 
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] constexpr virtual EventType GetEventType() const noexcept = 0;
-		/// <summary>
-		/// Retrieve the name of the event.
-		/// </summary>
-		/// <returns>Name.</returns>
+		/// @brief Retrieve the name of the event.
+		/// @return Name.
 		[[nodiscard]] constexpr virtual std::string GetName() const = 0;
-		/// <summary>
-		/// Retrieve the category flags of the event.
-		/// </summary>
-		/// <returns>Combination of one or more EventCategory's.</returns>
+		/// @brief Retrieve the category flags of the event.
+		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr virtual EventCategory GetCategoryFlags() const noexcept = 0;
 
-		/// <summary>
-		/// Check if an event is in the specified category.
-		/// </summary>
-		/// <param name="category">Category to check.</param>
-		/// <returns>True if event is in the category, false otherwise.</returns>
+		/// @brief Check if an event is in the specified category.
+		/// @param category Category to check.
+		/// @return True if event is in the category, false otherwise.
 		[[nodiscard]] constexpr bool IsInCategory(EventCategory category) const noexcept;
 	};
 
-	/// <summary>
-	/// Dispatcher for events.
-	/// </summary>
+	/// @brief Dispatcher for events.
 	class EventDispatcher
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="event">Event to dispatch.</param>
+		/// @brief Constructor.
+		/// @param event Event to dispatch.
 		explicit constexpr EventDispatcher(Event& event) noexcept;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~EventDispatcher() = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr EventDispatcher(const EventDispatcher&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr EventDispatcher& operator=(const EventDispatcher&) noexcept = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr EventDispatcher(EventDispatcher&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr EventDispatcher& operator=(EventDispatcher&&) noexcept = delete;
 
-		/// <summary>
-		/// Dispatch a specific event to a function.
-		/// </summary>
-		/// <typeparam name="T">Event to dispatch.</typeparam>
-		/// <typeparam name="F">Function to call.</typeparam>
-		/// <param name="func">Function to call.</param>
-		/// <returns>True if the received event matches the event to dispatch, false otherwise.</returns>
+		/// @brief Dispatch a specific event to a function.
+		/// @tparam T Event to dispatch.
+		/// @tparam F Function to call.
+		/// @param func Function to call.
+		/// @return True if the received event matches the event to dispatch, false otherwise.
 		template<typename T, typename F>
 		requires std::is_invocable_r_v<bool, F, T&>
 		constexpr bool Dispatch(const F& func) noexcept;
 
-		/// <summary>
-		/// Dispatch a specific event to a member function.
-		/// </summary>
-		/// <typeparam name="T">Event to dispatch.</typeparam>
-		/// <typeparam name="ClassType">Pointer to class from which to call member function.</typeparam>
-		/// <typeparam name="F">Member function to call.</typeparam>
-		/// <param name="func">Member function to call.</param>
-		/// <returns>True if the received event matches the event to dispatch, false otherwise.</returns>
+		/// @brief Dispatch a specific event to a member function.
+		/// @tparam T Event to dispatch.
+		/// @tparam ClassType Class to use member function from.
+		/// @tparam F Member function to call.
+		/// @param obj Pointer to class from which to call member function.
+		/// @param func Member function to call.
+		/// @return True if the received event matches the event to dispatch, false otherwise.
 		template<typename T, typename ClassType, typename F>
 		requires std::is_class_v<ClassType> && std::is_member_function_pointer_v<F> &&
 		         std::is_invocable_r_v<bool, typename std::remove_pointer_t<F>, ClassType*, T&>

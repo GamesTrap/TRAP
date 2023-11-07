@@ -8,58 +8,38 @@ namespace TRAP::Graphics
 	class DescriptorPool
 	{
 	public:
-		/// <summary>
-		/// Create a new descriptor pool.
-		/// </summary>
-		/// <param name="numDescriptorSets">Max amount of descriptors sets to manage by the pool.</param>
-		/// <returns>Created descriptor pool.</returns>
+		/// @brief Create a new descriptor pool.
+		/// @param numDescriptorSets Max amount of descriptors sets to manage by the pool.
+		/// @return Created descriptor pool.
 		[[nodiscard]] static TRAP::Ref<DescriptorPool> Create(u32 numDescriptorSets);
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~DescriptorPool();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr DescriptorPool(const DescriptorPool&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		DescriptorPool& operator=(const DescriptorPool&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr DescriptorPool(DescriptorPool&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		DescriptorPool& operator=(DescriptorPool&&) noexcept = default;
 
-		/// <summary>
-		/// Reset the descriptor pool.
-		/// Note: This implicitly frees all descriptor sets allocated from the pool.
-		/// </summary>
+		/// @brief Reset the descriptor pool.
+		/// @note This implicitly frees all descriptor sets allocated from the pool.
 		virtual void Reset() = 0;
 
-		/// <summary>
-		/// Max number of descriptor sets managed by the pool.
-		/// </summary>
-		/// <returns>
+		/// @brief Max number of descriptor sets managed by the pool.
+		/// @return Number of descriptor sets.
 		[[nodiscard]] constexpr u32 GetDescriptorSetsNum() const noexcept;
 
-		/// <summary>
-		/// Retrieve a new descriptor set from description.
-		/// </summary>
-		/// <param name="desc">Descriptor set description.</param>
-		/// <returns>New descriptor set.</returns>
+		/// @brief Retrieve a new descriptor set from description.
+		/// @param desc Descriptor set description.
+		/// @return New descriptor set.
 		[[nodiscard]] virtual TRAP::Scope<DescriptorSet> RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc) = 0;
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		explicit DescriptorPool(u32 numDescriptorSets);
 
 		u32 m_numDescriptorSets = 0;

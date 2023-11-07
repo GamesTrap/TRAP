@@ -11,79 +11,62 @@
 
 namespace TRAP::Network
 {
-	/// <summary>
-	/// TRAP::Network::IPv6Address is a utility class for manipulating network addresses.
+	/// @brief TRAP::Network::IPv6Address is a utility class for manipulating network addresses.
 	/// It provides a set of implicit constructors and conversion functions to easily build or transform
 	/// an IPv6 address from/to various representations.
-	/// </summary>
 	class IPv6Address
 	{
 	public:
-		/// <summary>
-		/// This constructor creates an empty (invalid) address.
-		/// </summary>
+		/// @brief This constructor creates an empty (invalid) address.
 		constexpr IPv6Address() noexcept = default;
 
-		/// <summary>
-		/// Construct the address from a string.
+		/// @brief Construct the address from a string.
 		///
 		/// Here address can be either a hex address (ex: "2001:0db8:85a3:0000:0000:8a2e:0370:7334") or a
 		/// network name (ex: "localhost").
-		/// </summary>
-		/// <param name="address">IPv6 address or network name.</param>
+		/// @param address IPv6 address or network name.
 		explicit IPv6Address(const std::string& address);
 
-		/// <summary>
-		/// Construct the address from a string.
+		/// @brief Construct the address from a string.
 		///
 		/// Here address can either be a hex address (ex: "2001:0db8:85a3:0000:0000:8a2e:0370:7334") or a
 		/// network name (ex: "localhost").
 		/// This is equivalent to the constructor taking a std::string
 		/// parameter, it is defined for convenience so that the
 		/// implicit conversion from literal strings to IPv6Address work.
-		/// </summary>
-		/// <param name="address">IPv6 address or network name.</param>
+		/// @param address IPv6 address or network name.
 		explicit IPv6Address(const char* address);
 
-		/// <summary>
-		/// Construct the address from 16 bytes array.
-		/// </summary>
-		/// <param name="addressBytes">Array containing 16 bytes address.</param>
+		/// @brief Construct the address from 16 bytes array.
+		/// @param addressBytes Array containing 16 bytes address.
 		explicit constexpr IPv6Address(const std::array<u8, 16>& addressBytes) noexcept;
 
-		/// <summary>
-		/// Get a string representation of the address.
+		/// @brief Get a string representation of the address.
 		///
 		/// The returned string is the hex representation of the
 		/// IPv6 address (like "2001:0db8:85a3:0000:0000:8a2e:0370:7334"), even if it was constructed
 		/// from a host name.
-		/// </summary>
-		/// <returns>String representation of the address.</returns>
+		/// @return String representation of the address.
 		[[nodiscard]] std::string ToString() const;
 
-		/// <summary>
-		/// Get a byte representation of the address.
+		/// @brief Get a byte representation of the address.
 		///
 		/// The returned array is the byte representation of the
 		/// IPv6 address, event if it was constructed
 		/// from a host name.
-		/// </summary>
-		/// <returns>Byte representation of the address.</returns>
+		/// @return Byte representation of the address.
 		[[nodiscard]] constexpr std::array<u8, 16> ToArray() const noexcept;
 
-		/// <summary>
-		/// Get the computer's local address.
+		/// @brief Get the computer's local address.
 		///
 		/// The local address is the address of the computer from the
 		/// LAN point of view, i.e. something like 2001:0db8:85a3:0000:0000:8a2e:0370:7334.
 		/// It is meaningful only for communications over the local network.
 		/// Unlike GetPublicAddress, this function is fast and may be used safely anywhere.
-		/// </summary>
-		/// <returns>Local IPv6 address of the computer.</returns>
+		/// @return Local IPv6 address of the computer.
 		[[nodiscard]] static IPv6Address GetLocalAddress();
 
-		/// <summary>
-		/// Get the computer's public address.
+		/// @brief Get the computer's public address.
 		///
 		/// The public address is the address of the computer from the
 		/// internet point of view, i.e. something like 2001:0db8:85a3:0000:0000:8a2e:0370:7334.
@@ -96,9 +79,8 @@ namespace TRAP::Network
 		/// sever, you may use a time limit if you don't want your program
 		/// to be possibly stuck waiting in case there is a problem; this
 		/// limit is deactivated by default.
-		/// </summary>
-		/// <param name="timeout">Maximum time to wait.</param>
-		/// <returns>Public IP address of the computer.</returns>
+		/// @param timeout Maximum time to wait.
+		/// @return Public IP address of the computer.
 		[[nodiscard]] static IPv6Address GetPublicAddress(Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 
 		static const IPv6Address None; //Value representing an empty/invaid address
@@ -116,10 +98,8 @@ namespace TRAP::Network
 		}
 
 	private:
-		/// <summary>
-		/// Resolve the given address string.
-		/// </summary>
-		/// <param name="address">Address string.</param>
+		/// @brief Resolve the given address string.
+		/// @param address Address string.
 		void Resolve(const std::string& address);
 
 		std::array<u8, 16> m_address; //Address stored as an 128 bit array
@@ -128,22 +108,18 @@ namespace TRAP::Network
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Overload of >> operator to extract an IP address from input stream.
-	/// </summary>
-	/// <param name="stream">Input stream.</param>
-	/// <param name="address">IP address to extract.</param>
-	/// <returns>Reference to the input stream.</returns>
+	/// @brief Overload of >> operator to extract an IP address from input stream.
+	/// @param stream Input stream.
+	/// @param address IP address to extract.
+	/// @return Reference to the input stream.
 	std::istream& operator>>(std::istream& stream, TRAP::Network::IPv6Address& address);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Overload of << operator to print an IP address to an output stream.
-	/// </summary>
-	/// <param name="stream">Output stream.</param>
-	/// <param name="address">IP address to print.</param>
-	/// <returns>Reference to the output stream.</returns>
+	/// @brief Overload of << operator to print an IP address to an output stream.
+	/// @param stream Output stream.
+	/// @param address IP address to print.
+	/// @return Reference to the output stream.
 	std::ostream& operator<<(std::ostream& stream, const TRAP::Network::IPv6Address& address);
 }
 

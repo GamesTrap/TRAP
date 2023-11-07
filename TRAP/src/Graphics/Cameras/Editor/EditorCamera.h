@@ -20,12 +20,11 @@ namespace TRAP::Events
 
 namespace TRAP::Graphics
 {
+	/// @remark @headless This class is not available in headless mode.
     class EditorCamera : public Camera
     {
     public:
-        /// <summary>
-        /// Camera modes.
-        /// </summary>
+        /// @brief Camera modes.
         enum class CameraMode
         {
             None,
@@ -33,231 +32,149 @@ namespace TRAP::Graphics
             ArcBall
         };
 
-        /// <summary>
-        /// Constructor.
+        /// @brief Constructor.
         /// Create a new camera from the given parameters.
-        /// </summary>
-        /// <param name="fov">Field of view in degrees.</param>
-        /// <param name="aspectRatio">Viewport aspect ratio.</param>
-        /// <param name="nearClip">Near clip plane.</param>
+        /// @param fov Field of view in degrees.
+        /// @param aspectRatio Viewport aspect ratio.
+        /// @param nearClip Near clip plane.
         constexpr EditorCamera(f32 fov, f32 aspectRatio, f32 nearClip);
-        /// <summary>
-        /// Destructor
-        /// </summary>
+        /// @brief Destructor
         constexpr ~EditorCamera() override = default;
-        /// <summary>
-        /// Copy constructor.
-        /// </summary>
+        /// @brief Copy constructor.
         constexpr EditorCamera(const EditorCamera&) noexcept = default;
-        /// <summary>
-        /// Move constructor.
-        /// </summary>
+        /// @brief Move constructor.
         constexpr EditorCamera(EditorCamera&&) noexcept = default;
 
-        /// <summary>
-        /// Copy assignment operator.
-        /// </summary>
-        /// <returns>EditorCamera.</returns>
+        /// @brief Copy assignment operator.
+        /// @return EditorCamera.
         constexpr EditorCamera& operator=(const EditorCamera&) noexcept = default;
-        /// <summary>
-        /// Move assignment operator.
-        /// </summary>
-        /// <returns>EditorCamera.</returns>
+        /// @brief Move assignment operator.
+        /// @return EditorCamera.
         constexpr EditorCamera& operator=(EditorCamera&&) noexcept = default;
 
-        /// <summary>
-        /// Initialize the camera.
-        /// </summary>
+        /// @brief Initialize the camera.
         constexpr void Init();
 
-        /// <summary>
-        /// Focus the camera onto the given point.
-        /// </summary>
-        /// <param name="focusPoint">Point to focus on.</param>
+        /// @brief Focus the camera onto the given point.
+        /// @param focusPoint Point to focus on.
         constexpr void Focus(const TRAP::Math::Vec3& focusPoint);
-        /// <summary>
-        /// Update the camera.
-        /// </summary>
-        /// <param name="deltaTime">Current frames delta time.</param>
+        /// @brief Update the camera.
+        /// @param deltaTime Current frames delta time.
         void OnUpdate(const Utils::TimeStep& deltaTime);
-        /// <summary>
-        /// Handle camera events.
-        /// </summary>
-        /// <param name="event">Triggered event.</param>
+        /// @brief Handle camera events.
+        /// @param event Triggered event.
         void OnEvent(Events::Event& event);
 
-        /// <summary>
-        /// Retrieve whether the camera is active or not.
-        /// </summary>
-        /// <returns>True if camera is active, false otherwise.</returns>
+        /// @brief Retrieve whether the camera is active or not.
+        /// @return True if camera is active, false otherwise.
         [[nodiscard]] constexpr bool IsActive() const noexcept;
-        /// <summary>
-        /// Set camera active or inactive
-        /// </summary>
-        /// <param name="active">Active or inactive.</param>
+        /// @brief Set camera active or inactive
+        /// @param active Active or inactive.
         constexpr void SetActive(bool active) noexcept;
 
-        /// <summary>
-        /// Retrieve the current mode of the camera.
-        /// </summary>
-        /// <returns>Current mode of the camera.</returns>
+        /// @brief Retrieve the current mode of the camera.
+        /// @return Current mode of the camera.
         [[nodiscard]] constexpr CameraMode GetCurrentMode() const noexcept;
 
-        /// <summary>
-        /// Retrieve the distance between the camera and the focal point.
-        /// </summary>
-        /// <returns>Distance.</returns>
+        /// @brief Retrieve the distance between the camera and the focal point.
+        /// @return Distance.
         [[nodiscard]] constexpr f32 GetDistance() const noexcept;
-        /// <summary>
-        /// Set the distance between the camera and the focal point.
-        /// </summary>
-        /// <param name="distance">Distance to set.</param>
+        /// @brief Set the distance between the camera and the focal point.
+        /// @param distance Distance to set.
         constexpr void SetDistance(f32 distance) noexcept;
 
-        /// <summary>
-        /// Retrieve the current focal point of the camera.
-        /// </summary>
-        /// <returns>Current focal point.</returns>
+        /// @brief Retrieve the current focal point of the camera.
+        /// @return Current focal point.
         [[nodiscard]] constexpr const TRAP::Math::Vec3& GetFocalPoint() const noexcept;
 
-        /// <summary>
-        /// Set the viewport of the camera.
+        /// @brief Set the viewport of the camera.
         /// This updates the projection matrix.
-        /// </summary>
-        /// <param name="width">Viewport width.</param>
-        /// <param name="height">Viewport height.</param>
+        /// @param width Viewport width.
+        /// @param height Viewport height.
         constexpr void SetViewportSize(f32 width, f32 height);
 
-        /// <summary>
-        /// Retrieve the view matrix.
-        /// </summary>
-        /// <returns>View matrix.</returns>
+        /// @brief Retrieve the view matrix.
+        /// @return View matrix.
         [[nodiscard]] constexpr const TRAP::Math::Mat4& GetViewMatrix() const noexcept;
 
-        /// <summary>
-        /// Retrieve the current up direction.
-        /// </summary>
-        /// <returns>Up direction.</returns>
+        /// @brief Retrieve the current up direction.
+        /// @return Up direction.
         [[nodiscard]] constexpr TRAP::Math::Vec3 GetUpDirection() const;
-        /// <summary>
-        /// Retrieve the current right direction.
-        /// </summary>
-        /// <returns>Right direction.</returns>
+        /// @brief Retrieve the current right direction.
+        /// @return Right direction.
         [[nodiscard]] constexpr TRAP::Math::Vec3 GetRightDirection() const;
-        /// <summary>
-        /// Retrieve the current forward direction.
-        /// </summary>
-        /// <returns>Forward direction.</returns>
+        /// @brief Retrieve the current forward direction.
+        /// @return Forward direction.
         [[nodiscard]] constexpr TRAP::Math::Vec3 GetForwardDirection() const;
 
-        /// <summary>
-        /// Retrieve the current camera position.
-        /// </summary>
-        /// <returns>Camera position.</returns>
+        /// @brief Retrieve the current camera position.
+        /// @return Camera position.
         [[nodiscard]] constexpr const TRAP::Math::Vec3& GetPosition() const noexcept;
 
-        /// <summary>
-        /// Retrieve the current camera orientation.
-        /// </summary>
-        /// <returns>Camera orientation.</returns>
+        /// @brief Retrieve the current camera orientation.
+        /// @return Camera orientation.
         [[nodiscard]] constexpr TRAP::Math::Quat GetOrientation() const;
 
-        /// <summary>
-        /// Retrieve the current field of view in degrees.
-        /// </summary>
-        /// <returns>Field of view in degrees.</returns>
+        /// @brief Retrieve the current field of view in degrees.
+        /// @return Field of view in degrees.
         [[nodiscard]] constexpr f32 GetFOV() const noexcept;
-        /// <summary>
-        /// Retrieve the current aspect ration.
-        /// </summary>
-        /// <returns>Aspect ratio.</returns>
+        /// @brief Retrieve the current aspect ration.
+        /// @return Aspect ratio.
         [[nodiscard]] constexpr f32 GetAspectRatio() const noexcept;
-        /// <summary>
-        /// Retrieve the nera clip plane.
-        /// </summary>
-        /// <returns>Near clip plane.</returns>
+        /// @brief Retrieve the nera clip plane.
+        /// @return Near clip plane.
         [[nodiscard]] constexpr f32 GetNearClip() const noexcept;
-        /// <summary>
-        /// Retrieve the camera pitch.
-        /// </summary>
-        /// <returns>Pitch.</returns>
+        /// @brief Retrieve the camera pitch.
+        /// @return Pitch.
         [[nodiscard]] constexpr f32 GetPitch() const noexcept;
-        /// <summary>
-        /// Retrieve the camera yaw.
-        /// </summary>
-        /// <returns>Yaw.</returns>
+        /// @brief Retrieve the camera yaw.
+        /// @return Yaw.
         [[nodiscard]] constexpr f32 GetYaw() const noexcept;
-        /// <summary>
-        /// Retrieve the current camera speed.
-        /// </summary>
-        /// <returns>Camera speed.</returns>
+        /// @brief Retrieve the current camera speed.
+        /// @return Camera speed.
         [[nodiscard]] f32 GetCameraSpeed() const;
 
     private:
-        /// <summary>
-        /// Update the view matrix.
-        /// </summary>
+        /// @brief Update the view matrix.
         constexpr void UpdateView();
-        /// <summary>
-        /// Update the projection matrix.
-        /// </summary>
+        /// @brief Update the projection matrix.
         constexpr void UpdateProjection();
 
-        /// <summary>
-        /// Mouse scroll event callback.
+        /// @brief Mouse scroll event callback.
         /// Used to zoom in and out and so set the camera speed.
-        /// </summary>
-        /// <param name="event">MouseScrollEvent.</param>
-        /// <returns>False.</returns>
+        /// @param event MouseScrollEvent.
+        /// @return False.
         bool OnMouseScroll(Events::MouseScrollEvent& event);
 
-        /// <summary>
-        /// Pan the camera via the given mouse delta.
-        /// </summary>
-        /// <param name="delta">Mouse delta.</param>
+        /// @brief Pan the camera via the given mouse delta.
+        /// @param delta Mouse delta.
         constexpr void MousePan(const TRAP::Math::Vec2& delta);
-        /// <summary>
-        /// Rotate the camera via the given mouse pitch and yaw delta.
-        /// </summary>
-        /// <param name="delta">Mouse pitch and yaw delta.</param>
+        /// @brief Rotate the camera via the given mouse pitch and yaw delta.
+        /// @param delta Mouse pitch and yaw delta.
         constexpr void MouseRotate(const TRAP::Math::Vec2& delta);
-        /// <summary>
-        /// Zoom the camera with the given mouse delta.
-        /// </summary>
-        /// <param name="delta">Mouse delta.</param>
+        /// @brief Zoom the camera with the given mouse delta.
+        /// @param delta Mouse delta.
         void MouseZoom(f32 delta);
 
-        /// <summary>
-        /// Calculate the current camera position.
-        /// </summary>
-        /// <returns>Camera position.</returns>
+        /// @brief Calculate the current camera position.
+        /// @return Camera position.
         [[nodiscard]] constexpr TRAP::Math::Vec3 CalculatePosition() const;
 
-        /// <summary>
-        /// Retrieve the pan speed to use.
-        /// </summary>
-        /// <returns>Pan speed.</returns>
+        /// @brief Retrieve the pan speed to use.
+        /// @return Pan speed.
         [[nodiscard]] constexpr TRAP::Math::Vec2 PanSpeed() const;
-        /// <summary>
-        /// Retrieve the rotation speed to use.
-        /// </summary>
-        /// <returns>Rotation speed.</returns>
+        /// @brief Retrieve the rotation speed to use.
+        /// @return Rotation speed.
         [[nodiscard]] constexpr f32 RotationSpeed() const noexcept;
-        /// <summary>
-        /// Retrieve the zoom speed to use.
-        /// </summary>
-        /// <returns>Zoom speed.</returns>
+        /// @brief Retrieve the zoom speed to use.
+        /// @return Zoom speed.
         [[nodiscard]] f32 ZoomSpeed() const;
 
-        /// <summary>
-        /// Disable the mouse and ImGui mouse handling.
+        /// @brief Disable the mouse and ImGui mouse handling.
         /// Allows for infinite mouse movement without ImGui interaction.
-        /// </summary>
         void DisableMouse();
-        /// <summary>
-        /// Enable the mouse and ImGui mouse handling.
+        /// @brief Enable the mouse and ImGui mouse handling.
         /// Disables the infinite mouse movement enabled by DisableMouse().
-        /// </summary>
         void EnableMouse();
 
         TRAP::Math::Mat4 m_viewMatrix;

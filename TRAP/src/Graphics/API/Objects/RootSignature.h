@@ -7,60 +7,38 @@ namespace TRAP::Graphics
 	class RootSignature
 	{
 	public:
-		/// <summary>
-		/// Create a new root signature from the given description.
-		/// </summary>
-		/// <param name="desc">Root signature description.</param>
-		/// <returns>Created root signature.</returns>
+		/// @brief Create a new root signature from the given description.
+		/// @param desc Root signature description.
+		/// @return Created root signature.
 		[[nodiscard]] static TRAP::Ref<RootSignature> Create(const RendererAPI::RootSignatureDesc& desc);
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~RootSignature();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr RootSignature(const RootSignature&) = delete;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr RootSignature& operator=(const RootSignature&) = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		RootSignature(RootSignature&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		RootSignature& operator=(RootSignature&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the pipeline type used by the shaders of the root signature.
-		/// </summary>
-		/// <returns>Pipeline type.</returns>
+		/// @brief Retrieve the pipeline type used by the shaders of the root signature.
+		/// @return Pipeline type.
 		[[nodiscard]] constexpr RendererAPI::PipelineType GetPipelineType() const noexcept;
-		/// <summary>
-		/// Retrieve the amount of descriptors contained in the root signature.
-		/// </summary>
-		/// <returns>Amount of descriptors.</returns>
+		/// @brief Retrieve the amount of descriptors contained in the root signature.
+		/// @return Amount of descriptors.
 		[[nodiscard]] constexpr u64 GetDescriptorCount() const noexcept;
-		/// <summary>
-		/// Retrieve the list of descriptors contained in the root signature.
-		/// </summary>
-		/// <returns>List of descriptors.</returns>
+		/// @brief Retrieve the list of descriptors contained in the root signature.
+		/// @return List of descriptors.
 		[[nodiscard]] constexpr const std::vector<RendererAPI::DescriptorInfo>& GetDescriptors() const noexcept;
-		/// <summary>
-		/// Retrieve the map which converts a descriptor name to its index.
-		/// </summary>
-		/// <returns>Map which converts a descriptor name to its index.</returns>
+		/// @brief Retrieve the map which converts a descriptor name to its index.
+		/// @return Map which converts a descriptor name to its index.
 		[[nodiscard]] const RendererAPI::DescriptorIndexMap& GetDescriptorNameToIndexMap() const noexcept;
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		RootSignature();
 
 		//Graphics or Compute

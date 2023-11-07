@@ -44,93 +44,65 @@ namespace TRAP::Network
 	class TCPSocketIPv6;
 	class UDPSocketIPv6;
 
-	/// <summary>
-	/// Utility class to build blocks of data to transfer.
+	/// @brief Utility class to build blocks of data to transfer.
 	/// over the network
-	/// </summary>
 	class Packet
 	{
 	public:
-		/// <summary>
-		/// Constructor.
+		/// @brief Constructor.
 		/// Creates an empty packet.
-		/// </summary>
 		constexpr Packet() noexcept = default;
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr virtual ~Packet() = default;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Packet(const Packet&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr Packet& operator=(const Packet&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr Packet(Packet&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr Packet& operator=(Packet&&) noexcept = default;
 
-		/// <summary>
-		/// Append data to the end of the packet.
-		/// </summary>
-		/// <param name="data">Pointer to the sequence of bytes to append.</param>
-		/// <param name="sizeInBytes">Number of bytes to append.</param>
+		/// @brief Append data to the end of the packet.
+		/// @param data Pointer to the sequence of bytes to append.
+		/// @param sizeInBytes Number of bytes to append.
 		constexpr void Append(const void* data, usize sizeInBytes);
 
-		/// <summary>
-		/// Get the current reading position in the packet.
+		/// @brief Get the current reading position in the packet.
 		/// The next read operation will read data from this position.
-		/// </summary>
-		/// <returns>The bytes offset of the current read position.</returns>
+		/// @return The bytes offset of the current read position.
 		[[nodiscard]] constexpr usize GetReadPosition() const noexcept;
 
-		/// <summary>
-		/// Clear the packet.
+		/// @brief Clear the packet.
 		/// After calling Clear, the packet is empty.
-		/// </summary>
 		constexpr void Clear() noexcept;
 
-		/// <summary>
-		/// Get a pointer to the data contained in the packet.
+		/// @brief Get a pointer to the data contained in the packet.
 		///
-		/// Warning: The returned pointer may become invalid after
-		/// you append data to the packet, therefore it should never
-		/// be stored.
 		/// The return pointer is nullptr if the packet is empty.
-		/// </summary>
-		/// <returns>Pointer to the data.</returns>
+		/// @return Pointer to the data.
+		/// @warning The returned pointer may become invalid after you append data
+		///          to the packet, therefore it should never be stored.
 		[[nodiscard]] constexpr const void* GetData() const;
 
-		/// <summary>
-		/// Get the size of the data contained in the packet.
+		/// @brief Get the size of the data contained in the packet.
 		///
 		/// This function returns the number of bytes pointer to by
 		/// what GetData returns.
-		/// </summary>
-		/// <returns>Data size, in bytes.</returns>
+		/// @return Data size, in bytes.
 		[[nodiscard]] constexpr usize GetDataSize() const noexcept;
 
-		/// <summary>
-		/// Tell if the reading position has reached the
+		/// @brief Tell if the reading position has reached the
 		/// end of the packet.
 		///
 		/// This function is useful to know if there is some data
 		/// left to be read, without actually reading it.
-		/// </summary>
-		/// <returns>True if all data was read, false otherwise.</returns>
+		/// @return True if all data was read, false otherwise.
 		[[nodiscard]] constexpr bool EndOfPacket() const noexcept;
 
-		/// <summary>
-		/// Test the validity of the packet, for reading.
+		/// @brief Test the validity of the packet, for reading.
 		///
 		/// This operator allows to test the packet as a boolean
 		/// variable, to check if a reading operation was successful.
@@ -143,44 +115,65 @@ namespace TRAP::Network
 		/// Don't focus on the return type, it's equivalent to bool but
 		/// it disallows unwanted implicit conversions to integer or
 		/// pointer types.
-		/// </summary>
-		/// <returns>True if last data extraction from packet was successful.</returns>
+		/// @return True if last data extraction from packet was successful.
 		constexpr explicit operator bool() const noexcept;
 
-		/// <summary>
-		/// Overload of operator >> to read data from the packet.
-		/// </summary>
+		/// @brief Overload of operator >> to read data from the packet.
 		constexpr Packet& operator>>(bool& data);
+		/// @brief Overload of operator >> to read data from the packet.
 		constexpr Packet& operator>>(i8& data);
+		/// @brief Overload of operator >> to read data from the packet.
 		constexpr Packet& operator>>(u8& data);
+		/// @brief Overload of operator >> to read data from the packet.
 		constexpr Packet& operator>>(i16& data);
+		/// @brief Overload of operator >> to read data from the packet.
 		constexpr Packet& operator>>(u16& data);
+		/// @brief Overload of operator >> to read data from the packet.
 		constexpr Packet& operator>>(i32& data);
+		/// @brief Overload of operator >> to read data from the packet.
 		constexpr Packet& operator>>(u32& data);
+		/// @brief Overload of operator >> to read data from the packet.
 		constexpr Packet& operator>>(i64& data);
+		/// @brief Overload of operator >> to read data from the packet.
 		constexpr Packet& operator>>(u64& data);
+		/// @brief Overload of operator >> to read data from the packet.
 		constexpr Packet& operator>>(f32& data);
+		/// @brief Overload of operator >> to read data from the packet.
 		constexpr Packet& operator>>(f64& data);
+		/// @brief Overload of operator >> to read data from the packet.
 		constexpr Packet& operator>>(char* data);
+		/// @brief Overload of operator >> to read data from the packet.
 		constexpr Packet& operator>>(std::string& data);
+		/// @brief Overload of operator >> to read data from the packet.
 		constexpr Packet& operator>>(wchar_t* data);
+		/// @brief Overload of operator >> to read data from the packet.
 		constexpr Packet& operator>>(std::wstring& data);
 
-		/// <summary>
-		/// Overload of operator << to write data into the packet.
-		/// </summary>
+		/// @brief Overload of operator << to write data into the packet.
 		constexpr Packet& operator<<(bool data);
+		/// @brief Overload of operator << to write data into the packet.
 		constexpr Packet& operator<<(i8 data);
+		/// @brief Overload of operator << to write data into the packet.
 		constexpr Packet& operator<<(u8 data);
+		/// @brief Overload of operator << to write data into the packet.
 		constexpr Packet& operator<<(i16 data);
+		/// @brief Overload of operator << to write data into the packet.
 		constexpr Packet& operator<<(u16 data);
+		/// @brief Overload of operator << to write data into the packet.
 		constexpr Packet& operator<<(i32 data);
+		/// @brief Overload of operator << to write data into the packet.
 		constexpr Packet& operator<<(u32 data);
+		/// @brief Overload of operator << to write data into the packet.
 		constexpr Packet& operator<<(i64 data);
+		/// @brief Overload of operator << to write data into the packet.
 		constexpr Packet& operator<<(u64 data);
+		/// @brief Overload of operator << to write data into the packet.
 		constexpr Packet& operator<<(f32 data);
+		/// @brief Overload of operator << to write data into the packet.
 		constexpr Packet& operator<<(f64 data);
+		/// @brief Overload of operator << to write data into the packet.
 		constexpr Packet& operator<<(std::string_view data);
+		/// @brief Overload of operator << to write data into the packet.
 		constexpr Packet& operator<<(std::wstring_view data);
 
 	protected:
@@ -189,8 +182,7 @@ namespace TRAP::Network
 		friend class TCPSocketIPv6;
 		friend class UDPSocketIPv6;
 
-		/// <summary>
-		/// Called before the packet is sent over the network.
+		/// @brief Called before the packet is sent over the network.
 		///
 		/// This function can be defined by derived classes to
 		/// transform the data before it is sent; this can be
@@ -199,13 +191,11 @@ namespace TRAP::Network
 		/// as well as the number of bytes pointed.
 		/// The default implementation provides the packet's data
 		/// without transforming it.
-		/// </summary>
-		/// <param name="size">Variable to fill with the size of data to send.</param>
-		/// <returns>Pointer to the array of bytes to send.</returns>
+		/// @param size Variable to fill with the size of data to send.
+		/// @return Pointer to the array of bytes to send.
 		[[nodiscard]] virtual const void* OnSend(usize& size);
 
-		/// <summary>
-		/// Called after the packet is received over the network.
+		/// @brief Called after the packet is received over the network.
 		///
 		/// This function can be defined by derived classes to
 		/// transform the data after it is received; this can be
@@ -214,29 +204,22 @@ namespace TRAP::Network
 		/// and must fill the packet with the transformed bytes.
 		/// The default implementation fills the packet directly
 		/// without transforming the data.
-		/// </summary>
-		/// <param name="data">Pointer to the received bytes.</param>
-		/// <param name="size">Number of bytes.</param>
+		/// @param data Pointer to the received bytes.
+		/// @param size Number of bytes.
 		constexpr virtual void OnReceive(const void* data, usize size);
 
 	public:
-		/// <summary>
-		/// Disallow comparisons between packets.
-		/// </summary>
+		/// @brief Disallow comparisons between packets.
 		[[nodiscard]] constexpr bool operator==(const Packet& right) const noexcept = delete;
-		/// <summary>
-		/// Disallow comparisons between packets.
-		/// </summary>
+		/// @brief Disallow comparisons between packets.
 		[[nodiscard]] constexpr bool operator!=(const Packet& right) const noexcept = delete;
 
 	private:
-		/// <summary>
-		/// Check if the packet can extract a given number of bytes.
+		/// @brief Check if the packet can extract a given number of bytes.
 		///
 		/// This function updates accordingly the state of the packet.
-		/// </summary>
-		/// <param name="size">Size to check.</param>
-		/// <returns>True if size bytes can be read from the packet.</returns>
+		/// @param size Size to check.
+		/// @return True if size bytes can be read from the packet.
 		[[nodiscard]] constexpr bool CheckSize(usize size) noexcept;
 
 		std::vector<u8> m_data{}; //Data stored in the packet

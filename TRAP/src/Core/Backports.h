@@ -12,12 +12,10 @@
 
 namespace std
 {
-    /// <summary>
-    /// Checks whether E is a scoped enumeration type.
-    /// Provides the member constant value which is equal to true, if E is a scoped enumeration type.
-    /// Otherwise, value is equal to false.
-    /// </summary>
-    /// <typeparam name="E">Type to check.</typeparam>
+    /// @brief Checks whether E is a scoped enumeration type.
+    ///        Provides the member constant value which is equal to true, if E is a scoped enumeration type.
+    ///        Otherwise, value is equal to false.
+    /// @tparam E Type to check.
     template<typename E>
     struct is_scoped_enum : std::bool_constant<requires
     {
@@ -26,11 +24,8 @@ namespace std
     }>
     {};
 
-    /// <summary>
-    /// Check whether E is a scoped enumeration type.
-    /// True if E is a scoped enumeration type, false otherwise.
-    /// </summary>
-    /// <typeparam name="T">Type to check.</typeparam>
+    /// @brief Check whether E is a scoped enumeration type. True if E is a scoped enumeration type, false otherwise.
+    /// @tparam T Type to check.
     template<class T>
     inline constexpr bool is_scoped_enum_v = is_scoped_enum<T>::value;
 }
@@ -47,12 +42,10 @@ namespace std
 
 namespace std
 {
-    /// <summary>
-    /// Retrieve a value of Enum using its underlying data type.
-    /// </summary>
-    /// <typeparam name="Enum">Enum to get value from.</typeparam>
-    /// <param name="e">Enum value to retrieve.</param>
-    /// <returns>Enum value represented with its underlying data type.</returns>
+    /// @brief Retrieve a value of Enum using its underlying data type.
+    /// @tparam Enum Enum to get value from.
+    /// @param e Enum value to retrieve.
+    /// @return Enum value represented with its underlying data type.
     template<class Enum>
     requires std::is_enum_v<Enum> || std::is_scoped_enum_v<Enum>
     constexpr std::underlying_type_t<Enum> to_underlying(Enum e) noexcept
@@ -73,14 +66,9 @@ namespace std
 
 namespace std
 {
-    /// <summary>
-    /// Reverses the bytes in the given integer value n.
-    /// </summary>
-    /// <param name="n">Integer value.</param>
-    /// <returns>
-    /// An integer value of type T whose object representation comprises
-    /// the bytes of that of n in reversed order.
-    /// </returns>
+    /// @brief Reverses the bytes in the given integer value n.
+    /// @param n Integer value.
+    /// @return An integer value of type T whose object representation comprises the bytes of that of n in reversed order.
     constexpr std::integral auto byteswap(std::integral auto n) noexcept
     {
         static_assert(std::has_unique_object_representations_v<decltype(n)>, "T may not have padding bits!");
@@ -104,6 +92,13 @@ namespace std::ranges
 {
     struct __contains_fn
     {
+        /// @brief Search-based algorithm that checks whether or not a given range contains a value with
+        ///        iterator-sentinel pairs.
+        /// @param first The range of elements to examine.
+        /// @param last The range of elements to examine.
+        /// @param value Value to compare the elements to.
+        /// @param proj Projection to apply to the elements.
+        /// @return std::ranges::find(std::move(first), last, value, proj) != last.
         template<std::input_iterator I, std::sentinel_for<I> S, typename T, typename Proj = std::identity>
         requires std::indirect_binary_predicate<ranges::equal_to, std::projected<I, Proj>, const T*>
         constexpr bool operator()(I first, S last, const T& value, Proj proj = {}) const
@@ -111,6 +106,12 @@ namespace std::ranges
             return std::ranges::find(std::move(first), last, value, std::move(proj)) != last;
         }
 
+        /// @brief Search-based algorithm that checks whether or not a given range contains a value with
+        ///        iterator-sentinel pairs.
+        /// @param r The range of the elements to examine.
+        /// @param value Value to compare the elements to.
+        /// @param proj Projection to apply to the elements.
+        /// @return std::ranges::find(std::move(first), last, value, proj) != last.
         template<ranges::input_range R, typename T, typename Proj = std::identity>
         requires std::indirect_binary_predicate<ranges::equal_to, std::projected<ranges::iterator_t<R>, Proj>, const T*>
         constexpr bool operator()(R&& r, const T& value, Proj proj = {}) const
@@ -134,6 +135,8 @@ namespace std::ranges
 
 namespace std
 {
+    /// @brief Invokes undefined behaviour. An implementation may use this to optimize impossible code branches away
+    ///        (typically, in optimized builds) or to trap them to prevent further execution (typically, in debug builds).
     [[noreturn]] inline void unreachable()
     {
     #ifdef __GNUC__

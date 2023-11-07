@@ -13,37 +13,29 @@
 
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 	#if defined(TRAP_PLATFORM_WINDOWS)
-		/// <summary>
-		/// Sets a cross platform debug break.
-		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
-		/// </summary>
+		/// @brief Sets a cross platform debug break.
+		/// @note Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		inline void TRAP_DEBUG_BREAK()
 		{
 			__debugbreak();
 		}
 	#elif defined(TRAP_PLATFORM_LINUX)
-		/// <summary>
-		/// Sets a cross platform debug break.
-		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
-		/// </summary>
 		#include <csignal>
+		/// @brief Sets a cross platform debug break.
+		/// @note Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		inline void TRAP_DEBUG_BREAK()
 		{
-			raise(SIGTRAP);
+			[[maybe_unused]] const auto _ = raise(SIGTRAP);
 		}
 	#else
-		/// <summary>
-		/// Sets a cross platform debug break.
-		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
-		/// </summary>
+		/// @brief Sets a cross platform debug break.
+		/// @note Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		inline constexpr void TRAP_DEBUG_BREAK() noexcept
 		{}
 	#endif
 #else
-		/// <summary>
-		/// Sets a cross platform debug break.
-		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
-		/// </summary>
+		/// @brief Sets a cross platform debug break.
+		/// @note Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		inline constexpr void TRAP_DEBUG_BREAK() noexcept
 		{}
 #endif /*TRAP_DEBUG || TRAP_RELWITHDEBINFO*/

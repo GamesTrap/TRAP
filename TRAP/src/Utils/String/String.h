@@ -10,80 +10,65 @@
 
 namespace TRAP::Utils::String
 {
-	/// <summary>
-	/// Split a string by the delimiter(s).
-	/// </summary>
-	/// <param name="string">String to split up.</param>
-	/// <param name="delimiters">Delimiter(s) to split source string with.</param>
-	/// <returns>Vector of strings splitted by the given delimiter(s).</returns>
+	/// @brief Split a string by the delimiter(s).
+	/// @param str String to split up.
+	/// @param delimiters Delimiter(s) to split source string with.
+	/// @return Vector of strings splitted by the given delimiter(s).
 	[[nodiscard]] constexpr std::vector<std::string_view> SplitStringView(std::string_view str, std::string_view delimiters);
-	/// <summary>
-	/// Split a string by the delimiter.
-	/// </summary>
-	/// <param name="string">String to split up.</param>
-	/// <param name="delimiter">Delimiter to split source string with.</param>
-	/// <returns>Vector of strings splitted by the given delimiter.</returns>
+	/// @brief Split a string by the delimiter.
+	/// @param str String to split up.
+	/// @param delimiter Delimiter to split source string with.
+	/// @return Vector of strings splitted by the given delimiter.
 	[[nodiscard]] constexpr std::vector<std::string_view> SplitStringView(std::string_view str, char delimiter);
-	/// <summary>
-	/// Split a string by the delimiter(s).
-	/// </summary>
-	/// <param name="string">String to split up.</param>
-	/// <param name="delimiters">Delimiter(s) to split source string with.</param>
-	/// <returns>Vector of strings splitted by the given delimiter(s).</returns>
+	/// @brief Split a string by the delimiter(s).
+	/// @param str String to split up.
+	/// @param delimiters Delimiter(s) to split source string with.
+	/// @return Vector of strings splitted by the given delimiter(s).
 	[[nodiscard]] constexpr std::vector<std::string> SplitString(const std::string& str, std::string_view delimiters);
-	/// <summary>
-	/// Split a string by the delimiter.
-	/// </summary>
-	/// <param name="string">String to split up.</param>
-	/// <param name="delimiter">Delimiter to split source string with.</param>
-	/// <returns>Vector of strings splitted by the given delimiter.</returns>
+	/// @brief Split a string by the delimiter.
+	/// @param str String to split up.
+	/// @param delimiter Delimiter to split source string with.
+	/// @return Vector of strings splitted by the given delimiter.
 	[[nodiscard]] constexpr std::vector<std::string> SplitString(const std::string& str, char delimiter);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Split a string on new line.
-	/// </summary>
-	/// <param name="string">String to split up.</param>
-	/// <returns>Vector of strings splitted by new lines.</returns>
+	/// @brief Split a string on new line.
+	/// @param str String to split up.
+	/// @return Vector of strings splitted by new lines.
 	[[nodiscard]] constexpr std::vector<std::string_view> GetLinesStringView(std::string_view str);
-	/// <summary>
-	/// Split a string on new line.
-	/// </summary>
-	/// <param name="string">String to split up.</param>
-	/// <returns>Vector of strings splitted by new lines.</returns>
+	/// @brief Split a string on new line.
+	/// @param str String to split up.
+	/// @return Vector of strings splitted by new lines.
 	[[nodiscard]] constexpr std::vector<std::string> GetLines(const std::string& str);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Checks if the string contains the given substring.
-	/// </summary>
-	/// <param name="str">String to check.</param>
-	/// <param name="substr">Substring to check if inside string.</param>
-	/// <returns>True if the string contains the provided substring, false otherwise.</returns>
+	/// @brief Checks if the string contains the given substring.
+	/// @param str String to check.
+	/// @param substr Substring to check if inside string.
+	/// @return True if the string contains the provided substring, false otherwise.
+	/// @deprecated This function is deprecated when compiling with C++23 standard.
 #if __cplusplus >= 202302L
 	[[deprecated("Use std::string::contains() instead!")]]
 #endif /*__cplusplus >= 202302L*/
 	[[nodiscard]] constexpr bool Contains(std::string_view str, std::string_view substr) noexcept;
 
-	/// <summary>
-	/// Checks if the string contains the given substring.
-	/// </summary>
-	/// <param name="str">String to check.</param>
-	/// <param name="c">Substring to check if inside string.</param>
-	/// <returns>True if the string contains the provided substring, false otherwise.</returns>
+	/// @brief Checks if the string contains the given substring.
+	/// @param str String to check.
+	/// @param c Substring to check if inside string.
+	/// @return True if the string contains the provided substring, false otherwise.
+	/// @deprecated This function is deprecated when compiling with C++23 standard.
 #if __cplusplus >= 202302L
 	[[deprecated("Use std::string::contains() instead!")]]
 #endif /*__cplusplus >= 202302L*/
 	[[nodiscard]] constexpr bool Contains(std::string_view str, char c) noexcept;
 
-	/// <summary>
-	/// Checks if the string contains the given substring.
-	/// </summary>
-	/// <param name="str">String to check.</param>
-	/// <param name="substr">Substring to check if inside string.</param>
-	/// <returns>True if the string contains the provided substring, false otherwise.</returns>
+	/// @brief Checks if the string contains the given substring.
+	/// @param str String to check.
+	/// @param substr Substring to check if inside string.
+	/// @return True if the string contains the provided substring, false otherwise.
+	/// @deprecated This function is deprecated when compiling with C++23 standard.
 #if __cplusplus >= 202302L
 	[[deprecated("Use std::string::contains() instead!")]]
 #endif /*__cplusplus >= 202302L*/
@@ -91,181 +76,139 @@ namespace TRAP::Utils::String
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Get the suffix of a string(everything after the last '.' in the string).
-	/// </summary>
-	/// <param name="name">String to get suffix from.</param>
-	/// <returns>Suffix if found, nullptr otherwise.</returns>
+	/// @brief Get the suffix of a string(everything after the last '.' in the string).
+	/// @param name String to get suffix from.
+	/// @return Suffix if found, nullptr otherwise.
 	[[nodiscard]] constexpr std::string_view GetSuffixStringView(std::string_view name);
-	/// <summary>
-	/// Get the suffix of a string(everything after the last '.' in the string).
-	/// </summary>
-	/// <param name="name">String to get suffix from.</param>
-	/// <returns>Suffix if found, empty string otherwise.</returns>
+	/// @brief Get the suffix of a string(everything after the last '.' in the string).
+	/// @param name String to get suffix from.
+	/// @return Suffix if found, empty string otherwise.
 	[[nodiscard]] constexpr std::string GetSuffix(const std::string& name);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Convert a string to lower case.
-	/// </summary>
-	/// <param name="string">String to convert.</param>
-	/// <returns>Lower case version of the given string.</returns>
+	/// @brief Convert a string to lower case.
+	/// @param str String to convert.
+	/// @return Lower case version of the given string.
 	[[nodiscard]] constexpr std::string ToLower(std::string str);
 
-	/// <summary>
-	/// Convert a character to lower case.
-	/// </summary>
-	/// <param name="c">Character to convert.</param>
-	/// <returns>Lower case version of the given character.</returns>
+	/// @brief Convert a character to lower case.
+	/// @param c Character to convert.
+	/// @return Lower case version of the given character.
 	[[nodiscard]] constexpr char ToLower(char c);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Convert a string to upper case.
-	/// </summary>
-	/// <param name="string">String to convert.</param>
-	/// <returns>Upper case version of the given string.</returns>
+	/// @brief Convert a string to upper case.
+	/// @param str String to convert.
+	/// @return Upper case version of the given string.
 	[[nodiscard]] constexpr std::string ToUpper(std::string str);
 
-	/// <summary>
-	/// Convert a character to upper case.
-	/// </summary>
-	/// <param name="c">Character to convert.</param>
-	/// <returns>Upper case version of the given character.</returns>
+	/// @brief Convert a character to upper case.
+	/// @param c Character to convert.
+	/// @return Upper case version of the given character.
 	[[nodiscard]] constexpr char ToUpper(char c);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Check if a character is a digit (0123456789).
-	/// </summary>
-	/// <param name="c">Character to check.</param>
-	/// <returns>True if character is a digit, false otherwise.</returns>
+	/// @brief Check if a character is a digit (0123456789).
+	/// @param c Character to check.
+	/// @return True if character is a digit, false otherwise.
 	[[nodiscard]] constexpr bool IsDigit(char c);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Check if a character is a hexdecimal digit (0123456789abcdefABCDEF).
-	/// </summary>
-	/// <param name="c">Character to check.</param>
-	/// <returns>True if character is a hexdecimal digit, false otherwise.</returns>
+	/// @brief Check if a character is a hexdecimal digit (0123456789abcdefABCDEF).
+	/// @param c Character to check.
+	/// @return True if character is a hexdecimal digit, false otherwise.
 	[[nodiscard]] constexpr bool IsHexDigit(char c);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Check if a character is a whitespace character.
-	/// </summary>
-	/// <param name="c">Character to check.</param>
-	/// <returns>True if character is a whitespace character, false otherwise.</returns>
+	/// @brief Check if a character is a whitespace character.
+	/// @param c Character to check.
+	/// @return True if character is a whitespace character, false otherwise.
 	[[nodiscard]] constexpr bool IsSpace(char c);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Check if a character is an alphabetic character.
-	/// </summary>
-	/// <param name="c">Character to check.</param>
-	/// <returns>True if character is an alphabetic character, false otherwise.</returns>
+	/// @brief Check if a character is an alphabetic character.
+	/// @param c Character to check.
+	/// @return True if character is an alphabetic character, false otherwise.
 	[[nodiscard]] constexpr bool IsAlpha(char c);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Check if a character is an alphanumeric character.
-	/// </summary>
-	/// <param name="c">Character to check.</param>
-	/// <returns>True if character is an alphanumeric character, false otherwise.</returns>
+	/// @brief Check if a character is an alphanumeric character.
+	/// @param c Character to check.
+	/// @return True if character is an alphanumeric character, false otherwise.
 	[[nodiscard]] constexpr bool IsAlphaNumeric(char c);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Count the occurrences of the given delimiter in a string.
-	/// </summary>
-	/// <param name="string">String to count occurrences.</param>
-	/// <param name="delimiter">Delimiter to find.</param>
-	/// <returns>Number of occurrences of the delimiter inside the given string.</returns>
+	/// @brief Count the occurrences of the given delimiter in a string.
+	/// @param str String to count occurrences.
+	/// @param delimiter Delimiter to find.
+	/// @return Number of occurrences of the delimiter inside the given string.
 	[[nodiscard]] constexpr i64 GetCount(std::string_view str, char delimiter);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Check if two strings are equal without case sensitivity.
-	/// </summary>
-	/// <param name="left">String to check.</param>
-	/// <param name="right">String to check.</param>
-	/// <returns>True if both strings are equal, false otherwise</returns>
+	/// @brief Check if two strings are equal without case sensitivity.
+	/// @param left String to check.
+	/// @param right String to check.
+	/// @return True if both strings are equal, false otherwise
 	[[nodiscard]] constexpr bool CompareAnyCase(std::string_view left, std::string_view right);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Convert a string to the given type.
-	/// </summary>
-	/// <typeparam name="T">Type to get.</typeparam>
-	/// <param name="input">String to convert.</param>
-	/// <returns>String converted to type T.</returns>
+	/// @brief Convert a string to the given type.
+	/// @tparam T Type to get
+	/// @param input String to convert.
+	/// @return String converted to type T.
 	template<typename T>
 	[[nodiscard]] T ConvertToType(const std::string& input);
-	/// <summary>
-	/// Convert a value of type T to a string.
-	/// </summary>
-	/// <typeparam name="T">Type to convert.</typeparam>
-	/// <param name="value">Value to convert.</param>
-	/// <returns>Type T value converted to string.</returns>
+	/// @brief Convert a value of type T to a string.
+	/// @tparam T Type to convert
+	/// @param value Value to convert.
+	/// @return Type T value converted to string.
 	template<typename T>
 	[[nodiscard]] std::string ConvertToString(T value);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Retrieve the given time-stamp as a string with "HH:MM:SS" format.
-	/// </summary>
-	/// <param name="timePoint">Time-stamp to convert.</param>
-	/// <returns>Time-stamp as string.</returns>
+	/// @brief Retrieve the given time-stamp as a string with "HH:MM:SS" format.
+	/// @param timePoint Time-stamp to convert.
+	/// @return Time-stamp as string.
 	[[nodiscard]] std::string GetTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint) noexcept;
-	/// <summary>
-	/// Retrieve the given date-time-stamp as a string with "YYYY-MM-DD HH:MM:SS" format.
-	/// </summary>
-	/// <param name="timePoint">Timestamp to convert.</param>
-	/// <returns>Timestamp as string.</returns>
+	/// @brief Retrieve the given date-time-stamp as a string with "YYYY-MM-DD HH:MM:SS" format.
+	/// @param timePoint Timestamp to convert.
+	/// @return Timestamp as string.
 	[[nodiscard]] std::string GetDateTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Retrieve the last set OS error message.
-	/// </summary>
-	/// <returns>Last OS error message.</returns>
+	/// @brief Retrieve the last set OS error message.
+	/// @return Last OS error message.
 	[[nodiscard]] std::string GetStrError();
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Encode a single Unicode code point to UTF-8 chars.
-	/// </summary>
-	/// <param name="codePoint">Unicode code point</param>
-	/// <returns>UTF-8 chars.</returns>
+	/// @brief Encode a single Unicode code point to UTF-8 chars.
+	/// @param codePoint Unicode code point
+	/// @return UTF-8 chars.
 	[[nodiscard]] constexpr std::string EncodeUTF8(u32 codePoint);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef TRAP_PLATFORM_WINDOWS
-	/// <summary>
-	/// Returns an UTF-8 string version of the specified wide string.
-	/// </summary>
-	/// <param name="wStr">Wide string representation.</param>
-	/// <returns>UTF-8 string representation of the given wide string.</returns>
+	/// @brief Returns an UTF-8 string version of the specified wide string.
+	/// @param wStr Wide string representation.
+	/// @return UTF-8 string representation of the given wide string.
 	[[nodiscard]] std::string CreateUTF8StringFromWideStringWin32(std::wstring_view wStr);
-	/// <summary>
-	/// Returns a wide string string version of the specified UTF-8 string.
-	/// </summary>
-	/// <param name="str">UTF-8 representation.</param>
-	/// <returns>Wide string representation of the given UTF-8 string.</returns>
+	/// @brief Returns a wide string string version of the specified UTF-8 string.
+	/// @param str UTF-8 representation.
+	/// @return Wide string representation of the given UTF-8 string.
 	[[nodiscard]] std::wstring CreateWideStringFromUTF8StringWin32(std::string_view str);
 #endif /*TRAP_PLATFORM_WINDOWS*/
 }

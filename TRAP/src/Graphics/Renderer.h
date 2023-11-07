@@ -17,47 +17,33 @@ namespace TRAP::Graphics
 	class Renderer
 	{
 	public:
-		/// <summary>
-		/// Initialize Renderer.
-		/// </summary>
+		/// @brief Initialize Renderer.
 		static void Init();
-		/// <summary>
-		/// Shutdown Renderer.
-		/// </summary>
+		/// @brief Shutdown Renderer.
 		static void Shutdown();
 
-		/// <summary>
-		/// Begin a Renderer scene.
-		/// </summary>
-		/// <param name="camera">Orthographic camera.</param>
+		/// @brief Begin a Renderer scene.
+		/// @param camera Orthographic camera.
 		[[deprecated("Use BeginScene(Camera, Mat4) instead!")]]
 		static void BeginScene(const OrthographicCamera& camera); //TODO
-		/// <summary>
-		/// Begin a Renderer scene.
-		/// </summary>
-		/// <param name="camera">Main camera.</param>
-		/// <param name="transform">Camera transform.</param>
+		/// @brief Begin a Renderer scene.
+		/// @param camera Main camera.
+		/// @param transform Camera transform.
 		static void BeginScene(const Camera& camera, const Math::Mat4& transform);
-		/// <summary>
-		/// End a running Renderer scene.
-		/// </summary>
+		/// @brief End a running Renderer scene.
 		static constexpr void EndScene() noexcept;
 
-		/// <summary>
-		/// Submit a non-indexed draw call.
-		/// </summary>
-		/// <param name="shader">Shader to use.</param>
-		/// <param name="vertexBuffer">Vertex buffer to use.</param>
-		/// <param name="transform">Model transform. Default is identity.</param>
+		/// @brief Submit a non-indexed draw call.
+		/// @param shader Shader to use.
+		/// @param vertexBuffer Vertex buffer to use.
+		/// @param transform Model transform. Default is identity.
 		static void Submit(const Ref<Shader>& shader, const VertexBuffer* vertexBuffer,
 						   const Math::Mat4& transform = Math::Mat4(1.0f));
-		/// <summary>
-		/// Submit an indexed draw call.
-		/// </summary>
-		/// <param name="shader">Shader to use.</param>
-		/// <param name="vertexBuffer">Vertex buffer to use.</param>
-		/// <param name="indexBuffer">Index buffer to use.</param>
-		/// <param name="transform">Model transform. Default is identity.</param>
+		/// @brief Submit an indexed draw call.
+		/// @param shader Shader to use.
+		/// @param vertexBuffer Vertex buffer to use.
+		/// @param indexBuffer Index buffer to use.
+		/// @param transform Model transform. Default is identity.
 		static void Submit(const Ref<Shader>& shader, const VertexBuffer* vertexBuffer, const IndexBuffer* indexBuffer,
 						   const Math::Mat4& transform = Math::Mat4(1.0f));
 

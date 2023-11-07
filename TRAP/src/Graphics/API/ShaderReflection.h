@@ -122,11 +122,9 @@ namespace TRAP::Graphics::API::ShaderReflection
 		std::vector<ShaderVariable> Variables;
 	};
 
-	/// <summary>
-	/// Create a pipeline reflection from shader reflection data.
-	/// </summary>
-	/// <param name="reflection">Shader reflection data.</param>
-	/// <returns>Pipeline reflection.</returns>
+	/// @brief Create a pipeline reflection from shader reflection data.
+	/// @param reflection Shader reflection data.
+	/// @return Pipeline reflection.
 	[[nodiscard]] TRAP::Ref<PipelineReflection> CreatePipelineReflection(const std::vector<ShaderReflection>& reflection);
 }
 

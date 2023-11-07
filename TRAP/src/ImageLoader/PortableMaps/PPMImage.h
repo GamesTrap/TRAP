@@ -8,48 +8,30 @@ namespace TRAP::INTERNAL
 	class PPMImage final : public Image
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="filepath">File path of the image to load.</param>
+		/// @brief Constructor.
+		/// @param filepath File path of the image to load.
 		explicit PPMImage(std::filesystem::path filepath);
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		PPMImage(const PPMImage&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		PPMImage& operator=(const PPMImage&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		PPMImage(PPMImage&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		PPMImage& operator=(PPMImage&&) noexcept = default;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~PPMImage() override = default;
 
-		/// <summary>
-		/// Retrieve the raw pixel data of the image.
-		/// </summary>
-		/// <returns>Constant pointer to the raw pixel data.</returns>
+		/// @brief Retrieve the raw pixel data of the image.
+		/// @return Constant pointer to the raw pixel data.
 		[[nodiscard]] constexpr const void* GetPixelData() const noexcept override;
-		/// <summary>
-		/// Retrieve the size of the raw pixel data of the image.
-		/// </summary>
-		/// <returns>Size of the raw pixel data in bytes.</returns>
+		/// @brief Retrieve the size of the raw pixel data of the image.
+		/// @return Size of the raw pixel data in bytes.
 		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
 
-		/// <summary>
-		/// Save an TRAP::Image as a Portable Pixmap (PPM) file.
-		/// </summary>
-		/// <param name="img">Image to save.</param>
-		/// <param name="filepath">File path to save the image to.</param>
+		/// @brief Save an TRAP::Image as a Portable Pixmap (PPM) file.
+		/// @param img Image to save.
+		/// @param filepath File path to save the image to.
 		static void Save(const Image* img, const std::filesystem::path& filepath);
 
 	private:

@@ -12,36 +12,22 @@ namespace TRAP::Graphics::API
 	class VulkanSemaphore final : public Semaphore
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		explicit VulkanSemaphore();
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanSemaphore() override;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		VulkanSemaphore(const VulkanSemaphore&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanSemaphore& operator=(const VulkanSemaphore&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanSemaphore(VulkanSemaphore&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanSemaphore& operator=(VulkanSemaphore&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the Vulkan semaphore handle.
-		/// </summary>
-		/// <returns>Vulkan semaphore handle.</returns>
+		/// @brief Retrieve the Vulkan semaphore handle.
+		/// @return Vulkan semaphore handle.
 		[[nodiscard]] constexpr VkSemaphore GetVkSemaphore() const noexcept;
 
 	private:

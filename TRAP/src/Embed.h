@@ -8,9 +8,7 @@
 
 namespace TRAP::Embed
 {
-	/// <summary>
-	/// Fallback Graphics shader
-	/// </summary>
+	/// @brief Fallback Graphics shader
 	inline constexpr std::string_view FallbackGraphicsShader
 	{
 		R"(
@@ -42,9 +40,7 @@ namespace TRAP::Embed
 	)"
 	};
 
-	/// <summary>
-	/// Fallback Compute shader
-	/// </summary>
+	/// @brief Fallback Compute shader
 	inline constexpr std::string_view FallbackComputeShader
 	{
 		R"(
@@ -59,9 +55,7 @@ namespace TRAP::Embed
 	)"
 	};
 
-	/// <summary>
-	/// 2D Renderer quad shader
-	/// </summary>
+	/// @brief 2D Renderer quad shader
 	inline constexpr std::string_view Renderer2DQuadShader
 	{
 		R"(
@@ -216,9 +210,7 @@ namespace TRAP::Embed
 	)"
 	};
 
-	/// <summary>
-	/// 2D Renderer line shader
-	/// </summary>
+	/// @brief 2D Renderer line shader
 	inline constexpr std::string_view Renderer2DLineShader
 	{
 		R"(
@@ -260,9 +252,7 @@ namespace TRAP::Embed
 	)"
 	};
 
-	/// <summary>
-	/// 2D Renderer circle shader
-	/// </summary>
+	/// @brief 2D Renderer circle shader
 	inline constexpr std::string_view Renderer2DCircleShader
 	{
 		R"(
@@ -326,9 +316,7 @@ namespace TRAP::Embed
 	)"
 	};
 
-	/// <summary>
-	/// Default debug image pixel data RGBA 32BPP
-	/// </summary>
+	/// @brief Default debug image pixel data RGBA 32BPP
 	inline constexpr std::array<u8, 4096> DefaultImageData =
 	{
 		13, 13, 13, 255,
@@ -1357,9 +1345,7 @@ namespace TRAP::Embed
 		13, 13, 13, 255
 	};
 
-	/// <summary>
-	/// TRAP Engine Logo Pixel Data RGBA 32BPP
-	/// </summary>
+	/// @brief TRAP Engine Logo Pixel Data RGBA 32BPP
 	inline constexpr std::array<u8, 4096> TRAPLogo
 	{
 		255, 255, 255, 0,
@@ -2388,9 +2374,7 @@ namespace TRAP::Embed
 		255, 255, 255, 0
 	};
 
-	/// <summary>
-	/// OpenSans TTF Font data.
-	/// </summary>
+	/// @brief OpenSans TTF Font data.
 	inline constexpr std::array<u8, 96932> OpenSansTTFData =
 	{
 		0x00, 0x01, 0x00, 0x00, 0x00, 0x11, 0x01, 0x00, 0x00, 0x04, 0x00, 0x10,
@@ -10473,9 +10457,7 @@ namespace TRAP::Embed
 		0x00, 0x01, 0x00, 0x01, 0x00, 0x49, 0x00, 0x00
 	};
 
-	/// <summary>
-	/// OpenSans Bold TTF Font data
-	/// </summary>
+	/// @brief OpenSans Bold TTF Font data
 	inline constexpr std::array<u8, 104120> OpenSansBoldTTFData =
 	{
 		0x00, 0x01, 0x00, 0x00, 0x00, 0x11, 0x01, 0x00, 0x00, 0x04, 0x00, 0x10,

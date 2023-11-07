@@ -11,74 +11,46 @@ namespace TRAP::Graphics::API
 	class VulkanRenderPass
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="device">Vulkan device.</param>
-		/// <param name="desc">Render pass description.</param>
+		/// @brief Constructor.
+		/// @param device Vulkan device.
+		/// @param desc Render pass description.
 		VulkanRenderPass(TRAP::Ref<VulkanDevice> device, const VulkanRenderer::RenderPassDesc& desc);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanRenderPass();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		VulkanRenderPass(const VulkanRenderPass&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanRenderPass& operator=(const VulkanRenderPass&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanRenderPass(VulkanRenderPass&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanRenderPass& operator=(VulkanRenderPass&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the Vulkan render pass handle.
-		/// </summary>
-		/// <returns>Vulkan render pass handle.</returns>
+		/// @brief Retrieve the Vulkan render pass handle.
+		/// @return Vulkan render pass handle.
 		[[nodiscard]] constexpr VkRenderPass GetVkRenderPass() const noexcept;
 
-		/// <summary>
-		/// Retrieve the used color formats.
-		/// </summary>
-		/// <returns>Used color formats.</returns>
+		/// @brief Retrieve the used color formats.
+		/// @return Used color formats.
 		[[nodiscard]] constexpr const std::vector<TRAP::Graphics::API::ImageFormat>& GetColorFormats() const noexcept;
-		/// <summary>
-		/// Retrieve the used color load action types.
-		/// </summary>
-		/// <returns>Used color load action types.</returns>
+		/// @brief Retrieve the used color load action types.
+		/// @return Used color load action types.
 		[[nodiscard]] constexpr const std::vector<RendererAPI::LoadActionType>& GetLoadActionsColor() const noexcept;
-		/// <summary>
-		/// Retrieve the number of used render targets.
-		/// </summary>
-		/// <returns>Number of used render targets.</returns>
+		/// @brief Retrieve the number of used render targets.
+		/// @return Number of used render targets.
 		[[nodiscard]] constexpr u32 GetRenderTargetCount() const noexcept;
-		/// <summary>
-		/// Retrieve the used sample count.
-		/// </summary>
-		/// <returns>Used sample count.</returns>
+		/// @brief Retrieve the used sample count.
+		/// @return Used sample count.
 		[[nodiscard]] constexpr RendererAPI::SampleCount GetSampleCount() const noexcept;
-		/// <summary>
-		/// Retrieve the used depth stencil format.
-		/// </summary>
-		/// <returns>Used depth stencil format.</returns>
+		/// @brief Retrieve the used depth stencil format.
+		/// @return Used depth stencil format.
 		[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat GetDepthStencilFormat() const noexcept;
-		/// <summary>
-		/// Retrieve the used depth load action type.
-		/// </summary>
-		/// <returns>Used depth load action type.</returns>
+		/// @brief Retrieve the used depth load action type.
+		/// @return Used depth load action type.
 		[[nodiscard]] constexpr RendererAPI::LoadActionType GetLoadActionTypeDepth() const noexcept;
-		/// <summary>
-		/// Retrieve the used stencil load action type.
-		/// </summary>
-		/// <returns>Used stencil load action type.</returns>
+		/// @brief Retrieve the used stencil load action type.
+		/// @return Used stencil load action type.
 		[[nodiscard]] constexpr RendererAPI::LoadActionType GetLoadActionTypeStencil() const noexcept;
 
 	private:

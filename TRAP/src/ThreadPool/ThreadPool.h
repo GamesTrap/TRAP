@@ -10,59 +10,40 @@
 
 namespace TRAP
 {
-	/// <summary>
-	/// ThreadPool is a multi-threading task scheduler.
-	/// Note: ThreadPool should only be used for small tasks!
-	/// </summary>
+	/// @brief ThreadPool is a multi-threading task scheduler.
 	class ThreadPool
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="threads">Max amount of threads to use for tasks.</param>
+		/// @brief Constructor.
+		/// @param threads Max amount of threads to use for tasks.
 		explicit ThreadPool(u32 threads = (std::thread::hardware_concurrency() - 1));
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~ThreadPool();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr ThreadPool(const ThreadPool&) = delete;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr ThreadPool& operator=(const ThreadPool&) = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr ThreadPool(ThreadPool&&) = delete;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr ThreadPool& operator=(ThreadPool&&) = delete;
 
-		/// <summary>
-		/// Enqueue work (Call given function on separate thread).
-		/// </summary>
-		/// <typeparam name="F">Functor to work on.</typeparam>
-		/// <typeparam name="...Args">Parameters of the functor.</typeparam>
-		/// <param name="f">Functor to work on.</param>
-		/// <param name="args">Optional arguments.</param>
+		/// @brief Enqueue work (Call given function on separate thread).
+		/// @tparam F Functor to work on.
+		/// @tparam Args Parameters of the functor.
+		/// @param f Functor to work on.
+		/// @param args Optional arguments.
 		template<typename F, typename... Args>
 		requires std::invocable<F, Args...>
 		void EnqueueWork(F&& f, Args&&... args);
 
-		/// <summary>
-		/// Enqueue task (Call given function on seperate thread and get a future).
-		/// </summary>
-		/// <typeparam name="F">Functor to work on.</typeparam>
-		/// <typeparam name="...Args">Parameters of the functor.</typeparam>
-		/// <param name="f">Functor to work on.</param>
-		/// <param name="args">Optional arguments.</param>
-		/// <returns>Future for the result of the given functor.</returns>
+		/// @brief Enqueue task (Call given function on seperate thread and get a future).
+		/// @tparam F Functor to work on.
+		/// @tparam Args Parameters of the functor.
+		/// @param f Functor to work on.
+		/// @param args Optional arguments.
+		/// @return Future for the result of the given functor.
 		template<typename F, typename... Args>
 		requires std::invocable<F, Args...>
 		[[nodiscard]] auto EnqueueTask(F&& f, Args&&... args) -> std::future<std::invoke_result_t<F, Args...>>;

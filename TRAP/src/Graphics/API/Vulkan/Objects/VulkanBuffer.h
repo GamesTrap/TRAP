@@ -14,83 +14,51 @@ namespace TRAP::Graphics::API
 	class VulkanBuffer final : public Buffer
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="desc">Buffer description.</param>
+		/// @brief Constructor.
+		/// @param desc Buffer description.
 		explicit VulkanBuffer(const RendererAPI::BufferDesc& desc);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanBuffer() override;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		VulkanBuffer(const VulkanBuffer&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanBuffer& operator=(const VulkanBuffer&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanBuffer(VulkanBuffer&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanBuffer& operator=(VulkanBuffer&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the VkBuffer handle.
-		/// </summary>
-		/// <returns>VkBuffer handle.</returns>
+		/// @brief Retrieve the VkBuffer handle.
+		/// @return VkBuffer handle.
 		[[nodiscard]] constexpr VkBuffer GetVkBuffer() const noexcept;
-		/// <summary>
-		/// Retrieve the storage texel view.
-		/// </summary>
-		/// <returns>VkBufferView for storage texel.</returns>
+		/// @brief Retrieve the storage texel view.
+		/// @return VkBufferView for storage texel.
 		[[nodiscard]] constexpr VkBufferView GetStorageTexelView() const noexcept;
-		/// <summary>
-		/// Retrieve the uniform texel view.
-		/// </summary>
-		/// <returns>VkBufferView for uniform texel.</returns>
+		/// @brief Retrieve the uniform texel view.
+		/// @return VkBufferView for uniform texel.
 		[[nodiscard]] constexpr VkBufferView GetUniformTexelView() const noexcept;
-		/// <summary>
-		/// Retrieve the byte offset to the first element in the buffer.
-		/// </summary>
-		/// <returns>Byte offset to the first element in the buffer.</returns>
+		/// @brief Retrieve the byte offset to the first element in the buffer.
+		/// @return Byte offset to the first element in the buffer.
 		[[nodiscard]] constexpr u64 GetOffset() const noexcept;
-		/// <summary>
-		/// Retrieve the VkDeviceMemory handle.
-		/// </summary>
-		/// <returns>VkDeviceMemory handle.</returns>
+		/// @brief Retrieve the VkDeviceMemory handle.
+		/// @return VkDeviceMemory handle.
 		[[nodiscard]] VkDeviceMemory GetVkDeviceMemory() const;
-		/// <summary>
-		/// Retrieve the VkDeviceMemory offset to the start of the buffer.
-		/// </summary>
-		/// <returns>VkDeviceMemory offset.</returns>
+		/// @brief Retrieve the VkDeviceMemory offset to the start of the buffer.
+		/// @return VkDeviceMemory offset.
 		[[nodiscard]] u64 GetVkDeviceMemoryOffset() const;
 
-		/// <summary>
-		/// Map a region of the buffer to the CPU.
-		///
-		/// Note: MapBuffer must not be called if memory usage is GPU only.
-		/// </summary>
-		/// <param name="range">Optional range of the buffer to map. Default: Whole buffer.</param>
+		/// @brief Map a region of the buffer to the CPU.
+		/// @param range Optional range of the buffer to map. Default: Whole buffer.
+		/// @note MapBuffer must not be called if memory usage is GPU only.
 		void MapBuffer(const RendererAPI::ReadRange* range) override;
-		/// <summary>
-		/// Unmap CPU mapped memory region.
-		///
-		/// Note: UnMapBuffer must not be called if memory usage is GPU only.
-		/// </summary>
+		/// @brief Unmap CPU mapped memory region.
+		/// @note UnMapBuffer must not be called if memory usage is GPU only.
 		void UnMapBuffer() override;
 
 	private:
-		/// <summary>
-		/// Set a name for the buffer.
-		/// </summary>
-		/// <param name="name">Name for the buffer.</param>
+		/// @brief Set a name for the buffer.
+		/// @param name Name for the buffer.
 		void SetBufferName(std::string_view name) const;
 
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();

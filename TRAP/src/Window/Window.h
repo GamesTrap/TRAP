@@ -11,15 +11,12 @@ namespace TRAP
 	struct WindowProps;
 	class Monitor;
 
-	/// <summary>
-	/// Class representing a desktop system based window.
-	/// </summary>
+	/// @brief Class representing a desktop system based window.
+	/// @remark @headless This class is not available in headless mode.
 	class Window final
 	{
 	public:
-		/// <summary>
-		/// Specifies the display mode of a window.
-		/// </summary>
+		/// @brief Specifies the display mode of a window.
 		enum class DisplayMode
 		{
 			Windowed,
@@ -27,390 +24,245 @@ namespace TRAP
 			Borderless
 		};
 
-		/// <summary>
-		/// Same as WindowingAPI::CursorMode.
+		/// @brief Same as WindowingAPI::CursorMode.
 		/// Specifies the cursor mode of a window.
-		/// </summary>
 		using CursorMode = INTERNAL::WindowingAPI::CursorMode;
 
-		/// <summary>
-		/// Same as WindowingAPI::CursorType.
+		/// @brief Same as WindowingAPI::CursorType.
 		/// Specifies the cursor type (visual appearance) of a window.
-		/// </summary>
 		using CursorType = INTERNAL::WindowingAPI::CursorType;
 
-		/// <summary>
-		/// Same as WindowingAPI::ProgressState.
+		/// @brief Same as WindowingAPI::ProgressState.
 		/// Specifies the progress state of a window.
-		/// </summary>
 		using ProgressState = INTERNAL::WindowingAPI::ProgressState;
 
 		using EventCallbackFn = std::function<void(Events::Event&)>;
 
-		/// <summary>
-		/// Create a new Window.
-		/// </summary>
-		/// <param name="props">Properties to be applied to the new window.</param>
-		/// <returns>New window object.</returns>
+		/// @brief Create a new Window.
+		/// @param props Properties to be applied to the new window.
 		explicit Window(const WindowProps& props);
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Window(const Window&) = delete;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr Window& operator=(const Window&) = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		Window(Window&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		Window& operator=(Window&&) noexcept = default;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~Window();
 
-		/// <summary>
-		/// Updates all windows (polls events from OS etc.).
-		/// </summary>
+		/// @brief Updates all windows (polls events from OS etc.).
 		static void OnUpdate();
 
-		/// <summary>
-		/// Get the amount of all active windows.
-		/// </summary>
-		/// <returns>Total amount of active windows.</returns>
+		/// @brief Get the amount of all active windows.
+		/// @return Total amount of active windows.
 		[[nodiscard]] static u32 GetActiveWindows() noexcept;
 
-		/// <summary>
-		/// Get the current title of the window.
-		/// </summary>
-		/// <returns>Title of the window.</returns>
+		/// @brief Get the current title of the window.
+		/// @return Title of the window.
 		[[nodiscard]] constexpr std::string GetTitle() const noexcept;
-		/// <summary>
-		/// Get the current width of the window.
-		/// </summary>
-		/// <returns>Width of the window.</returns>
+		/// @brief Get the current width of the window.
+		/// @return Width of the window.
 		[[nodiscard]] u32 GetWidth() const noexcept;
-		/// <summary>
-		/// Get the current height of the window.
-		/// </summary>
-		/// <returns>Height of the window.</returns>
+		/// @brief Get the current height of the window.
+		/// @return Height of the window.
 		[[nodiscard]] u32 GetHeight() const noexcept;
-		/// <summary>
-		/// Get the current width and height of the window.
-		/// </summary>
-		/// <returns>Vec2ui containing the width and height of the window.</returns>
+		/// @brief Get the current width and height of the window.
+		/// @return Vec2ui containing the width and height of the window.
 		[[nodiscard]] Math::Vec2ui GetSize() const noexcept;
-		/// <summary>
-		/// Get the current framebuffer width of the window.
-		/// </summary>
-		/// <returns>Framebuffer width of the window.</returns>
+		/// @brief Get the current framebuffer width of the window.
+		/// @return Framebuffer width of the window.
 		[[nodiscard]] u32 GetFrameBufferWidth() const;
-		/// <summary>
-		/// Get the current framebuffer height of the window.
-		/// </summary>
-		/// <returns>Framebuffer height of the window.</returns>
+		/// @brief Get the current framebuffer height of the window.
+		/// @return Framebuffer height of the window.
 		[[nodiscard]] u32 GetFrameBufferHeight() const;
-		/// <summary>
-		/// Get the current framebuffer width and height of the window.
-		/// </summary>
-		/// <returns>Vec2ui containing the framebuffer width and height of the window.</returns>
+		/// @brief Get the current framebuffer width and height of the window.
+		/// @return Vec2ui containing the framebuffer width and height of the window.
 		[[nodiscard]] Math::Vec2ui GetFrameBufferSize() const;
-		/// <summary>
-		/// Get the current position of the window.
+		/// @brief Get the current position of the window.
 		/// Retrieves the position, in screen coordinates, of the upper-left corner of the content area.
-		/// </summary>
-		/// <returns>Vec2i containing the position of the window.</returns>
+		/// @return Vec2i containing the position of the window.
 		[[nodiscard]] Math::Vec2i GetPosition() const;
-		/// <summary>
-		/// Get the current refresh rate of the window.
-		/// </summary>
-		/// <returns>Refresh rate of the window.</returns>
+		/// @brief Get the current refresh rate of the window.
+		/// @return Refresh rate of the window.
 		[[nodiscard]] f64 GetRefreshRate() const noexcept;
-		/// <summary>
-		/// Get the current display mode of the window.
-		/// </summary>
-		/// <returns>Display mode of the window.</returns>
+		/// @brief Get the current display mode of the window.
+		/// @return Display mode of the window.
 		[[nodiscard]] constexpr DisplayMode GetDisplayMode() const noexcept;
-		/// <summary>
-		/// Get the current monitor used by the window
+		/// @brief Get the current monitor used by the window
 		/// (only for display modes fullscreen and borderless).
-		/// </summary>
-		/// <returns>Object of monitor class used by the window.</returns>
+		/// @return Object of monitor class used by the window.
 		[[nodiscard]] Monitor GetMonitor() const;
-		/// <summary>
-		/// Get the current cursor mode of the window.
-		/// </summary>
-		/// <returns>Cursor mode of the window.</returns>
+		/// @brief Get the current cursor mode of the window.
+		/// @return Cursor mode of the window.
 		[[nodiscard]] CursorMode GetCursorMode() const noexcept;
-		/// <summary>
-		/// Get the current raw mouse input (false = off, true = on) usage of the window.
-		/// </summary>
-		/// <returns>Raw mouse input status of the window.</returns>
+		/// @brief Get the current raw mouse input (false = off, true = on) usage of the window.
+		/// @return Raw mouse input status of the window.
 		[[nodiscard]] bool GetRawMouseInput() const noexcept;
-		/// <summary>
-		/// Get the ratio between the current DPI and the platforms DPI.
-		/// </summary>
-		/// <returns>Vec2 containing the x and y scale.</returns>
+		/// @brief Get the ratio between the current DPI and the platforms DPI.
+		/// @return Vec2 containing the x and y scale.
 		[[nodiscard]] Math::Vec2 GetContentScale() const;
-		/// <summary>
-		/// Get the current opacity of the window.
-		/// </summary>
-		/// <returns>Opacity of the window on success, empty optional otherwise.</returns>
+		/// @brief Get the current opacity of the window.
+		/// @return Opacity of the window on success, empty optional otherwise.
 		[[nodiscard]] std::optional<f32> GetOpacity() const;
-		/// <summary>
-		/// Get whether VSync is enabled or disabled.
+		/// @brief Get whether VSync is enabled or disabled.
 		///
 		/// Same as calling TRAP::Graphics::RendererAPI::GetRenderer()->GetVSync().
-		/// </summary>
-		/// <returns>True if VSync is enabled, false otherwise.</returns>
+		/// @return True if VSync is enabled, false otherwise.
 		[[nodiscard]] bool GetVSync() const noexcept;
-		/// <summary>
-		/// Get the aspect ratio of the window.
-		/// </summary>
-		/// <returns>Aspect ratio of window framebuffer.</returns>
+		/// @brief Get the aspect ratio of the window.
+		/// @return Aspect ratio of window framebuffer.
 		[[nodiscard]] f32 GetAspectRatio() const;
 
-		/// <summary>
-		/// Get the internal handle of the window.
-		/// </summary>
-		/// <returns>Pointer to the internal window handle.</returns>
+		/// @brief Get the internal handle of the window.
+		/// @return Pointer to the internal window handle.
 		[[nodiscard]] constexpr void* GetInternalWindow() const noexcept;
 
-		/// <summary>
-		/// Set a new title for the window.
-		/// </summary>
-		/// <param name="title">New window title.</param>
+		/// @brief Set a new title for the window.
+		/// @param title New window title.
 		void SetTitle(const std::string& title);
-		/// <summary>
-		/// Set the window to fullscreen display mode using
+		/// @brief Set the window to fullscreen display mode using
 		/// the monitors native video mode.
-		/// </summary>
 		void SetFullscreen();
-		/// <summary>
-		/// Set the window to fullscreen display mode using the given video mode.
-		///
-		/// Note: If the given video mode is not supported by the monitor
-		///       then this function does nothing.
-		/// </summary>
-		/// <param name="videoMode">Video mode to use.</param>
+		/// @brief Set the window to fullscreen display mode using the given video mode.
+		/// @param videoMode Video mode to use.
+		/// @note If the given video mode is not supported by the monitor then this function does nothing.
 		void SetFullscreen(const Monitor::VideoMode& videoMode);
-		/// <summary>
-		/// Set the window to fullscreen borderless display mode.
-		/// </summary>
+		/// @brief Set the window to fullscreen borderless display mode.
 		void SetFullscreenBorderless();
-		/// <summary>
-		/// Set the window to windowed display mode using the previously used window size.
-		/// </summary>
+		/// @brief Set the window to windowed display mode using the previously used window size.
 		void SetWindowed();
-		/// <summary>
-		/// Set the Windowed object
-		/// </summary>
-		/// <param name="width">New window width.</param>
-		/// <param name="height">New window height.</param>
+		/// @brief Set the Windowed object
+		/// @param width New window width.
+		/// @param height New window height.
 		void SetWindowed(u32 width, u32 height);
-		/// <summary>
-		/// Set a new monitor for the window.
-		///
-		/// Note: If the current display mode is fullscreen or fullscreen borderless,
+		/// @brief Set a new monitor for the window.
+		/// @param monitor Monitor object to be used from now on.
+		/// @note If the current display mode is fullscreen or fullscreen borderless,
 		///       the window will use the new monitors native resolution.
-		/// </summary>
-		/// <param name="monitor">Monitor object to be used from now on.</param>
 		void SetMonitor(const Monitor& monitor);
-		/// <summary>
-		/// Set the cursor mode for the window.
-		/// </summary>
-		/// <param name="mode">New cursor mode.</param>
+		/// @brief Set the cursor mode for the window.
+		/// @param mode New cursor mode.
 		void SetCursorMode(const CursorMode& mode);
-		/// <summary>
-		/// Set the cursor type for the window.
-		/// </summary>
-		/// <param name="cursor">New cursor type.</param>
+		/// @brief Set the cursor type for the window.
+		/// @param cursor New cursor type.
 		void SetCursorType(const CursorType& cursor) const;
-		/// <summary>
-		/// Set the cursor to a custom image (image must be non HDR RGB/RGBA with 24/32 bits per pixel).
-		/// </summary>
-		/// <param name="image">Image to be used as a cursor.</param>
-		/// <param name="xHotspot">X hotspot of the image.</param>
-		/// <param name="yHotspot">Y hotspot of the image.</param>
+		/// @brief Set the cursor to a custom image (image must be non HDR RGB/RGBA with 24/32 bits per pixel).
+		/// @param image Image to be used as a cursor.
+		/// @param xHotspot X hotspot of the image.
+		/// @param yHotspot Y hotspot of the image.
 		void SetCursorIcon(const Image* image, u32 xHotspot = 0, u32 yHotspot = 0) const;
-		/// <summary>
-		/// Set if raw mouse input should be used.
-		/// </summary>
-		/// <param name="enabled">New status for raw mouse input.</param>
+		/// @brief Set if raw mouse input should be used.
+		/// @param enabled New status for raw mouse input.
 		void SetRawMouseInput(bool enabled);
-		/// <summary>
-		/// Sets the progress on the taskbar for the specified window.
+		/// @brief Sets the progress on the taskbar for the specified window.
 		///
 		/// Linux: This only works on KDE & Unity environments.
 		///        A .desktop file must exist for the application with the same name as given to TRAP::Application.
-		/// </summary>
-		/// <param name="state">State of progress.</param>
-		/// <param name="progress">How much has been completed. Valid range [0.0-1.0].</param>
+		/// @param state State of progress.
+		/// @param progress How much has been completed. Valid range [0.0-1.0].
 		void SetProgress(ProgressState state, f64 progress) const;
-		/// <summary>
-		/// Resets the window icon to the TRAP logo.
-		/// </summary>
+		/// @brief Resets the window icon to the TRAP logo.
 		void SetIcon() const;
-		/// <summary>
-		/// Set a custom logo as window icon (image must be non HDR RGBA 32 bits per pixel)
+		/// @brief Set a custom logo as window icon (image must be non HDR RGBA 32 bits per pixel)
 		/// (nullptr resets the icon to the TRAP logo).
-		/// </summary>
-		/// <param name="image">New logo to be used by the window.</param>
+		/// @param image New logo to be used by the window.
 		void SetIcon(const Image* image) const;
-		/// <summary>
-		/// Set the function where events should be reported to from the window.
-		/// </summary>
-		/// <param name="callback">Callback function used to report events to.</param>
+		/// @brief Set the function where events should be reported to from the window.
+		/// @param callback Callback function used to report events to.
 		void SetEventCallback(const EventCallbackFn& callback) noexcept;
-		/// <summary>
-		/// Set whether resizing of the window should be allowed.
-		/// </summary>
-		/// <param name="enabled">Set resizable or non resizable.</param>
+		/// @brief Set whether resizing of the window should be allowed.
+		/// @param enabled Set resizable or non resizable.
 		void SetResizable(bool enabled) const;
-		/// <summary>
-		/// Limit the minimum size of the window.
+		/// @brief Limit the minimum size of the window.
 		/// Setting any of the two parameters to 0 will disable the minimum size restriction.
-		/// </summary>
-		/// <param name="minWidth">Min width.</param>
-		/// <param name="minHeight">Min height.</param>
+		/// @param minWidth Min width.
+		/// @param minHeight Min height.
 		void SetMinimumSize(u32 minWidth, u32 minHeight);
-		/// <summary>
-		/// Limit the maximum size of the window.
+		/// @brief Limit the maximum size of the window.
 		/// Setting any of the two parameters to 0 will disable the maximum size restriction.
-		/// </summary>
-		/// <param name="maxWidth">Max width.</param>
-		/// <param name="maxHeight">Max height.</param>
+		/// @param maxWidth Max width.
+		/// @param maxHeight Max height.
 		void SetMaximumSize(u32 maxWidth, u32 maxHeight);
-		/// <summary>
-		/// Set the aspect ratio of the window.
+		/// @brief Set the aspect ratio of the window.
 		/// This makes sure that the window size always matches the specified aspect ratio.
 		///
 		/// Set both parameters to 0 to disable the aspect ratio restriction.
-		///
-		/// Note: This only takes effect in windowed mode.
-		///       This function does nothing if the window is not resizable.
-		///       If you set size limits and an aspect ratio that conflict, the results are undefined.
+		/// @param numerator Numerator of the desired aspect ratio, or 0.
+		/// @param denominator Denominator of the desired aspect ratio, or 0.
+		/// @note This only takes effect in windowed mode.
+		/// @note This function does nothing if the window is not resizable.
+		/// @note If you set size limits and an aspect ratio that conflict, the results are undefined.
 		//        The aspect ratio is applied immediately to a windowed mode window and may cause it to be resized.
-		/// </summary>
-		/// <param name="numerator">Numerator of the desired aspect ratio, or 0.</param>
-		/// <param name="denominator">Denominator of the desired aspect ratio, or 0.</param>
 		void SetAspectRatio(u32 numerator, u32 denominator);
-		/// <summary>
-		/// Set the position of the window.
-		/// </summary>
-		/// <param name="x">New x position.</param>
-		/// <param name="y">New x position.</param>
+		/// @brief Set the position of the window.
+		/// @param x New x position.
+		/// @param y New x position.
 		void SetPosition(u32 x, u32 y);
-		/// <summary>
-		/// Set the opacity of the window (1.0f = fully opaque, 0.0f = fully transparent).
-		/// </summary>
-		/// <param name="opacity">Opacity strength.</param>
+		/// @brief Set the opacity of the window (1.0f = fully opaque, 0.0f = fully transparent).
+		/// @param opacity Opacity strength.
 		void SetOpacity(f32 opacity) const;
-		/// <summary>
-		/// Enable or disable drag and drop feature for the window.
-		/// </summary>
-		/// <param name="enabled">True to enable, false otherwise.</param>
+		/// @brief Enable or disable drag and drop feature for the window.
+		/// @param enabled True to enable, false otherwise.
 		void SetDragAndDrop(bool enabled) const;
-		/// <summary>
-		/// Enable or disable VSync for the window.
+		/// @brief Enable or disable VSync for the window.
 		///
 		/// Same as calling TRAP::Graphics::RendererAPI::GetRenderer()->SetVSync().
-		/// </summary>
-		/// <param name="enabled">Whether to enable VSync or not.</param>
+		/// @param enabled Whether to enable VSync or not.
 		void SetVSync(bool enabled) const;
 
-		/// <summary>
-		/// Query whether the window is maximized or not.
-		/// </summary>
-		/// <returns>Window maximization status.</returns>
+		/// @brief Query whether the window is maximized or not.
+		/// @return Window maximization status.
 		[[nodiscard]] bool IsMaximized() const;
-		/// <summary>
-		/// Query whether the window is minimized or not.
-		/// </summary>
-		/// <returns>Window minimization status.</returns>
+		/// @brief Query whether the window is minimized or not.
+		/// @return Window minimization status.
 		[[nodiscard]] bool IsMinimized() const;
-		/// <summary>
-		/// Query whether the window is resizable or not.
-		/// </summary>
-		/// <returns>Window resizable status.</returns>
+		/// @brief Query whether the window is resizable or not.
+		/// @return Window resizable status.
 		[[nodiscard]] bool IsResizable() const;
-		/// <summary>
-		/// Query whether the window is visible or not.
-		/// </summary>
-		/// <returns>Window visibility status.</returns>
+		/// @brief Query whether the window is visible or not.
+		/// @return Window visibility status.
 		[[nodiscard]] bool IsVisible() const;
-		/// <summary>
-		/// Query whether the window is focused or not.
-		/// </summary>
-		/// <returns>Window focus status.</returns>
+		/// @brief Query whether the window is focused or not.
+		/// @return Window focus status.
 		[[nodiscard]] bool IsFocused() const;
-		/// <summary>
-		/// Query whether the window is decorated or not.
-		/// </summary>
-		/// <returns>Window decoration status.</returns>
+		/// @brief Query whether the window is decorated or not.
+		/// @return Window decoration status.
 		[[nodiscard]] bool IsDecorated() const;
-		/// <summary>
-		/// Query whether the mouse is hovered on the window or not.
-		/// </summary>
-		/// <returns>Window mouse hover status.</returns>
+		/// @brief Query whether the mouse is hovered on the window or not.
+		/// @return Window mouse hover status.
 		[[nodiscard]] bool IsHovered() const;
 
-		/// <summary>
-		/// Maximize the window.
-		/// Note: This function only affects the window when using DisplayMode::Windowed.
-		/// </summary>
+		/// @brief Maximize the window.
+		/// @note This function only affects the window when using DisplayMode::Windowed.
 		void Maximize() const;
-		/// <summary>
-		/// Minimize the window.
-		/// </summary>
+		/// @brief Minimize the window.
 		void Minimize() const;
-		/// <summary>
-		/// Request attention/focus for the window.
-		/// </summary>
+		/// @brief Request attention/focus for the window.
 		void RequestAttention() const;
-		/// <summary>
-		/// Focus the window.
-		/// </summary>
+		/// @brief Focus the window.
 		void Focus() const;
-		/// <summary>
-		/// Hide the window.
-		/// </summary>
+		/// @brief Hide the window.
 		void Hide() const;
-		/// <summary>
-		/// Show the window.
-		/// </summary>
+		/// @brief Show the window.
 		void Show() const;
-		/// <summary>
-		/// Restore/Show the window.
-		/// </summary>
+		/// @brief Restore/Show the window.
 		void Restore() const;
 
 	private:
-		/// <summary>
-		/// Initializes a new window and also if not happened already the renderer.
-		/// </summary>
-		/// <param name="props">Window properties for the new window.</param>
+		/// @brief Initializes a new window and also if not happened already the renderer.
+		/// @param props Window properties for the new window.
 		void Init(const WindowProps& props);
-		/// <summary>
-		/// Shutdown current window and if there are no other open windows also
+		/// @brief Shutdown current window and if there are no other open windows also
 		/// deinitializes the internal WindowingAPI.
-		/// </summary>
 		void Shutdown();
-		/// <summary>
-		/// Setup how to handle/process/dispatch incoming events from the internal WindowingAPI.
-		/// </summary>
+		/// @brief Setup how to handle/process/dispatch incoming events from the internal WindowingAPI.
 		void SetupEventCallbacks();
 
 		INTERNAL::WindowingAPI::InternalWindow* m_window; //Handle to the internal window
 
-		/// <summary>
-		/// Used when switching between fullscreen <-> windowed mode.
-		/// </summary>
+		/// @brief Used when switching between fullscreen <-> windowed mode.
 		struct WindowedModeParams
 		{
 			i32 Width = 800, Height = 600;
@@ -437,9 +289,8 @@ namespace TRAP
 		inline static constexpr i32 MinimumSupportedWindowHeight = 2;
 	};
 
-	/// <summary>
-	/// Struct containing all Window properties needed to create a new TRAP::Window.
-	/// </summary>
+	/// @brief Struct containing all Window properties needed to create a new TRAP::Window.
+	/// @remark @headless This struct is not available in headless mode.
 	struct WindowProps
 	{
 		std::string Title;
@@ -450,9 +301,7 @@ namespace TRAP
 		Window::DisplayMode DisplayMode;
 		TRAP::Monitor Monitor;
 
-		/// <summary>
-		/// More advanced(optional) window properties.
-		/// </summary>
+		/// @brief More advanced(optional) window properties.
 		struct AdvancedProps
 		{
 			bool Resizable = true;
@@ -464,17 +313,15 @@ namespace TRAP
 			bool RawMouseInput = false;
 			Window::CursorMode CursorMode = Window::CursorMode::Normal;
 
-			/// <summary>
-			/// Constructor for advanced(optional) window properties.
-			/// </summary>
-			/// <param name="resizable">Whether the window should be resizable.</param>
-			/// <param name="maximized">Whether the window should be maximized on creation.</param>
-			/// <param name="visible">Whether the window should be visible or not.</param>
-			/// <param name="focused">Whether the window should be focused or not.</param>
-			/// <param name="focusOnShow">Whether the window should be focused when shown or not.</param>
-			/// <param name="decorated">Whether the window should be decorated or not.</param>
-			/// <param name="rawMouseInput">Whether the window should use raw mouse input or not.</param>
-			/// <param name="cursorMode">Cursor mode to be used by the window.</param>
+			/// @brief Constructor for advanced(optional) window properties.
+			/// @param resizable Whether the window should be resizable.
+			/// @param maximized Whether the window should be maximized on creation.
+			/// @param visible Whether the window should be visible or not.
+			/// @param focused Whether the window should be focused or not.
+			/// @param focusOnShow Whether the window should be focused when shown or not.
+			/// @param decorated Whether the window should be decorated or not.
+			/// @param rawMouseInput Whether the window should use raw mouse input or not.
+			/// @param cursorMode Cursor mode to be used by the window.
 			constexpr explicit AdvancedProps(bool resizable = true,
 			                                 bool maximized = false,
 			                                 bool visible = true,
@@ -485,17 +332,15 @@ namespace TRAP
 			                                 Window::CursorMode cursorMode = Window::CursorMode::Normal) noexcept;
 		} Advanced{};
 
-		/// <summary>
-		/// Constructor for basic window properties.
-		/// </summary>
-		/// <param name="title">Title for the new window.</param>
-		/// <param name="width">Width for the new window.</param>
-		/// <param name="height">Height for the new window.</param>
-		/// <param name="refreshRate">Refresh rate for the new window.</param>
-		/// <param name="vsync">Whether to enable VSync for the new window or not.</param>
-		/// <param name="displayMode">Display mode for the new window.</param>
-		/// <param name="advanced">Optional advanced properties to be used for the new window.</param>
-		/// <param name="monitor">Monitor to be used by the new window.</param>
+		/// @brief Constructor for basic window properties.
+		/// @param title Title for the new window.
+		/// @param width Width for the new window.
+		/// @param height Height for the new window.
+		/// @param refreshRate Refresh rate for the new window.
+		/// @param vsync Whether to enable VSync for the new window or not.
+		/// @param displayMode Display mode for the new window.
+		/// @param advanced Optional advanced properties to be used for the new window.
+		/// @param monitor Monitor to be used by the new window.
 		explicit WindowProps(std::string title = "TRAP™",
 							 u32 width = 1280u,
 							 u32 height = 720u,

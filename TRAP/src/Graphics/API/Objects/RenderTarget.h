@@ -10,96 +10,60 @@ namespace TRAP::Graphics
 	class RenderTarget
 	{
 	public:
-		/// <summary>
-		/// Create a new render target from the given description.
-		/// </summary>
-		/// <param name="desc">Render target description.</param>
-		/// <returns>Created render target.</returns>
+		/// @brief Create a new render target from the given description.
+		/// @param desc Render target description.
+		/// @return Created render target.
 		[[nodiscard]] static TRAP::Ref<RenderTarget> Create(const RendererAPI::RenderTargetDesc& desc);
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~RenderTarget();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr RenderTarget(const RenderTarget&) = delete;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr RenderTarget& operator=(const RenderTarget&) = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		RenderTarget(RenderTarget&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		RenderTarget& operator=(RenderTarget&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the width of the render target.
-		/// </summary>
-		/// <returns>Render target width.</returns>
+		/// @brief Retrieve the width of the render target.
+		/// @return Render target width.
 		[[nodiscard]] constexpr u32 GetWidth() const noexcept;
-		/// <summary>
-		/// Retrieve the height of the render target.
-		/// </summary>
-		/// <returns>Render target height.</returns>
+		/// @brief Retrieve the height of the render target.
+		/// @return Render target height.
 		[[nodiscard]] constexpr u32 GetHeight() const noexcept;
-		/// <summary>
-		/// Retrieve the depth of the render target.
-		/// </summary>
-		/// <returns>Render target depth.</returns>
+		/// @brief Retrieve the depth of the render target.
+		/// @return Render target depth.
 		[[nodiscard]] constexpr u32 GetDepth() const noexcept;
-		/// <summary>
-		/// Retrieve the array size of the render target.
-		/// </summary>
-		/// <returns>Render target array size.</returns>
+		/// @brief Retrieve the array size of the render target.
+		/// @return Render target array size.
 		[[nodiscard]] constexpr u32 GetArraySize() const noexcept;
-		/// <summary>
-		/// Retrieve the mip levels of the render target.
-		/// </summary>
-		/// <returns>Render target mip levels.</returns>
+		/// @brief Retrieve the mip levels of the render target.
+		/// @return Render target mip levels.
 		[[nodiscard]] constexpr u32 GetMipLevels() const noexcept;
-		/// <summary>
-		/// Retrieve the sample count of the render target.
-		/// </summary>
-		/// <returns>Render target sample count.</returns>
+		/// @brief Retrieve the sample count of the render target.
+		/// @return Render target sample count.
 		[[nodiscard]] constexpr RendererAPI::SampleCount GetSampleCount() const noexcept;
-		/// <summary>
-		/// Retrieve the sample quality of the render target.
-		/// </summary>
-		/// <returns>Render target sample quality.</returns>
+		/// @brief Retrieve the sample quality of the render target.
+		/// @return Render target sample quality.
 		[[nodiscard]] constexpr u32 GetSampleQuality() const noexcept;
-		/// <summary>
-		/// Retrieve the image format of the render target.
-		/// </summary>
-		/// <returns>Render target image format.</returns>
+		/// @brief Retrieve the image format of the render target.
+		/// @return Render target image format.
 		[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat GetImageFormat() const noexcept;
-		/// <summary>
-		/// Retrieve the clear color of the render target.
-		/// </summary>
-		/// <returns>Render target clear color.</returns>
+		/// @brief Retrieve the clear color of the render target.
+		/// @return Render target clear color.
 		[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::ClearValue GetClearValue() const noexcept;
-		/// <summary>
-		/// Retrieve the descriptor type of the render target.
-		/// </summary>
-		/// <returns>Render target descriptor type.</returns>
+		/// @brief Retrieve the descriptor type of the render target.
+		/// @return Render target descriptor type.
 		[[nodiscard]] constexpr RendererAPI::DescriptorType GetDescriptorType() const noexcept;
 
-		/// <summary>
-		/// Retrieve the texture base of the render target.
-		/// </summary>
-		/// <returns>Render target texture base.</returns>
+		/// @brief Retrieve the texture base of the render target.
+		/// @return Render target texture base.
 		[[nodiscard]] Ref<TRAP::Graphics::Texture> GetTexture() const noexcept;
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		explicit RenderTarget(const RendererAPI::RenderTargetDesc& desc);
 
 		TRAP::Ref<TRAP::Graphics::Texture> m_texture = nullptr;

@@ -6,24 +6,20 @@
 
 namespace TRAP::Utils::Memory
 {
-	/// <summary>
-	/// Converts primitive data types from big->little or little->big endian depending on
+	/// @brief Converts primitive data types from big->little or little->big endian depending on
 	/// given parameters endianness.
-	/// </summary>
-	/// <param name="t">Primitive data type.</param>
+	/// @param t Primitive data type.
 	inline constexpr void SwapBytes(std::integral auto& t)
 	{
 		t = std::byteswap(t);
 	}
 
-	/// <summary>
-	/// Converts all primitive data types in the container from
+	/// @brief Converts all primitive data types in the container from
 	/// big->little or little->big endian depending on
 	/// given parameters endianness.
-	/// </summary>
-	/// <typeparam name="Iter">Container iterator type.</typeparam>
-	/// <param name="begin">Start of the container.</param>
-	/// <param name="end">End of the container.</param>
+	/// @tparam Iter Container iterator type.
+	/// @param begin Start of the container.
+	/// @param end End of the container.
 	template<typename Iter>
 	requires std::integral<typename std::iterator_traits<Iter>::value_type>
 	inline constexpr void SwapBytes(Iter begin, Iter end)
@@ -32,14 +28,11 @@ namespace TRAP::Utils::Memory
 			SwapBytes(*begin);
 	}
 
-	/// <summary>
-	/// Converts the given bytes to the given data type
-	///
-	/// Note: Byte order depends on the given input bytes.
-	/// </summary>
-	/// <typeparam name="T">Type to convert bytes to.</typeparam>
-	/// <param name="source">Bytes to convert.</param>
-	/// <returns>Converted bytes.</returns>
+	/// @brief Converts the given bytes to the given data type
+	/// @tparam T Type to convert bytes to.
+	/// @param source Bytes to convert.
+	/// @return Converted bytes.
+	/// @note Byte order depends on the given input bytes.
 	template<typename T>
 	requires (std::unsigned_integral<T> && !std::same_as<T, u8>)
 	[[nodiscard]] inline constexpr T ConvertByte(const u8* const source)
@@ -67,18 +60,15 @@ namespace TRAP::Utils::Memory
 		}
 	}
 
-	/// <summary>
-	/// Converts all bytes from begin to end iterators to the given type from
+	/// @brief Converts all bytes from begin to end iterators to the given type from
 	/// the output iterator and stores the resulting data in output.
-	///
-	/// Note: Byte order depends on the given input bytes.
-	/// Note: The output container must be big enough to hold the converted data.
-	/// </summary>
-	/// <typeparam name="InputIt">Container input iterator type.</typeparam>
-	/// <typeparam name="OutputIt">Container output iterator type.</typeparam>
-	/// <param name="begin">Start of the input container.</param>
-	/// <param name="end">End of the input container.</param>
-	/// <param name="output">Type to convert to and store the converted data.</param>
+	/// @tparam InputIt Container input iterator type.
+	/// @tparam OutputIt Container output iterator type.
+	/// @param begin Start of the input container.
+	/// @param end End of the input container.
+	/// @param output Type to convert to and store the converted data.
+	/// @note Byte order depends on the given input bytes.
+	/// @note The output container must be big enough to hold the converted data.
 	template<typename InputIt, typename OutputIt>
 	requires std::same_as<typename std::iterator_traits<InputIt>::value_type, u8>
 	inline static void ConvertBytes(InputIt begin, InputIt end, OutputIt output)
@@ -99,11 +89,9 @@ namespace TRAP::Utils::Memory
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <summary>
-	/// Retrieve a specific byte from the given integral.
-	/// </summary>
-	/// <typeparam name="Byte">Byte to retrieve.</typeparam>
-	/// <returns>Requested byte from the given integral.</returns>
+	/// @brief Retrieve a specific byte from the given integral.
+	/// @tparam Byte Byte to retrieve.
+	/// @return Requested byte from the given integral.
 	template<u8 Byte>
 	[[nodiscard]] inline constexpr u8 GetByteFromInteger(const std::integral auto value)
 	requires (Byte < sizeof(decltype(value)))

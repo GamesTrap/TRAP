@@ -9,11 +9,17 @@ namespace TRAP
 	class ScriptableEntity
 	{
 	public:
+		/// @brief Constructor.
 		constexpr ScriptableEntity() noexcept = default;
+		/// @brief Destructor.
 		constexpr virtual ~ScriptableEntity() = default;
+		/// @brief Copy constructor.
 		constexpr ScriptableEntity(const ScriptableEntity&) noexcept = default;
+		/// @brief Move constructor.
 		constexpr ScriptableEntity(ScriptableEntity&&) noexcept = default;
+		/// @brief Copy assignment operator.
 		constexpr ScriptableEntity& operator=(const ScriptableEntity&) noexcept = default;
+		/// @brief Move assignment operator.
 		constexpr ScriptableEntity& operator=(ScriptableEntity&&) noexcept = default;
 
 		template<typename T>

@@ -78,7 +78,8 @@ namespace TRAP::Graphics::API
 
 namespace ImGui::INTERNAL::Vulkan
 {
-    // Initialization data, for ImGui_ImplVulkan_Init()
+    /// @brief Initialization data, for ImGui_ImplVulkan_Init()
+	/// @remark @headless This struct is not available in headless mode.
     struct InitInfo
     {
         using PFN_CheckVkResultFn = void(*)(VkResult err);
@@ -103,17 +104,17 @@ namespace ImGui::INTERNAL::Vulkan
     };
 
     // Called by user code
-                  IMGUI_IMPL_API void        Init(const InitInfo& info, VkRenderPass render_pass);
-                  IMGUI_IMPL_API void        Shutdown();
-                  IMGUI_IMPL_API void        NewFrame();
-                  IMGUI_IMPL_API void        RenderDrawData(const ImDrawData& draw_data, const TRAP::Graphics::API::VulkanCommandBuffer& command_buffer, VkPipeline pipeline = VK_NULL_HANDLE);
-                  IMGUI_IMPL_API void        UploadFontsTexture();
-                  IMGUI_IMPL_API void        DestroyFontUploadObjects();
-    [[nodiscard]] IMGUI_IMPL_API ImTextureID AddTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanSampler>& sampler, const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& image, VkImageLayout image_layout);
-                  IMGUI_IMPL_API void        RemoveTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& image_view);
-                  IMGUI_IMPL_API ImTextureID UpdateTextureInfo(VkDescriptorSet descriptorSet, const TRAP::Graphics::API::VulkanSampler& sampler, VkImageView image_view, VkImageLayout image_layout);
-                  IMGUI_IMPL_API void        ClearCache() noexcept;
-                  IMGUI_IMPL_API void        SetMSAASamples(VkSampleCountFlagBits sampleCount);
+                  void        Init(const InitInfo& info, VkRenderPass render_pass);
+                  void        Shutdown();
+                  void        NewFrame();
+                  void        RenderDrawData(const ImDrawData& draw_data, const TRAP::Graphics::API::VulkanCommandBuffer& command_buffer, VkPipeline pipeline = VK_NULL_HANDLE);
+                  void        UploadFontsTexture();
+                  void        DestroyFontUploadObjects();
+    [[nodiscard]] ImTextureID AddTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanSampler>& sampler, const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& image, VkImageLayout image_layout);
+                  void        RemoveTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& image_view);
+                  ImTextureID UpdateTextureInfo(VkDescriptorSet descriptorSet, const TRAP::Graphics::API::VulkanSampler& sampler, VkImageView image_view, VkImageLayout image_layout);
+                  void        ClearCache() noexcept;
+                  void        SetMSAASamples(VkSampleCountFlagBits sampleCount);
 };
 
 #endif /*TRAP_HEADLESS_MODE*/

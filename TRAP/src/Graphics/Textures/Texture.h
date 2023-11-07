@@ -6,9 +6,7 @@
 
 namespace TRAP::Graphics
 {
-	/// <summary>
-	/// Different texture types.
-	/// </summary>
+	/// @brief Different texture types.
 	enum class TextureType
 	{
 		Texture2D,
@@ -21,348 +19,233 @@ namespace TRAP::Graphics
 	class Texture
 	{
 	public:
-		/// <summary>
-		/// Create a cube texture from 6 files.
-		/// </summary>
-		/// <param name="name">Name for the texture.</param>
-		/// <param name="filepaths">
-		/// File paths of the 6 texture files.
+		/// @brief Create a cube texture from 6 files.
+		/// @param name Name for the texture.
+		/// @param filepaths File paths of the 6 texture files.
 		/// Order: +X, -X, +Y, -Y, +Z, -Z
-		/// </param>
-		/// <param name="flags">Additional flags. Default: None.</param>
-		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
+		/// @param flags Additional flags. Default: None.
+		/// @return Loaded texture on success, Fallback texture otherwise.
 		[[nodiscard]] static Ref<Texture> CreateFromFiles(std::string name,
 		                                                  std::array<std::filesystem::path, 6> filepaths,
 											              TextureCreationFlags flags = TextureCreationFlags::None);
-		/// <summary>
-		/// Create a texture from file.
-		/// </summary>
-		/// <param name="name">Name for the texture.</param>
-		/// <param name="filepath">File path of the texture.</param>
-		/// <param name="type">Type of Texture.</param>
-		/// <param name="cubeFormat">Format of the cube texture. Ignored when using TextureType::Texture2D.</param>
-		/// <param name="flags">Additional flags. Default: None.</param>
-		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
+		/// @brief Create a texture from file.
+		/// @param name Name for the texture.
+		/// @param filepath File path of the texture.
+		/// @param type Type of Texture.
+		/// @param cubeFormat Format of the cube texture. Ignored when using TextureType::Texture2D.
+		/// @param flags Additional flags. Default: None.
+		/// @return Loaded texture on success, Fallback texture otherwise.
 		[[nodiscard]] static Ref<Texture> CreateFromFile(std::string name, std::filesystem::path filepath, TextureType type,
 		                                                 TextureCubeFormat cubeFormat = TextureCubeFormat::NONE,
 										                 TextureCreationFlags flags = TextureCreationFlags::None);
-		/// <summary>
-		/// Create a texture from file.
+		/// @brief Create a texture from file.
 		/// File name will be used as the texture name.
-		/// </summary>
-		/// <param name="filepath">File path of the texture.</param>
-		/// <param name="type">Type of Texture.</param>
-		/// <param name="cubeFormat">Format of the cube texture. Ignored when using TextureType::Texture2D.</param>
-		/// <param name="flags">Additional flags. Default: None.</param>
-		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
+		/// @param filepath File path of the texture.
+		/// @param type Type of Texture.
+		/// @param cubeFormat Format of the cube texture. Ignored when using TextureType::Texture2D.
+		/// @param flags Additional flags. Default: None.
+		/// @return Loaded texture on success, Fallback texture otherwise.
 		[[nodiscard]] static Ref<Texture> CreateFromFile(std::filesystem::path filepath, TextureType type,
 		                                                 TextureCubeFormat cubeFormat = TextureCubeFormat::NONE,
 										                 TextureCreationFlags flags = TextureCreationFlags::None);
-		/// <summary>
-		/// Create a cube texture from 6 TRAP::Images.
-		/// </summary>
-		/// <param name="name">Name for the texture.</param>
-		/// <param name="imgs">
-		/// Images to create the texture from.
+		/// @brief Create a cube texture from 6 TRAP::Images.
+		/// @param name Name for the texture.
+		/// @param imgs Images to create the texture from.
 		/// Order: +X, -X, +Y, -Y, +Z, -Z
-		/// Note: The images must be valid till IsLoaded() returns true.
-		/// </param>
-		/// <param name="flags">Additional flags. Default: None.</param>
-		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
+		/// @param flags Additional flags. Default: None.
+		/// @return Loaded texture on success, Fallback texture otherwise.
+		/// @note The images must be valid till IsLoaded() returns true.
 		[[nodiscard]] static Ref<Texture> CreateFromImages(std::string name, const std::array<const Image*, 6>& imgs,
 											               TextureCreationFlags flags = TextureCreationFlags::None);
-		/// <summary>
-		/// Create a texture from TRAP::Image.
-		/// </summary>
-		/// <param name="name">Name for the texture.</param>
-		/// <param name="img">
-		/// Image to create the texture from.
-		/// Note: The image must be valid till IsLoaded() returns true.
-		/// </param>
-		/// <param name="type">Type of Texture.</param>
-		/// <param name="cubeFormat">Format of the cube texture. Ignored when using TextureType::Texture2D.</param>
-		/// <param name="flags">Additional flags. Default: None.</param>
-		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
+		/// @brief Create a texture from TRAP::Image.
+		/// @param name Name for the texture.
+		/// @param img Image to create the texture from.
+		/// @param type Type of Texture.
+		/// @param cubeFormat Format of the cube texture. Ignored when using TextureType::Texture2D.
+		/// @param flags Additional flags. Default: None.
+		/// @return Loaded texture on success, Fallback texture otherwise.
+		/// @note The image must be valid till IsLoaded() returns true.
 		[[nodiscard]] static Ref<Texture> CreateFromImage(std::string name, const TRAP::Image* img, TextureType type,
 		                                                  TextureCubeFormat cubeFormat = TextureCubeFormat::NONE,
 											              TextureCreationFlags flags = TextureCreationFlags::None);
-		/// <summary>
-		/// Create an empty texture.
-		/// </summary>
-		/// <param name="name">Name for the texture.</param>
-		/// <param name="width">Width for the texture.</param>
-		/// <param name="height">Height for the texture.</param>
-		/// <param name="bitsPerPixel">Bits per pixel for the texture.</param>
-		/// <param name="format">Color format for the texture.</param>
-		/// <param name="type">Type of texture.</param>
-		/// <param name="flags">Additional flags. Default: None.</param>
-		/// <returns>Empty texture on success, nullptr otherwise.</returns>
+		/// @brief Create an empty texture.
+		/// @param name Name for the texture.
+		/// @param width Width for the texture.
+		/// @param height Height for the texture.
+		/// @param bitsPerPixel Bits per pixel for the texture.
+		/// @param format Color format for the texture.
+		/// @param type Type of texture.
+		/// @param flags Additional flags. Default: None.
+		/// @return Empty texture on success, nullptr otherwise.
 		[[nodiscard]] static Ref<Texture> CreateEmpty(std::string name, u32 width, u32 height, u32 bitsPerPixel,
 		                                              Image::ColorFormat format, TextureType type,
 										              TextureCreationFlags flags = TextureCreationFlags::None);
-		/// <summary>
-		/// Create a custom texture.
-		/// </summary>
-		/// <param name="desc">Texture description.</param>
-		/// <returns>New texture.</returns>
+		/// @brief Create a custom texture.
+		/// @param desc Texture description.
+		/// @return New texture.
         [[nodiscard]] static Ref<Texture> CreateCustom(const RendererAPI::TextureDesc& desc);
-		/// <summary>
-		/// Create the fallback 2D texture.
-		/// </summary>
-		/// <returns>Fallback 2D texture.</returns>
+		/// @brief Create the fallback 2D texture.
+		/// @return Fallback 2D texture.
 		[[nodiscard]] static Ref<Texture> CreateFallback2D();
-		/// <summary>
-		/// Create the fallback cube texture.
-		/// </summary>
-		/// <returns>Fallback cube texture.</returns>
+		/// @brief Create the fallback cube texture.
+		/// @return Fallback cube texture.
 		[[nodiscard]] static Ref<Texture> CreateFallbackCube();
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~Texture() = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		Texture(const Texture&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		Texture& operator=(const Texture&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		Texture(Texture&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		Texture& operator=(Texture&&) noexcept = default;
 
-		/// <summary>
-		/// Initialize the Texture.
-		/// </summary>
-		/// <param name="desc">Texture description.</param>
+		/// @brief Initialize the Texture.
+		/// @param desc Texture description.
 		virtual void Init(const RendererAPI::TextureDesc& desc) = 0;
 
-		/// <summary>
-		/// Reload texture.
-		/// </summary>
-		/// <returns>True on successful reload (valid texture), else (invalid texture) otherwise.</returns>
+		/// @brief Reload texture.
+		/// @return True on successful reload (valid texture), else (invalid texture) otherwise.
 		bool Reload();
 
-		/// <summary>
-		/// Retrieve the name of the texture.
-		/// </summary>
-		/// <returns>Name of the texture.</returns>
+		/// @brief Retrieve the name of the texture.
+		/// @return Name of the texture.
 		[[nodiscard]] constexpr std::string GetName() const noexcept;
-		/// <summary>
-		/// Retrieve the texture type.
-		/// </summary>
-		/// <returns>Texture type.</returns>
+		/// @brief Retrieve the texture type.
+		/// @return Texture type.
 		[[nodiscard]] constexpr TextureType GetType() const noexcept;
-		/// <summary>
-		/// Retrieve the texture width.
-		/// </summary>
-		/// <returns>Texture width.</returns>
+		/// @brief Retrieve the texture width.
+		/// @return Texture width.
 		[[nodiscard]] constexpr u32 GetWidth() const noexcept;
-		/// <summary>
-		/// Retrieve the texture height.
-		/// </summary>
-		/// <returns>Texture height.</returns>
+		/// @brief Retrieve the texture height.
+		/// @return Texture height.
 		[[nodiscard]] constexpr u32 GetHeight() const noexcept;
-		/// <summary>
-		/// Retrieve the texture size.
-		/// </summary>
-		/// <returns>Texture size.</returns>
+		/// @brief Retrieve the texture size.
+		/// @return Texture size.
 		[[nodiscard]] constexpr Math::Vec2ui GetSize() const noexcept;
-		/// <summary>
-		/// Retrieve the texture depth.
-		/// </summary>
-		/// <returns>Texture depth.</returns>
+		/// @brief Retrieve the texture depth.
+		/// @return Texture depth.
 		[[nodiscard]] constexpr u32 GetDepth() const noexcept;
-		/// <summary>
-		/// Retrieve the texture array size.
-		/// </summary>
-		/// <returns>Texture array size.</returns>
+		/// @brief Retrieve the texture array size.
+		/// @return Texture array size.
 		[[nodiscard]] constexpr u32 GetArraySize() const noexcept;
-		/// <summary>
-		/// Retrieve the textures mip level count.
-		/// </summary>
-		/// <returns>Textures mip level count.</returns>
+		/// @brief Retrieve the textures mip level count.
+		/// @return Textures mip level count.
 		[[nodiscard]] constexpr u32 GetMipLevels() const noexcept;
-		/// <summary>
-		/// Retrieve the textures aspect mask.
+		/// @brief Retrieve the textures aspect mask.
 		/// Aspect mask specifies which aspects (Color, Depth, Stencil) are included in the texture.
-		/// </summary>
-		/// <returns>Aspect mask.</returns>
+		/// @return Aspect mask.
 		[[nodiscard]] constexpr u32 GetAspectMask() const noexcept;
-		/// <summary>
-		/// Retrieve the textures color format.
-		/// </summary>
-		/// <returns>Textures color format.</returns>
+		/// @brief Retrieve the textures color format.
+		/// @return Textures color format.
 		[[nodiscard]] constexpr Image::ColorFormat GetColorFormat() const noexcept;
-		/// <summary>
-		/// Retrieve the textures image format.
-		/// </summary>
-		/// <returns>Image format.</returns>
+		/// @brief Retrieve the textures image format.
+		/// @return Image format.
 		[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat GetImageFormat() const noexcept;
-		/// <summary>
-		/// Retrieve the textures used descriptor types.
-		/// </summary>
-		/// <returns>Used descriptor types.</returns>
+		/// @brief Retrieve the textures used descriptor types.
+		/// @return Used descriptor types.
 		[[nodiscard]] constexpr RendererAPI::DescriptorType GetDescriptorTypes() const noexcept;
 
-		/// <summary>
-		/// Retrieve the textures bits per channel.
-		/// </summary>
-		/// <returns>Textures bits per channel.</returns>
+		/// @brief Retrieve the textures bits per channel.
+		/// @return Textures bits per channel.
 		[[nodiscard]] constexpr u32 GetBitsPerChannel() const noexcept;
-		/// <summary>
-		/// Retrieve the textures bytes per channel.
-		/// </summary>
-		/// <returns>Textures bytes per channel.</returns>
+		/// @brief Retrieve the textures bytes per channel.
+		/// @return Textures bytes per channel.
 		[[nodiscard]] constexpr u32 GetBytesPerChannel() const noexcept;
-		/// <summary>
-		/// Retrieve the textures bits per pixel.
-		/// </summary>
-		/// <returns>Textures bits per pixel.</returns>
+		/// @brief Retrieve the textures bits per pixel.
+		/// @return Textures bits per pixel.
 		[[nodiscard]] constexpr u32 GetBitsPerPixel() const noexcept;
-		/// <summary>
-		/// Retrieve the textures bytes per pixel.
-		/// </summary>
-		/// <returns>Textures bytes per pixel.</returns>
+		/// @brief Retrieve the textures bytes per pixel.
+		/// @return Textures bytes per pixel.
 		[[nodiscard]] constexpr u32 GetBytesPerPixel() const noexcept;
-		/// <summary>
-		/// Retrieve the textures mip width of a specific level.
-		/// </summary>
-		/// <param name="mipLevel">Mip level.</param>
-		/// <returns>Mip width.</returns>
+		/// @brief Retrieve the textures mip width of a specific level.
+		/// @param mipLevel Mip level.
+		/// @return Mip width.
 		[[nodiscard]] constexpr u32 GetMipWidth(u32 mipLevel) const;
-		/// <summary>
-		/// Retrieve the textures mip height of a specific level.
-		/// </summary>
-		/// <param name="mipLevel">Mip level.</param>
-		/// <returns>Mip height.</returns>
+		/// @brief Retrieve the textures mip height of a specific level.
+		/// @param mipLevel Mip level.
+		/// @return Mip height.
 		[[nodiscard]] constexpr u32 GetMipHeight(u32 mipLevel) const;
-		/// <summary>
-		/// Retrieve the textures mip size of a specific level.
-		/// </summary>
-		/// <param name="mipLevel">Mip level.</param>
-		/// <returns>Mip size.</returns>
+		/// @brief Retrieve the textures mip size of a specific level.
+		/// @param mipLevel Mip level.
+		/// @return Mip size.
 		[[nodiscard]] constexpr Math::Vec2ui GetMipSize(u32 mipLevel) const;
-		/// <summary>
-		/// Retrieve the file path of the texture.
-		/// </summary>
-		/// <returns>File path of the texture.</returns>
+		/// @brief Retrieve the file path of the texture.
+		/// @return File path of the texture.
 		[[nodiscard]] const std::filesystem::path& GetFilePath() const noexcept;
-		/// <summary>
-		/// Retrieve the file path of the texture.
-		/// </summary>
-		/// <returns>File path of the texture.</returns>
+		/// @brief Retrieve the file path of the texture.
+		/// @return File path of the texture.
 		[[nodiscard]] constexpr const std::array<std::filesystem::path, 6>& GetFilePaths() const noexcept;
-		/// <summary>
-		/// Retrieve the cube format of the texture.
-		/// </summary>
-		/// <returns>Cube format of the texture.</returns>
+		/// @brief Retrieve the cube format of the texture.
+		/// @return Cube format of the texture.
 		[[nodiscard]] constexpr TextureCubeFormat GetCubeFormat() const noexcept;
 
-		/// <summary>
-		/// Update the texture with raw pixel data.
-		///
-		/// Note: Data array length and sizeInBytes must match the textures current size or it won't update
-		/// </summary>
-		/// <param name="data">Raw pixel data.</param>
-		/// <param name="sizeInBytes">Size of the data array in bytes.</param>
-		/// <param name="mipLevel">Mip level to update. Default: 0</param>
-		/// <param name="arrayLayer">Array layer to update. Default: 0</param>
+		/// @brief Update the texture with raw pixel data.
+		/// @param data Raw pixel data.
+		/// @param sizeInBytes Size of the data array in bytes.
+		/// @param mipLevel Mip level to update. Default: 0
+		/// @param arrayLayer Array layer to update. Default: 0
+		/// @note Data array length and sizeInBytes must match the textures current size or it won't update
 		void Update(const void* data, u32 sizeInBytes, u32 mipLevel = 0, u32 arrayLayer = 0);
 
-		/// <summary>
-		/// Set the texture name.
-		/// </summary>
-		/// <param name="name">Name for the texture.</param>
+		/// @brief Set the texture name.
+		/// @param name Name for the texture.
         virtual void SetTextureName(std::string_view name) const = 0;
 
-		/// <summary>
-		/// Retrieve whether the texture owns the image data.
-		/// </summary>
-		/// <returns>True if texture owns the image data, false otherwise.</returns>
+		/// @brief Retrieve whether the texture owns the image data.
+		/// @return True if texture owns the image data, false otherwise.
 		[[nodiscard]] constexpr bool OwnsImage() const noexcept;
 
-		/// <summary>
-		/// Check if texture finished loading.
-		/// </summary>
-		/// <returns>True if texture finished loading, false otherwise.</returns>
+		/// @brief Check if texture finished loading.
+		/// @return True if texture finished loading, false otherwise.
 		[[nodiscard]] bool IsLoaded() const;
-		/// <summary>
-		/// Wait for texture to finish loading.
-		/// </summary>
+		/// @brief Wait for texture to finish loading.
 		void AwaitLoading() const;
 
-		/// <summary>
-		/// Calculate the size of a mip level.
-		/// </summary>
-		/// <param name="width">Width of the texture.</param>
-		/// <param name="height">Height of the texture.</param>
-		/// <returns>Size of the mip level.</returns>
+		/// @brief Calculate the size of a mip level.
+		/// @param width Width of the texture.
+		/// @param height Height of the texture.
+		/// @return Size of the mip level.
 		[[nodiscard]] static u32 CalculateMipLevels(u32 width, u32 height);
-		/// <summary>
-		/// Split a horizontal or vertical cross texture into multiple textures.
-		/// </summary>
-		/// <param name="image">Image to split.</param>
-		/// <returns>Array of splitted textures.</returns>
+		/// @brief Split a horizontal or vertical cross texture into multiple textures.
+		/// @param image Image to split.
+		/// @return Array of splitted textures.
 		template<typename T>
 		requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 		[[nodiscard]] static std::array<TRAP::Scope<TRAP::Image>, 6> SplitImageFromCross(const TRAP::Image* image);
 
 	protected:
-		/// <summary>
-		/// Shutdown API dependent texture.
-		/// </summary>
+		/// @brief Shutdown API dependent texture.
 		virtual void Shutdown() = 0;
 
-		/// <summary>
-		/// Validate texture limits.
-		/// </summary>
-		/// <param name="desc">Texture description.</param>
-		/// <returns>True if texture is inside limits, false otherwise.</returns>
+		/// @brief Validate texture limits.
+		/// @param desc Texture description.
+		/// @return True if texture is inside limits, false otherwise.
 		[[nodiscard]] static bool ValidateLimits(const RendererAPI::TextureDesc& desc);
 
-		/// <summary>
-		/// Convert color format and bits per pixel to image format.
-		/// </summary>
-		/// <param name="colorFormat">Color format.</param>
-		/// <param name="bpp">Bits per pixel.</param>
-		/// <returns>Image format.</returns>
+		/// @brief Convert color format and bits per pixel to image format.
+		/// @param colorFormat Color format.
+		/// @param bpp Bits per pixel.
+		/// @return Image format.
 		[[nodiscard]] static API::ImageFormat ColorFormatBitsPerPixelToImageFormat(Image::ColorFormat colorFormat, u32 bpp);
-		/// <summary>
-		/// Convert image format to color format.
-		/// </summary>
-		/// <param name="imageFormat">Image format.</param>
-		/// <returns>Color format.</returns>
+		/// @brief Convert image format to color format.
+		/// @param imageFormat Image format.
+		/// @return Color format.
 		[[nodiscard]] static constexpr Image::ColorFormat ImageFormatToColorFormat(API::ImageFormat imageFormat) noexcept;
-		/// <summary>
-		/// Retrieve bits per channel from image format.
-		/// </summary>
-		/// <param name="imageFormat">Image format.</param>
-		/// <returns>Bits per channel.</returns>
+		/// @brief Retrieve bits per channel from image format.
+		/// @param imageFormat Image format.
+		/// @return Bits per channel.
 		[[nodiscard]] static constexpr u32 GetBitsPerChannelFromImageFormat(API::ImageFormat imageFormat) noexcept;
 
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		Texture() noexcept;
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		Texture(std::string name, std::array<std::filesystem::path, 6> filepaths) noexcept;
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		Texture(std::string name, std::filesystem::path filepath, TextureType type, TextureCubeFormat cubeFormat) noexcept;
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		explicit Texture(TextureType type) noexcept;
 
 		//RenderAPI independent data

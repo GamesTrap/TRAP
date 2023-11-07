@@ -13,137 +13,93 @@ namespace TRAP::Graphics::API
 	class VulkanDevice
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="physicalDevice">Vulkan physical device.</param>
-		/// <param name="deviceExtensions">Device extensions to use.</param>
+		/// @brief Constructor.
+		/// @param physicalDevice Vulkan physical device.
+		/// @param deviceExtensions Device extensions to use.
 		VulkanDevice(TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
 		             std::vector<std::string> deviceExtensions);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanDevice();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr VulkanDevice(const VulkanDevice&) = delete;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr VulkanDevice& operator=(const VulkanDevice&) = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanDevice(VulkanDevice&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanDevice& operator=(VulkanDevice&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the VkDevice.
-		/// </summary>
-		/// <returns>VkDevice.</returns>
+		/// @brief Retrieve the VkDevice.
+		/// @return VkDevice.
 		[[nodiscard]] constexpr VkDevice GetVkDevice() const noexcept;
 
-		/// <summary>
-		/// Retrieve the Vulkan physical device.
-		/// </summary>
-		/// <returns>Vulkan physical device.</returns>
+		/// @brief Retrieve the Vulkan physical device.
+		/// @return Vulkan physical device.
 		[[nodiscard]] VulkanPhysicalDevice* GetPhysicalDevice() const noexcept;
 
-		/// <summary>
-		/// Retrieve a list of all used physical device extensions.
-		/// </summary>
-		/// <returns>List of physical device extensions.</returns>
+		/// @brief Retrieve a list of all used physical device extensions.
+		/// @return List of physical device extensions.
 		[[nodiscard]] constexpr const std::vector<std::string>& GetUsedPhysicalDeviceExtensions() const noexcept;
 
-		/// <summary>
-		/// Find a queue family index for each queue type.
-		/// </summary>
+		/// @brief Find a queue family index for each queue type.
 		void FindQueueFamilyIndices();
 
-		/// <summary>
-		/// Wait for the completion of outstanding queue operations for all queues on the device.
-		/// </summary>
+		/// @brief Wait for the completion of outstanding queue operations for all queues on the device.
 		void WaitIdle() const;
 
-		/// <summary>
-		/// Retrieve the graphics queue family index.
-		/// </summary>
-		/// <returns>Graphics queue family index.</returns>
+		/// @brief Retrieve the graphics queue family index.
+		/// @return Graphics queue family index.
 		[[nodiscard]] constexpr u8 GetGraphicsQueueFamilyIndex() const noexcept;
-		/// <summary>
-		/// Retrieve the transfer queue family index.
-		/// </summary>
-		/// <returns>Transfer queue family index.</returns>
+		/// @brief Retrieve the transfer queue family index.
+		/// @return Transfer queue family index.
 		[[nodiscard]] constexpr u8 GetTransferQueueFamilyIndex() const noexcept;
-		/// <summary>
-		/// Retrieve the compute queue family index.
-		/// </summary>
-		/// <returns>Compute queue family index.</returns>
+		/// @brief Retrieve the compute queue family index.
+		/// @return Compute queue family index.
 		[[nodiscard]] constexpr u8 GetComputeQueueFamilyIndex() const noexcept;
-		/// <summary>
-		/// Retrieve the all queue family (graphics, transfer, compute) indices.
-		/// </summary>
-		/// <returns>All queue family indices.</returns>
+		/// @brief Retrieve the all queue family (graphics, transfer, compute) indices.
+		/// @return All queue family indices.
 		[[nodiscard]] constexpr std::array<u8, 3> GetQueueFamilyIndices() const noexcept;
 
-		/// <summary>
-		/// Retrieve the graphics queue index.
-		/// </summary>
-		/// <returns>Graphics queue index.</returns>
+		/// @brief Retrieve the graphics queue index.
+		/// @return Graphics queue index.
 		[[nodiscard]] constexpr u8 GetGraphicsQueueIndex() const noexcept;
-		/// <summary>
-		/// Retrieve the transfer queue index.
-		/// </summary>
-		/// <returns>Transfer queue index.</returns>
+		/// @brief Retrieve the transfer queue index.
+		/// @return Transfer queue index.
 		[[nodiscard]] constexpr u8 GetTransferQueueIndex() const noexcept;
-		/// <summary>
-		/// Retrieve the compute queue index.
-		/// </summary>
-		/// <returns>Compute queue index.</returns>
+		/// @brief Retrieve the compute queue index.
+		/// @return Compute queue index.
 		[[nodiscard]] constexpr u8 GetComputeQueueIndex() const noexcept;
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-		/// <summary>
-		/// Retrieve the NVIDIA Reflex semaphore.
-		/// </summary>
-		/// <returns>Semaphore.</returns>
+		/// @brief Retrieve the NVIDIA Reflex semaphore.
+		/// @return Semaphore.
+		/// @remark @headless This function is not available in headless mode.
+		/// @remark This function is only available when NVIDIA Reflex SDK is provided.
 		[[nodiscard]] constexpr VkSemaphore& GetReflexSemaphore() noexcept;
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 	private:
 		friend VulkanQueue;
 
-		/// <summary>
-		/// Find the queue family index for a given queue type.
-		/// </summary>
-		/// <param name="queueType">Queue type to search for.</param>
-		/// <param name="queueFamilyIndex">Output queue family index.</param>
-		/// <param name="queueIndex">Output queue index.</param>
+		/// @brief Find the queue family index for a given queue type.
+		/// @param queueType Queue type to search for.
+		/// @param queueFamilyIndex Output queue family index.
+		/// @param queueIndex Output queue index.
 		void FindQueueFamilyIndex(RendererAPI::QueueType queueType, u8& queueFamilyIndex, u8& queueIndex);
-		/// <summary>
-		/// Find the queue family index for a given queue type from the given queue family properties.
-		/// </summary>
-		/// <param name="queueType">Queue type to search for.</param>
-		/// <param name="queueFamilyProperties">Queue family properties to search in.</param>
-		/// <param name="queueFamilyIndex">Output queue family index.</param>
-		/// <param name="queueIndex">Output queue index.</param>
+		/// @brief Find the queue family index for a given queue type from the given queue family properties.
+		/// @param queueType Queue type to search for.
+		/// @param queueFamilyProperties Queue family properties to search in.
+		/// @param queueFamilyIndex Output queue family index.
+		/// @param queueIndex Output queue index.
 		void FindQueueFamilyIndex(RendererAPI::QueueType queueType, VkQueueFamilyProperties& queueFamilyProperties,
 		                          u8& queueFamilyIndex, u8& queueIndex);
 
-		/// <summary>
-		/// Set a name for the device device.
-		/// </summary>
-		/// <param name="name">Name for the device.</param>
+		/// @brief Set a name for the device device.
+		/// @param name Name for the device.
 		void SetDeviceName(std::string_view name) const;
 
-		/// <summary>
-		/// Load the variable shading rate capabilities from the physical device.
-		/// </summary>
+		/// @brief Load the variable shading rate capabilities from the physical device.
 		void LoadShadingRateCaps(const VkPhysicalDeviceFragmentShadingRateFeaturesKHR& shadingRateFeatures) const;
 
 		TRAP::Scope<VulkanPhysicalDevice> m_physicalDevice;

@@ -39,9 +39,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 		u32 BaseTypeID;
 	};
 
-	/// <summary>
-	/// Type of resource.
-	/// </summary>
+	/// @brief Type of resource.
 	enum class ResourceType : u32
 	{
 		Inputs = 0,
@@ -61,9 +59,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 		RESOURCE_TYPE_COUNT
 	};
 
-	/// <summary>
-	/// Texture dimension.
-	/// </summary>
+	/// @brief Texture dimension.
 	enum class ResourceTextureDimension : u32
 	{
 		Undefined = 0,
@@ -81,9 +77,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 		RESOURCE_TEXTURE_DIMENSION_COUNT = 11
 	};
 
-	/// <summary>
-	/// Struct describing a shader resource.
-	/// </summary>
+	/// @brief Struct describing a shader resource.
 	struct Resource
 	{
 		//SPIRV data type
@@ -115,9 +109,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 		std::string Name;
 	};
 
-	/// <summary>
-	/// Struct describing a shader variable.
-	/// </summary>
+	/// @brief Struct describing a shader variable.
 	struct Variable
 	{
 		//SPIRV data type
@@ -142,58 +134,38 @@ namespace TRAP::Graphics::API::SPIRVTools
 		std::string Name;
 	};
 
-	/// <summary>
-	/// SPIRV cross compiler data
-	/// </summary>
+	/// @brief SPIRV cross compiler data
 	class CrossCompiler
 	{
 	public:
-		/// <summary>
-		/// Create a new SPIRV cross compiler instance.
-		/// </summary>
-		/// <param name="SPIRVBinary">SPIRV binary data.</param>
-		/// <param name="binarySize">Size of the SPIRV binary data.</param>
+		/// @brief Create a new SPIRV cross compiler instance.
+		/// @param SPIRVBinary SPIRV binary data.
+		/// @param binarySize Size of the SPIRV binary data.
 		CrossCompiler(const u32* SPIRVBinary, usize binarySize);
 
-		/// <summary>
-		/// Reflect the shaders entry point.
-		/// </summary>
+		/// @brief Reflect the shaders entry point.
 		void ReflectEntryPoint();
-		/// <summary>
-		/// Reflect the shaders used resources.
-		/// </summary>
+		/// @brief Reflect the shaders used resources.
 		void ReflectShaderResources();
-		/// <summary>
-		/// Reflect the shaders uniform variables.
-		/// </summary>
+		/// @brief Reflect the shaders uniform variables.
 		void ReflectShaderVariables();
-		/// <summary>
-		/// Reflect the compute shader work group size.
-		/// </summary>
-		/// <returns>Compute shader work group size.</returns>
+		/// @brief Reflect the compute shader work group size.
+		/// @return Compute shader work group size.
 		[[nodiscard]] std::array<u32, 3> ReflectComputeShaderWorkGroupSize() const;
-		/// <summary>
-		/// Reflect tessellation control shader control point count.
-		/// </summary>
-		/// <returns>Tessellation control shader control point count.</returns>
+		/// @brief Reflect tessellation control shader control point count.
+		/// @return Tessellation control shader control point count.
 		[[nodiscard]] u32 ReflectTessellationControlShaderControlPoint() const;
 
-		/// <summary>
-		/// Retrieve the shader resources.
-		/// </summary>
-		/// <returns>Shader resources.</returns>
+		/// @brief Retrieve the shader resources.
+		/// @return Shader resources.
 		[[nodiscard]] constexpr const std::vector<Resource>& GetShaderResources() const noexcept;
 
-		/// <summary>
-		/// Retrieve the uniform variables.
-		/// </summary>
-		/// <returns>Uniform variables.</returns>
+		/// @brief Retrieve the uniform variables.
+		/// @return Uniform variables.
 		[[nodiscard]] constexpr const std::vector<Variable>& GetUniformVariables() const noexcept;
 
-		/// <summary>
-		/// Rertieve the name of the entry point.
-		/// </summary>
-		/// <returns>Name of entry point.</returns>
+		/// @brief Rertieve the name of the entry point.
+		/// @return Name of entry point.
 		[[nodiscard]] constexpr std::string GetEntryPoint() const noexcept;
 
 	private:

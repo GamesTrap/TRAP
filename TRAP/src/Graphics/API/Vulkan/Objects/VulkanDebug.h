@@ -11,58 +11,42 @@ namespace TRAP::Graphics::API
 	class VulkanDebug
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="instance">Vulkan instance.</param>
+		/// @brief Constructor.
+		/// @param instance Vulkan instance.
 		explicit VulkanDebug(Ref<VulkanInstance> instance);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanDebug();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		VulkanDebug(const VulkanDebug&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanDebug& operator=(const VulkanDebug&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanDebug(VulkanDebug&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanDebug& operator=(VulkanDebug&&) noexcept = default;
 
 	private:
-		/// <summary>
-		/// Callback for Vulkan debug utils messenger extension.
-		/// </summary>
-		/// <param name="messageSeverity">Severity of the message.</param>
-		/// <param name="messageType">Type of message (unused).</param>
-		/// <param name="callbackData">Message data.</param>
-		/// <param name="userData">User data (unused).</param>
-		/// <returns>VK_FALSE (as defined in Vulkan spec).</returns>
+		/// @brief Callback for Vulkan debug utils messenger extension.
+		/// @param messageSeverity Severity of the message.
+		/// @param messageType Type of message (unused).
+		/// @param callbackData Message data.
+		/// @param userData User data (unused).
+		/// @return VK_FALSE (as defined in Vulkan spec).
 		static constexpr VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugUtilsCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
 																                 VkDebugUtilsMessageTypeFlagsEXT messageType,
 																                 const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
 																                 void* userData);
-		/// <summary>
-		/// Callback for Vulkan debug report messenger extension.
-		/// </summary>
-		/// <param name="flags">Severity of the message.</param>
-		/// <param name="objectType">Object type (unused).</param>
-		/// <param name="object">Object (unused).</param>
-		/// <param name="location">Location (unused).</param>
-		/// <param name="messageCode">Message code.</param>
-		/// <param name="layerPrefix">Layer prefix.</param>
-		/// <param name="message">Message data.</param>
-		/// <param name="userData">User data (unused).</param>
-		/// <returns>VK_FALSE (as defined in Vulkan spec).</returns>
+		/// @brief Callback for Vulkan debug report messenger extension.
+		/// @param flags Severity of the message.
+		/// @param objectType Object type (unused).
+		/// @param object Object (unused).
+		/// @param location Location (unused).
+		/// @param messageCode Message code.
+		/// @param layerPrefix Layer prefix.
+		/// @param message Message data.
+		/// @param userData User data (unused).
+		/// @return VK_FALSE (as defined in Vulkan spec).
 		static constexpr VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugReportCallback(VkDebugReportFlagsEXT flags,
 																	              VkDebugReportObjectTypeEXT objectType,
 																	              u64 object, usize location,

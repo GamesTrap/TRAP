@@ -14,47 +14,29 @@ namespace TRAP::Graphics::API
 	class VulkanRenderTarget final : public RenderTarget
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="desc">Render target description.</param>
+		/// @brief Constructor.
+		/// @param desc Render target description.
 		explicit VulkanRenderTarget(const RendererAPI::RenderTargetDesc& desc);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanRenderTarget() override;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr VulkanRenderTarget(const VulkanRenderTarget&) = delete;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr VulkanRenderTarget& operator=(const VulkanRenderTarget&) = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanRenderTarget(VulkanRenderTarget&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanRenderTarget& operator=(VulkanRenderTarget&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the render target's Vulkan image view.
-		/// </summary>
-		/// <returns>Vulkan image view.</returns>
+		/// @brief Retrieve the render target's Vulkan image view.
+		/// @return Vulkan image view.
 		[[nodiscard]] constexpr VkImageView GetVkImageView() const noexcept;
-		/// <summary>
-		/// Retrieve the render target's Vulkan image view slices.
-		/// </summary>
-		/// <returns>Vulkan image view slices.</returns>
+		/// @brief Retrieve the render target's Vulkan image view slices.
+		/// @return Vulkan image view slices.
 		[[nodiscard]] constexpr const std::vector<VkImageView>& GetVkImageViewSlices() const noexcept;
-		/// <summary>
-		/// Retrieve the render target's ID.
-		/// </summary>
-		/// <returns>Render target ID.</returns>
+		/// @brief Retrieve the render target's ID.
+		/// @return Render target ID.
 		[[nodiscard]] constexpr u64 GetID() const noexcept;
 
 	private:
@@ -73,10 +55,8 @@ namespace TRAP::Graphics::API
 			                                                                    u32 depthMipSlice,
 							   												    const TRAP::Ref<RenderTarget>& shadingRate);
 
-		/// <summary>
-		/// Set the name of the render target.
-		/// </summary>
-		/// <param name="name">Name to use.</param>
+		/// @brief Set the name of the render target.
+		/// @param name Name to use.
 		void SetRenderTargetName(std::string_view name) const;
 
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();

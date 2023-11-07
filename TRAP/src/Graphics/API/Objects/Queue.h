@@ -8,65 +8,44 @@ namespace TRAP::Graphics
 	class Queue
 	{
 	public:
-		/// <summary>
-		/// Create a new queue from the given description.
-		/// </summary>
-		/// <param name="desc">Queue description.</param>
-		/// <returns>Created queue.</returns>
+		/// @brief Create a new queue from the given description.
+		/// @param desc Queue description.
+		/// @return Created queue.
 		[[nodiscard]] static TRAP::Ref<Queue> Create(const RendererAPI::QueueDesc& desc);
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~Queue();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Queue(const Queue&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		Queue& operator=(const Queue&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr Queue(Queue&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		Queue& operator=(Queue&&) noexcept = default;
 
-		/// <summary>
-		/// Wait for the queue to finish all submitted commands.
-		/// </summary>
+		/// @brief Wait for the queue to finish all submitted commands.
 		virtual void WaitQueueIdle() const = 0;
 
-		/// <summary>
-		/// Submit work to the queue.
-		/// </summary>
-		/// <param name="desc">Queue submit description.</param>
+		/// @brief Submit work to the queue.
+		/// @param desc Queue submit description.
 		virtual void Submit(const RendererAPI::QueueSubmitDesc& desc) const = 0;
 
-		/// <summary>
-		/// Retrieve the queue type.
-		/// </summary>
-		/// <returns>Queue type.</returns>
+		/// @brief Retrieve the queue type.
+		/// @return Queue type.
 		[[nodiscard]] constexpr RendererAPI::QueueType GetQueueType() const noexcept;
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Queue an image for presentation.
-		/// </summary>
-		/// <param name="desc">Queue presentation description.</param>
-		/// <returns>Presentation status.</returns>
+		/// @brief Queue an image for presentation.
+		/// @param desc Queue presentation description.
+		/// @return Presentation status.
+		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] virtual RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		explicit Queue(RendererAPI::QueueType queueType);
 
 		RendererAPI::QueueType m_type = RendererAPI::QueueType::Graphics;

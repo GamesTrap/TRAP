@@ -5,12 +5,10 @@
 
 namespace TRAP::Graphics::API
 {
-	/// <summary>
-	/// Create a shader reflection from Vulkan SPIRV source code.
-	/// </summary>
-	/// <param name="shaderCode">SPIRV code.</param>
-	/// <param name="shaderStage">Shader stage of SPIRV code.</param>
-	/// <returns>Shader reflection.</returns>
+	/// @brief Create a shader reflection from Vulkan SPIRV source code.
+	/// @param shaderCode SPIRV code.
+	/// @param shaderStage Shader stage of SPIRV code.
+	/// @return Shader reflection.
 	[[nodiscard]] ShaderReflection::ShaderReflection VkCreateShaderReflection(const std::vector<u32>& shaderCode,
 	                                                                          RendererAPI::ShaderStage shaderStage);
 }

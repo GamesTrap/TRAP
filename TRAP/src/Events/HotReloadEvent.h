@@ -11,138 +11,86 @@ namespace TRAP::Graphics
 
 namespace TRAP::Events
 {
-	/// <summary>
-	/// Texture reloaded.
-	/// </summary>
+	/// @brief Texture reloaded event.
 	class TextureReloadEvent final : public Event
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="texture">Pointer to the affected texture.</param>
+		/// @brief Constructor.
+		/// @param texture Pointer to the affected texture.
 		explicit TextureReloadEvent(TRAP::Ref<TRAP::Graphics::Texture> texture);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~TextureReloadEvent() override = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		TextureReloadEvent(const TextureReloadEvent&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		TextureReloadEvent& operator=(const TextureReloadEvent&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		TextureReloadEvent(TextureReloadEvent&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		TextureReloadEvent& operator=(TextureReloadEvent&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve a pointer to the affected texture.
-		/// </summary>
-		/// <returns>Texture pointer.</returns>
+		/// @brief Retrieve a pointer to the affected texture.
+		/// @return Texture pointer.
 		[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> GetTexture() const noexcept;
 
-		/// <summary>
-		/// Get a string representation of the TextureReloadEvent.
-		/// </summary>
-		/// <returns>String representation.</returns>
+		/// @brief Get a string representation of the TextureReloadEvent.
+		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
 
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
-		/// <summary>
-		/// Retrieve the name of the event.
-		/// </summary>
-		/// <returns>Name.</returns>
+		/// @brief Retrieve the name of the event.
+		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
-		/// <summary>
-		/// Retrieve the category flags of the event.
-		/// </summary>
-		/// <returns>Combination of one or more EventCategory's.</returns>
+		/// @brief Retrieve the category flags of the event.
+		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
         TRAP::Ref<TRAP::Graphics::Texture> m_texture;
 	};
 
-    /// <summary>
-	/// Shader reloaded.
-	/// </summary>
+	/// @brief Shader reloaded event.
 	class ShaderReloadEvent final : public Event
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="shader">Affected shader.</param>
+		/// @brief Constructor.
+		/// @param shader Affected shader.
 		explicit ShaderReloadEvent(TRAP::Ref<TRAP::Graphics::Shader> shader);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~ShaderReloadEvent() override = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		ShaderReloadEvent(const ShaderReloadEvent&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		ShaderReloadEvent& operator=(const ShaderReloadEvent&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		ShaderReloadEvent(ShaderReloadEvent&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		ShaderReloadEvent& operator=(ShaderReloadEvent&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the affected shader.
-		/// </summary>
-		/// <returns>Shader.</returns>
+		/// @brief Retrieve the affected shader.
+		/// @return Shader.
 		[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> GetShader() const noexcept;
 
-		/// <summary>
-		/// Get a string representation of the ShaderReloadEvent.
-		/// </summary>
-		/// <returns>String representation.</returns>
+		/// @brief Get a string representation of the ShaderReloadEvent.
+		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
 
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
-		/// <summary>
-		/// Retrieve the name of the event.
-		/// </summary>
-		/// <returns>Name.</returns>
+		/// @brief Retrieve the name of the event.
+		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
-		/// <summary>
-		/// Retrieve the category flags of the event.
-		/// </summary>
-		/// <returns>Combination of one or more EventCategory's.</returns>
+		/// @brief Retrieve the category flags of the event.
+		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	private:

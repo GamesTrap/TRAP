@@ -37,41 +37,25 @@ namespace TRAP::INTERNAL
 	class PNGImage final : public Image
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="filepath">File path of the image to load.</param>
+		/// @brief Constructor.
+		/// @param filepath File path of the image to load.
 		explicit PNGImage(std::filesystem::path filepath);
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		PNGImage(const PNGImage&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		PNGImage& operator=(const PNGImage&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		PNGImage(PNGImage&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		PNGImage& operator=(PNGImage&&) noexcept = default;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~PNGImage() override = default;
 
-		/// <summary>
-		/// Retrieve the raw pixel data of the image.
-		/// </summary>
-		/// <returns>Constant pointer to the raw pixel data.</returns>
+		/// @brief Retrieve the raw pixel data of the image.
+		/// @return Constant pointer to the raw pixel data.
 		[[nodiscard]] constexpr const void* GetPixelData() const noexcept override;
-		/// <summary>
-		/// Retrieve the size of the raw pixel data of the image.
-		/// </summary>
-		/// <returns>Size of the raw pixel data in bytes.</returns>
+		/// @brief Retrieve the size of the raw pixel data of the image.
+		/// @return Size of the raw pixel data in bytes.
 		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
 
 	private:
@@ -109,13 +93,12 @@ namespace TRAP::INTERNAL
 			std::string MagicNumber{};
 		};
 
-		/// <summary>
-		/// Process a PNG chunk.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <param name="data">Data containing information about the image.</param>
-		/// <param name="alreadyLoaded">Flags to indicate which chunks have already been loaded.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
+		/// @brief Process a PNG chunk.
+		/// @param nextChunk Length and magic number of the next chunk to process.
+		/// @param file Open PNG file.
+		/// @param data Data containing information about the image.
+		/// @param alreadyLoaded Flags to indicate which chunks have already been loaded.
+		/// @return True if the chunk was processed successfully, false otherwise.
 		[[nodiscard]] static bool ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data,
 		                                       AlreadyLoaded& alreadyLoaded);
 
@@ -142,162 +125,124 @@ namespace TRAP::INTERNAL
 
 		//Mandatory PNG chunks are IHDR, IDAT(s), IEND.
 
-		/// <summary>
-		/// Process the IHDR chunk.
+		/// @brief Process the IHDR chunk.
 		/// IHDR is the first chunk in the PNG file and contains the width, height,
 		/// bit depth, color type, compression method, filter method and interlace method.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <param name="data">Data containing information about the image.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
+		/// @param file Open PNG file.
+		/// @param data Data containing information about the image.
+		/// @return True if the chunk was processed successfully, false otherwise.
 		[[nodiscard]] static bool ProcessIHDR(std::ifstream& file, Data& data);
-		/// <summary>
-		/// Process the optional sBIT chunk.
+		/// @brief Process the optional sBIT chunk.
 		/// sBIT contains the significant bits for each sample.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <param name="data">Data containing information about the image.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
+		/// @param file Open PNG file.
+		/// @param data Data containing information about the image.
+		/// @return True if the chunk was processed successfully, false otherwise.
 		[[nodiscard]] static bool ProcesssBIT(std::ifstream& file, const Data& data);
-		/// <summary>
-		/// Process the optional sRGB chunk.
+		/// @brief Process the optional sRGB chunk.
 		/// sRGB contains the rendering intent.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
+		/// @param file Open PNG file.
+		/// @return True if the chunk was processed successfully, false otherwise.
 		[[nodiscard]] static bool ProcesssRGB(std::ifstream& file);
-		/// <summary>
-		/// Process the optional bKGD chunk.
+		/// @brief Process the optional bKGD chunk.
 		/// bKGD contains the image background color.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <param name="data">Data containing information about the image.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
+		/// @param file Open PNG file.
+		/// @param data Data containing information about the image.
+		/// @return True if the chunk was processed successfully, false otherwise.
 		[[nodiscard]] static bool ProcessbKGD(std::ifstream& file, const Data& data);
-		/// <summary>
-		/// Process the optional tRNS chunk.
+		/// @brief Process the optional tRNS chunk.
 		/// tRNS contains the transparency data.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <param name="length">Chunk length.</param>
-		/// <param name="data">Data containing information about the image.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
+		/// @param file Open PNG file.
+		/// @param length Chunk length.
+		/// @param data Data containing information about the image.
+		/// @return True if the chunk was processed successfully, false otherwise.
 		[[nodiscard]] static bool ProcesstRNS(std::ifstream& file, u32 length, Data& data);
-		/// <summary>
-		/// Process the optional PLTE chunk.
+		/// @brief Process the optional PLTE chunk.
 		/// PLTE contains the palette.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <param name="data">Data containing information about the image.</param>
-		/// <param name="length">Chunk length.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
+		/// @param file Open PNG file.
+		/// @param data Data containing information about the image.
+		/// @param length Chunk length.
+		/// @return True if the chunk was processed successfully, false otherwise.
 		[[nodiscard]] static bool ProcessPLTE(std::ifstream& file, Data& data, u32 length);
-		/// <summary>
-		/// Process the IDAT chunk.
+		/// @brief Process the IDAT chunk.
 		/// IDAT contains the image data.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <param name="data">Data containing information about the image.</param>
-		/// <param name="length">Chunk length.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
+		/// @param file Open PNG file.
+		/// @param data Data containing information about the image.
+		/// @param length Chunk length.
+		/// @return True if the chunk was processed successfully, false otherwise.
 		[[nodiscard]] static bool ProcessIDAT(std::ifstream& file, Data& data, u32 length);
 
-		/// <summary>
-		/// Check IHDR validity.
-		/// </summary>
-		/// <param name="ihdrChunk">Loaded IHDR chunk data.</param>
-		/// <returns>True if the IHDR chunk is valid, false otherwise.</returns>
+		/// @brief Check IHDR validity.
+		/// @param ihdrChunk Loaded IHDR chunk data.
+		/// @return True if the IHDR chunk is valid, false otherwise.
 		[[nodiscard]] static bool IHDRCheck(const IHDRChunk& ihdrChunk);
 
 		std::vector<u8> m_data;
 		std::vector<u16> m_data2Byte;
 
-		/// <summary>
-		/// Decompress PNG data.
-		/// </summary>
-		/// <param name="source">Source data.</param>
-		/// <param name="destination">Destination for uncompressed data.</param>
-		/// <returns>True if the data was decompressed successfully, false otherwise.</returns>
+		/// @brief Decompress PNG data.
+		/// @param source Source data.
+		/// @param destination Destination for uncompressed data.
+		/// @return True if the data was decompressed successfully, false otherwise.
 		[[nodiscard]] static bool DecompressData(std::span<const u8> source, std::span<u8> destination);
-		/// <summary>
-		/// Unfilter scanline depending on given filter type.
-		/// </summary>
-		/// <param name="recon">
-		/// <param name="scanline">Pointer to scanline.</param>
-		/// <param name="precon">
-		/// <param name="byteWidth">Width of the scanline in bytes.</param>
-		/// <param name="filterType">Filter type.</param>
-		/// <param name="length">Length of the scanline in bytes.</param>
-		/// <returns>True if the scanline was unfiltered successfully, false otherwise.</returns>
+		/// @brief Unfilter scanline depending on given filter type.
+		/// @param recon
+		/// @param scanline Pointer to scanline.
+		/// @param precon
+		/// @param byteWidth Width of the scanline in bytes.
+		/// @param filterType Filter type.
+		/// @param length Length of the scanline in bytes.
+		/// @return True if the scanline was unfiltered successfully, false otherwise.
 		[[nodiscard]] static bool UnFilterScanline(u8* recon, const u8* scanline, const u8* precon,
 		                                           usize byteWidth, u8 filterType, usize length);
-		/// <summary>
-		/// Unfilter decompressed image data.
-		/// </summary>
-		/// <param name="out">Pointer to output storage.</param>
-		/// <param name="in">Pointer to decompressed data.</param>
-		/// <param name="width">Image width.</param>
-		/// <param name="height">Image height.</param>
-		/// <param name="bitsPerPixel">Image bits per pixel.</param>
-		/// <returns>True on successful unfiltering, false otherwise.</returns>
+		/// @brief Unfilter decompressed image data.
+		/// @param out Pointer to output storage.
+		/// @param in Pointer to decompressed data.
+		/// @param width Image width.
+		/// @param height Image height.
+		/// @param bitsPerPixel Image bits per pixel.
+		/// @return True on successful unfiltering, false otherwise.
 		[[nodiscard]] static bool UnFilter(u8* out, const u8* in, u32 width, u32 height, u32 bitsPerPixel);
-		/// <summary>
-		/// Paeth predictor used by PNG filter type 4.
-		/// </summary>
-		/// <param name="a">Left pixel.</param>
-		/// <param name="b">Above pixel.</param>
-		/// <param name="c">Above-left pixel.</param>
-		/// <returns>Predicted pixel.</returns>
+		/// @brief Paeth predictor used by PNG filter type 4.
+		/// @param a Left pixel.
+		/// @param b Above pixel.
+		/// @param c Above-left pixel.
+		/// @return Predicted pixel.
 		[[nodiscard]] static u8 PaethPredictor(u16 a, u16 b, u16 c);
-		/// <summary>
-		/// Retrieve the raw/decompressed IDAT byte size.
-		/// </summary>
-		/// <param name="width">Image width.</param>
-		/// <param name="height">Image height.</param>
-		/// <param name="bitsPerPixel">Image bits per pixel.</param>
-		/// <returns>Raw IDAT size.</returns>
+		/// @brief Retrieve the raw/decompressed IDAT byte size.
+		/// @param width Image width.
+		/// @param height Image height.
+		/// @param bitsPerPixel Image bits per pixel.
+		/// @return Raw IDAT size.
 		[[nodiscard]] static usize GetRawSizeIDAT(u32 width, u32 height, u32 bitsPerPixel);
-		/// <summary>
-		/// Retrieve the raw/expected pixel data byte size.
-		/// </summary>
-		/// <param name="width">Image width.</param>
-		/// <param name="height">Image height.</param>
-		/// <param name="bitsPerPixel">Image bits per pixel.</param>
-		/// <returns>Raw pixel data byte size.</returns>
+		/// @brief Retrieve the raw/expected pixel data byte size.
+		/// @param width Image width.
+		/// @param height Image height.
+		/// @param bitsPerPixel Image bits per pixel.
+		/// @return Raw pixel data byte size.
 		[[nodiscard]] static usize GetRawSize(u32 width, u32 height, u32 bitsPerPixel);
-		/// <summary>
-		/// Post process scanlines
+		/// @brief Post process scanlines
 		/// This function converts filtered-padded-interlaced data into pure 2D image buffer data.
-		/// Note: The in buffer will be overwritten with intermediate data!
-		/// </summary>
-		/// <param name="out">Pointer to output storage.</param>
-		/// <param name="in">Pointer to decompressed data.</param>
-		/// <param name="width">Image width.</param>
-		/// <param name="height">Image height.</param>
-		/// <param name="bitsPerPixel">Image bits per pixel.</param>
-		/// <param name="interlaceMethdo">Interlace method.</param>
-		/// <returns>True on successful post processing, false otherwise.</returns>
+		/// @param out Pointer to output storage.
+		/// @param in Pointer to decompressed data.
+		/// @param width Image width.
+		/// @param height Image height.
+		/// @param bitsPerPixel Image bits per pixel.
+		/// @param interlaceMethod Interlace method.
+		/// @return True on successful post processing, false otherwise.
+		/// @note The in buffer will be overwritten with intermediate data!
 		[[nodiscard]] static bool PostProcessScanlines(u8* out, u8* in, u32 width, u32 height,
 		                                               u32 bitsPerPixel, u8 interlaceMethod);
-		/// <summary>
-		/// Outputs various dimensions and positions in the image related to the Adam7 reduced images.
-		/// </summary>
-		/// <param name="passW">Output containing the width of the 7 passes.</param>
-		/// <param name="passH">Output containing the height of the 7 passes.</param>
-		/// <param name="filterPassStart">
-		/// Output containing the index of the start and end of each reduced image with filter bytes.
-		/// </param>
-		/// <param name="paddedPassStart">
-		/// Output containing the index of the start and end of each reduced image when without filter
+		/// @brief Outputs various dimensions and positions in the image related to the Adam7 reduced images.
+		/// @param passW Output containing the width of the 7 passes.
+		/// @param passH Output containing the height of the 7 passes.
+		/// @param filterPassStart Output containing the index of the start and end of each reduced image with filter bytes.
+		/// @param paddedPassStart Output containing the index of the start and end of each reduced image when without filter
 		/// bytes but with padded scanlines.
-		/// </param>
-		/// <param name="passStart">
-		/// Output containing the index of the start and end of each reduced image without padding
+		/// @param passStart Output containing the index of the start and end of each reduced image without padding
 		/// between scanlines, but still padding between the images.
-		/// </param>
-		/// <param name="width">Image width (non-interlaced).</param>
-		/// <param name="height">Image height (non-interlaced).</param>
-		/// <param name="bitsPerPixel">Image bits per pixel.</param>
+		/// @param width Image width (non-interlaced).
+		/// @param height Image height (non-interlaced).
+		/// @param bitsPerPixel Image bits per pixel.
 		static void Adam7GetPassValues(std::array<u32, 7>& passW,
 		                               std::array<u32, 7>& passH,
 		                               std::array<usize, 8>& filterPassStart,
@@ -306,30 +251,24 @@ namespace TRAP::INTERNAL
 		                               u32 width,
 		                               u32 height,
 		                               u32 bitsPerPixel);
-		/// <summary>
-		/// Deinterlace an Adam7 interlaced image.
-		/// </summary>
-		/// <param name="out">Same pixels as in, but re-ordered so that they are now a non-interlaced image with size width * height.</param>
-		/// <param name="in">Adam7 interlaced image, with no padding bits between scanlines, but between reduced images so that each reduced image starts at a byte.</param>
-		/// <param name="width">Image width.</param>
-		/// <param name="height">Image height.</param>
-		/// <param name="bitsPerPixel">Image bits per pixel.</param>
+		/// @brief Deinterlace an Adam7 interlaced image.
+		/// @param out Same pixels as in, but re-ordered so that they are now a non-interlaced image with size width * height.
+		/// @param in Adam7 interlaced image, with no padding bits between scanlines, but between reduced images so that each reduced image starts at a byte.
+		/// @param width Image width.
+		/// @param height Image height.
+		/// @param bitsPerPixel Image bits per pixel.
 		static void Adam7DeInterlace(u8* out, const u8* in, u32 width, u32 height,
 		                             u32 bitsPerPixel);
-		/// <summary>
-		/// Convert pixel data to 16 bits per channel with endianness correction.
-		/// </summary>
-		/// <param name="raw">Raw pixel data.</param>
-		/// <returns>Converted 16 bpc pixel data.</returns>
+		/// @brief Convert pixel data to 16 bits per channel with endianness correction.
+		/// @param raw Raw pixel data.
+		/// @return Converted 16 bpc pixel data.
 		[[nodiscard]] static std::vector<u16> ConvertTo2Byte(std::vector<u8>& raw);
-		/// <summary>
-		/// Resolves indexed pixel data to RGBA.
-		/// </summary>
-		/// <param name="raw">Raw pixel data.</param>
-		/// <param name="width">Image width.</param>
-		/// <param name="height">Image height.</param>
-		/// <param name="data">Data containing information about the image.</param>
-		/// <returns>Raw pixel data.</returns>
+		/// @brief Resolves indexed pixel data to RGBA.
+		/// @param raw Raw pixel data.
+		/// @param width Image width.
+		/// @param height Image height.
+		/// @param data Data containing information about the image.
+		/// @return Raw pixel data.
 		[[nodiscard]] static std::vector<u8> ResolveIndexed(std::vector<u8>& raw, u32 width, u32 height,
 		                                                         const Data& data);
 	};

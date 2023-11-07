@@ -13,15 +13,11 @@
 
 namespace TRAP
 {
-	/// <summary>
-	/// Abstract image base class.
-	/// </summary>
+	/// @brief Abstract image base class.
 	class Image
 	{
 	public:
-		/// <summary>
-		/// Color formats.
-		/// </summary>
+		/// @brief Color formats.
 		enum class ColorFormat : u32
 		{
 			NONE = 0,
@@ -32,212 +28,136 @@ namespace TRAP
 		};
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		explicit Image(std::filesystem::path filepath);
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		Image(std::filesystem::path filepath, u32 width, u32 height, ColorFormat format);
 	public:
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		Image(const Image&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		Image& operator=(const Image&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		Image(Image&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		Image& operator=(Image&&) noexcept = default;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~Image() = default;
 
-		/// <summary>
-		/// Retrieve the raw pixel data of the image.
-		/// </summary>
-		/// <returns>Constant pointer to the raw pixel data.</returns>
+		/// @brief Retrieve the raw pixel data of the image.
+		/// @return Constant pointer to the raw pixel data.
 		[[nodiscard]] virtual constexpr const void* GetPixelData() const noexcept = 0;
-		/// <summary>
-		/// Retrieve the size of the raw pixel data of the image.
-		/// </summary>
-		/// <returns>Size of the raw pixel data in bytes.</returns>
+		/// @brief Retrieve the size of the raw pixel data of the image.
+		/// @return Size of the raw pixel data in bytes.
 		[[nodiscard]] virtual constexpr u64 GetPixelDataSize() const noexcept = 0;
-		/// <summary>
-		/// Retrieve the amount of bits used for a single pixel in the image.
-		/// </summary>
-		/// <returns>Amount of bits.</returns>
+		/// @brief Retrieve the amount of bits used for a single pixel in the image.
+		/// @return Amount of bits.
 		[[nodiscard]] constexpr u32 GetBitsPerPixel() const noexcept;
-		/// <summary>
-		/// Retrieve the amount of bytes used for a single pixel in the image.
-		/// </summary>
-		/// <returns>Amount of bytes.</returns>
+		/// @brief Retrieve the amount of bytes used for a single pixel in the image.
+		/// @return Amount of bytes.
 		[[nodiscard]] constexpr u32 GetBytesPerPixel() const noexcept;
-		/// <summary>
-		/// Retrieve the amount of bits used for a single channel of a pixel in the image.
-		/// </summary>
-		/// <returns>Amount of bits.</returns>
+		/// @brief Retrieve the amount of bits used for a single channel of a pixel in the image.
+		/// @return Amount of bits.
 		[[nodiscard]] constexpr u32 GetBitsPerChannel() const noexcept;
-		/// <summary>
-		/// Retrieve the amount of bytes used for a single channel of a pixel in the image.
-		/// </summary>
-		/// <returns>Amount of bytes.</returns>
+		/// @brief Retrieve the amount of bytes used for a single channel of a pixel in the image.
+		/// @return Amount of bytes.
 		[[nodiscard]] constexpr u32 GetBytesPerChannel() const noexcept;
-		/// <summary>
-		/// Retrieve the width of the image.
-		/// </summary>
-		/// <returns>Width of the image.</returns>
+		/// @brief Retrieve the width of the image.
+		/// @return Width of the image.
 		[[nodiscard]] constexpr u32 GetWidth() const noexcept;
-		/// <summary>
-		/// Retrieve the height of the image.
-		/// </summary>
-		/// <returns>Height of the image.</returns>
+		/// @brief Retrieve the height of the image.
+		/// @return Height of the image.
 		[[nodiscard]] constexpr u32 GetHeight() const noexcept;
-		/// <summary>
-		/// Retrieve the size of the image.
-		/// </summary>
-		/// <returns>Size of the image as a Math::Vec2ui.</returns>
+		/// @brief Retrieve the size of the image.
+		/// @return Size of the image as a Math::Vec2ui.
 		[[nodiscard]] constexpr Math::Vec2ui GetSize() const noexcept;
-		/// <summary>
-		/// Retrieve whether the image has an alpha channel or not.
-		/// </summary>
-		/// <returns>True if image has an alpha channel, false otherwise.</returns>
+		/// @brief Retrieve whether the image has an alpha channel or not.
+		/// @return True if image has an alpha channel, false otherwise.
 		[[nodiscard]] constexpr bool HasAlphaChannel() const noexcept;
-		/// <summary>
-		/// Retrieve whether the image is gray scale or not.
-		/// </summary>
-		/// <returns>True if image is gray scale, false otherwise.</returns>
+		/// @brief Retrieve whether the image is gray scale or not.
+		/// @return True if image is gray scale, false otherwise.
 		[[nodiscard]] constexpr bool IsImageGrayScale() const noexcept;
-		/// <summary>
-		/// Retrieve whether the image is colored or not.
-		/// </summary>
-		/// <returns>True if image is colored, false otherwise.</returns>
+		/// @brief Retrieve whether the image is colored or not.
+		/// @return True if image is colored, false otherwise.
 		[[nodiscard]] constexpr bool IsImageColored() const noexcept;
-		/// <summary>
-		/// Retrieve whether the image is HDR(High Dynamic Range) or not.
-		/// </summary>
-		/// <returns>True if image is HDR, false otherwise.</returns>
+		/// @brief Retrieve whether the image is HDR(High Dynamic Range) or not.
+		/// @return True if image is HDR, false otherwise.
 		[[nodiscard]] constexpr bool IsHDR() const noexcept;
-		/// <summary>
-		/// Retrieve whether the image is LDR(Low Dynamic Range) or not.
-		/// </summary>
-		/// <returns>True if image is LDR, false otherwise.</returns>
+		/// @brief Retrieve whether the image is LDR(Low Dynamic Range) or not.
+		/// @return True if image is LDR, false otherwise.
 		[[nodiscard]] constexpr bool IsLDR() const noexcept;
-		/// <summary>
-		/// Retrieve the file path of the image.
-		/// </summary>
-		/// <returns>Path to the image file, or empty string for custom images.</returns>
+		/// @brief Retrieve the file path of the image.
+		/// @return Path to the image file, or empty string for custom images.
 		[[nodiscard]] const std::filesystem::path& GetFilePath() const noexcept;
-		/// <summary>
-		/// Retrieve the color format used by the image.
-		/// </summary>
-		/// <returns>Color format of the image.</returns>
+		/// @brief Retrieve the color format used by the image.
+		/// @return Color format of the image.
 		[[nodiscard]] constexpr ColorFormat GetColorFormat() const noexcept;
 
-		/// <summary>
-		/// Load an image from disk.
-		/// </summary>
-		/// <param name="filepath">
-		/// Path to the image.
+		/// @brief Load an image from disk.
+		/// @param filepath Path to the image.
 		/// Supported formats:
 		///		- Portable Maps: PGM, PPM, PNM, PAM, PFM
 		///		- Targa: TGA, ICB, VDA, VST
 		///		- Bitmap: BMP, DIB
 		///		- Portable Network Graphics: PNG
 		///		- Radiance: HDR, PIC
-		/// </param>
-		/// <returns>Loaded image on success, fallback image otherwise.</returns>
+		/// @return Loaded image on success, fallback image otherwise.
 		[[nodiscard]] static Scope<Image> LoadFromFile(const std::filesystem::path& filepath);
-		/// <summary>
-		/// Load an image from memory.
-		/// </summary>
-		/// <param name="width">Width for the image.</param>
-		/// <param name="height">Height for the image</param>
-		/// <param name="format">Color format for the image.</param>
-		/// <param name="pixelData">Raw pixel data for the image</param>
-		/// <returns>
-		/// Loaded image.
-		/// Note: There are no validation checks for images loaded from memory!
-		/// </returns>
+		/// @brief Load an image from memory.
+		/// @param width Width for the image.
+		/// @param height Height for the image
+		/// @param format Color format for the image.
+		/// @param pixelData Raw pixel data for the image
+		/// @return Loaded image.
+		/// @note There are no validation checks for images loaded from memory!
 		[[nodiscard]] static Scope<Image> LoadFromMemory(u32 width, u32 height, ColorFormat format,
 		                                                 const std::vector<u8>& pixelData);
-		/// <summary>
-		/// Load an image from memory.
-		/// </summary>
-		/// <param name="width">Width for the image.</param>
-		/// <param name="height">Height for the image</param>
-		/// <param name="format">Color format for the image.</param>
-		/// <param name="pixelData">Raw pixel data for the image</param>
-		/// <returns>
-		/// Loaded Image.
-		/// Note: There are no validation checks for images loaded from memory!
-		/// </returns>
+		/// @brief Load an image from memory.
+		/// @param width Width for the image.
+		/// @param height Height for the image
+		/// @param format Color format for the image.
+		/// @param pixelData Raw pixel data for the image
+		/// @return Loaded Image.
+		/// @note There are no validation checks for images loaded from memory!
 		[[nodiscard]] static Scope<Image> LoadFromMemory(u32 width, u32 height, ColorFormat format,
 		                                                 const std::vector<u16>& pixelData);
-		/// <summary>
-		/// Load an HDR image from memory.
-		/// </summary>
-		/// <param name="width">Width for the image.</param>
-		/// <param name="height">Height for the image</param>
-		/// <param name="format">Color format for the image.</param>
-		/// <param name="pixelData">Raw pixel data for the image</param>
-		/// <returns>
-		/// Loaded Image.
-		/// Note: There are no validation checks for images loaded from memory!
-		/// </returns>
+		/// @brief Load an HDR image from memory.
+		/// @param width Width for the image.
+		/// @param height Height for the image
+		/// @param format Color format for the image.
+		/// @param pixelData Raw pixel data for the image
+		/// @return Loaded Image.
+		/// @note There are no validation checks for images loaded from memory!
 		[[nodiscard]] static Scope<Image> LoadFromMemory(u32 width, u32 height, ColorFormat format,
 		                                                 const std::vector<f32>& pixelData);
-		/// <summary>
-		/// Load the fallback image.
-		/// </summary>
-		/// <returns>Fallback image.</returns>
+		/// @brief Load the fallback image.
+		/// @return Fallback image.
 		[[nodiscard]] static Scope<Image> LoadFallback();
 
-		/// <summary>
-		/// Check if the given file is a supported image.
-		/// </summary>
-		/// <param name="filepath">Path to a file</param>
-		/// <returns>True if given file is an image, false otherwise.</returns>
+		/// @brief Check if the given file is a supported image.
+		/// @param filepath Path to a file
+		/// @return True if given file is an image, false otherwise.
 		[[nodiscard]] static bool IsSupportedImageFile(const std::filesystem::path& filepath);
 
-		/// <summary>
-		/// Flip an image on its X axis.
-		/// </summary>
-		/// <param name="img">Image to flip.</param>
-		/// <returns>Flipped image.</returns>
+		/// @brief Flip an image on its X axis.
+		/// @param img Image to flip.
+		/// @return Flipped image.
 		[[nodiscard]] static Scope<Image> FlipX(const Image* img);
-		/// <summary>
-		/// Flip an image on its Y axis.
-		/// </summary>
-		/// <param name="img">Image to flip.</param>
-		/// <returns>Flipped image.</returns>
+		/// @brief Flip an image on its Y axis.
+		/// @param img Image to flip.
+		/// @return Flipped image.
 		[[nodiscard]] static Scope<Image> FlipY(const Image* img);
-		/// <summary>
-		/// Rotate an image by 90 degrees clockwise.
-		/// </summary>
-		/// <param name="img">Image to flip.</param>
-		/// <returns>Rotated image.</returns>
+		/// @brief Rotate an image by 90 degrees clockwise.
+		/// @param img Image to flip.
+		/// @return Rotated image.
 		[[nodiscard]] static Scope<Image> Rotate90Clockwise(const Image* img);
-		/// <summary>
-		/// Rotate an image by 90 degrees counter clockwise.
-		/// </summary>
-		/// <param name="img">Image to flip.</param>
-		/// <returns>Rotated image.</returns>
+		/// @brief Rotate an image by 90 degrees counter clockwise.
+		/// @param img Image to flip.
+		/// @return Rotated image.
 		[[nodiscard]] static Scope<Image> Rotate90CounterClockwise(const Image* img);
-		/// <summary>
-		/// Convert a RGB image to RGBA.
-		/// </summary>
-		/// <param name="img">Image to convert.</param>
-		/// <returns>Converted image.</returns>
+		/// @brief Convert a RGB image to RGBA.
+		/// @param img Image to convert.
+		/// @return Converted image.
 		[[nodiscard]] static Scope<Image> ConvertRGBToRGBA(const Image* img);
 
 		inline static constexpr std::array<std::string_view, 15> SupportedImageFormatSuffixes
@@ -251,116 +171,96 @@ namespace TRAP
 		};
 
 	protected:
-		/// <summary>
-		/// Flip raw pixel data on X axis.
-		/// </summary>
-		/// <typeparam name="T">u8, u16 or f32.</typeparam>
-		/// <param name="width">Width of image in pixels.</param>
-		/// <param name="height">Height of image in pixels.</param>
-		/// <param name="format">Color format of the image data.</param>
-		/// <param name="data">Raw pixel data.</param>
-		/// <returns>Flipped raw pixel data</returns>
+		/// @brief Flip raw pixel data on X axis.
+		/// @tparam T u8, u16 or f32.
+		/// @param width Width of image in pixels.
+		/// @param height Height of image in pixels.
+		/// @param format Color format of the image data.
+		/// @param data Raw pixel data.
+		/// @return Flipped raw pixel data
 		template<typename T>
 		requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 		[[nodiscard]] static std::vector<T> FlipX(u32 width, u32 height, ColorFormat format, const T* data);
-		/// <summary>
-		/// Flip raw pixel data on Y axis.
-		/// </summary>
-		/// <typeparam name="T">u8, u16 or f32.</typeparam>
-		/// <param name="width">Width of image in pixels.</param>
-		/// <param name="height">Height of image in pixels.</param>
-		/// <param name="format">Color format of the image data.</param>
-		/// <param name="data">Raw pixel data.</param>
-		/// <returns>Flipped raw pixel data</returns>
+		/// @brief Flip raw pixel data on Y axis.
+		/// @tparam T u8, u16 or f32.
+		/// @param width Width of image in pixels.
+		/// @param height Height of image in pixels.
+		/// @param format Color format of the image data.
+		/// @param data Raw pixel data.
+		/// @return Flipped raw pixel data
 		template<typename T>
 		requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 		[[nodiscard]] static std::vector<T> FlipY(u32 width, u32 height, ColorFormat format, const T* data);
-		/// <summary>
-		/// Rotate raw pixel data by 90 degrees clockwise.
-		/// </summary>
-		/// <typeparam name="T">u8, u16 or f32.</typeparam>
-		/// <param name="width">Width of image in pixels.</param>
-		/// <param name="height">Height of image in pixels.</param>
-		/// <param name="format">Color format of the image data.</param>
-		/// <param name="data">Raw pixel data.</param>
-		/// <returns>Rotated raw pixel data</returns>
+		/// @brief Rotate raw pixel data by 90 degrees clockwise.
+		/// @tparam T u8, u16 or f32.
+		/// @param width Width of image in pixels.
+		/// @param height Height of image in pixels.
+		/// @param format Color format of the image data.
+		/// @param data Raw pixel data.
+		/// @return Rotated raw pixel data
 		template<typename T>
 		requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 		[[nodiscard]] static std::vector<T> Rotate90Clockwise(u32 width, u32 height, ColorFormat format, const T* data);
-		/// <summary>
-		/// Rotate raw pixel data by 90 degrees counter clockwise.
-		/// </summary>
-		/// <typeparam name="T">u8, u16 or f32.</typeparam>
-		/// <param name="width">Width of image in pixels.</param>
-		/// <param name="height">Height of image in pixels.</param>
-		/// <param name="format">Color format of the image data.</param>
-		/// <param name="data">Raw pixel data.</param>
-		/// <returns>Rotate raw pixel data</returns>
+		/// @brief Rotate raw pixel data by 90 degrees counter clockwise.
+		/// @tparam T u8, u16 or f32.
+		/// @param width Width of image in pixels.
+		/// @param height Height of image in pixels.
+		/// @param format Color format of the image data.
+		/// @param data Raw pixel data.
+		/// @return Rotate raw pixel data
 		template<typename T>
 		requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 		[[nodiscard]] static std::vector<T> Rotate90CounterClockwise(u32 width, u32 height, ColorFormat format, const T* data);
-		/// <summary>
-		/// Converts raw RGB pixel data to RGBA.
-		/// </summary>
-		/// <typeparam name="T">u8, u16 or f32.</typeparam>
-		/// <param name="width">Width of image in pixels.</param>
-		/// <param name="height">Height of image in pixels.</param>
-		/// <param name="format">Color format of the image data.</param>
-		/// <param name="data">Raw pixel data.</param>
-		/// <returns>Converted RGBA raw pixel data</returns>
+		/// @brief Converts raw RGB pixel data to RGBA.
+		/// @tparam T u8, u16 or f32.
+		/// @param width Width of image in pixels.
+		/// @param height Height of image in pixels.
+		/// @param format Color format of the image data.
+		/// @param data Raw pixel data.
+		/// @return Converted RGBA raw pixel data
 		template<typename T>
 		requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 		[[nodiscard]] static std::vector<T> ConvertRGBToRGBA(u32 width, u32 height, ColorFormat format, const T* data);
-		/// <summary>
-		/// Converts raw RGBA pixel data to RGB.
-		/// </summary>
-		/// <typeparam name="T">u8, u16 or f32.</typeparam>
-		/// <param name="width">Width of image in pixels.</param>
-		/// <param name="height">Height of image in pixels.</param>
-		/// <param name="format">Color format of the image data.</param>
-		/// <param name="data">Raw pixel data.</param>
-		/// <returns>Converted RGB raw pixel data</returns>
+		/// @brief Converts raw RGBA pixel data to RGB.
+		/// @tparam T u8, u16 or f32.
+		/// @param width Width of image in pixels.
+		/// @param height Height of image in pixels.
+		/// @param format Color format of the image data.
+		/// @param data Raw pixel data.
+		/// @return Converted RGB raw pixel data
 		template<typename T>
 		requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 		[[nodiscard]] static std::vector<T> ConvertRGBAToRGB(u32 width, u32 height, ColorFormat format, const T* data);
 
-		/// <summary>
-		/// Converts BGR16 pixel data to RGB24.
-		/// </summary>
-		/// <param name="source">BGR16 pixel data.</param>
-		/// <param name="width">Width of the image.</param>
-		/// <param name="height">Height of the image.</param>
-		/// <returns>RGB24 pixel data.</returns>
+		/// @brief Converts BGR16 pixel data to RGB24.
+		/// @param source BGR16 pixel data.
+		/// @param width Width of the image.
+		/// @param height Height of the image.
+		/// @return RGB24 pixel data.
 		[[nodiscard]] static constexpr std::vector<u8> ConvertBGR16ToRGB24(std::vector<u8>& source,
 		                                                                        u32 width, u32 height);
-		/// <summary>
-		/// Converts BGR24 pixel data to RGB24.
-		/// </summary>
-		/// <param name="source">BGR24 pixel data.</param>
-		/// <param name="width">Width of the image.</param>
-		/// <param name="height">Height of the image.</param>
-		/// <returns>RGB24 pixel data.</returns>
+		/// @brief Converts BGR24 pixel data to RGB24.
+		/// @param source BGR24 pixel data.
+		/// @param width Width of the image.
+		/// @param height Height of the image.
+		/// @return RGB24 pixel data.
 		[[nodiscard]] static constexpr std::vector<u8> ConvertBGR24ToRGB24(std::vector<u8>& source,
 		                                                                        u32 width, u32 height);
-		/// <summary>
-		/// Converts BGR32 pixel data to RGB32.
-		/// </summary>
-		/// <param name="source">BGR32 pixel data.</param>
-		/// <param name="width">Width of the image.</param>
-		/// <param name="height">Height of the image.</param>
-		/// <returns>RGB32 pixel data.</returns>
+		/// @brief Converts BGR32 pixel data to RGB32.
+		/// @param source BGR32 pixel data.
+		/// @param width Width of the image.
+		/// @param height Height of the image.
+		/// @return RGB32 pixel data.
 		[[nodiscard]] static constexpr std::vector<u8> ConvertBGRA32ToRGBA32(std::vector<u8>& source,
 		                                                                          u32 width, u32 height);
-		/// <summary>
-		/// Decode BGRA indexed pixel data to RGBA.
+		/// @brief Decode BGRA indexed pixel data to RGBA.
 		/// Output format depends on channel count, if it is 4, output is RGBA, if it is 3, output is RGB and so on.
-		/// </summary>
-		/// <param name="source">Indexed BGRA pixel data.</param>
-		/// <param name="width">Width of the image.</param>
-		/// <param name="height">Height of the image.</param>
-		/// <param name="channels">Amount of channels, i.e. 4 = RGBA, 3 = RGB.</param>
-		/// <param name="colorMap">Color table.</param>
-		/// <returns>Decoded pixel data.</returns>
+		/// @param source Indexed BGRA pixel data.
+		/// @param width Width of the image.
+		/// @param height Height of the image.
+		/// @param channels Amount of channels, i.e. 4 = RGBA, 3 = RGB.
+		/// @param colorMap Color table.
+		/// @return Decoded pixel data.
 		[[nodiscard]] constexpr static std::vector<u8> DecodeBGRAMap(std::vector<u8>& source, u32 width, u32 height,
 		                                                                  u32 channels, std::vector<u8>& colorMap);
 

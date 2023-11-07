@@ -10,56 +10,36 @@ namespace TRAP::Graphics
 	class CommandPool
 	{
 	public:
-		/// <summary>
-		/// Create a new command pool from the given description.
-		/// </summary>
-		/// <param name="desc">Command pool description.</param>
-		/// <returns>Created command pool.</returns>
+		/// @brief Create a new command pool from the given description.
+		/// @param desc Command pool description.
+		/// @return Created command pool.
 		[[nodiscard]] static TRAP::Ref<CommandPool> Create(const RendererAPI::CommandPoolDesc& desc);
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~CommandPool();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		CommandPool(const CommandPool&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		CommandPool& operator=(const CommandPool&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		CommandPool(CommandPool&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		CommandPool& operator=(CommandPool&&) noexcept = default;
 
-		/// <summary>
-		/// Allocate a new command buffer.
-		/// </summary>
-		/// <param name="secondary">Should the command buffer be a secondary command buffer.</param>
-		///<returns>New command buffer.</returns>
+		/// @brief Allocate a new command buffer.
+		/// @param secondary Should the command buffer be a secondary command buffer.
+		///@return New command buffer.
 		[[nodiscard]] virtual CommandBuffer* AllocateCommandBuffer(bool secondary) = 0;
-		/// <summary>
-		/// Free a command buffer
-		/// </summary>
-		/// <param name="cmdBuffer">Command buffer to free.</param>
+		/// @brief Free a command buffer
+		/// @param cmdBuffer Command buffer to free.
 		virtual void FreeCommandBuffer(const CommandBuffer* cmdBuffer) = 0;
 
-		/// <summary>
-		/// Reset the command pool.
-		/// </summary>
+		/// @brief Reset the command pool.
 		virtual void Reset() const = 0;
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		explicit CommandPool(TRAP::Ref<TRAP::Graphics::Queue> queue);
 
 		std::vector<TRAP::Scope<CommandBuffer>> m_commandBuffers{};

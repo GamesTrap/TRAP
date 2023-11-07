@@ -10,97 +10,63 @@ namespace TRAP::Graphics::API
 	class VulkanRootSignature final : public RootSignature
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="desc">Root signature description.</param>
+		/// @brief Constructor.
+		/// @param desc Root signature description.
 		explicit VulkanRootSignature(const RendererAPI::RootSignatureDesc& desc);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanRootSignature() override;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr VulkanRootSignature(const VulkanRootSignature&) = delete;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr VulkanRootSignature& operator=(const VulkanRootSignature&) = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanRootSignature(VulkanRootSignature&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanRootSignature& operator=(VulkanRootSignature&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the Vulkan pipeline layout.
-		/// </summary>
-		/// <returns>Vulkan pipeline layout.</returns>
+		/// @brief Retrieve the Vulkan pipeline layout.
+		/// @return Vulkan pipeline layout.
 		[[nodiscard]] constexpr VkPipelineLayout GetVkPipelineLayout() const noexcept;
-		/// <summary>
-		/// Retrieve the root signature's Vulkan descriptor set layouts.
-		/// </summary>
-		/// <returns>Vulkan descriptor set layouts.</returns>
+		/// @brief Retrieve the root signature's Vulkan descriptor set layouts.
+		/// @return Vulkan descriptor set layouts.
 		[[nodiscard]] constexpr const std::array<VkDescriptorSetLayout,
 		                               RendererAPI::MaxDescriptorSets>& GetVkDescriptorSetLayouts() const noexcept;
-		/// <summary>
-		/// Retrieve the root signature's Vulkan cumulative descriptor counts.
-		/// </summary>
-		/// <returns>Vulkan cumulative descriptor counts.</returns>
+		/// @brief Retrieve the root signature's Vulkan cumulative descriptor counts.
+		/// @return Vulkan cumulative descriptor counts.
 		[[nodiscard]] constexpr const std::array<u32,
 		                               RendererAPI::MaxDescriptorSets>& GetVkCumulativeDescriptorCounts() const noexcept;
-		/// <summary>
-		/// Retrieve the root signature's Vulkan descriptor counts.
-		/// </summary>
-		/// <returns>Vulkan descriptor counts.</returns>
+		/// @brief Retrieve the root signature's Vulkan descriptor counts.
+		/// @return Vulkan descriptor counts.
 		[[nodiscard]] constexpr const std::array<u16,
 		                               RendererAPI::MaxDescriptorSets>& GetVkDescriptorCounts() const noexcept;
-		/// <summary>
-		/// Retrieve the root signature's Vulkan dynamic descriptor counts.
-		/// </summary>
-		/// <returns>Vulkan dynamic descriptor counts.</returns>
+		/// @brief Retrieve the root signature's Vulkan dynamic descriptor counts.
+		/// @return Vulkan dynamic descriptor counts.
 		[[nodiscard]] constexpr const std::array<u8,
 		                               RendererAPI::MaxDescriptorSets>& GetVkDynamicDescriptorCounts() const noexcept;
-		/// <summary>
-		/// Retrieve the root signature's Vulkan RayTracing descriptor counts.
-		/// </summary>
-		/// <returns>Vulkan RayTracing descriptor counts.</returns>
+		/// @brief Retrieve the root signature's Vulkan RayTracing descriptor counts.
+		/// @return Vulkan RayTracing descriptor counts.
 		[[nodiscard]] constexpr const std::array<u8,
 		                               RendererAPI::MaxDescriptorSets>& GetVkRayTracingDescriptorCounts() const noexcept;
 
-		/// <summary>
-		/// Retrieve the root signature's Vulkan descriptor update templates.
-		/// </summary>
-		/// <returns>Vulkan descriptor update templates.</returns>
+		/// @brief Retrieve the root signature's Vulkan descriptor update templates.
+		/// @return Vulkan descriptor update templates.
 		[[nodiscard]] constexpr const std::array<VkDescriptorUpdateTemplate,
 		                               RendererAPI::MaxDescriptorSets>& GetUpdateTemplates() const noexcept;
-		/// <summary>
-		/// Retrieve the root signature's empty Vulkan descriptor sets.
-		/// </summary>
-		/// <returns>Vulkan empty descriptor sets.</returns>
+		/// @brief Retrieve the root signature's empty Vulkan descriptor sets.
+		/// @return Vulkan empty descriptor sets.
 		[[nodiscard]] constexpr const std::array<VkDescriptorSet,
 		                               RendererAPI::MaxDescriptorSets>& GetVkEmptyDescriptorSets() const noexcept;
-		/// <summary>
-		/// Retrieve the root signature's descriptor update data.
-		/// </summary>
-		/// <returns>Descriptor update data.</returns>
+		/// @brief Retrieve the root signature's descriptor update data.
+		/// @return Descriptor update data.
 		[[nodiscard]] constexpr const std::array<std::vector<VulkanRenderer::DescriptorUpdateData>,
 		                               RendererAPI::MaxDescriptorSets>& GetUpdateTemplateData() const noexcept;
 
-		/// <summary>
-		/// Retrieve a descriptor via its name.
-		/// </summary>
-		/// <returns>Descriptor if found, nullptr otherwise.</returns>
+		/// @brief Retrieve a descriptor via its name.
+		/// @return Descriptor if found, nullptr otherwise.
 		[[nodiscard]] RendererAPI::DescriptorInfo* GetDescriptor(std::string_view resName);
-		/// <summary>
-		/// Retrieve a descriptor via its name.
-		/// </summary>
-		/// <returns>Descriptor if found, nullptr otherwise.</returns>
+		/// @brief Retrieve a descriptor via its name.
+		/// @return Descriptor if found, nullptr otherwise.
 		[[nodiscard]] const RendererAPI::DescriptorInfo* GetDescriptor(std::string_view resName) const;
 	private:
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();

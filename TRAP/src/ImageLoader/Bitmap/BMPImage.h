@@ -8,41 +8,25 @@ namespace TRAP::INTERNAL
 	class BMPImage final : public Image
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="filepath">File path of the image to load.</param>
+		/// @brief Constructor.
+		/// @param filepath File path of the image to load.
 		explicit BMPImage(std::filesystem::path filepath);
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		BMPImage(const BMPImage&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		BMPImage& operator=(const BMPImage&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		BMPImage(BMPImage&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		BMPImage& operator=(BMPImage&&) noexcept = default;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~BMPImage() override = default;
 
-		/// <summary>
-		/// Retrieve the raw pixel data of the image.
-		/// </summary>
-		/// <returns>Constant pointer to the raw pixel data.</returns>
+		/// @brief Retrieve the raw pixel data of the image.
+		/// @return Constant pointer to the raw pixel data.
 		[[nodiscard]] constexpr const void* GetPixelData() const noexcept override;
-		/// <summary>
-		/// Retrieve the size of the raw pixel data of the image.
-		/// </summary>
-		/// <returns>Size of the raw pixel data in bytes.</returns>
+		/// @brief Retrieve the size of the raw pixel data of the image.
+		/// @return Size of the raw pixel data in bytes.
 		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
 
 	private:
@@ -74,46 +58,34 @@ namespace TRAP::INTERNAL
 			//u32 CLRImportant = 0; //Amount of important colors in palette
 		};
 
-		/// <summary>
-		/// Validate bit fields via the given masks.
-		/// </summary>
-		/// <param name="bitFields">Bit fields to validate.</param>
-		/// <param name="masks">Mask to validate the bit fields against.</param>
-		/// <returns>True if the bit fields are valid, false otherwise.</returns>
+		/// @brief Validate bit fields via the given masks.
+		/// @param bitFields Bit fields to validate.
+		/// @param masks Mask to validate the bit fields against.
+		/// @return True if the bit fields are valid, false otherwise.
 		[[nodiscard]] constexpr bool ValidateBitFields(std::array<BitField, 4>& bitFields, std::array<u32, 4>& masks) const noexcept;
-		/// <summary>
-		/// Parse a bit field.
-		/// </summary>
-		/// <param name="field">Bit field to parse.</param>
-		/// <param name="mask">Mask.</param>
-		/// <returns>True if the bit field was parsed successfully, false otherwise.</returns>
+		/// @brief Parse a bit field.
+		/// @param field Bit field to parse.
+		/// @param mask Mask.
+		/// @return True if the bit field was parsed successfully, false otherwise.
 		[[nodiscard]] static constexpr bool ParseBitfield(BitField& field, u32 mask) noexcept;
-		/// <summary>
-		/// Convert given value to 8 bits.
-		/// </summary>
-		/// <param name="value">Value to convert.</param>
-		/// <param name="bitSpan">Bit span.</param>
-		/// <returns>Value as 8 bits.</returns>
+		/// @brief Convert given value to 8 bits.
+		/// @param value Value to convert.
+		/// @param bitSpan Bit span.
+		/// @return Value as 8 bits.
 		[[nodiscard]] static constexpr u8 Make8Bits(u32 value, u32 bitSpan) noexcept;
-		/// <summary>
-		/// Applies a bit field on the given value.
-		/// </summary>
-		/// <param name="x">Value to apply bit field to.</param>
-		/// <param name="bitField">Bit field to apply.</param>
-		/// <returns>Value with bit field applied.</returns>
+		/// @brief Applies a bit field on the given value.
+		/// @param x Value to apply bit field to.
+		/// @param bitField Bit field to apply.
+		/// @return Value with bit field applied.
 		[[nodiscard]] static constexpr u32 ApplyBitField(u32 x, BitField& bitField) noexcept;
-		/// <summary>
-		/// Applies a bit field on the given value.
-		/// </summary>
-		/// <param name="x">Value to apply bit field to.</param>
-		/// <param name="bitField">Bit field to apply.</param>
-		/// <returns>Value with bit field applied.</returns>
+		/// @brief Applies a bit field on the given value.
+		/// @param x Value to apply bit field to.
+		/// @param bitField Bit field to apply.
+		/// @return Value with bit field applied.
 		[[nodiscard]] static constexpr u32 ApplyBitField(u16 x, BitField& bitField) noexcept;
-		/// <summary>
-		/// Decode run length encoded 8-bit BMP data.
-		/// </summary>
-		/// <param name="compressedImageData">Compressed image data.</param>
-		/// <param name="colorTable">Color table.</param>
+		/// @brief Decode run length encoded 8-bit BMP data.
+		/// @param compressedImageData Compressed image data.
+		/// @param colorTable Color table.
 		constexpr void DecodeRLE8(std::vector<u8>& compressedImageData, const std::vector<u8>* colorTable);
 
 		std::vector<u8> m_data;

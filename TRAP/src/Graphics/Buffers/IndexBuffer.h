@@ -11,125 +11,87 @@ namespace TRAP::Graphics
 	class IndexBuffer
 	{
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="indexType">Index type of the index buffer.</param>
+		/// @brief Constructor.
+		/// @param indexType Index type of the index buffer.
 		constexpr explicit IndexBuffer(RendererAPI::IndexType indexType) noexcept;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		IndexBuffer(const IndexBuffer&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		IndexBuffer& operator=(const IndexBuffer&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		IndexBuffer(IndexBuffer&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		IndexBuffer& operator=(IndexBuffer&&) noexcept = default;
 
 	public:
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~IndexBuffer() = default;
 
-		/// <summary>
-		/// Retrieve the count of indices inside this buffer.
-		/// </summary>
-		/// <returns>Count of indices.</returns>
+		/// @brief Retrieve the count of indices inside this buffer.
+		/// @return Count of indices.
 		[[nodiscard]] u32 GetCount() const noexcept;
-		/// <summary>
-		/// Retrieve the total byte size of the buffer.
-		/// </summary>
-		/// <returns>Total buffer byte size.</returns>
+		/// @brief Retrieve the total byte size of the buffer.
+		/// @return Total buffer byte size.
 		[[nodiscard]] u64 GetSize() const noexcept;
-		/// <summary>
-		/// Retrieve the update frequency used by this buffer.
-		/// </summary>
-		/// <returns>Update frequency.</returns>
+		/// @brief Retrieve the update frequency used by this buffer.
+		/// @return Update frequency.
 		[[nodiscard]] UpdateFrequency GetUpdateFrequency() const noexcept;
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Use this buffer for rendering on the given window.
-		/// </summary>
-		/// <param name="window">Window to use index buffer on. Default: Main Window.</param>
+		/// @brief Use this buffer for rendering on the given window.
+		/// @param window Window to use index buffer on. Default: Main Window.
+		/// @remark @headless This function is not available in headless mode.
 		void Use(const Window* window = TRAP::Application::GetWindow()) const;
 #else
-		/// <summary>
-		/// Use this buffer for rendering.
-		/// </summary>
+		/// @brief Use this buffer for rendering.
+		/// @remark This function is only available in headless mode.
 		void Use() const;
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Update the buffers index data.
-		/// </summary>
-		/// <param name="indices">Pointer to the updated data.</param>
-		/// <param name="offset">Byte offset into the currently used index data.</param>
+		/// @brief Update the buffers index data.
+		/// @param indices Pointer to the updated data.
+		/// @param offset Byte offset into the currently used index data.
 		void SetData(std::span<const u16> indices, u64 offset = 0);
-		/// <summary>
-		/// Update the buffers index data.
-		/// </summary>
-		/// <param name="indices">Pointer to the updated data.</param>
-		/// <param name="offset">Byte offset into the currently used index data.</param>
+		/// @brief Update the buffers index data.
+		/// @param indices Pointer to the updated data.
+		/// @param offset Byte offset into the currently used index data.
 		void SetData(std::span<const u32> indices, u64 offset = 0);
 
-		/// <summary>
-		/// Check whether uploading data to the GPU has finished.
-		/// </summary>
-		/// <returns>True if uploading data to the GPU has finished.</returns>
+		/// @brief Check whether uploading data to the GPU has finished.
+		/// @return True if uploading data to the GPU has finished.
 		[[nodiscard]] bool IsLoaded() const;
-		/// <summary>
-		/// Wait until uploading data to the GPU has finished.
-		/// </summary>
+		/// @brief Wait until uploading data to the GPU has finished.
 		void AwaitLoading() const;
 
-		/// <summary>
-		/// Create a new index buffer and set its data.
-		/// </summary>
-		/// <param name="indices">Pointer to the data to upload.</param>
-		/// <param name="updateFrequency">Update frequency for the buffer.</param>
-		/// <returns>New index buffer.</returns>
+		/// @brief Create a new index buffer and set its data.
+		/// @param indices Pointer to the data to upload.
+		/// @param updateFrequency Update frequency for the buffer.
+		/// @return New index buffer.
 		[[nodiscard]] static Scope<IndexBuffer> Create(std::span<const u16> indices, UpdateFrequency updateFrequency);
-		/// <summary>
-		/// Create a new index buffer and set its data.
-		/// </summary>
-		/// <param name="indices">Pointer to the data to upload.</param>
-		/// <param name="updateFrequency">Update frequency for the buffer.</param>
-		/// <returns>New index buffer.</returns>
+		/// @brief Create a new index buffer and set its data.
+		/// @param indices Pointer to the data to upload.
+		/// @param updateFrequency Update frequency for the buffer.
+		/// @return New index buffer.
 		[[nodiscard]] static Scope<IndexBuffer> Create(std::span<const u32> indices, UpdateFrequency updateFrequency);
-		/// <summary>
-		/// Create a new index buffer and set its size.
-		/// </summary>
-		/// <param name="size">Byte size for the index buffer.</param>
-		/// <param name="updateFrequency">Update frequency for the buffer.</param>
-		/// <returns>New index buffer.</returns>
+		/// @brief Create a new index buffer and set its size.
+		/// @param size Byte size for the index buffer.
+		/// @param updateFrequency Update frequency for the buffer.
+		/// @return New index buffer.
 		[[nodiscard]] static Scope<IndexBuffer> Create(u64 size, UpdateFrequency updateFrequency);
 
 	private:
-		/// <summary>
-		/// Initialize index buffer with given data.
-		/// </summary>
-		/// <param name="indices">Pointer to the data to upload.</param>
-		/// <param name="size">Byte size of the data to upload.</param>
-		/// <param name="updateFrequency">Update frequency for the buffer.</param>
-		/// <returns>New index buffer.</returns>
+		/// @brief Initialize index buffer with given data.
+		/// @param indices Pointer to the data to upload.
+		/// @param size Byte size of the data to upload.
+		/// @param updateFrequency Update frequency for the buffer.
+		/// @return New index buffer.
 		template<typename T>
 		requires std::same_as<T, u16> || std::same_as<T, u32>
 		[[nodiscard]] static TRAP::Scope<IndexBuffer> Init(const T* indices, u64 size, UpdateFrequency updateFrequency);
 
-		/// <summary>
-		/// Set new index buffer data.
-		/// </summary>
-		/// <param name="indices">Pointer to the data to upload.</param>
-		/// <param name="offset">Byte offset into the currently used index data.</param>
+		/// @brief Set new index buffer data.
+		/// @param indices Pointer to the data to upload.
+		/// @param offset Byte offset into the currently used index data.
 		template<typename T, usize Size = std::dynamic_extent>
 		requires std::same_as<T, u16> || std::same_as<T, u32>
 		void SetDataInternal(std::span<const T, Size> indices, u64 offset = 0);
@@ -153,8 +115,9 @@ constexpr TRAP::Graphics::IndexBuffer::IndexBuffer(const RendererAPI::IndexType 
 
 template<typename T>
 requires std::same_as<T, u16> || std::same_as<T, u32>
-[[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Init(const T* const indices, const u64 size,
-                                                                                         const UpdateFrequency updateFrequency)
+[[nodiscard]] inline TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Init(const T* const indices,
+                                                                                                const u64 size,
+                                                                                                const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

@@ -8,15 +8,11 @@
 
 namespace TRAP::Utils::INTERNAL
 {
-    /// <summary>
-    /// Key type for getting common type numbers or objects.
-    /// </summary>
+    /// @brief Key type for getting common type numbers or objects.
     struct Common { };
 
-    /// <summary>
-    /// True if type T is applicable by a std::uniform_int_distribution.
-    /// </summary>
-    /// <typeparam name="T">Type applicable by std::uniform_int_distribution.</typeparam>
+    /// @brief True if type T is applicable by a std::uniform_int_distribution.
+    /// @tparam T Type applicable by std::uniform_int_distribution.
     template<typename T>
     concept IsUniformInt = std::same_as<T,  i16> ||
                            std::same_as<T,  i32> ||
@@ -25,44 +21,34 @@ namespace TRAP::Utils::INTERNAL
                            std::same_as<T, u32> ||
                            std::same_as<T, u64>;
 
-    /// <summary>
-    /// True if type T is applicable by a std::uniform_real_distribution.
-    /// </summary>
-    /// <typeparam name="T">Type applicable by std::uniform_real_distribution.</typeparam>
+    /// @brief True if type T is applicable by a std::uniform_real_distribution.
+    /// @tparam T Type applicable by std::uniform_real_distribution.
     template<typename T>
     concept IsUniformReal = std::same_as<T,       f32> ||
                             std::same_as<T,      f64> ||
                             std::same_as<T, long double>;
 
-    /// <summary>
-    /// True if type T is plain byte.
-    /// </summary>
-    /// <typeparam name="T">Byte type.</typeparam>
+    /// @brief True if type T is plain byte.
+    /// @tparam T Byte type.
     template<typename T>
     concept IsByte = std::same_as<T,  i8> ||
                      std::same_as<T, u8>;
 
-    /// <summary>
-    /// True if type T is plain number type.
-    /// </summary>
-    /// <typeparam name="T">Number type.</typeparam>
+    /// @brief True if type T is plain number type.
+    /// @tparam T Number type.
     template<typename T>
     concept IsSupportedNumber = IsByte<T> || IsUniformReal<T> || IsUniformInt<T>;
 
-    /// <summary>
-    /// True if type T is character type.
-    /// </summary>
-    /// <typeparam name="T">Character type.</typeparam>
+    /// @brief True if type T is character type.
+    /// @tparam T Character type.
     template<typename T>
     concept IsSupportedCharacter = std::same_as<T,     char> ||
                                    std::same_as<T,  wchar_t> ||
                                    std::same_as<T, char16_t> ||
                                    std::same_as<T, char32_t>;
 
-    /// <summary>
-    /// True if type T is iterator
-    /// </summary>
-    /// <typeparam name="T">Iterator type.</typeparam>
+    /// @brief True if type T is iterator
+    /// @tparam T Iterator type.
     template<typename T>
     struct IsIterator
     {

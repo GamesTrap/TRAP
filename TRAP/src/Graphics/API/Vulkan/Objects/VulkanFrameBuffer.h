@@ -10,54 +10,34 @@ namespace TRAP::Graphics::API
 	class VulkanFrameBuffer
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="device">Vulkan device.</param>
-		/// <param name="desc">Framebuffer description.</param>
+		/// @brief Constructor.
+		/// @param device Vulkan device.
+		/// @param desc Framebuffer description.
 		VulkanFrameBuffer(TRAP::Ref<VulkanDevice> device, const VulkanRenderer::FrameBufferDesc& desc);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanFrameBuffer();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		VulkanFrameBuffer(const VulkanFrameBuffer&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanFrameBuffer& operator=(const VulkanFrameBuffer&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanFrameBuffer(VulkanFrameBuffer&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanFrameBuffer& operator=(VulkanFrameBuffer&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the VkFramebuffer handle.
-		/// </summary>
-		/// <returns>VkFramebuffer handle.</returns>
+		/// @brief Retrieve the VkFramebuffer handle.
+		/// @return VkFramebuffer handle.
 		[[nodiscard]] constexpr VkFramebuffer GetVkFrameBuffer() const noexcept;
 
-		/// <summary>
-		/// Retrieve the width of the framebuffer.
-		/// </summary>
-		/// <returns>Framebuffer width.</returns>
+		/// @brief Retrieve the width of the framebuffer.
+		/// @return Framebuffer width.
 		[[nodiscard]] constexpr u32 GetWidth() const noexcept;
-		/// <summary>
-		/// Retrieve the height of the framebuffer.
-		/// </summary>
-		/// <returns>Framebuffer height.</returns>
+		/// @brief Retrieve the height of the framebuffer.
+		/// @return Framebuffer height.
 		[[nodiscard]] constexpr u32 GetHeight() const noexcept;
-		/// <summary>
-		/// Retrieve the array size of the framebuffer.
-		/// </summary>
-		/// <returns>Framebuffer array size.</returns>
+		/// @brief Retrieve the array size of the framebuffer.
+		/// @return Framebuffer array size.
 		[[nodiscard]] constexpr u32 GetArraySize() const noexcept;
 
 	private:

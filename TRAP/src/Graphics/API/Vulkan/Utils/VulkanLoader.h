@@ -66,65 +66,47 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 struct VkDeviceTable;
 
-/// <summary>
-/// Initialize library by loading Vulkan loader; call this function before creating the Vulkan instance.
-/// </summary>
-/// <returns>VK_SUCCESS on success and VK_ERROR_INITIALIZATION_FAILED otherwise.</returns>
+/// @brief Initialize library by loading Vulkan loader; call this function before creating the Vulkan instance.
+/// @return VK_SUCCESS on success and VK_ERROR_INITIALIZATION_FAILED otherwise.
 [[nodiscard]] VkResult VkInitialize();
 
-/// <summary>
-/// Initialize library by providing a custom handler to load global symbols.
-/// This function can be used instead of VkInitialize.
-/// The handler function pointer will be asked to load global Vulkan symbols which require no instance
-/// (such as vkCreateInstance, vkEnumerateInstance*and vkEnumerateInstanceVersion if available).
-/// </summary>
-/// <param name="handler">Function pointer for custom loading</param>
+/// @brief Initialize library by providing a custom handler to load global symbols.
+///        This function can be used instead of VkInitialize.
+///        The handler function pointer will be asked to load global Vulkan symbols which require no instance
+///        (such as vkCreateInstance, vkEnumerateInstance*and vkEnumerateInstanceVersion if available).
+/// @param handler Function pointer for custom loading.
 void VkInitializeCustom(PFN_vkGetInstanceProcAddr handler);
 
-/// <summary>
-/// Get Vulkan instance version supported by the Vulkan loader, or an empty optional if Vulkan isn't supported
-/// </summary>
-/// <returns>Empty optional if VkInitialize wasn't called or failed.</returns>
+/// @brief Get Vulkan instance version supported by the Vulkan loader, or an empty optional if Vulkan isn't supported.
+/// @return Empty optional if VkInitialize wasn't called or failed.
 [[nodiscard]] std::optional<u32> VkGetInstanceVersion();
 
-/// <summary>
-/// Load global function pointers using application-created VkInstance; call this function after creating the Vulkan instance.
-/// </summary>
-/// <param name="instance"></param>
+/// @brief Load global function pointers using application-created VkInstance; call this function after creating the Vulkan instance.
+/// @param instance VkInstance to load functions with.
 void VkLoadInstance(VkInstance instance);
 
-/// <summary>
-/// Load global function pointers using application-created VkInstance; call this function after creating the Vulkan instance.
-/// Skips loading device-based function pointers, requires usage of VkLoadDevice afterwards.
-/// </summary>
-/// <param name="instance">VkInstance</param>
+/// @brief Load global function pointers using application-created VkInstance; call this function after creating the Vulkan instance.
+///        Skips loading device-based function pointers, requires usage of VkLoadDevice afterwards.
+/// @param instance VkInstance to load functions with.
 void VkLoadInstanceOnly(VkInstance instance);
 
-/// <summary>
-/// Load global function pointers using application-created VkDevice; call this function after creating the Vulkan device.
-/// Note: this is not suitable for applications that want to use multiple VkDevice objects concurrently.
-/// </summary>
-/// <param name="device">VkDevice</param>
+/// @brief Load global function pointers using application-created VkDevice; call this function after creating the Vulkan device.
+/// @param device VkDevice to load functions with.
+/// @note This is not suitable for applications that want to use multiple VkDevice objects concurrently.
 void VkLoadDevice(VkDevice device);
 
-/// <summary>
-/// Retrieve the last VkInstance for which global function pointers have been loaded via VkLoadInstance().
-/// </summary>
-/// <returns>VkInstance, or VK_NULL_HANDLE if VkLoadInstance() has not been called.</returns>
+/// @brief Retrieve the last VkInstance for which global function pointers have been loaded via VkLoadInstance().
+/// @return VkInstance, or VK_NULL_HANDLE if VkLoadInstance() has not been called.
 [[nodiscard]] VkInstance VkGetLoadedInstance();
 
-/// <summary>
-/// Retrieve the last VkDevice for which global function pointers have been loaded via VkLoadDevice().
-/// </summary>
-/// <returns>VkDevice, or VK_NULL_HANDLE if VkLoadDevice() has not been called.</returns>
+/// @brief Retrieve the last VkDevice for which global function pointers have been loaded via VkLoadDevice().
+/// @return VkDevice, or VK_NULL_HANDLE if VkLoadDevice() has not been called.
 [[nodiscard]] VkDevice VkGetLoadedDevice();
 
-/// <summary>
-/// Load function pointers using application-created VkDevice into a table.
-/// Application should use function pointers from that table instead of using global function pointers.
-/// </summary>
-/// <param name="table">Pointer where to store loaded functions into</param>
-/// <param name="device">Device from which function pointers should be loaded</param>
+/// @brief Load function pointers using application-created VkDevice into a table.
+///        Application should use function pointers from that table instead of using global function pointers.
+/// @param table Pointer where to store loaded functions into.
+/// @param device Device from which function pointers should be loaded.
 void VkLoadDeviceTable(struct VkDeviceTable* table, VkDevice device);
 
 //Device-specific function pointer table

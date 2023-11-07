@@ -40,30 +40,18 @@ namespace TRAP::Network
 	class Socket
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		constexpr Socket() noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr Socket(Socket&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		Socket& operator=(Socket&&) noexcept = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Socket(const Socket&) = delete;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr Socket& operator=(const Socket&) = delete;
 
-		/// <summary>
-		/// Status codes that may be returned by socket functions.
-		/// </summary>
+		/// @brief Status codes that may be returned by socket functions.
 		enum class Status
 		{
 			Done,         //The socket has sent / received the data
@@ -73,21 +61,16 @@ namespace TRAP::Network
 			Error         //An unexpected error happened
 		};
 
-		/// <summary>
-		/// Some special values used by sockets.
-		/// </summary>
+		/// @brief Some special values used by sockets.
 		enum
 		{
 			AnyPort = 0 //Special value that tells the system to pick any available port
 		};
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~Socket();
 
-		/// <summary>
-		/// Set the blocking state of the socket.
+		/// @brief Set the blocking state of the socket.
 		///
 		/// In blocking mode, calls will not return until they have
 		/// completed their task.
@@ -98,72 +81,55 @@ namespace TRAP::Network
 		/// using the return code to signal whether there was data
 		/// available or not.
 		/// By default, all sockets are blocking.
-		/// </summary>
-		/// <param name="blocking">True to set the socket as blocking, false for non-blocking.</param>
+		/// @param blocking True to set the socket as blocking, false for non-blocking.
 		void SetBlocking(bool blocking);
 
-		/// <summary>
-		/// Tell whether the socket is in blocking or non-blocking mode.
-		/// </summary>
-		/// <returns>True if the socket is blocking, false otherwise.</returns>
+		/// @brief Tell whether the socket is in blocking or non-blocking mode.
+		/// @return True if the socket is blocking, false otherwise.
 		[[nodiscard]] constexpr bool IsBlocking() const noexcept;
 
 	protected:
-		/// <summary>
-		/// Types of protocols that the socket can use.
-		/// </summary>
+		/// @brief Types of protocols that the socket can use.
 		enum class Type
 		{
 			TCP, //TCP protocol
 			UDP  //UDP protocol
 		};
 
-		/// <summary>
-		/// Constructor.
+		/// @brief Constructor.
 		///
 		/// This constructor can only be accessed by derived classes.
-		/// </summary>
-		/// <param name="type">Type of the socket (TCP or UDP).</param>
+		/// @param type Type of the socket (TCP or UDP).
 		constexpr explicit Socket(Type type) noexcept;
 
-		/// <summary>
-		/// Return the internal handle of the socket.
+		/// @brief Return the internal handle of the socket.
 		///
 		/// The returned handle may be invalid if the socket
 		/// was not created yet (or already destroyed).
 		/// This function can only be accessed by derived classes.
-		/// </summary>
-		/// <returns>The internal (OS-specific) handle of the socket.</returns>
+		/// @return The internal (OS-specific) handle of the socket.
 		[[nodiscard]] constexpr SocketHandle GetHandle() const noexcept;
 
-		/// <summary>
-		/// Create the internal representation of the socket.
+		/// @brief Create the internal representation of the socket.
 		///
 		/// This function can only be accessed by derived classes.
-		/// </summary>
 		void CreateIPv4();
 
-		/// <summary>
-		/// Create the internal representation of the socket.
+		/// @brief Create the internal representation of the socket.
 		///
 		/// This function can only be accessed by derived classes.
-		/// </summary>
 		void CreateIPv6();
 
-		/// <summary>
-		/// Create the internal representation of the socket
+		/// @brief Create the internal representation of the socket
 		/// from a socket handle.
 		///
 		/// This function can only be accessed by derived classes.
-		/// </summary>
-		/// <param name="handle">OS-specific handle of the socket to wrap.</param>
+		/// @param handle OS-specific handle of the socket to wrap.
 		void Create(SocketHandle handle);
 
-		/// <summary>
-		/// Close the socket gracefully.
+		/// @brief Close the socket gracefully.
 		///
 		/// This function can only be accessed by derived classes.
-		/// </summary>
 		void Close();
 
 	private:

@@ -13,112 +13,76 @@ namespace TRAP::Graphics
 	class VertexBuffer
 	{
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		constexpr VertexBuffer() noexcept = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		VertexBuffer(const VertexBuffer&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VertexBuffer& operator=(const VertexBuffer&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VertexBuffer(VertexBuffer&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VertexBuffer& operator=(VertexBuffer&&) noexcept = default;
 
 	public:
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VertexBuffer() = default;
 
-		/// <summary>
-		/// Retrieve the vertex buffer layout of this buffer.
-		/// </summary>
-		/// <returns>Vertex buffer layout.</returns>
+		/// @brief Retrieve the vertex buffer layout of this buffer.
+		/// @return Vertex buffer layout.
 		[[nodiscard]] constexpr const VertexBufferLayout& GetLayout() const noexcept;
-		/// <summary>
-		/// Set the vertex buffer layout to be used by this buffer.
-		/// </summary>
-		/// <param name="layout">New vertex buffer layout.</param>
+		/// @brief Set the vertex buffer layout to be used by this buffer.
+		/// @param layout New vertex buffer layout.
 		constexpr void SetLayout(const VertexBufferLayout& layout);
-		/// <summary>
-		/// Retrieve the total byte size of the buffer.
-		/// </summary>
-		/// <returns>Total buffer byte size.</returns>
+		/// @brief Retrieve the total byte size of the buffer.
+		/// @return Total buffer byte size.
 		[[nodiscard]] u64 GetSize() const noexcept;
-		/// <summary>
-		/// Retrieve the count of vertex elements inside this buffer.
-		/// </summary>
-		/// <returns>Count of vertex elements.</returns>
+		/// @brief Retrieve the count of vertex elements inside this buffer.
+		/// @return Count of vertex elements.
 		[[nodiscard]] u32 GetCount() const noexcept;
-		/// <summary>
-		/// Retrieve the update frequency used by this buffer.
-		/// </summary>
-		/// <returns>Update frequency.</returns>
+		/// @brief Retrieve the update frequency used by this buffer.
+		/// @return Update frequency.
 		[[nodiscard]] UpdateFrequency GetUpdateFrequency() const noexcept;
 
-		/// <summary>
-		/// Update the buffers vertex data.
-		/// </summary>
-		/// <param name="data">Pointer to the updated data.</param>
-		/// <param name="offset">Byte offset into the currently used vertex data.</param>
+		/// @brief Update the buffers vertex data.
+		/// @param data Pointer to the updated data.
+		/// @param offset Byte offset into the currently used vertex data.
 		void SetData(std::span<const f32> data, u64 offset = 0);
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Use this buffer for rendering on the given window.
-		/// </summary>
-		/// <param name="window">Window to use vertex buffer on. Default: Main Window.</param>
+		/// @brief Use this buffer for rendering on the given window.
+		/// @param window Window to use vertex buffer on. Default: Main Window.
+		/// @remark @headless This function is not available in headless mode.
 		void Use(const Window* window = TRAP::Application::GetWindow()) const;
 #else
-		/// <summary>
-		/// Use this buffer for rendering.
-		/// </summary>
+		/// @brief Use this buffer for rendering.
+		/// @remark This function is only available in headless mode.
 		void Use() const;
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Check whether uploading data to the GPU has finished.
-		/// </summary>
-		/// <returns>True if uploading data to the GPU has finished.</returns>
+		/// @brief Check whether uploading data to the GPU has finished.
+		/// @return True if uploading data to the GPU has finished.
 		[[nodiscard]] bool IsLoaded() const;
-		/// <summary>
-		/// Wait until uploading data to the GPU has finished.
-		/// </summary>
+		/// @brief Wait until uploading data to the GPU has finished.
 		void AwaitLoading() const;
 
-		/// <summary>
-		/// Create a new vertex buffer and set its data.
-		/// </summary>
-		/// <param name="vertices">Pointer to the data to upload.</param>
-		/// <param name="updateFrequency">Update frequency for the buffer.</param>
-		/// <returns>New vertex buffer.</returns>
+		/// @brief Create a new vertex buffer and set its data.
+		/// @param vertices Pointer to the data to upload.
+		/// @param updateFrequency Update frequency for the buffer.
+		/// @return New vertex buffer.
 		[[nodiscard]] static Scope<VertexBuffer> Create(std::span<const f32> vertices, UpdateFrequency updateFrequency);
-		/// <summary>
-		/// Create a new vertex buffer and set its size.
-		/// </summary>
-		/// <param name="size">Byte size for the vertex buffer.</param>
-		/// <param name="updateFrequency">Update frequency for the buffer.</param>
-		/// <returns>New vertex buffer.</returns>
+		/// @brief Create a new vertex buffer and set its size.
+		/// @param size Byte size for the vertex buffer.
+		/// @param updateFrequency Update frequency for the buffer.
+		/// @return New vertex buffer.
 		[[nodiscard]] static Scope<VertexBuffer> Create(u64 size, UpdateFrequency updateFrequency);
 
 	private:
-		/// <summary>
-		/// Initialize vertex buffer with given data.
-		/// </summary>
-		/// <param name="vertices">Pointer to the data to upload.</param>
-		/// <param name="size">Byte size of the data to upload.</param>
-		/// <param name="updateFrequency">Update frequency for the buffer.</param>
-		/// <returns>New vertex buffer.</returns>
+		/// @brief Initialize vertex buffer with given data.
+		/// @param vertices Pointer to the data to upload.
+		/// @param size Byte size of the data to upload.
+		/// @param updateFrequency Update frequency for the buffer.
+		/// @return New vertex buffer.
 		[[nodiscard]] static Scope<VertexBuffer> Init(const f32* vertices, u64 size, UpdateFrequency updateFrequency);
 
 		TRAP::Ref<TRAP::Graphics::Buffer> m_vertexBuffer = nullptr;

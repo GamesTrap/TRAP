@@ -8,319 +8,207 @@
 
 namespace TRAP::Events
 {
-	/// <summary>
-	/// Key event base class.
-	/// </summary>
+	/// @brief Key event base class.
+	/// @remark @headless This class is not available in headless mode.
 	class KeyEvent : public Event
 	{
 	public:
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~KeyEvent() override = default;
 
-		/// <summary>
-		/// Retrieve the affected key.
-		/// </summary>
-		/// <returns>Key.</returns>
+		/// @brief Retrieve the affected key.
+		/// @return Key.
 		[[nodiscard]] constexpr Input::Key GetKey() const noexcept;
 
-		/// <summary>
-		/// Retrieve the category flags of the event.
-		/// </summary>
-		/// <returns>Combination of one or more EventCategory's.</returns>
+		/// @brief Retrieve the category flags of the event.
+		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="key">Affected key.</param>
+		/// @brief Constructor.
+		/// @param key Affected key.
 		explicit constexpr KeyEvent(Input::Key key) noexcept;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr KeyEvent(const KeyEvent&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr KeyEvent& operator=(const KeyEvent&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr KeyEvent(KeyEvent&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr KeyEvent& operator=(KeyEvent&&) noexcept = default;
 
 		Input::Key m_key;
 	};
 
-	/// <summary>
-	/// Key pressed.
-	/// </summary>
+	/// @brief Key pressed event.
+	/// @remark @headless This class is not available in headless mode.
 	class KeyPressEvent final : public KeyEvent
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="key">Pressed key.</param>
-		/// <param name="window">Pointer to the affected window.</param>
+		/// @brief Constructor.
+		/// @param key Pressed key.
+		/// @param window Pointer to the affected window.
 		KeyPressEvent(Input::Key key, TRAP::Window* window);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~KeyPressEvent() override = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr KeyPressEvent(const KeyPressEvent&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		KeyPressEvent& operator=(const KeyPressEvent&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr KeyPressEvent(KeyPressEvent&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		KeyPressEvent& operator=(KeyPressEvent&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve a pointer to the affected window.
-		/// </summary>
-		/// <returns>Window pointer.</returns>
+		/// @brief Retrieve a pointer to the affected window.
+		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// <summary>
-		/// Get a string representation of the KeyPressEvent.
-		/// </summary>
-		/// <returns>String representation.</returns>
+		/// @brief Get a string representation of the KeyPressEvent.
+		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
 
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
-		/// <summary>
-		/// Retrieve the name of the event.
-		/// </summary>
-		/// <returns>Name.</returns>
+
+		/// @brief Retrieve the name of the event.
+		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
 
 	private:
 		TRAP::Window* m_window;
 	};
 
-	/// <summary>
-	/// Key repeated.
-	/// </summary>
+	/// @brief Key repeated event.
+	/// @remark @headless This class is not available in headless mode.
 	class KeyRepeatEvent final : public KeyEvent
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="key">Repeated key.</param>
-		/// <param name="window">Pointer to the affected window.</param>
+		/// @brief Constructor.
+		/// @param key Repeated key.
+		/// @param window Pointer to the affected window.
 		KeyRepeatEvent(Input::Key key, TRAP::Window* window);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~KeyRepeatEvent() override = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr KeyRepeatEvent(const KeyRepeatEvent&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		KeyRepeatEvent& operator=(const KeyRepeatEvent&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr KeyRepeatEvent(KeyRepeatEvent&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		KeyRepeatEvent& operator=(KeyRepeatEvent&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve a pointer to the affected window.
-		/// </summary>
-		/// <returns>Window pointer.</returns>
+		/// @brief Retrieve a pointer to the affected window.
+		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// <summary>
-		/// Get a string representation of the KeyRepeatEvent.
-		/// </summary>
-		/// <returns>String representation.</returns>
+		/// @brief Get a string representation of the KeyRepeatEvent.
+		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
 
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
-		/// <summary>
-		/// Retrieve the name of the event.
-		/// </summary>
-		/// <returns>Name.</returns>
+		/// @brief Retrieve the name of the event.
+		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
 
 	private:
 		TRAP::Window* m_window;
 	};
 
-	/// <summary>
-	/// Key released.
-	/// </summary>
+	/// @brief Key released.
+	/// @remark @headless This class is not available in headless mode.
 	class KeyReleaseEvent final : public KeyEvent
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="key">Released key.</param>
-		/// <param name="window">Pointer to the affected window.</param>
+		/// @brief Constructor.
+		/// @param key Released key.
+		/// @param window Pointer to the affected window.
 		explicit KeyReleaseEvent(Input::Key key, TRAP::Window* window);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~KeyReleaseEvent() override = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr KeyReleaseEvent(const KeyReleaseEvent&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		KeyReleaseEvent& operator=(const KeyReleaseEvent&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr KeyReleaseEvent(KeyReleaseEvent&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		KeyReleaseEvent& operator=(KeyReleaseEvent&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve a pointer to the affected window.
-		/// </summary>
-		/// <returns>Window pointer.</returns>
+		/// @brief Retrieve a pointer to the affected window.
+		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// <summary>
-		/// Get a string representation of the KeyReleaseEvent.
-		/// </summary>
-		/// <returns>String representation.</returns>
+		/// @brief Get a string representation of the KeyReleaseEvent.
+		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
 
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
-		/// <summary>
-		/// Retrieve the name of the event.
-		/// </summary>
-		/// <returns>Name.</returns>
+		/// @brief Retrieve the name of the event.
+		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
 
 	private:
 		TRAP::Window* m_window;
 	};
 
-	/// <summary>
-	/// Key typed.
-	/// </summary>
+	/// @brief Key typed.
+	/// @remark @headless This class is not available in headless mode.
 	class KeyTypeEvent final : public Event
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="codePoint">Unicode code point entered.</param>
-		/// <param name="window">Pointer to the affected window.</param>
+		/// @brief Constructor.
+		/// @param codePoint Unicode code point entered.
+		/// @param window Pointer to the affected window.
 		explicit KeyTypeEvent(u32 codePoint, TRAP::Window* window);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~KeyTypeEvent() override = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr KeyTypeEvent(const KeyTypeEvent&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		KeyTypeEvent& operator=(const KeyTypeEvent&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr KeyTypeEvent(KeyTypeEvent&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		KeyTypeEvent& operator=(KeyTypeEvent&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve a pointer to the affected window.
-		/// </summary>
-		/// <returns>Window pointer.</returns>
+		/// @brief Retrieve a pointer to the affected window.
+		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
-		/// <summary>
-		/// Retrieve the entered Unicode code point.
-		/// </summary>
-		/// <returns>Unicode code point.</returns>
+		/// @brief Retrieve the entered Unicode code point.
+		/// @return Unicode code point.
 		[[nodiscard]] constexpr u32 GetCodePoint() const noexcept;
 
-		/// <summary>
-		/// Get a string representation of the KeyTypeEvent.
-		/// </summary>
-		/// <returns>String representation.</returns>
+		/// @brief Get a string representation of the KeyTypeEvent.
+		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
 
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
-		/// <summary>
-		/// Retrieve the name of the event.
-		/// </summary>
-		/// <returns>Name.</returns>
+		/// @brief Retrieve the name of the event.
+		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
-		/// <summary>
-		/// Retrieve the category flags of the event.
-		/// </summary>
-		/// <returns>Combination of one or more EventCategory's.</returns>
+		/// @brief Retrieve the category flags of the event.
+		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
@@ -328,69 +216,44 @@ namespace TRAP::Events
 		u32 m_codePoint;
 	};
 
-	/// <summary>
-	/// Key layout changed.
-	/// </summary>
+	/// @brief Key layout changed.
+	/// @remark @headless This class is not available in headless mode.
 	class KeyLayoutEvent final : public Event
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="layout">New keyboard layout.</param>
+		/// @brief Constructor.
+		/// @param layout New keyboard layout.
 		constexpr explicit KeyLayoutEvent(std::string layout) noexcept;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~KeyLayoutEvent() override = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr KeyLayoutEvent(const KeyLayoutEvent&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr KeyLayoutEvent& operator=(const KeyLayoutEvent&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr KeyLayoutEvent(KeyLayoutEvent&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr KeyLayoutEvent& operator=(KeyLayoutEvent&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the human-readable name of the new keyboard layout.
-		/// </summary>
-		/// <returns>Name of new keyboard layout.</returns>
+		/// @brief Retrieve the human-readable name of the new keyboard layout.
+		/// @return Name of new keyboard layout.
 		[[nodiscard]] constexpr std::string GetLayout() const noexcept;
 
-		/// <summary>
-		/// Get a string representation of the KeyLayoutEvent.
-		/// </summary>
-		/// <returns>String representation.</returns>
+		/// @brief Get a string representation of the KeyLayoutEvent.
+		/// @return String representation.
 		[[nodiscard]] constexpr std::string ToString() const override;
 
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
-		/// <summary>
-		/// Retrieve the name of the event.
-		/// </summary>
-		/// <returns>Name.</returns>
+		/// @brief Retrieve the name of the event.
+		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
-		/// <summary>
-		/// Retrieve the category flags of the event.
-		/// </summary>
-		/// <returns>Combination of one or more EventCategory's.</returns>
+		/// @brief Retrieve the category flags of the event.
+		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	private:

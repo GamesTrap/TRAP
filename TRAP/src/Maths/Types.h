@@ -81,53 +81,37 @@ namespace TRAP::Math
 
 	//Concepts
 
-	/// <summary>
-	/// Concept which evaluates to true if T is of type TRAP::Math::tVec2<>
-	/// </summary>
+	/// @brief Concept which evaluates to true if T is of type TRAP::Math::tVec2<>
 	template<typename T>
 	concept IsVec2 = std::same_as<T, tVec2<typename T::value_type>>;
 
-	/// <summary>
-	/// Concept which evaluates to true if T is of type TRAP::Math::tVec3<>
-	/// </summary>
+	/// @brief Concept which evaluates to true if T is of type TRAP::Math::tVec3<>
 	template<typename T>
 	concept IsVec3 = std::same_as<T, tVec3<typename T::value_type>>;
 
-	/// <summary>
-	/// Concept which evaluates to true if T is of type TRAP::Math::tVec4<>
-	/// </summary>
+	/// @brief Concept which evaluates to true if T is of type TRAP::Math::tVec4<>
 	template<typename T>
 	concept IsVec4 = std::same_as<T, tVec4<typename T::value_type>>;
 
-	/// <summary>
-	/// Concept which evaluates to true if T is any of type
+	/// @brief Concept which evaluates to true if T is any of type
 	/// TRAP::Math::tVec2<>, TRAP::Math::tVec3<> or TRAP::Math::tVec4<>
-	/// </summary>
 	template<typename T>
 	concept IsVec = IsVec2<T> || IsVec3<T> || IsVec4<T>;
 
-	/// <summary>
-	/// Concept which evaluates to true if T is of type TRAP::Math::tMat3<>
-	/// </summary>
+	/// @brief Concept which evaluates to true if T is of type TRAP::Math::tMat3<>
 	template<typename T>
 	concept IsMat3 = std::same_as<T, tMat3<typename T::value_type>>;
 
-	/// <summary>
-	/// Concept which evaluates to true if T is of type TRAP::Math::tMat4<>
-	/// </summary>
+	/// @brief Concept which evaluates to true if T is of type TRAP::Math::tMat4<>
 	template<typename T>
 	concept IsMat4 = std::same_as<T, tMat4<typename T::value_type>>;
 
-	/// <summary>
-	/// Concept which evaluates to true if T is any of type
+	/// @brief Concept which evaluates to true if T is any of type
 	/// TRAP::Math::tMat3<> or TRAP::Math::tMat4<>
-	/// </summary>
 	template<typename T>
 	concept IsMat = IsMat3<T> || IsMat4<T>;
 
-	/// <summary>
-	/// Concept which evaluates to true if T is of type TRAP::Math::tQuat<>
-	/// </summary>
+	/// @brief Concept which evaluates to true if T is of type TRAP::Math::tQuat<>
 	template<typename T>
 	concept IsQuat = std::same_as<T, tQuat<typename T::value_type>>;
 }

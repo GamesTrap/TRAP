@@ -16,58 +16,36 @@
 
 namespace TRAP
 {
-	/// <summary>
-	/// Utility class to log messages to console.
-	/// </summary>
+	/// @brief Utility class to log messages to console.
 	class Log final
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		explicit Log();
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="filePath">Path for the log file.</param>
+		/// @brief Constructor.
+		/// @param filePath Path for the log file.
 		explicit Log(std::filesystem::path filePath);
-		/// <summary>
-		///	Destructor.
-		/// </summary>
+		///	@brief Destructor.
 		~Log();
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Log(const Log&) = delete;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr Log& operator=(const Log&) = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr Log(Log&&) = delete;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr Log& operator=(Log&&) = delete;
 
-		/// <summary>
-		/// Get the current used file path for saving.
-		/// </summary>
-		/// <returns>File path.</returns>
+		/// @brief Get the current used file path for saving.
+		/// @return File path.
 		[[nodiscard]] const std::filesystem::path& GetFilePath() const noexcept;
-		/// <summary>
-		/// Set the file path used for saving.
+		/// @brief Set the file path used for saving.
 		///
 		///	Logs files are always saved in the format: "<FileName>-YYYY-MM-DDTHH-MM-SS.<FileEnding>"
-		/// </summary>
-		/// <param name="filePath">File path.</param>
+		/// @param filePath File path.
 		void SetFilePath(std::filesystem::path filePath) noexcept;
 
-		/// <summary>
-		/// Importance levels.
-		/// </summary>
+		/// @brief Importance levels.
 		enum class Level : uint32_t
 		{
 			None = 0x00,
@@ -79,75 +57,54 @@ namespace TRAP
 			Critical = 0x20
 		};
 
-		/// <summary>
-		/// Set the importance level for the log messages.
+		/// @brief Set the importance level for the log messages.
 		/// Messages that are blow the given importance level
 		/// won't be printed to the console.
-		///
-		/// Note: All messages are saved in the log file regardless
+		/// @note All messages are saved in the log file regardless
 		///       off the importance level.
-		/// </summary>
-		/// <param name="level">Importance level to use.</param>
+		/// @param level Importance level to use.
 		constexpr void SetImportance(Level level) noexcept;
 
-		/// <summary>
-		/// Log a trace message.
-		/// </summary>
-		/// <typeparam name="...Args">Message to log.</typeparam>
+		/// @brief Log a trace message.
+		/// @tparam Args Message to log.
 		template<typename... Args>
 		void Trace(Args&& ... args);
 
-		/// <summary>
-		/// Log a debug message.
-		/// </summary>
-		/// <typeparam name="...Args">Message to log.</typeparam>
+		/// @brief Log a debug message.
+		/// @tparam Args Message to log.
 		template<typename... Args>
 		void Debug(Args&& ... args);
 
-		/// <summary>
-		/// Log a info message.
-		/// </summary>
-		/// <typeparam name="...Args">Message to log.</typeparam>
+		/// @brief Log a info message.
+		/// @tparam Args Message to log.
 		template<typename... Args>
 		void Info(Args&& ... args);
 
-		/// <summary>
-		/// Log a warn message.
-		/// </summary>
-		/// <typeparam name="...Args">Message to log.</typeparam>
+		/// @brief Log a warn message.
+		/// @tparam Args Message to log.
 		template<typename... Args>
 		void Warn(Args&& ... args);
 
-		/// <summary>
-		/// Log a error message.
-		/// </summary>
-		/// <typeparam name="...Args">Message to log.</typeparam>
+		/// @brief Log a error message.
+		/// @tparam Args Message to log.
 		template<typename... Args>
 		void Error(Args&& ... args);
 
-		/// <summary>
-		/// Log a critical message.
-		/// </summary>
-		/// <typeparam name="...Args">Message to log.</typeparam>
+		/// @brief Log a critical message.
+		/// @tparam Args Message to log.
 		template<typename... Args>
 		void Critical(Args&& ... args);
 
-		/// <summary>
-		/// Get all saved log messages and their associated importance level.
-		/// </summary>
-		/// <returns>Messages with importance level.</returns>
+		/// @brief Get all saved log messages and their associated importance level.
+		/// @return Messages with importance level.
 		[[nodiscard]] constexpr const std::vector<std::pair<Level, std::string>>& GetBuffer() const noexcept;
 
-		/// <summary>
-		/// Save all collected messages to file.
-		/// </summary>
+		/// @brief Save all collected messages to file.
 		void Save() const;
-		/// <summary>
-		/// Clears all buffered messages.
-		/// </summary>
+		/// @brief Clears all buffered messages.
 		constexpr void Clear() noexcept;
 
-		inline static constexpr auto WindowVersion =                        "[23w44b1]";
+		inline static constexpr auto WindowVersion =                        "[23w44b2]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -254,38 +211,26 @@ namespace TRAP
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	private:
-		/// <summary>
-		/// Retrieves information about the specified console screen buffer.
-		/// </summary>
+		/// @brief Retrieves information about the specified console screen buffer.
 		static void GetInfo() noexcept;
-		/// <summary>
-		/// Set the new color for the following console output.
-		/// </summary>
-		/// <param name="wRGBI">New console color.</param>
+		/// @brief Set the new color for the following console output.
+		/// @param wRGBI New console color.
 		static void SetColor(WORD wRGBI) noexcept;
-		/// <summary>
-		/// Reset the console color to the default for the following output.
-		/// </summary>
+		/// @brief Reset the console color to the default for the following output.
 		static void ResetColor() noexcept;
 
 		static HANDLE m_handleConsole;
 		static CONSOLE_SCREEN_BUFFER_INFO m_csbi;
 #else
 	private:
-		/// <summary>
-		/// Check whether the terminal supports ANSI color codes.
-		/// </summary>
+		/// @brief Check whether the terminal supports ANSI color codes.
 		[[nodiscard]] static bool IsColorTerminal();
 #endif
-		/// <summary>
-		/// Get a time stamp with [HH:MM:SS] format.
-		/// </summary>
-		/// <returns>Time stamp as a string.</returns>
+		/// @brief Get a time stamp with [HH:MM:SS] format.
+		/// @return Time stamp as a string.
 		[[nodiscard]] static std::string GetTimeStamp();
-		/// <summary>
-		/// Get a date time stamp with YYYY-MM-DDTHH-MM-SS format.
-		/// </summary>
-		/// <returns>Time stamp as a string.</returns>
+		/// @brief Get a date time stamp with YYYY-MM-DDTHH-MM-SS format.
+		/// @return Time stamp as a string.
 		[[nodiscard]] static std::string GetDateTimeStamp();
 
 		std::vector<std::pair<Level, std::string>> m_buffer{};
@@ -342,10 +287,8 @@ static constexpr inline TRAP::Log::Level operator&=(TRAP::Log::Level& a, const T
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// <summary>
-/// Log a trace message.
-/// </summary>
-/// <typeparam name="...Args">Message to log.</typeparam>
+/// @brief Log a trace message.
+/// @tparam Args Message to log.
 template<typename... Args>
 void TP_TRACE(const Args& ... args)
 {
@@ -356,10 +299,8 @@ void TP_TRACE(const Args& ... args)
 
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 
-/// <summary>
-/// Log a debug message.
-/// </summary>
-/// <typeparam name="...Args">Message to log.</typeparam>
+/// @brief Log a debug message.
+/// @tparam Args Message to log.
 template<typename... Args>
 void TP_DEBUG(const Args& ... args)
 {
@@ -369,10 +310,8 @@ void TP_DEBUG(const Args& ... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #else
-/// <summary>
-/// Log a debug message.
-/// </summary>
-/// <typeparam name="...Args">Message to log.</typeparam>
+/// @brief Log a debug message.
+/// @tparam Args Message to log.
 template<typename... Args>
 void TP_DEBUG([[maybe_unused]] const Args& ... args)
 {
@@ -381,10 +320,8 @@ void TP_DEBUG([[maybe_unused]] const Args& ... args)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// <summary>
-/// Log a info message.
-/// </summary>
-/// <typeparam name="...Args">Message to log.</typeparam>
+/// @brief Log a info message.
+/// @tparam Args Message to log.
 template<typename... Args>
 void TP_INFO(const Args& ... args)
 {
@@ -393,10 +330,8 @@ void TP_INFO(const Args& ... args)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// <summary>
-/// Log a warn message.
-/// </summary>
-/// <typeparam name="...Args">Message to log.</typeparam>
+/// @brief Log a warn message.
+/// @tparam Args Message to log.
 template<typename... Args>
 void TP_WARN(const Args& ... args)
 {
@@ -405,10 +340,8 @@ void TP_WARN(const Args& ... args)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// <summary>
-/// Log a error message.
-/// </summary>
-/// <typeparam name="...Args">Message to log.</typeparam>
+/// @brief Log a error message.
+/// @tparam Args Message to log.
 template<typename... Args>
 void TP_ERROR(const Args& ... args)
 {
@@ -417,10 +350,8 @@ void TP_ERROR(const Args& ... args)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// <summary>
-/// Log a critical message.
-/// </summary>
-/// <typeparam name="...Args">Message to log.</typeparam>
+/// @brief Log a critical message.
+/// @tparam Args Message to log.
 template<typename... Args>
 void TP_CRITICAL(const Args& ... args)
 {

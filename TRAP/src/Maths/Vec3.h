@@ -39,9 +39,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 namespace TRAP::Math
 {
-	/// <summary>
-	/// Struct for a 3-dimensional vector.
-	/// </summary>
+	/// @brief Struct for a 3-dimensional vector.
 	template<typename T>
 	requires std::is_arithmetic_v<T>
 	struct Vec<3, T>
@@ -65,7 +63,9 @@ private:
 
 public:
 		//Implicit basic constructors
+		/// @brief Constructor.
 		constexpr Vec() noexcept = default;
+		/// @brief Copy constructor.
 		constexpr Vec(const Vec & v) noexcept = default;
 
 		//Explicit basic constructors
@@ -97,45 +97,112 @@ public:
 		requires std::is_arithmetic_v<U>
 		explicit constexpr Vec(const Vec<3, U> & v) noexcept;
 
+		/// @brief Move constructor.
 		constexpr Vec(Vec&&) noexcept = default;
+		/// @brief Destructor.
 		constexpr ~Vec() = default;
+		/// @brief Move assignment operator.
 		constexpr Vec<3, T>& operator=(Vec&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the count of components of the vector.
-		/// </summary>
-		/// <returns>Count of components.</returns>
+		/// @brief Retrieve the count of components of the vector.
+		/// @return Count of components.
 		[[nodiscard]] static constexpr usize Length() noexcept;
 
 		//Component accesses
+
+		/// @brief Retrieve the x component of the vector.
+		/// @return x component.
 		[[nodiscard]] constexpr T& x() noexcept;
+		/// @brief Retrieve the x component of the vector.
+		/// @return x component.
 		[[nodiscard]] constexpr const T& x() const noexcept;
+		/// @brief Retrieve the y component of the vector.
+		/// @return y component.
 		[[nodiscard]] constexpr T& y() noexcept;
+		/// @brief Retrieve the y component of the vector.
+		/// @return y component.
 		[[nodiscard]] constexpr const T& y() const noexcept;
+		/// @brief Retrieve the z component of the vector.
+		/// @return z component.
 		[[nodiscard]] constexpr T& z() noexcept;
+		/// @brief Retrieve the z component of the vector.
+		/// @return z component.
 		[[nodiscard]] constexpr const T& z() const noexcept;
 
+		/// @brief Returns a reference to the element at specified location i.
+		/// @param i Position of the element to return.
+		/// @return Reference to the requested element.
+		/// @note No bounds checking is performed.
 		[[nodiscard]] constexpr T& operator[](usize i) noexcept;
+		/// @brief Returns a constant reference to the element at specified location i.
+		/// @param i Position of the element to return.
+		/// @return Constant reference to the requested element.
+		/// @note No bounds checking is performed.
 		[[nodiscard]] constexpr const T& operator[](usize i) const noexcept;
 
+		/// @brief Returns a reference to the element at specified location i, with bounds checking via asserts.
+		/// @param i Position of the element to return.
+		/// @return Reference to the requested element.
 		[[nodiscard]] T& at(usize i);
+		/// @brief Returns a constant reference to the element at specified location i, with bounds checking via asserts.
+		/// @param i Position of the element to return.
+		/// @return Constant reference to the requested element.
 		[[nodiscard]] const T& at(usize i) const;
 
 		//Iterator
+
+		/// @brief Returns an iterator to the first element of the vector.
+		/// @return Iterator to the first element.
 		[[nodiscard]] constexpr const_iterator begin() const noexcept;
+		/// @brief Returns an iterator to the first element of the vector.
+		/// @return Iterator to the first element.
 		[[nodiscard]] constexpr iterator begin() noexcept;
+		/// @brief Returns an iterator to the first element of the vector.
+		/// @return Iterator to the first element.
 		[[nodiscard]] constexpr const_iterator cbegin() const noexcept;
+		/// @brief Returns a reverse iterator to the first element of the reversed vector.
+		///        It corresponds to the last element of the non-reversed vector.
+		/// @return Reverse iterator to the first element.
 		[[nodiscard]] constexpr const_reverse_iterator rbegin() const noexcept;
+		/// @brief Returns a reverse iterator to the first element of the reversed vector.
+		///        It corresponds to the last element of the non-reversed vector.
+		/// @return Reverse iterator to the first element.
 		[[nodiscard]] constexpr reverse_iterator rbegin() noexcept;
+		/// @brief Returns a reverse iterator to the first element of the reversed vector.
+		///        It corresponds to the last element of the non-reversed vector.
+		/// @return Reverse iterator to the first element.
 		[[nodiscard]] constexpr const_reverse_iterator crbegin() const noexcept;
+		/// @brief Returns an iterator to the element following the last element of the vector.
+		/// @return Iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
 		[[nodiscard]] constexpr const_iterator end() const noexcept;
+		/// @brief Returns an iterator to the element following the last element of the vector.
+		/// @return Iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
 		[[nodiscard]] constexpr iterator end() noexcept;
+		/// @brief Returns an iterator to the element following the last element of the vector.
+		/// @return Iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
 		[[nodiscard]] constexpr const_iterator cend() const noexcept;
+		/// @brief Returns a reverse iterator to the element following the last element of the reversed vector.
+		///        It corresponds to the element preceding the first element of the non-reversed vector.
+		/// @return Reverse iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
 		[[nodiscard]] constexpr const_reverse_iterator rend() const noexcept;
+		/// @brief Returns a reverse iterator to the element following the last element of the reversed vector.
+		///        It corresponds to the element preceding the first element of the non-reversed vector.
+		/// @return Reverse iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
 		[[nodiscard]] constexpr reverse_iterator rend() noexcept;
+		/// @brief Returns a reverse iterator to the element following the last element of the reversed vector.
+		///        It corresponds to the element preceding the first element of the non-reversed vector.
+		/// @return Reverse iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
 		[[nodiscard]] constexpr const_reverse_iterator crend() const noexcept;
 
 		//Unary arithmetic operators
+
+		/// @brief Copy assignment operator.
 		constexpr Vec<3, T>& operator=(const Vec<3, T>& v) noexcept = default;
 
 		template<typename U>
@@ -204,6 +271,8 @@ public:
 		[[nodiscard]] constexpr bool operator==(const Vec<3, T>& rhs) const noexcept = default;
 		[[nodiscard]] constexpr bool operator!=(const Vec<3, T>& rhs) const noexcept = default;
 
+		/// @brief Retrieve a string representation of the vector.
+		/// @return String representation of the vector.
 		[[nodiscard]] std::string ToString() const;
 	};
 
@@ -1230,13 +1299,11 @@ constexpr TRAP::Math::Vec<3, bool> TRAP::Math::operator||(const Vec<3, bool>& v1
 
 namespace std
 {
-	/// <summary>
-	/// Extracts the Ith element from the vector.
+	/// @brief Extracts the Ith element from the vector.
 	/// I must be an integer value in range [0, 3).
 	/// This is enforced at compile time!
-	/// </summary>
-	/// <param name="v">Vector whose contents to extract.</param>
-	/// <returns>A reference to the Ith element of v.</returns>
+	/// @param v Vector whose contents to extract.
+	/// @return A reference to the Ith element of v.
 	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr T& get(TRAP::Math::Vec<3, T>& v) noexcept
@@ -1263,13 +1330,11 @@ namespace std
 #endif /*__cpp_lib_unreachable >= 202202L*/
 	}
 
-	/// <summary>
-	/// Extracts the Ith element from the vector.
+	/// @brief Extracts the Ith element from the vector.
 	/// I must be an integer value in range [0, 3).
 	/// This is enforced at compile time!
-	/// </summary>
-	/// <param name="v">Vector whose contents to extract.</param>
-	/// <returns>A reference to the Ith element of v.</returns>
+	/// @param v Vector whose contents to extract.
+	/// @return A reference to the Ith element of v.
 	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr T&& get(TRAP::Math::Vec<3, T>&& v) noexcept
@@ -1296,13 +1361,11 @@ namespace std
 #endif /*__cpp_lib_unreachable >= 202202L*/
 	}
 
-	/// <summary>
-	/// Extracts the Ith element from the vector.
+	/// @brief Extracts the Ith element from the vector.
 	/// I must be an integer value in range [0, 3).
 	/// This is enforced at compile time!
-	/// </summary>
-	/// <param name="v">Vector whose contents to extract.</param>
-	/// <returns>A reference to the Ith element of v.</returns>
+	/// @param v Vector whose contents to extract.
+	/// @return A reference to the Ith element of v.
 	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr const T& get(const TRAP::Math::Vec<3, T>& v) noexcept
@@ -1329,13 +1392,11 @@ namespace std
 #endif /*__cpp_lib_unreachable >= 202202L*/
 	}
 
-	/// <summary>
-	/// Extracts the Ith element from the vector.
+	/// @brief Extracts the Ith element from the vector.
 	/// I must be an integer value in range [0, 3).
 	/// This is enforced at compile time!
-	/// </summary>
-	/// <param name="v">Vector whose contents to extract.</param>
-	/// <returns>A reference to the Ith element of v.</returns>
+	/// @param v Vector whose contents to extract.
+	/// @return A reference to the Ith element of v.
 	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr const T&& get(const TRAP::Math::Vec<3, T>&& v) noexcept

@@ -8,162 +8,103 @@
 
 namespace TRAP::Events
 {
-	/// <summary>
-	/// Controller event base class.
-	/// </summary>
+	/// @brief Controller event base class.
+	/// @remark @headless This class is not available in headless mode.
 	class ControllerEvent : public Event
 	{
 	public:
-		/// <summary>
-		/// Destructor.
-		/// </summary>
-		constexpr ~ControllerEvent() override = default;
+		/// @brief Destructor.
+		constexpr  ~ControllerEvent() override = default;
 
-		/// <summary>
-		/// Retrieve the affected controller.
-		/// </summary>
-		/// <returns>Controller.</returns>
+		/// @brief Retrieve the affected controller.
+		/// @return Controller.
 		[[nodiscard]] constexpr Input::Controller GetController() const;
 
-		/// <summary>
-		/// Retrieve the category flags of the event.
-		/// </summary>
-		/// <returns>Combination of one or more EventCategory's.</returns>
+		/// @brief Retrieve the category flags of the event.
+		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="controller">Affected controller.</param>
+		/// @brief Constructor.
+		/// @param controller Affected controller.
 		constexpr explicit ControllerEvent(Input::Controller controller) noexcept;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr ControllerEvent(const ControllerEvent&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr ControllerEvent& operator=(const ControllerEvent&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr ControllerEvent(ControllerEvent&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr ControllerEvent& operator=(ControllerEvent&&) noexcept = default;
 
 		Input::Controller m_controller;
 	};
 
-	/// <summary>
-	/// Controller connected.
-	/// </summary>
+	/// @brief Controller connected event.
+	/// @remark @headless This class is not available in headless mode.
 	class ControllerConnectEvent final : public ControllerEvent
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="controller">Newly connected controller.</param>
+		/// @brief Constructor.
+		/// @param controller Newly connected controller.
 		constexpr explicit ControllerConnectEvent(Input::Controller controller) noexcept;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~ControllerConnectEvent() override = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr ControllerConnectEvent(const ControllerConnectEvent&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr ControllerConnectEvent& operator=(const ControllerConnectEvent&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr ControllerConnectEvent(ControllerConnectEvent&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr ControllerConnectEvent& operator=(ControllerConnectEvent&&) noexcept = default;
 
-		/// <summary>
-		/// Get a string representation of the ControllerConnectEvent.
-		/// </summary>
-		/// <returns>String representation.</returns>
+		/// @brief Get a string representation of the ControllerConnectEvent.
+		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
 
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
-		/// <summary>
-		/// Retrieve the name of the event.
-		/// </summary>
-		/// <returns>Name.</returns>
+		/// @brief Retrieve the name of the event.
+		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
 	};
 
-	/// <summary>
-	/// Controller disconnected.
-	/// </summary>
+	/// @brief Controller disconnected event.
+	/// @remark @headless This class is not available in headless mode.
 	class ControllerDisconnectEvent final : public ControllerEvent
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="controller">Disconnected controller.</param>
+		/// @brief Constructor.
+		/// @param controller Disconnected controller.
 		constexpr explicit ControllerDisconnectEvent(Input::Controller controller) noexcept;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~ControllerDisconnectEvent() override = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr ControllerDisconnectEvent(const ControllerDisconnectEvent&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr ControllerDisconnectEvent& operator=(const ControllerDisconnectEvent&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr ControllerDisconnectEvent(ControllerDisconnectEvent&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr ControllerDisconnectEvent& operator=(ControllerDisconnectEvent&&) noexcept = default;
 
-		/// <summary>
-		/// Get a string representation of the ControllerDisconnectEvent.
-		/// </summary>
-		/// <returns>String representation.</returns>
+		/// @brief Get a string representation of the ControllerDisconnectEvent.
+		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
 
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
-		/// <summary>
-		/// Retrieve the name of the event.
-		/// </summary>
-		/// <returns>Name.</returns>
+		/// @brief Retrieve the name of the event.
+		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
 	};
 }

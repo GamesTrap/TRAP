@@ -22,8 +22,8 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Activate this to enable support for texture import/exporting from/to other processes
-//Note: Only works on Windows
+/// @brief Activate this to enable support for texture import/exporting from/to other processes
+/// @remark This functionality only works on Windows.
 // #define USE_EXTERNAL_MEMORY_EXTENSIONS
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -56,7 +56,7 @@
 
 //Headless mode.
 //This macro enables the headless mode
-//See https://gamestrap.github.io/TRAP/pages/gettingstarted.html#differences-between-normal-mode-and-headless-mode
+//See https://gamestrap.github.io/TRAP-Docs/pages/gettingstarted.html#differences-between-normal-mode-and-headless-mode
 //#define TRAP_HEADLESS_MODE
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -66,15 +66,6 @@
 //Any subsequent attempts to run a TRAP application will fail with a message box stating that a
 //TRAP application is already running.
 // #define ENABLE_SINGLE_PROCESS_ONLY
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Enable Wayland support on Linuxe
-//NOTE: Wayland support is still experimental and not fully implemented.
-//Currently X11/Xwayland is preferred over native Wayland.
-#ifdef TRAP_PLATFORM_LINUX
-	#define ENABLE_WAYLAND_SUPPORT
-#endif /*TRAP_PLATFORM_LINUX*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -113,7 +104,8 @@ enum class ProfileSystems : u32
 	return static_cast<bool>(std::to_underlying(lhs) & std::to_underlying(rhs));
 }
 
-//Set this macro to specify which systems should be profiled.
+/// @brief Change this function to specify which systems should be profiled.
+/// @return Systems to profile.
 [[nodiscard]] inline consteval ProfileSystems TRAP_PROFILE_SYSTEMS() noexcept
 {
 	return ProfileSystems::All;
@@ -125,13 +117,11 @@ enum class ProfileSystems : u32
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// <summary>
-/// Construct a version number.
-/// </summary>
-/// <param name="major">Major version number.</param>
-/// <param name="minor">Minor version number.</param>
-/// <param name="patch">Patch version number.</param>
-/// <returns>Version number packed into a single u32.</returns>
+/// @brief Construct a version number.
+/// @tparam major Major version number.
+/// @tparam minor Minor version number.
+/// @tparam patch Patch version number.
+/// @return Version number packed into a single u32.
 template<u32 major, u32 minor, u32 patch>
 [[nodiscard]] consteval u32 TRAP_MAKE_VERSION()
 {
@@ -144,11 +134,9 @@ template<u32 major, u32 minor, u32 patch>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// <summary>
-/// Extract major version from a version number created with TRAP_MAKE_VERSION.
-/// </summary>
-/// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
-/// <returns>Major version number.</returns>
+/// @brief Extract major version from a version number created with TRAP_MAKE_VERSION.
+/// @param version Version number created with TRAP_MAKE_VERSION.
+/// @return Major version number.
 [[nodiscard]] inline consteval u32 TRAP_VERSION_MAJOR(const u32 version) noexcept
 {
 	return version >> 22u;
@@ -156,11 +144,9 @@ template<u32 major, u32 minor, u32 patch>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// <summary>
-/// Extract minor version from a version number created with TRAP_MAKE_VERSION.
-/// </summary>
-/// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
-/// <returns>Minor version number.</returns>
+/// @brief Extract minor version from a version number created with TRAP_MAKE_VERSION.
+/// @param version Version number created with TRAP_MAKE_VERSION.
+/// @return Minor version number.
 [[nodiscard]] inline consteval u32 TRAP_VERSION_MINOR(const u32 version) noexcept
 {
 	return version >> 12u;
@@ -168,11 +154,9 @@ template<u32 major, u32 minor, u32 patch>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// <summary>
-/// Extract patch version from a version number created with TRAP_MAKE_VERSION.
-/// </summary>
-/// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
-/// <returns>Patch version number.</returns>
+/// @brief Extract patch version from a version number created with TRAP_MAKE_VERSION.
+/// @param version Version number created with TRAP_MAKE_VERSION.
+/// @return Patch version number.
 [[nodiscard]] inline consteval u32 TRAP_VERSION_PATCH(const u32 version) noexcept
 {
 	return version & 0xFFFu;
@@ -180,10 +164,8 @@ template<u32 major, u32 minor, u32 patch>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// <summary>
-/// TRAP version number created with TRAP_MAKE_VERSION
-/// </summary>
-inline constexpr u32 TRAP_VERSION = TRAP_MAKE_VERSION<0, 10, 0>();
+/// @brief TRAP version number created with TRAP_MAKE_VERSION
+inline constexpr u32 TRAP_VERSION = TRAP_MAKE_VERSION<0, 10, 1>();
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -203,12 +185,9 @@ inline constexpr u32 TRAP_VERSION = TRAP_MAKE_VERSION<0, 10, 0>();
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// <summary>
-/// Shift 1 x times.
-/// </summary>
-/// <typeparam name="T">DataType of variable.</typeparam>
-/// <param name="x">Amount to shift.</param>
-/// <returns>Shifted value.</returns>
+/// @brief Shift 1 x times.
+/// @param x Amount to shift.
+/// @return Shifted value.
 [[nodiscard]] inline constexpr std::unsigned_integral auto BIT(const std::unsigned_integral auto x) noexcept
 {
 	return decltype(x)(1) << x;
@@ -218,6 +197,7 @@ inline constexpr u32 TRAP_VERSION = TRAP_MAKE_VERSION<0, 10, 0>();
 
 #ifdef TRACY_ENABLE
 //Overloads for new and delete (only used for profiling)
+
 [[nodiscard]] void* operator new(const usize count);
 [[nodiscard]] void* operator new[](const usize count);
 void operator delete(void* ptr) noexcept;
@@ -230,32 +210,20 @@ void operator delete[](void* ptr, usize count) noexcept;
 
 namespace TRAP
 {
-	/// <summary>
-	/// Wrapper for new & delete.
-	/// Related to MemoryManagement which is still in planing.
-	/// </summary>
+	/// @brief Wrapper for std::unique_ptr. Related to memory management which is still in planing.
 	template<typename T>
 	using Scope = std::unique_ptr<T>;
-	/// <summary>
-	/// Wrapper for new & delete.
-	/// Related to MemoryManagement which is still in planing.
-	/// </summary>
+	/// @brief Wrapper for std::make_unique. Related to memory management which is still in planing.
 	template<typename T, typename... Args>
 	inline constexpr Scope<T> MakeScope(Args&&... args)
 	{
 		return std::make_unique<T>(std::forward<Args>(args)...);
 	}
 
-	/// <summary>
-	/// Wrapper for new & delete with reference counting.
-	/// Related to MemoryManagement which is still in planing.
-	/// </summary>
+	/// @brief Wrapper for std::shared_ptr. Related to memory management which is still in planing.
 	template<typename T>
 	using Ref = std::shared_ptr<T>;
-	/// <summary>
-	/// Wrapper for new & delete with reference counting.
-	/// Related to MemoryManagement which is still in planing.
-	/// </summary>
+	/// @brief Wrapper for std::make_shared. Related to memory management which is still in planing.
 	template<typename T, typename... Args>
 	inline constexpr Ref<T> MakeRef(Args&&... args)
 	{

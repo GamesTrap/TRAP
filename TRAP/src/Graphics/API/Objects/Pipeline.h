@@ -8,39 +8,25 @@ namespace TRAP::Graphics
 	class Pipeline
 	{
 	public:
-		/// <summary>
-		/// Create a new pipeline from the given description.
-		/// </summary>
-		/// <param name="desc">Pipeline description.</param>
-		/// <returns>Created pipeline.</returns>
+		/// @brief Create a new pipeline from the given description.
+		/// @param desc Pipeline description.
+		/// @return Created pipeline.
 		[[nodiscard]] static TRAP::Ref<Pipeline> Create(const RendererAPI::PipelineDesc& desc);
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~Pipeline();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Pipeline(const Pipeline&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		Pipeline& operator=(const Pipeline&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr Pipeline(Pipeline&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		Pipeline& operator=(Pipeline&&) noexcept = default;
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		Pipeline();
 
 		//No Graphic API independent data

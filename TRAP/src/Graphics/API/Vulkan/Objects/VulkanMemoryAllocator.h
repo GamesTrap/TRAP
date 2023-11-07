@@ -19,38 +19,24 @@ namespace TRAP::Graphics::API
 	class VulkanMemoryAllocator
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="device">Logical Vulkan device.</param>
-		/// <param name="instance">Vulkan instance.</param>
+		/// @brief Constructor.
+		/// @param device Logical Vulkan device.
+		/// @param instance Vulkan instance.
 		VulkanMemoryAllocator(const TRAP::Ref<VulkanDevice>& device, const TRAP::Ref<VulkanInstance>& instance);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanMemoryAllocator();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr VulkanMemoryAllocator(const VulkanMemoryAllocator&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanMemoryAllocator& operator=(const VulkanMemoryAllocator&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr VulkanMemoryAllocator(VulkanMemoryAllocator&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanMemoryAllocator& operator=(VulkanMemoryAllocator&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the Vulkan memory allocator (VMA) allocator handle.
-		/// </summary>
-		/// <returns>VMA allocator handle.</returns>
+		/// @brief Retrieve the Vulkan memory allocator (VMA) allocator handle.
+		/// @return VMA allocator handle.
 		[[nodiscard]] constexpr VmaAllocator GetVMAAllocator() const noexcept;
 
 	private:

@@ -14,92 +14,61 @@ namespace TRAP::Graphics::API
 	class VulkanQueue final : public Queue
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="desc">Queue description.</param>
+		/// @brief Constructor.
+		/// @param desc Queue description.
 		explicit VulkanQueue(const RendererAPI::QueueDesc& desc);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanQueue() override;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		VulkanQueue(const VulkanQueue&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr VulkanQueue& operator=(const VulkanQueue&) = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanQueue(VulkanQueue&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr VulkanQueue& operator=(VulkanQueue&&) = delete;
 
-		/// <summary>
-		/// Retrieve the Vulkan queue handle.
-		/// </summary>
-		/// <returns>Vulkan queue handle.</returns>
+		/// @brief Retrieve the Vulkan queue handle.
+		/// @return Vulkan queue handle.
 		[[nodiscard]] constexpr VkQueue GetVkQueue() const noexcept;
-		/// <summary>
-		/// Retrieve the queue family index.
-		/// </summary>
-		/// <returns>Queue family index.</returns>
+		/// @brief Retrieve the queue family index.
+		/// @return Queue family index.
 		[[nodiscard]] constexpr u8 GetQueueFamilyIndex() const noexcept;
-		/// <summary>
-		/// Retrieve the queue index.
-		/// </summary>
-		/// <returns>Queue index.</returns>
+		/// @brief Retrieve the queue index.
+		/// @return Queue index.
 		[[nodiscard]] constexpr u8 GetQueueIndex() const noexcept;
-		/// <summary>
-		/// Retrieve the queue flags.
+		/// @brief Retrieve the queue flags.
 		/// Indicates capabilities of the queue.
-		/// </summary>
-		/// <returns>Queue flags.</returns>
+		/// @return Queue flags.
 		[[nodiscard]] constexpr u32 GetFlags() const noexcept;
-		/// <summary>
-		/// Retrieve the number of nanoseconds required
+		/// @brief Retrieve the number of nanoseconds required
 		/// for a timestamp to be incremented by 1.
-		/// </summary>
-		/// <returns>Nanoseconds per timestamp increment.</returns>
+		/// @return Nanoseconds per timestamp increment.
 		[[nodiscard]] constexpr f32 GetTimestampPeriod() const noexcept;
-		/// <summary>
-		/// Retrieve the number of ticks per second
+		/// @brief Retrieve the number of ticks per second
 		/// required to increment a timestamp by 1.
-		/// </summary>
-		/// <returns>Ticks per second.</returns>
+		/// @return Ticks per second.
 		[[nodiscard]] constexpr f64 GetTimestampFrequency() const noexcept;
 
-		/// <summary>
-		/// Wait for the queue to finish all submitted commands.
-		/// </summary>
+		/// @brief Wait for the queue to finish all submitted commands.
 		void WaitQueueIdle() const override;
 
-		/// <summary>
-		/// Submit work to the queue.
-		/// </summary>
-		/// <param name="desc">Queue submit description.</param>
+		/// @brief Submit work to the queue.
+		/// @param desc Queue submit description.
 		void Submit(const RendererAPI::QueueSubmitDesc& desc) const override;
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Queue an image for presentation.
-		/// </summary>
-		/// <param name="desc">Queue presentation description.</param>
-		/// <returns>Presentation status.</returns>
+		/// @brief Queue an image for presentation.
+		/// @param desc Queue presentation description.
+		/// @return Presentation status.
+		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 	private:
-		/// <summary>
-		/// Set a name for the queue.
-		/// </summary>
-		/// <param name="name">Name for the queue.</param>
+		/// @brief Set a name for the queue.
+		/// @param name Name for the queue.
 		void SetQueueName(std::string_view name) const;
 
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();

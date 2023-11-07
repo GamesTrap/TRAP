@@ -7,31 +7,21 @@
 
 namespace TRAP::Utils
 {
-	/// <summary>
-	/// Timer class.
-	/// </summary>
+	/// @brief Timer class.
 	class Timer
 	{
 	public:
-		/// <summary>
-		/// Constructor.
+		/// @brief Constructor.
 		/// Creates and starts a new timer.
-		/// </summary>
 		Timer() noexcept;
 
-		/// <summary>
-		/// Resets and restarts the timer.
-		/// </summary>
+		/// @brief Resets and restarts the timer.
 		void Reset() noexcept;
-		/// <summary>
-		/// Retrieve elapsed time in seconds.
-		/// </summary>
-		/// <returns>Elapsed time in seconds.</returns>
+		/// @brief Retrieve elapsed time in seconds.
+		/// @return Elapsed time in seconds.
 		[[nodiscard]] f32 Elapsed() const;
-		/// <summary>
-		/// Retrieve elapsed time in milliseconds.
-		/// </summary>
-		/// <returns>Elapsed time in milliseconds.</returns>
+		/// @brief Retrieve elapsed time in milliseconds.
+		/// @return Elapsed time in milliseconds.
 		[[nodiscard]] f32 ElapsedMilliseconds() const;
 
 	private:

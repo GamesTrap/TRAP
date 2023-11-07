@@ -18,48 +18,31 @@ namespace TRAP::INTERNAL
 	class QOIImage final : public Image
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="filepath">File path of the image to load.</param>
+		/// @brief Constructor.
+		/// @param filepath File path of the image to load.
 		explicit QOIImage(std::filesystem::path filepath);
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		QOIImage(const QOIImage&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		QOIImage& operator=(const QOIImage&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		QOIImage(QOIImage&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		QOIImage& operator=(QOIImage&&) noexcept = default;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~QOIImage() override = default;
 
-		/// <summary>
-		/// Retrieve the raw pixel data of the image.
-		/// </summary>
-		/// <returns>Constant pointer to the raw pixel data.</returns>
+		/// @brief Retrieve the raw pixel data of the image.
+		/// @return Constant pointer to the raw pixel data.
 		[[nodiscard]] constexpr const void* GetPixelData() const noexcept override;
-		/// <summary>
-		/// Retrieve the size of the raw pixel data of the image.
-		/// </summary>
-		/// <returns>Size of the raw pixel data in bytes.</returns>
+		/// @brief Retrieve the size of the raw pixel data of the image.
+		/// @return Size of the raw pixel data in bytes.
 		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
 
 	private:
-        /// <summary>
-        /// Decode the image QOI pixel data.
-        /// </summary>
-        /// <param name="file">Open file stream of the image.</param>
+        /// @brief Decode the image QOI pixel data.
+        /// @param file Open file stream of the image.
+		/// @param fileSize Size of the file to decode.
         void DecodeImage(std::ifstream& file, const usize& fileSize);
 
 		std::vector<u8> m_data;

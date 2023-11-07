@@ -9,42 +9,26 @@ namespace TRAP::Graphics::API
 	class VulkanCommandSignature final : public CommandSignature
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="desc">Command signature description.</param>
+		/// @brief Constructor.
+		/// @param desc Command signature description.
 		explicit VulkanCommandSignature(const RendererAPI::CommandSignatureDesc& desc);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanCommandSignature() override;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr VulkanCommandSignature(const VulkanCommandSignature&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanCommandSignature& operator=(const VulkanCommandSignature&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr VulkanCommandSignature(VulkanCommandSignature&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanCommandSignature& operator=(VulkanCommandSignature&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the draw type used for indirect drawing.
-		/// </summary>
-		/// <returns>Draw type.</returns>
+		/// @brief Retrieve the draw type used for indirect drawing.
+		/// @return Draw type.
 		[[nodiscard]] constexpr RendererAPI::IndirectArgumentType GetDrawType() const noexcept;
-		/// <summary>
-		/// Retrieve the byte stride between successive sets of draw parameters.
-		/// </summary>
-		/// <returns>Byte stride.</returns>
+		/// @brief Retrieve the byte stride between successive sets of draw parameters.
+		/// @return Byte stride.
 		[[nodiscard]] constexpr u32 GetStride() const noexcept;
 
 	private:

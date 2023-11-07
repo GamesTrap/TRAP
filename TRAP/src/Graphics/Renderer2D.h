@@ -24,54 +24,36 @@ namespace TRAP::Graphics
 	class Renderer2D
 	{
 	public:
-		/// <summary>
-		/// Initialize Renderer2D.
-		/// </summary>
+		/// @brief Initialize Renderer2D.
 		static void Init();
-		/// <summary>
-		/// Shutdown Renderer2D.
-		/// </summary>
+		/// @brief Shutdown Renderer2D.
 		static void Shutdown();
-		/// <summary>
-		/// Reset the Renderer2D for a new frame.
-		///
-		/// Note: This functions gets called by TRAP::Application
-		/// </summary>
+		/// @brief Reset the Renderer2D for a new frame.
+		/// @note This functions gets called by TRAP::Application
 		static void Reset() noexcept;
 
-		/// <summary>
-		/// Begin a Renderer2D scene.
-		/// </summary>
-		/// <param name="camera">Main camera.</param>
-		/// <param name="transform">Camera transform.</param>
+		/// @brief Begin a Renderer2D scene.
+		/// @param camera Main camera.
+		/// @param transform Camera transform.
 		static void BeginScene(const Camera& camera, const Math::Mat4& transform);
-		/// <summary>
-		/// Begin a Renderer2D scene.
-		/// </summary>
-		/// <param name="camera">Orthographic camera.</param>
+		/// @brief Begin a Renderer2D scene.
+		/// @param camera Orthographic camera.
 		[[deprecated("Use BeginScene(Camera, Mat4) instead!")]]
 		static void BeginScene(const OrthographicCamera& camera);
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Begin a Renderer2D scene.
-		/// </summary>
-		/// <param name="camera">Editor camera.</param>
+		/// @brief Begin a Renderer2D scene.
+		/// @param camera Editor camera.
+		/// @remark @headless This function is not available in headless mode.
 		static void BeginScene(const EditorCamera& camera);
 #endif /*TRAP_HEADLESS_MODE*/
-		/// <summary>
-		/// End a running Renderer2D scene.
-		/// </summary>
+		/// @brief End a running Renderer2D scene.
 		static void EndScene();
 
-		/// <summary>
-		/// Set a custom sampler to use by the 2D renderer.
-		/// </summary>
-		/// <param name="sampler">Sampler to use.</param>
+		/// @brief Set a custom sampler to use by the 2D renderer.
+		/// @param sampler Sampler to use.
 		static void SetCustomSampler(const TRAP::Ref<TRAP::Graphics::Sampler>& sampler);
 
-		/// <summary>
-		/// Struct to describe position, rotation and scale.
-		/// </summary>
+		/// @brief Struct to describe position, rotation and scale.
 		struct Transform
 		{
 			Math::Vec3 Position = {0.0f, 0.0f, 0.0f};
@@ -81,95 +63,73 @@ namespace TRAP::Graphics
 
 		//Primitives
 
-		/// <summary>
-		/// Draw a colored quad.
-		/// </summary>
-		/// <param name="transform">Transform of the quad.</param>
-		/// <param name="color">Color for the quad.</param>
+		/// @brief Draw a colored quad.
+		/// @param transform Transform of the quad.
+		/// @param color Color for the quad.
 		static void DrawQuad(const Transform& transform, const Math::Vec4& color);
-		/// <summary>
-		/// Draw a textured quad.
-		/// </summary>
-		/// <param name="transform">Transform of the quad.</param>
-		/// <param name="texture">Texture for the quad.</param>
+		/// @brief Draw a textured quad.
+		/// @param transform Transform of the quad.
+		/// @param texture Texture for the quad.
 		static void DrawQuad(const Transform& transform, const Ref<Texture>& texture);
-		/// <summary>
-		/// Draw a colored and textured quad.
-		/// </summary>
-		/// <param name="transform">Transform of the quad.</param>
-		/// <param name="color">Color for the quad.</param>
-		/// <param name="texture">Texture for the quad.</param>
+		/// @brief Draw a colored and textured quad.
+		/// @param transform Transform of the quad.
+		/// @param color Color for the quad.
+		/// @param texture Texture for the quad.
 		static void DrawQuad(const Transform& transform, const Math::Vec4& color,
 		                     const Ref<Texture>& texture);
-		/// <summary>
-		/// Draw a textured quad.
-		/// </summary>
-		/// <param name="transform">Transform of the quad.</param>
-		/// <param name="texture">Texture for the quad.</param>
+		/// @brief Draw a textured quad.
+		/// @param transform Transform of the quad.
+		/// @param texture Texture for the quad.
 		static void DrawQuad(const Transform& transform, const TRAP::Ref<SubTexture2D>& texture);
-		/// <summary>
-		/// Draw a colored and textured quad.
-		/// </summary>
-		/// <param name="transform">Transform of the quad.</param>
-		/// <param name="color">Color for the quad.</param>
-		/// <param name="texture">Texture for the quad.</param>
+		/// @brief Draw a colored and textured quad.
+		/// @param transform Transform of the quad.
+		/// @param color Color for the quad.
+		/// @param texture Texture for the quad.
 		static void DrawQuad(const Transform& transform, const Math::Vec4& color,
 		                     const TRAP::Ref<SubTexture2D>& texture);
-		/// <summary>
-		/// Draw a colored and textured quad.
+		/// @brief Draw a colored and textured quad.
 		/// This is the base function for all the other DrawQuad functions.
-		/// </summary>
-		/// <param name="transform">Transform matrix for the quad.</param>
-		/// <param name="color">Color for the quad.</param>
-		/// <param name="texture">Texture for the quad.</param>
-		/// <param name="texCoords">Optional: Texture coordinates for the quad.</param>
-		/// <param name="entityID">Optional: Entity ID of the quad.</param>
+		/// @param transform Transform matrix for the quad.
+		/// @param color Color for the quad.
+		/// @param texture Texture for the quad.
+		/// @param texCoords Optional: Texture coordinates for the quad.
+		/// @param entityID Optional: Entity ID of the quad.
 		static void DrawQuad(const TRAP::Math::Mat4& transform, const Math::Vec4& color,
 		                     const Ref<Texture>& texture, const std::array<Math::Vec2, 4>* texCoords, i32 entityID = -1);
 
-		/// <summary>
-		/// Draw a colored circle with given thickness and fading.
+		/// @brief Draw a colored circle with given thickness and fading.
 		/// This is the base function for all the other DrawCircle functions.
-		/// </summary>
-		/// <param name="transform">Transform matrix for the circle.</param>
-		/// <param name="color">Color for the circle.</param>
-		/// <param name="thickness">Optional: Thickness for the circle.</param>
-		/// <param name="fade">Optional: Fade for the circle.</param>
-		/// <param name="entityID">Optional: Entity ID of the quad.</param>
+		/// @param transform Transform matrix for the circle.
+		/// @param color Color for the circle.
+		/// @param thickness Optional: Thickness for the circle.
+		/// @param fade Optional: Fade for the circle.
+		/// @param entityID Optional: Entity ID of the quad.
 		static void DrawCircle(const TRAP::Math::Mat4& transform, const Math::Vec4& color,
 		                       f32 thickness = 1.0f, f32 fade = 0.005f, i32 entityID = -1);
 
-		/// <summary>
-		/// Draw a sprite.
-		/// </summary>
-		/// <param name="transform">Transform matrix for the sprite.</param>
-		/// <param name="sprite">Sprite component data.</param>
-		/// <param name="entityID">Entity ID of this sprite.</param>
+		/// @brief Draw a sprite.
+		/// @param transform Transform matrix for the sprite.
+		/// @param sprite Sprite component data.
+		/// @param entityID Entity ID of this sprite.
 		static void DrawSprite(const TRAP::Math::Mat4& transform, const SpriteRendererComponent& sprite, i32 entityID = -1);
 
-		/// <summary>
-		/// Draw a colored line from point p0 to point p1.
-		/// </summary>
-		/// <param name="p0">First point of the line.</param>
-		/// <param name="p1">Second point of the line.</param>
-		/// <param name="color">Color for the line.</param>
-		/// <param name="entityID">Entity ID of this line.</param>
+		/// @brief Draw a colored line from point p0 to point p1.
+		/// @param p0 First point of the line.
+		/// @param p1 Second point of the line.
+		/// @param color Color for the line.
+		/// @param entityID Entity ID of this line.
 		static void DrawLine(const TRAP::Math::Vec3& p0, const TRAP::Math::Vec3& p1, const TRAP::Math::Vec4& color, i32 entityID = -1);
 
-		/// <summary>
-		/// Draw a rectangle (not filled).
-		/// </summary>
-		/// <param name="position">Position of the rectangle.</param>
-		/// <param name="size">Size of the rectangle.</param>
-		/// <param name="color">Color for the rectangle.</param>
-		/// <param name="entityID">Entity ID of this rectangle.</param>
+		/// @brief Draw a rectangle (not filled).
+		/// @param position Position of the rectangle.
+		/// @param size Size of the rectangle.
+		/// @param color Color for the rectangle.
+		/// @param entityID Entity ID of this rectangle.
 		static void DrawRect(const TRAP::Math::Vec3& position, const TRAP::Math::Vec2& size, const TRAP::Math::Vec4& color, i32 entityID = -1);
-		/// <summary>
-		/// Draw a rectangle (not filled).
-		/// </summary>
-		/// <param name="transform">Transformation of the rectangle.</param>
-		/// <param name="color">Color for the rectangle.</param>
-		/// <param name="entityID">Entity ID of this rectangle.</param>
+		/// @brief Draw a rectangle (not filled).
+		/// @param transform Transformation of the rectangle.
+		/// @param color Color for the rectangle.
+		/// @param entityID Entity ID of this rectangle.
 		static void DrawRect(const TRAP::Math::Mat4& transform, const TRAP::Math::Vec4& color, i32 entityID = -1);
 
 		//Stats
@@ -180,25 +140,17 @@ namespace TRAP::Graphics
 			u32 CircleCount = 0;
 			u32 LineCount = 0;
 
-			/// <summary>
-			/// Retrieve the current total number of vertices.
-			/// </summary>
-			/// <returns>Total vertices count.</returns>
+			/// @brief Retrieve the current total number of vertices.
+			/// @return Total vertices count.
 			[[nodiscard]] constexpr u32 GetTotalVertexCount() const noexcept;
-			/// <summary>
-			/// Retrieve the current total number of indices.
-			/// </summary>
-			/// <returns>Total indices count.</returns>
+			/// @brief Retrieve the current total number of indices.
+			/// @return Total indices count.
 			[[nodiscard]] constexpr u32 GetTotalIndexCount() const noexcept;
 		};
-		/// <summary>
-		/// Retrieve the current Renderer2D statistics.
-		/// </summary>
-		/// <returns>Renderer2D statistics.</returns>
+		/// @brief Retrieve the current Renderer2D statistics.
+		/// @return Renderer2D statistics.
 		[[nodiscard]] static Statistics GetStats() noexcept;
-		/// <summary>
-		/// Reset the Renderer2D statistics.
-		/// </summary>
+		/// @brief Reset the Renderer2D statistics.
 		static void ResetStats() noexcept;
 
 	private:

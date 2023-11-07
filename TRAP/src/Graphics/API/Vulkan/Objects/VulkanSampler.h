@@ -12,37 +12,23 @@ namespace TRAP::Graphics::API
 	class VulkanSampler final : public Sampler
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="desc">Sampler description.</param>
+		/// @brief Constructor.
+		/// @param desc Sampler description.
 		explicit VulkanSampler(const RendererAPI::SamplerDesc& desc);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanSampler() override;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		VulkanSampler(const VulkanSampler&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanSampler& operator=(const VulkanSampler&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanSampler(VulkanSampler&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanSampler& operator=(VulkanSampler&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the Vulkan sampler handle.
-		/// </summary>
-		/// <returns>Vulkan sampler handle.</returns>
+		/// @brief Retrieve the Vulkan sampler handle.
+		/// @return Vulkan sampler handle.
 		[[nodiscard]] constexpr VkSampler GetVkSampler() const noexcept;
 
 	private:

@@ -14,80 +14,54 @@ namespace TRAP::Graphics::API
 	class VulkanDevice;
 	class VulkanSurface;
 
+	/// @remark @headless This class is not available in headless mode.
 	class VulkanSwapChain final : public SwapChain
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="desc">Swap chain description.</param>
+		/// @brief Constructor.
+		/// @param desc Swap chain description.
 		explicit VulkanSwapChain(RendererAPI::SwapChainDesc& desc);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanSwapChain() override;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		VulkanSwapChain(const VulkanSwapChain&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanSwapChain& operator=(const VulkanSwapChain&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanSwapChain(VulkanSwapChain&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanSwapChain& operator=(VulkanSwapChain&&) noexcept = default;
 
-		/// <summary>
-		/// Acquire the next presentable image from the swapchain to render to.
-		/// </summary>
-		/// <param name="signalSemaphore">Semaphore to signal when the image is ready to be presented.</param>
-		/// <param name="fence">Fence to wait for the image to be ready to be presented.</param>
-		/// <returns>Acuired image index.</returns>
+		/// @brief Acquire the next presentable image from the swapchain to render to.
+		/// @param signalSemaphore Semaphore to signal when the image is ready to be presented.
+		/// @param fence Fence to wait for the image to be ready to be presented.
+		/// @return Acuired image index.
 		[[nodiscard]] std::optional<u32> AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
 		                                                       const TRAP::Ref<Fence>& fence) const override;
 
-		/// <summary>
-		/// Toggle VSync on and off.
-		/// </summary>
+		/// @brief Toggle VSync on and off.
 		void ToggleVSync() override;
 
-		/// <summary>
-		/// Updates the framebuffer size and recreates the swap chain.
-		/// </summary>
+		/// @brief Updates the framebuffer size and recreates the swap chain.
 		void UpdateFramebufferSize() override;
 
-		/// <summary>
-		/// Retrieve the Vulkan swap chain handle.
-		/// </summary>
-		/// <returns>Vulkan swap chain handle.</returns>
+		/// @brief Retrieve the Vulkan swap chain handle.
+		/// @return Vulkan swap chain handle.
 		[[nodiscard]] constexpr VkSwapchainKHR GetVkSwapChain() const noexcept;
-		/// <summary>
-		/// Retrieve the Vulkan queue used for presentation.
-		/// </summary>
-		/// <returns>Vulkan queue used for presentation.</returns>
+		/// @brief Retrieve the Vulkan queue used for presentation.
+		/// @return Vulkan queue used for presentation.
 		[[nodiscard]] constexpr VkQueue GetPresentVkQueue() const noexcept;
 
 	private:
-		/// <summary>
-		/// Initialize the swap chain.
-		/// </summary>
-		/// <param name="desc">Swap chain description.</param>
+		/// @brief Initialize the swap chain.
+		/// @param desc Swap chain description.
+		/// @param oldSwapChain Optional: Old Vulkan swapchain, potentially speeds up creation of new swapchain.
 		void InitSwapchain(RendererAPI::SwapChainDesc& desc, VkSwapchainKHR oldSwapChain = VK_NULL_HANDLE);
-		/// <summary>
-		/// Uninitialize the swap chain.
-		/// </summary>
-		/// <param name="allowSwapChainReuse">Don't destroy swap chain and surface to allow for reuse on new swap chain creation.</param>
+		/// @brief Uninitialize the swap chain.
+		/// @param allowSwapChainReuse Don't destroy swap chain and surface to allow for reuse on new swap chain creation.
 		void DeInitSwapchain(bool allowSwapChainReuse = false);
-		/// <summary>
-		/// Reinitialize the swap chain while reusing the old one.
-		/// </summary>
+		/// @brief Reinitialize the swap chain while reusing the old one.
 		void ReInitSwapChain();
 
 		TRAP::Ref<VulkanMemoryAllocator> m_vma = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetVMA();

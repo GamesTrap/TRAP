@@ -38,11 +38,9 @@ namespace TRAP::Utils
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-    /// <summary>
-    /// Display the error message from the given error code.
+    /// @brief Display the error message from the given error code.
     /// Afterwards the engine will be closed.
-    /// </summary>
-    /// <param name="error">Error code.</param>
+    /// @param error Error code.
     void DisplayError(ErrorCode error);
 }
 

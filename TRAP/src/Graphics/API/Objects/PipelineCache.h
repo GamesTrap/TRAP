@@ -8,60 +8,39 @@ namespace TRAP::Graphics
 	class PipelineCache
 	{
 	public:
-		/// <summary>
-		/// Create a new pipeline cache from the given description.
-		/// </summary>
-		/// <param name="desc">Pipeline cache description.</param>
-		/// <returns>Created pipeline cache.</returns>
+		/// @brief Create a new pipeline cache from the given description.
+		/// @param desc Pipeline cache description.
+		/// @return Created pipeline cache.
 		[[nodiscard]] static TRAP::Ref<PipelineCache> Create(const RendererAPI::PipelineCacheDesc& desc);
-		/// <summary>
-		/// Create a new pipeline cache from the given description.
-		/// </summary>
-		/// <param name="desc">Pipeline cache description.</param>
-		/// <returns>Created pipeline cache.</returns>
+		/// @brief Create a new pipeline cache from the given description.
+		/// @param desc Pipeline cache description.
+		/// @return Created pipeline cache.
 		[[nodiscard]] static TRAP::Ref<PipelineCache> Create(const RendererAPI::PipelineCacheLoadDesc& desc);
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~PipelineCache();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr PipelineCache(const PipelineCache&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		PipelineCache& operator=(const PipelineCache&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr PipelineCache(PipelineCache&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		PipelineCache& operator=(PipelineCache&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the cached pipeline data.
-		///
-		/// To retrieve the size of cached data call this function with data = nullptr.
-		/// </summary>
-		/// <param name="size">Output: Size of the data.</param>
-		/// <param name="data">Output: Pointer to store the data.</param>
+		/// @brief Retrieve the cached pipeline data.
+		///        To retrieve the size of cached data call this function with data = nullptr.
+		/// @param size Output: Size of the data.
+		/// @param data Output: Pointer to store the data.
 		virtual void GetPipelineCacheData(usize* size, void* data) const = 0;
 
-		/// <summary>
-		/// Save a pipeline to disk.
-		/// </summary>
-		/// <param name="path">Path to save the pipeline to.</param>
+		/// @brief Save a pipeline to disk.
+		/// @param path Path to save the pipeline to.
 		void Save(const std::filesystem::path& path) const;
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		PipelineCache();
 
 		//No Graphic API independent data

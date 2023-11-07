@@ -20,236 +20,161 @@
 
 namespace TRAP::Utils::Steam
 {
-    /// <summary>
-    /// Initialize the Steamworks SDK.
+    /// @brief Initialize the Steamworks SDK.
     /// If the application was launched without Steam, it will be relaunched through Steam.
     /// A callback for messages will be registered.
-    ///
-    /// Note: This function stops the engine if it fails to initialize.
-    /// </summary>
-    /// <param name="appID">Steam AppID for this application.</param>
+    /// @param appID Steam AppID for this application.
+    /// @note This function stops the engine if it fails to initialize.
     void InitializeClient(u32 appID);
 
 #ifdef USE_STEAMWORKS_SDK
-    /// <summary>
-    /// Initialize the Steamworks SDK for servers.
-    /// </summary>
-    /// <param name="bindIPv4">IPv4 to bind to. The IP should be in host order (i.e. 127.0.0.1 == 0x7F000001).</param>
-    /// <param name="gamePort">Port that clients will connect to.</param>
-    /// <param name="queryPort">Port for server browser related duties and info pings from clients.</param>
-    /// <param name="authenticationMethod">Method of authentication to use.</param>
-    /// <param name="version">
-    /// Version of the server. This usually has the format "x.x.x.x".
+    /// @brief Initialize the Steamworks SDK for servers.
+    /// @param bindIPv4 IPv4 to bind to. The IP should be in host order (i.e. 127.0.0.1 == 0x7F000001).
+    /// @param gamePort Port that clients will connect to.
+    /// @param queryPort Port for server browser related duties and info pings from clients.
+    /// @param authenticationMethod Method of authentication to use.
+    /// @param version Version of the server. This usually has the format "x.x.x.x".
     /// It is used by the master server to detect out of date servers.
-    /// </param>
-    /// <returns>True if Steamworks SDK for servers is initialized, false otherwise.</returns>
+    /// @return True if Steamworks SDK for servers is initialized, false otherwise.
     bool InitializeServer(u32 bindIPv4, u16 gamePort,
                           u16 queryPort, EServerMode authenticationMethod,
                           const std::string& version);
 #endif /*USE_STEAMWORKS_SDK*/
 
-    /// <summary>
-    /// Shutdown the Steamworks SDK.
-    /// </summary>
+    /// @brief Shutdown the Steamworks SDK.
     void Shutdown();
 
-    /// <summary>
-    /// Dispatches callbacks and call results to all of the registered listeners.
-    /// </summary>
+    /// @brief Dispatches callbacks and call results to all of the registered listeners.
     void RunCallbacks();
 
-    /// <summary>
-    /// Check whether the Steamworks SDK for clients is initialized or not.
-    /// </summary>
-    /// <returns>True if Steamworks SDK is initialized, false otherwise.</returns>
+    /// @brief Check whether the Steamworks SDK for clients is initialized or not.
+    /// @return True if Steamworks SDK is initialized, false otherwise.
     [[nodiscard]] bool IsClientInitialized() noexcept;
 
-    /// <summary>
-    /// Check whether the Steamworks SDK for servers is initialized or not.
-    /// </summary>
-    /// <returns>True if Steamworks SDK is initialized, false otherwise.</returns>
+    /// @brief Check whether the Steamworks SDK for servers is initialized or not.
+    /// @return True if Steamworks SDK is initialized, false otherwise.
     [[nodiscard]] bool IsServerInitialized() noexcept;
 
 #ifdef USE_STEAMWORKS_SDK
 
-    /// <summary>
-    /// Retrieve the SteamApps interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamApps interface.</returns>
+    /// @brief Retrieve the SteamApps interface.
+    /// @return Pointer to the SteamApps interface.
     [[nodiscard]] ISteamApps* GetSteamApps();
 
-    /// <summary>
-    /// Retrieve the SteamFriends interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamFriends interface.</returns>
+    /// @brief Retrieve the SteamFriends interface.
+    /// @return Pointer to the SteamFriends interface.
     [[nodiscard]] ISteamFriends* GetSteamFriends();
 
-    /// <summary>
-    /// Retrieve the SteamHTMLSurface interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamHTMLSurface interface.</returns>
+    /// @brief Retrieve the SteamHTMLSurface interface.
+    /// @return Pointer to the SteamHTMLSurface interface.
     [[nodiscard]] ISteamHTMLSurface* GetSteamHTMLSurface();
 
-    /// <summary>
-    /// Retrieve the SteamHTTP interface from the client.
-    /// </summary>
-    /// <returns>Pointer to the SteamHTTP interface.</returns>
+    /// @brief Retrieve the SteamHTTP interface from the client.
+    /// @return Pointer to the SteamHTTP interface.
     [[nodiscard]] ISteamHTTP* GetSteamClientHTTP();
 
-    /// <summary>
-    /// Retrieve the SteamHTTP interface from the server.
-    /// </summary>
-    /// <returns>Pointer to the SteamHTTP interface.</returns>
+    /// @brief Retrieve the SteamHTTP interface from the server.
+    /// @return Pointer to the SteamHTTP interface.
     [[nodiscard]] ISteamHTTP* GetSteamServerHTTP();
 
-    /// <summary>
-    /// Retrieve the SteamInput interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamInput interface.</returns>
+    /// @brief Retrieve the SteamInput interface.
+    /// @return Pointer to the SteamInput interface.
     [[nodiscard]] ISteamInput* GetSteamInput();
 
-    /// <summary>
-    /// Retrieve the SteamInventory interface from the client.
-    /// </summary>
-    /// <returns>Pointer to the SteamInventory interface.</returns>
+    /// @brief Retrieve the SteamInventory interface from the client.
+    /// @return Pointer to the SteamInventory interface.
     [[nodiscard]] ISteamInventory* GetSteamClientInventory();
 
-    /// <summary>
-    /// Retrieve the SteamInventory interface from the server.
-    /// </summary>
-    /// <returns>Pointer to the SteamInventory interface.</returns>
+    /// @brief Retrieve the SteamInventory interface from the server.
+    /// @return Pointer to the SteamInventory interface.
     [[nodiscard]] ISteamInventory* GetSteamServerInventory();
 
-    /// <summary>
-    /// Retrieve the SteamMatchmaking interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamMatchmaking interface.</returns>
+    /// @brief Retrieve the SteamMatchmaking interface.
+    /// @return Pointer to the SteamMatchmaking interface.
     [[nodiscard]] ISteamMatchmaking* GetSteamMatchmaking();
 
-    /// <summary>
-    /// Retrieve the SteamMatchmakingServers interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamMatchmakingServers interface.</returns>
+    /// @brief Retrieve the SteamMatchmakingServers interface.
+    /// @return Pointer to the SteamMatchmakingServers interface.
     [[nodiscard]] ISteamMatchmakingServers* GetSteamMatchmakingServers();
 
-    /// <summary>
-    /// Retrieve the SteamMusic interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamMusic interface.</returns>
+    /// @brief Retrieve the SteamMusic interface.
+    /// @return Pointer to the SteamMusic interface.
     [[nodiscard]] ISteamMusic* GetSteamMusic();
 
-    /// <summary>
-    /// Retrieve the SteamMusicRemote interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamMusicRemote interface.</returns>
+    /// @brief Retrieve the SteamMusicRemote interface.
+    /// @return Pointer to the SteamMusicRemote interface.
     [[nodiscard]] ISteamMusicRemote* GetSteamMusicRemote();
 
-    /// <summary>
-    /// Retrieve the SteamNetworkingMessages interface from the client.
-    /// </summary>
-    /// <returns>Pointer to the SteamNetworkingMessages interface.</returns>
+    /// @brief Retrieve the SteamNetworkingMessages interface from the client.
+    /// @return Pointer to the SteamNetworkingMessages interface.
     [[nodiscard]] ISteamNetworkingMessages* GetSteamClientNetworkingMessages();
 
-    /// <summary>
-    /// Retrieve the SteamNetworkingMessages interface from the server.
-    /// </summary>
-    /// <returns>Pointer to the SteamNetworkingMessages interface.</returns>
+    /// @brief Retrieve the SteamNetworkingMessages interface from the server.
+    /// @return Pointer to the SteamNetworkingMessages interface.
     [[nodiscard]] ISteamNetworkingMessages* GetSteamServerNetworkingMessages();
 
-    /// <summary>
-    /// Retrieve the SteamNetworkingSockets interface from the client.
-    /// </summary>
-    /// <returns>Pointer to the SteamNetworkingSockets interface.</returns>
+    /// @brief Retrieve the SteamNetworkingSockets interface from the client.
+    /// @return Pointer to the SteamNetworkingSockets interface.
     [[nodiscard]] ISteamNetworkingSockets* GetSteamClientNetworkingSockets();
 
-    /// <summary>
-    /// Retrieve the SteamNetworkingSockets interface from the server.
-    /// </summary>
-    /// <returns>Pointer to the SteamNetworkingSockets interface.</returns>
+    /// @brief Retrieve the SteamNetworkingSockets interface from the server.
+    /// @return Pointer to the SteamNetworkingSockets interface.
     [[nodiscard]] ISteamNetworkingSockets* GetSteamServerNetworkingSockets();
 
-    /// <summary>
-    /// Retrieve the SteamNetworkingUtils interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamNetworkingUtils interface.</returns>
+    /// @brief Retrieve the SteamNetworkingUtils interface.
+    /// @return Pointer to the SteamNetworkingUtils interface.
     [[nodiscard]] ISteamNetworkingUtils* GetSteamNetworkingUtils();
 
-    /// <summary>
-    /// Retrieve the SteamParties interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamParties interface.</returns>
+    /// @brief Retrieve the SteamParties interface.
+    /// @return Pointer to the SteamParties interface.
     [[nodiscard]] ISteamParties* GetSteamParties();
 
-    /// <summary>
-    /// Retrieve the SteamRemotePlay interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamRemotePlay interface.</returns>
+    /// @brief Retrieve the SteamRemotePlay interface.
+    /// @return Pointer to the SteamRemotePlay interface.
     [[nodiscard]] ISteamRemotePlay* GetSteamRemotePlay();
 
-    /// <summary>
-    /// Retrieve the SteamRemoteStorage interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamRemoteStorage interface.</returns>
+    /// @brief Retrieve the SteamRemoteStorage interface.
+    /// @return Pointer to the SteamRemoteStorage interface.
     [[nodiscard]] ISteamRemoteStorage* GetSteamRemoteStorage();
 
-    /// <summary>
-    /// Retrieve the SteamScreenshots interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamScreenshots interface.</returns>
+    /// @brief Retrieve the SteamScreenshots interface.
+    /// @return Pointer to the SteamScreenshots interface.
     [[nodiscard]] ISteamScreenshots* GetSteamScreenshots();
 
-    /// <summary>
-    /// Retrieve the SteamUGC interface from the client.
-    /// </summary>
-    /// <returns>Pointer to the SteamUGC interface.</returns>
+    /// @brief Retrieve the SteamUGC interface from the client.
+    /// @return Pointer to the SteamUGC interface.
     [[nodiscard]] ISteamUGC* GetSteamClientUGC();
 
-    /// <summary>
-    /// Retrieve the SteamUGC interface from the server.
-    /// </summary>
-    /// <returns>Pointer to the SteamUGC interface.</returns>
+    /// @brief Retrieve the SteamUGC interface from the server.
+    /// @return Pointer to the SteamUGC interface.
     [[nodiscard]] ISteamUGC* GetSteamServerUGC();
 
-    /// <summary>
-    /// Retrieve the SteamUser interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamUser interface.</returns>
+    /// @brief Retrieve the SteamUser interface.
+    /// @return Pointer to the SteamUser interface.
     [[nodiscard]] ISteamUser* GetSteamUser();
 
-    /// <summary>
-    /// Retrieve the SteamUserStats interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamUserStats interface.</returns>
+    /// @brief Retrieve the SteamUserStats interface.
+    /// @return Pointer to the SteamUserStats interface.
     [[nodiscard]] ISteamUserStats* GetSteamUserStats();
 
-    /// <summary>
-    /// Retrieve the SteamUtils interface from the client.
-    /// </summary>
-    /// <returns>Pointer to the SteamUtils interface.</returns>
+    /// @brief Retrieve the SteamUtils interface from the client.
+    /// @return Pointer to the SteamUtils interface.
     [[nodiscard]] ISteamUtils* GetSteamClientUtils();
 
-    /// <summary>
-    /// Retrieve the SteamUtils interface from the server.
-    /// </summary>
-    /// <returns>Pointer to the SteamUtils interface.</returns>
+    /// @brief Retrieve the SteamUtils interface from the server.
+    /// @return Pointer to the SteamUtils interface.
     [[nodiscard]] ISteamUtils* GetSteamServerUtils();
 
-    /// <summary>
-    /// Retrieve the SteamVideo interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamVideo interface.</returns>
+    /// @brief Retrieve the SteamVideo interface.
+    /// @return Pointer to the SteamVideo interface.
     [[nodiscard]] ISteamVideo* GetSteamVideo();
 
-    /// <summary>
-    /// Retrieve the SteamGameServer interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamGameServer interface.</returns>
+    /// @brief Retrieve the SteamGameServer interface.
+    /// @return Pointer to the SteamGameServer interface.
     [[nodiscard]] ISteamGameServer* GetSteamGameServer();
 
-    /// <summary>
-    /// Retrieve the SteamGameServerStats interface.
-    /// </summary>
-    /// <returns>Pointer to the SteamGameServerStats interface.</returns>
+    /// @brief Retrieve the SteamGameServerStats interface.
+    /// @return Pointer to the SteamGameServerStats interface.
     [[nodiscard]] ISteamGameServerStats* GetSteamGameServerStats();
 
 #endif /*USE_STEAMWORKS_SDK*/

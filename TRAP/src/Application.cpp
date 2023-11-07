@@ -169,7 +169,6 @@ void TRAP::Application::Run()
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, PCLSTATS_SIMULATION_START);
-		// Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, PCLSTATS_INPUT_SAMPLE); //Deprecated
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE

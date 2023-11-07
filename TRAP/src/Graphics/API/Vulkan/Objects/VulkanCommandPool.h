@@ -14,54 +14,34 @@ namespace TRAP::Graphics::API
 	class VulkanCommandPool final : public CommandPool
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="desc">Command pool description.</param>
+		/// @brief Constructor.
+		/// @param desc Command pool description.
 		explicit VulkanCommandPool(const RendererAPI::CommandPoolDesc& desc);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanCommandPool() override;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		VulkanCommandPool(const VulkanCommandPool&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanCommandPool& operator=(const VulkanCommandPool&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanCommandPool(VulkanCommandPool&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanCommandPool& operator=(VulkanCommandPool&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the VkCommandPool handle.
-		/// </summary>
-		/// <returns>VkCommandPool handle.</returns>
+		/// @brief Retrieve the VkCommandPool handle.
+		/// @return VkCommandPool handle.
 		[[nodiscard]] constexpr VkCommandPool GetVkCommandPool() const noexcept;
 
-		/// <summary>
-		/// Allocate a new command buffer.
-		/// </summary>
-		/// <param name="secondary">Should the command buffer be a secondary command buffer.</param>
-		///<returns>New command buffer.</returns>
+		/// @brief Allocate a new command buffer.
+		/// @param secondary Should the command buffer be a secondary command buffer.
+		///@return New command buffer.
 		[[nodiscard]] CommandBuffer* AllocateCommandBuffer(bool secondary) override;
-		/// <summary>
-		/// Free a command buffer
-		/// </summary>
-		/// <param name="cmdBuffer">Command buffer to free.</param>
+		/// @brief Free a command buffer
+		/// @param cmdBuffer Command buffer to free.
 		void FreeCommandBuffer(const CommandBuffer* cmdBuffer) override;
 
-		/// <summary>
-		/// Reset the command pool.
-		/// </summary>
+		/// @brief Reset the command pool.
 		void Reset() const override;
 
 	private:

@@ -8,165 +8,106 @@
 
 namespace TRAP::Events
 {
-	/// <summary>
-	/// Monitor event base class.
-	/// </summary>
+	/// @brief Monitor event base class.
+	/// @remark @headless This class is not available in headless mode.
 	class MonitorEvent : public Event
 	{
 	public:
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~MonitorEvent() override = default;
 
-		/// <summary>
-		/// Retrieve the affected monitor.
-		/// </summary>
-		/// <returns>Monitor.</returns>
+		/// @brief Retrieve the affected monitor.
+		/// @return Monitor.
 		[[nodiscard]] Monitor GetMonitor() const noexcept;
 
-		/// <summary>
-		/// Retrieve the category flags of the event.
-		/// </summary>
-		/// <returns>Combination of one or more EventCategory's.</returns>
+		/// @brief Retrieve the category flags of the event.
+		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="monitor">Affected monitor.</param>
+		/// @brief Constructor.
+		/// @param monitor Affected monitor.
 		// explicit MonitorEvent(Monitor monitor) noexcept;
 		explicit constexpr MonitorEvent(const Monitor& monitor) noexcept;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr MonitorEvent(const MonitorEvent&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		MonitorEvent& operator=(const MonitorEvent&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr MonitorEvent(MonitorEvent&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		MonitorEvent& operator=(MonitorEvent&&) noexcept = default;
 
 		Monitor m_monitor;
 	};
 
-	/// <summary>
-	/// Monitor connected.
-	/// </summary>
+	/// @brief Monitor connected.
+	/// @remark @headless This class is not available in headless mode.
 	class MonitorConnectEvent final : public MonitorEvent
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="monitor">Newly connected monitor.</param>
+		/// @brief Constructor.
+		/// @param monitor Newly connected monitor.
 		// explicit MonitorConnectEvent(Monitor monitor) noexcept;
 		explicit constexpr MonitorConnectEvent(const Monitor& monitor) noexcept;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~MonitorConnectEvent() override = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr MonitorConnectEvent(const MonitorConnectEvent&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		MonitorConnectEvent& operator=(const MonitorConnectEvent&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr MonitorConnectEvent(MonitorConnectEvent&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		MonitorConnectEvent& operator=(MonitorConnectEvent&&) noexcept = default;
 
-		/// <summary>
-		/// Get a string representation of the MonitorConnectEvent.
-		/// </summary>
-		/// <returns>String representation.</returns>
+		/// @brief Get a string representation of the MonitorConnectEvent.
+		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
 
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
-		/// <summary>
-		/// Retrieve the name of the event.
-		/// </summary>
-		/// <returns>Name.</returns>
+		/// @brief Retrieve the name of the event.
+		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
 	};
 
-	/// <summary>
-	/// Monitor disconnected.
-	/// </summary>
+	/// @brief Monitor disconnected.
+	/// @remark @headless This class is not available in headless mode.
 	class MonitorDisconnectEvent final : public MonitorEvent
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="monitor">Disconnected monitor.</param>
+		/// @brief Constructor.
+		/// @param monitor Disconnected monitor.
 		// explicit MonitorDisconnectEvent(Monitor monitor) noexcept;
 		explicit constexpr MonitorDisconnectEvent(const Monitor& monitor) noexcept;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~MonitorDisconnectEvent() override = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr MonitorDisconnectEvent(const MonitorDisconnectEvent&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		MonitorDisconnectEvent& operator=(const MonitorDisconnectEvent&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr MonitorDisconnectEvent(MonitorDisconnectEvent&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		MonitorDisconnectEvent& operator=(MonitorDisconnectEvent&&) noexcept = default;
 
-		/// <summary>
-		/// Get a string representation of the MonitorDisconnectEvent.
-		/// </summary>
-		/// <returns>String representation.</returns>
+		/// @brief Get a string representation of the MonitorDisconnectEvent.
+		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
 
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
-		/// <summary>
-		/// Retrieve the name of the event.
-		/// </summary>
-		/// <returns>Name.</returns>
+		/// @brief Retrieve the name of the event.
+		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
 	};
 }

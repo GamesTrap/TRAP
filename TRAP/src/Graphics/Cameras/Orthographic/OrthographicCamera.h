@@ -9,67 +9,49 @@ namespace TRAP::Graphics
 	class OrthographicCamera final
 	{
 	public:
-		/// <summary>
-		/// Constructor.
+		/// @brief Constructor.
 		/// Initializes the Orthographic/2D camera.
-		/// </summary>
-		/// <param name="left">Left screen coordinate.</param>
-		/// <param name="right">Right screen coordinate.</param>
-		/// <param name="bottom">Bottom screen coordinate.</param>
-		/// <param name="top">Top screen coordinate.</param>
-		/// <param name="near">Near distance.</param>
-		/// <param name="far">Far distance.</param>
+		/// @param left Left screen coordinate.
+		/// @param right Right screen coordinate.
+		/// @param bottom Bottom screen coordinate.
+		/// @param top Top screen coordinate.
+		/// @param near Near distance.
+		/// @param far Far distance.
 		constexpr OrthographicCamera(f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far);
 
-		/// <summary>
-		/// Set the projection matrix via screen coordinates.
-		/// </summary>
-		/// <param name="left">Left screen coordinate.</param>
-		/// <param name="right">Right screen coordinate.</param>
-		/// <param name="bottom">Bottom screen coordinate.</param>
-		/// <param name="top">Top screen coordinate.</param>
-		/// <param name="near">Near distance.</param>
-		/// <param name="far">Far distance.</param>
+		/// @brief Set the projection matrix via screen coordinates.
+		/// @param left Left screen coordinate.
+		/// @param right Right screen coordinate.
+		/// @param bottom Bottom screen coordinate.
+		/// @param top Top screen coordinate.
+		/// @param near Near distance.
+		/// @param far Far distance.
 		constexpr void SetProjection(f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far);
 
-		/// <summary>
-		/// Retrieve the current camera position.
-		/// </summary>
-		/// <returns>Current camera position.</returns>
+		/// @brief Retrieve the current camera position.
+		/// @return Current camera position.
 		[[nodiscard]] constexpr const Math::Vec3& GetPosition() const noexcept;
-		/// <summary>
-		/// Set the camera position.
-		/// </summary>
-		/// <param name="position">New camera position.</param>
+		/// @brief Set the camera position.
+		/// @param position New camera position.
 		constexpr void SetPosition(const Math::Vec3& position);
 
-		/// <summary>
-		/// Retrieve the current camera rotation.
-		/// </summary>
-		/// <returns>Current camera rotation.</returns>
+		/// @brief Retrieve the current camera rotation.
+		/// @return Current camera rotation.
 		[[nodiscard]] constexpr const Math::Vec3& GetRotation() const noexcept;
-		/// <summary>
-		/// Set the camera rotation.
-		/// </summary>
-		/// <param name="rotation">New camera rotation.</param>
+		/// @brief Set the camera rotation.
+		/// @param rotation New camera rotation.
 		constexpr void SetRotation(const Math::Vec3& rotation);
 
-		/// <summary>
-		/// Retrieve the projection matrix.
-		/// </summary>
-		/// <returns>Projection matrix.</returns>
+		/// @brief Retrieve the projection matrix.
+		/// @return Projection matrix.
 		[[nodiscard]] constexpr const Math::Mat4& GetProjectionMatrix() const noexcept;
-		/// <summary>
-		/// Retrieve the view matrix.
-		/// </summary>
-		/// <returns>View matrix.</returns>
+		/// @brief Retrieve the view matrix.
+		/// @return View matrix.
 		[[nodiscard]] constexpr const Math::Mat4& GetViewMatrix() const noexcept;
 
 	private:
-		/// <summary>
-		/// Recalculate the view matrix.
+		/// @brief Recalculate the view matrix.
 		/// This applies the camera position and rotation to the view matrix.
-		/// </summary>
 		constexpr void RecalculateViewMatrix();
 
 		Math::Mat4 m_projectionMatrix;

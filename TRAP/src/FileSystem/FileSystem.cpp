@@ -946,13 +946,10 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
 //INTERNAL-----------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// <summary>
-/// Opens the file browser at the given path.
-///
-/// Note: Linux uses xdg-open.
-/// </summary>
-/// <param name="p">Path to folder to open in file browser.</param>
-/// <returns>True on success, false otherwise.</returns>
+/// @brief Opens the file browser at the given path.
+/// @param p Path to folder to open in file browser.
+/// @return True on success, false otherwise.
+/// @remark @linux Linux uses xdg-open for this functionality.
 bool OpenFolderInFileBrowser(const std::filesystem::path& p)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
@@ -1009,14 +1006,10 @@ bool OpenFolderInFileBrowser(const std::filesystem::path& p)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// <summary>
-/// Opens the file browser and selects the given file.
-///
-/// Note: On Linux this function does't select the given file.
-/// Note: Linux uses xdg-open.
-/// </summary>
-/// <param name="p">Path to file to open in file browser.</param>
-/// <returns>True on success, false otherwise.</returns>
+/// @brief Opens the file browser and selects the given file.
+/// @param p Path to file to open in file browser.
+/// @return True on success, false otherwise.
+/// @remark @linux Linux uses xdg-open for this functionality. The given file won't be selected.
 bool OpenFileInFileBrowser(const std::filesystem::path& p)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
@@ -1083,18 +1076,12 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
 
 #ifdef TRAP_PLATFORM_LINUX
 
-/// <summary>
-/// Retrieves the effective user's home dir.
-/// If the user is running as root we ignore the HOME environment.
-/// It works badly with sudo.
-///
-/// Note: Writing to $HOME as root implies security concerns that a multiplatform program
-///       cannot be assumed to handle.
-/// </summary>
-/// <returns>
-/// The home directory on success, empty optional.
-/// HOME environment is respected for non-root users if it exists.
-/// </returns>
+/// @brief Retrieves the effective user's home dir.
+///        If the user is running as root we ignore the HOME environment. It works badly with sudo.
+/// @return The home directory on success, empty optional.
+///         HOME environment is respected for non-root users if it exists.
+/// @warning @linux Writing to $HOME as root implies security concerns that a multiplatform
+///                 program cannot be assumed to handle.
 [[nodiscard]] std::optional<std::filesystem::path> GetHomeFolderPathLinux()
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
@@ -1142,18 +1129,12 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// <summary>
-/// Retrieves the effective user's document dir.
-/// If the user is running as root we ignore the HOME environment.
-/// It works badly with sudo.
-///
-/// Note: Writing to $HOME as root implies security concerns that a multiplatform program
-///       cannot be assumed to handle.
-/// </summary>
-/// <returns>
-/// The document directory on success, empty optional otherwise.
-/// HOME environment is respected for non-root users if it exists.
-/// </returns>
+/// @brief Retrieves the effective user's document dir.
+///        If the user is running as root we ignore the HOME environment. It works badly with sudo.
+/// @return The document directory on success, empty optional otherwise.
+///         HOME environment is respected for non-root users if it exists.
+/// @warning @linux Writing to $HOME as root implies security concerns that a multiplatform
+///                 program cannot be assumed to handle.
 [[nodiscard]] std::optional<std::filesystem::path> GetDocumentsFolderPathLinux()
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);

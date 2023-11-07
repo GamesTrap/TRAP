@@ -8,39 +8,25 @@ namespace TRAP::Graphics
 	class DescriptorSet
 	{
 	public:
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr virtual ~DescriptorSet() = default;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr DescriptorSet(const DescriptorSet&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr DescriptorSet& operator=(const DescriptorSet&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr DescriptorSet(DescriptorSet&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr DescriptorSet& operator=(DescriptorSet&&) noexcept = default;
 
-		/// <summary>
-		/// Update the descriptor set.
-		/// </summary>
-		/// <param name="index">Index of the set to update.</param>
-		/// <param name="params">Data to update.</param>
+		/// @brief Update the descriptor set.
+		/// @param index Index of the set to update.
+		/// @param params Data to update.
 		virtual void Update(u32 index, const std::vector<RendererAPI::DescriptorData>& params) = 0;
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		constexpr DescriptorSet() noexcept = default;
 	};
 }

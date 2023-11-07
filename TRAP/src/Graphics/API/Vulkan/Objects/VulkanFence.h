@@ -14,52 +14,34 @@ namespace TRAP::Graphics::API
 	class VulkanFence final : public Fence
 	{
 	public:
-		/// <summary>
-		/// Constructor.
+		/// @brief Constructor.
 		/// Fence is not signaled.
-		/// </summary>
-		/// <param name="signalled">Whether the Fence should be in signalled state or not. Default: Not signalled.</param>
+		/// @param signalled Whether the Fence should be in signalled state or not. Default: Not signalled.
 		explicit VulkanFence(bool signalled = false);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanFence() override;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		VulkanFence(const VulkanFence&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanFence& operator=(const VulkanFence&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanFence(VulkanFence&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanFence& operator=(VulkanFence&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the VkFence handle.
-		/// </summary>
-		/// <returns>VkFence handle.</returns>
+		/// @brief Retrieve the VkFence handle.
+		/// @return VkFence handle.
 		[[nodiscard]] constexpr VkFence GetVkFence() const noexcept;
 
-		/// <summary>
-		/// Retrieve the current status of the fence.
-		/// </summary>
-		/// <returns>Fence status.</returns>
+		/// @brief Retrieve the current status of the fence.
+		/// @return Fence status.
 		[[nodiscard]] RendererAPI::FenceStatus GetStatus() override;
 
-		/// <summary>
-		/// Wait for the fence to be signaled.
+		/// @brief Wait for the fence to be signaled.
 		///
 		/// 1. Waits for the fence to be signaled.
 		/// 2. Resets the fence.
-		/// </summary>
 		void Wait() override;
 
 	private:

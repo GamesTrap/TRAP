@@ -10,148 +10,106 @@
 
 namespace TRAP::Graphics
 {
+	/// @remark @headless This struct is not available in headless mode.
 	struct OrthographicCameraBounds
 	{
 		f32 Left, Right;
 		f32 Bottom, Top;
 
-		/// <summary>
-		/// Retrieve the width of the camera bounds.
-		/// </summary>
-		/// <returns>Width of the camera bounds.</returns>
+		/// @brief Retrieve the width of the camera bounds.
+		/// @return Width of the camera bounds.
 		[[nodiscard]] constexpr f32 GetWidth() const noexcept;
-		/// <summary>
-		/// Retrieve the height of the camera bounds.
-		/// </summary>
-		/// <returns>Height of the camera bounds.</returns>
+		/// @brief Retrieve the height of the camera bounds.
+		/// @return Height of the camera bounds.
 		[[nodiscard]] constexpr f32 GetHeight() const noexcept;
 	};
 
+	/// @remark @headless This class is not available in headless mode.
 	class OrthographicCameraController
 	{
 	public:
-		/// <summary>
-		/// Constructor.
+		/// @brief Constructor.
 		/// Initializes the Orthographic/2D camera and its controls.
-		/// </summary>
-		/// <param name="aspectRatio">Aspect ratio for the camera.</param>
-		/// <param name="rotation">Enabled or disable rotation controls.</param>
-		/// <param name="useController">Use the mouse and keyboard to control the camera or a controller.</param>
-		/// <param name="controller">Which controller slot to use when useController is set to true.</param>
+		/// @param aspectRatio Aspect ratio for the camera.
+		/// @param rotation Enabled or disable rotation controls.
+		/// @param useController Use the mouse and keyboard to control the camera or a controller.
+		/// @param controller Which controller slot to use when useController is set to true.
 		constexpr explicit OrthographicCameraController(f32 aspectRatio, bool rotation = false, bool useController = false,
 		                                                Input::Controller controller = Input::Controller::One) noexcept; //TODO Could be split into 2 constructors, one containing controller.
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~OrthographicCameraController() = default;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr OrthographicCameraController(const OrthographicCameraController&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr OrthographicCameraController& operator=(const OrthographicCameraController&) = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr OrthographicCameraController(OrthographicCameraController&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr OrthographicCameraController& operator=(OrthographicCameraController&&) = delete;
 
-		/// <summary>
-		/// Update the camera.
+		/// @brief Update the camera.
 		///
 		/// 1. Update controller or mouse/keyboard state depending on useController variable.
 		/// 2. Update camera position and optionally rotation.
-		/// </summary>
-		/// <param name="deltaTime">Time since last frame.</param>
+		/// @param deltaTime Time since last frame.
 		void OnUpdate(const Utils::TimeStep& deltaTime);
 
-		/// <summary>
-		/// Receive and handle mouse scroll and framebuffer resize events.
-		/// </summary>
-		/// <param name="e">Event to handle.</param>
+		/// @brief Receive and handle mouse scroll and framebuffer resize events.
+		/// @param e Event to handle.
 		void OnEvent(Events::Event& e);
 
-		/// <summary>
-		/// Resize the camera.
+		/// @brief Resize the camera.
 		///
 		/// Recalculates the aspect ratio, the camera bounds and the projection matrix.
-		/// </summary>
-		/// <param name="width">New width of the camera.</param>
-		/// <param name="height">New height of the camera.</param>
+		/// @param width New width of the camera.
+		/// @param height New height of the camera.
 		constexpr void OnResize(f32 width, f32 height);
 
-		/// <summary>
-		/// Retrieve the Orthographic/2D camera.
-		/// </summary>
-		/// <returns>Orthographic/2D camera.</returns>
+		/// @brief Retrieve the Orthographic/2D camera.
+		/// @return Orthographic/2D camera.
 		[[nodiscard]] constexpr OrthographicCamera& GetCamera() noexcept;
-		/// <summary>
-		/// Retrieve the Orthographic/2D camera.
-		/// </summary>
-		/// <returns>Orthographic/2D camera.</returns>
+		/// @brief Retrieve the Orthographic/2D camera.
+		/// @return Orthographic/2D camera.
 		[[nodiscard]] constexpr const OrthographicCamera& GetCamera() const noexcept;
 
-		/// <summary>
-		/// Retrieve the currently used translation/movement speed.
-		/// </summary>
-		/// <returns>Translation/movement speed.</returns>
+		/// @brief Retrieve the currently used translation/movement speed.
+		/// @return Translation/movement speed.
 		[[nodiscard]] constexpr f32 GetTranslationSpeed() const noexcept;
-		/// <summary>
-		/// Set the translation/movement speed.
-		/// </summary>
-		/// <param name="translationSpeed">New translation/movement speed.</param>
+		/// @brief Set the translation/movement speed.
+		/// @param translationSpeed New translation/movement speed.
 		constexpr void SetTranslationSpeed(f32 translationSpeed) noexcept;
 
-		/// <summary>
-		/// Retrieve the currently used rotation speed.
-		/// </summary>
-		/// <returns>Rotation speed.</returns>
+		/// @brief Retrieve the currently used rotation speed.
+		/// @return Rotation speed.
 		[[nodiscard]] constexpr f32 GetRotationSpeed() const noexcept;
-		/// <summary>
-		/// Set the rotation speed.
-		/// </summary>
-		/// <param name="rotationSpeed">New rotation speed.</param>
+		/// @brief Set the rotation speed.
+		/// @param rotationSpeed New rotation speed.
 		constexpr void SetRotationSpeed(f32 rotationSpeed) noexcept;
 
-		/// <summary>
-		/// Retrieve the current zoom level.
-		/// </summary>
-		/// <returns>Zoom level.</returns>
+		/// @brief Retrieve the current zoom level.
+		/// @return Zoom level.
 		[[nodiscard]] constexpr f32 GetZoomLevel() const noexcept;
-		/// <summary>
-		/// Set the zoom level.
-		/// </summary>
-		/// <param name="zoomLevel">New zoom level.</param>
+		/// @brief Set the zoom level.
+		/// @param zoomLevel New zoom level.
 		constexpr void SetZoomLevel(f32 zoomLevel);
 
-		/// <summary>
-		/// Retrieve the current camera bounds.
-		/// </summary>
-		/// <returns>Camera bounds.</returns>
+		/// @brief Retrieve the current camera bounds.
+		/// @return Camera bounds.
 		[[nodiscard]] constexpr const OrthographicCameraBounds& GetBounds() const noexcept;
 
 	private:
-		/// <summary>
-		/// Event handler for mouse scroll event.
+		/// @brief Event handler for mouse scroll event.
 		///
 		/// Updates zoom level, translation speed, bounds and recalculates the projection matrix.
-		/// </sumary>
-		/// <param name="e">Mouse scroll event.</param>
-		/// <returns>False.</returns>
+		/// @param e Mouse scroll event.
+		/// @return False.
 		constexpr bool OnMouseScroll(const Events::MouseScrollEvent& e);
-		/// <summary>
-		/// Event handler for framebuffer resize event.
+		/// @brief Event handler for framebuffer resize event.
 		///
 		/// Calls OrthographicCameraController::OnResize.
-		/// </sumary>
-		/// <param name="e">Framebuffer resize event.</param>
-		/// <returns>False.</returns>
+		/// @param e Framebuffer resize event.
+		/// @return False.
 		constexpr bool OnFrameBufferResize(const Events::FrameBufferResizeEvent& e);
 
 		f32 m_aspectRatio;

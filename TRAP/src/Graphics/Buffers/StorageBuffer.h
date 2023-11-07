@@ -16,117 +16,83 @@ namespace TRAP::Graphics
 	class StorageBuffer
 	{
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="updateFrequency">Update frequency for the storage buffer.</param>
+		/// @brief Constructor.
+		/// @param updateFrequency Update frequency for the storage buffer.
 		constexpr explicit StorageBuffer(RendererAPI::DescriptorUpdateFrequency updateFrequency);
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr StorageBuffer(const StorageBuffer&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr StorageBuffer& operator=(const StorageBuffer&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr StorageBuffer(StorageBuffer&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr StorageBuffer& operator=(StorageBuffer&&) noexcept = default;
 
 	public:
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~StorageBuffer() = default;
 
-		/// <summary>
-		/// Retrieve the byte size of the SSBO.
-		/// </summary>
-		/// <returns>Byte size of the SSBO.</returns>
+		/// @brief Retrieve the byte size of the SSBO.
+		/// @return Byte size of the SSBO.
 		[[nodiscard]] u64 GetSize() const noexcept;
-		/// <summary>
-		/// Retrieve the update frequency of the SSBO.
-		/// </summary>
-		/// <returns>Update frequency of the SSBO.</returns>
+		/// @brief Retrieve the update frequency of the SSBO.
+		/// @return Update frequency of the SSBO.
 		[[nodiscard]] constexpr UpdateFrequency GetUpdateFrequency() const noexcept;
-		/// <summary>
-		/// Retrieve the underlying buffers.
-		/// </summary>
-		/// <returns>Underlying buffers.</returns>
+		/// @brief Retrieve the underlying buffers.
+		/// @return Underlying buffers.
 		[[nodiscard]] constexpr const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetSSBOs() const noexcept;
 
-		/// <summary>
-		/// Update data of the SSBO.
-		/// </summary>
-		/// <param name="data">New data.</param>
-		/// <param name="size">Byte size of the data.</param>
-		/// <param name="offset">Offset into the currently used data.</param>
+		/// @brief Update data of the SSBO.
+		/// @param data New data.
+		/// @param size Byte size of the data.
+		/// @param offset Offset into the currently used data.
 		void SetData(const void* data, u64 size, u64 offset = 0);
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Retrieve data of the SSBO.
-		/// </summary>
-		/// <param name="data">Pointer to store data in.</param>
-		/// <param name="size">Byte size for data storage.</param>
-		/// <param name="offset">Offset into the currently used data.</param>
-		/// <param name="window">Window to use for the data retrieval. Default: Main Window.</param>
+		/// @brief Retrieve data of the SSBO.
+		/// @param data Pointer to store data in.
+		/// @param size Byte size for data storage.
+		/// @param offset Offset into the currently used data.
+		/// @param window Window to use for the data retrieval. Default: Main Window.
+		/// @remark @headless This function is not available in headless mode.
 		void GetData(const auto* data, u64 size, u64 offset = 0,
 		             const Window* window = TRAP::Application::GetWindow());
 #else
-		/// <summary>
-		/// Retrieve data of the SSBO.
-		/// </summary>
-		/// <param name="data">Pointer to store data in.</param>
-		/// <param name="size">Byte size for data storage.</param>
-		/// <param name="offset">Offset into the currently used data.</param>
+		/// @brief Retrieve data of the SSBO.
+		/// @param data Pointer to store data in.
+		/// @param size Byte size for data storage.
+		/// @param offset Offset into the currently used data.
+		/// @remark This function is only available in headless mode.
 		void GetData(const auto* data, u64 size, u64 offset = 0);
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Check whether uploading data to the GPU has finished.
-		/// </summary>
-		/// <returns>True if uploading data to the GPU has finished.</returns>
+		/// @brief Check whether uploading data to the GPU has finished.
+		/// @return True if uploading data to the GPU has finished.
 		[[nodiscard]] bool IsLoaded() const;
-		/// <summary>
-		/// Wait until uploading data to the GPU has finished.
-		/// </summary>
+		/// @brief Wait until uploading data to the GPU has finished.
 		void AwaitLoading() const;
 
-		/// <summary>
-		/// Calculate the aligned size of the SSBO.
-		/// </summary>
-		/// <param name="byteSize">Byte size of the SSBO.</param>
+		/// @brief Calculate the aligned size of the SSBO.
+		/// @param byteSize Byte size of the SSBO.
 		[[nodiscard]] static u64 CalculateAlignedSize(u64 byteSize) noexcept;
 
-		/// <summary>
-		/// Create a new shader storage buffer and set its size.
-		/// </summary>
-		/// <param name="size">Byte size for the uniform buffer.</param>
-		/// <param name="updateFrequency">Update frequency for the buffer.</param>
-		/// <returns>New shader storage buffer.</returns>
+		/// @brief Create a new shader storage buffer and set its size.
+		/// @param size Byte size for the uniform buffer.
+		/// @param updateFrequency Update frequency for the buffer.
+		/// @return New shader storage buffer.
 		[[nodiscard]] static Scope<StorageBuffer> Create(u64 size, UpdateFrequency updateFrequency);
-		/// <summary>
-		/// Create a new shader storage buffer and set its data.
-		/// </summary>
-		/// <param name="data">Pointer to the data to upload.</param>
-		/// <param name="size">Byte size of the data to upload.</param>
-		/// <param name="updateFrequency">Update frequency for the buffer.</param>
-		/// <returns>New shader storage buffer.</returns>
+		/// @brief Create a new shader storage buffer and set its data.
+		/// @param data Pointer to the data to upload.
+		/// @param size Byte size of the data to upload.
+		/// @param updateFrequency Update frequency for the buffer.
+		/// @return New shader storage buffer.
 		[[nodiscard]] static Scope<StorageBuffer> Create(const void* data, u64 size, UpdateFrequency updateFrequency);
 
 	private:
-		/// <summary>
-		/// Initialize shader storage buffer with given data.
-		/// </summary>
-		/// <param name="data">Pointer to the data to upload.</param>
-		/// <param name="size">Byte size of the data to upload.</param>
-		/// <param name="updateFrequency">Update frequency for the buffer.</param>
-		/// <returns>New shader storage buffer.</returns>
+		/// @brief Initialize shader storage buffer with given data.
+		/// @param data Pointer to the data to upload.
+		/// @param size Byte size of the data to upload.
+		/// @param updateFrequency Update frequency for the buffer.
+		/// @return New shader storage buffer.
 		[[nodiscard]] static Scope<StorageBuffer> Init(const void* data, u64 size, UpdateFrequency updateFrequency);
 
 		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_storageBuffers;

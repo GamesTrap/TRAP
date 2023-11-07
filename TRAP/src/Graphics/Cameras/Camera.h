@@ -9,40 +9,24 @@ namespace TRAP::Graphics
 	class Camera
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		constexpr Camera() noexcept = default;
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="projection">Projection matrix.</param>
+		/// @brief Constructor.
+		/// @param projection Projection matrix.
 		constexpr explicit Camera(const Math::Mat4& projection) noexcept;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr virtual ~Camera() = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Camera(const Camera&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr Camera(Camera&&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr Camera& operator=(const Camera&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr Camera& operator=(Camera&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the projection matrix.
-		/// </summary>
-		/// <returns>Projection matrix.</returns>
+		/// @brief Retrieve the projection matrix.
+		/// @return Projection matrix.
 		[[nodiscard]] constexpr Math::Mat4 GetProjectionMatrix() const noexcept;
 
 	protected:

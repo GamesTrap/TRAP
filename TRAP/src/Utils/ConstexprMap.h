@@ -9,12 +9,10 @@
 
 namespace TRAP::Utils
 {
-    /// <summary>
-    /// Compile-time and thread safe, fixed size map implementation
-    /// </summary>
-    /// <typeparam name="Key">Key type for the map.</typeparam>
-    /// <typeparam name="Value">Value type for the map.</typeparam>
-    /// <typeparam name="Size">Size for the map.</typeparam>
+    /// @brief Compile-time and thread safe, fixed size map implementation
+    /// @tparam Key Key type for the map.
+    /// @tparam Value Value type for the map.
+    /// @tparam Size Size for the map.
     template<typename Key, typename Value, usize Size>
     struct ConstexprMap
     {
@@ -28,12 +26,10 @@ namespace TRAP::Utils
 
         //-------------------------------------------------------------------------------------------------------------------//
 
-        /// <summary>
-        /// Retrieve the mapped value of the element with key equivalent to key.
+        /// @brief Retrieve the mapped value of the element with key equivalent to key.
         /// If no such element exists, an empty optional is returned.
-        /// </summary>
-        /// <param name="key">Key of the element to find.</param>
-        /// <returns>Mapped value of the requested element or empty optional if not found.</returns>
+        /// @param key Key of the element to find.
+        /// @return Mapped value of the requested element or empty optional if not found.
         [[nodiscard]] constexpr std::optional<mapped_type> at(const key_type& key) const
         {
             const auto iterator = std::ranges::find_if(data, [&key](const auto& val){return val.first == key;});
@@ -46,11 +42,9 @@ namespace TRAP::Utils
 
         //-------------------------------------------------------------------------------------------------------------------//
 
-        /// <summary>
-        /// Check if there is an element with key equivalent to key in the container.
-        /// </summary>
-        /// <param name="key">Key value of the element to search for.</param>
-        /// <returns>True if there is such an element, false otherwise.</returns>
+        /// @brief Check if there is an element with key equivalent to key in the container.
+        /// @param key Key value of the element to search for.
+        /// @return True if there is such an element, false otherwise.
         [[nodiscard]] constexpr bool contains(const key_type& key) const
         {
             const auto iterator = std::ranges::find_if(data, [&key](const auto& val){return val.first == key;});
@@ -60,10 +54,8 @@ namespace TRAP::Utils
 
         //-------------------------------------------------------------------------------------------------------------------//
 
-        /// <summary>
-        /// Checks if the container has no elements.
-        /// </summary>
-        /// <returns>True if the container is empty, false otherwise.</returns>
+        /// @brief Checks if the container has no elements.
+        /// @return True if the container is empty, false otherwise.
         [[nodiscard]] constexpr bool empty() const noexcept
         {
             return Size == 0;
@@ -71,10 +63,8 @@ namespace TRAP::Utils
 
         //-------------------------------------------------------------------------------------------------------------------//
 
-        /// <summary>
-        /// Returns the number of elements in the container.
-        /// </summary>
-        /// <returns>Number of elements in the container.</returns>
+        /// @brief Returns the number of elements in the container.
+        /// @return Number of elements in the container.
         [[nodiscard]] constexpr size_type size() const noexcept
         {
             return Size;
@@ -82,12 +72,10 @@ namespace TRAP::Utils
 
         //-------------------------------------------------------------------------------------------------------------------//
 
-        /// <summary>
-        /// Retrieve the value that is mapped to a key equivalent to key.
-        /// Note: This function throws an exception if no element was found.
-        /// </summary>
-        /// <param name="key">Key of the element to find.</param>
-        /// <returns>Mapped value of the requested element.</returns>
+        /// @brief Retrieve the value that is mapped to a key equivalent to key.
+        /// @param key Key of the element to find.
+        /// @return Mapped value of the requested element.
+        /// @warning This function throws an exception if no element was found.
         [[nodiscard]] constexpr mapped_type operator[](const key_type& key) const
         {
             return at(key).value();
@@ -95,12 +83,10 @@ namespace TRAP::Utils
 
         //-------------------------------------------------------------------------------------------------------------------//
 
-        /// <summary>
-        /// Retrieve the number of elements with key that compares equal to the specified argument key,
+        /// @brief Retrieve the number of elements with key that compares equal to the specified argument key,
         /// which is either 1 or 0 since this container does not allow duplicates.
-        /// </summary>
-        /// <param name="key">Key value of the elements to count.</param>
-        /// <returns>Number of elements with key key, that is either 1 or 0.</returns>
+        /// @param key Key value of the elements to count.
+        /// @return Number of elements with key key, that is either 1 or 0.
         [[nodiscard]] constexpr size_type count(const key_type& key) const
         {
             return contains(key) ? 1 : 0;

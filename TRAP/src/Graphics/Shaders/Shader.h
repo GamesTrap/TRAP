@@ -26,9 +26,7 @@ namespace TRAP::Graphics
 	class Shader
 	{
 	public:
-		/// <summary>
-		/// Struct defining a shader macro.
-		/// </summary>
+		/// @brief Struct defining a shader macro.
 		struct Macro
 		{
 			std::string Definition{};
@@ -36,253 +34,203 @@ namespace TRAP::Graphics
 		};
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		Shader(std::string name, bool valid, RendererAPI::ShaderStage stages, const std::vector<Macro>* userMacros = nullptr, const std::filesystem::path& filepath = "");
 	public:
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Shader(const Shader&) = delete;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr Shader& operator=(const Shader&) = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		Shader(Shader&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		Shader& operator=(Shader&&) noexcept = default;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~Shader() = default;
 
-		/// <summary>
-		/// Reload shader.
-		/// </summary>
-		/// <returns>True on successful reload (valid shader), else (invalid shader) otherwise.</returns>
+		/// @brief Reload shader.
+		/// @return True on successful reload (valid shader), else (invalid shader) otherwise.
 		bool Reload();
 
-		/// <summary>
-		/// Retrieve the name of the shader.
-		/// </summary>
-		/// <returns>Name of the shader.</returns>
+		/// @brief Retrieve the name of the shader.
+		/// @return Name of the shader.
 		[[nodiscard]] constexpr std::string GetName() const noexcept;
 
-		/// <summary>
-		/// Retrieve the file path of the shader.
-		/// </summary>
-		/// <returns>File path of the shader.</returns>
+		/// @brief Retrieve the file path of the shader.
+		/// @return File path of the shader.
 		[[nodiscard]] std::filesystem::path GetFilePath() const noexcept;
 
-		/// <summary>
-		/// Retrieve the shader stages of the shader.
-		/// <summary>
-		/// <returns>Shader stages of the shader.</returns>
+		/// @brief Retrieve the shader stages of the shader.
+		/// @brief @return Shader stages of the shader.
 		[[nodiscard]] constexpr RendererAPI::ShaderStage GetShaderStages() const noexcept;
 
-		/// <summary>
-		/// Retrieve the used macros of the shader.
-		/// </summary>
-		/// <returns>Used macros.</returns>
+		/// @brief Retrieve the used macros of the shader.
+		/// @return Used macros.
 		[[nodiscard]] constexpr const std::vector<Macro>& GetMacros() const noexcept;
 
-		/// <summary>
-		/// Retrieve the root signature of the shader.
-		/// </summary>
-		/// <returns>Root signature of the shader.</returns>
+		/// @brief Retrieve the root signature of the shader.
+		/// @return Root signature of the shader.
 		[[nodiscard]] TRAP::Ref<RootSignature> GetRootSignature() const noexcept;
-		/// <summary>
-		/// Retrieve the descriptor sets of the shader.
-		/// </summary>
-		/// <returns>Descriptor sets of the shader.</returns>
+		/// @brief Retrieve the descriptor sets of the shader.
+		/// @return Descriptor sets of the shader.
 		[[nodiscard]] constexpr const std::array<TRAP::Scope<DescriptorSet>, RendererAPI::MaxDescriptorSets>& GetDescriptorSets() const noexcept;
 
-		/// <summary>
-		/// Retrieve whether the shader is valid (i.e. loaded and compiled) or not.
-		/// </summary>
-		/// <returns>True if shader is valid, false otherwise.</returns>
+		/// @brief Retrieve whether the shader is valid (i.e. loaded and compiled) or not.
+		/// @return True if shader is valid, false otherwise.
 		[[nodiscard]] constexpr bool IsShaderValid() const noexcept;
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Use shader for rendering on the given window.
-		/// </summary>
-		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
+		/// @brief Use shader for rendering on the given window.
+		/// @param window Window to use the shader for. Default: Main Window.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void Use(const Window* window = TRAP::Application::GetWindow()) = 0;
 #else
-		/// <summary>
-		/// Use shader for rendering.
-		/// </summary>
+		/// @brief Use shader for rendering.
+		/// @remark This function is only available in headless mode.
 		virtual void Use() = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Use texture with this shader on the given window.
-		/// </summary>
-		/// <param name="set">Descriptor set to use the texture with.</param>
-		/// <param name="binding">Binding point of the texture.</param>
-		/// <param name="texture">Texture to use.</param>
-		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
+		/// @brief Use texture with this shader on the given window.
+		/// @param set Descriptor set to use the texture with.
+		/// @param binding Binding point of the texture.
+		/// @param texture Texture to use.
+		/// @param window Window to use the shader for. Default: Main Window.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void UseTexture(u32 set, u32 binding, Ref<TRAP::Graphics::Texture> texture,
 		                        const Window* window = TRAP::Application::GetWindow()) const = 0;
 #else
-		/// <summary>
-		/// Use texture with this shader.
-		/// </summary>
-		/// <param name="set">Descriptor set to use the texture with.</param>
-		/// <param name="binding">Binding point of the texture.</param>
-		/// <param name="texture">Texture to use.</param>
+		/// @brief Use texture with this shader.
+		/// @param set Descriptor set to use the texture with.
+		/// @param binding Binding point of the texture.
+		/// @param texture Texture to use.
+		/// @remark This function is only available in headless mode.
 		virtual void UseTexture(u32 set, u32 binding, Ref<TRAP::Graphics::Texture> texture) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Use multiple textures with this shader on the given window.
-		/// </summary>
-		/// <param name="set">Descriptor set to use the textures with.</param>
-		/// <param name="binding">Binding point of the textures.</param>
-		/// <param name="textures">Textures to use.</param>
-		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
+		/// @brief Use multiple textures with this shader on the given window.
+		/// @param set Descriptor set to use the textures with.
+		/// @param binding Binding point of the textures.
+		/// @param textures Textures to use.
+		/// @param window Window to use the shader for. Default: Main Window.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void UseTextures(u32 set, u32 binding,
 		                         const std::vector<Ref<TRAP::Graphics::Texture>>& textures,
 								 const Window* window = TRAP::Application::GetWindow()) const = 0;
 #else
-		/// <summary>
-		/// Use multiple textures with this shader.
-		/// </summary>
-		/// <param name="set">Descriptor set to use the textures with.</param>
-		/// <param name="binding">Binding point of the textures.</param>
-		/// <param name="textures">Textures to use.</param>
+		/// @brief Use multiple textures with this shader.
+		/// @param set Descriptor set to use the textures with.
+		/// @param binding Binding point of the textures.
+		/// @param textures Textures to use.
+		/// @remark This function is only available in headless mode.
 		virtual void UseTextures(u32 set, u32 binding,
 		                         const std::vector<Ref<TRAP::Graphics::Texture>>& textures) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Use sampler with this shader on the given window.
-		/// </summary>
-		/// <param name="set">Descriptor set to use the sampler with.</param>
-		/// <param name="binding">Binding point of the sampler.</param>
-		/// <param name="sampler">Sampler to use.</param>
-		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
+		/// @brief Use sampler with this shader on the given window.
+		/// @param set Descriptor set to use the sampler with.
+		/// @param binding Binding point of the sampler.
+		/// @param sampler Sampler to use.
+		/// @param window Window to use the shader for. Default: Main Window.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void UseSampler(u32 set, u32 binding, TRAP::Graphics::Sampler* sampler,
 		                        const Window* window = TRAP::Application::GetWindow()) const = 0;
 #else
-		/// <summary>
-		/// Use sampler with this shader.
-		/// </summary>
-		/// <param name="set">Descriptor set to use the sampler with.</param>
-		/// <param name="binding">Binding point of the sampler.</param>
-		/// <param name="sampler">Sampler to use.</param>
+		/// @brief Use sampler with this shader.
+		/// @param set Descriptor set to use the sampler with.
+		/// @param binding Binding point of the sampler.
+		/// @param sampler Sampler to use.
+		/// @remark This function is only available in headless mode.
 		virtual void UseSampler(u32 set, u32 binding, TRAP::Graphics::Sampler* sampler) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Use multiple samplers with this shader on the given window.
-		/// </summary>
-		/// <param name="set">Descriptor set to use the samplers with.</param>
-		/// <param name="binding">Binding point of the samplers.</param>
-		/// <param name="samplers">Samplers to use.</param>
-		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
+		/// @brief Use multiple samplers with this shader on the given window.
+		/// @param set Descriptor set to use the samplers with.
+		/// @param binding Binding point of the samplers.
+		/// @param samplers Samplers to use.
+		/// @param window Window to use the shader for. Default: Main Window.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void UseSamplers(u32 set, u32 binding,
 		                         const std::vector<TRAP::Graphics::Sampler*>& samplers,
 								 const Window* window = TRAP::Application::GetWindow()) const = 0;
 #else
-		/// <summary>
-		/// Use multiple samplers with this shader.
-		/// </summary>
-		/// <param name="set">Descriptor set to use the samplers with.</param>
-		/// <param name="binding">Binding point of the samplers.</param>
-		/// <param name="samplers">Samplers to use.</param>
+		/// @brief Use multiple samplers with this shader.
+		/// @param set Descriptor set to use the samplers with.
+		/// @param binding Binding point of the samplers.
+		/// @param samplers Samplers to use.
+		/// @remark This function is only available in headless mode.
 		virtual void UseSamplers(u32 set, u32 binding,
 		                         const std::vector<TRAP::Graphics::Sampler*>& samplers) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Use uniform buffer object with this shader on the given window.
-		/// </summary>
-		/// <param name="set">Descriptor set to use the UBO with.</param>
-		/// <param name="binding">Binding point of the UBO.</param>
-		/// <param name="uniformBuffer">Uniform buffer to use.</param>
-		/// <param name="size">Size of the UBO.</param>
-		/// <param name="offset">Offset of the UBO.</param>
-		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
+		/// @brief Use uniform buffer object with this shader on the given window.
+		/// @param set Descriptor set to use the UBO with.
+		/// @param binding Binding point of the UBO.
+		/// @param uniformBuffer Uniform buffer to use.
+		/// @param size Size of the UBO.
+		/// @param offset Offset of the UBO.
+		/// @param window Window to use the shader for. Default: Main Window.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer* uniformBuffer,
 							u64 size = 0, u64 offset = 0, const Window* window = TRAP::Application::GetWindow()) const = 0;
 #else
-		/// <summary>
-		/// Use uniform buffer object with this shader.
-		/// </summary>
-		/// <param name="set">Descriptor set to use the UBO with.</param>
-		/// <param name="binding">Binding point of the UBO.</param>
-		/// <param name="uniformBuffer">Uniform buffer to use.</param>
-		/// <param name="size">Size of the UBO.</param>
-		/// <param name="offset">Offset of the UBO.</param>
+		/// @brief Use uniform buffer object with this shader.
+		/// @param set Descriptor set to use the UBO with.
+		/// @param binding Binding point of the UBO.
+		/// @param uniformBuffer Uniform buffer to use.
+		/// @param size Size of the UBO.
+		/// @param offset Offset of the UBO.
+		/// @remark This function is only available in headless mode.
 		virtual void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer* uniformBuffer,
 							u64 size = 0, u64 offset = 0) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Use shader storage buffer object with this shader on the given window.
-		/// </summary>
-		/// <param name="set">Descriptor set to use the SSBO with.</param>
-		/// <param name="binding">Binding point of the SSBO.</param>
-		/// <param name="storageBuffer">Storage buffer to use.</param>
-		/// <param name="size">Size of the SSBO.</param>
-		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
+		/// @brief Use shader storage buffer object with this shader on the given window.
+		/// @param set Descriptor set to use the SSBO with.
+		/// @param binding Binding point of the SSBO.
+		/// @param storageBuffer Storage buffer to use.
+		/// @param size Size of the SSBO.
+		/// @param window Window to use the shader for. Default: Main Window.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void UseSSBO(u32 set, u32 binding, const TRAP::Graphics::StorageBuffer* storageBuffer,
 							 u64 size = 0, const Window* window = TRAP::Application::GetWindow()) const = 0;
 #else
-		/// <summary>
-		/// Use shader storage buffer object with this shader.
-		/// </summary>
-		/// <param name="set">Descriptor set to use the SSBO with.</param>
-		/// <param name="binding">Binding point of the SSBO.</param>
-		/// <param name="storageBuffer">Storage buffer to use.</param>
-		/// <param name="size">Size of the SSBO.</param>
+		/// @brief Use shader storage buffer object with this shader.
+		/// @param set Descriptor set to use the SSBO with.
+		/// @param binding Binding point of the SSBO.
+		/// @param storageBuffer Storage buffer to use.
+		/// @param size Size of the SSBO.
+		/// @remark This function is only available in headless mode.
 		virtual void UseSSBO(u32 set, u32 binding, const TRAP::Graphics::StorageBuffer* storageBuffer,
 							 u64 size = 0) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Retrieve the shaders thread count per work group.
-		/// </summary>
-		/// <returns>Shaders thread count per work group.</returns>
+		/// @brief Retrieve the shaders thread count per work group.
+		/// @return Shaders thread count per work group.
 		[[nodiscard]] virtual constexpr std::array<u32, 3> GetNumThreadsPerGroup() const noexcept = 0;
 
-		/// <summary>
-		/// Create a shader from file.
-		/// </summary>
-		/// <param name="name">Name for the shader.</param>
-		/// <param name="filePath">File path of the shader.</param>
-		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
-		/// <returns>Loaded Shader on success, Fallback Shader otherwise.</returns>
+		/// @brief Create a shader from file.
+		/// @param name Name for the shader.
+		/// @param filePath File path of the shader.
+		/// @param userMacros Optional user defined macros. Default: nullptr.
+		/// @return Loaded Shader on success, Fallback Shader otherwise.
 		[[nodiscard]] static Ref<Shader> CreateFromFile(const std::string& name, const std::filesystem::path& filePath,
 		                                                const std::vector<Macro>* userMacros = nullptr);
-		/// <summary>
-		/// Create a shader from file.
+		/// @brief Create a shader from file.
 		/// File name will be used as the shader name.
-		/// </summary>
-		/// <param name="filePath">File path of the shader.</param>
-		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
-		/// <returns>Loaded Shader on success, Fallback Shader otherwise.</returns>
+		/// @param filePath File path of the shader.
+		/// @param userMacros Optional user defined macros. Default: nullptr.
+		/// @return Loaded Shader on success, Fallback Shader otherwise.
 		[[nodiscard]] static Ref<Shader> CreateFromFile(const std::filesystem::path& filePath,
 		                                                const std::vector<Macro>* userMacros = nullptr);
-		/// <summary>
-		/// Create a shader from GLSL source.
-		/// </summary>
-		/// <param name="name">Name for the shader.</param>
-		/// <param name="glslSource">GLSL Source code.</param>
-		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
-		/// <returns>Loaded Shader on success, Fallback Shader otherwise.</returns>
+		/// @brief Create a shader from GLSL source.
+		/// @param name Name for the shader.
+		/// @param glslSource GLSL Source code.
+		/// @param userMacros Optional user defined macros. Default: nullptr.
+		/// @return Loaded Shader on success, Fallback Shader otherwise.
 		[[nodiscard]] static Ref<Shader> CreateFromSource(const std::string& name, const std::string& glslSource,
 		                                                  const std::vector<Macro>* userMacros = nullptr);
 
@@ -293,14 +241,10 @@ namespace TRAP::Graphics
 		                                                         sizeof(u8) + sizeof(usize) + sizeof(u8);
 
 	protected:
-		/// <summary>
-		/// Initialize API dependent shader.
-		/// </summary>
-		/// <param name="desc">Binary shader description.</param>
+		/// @brief Initialize API dependent shader.
+		/// @param desc Binary shader description.
 		virtual void Init(const RendererAPI::BinaryShaderDesc& desc) = 0;
-		/// <summary>
-		/// Shutdown API dependent shader.
-		/// </summary>
+		/// @brief Shutdown API dependent shader.
 		virtual void Shutdown() = 0;
 
 		std::string m_name;
@@ -312,96 +256,74 @@ namespace TRAP::Graphics
 		bool m_valid{};
 
 	private:
-		/// <summary>
-		/// Check if given file contains the TRAP Shader magic number.
-		/// </summary>
-		/// <param name="filePath">File path of the shader.</param>
-		/// <returns>True if file has TRAP Shader magic number, false otherwise.</returns>
+		/// @brief Check if given file contains the TRAP Shader magic number.
+		/// @param filePath File path of the shader.
+		/// @return True if file has TRAP Shader magic number, false otherwise.
 		[[nodiscard]] static bool CheckTRAPShaderMagicNumber(const std::filesystem::path& filePath);
 
-		/// <summary>
-		/// Pre process GLSL source code.
+		/// @brief Pre process GLSL source code.
 		///
 		/// 1. Splits different shader types like vertex, fragment, etc.
 		/// 2. Checks for duplicate shader types.
 		/// 3. Automatically adds #version directive.
 		/// 4. Inject default macros.
 		/// 4. Inject user defined macros.
-		/// </summary>
-		/// <param name="glslSource">GLSL source code.</param>
-		/// <param name="shaders"Output: Splitted shaders.</param>
-		/// <param name="userMacros">Optional: User defined macros.</param>
-		/// <returns>True if pre processing was successful, false otherwise.</returns>
+		/// @param glslSource GLSL source code.
+		/// @param shaders Output: Splitted shaders.
+		/// @param userMacros Optional: User defined macros.
+		/// @return True if pre processing was successful, false otherwise.
 		[[nodiscard]] static bool PreProcessGLSL(const std::string& glslSource,
 		                                         std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders,
 								                 const std::vector<Macro>* userMacros);
-		/// <summary>
-		/// Parse a glslang::TShader object.
-		/// </summary>
-		/// <param name="shader">glslang::TShader object.</param>
-		/// <returns>True if parsing was successful, false otherwise.</returns>
+		/// @brief Parse a glslang::TShader object.
+		/// @param shader glslang::TShader object.
+		/// @return True if parsing was successful, false otherwise.
 		[[nodiscard]] static bool ParseGLSLang(glslang::TShader& shader);
-		/// <summary>
-		/// Link a glslang::TShader to a glslang::TProgram object.
-		/// </summary>
-		/// <param name="shader">glslang::TShader object.</param>
-		/// <param name="program">glslang::TProgram object to link with.</param>
-		/// <returns>True if linking was successful, false otherwise.</returns>
+		/// @brief Link a glslang::TShader to a glslang::TProgram object.
+		/// @param shader glslang::TShader object.
+		/// @param program glslang::TProgram object to link with.
+		/// @return True if linking was successful, false otherwise.
 		[[nodiscard]] static bool LinkGLSLang(glslang::TShader& shader, glslang::TProgram& program);
-		/// <summary>
-		/// Validate that the given shader stages are a valid combination.
+		/// @brief Validate that the given shader stages are a valid combination.
 		///
 		/// 1. Checks if Rasterizer shaders are combined with Compute shader.
 		/// 2. Checks if Rasterizer shaders are combined with RayTracing shaders
 		/// 3. Checks if Compute shader is combined with RayTracing shaders.
 		/// 4. Checks if Vertex and Fragment shaders are combined.
-		/// </summary>
-		/// <param name="shaders">Shader stages to validate.</param>
-		/// <returns>True if validation was successful, false otherwise.</returns>
+		/// @param shaders Shader stages to validate.
+		/// @return True if validation was successful, false otherwise.
 		[[nodiscard]] static constexpr bool ValidateShaderStages(const std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders);
-		/// <summary>
-		/// Convert GLSL shaders to SPIRV.
-		/// </summary>
-		/// <param name="shaders">GLSL shader(s) to convert.</param>
-		/// <returns>RendererAPI::BinaryShaderDesc containing SPIRV binary data.</returns>
+		/// @brief Convert GLSL shaders to SPIRV.
+		/// @param shaders GLSL shader(s) to convert.
+		/// @return RendererAPI::BinaryShaderDesc containing SPIRV binary data.
 		[[nodiscard]] static RendererAPI::BinaryShaderDesc ConvertGLSLToSPIRV(const std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders);
-		/// <summary>
-		/// Convert a glslang::TProgram object to SPIRV binary data.
-		/// </summary>
-		/// <param name="stage">Shader stage to convert.</param>
-		/// <param name="program">glslang::TProgram object to convert.</param>
-		/// <returns>SPIRV binary data on success, empty vector otherwise.</returns>
+		/// @brief Convert a glslang::TProgram object to SPIRV binary data.
+		/// @param stage Shader stage to convert.
+		/// @param program glslang::TProgram object to convert.
+		/// @return SPIRV binary data on success, empty vector otherwise.
 		[[nodiscard]] static std::vector<u32> ConvertToSPIRV(RendererAPI::ShaderStage stage,
 		                                                          glslang::TProgram& program);
-		/// <summary>
-		/// Load SPIRV binary data into RendererAPI::BinaryShaderDesc.
-		/// </summary>
-		/// <param name="SPIRV">SPIRV binary data.</param>
-		/// <returns>RendererAPI::BinaryShaderDesc containing loaded SPIRV binary data.</returns>
+		/// @brief Load SPIRV binary data into RendererAPI::BinaryShaderDesc.
+		/// @param SPIRV SPIRV binary data.
+		/// @return RendererAPI::BinaryShaderDesc containing loaded SPIRV binary data.
 		[[nodiscard]] static RendererAPI::BinaryShaderDesc LoadSPIRV(std::vector<u8>& SPIRV);
-		/// <summary>
-		/// Check if the ending of the given path is a supported shader file ending.
-		/// </summary>
-		/// <param name="filePath">File path to check.</param>
-		/// <returns>True if file ending is supported, false otherwise.</returns>
+		/// @brief Check if the ending of the given path is a supported shader file ending.
+		/// @param filePath File path to check.
+		/// @return True if file ending is supported, false otherwise.
 		[[nodiscard]] static bool IsFileEndingSupported(const std::filesystem::path& filePath);
-		/// <summary>
-		/// Shader pre initialization.
+		/// @brief Shader pre initialization.
 		///
 		/// 1. Checks if file type is supported shader type.
 		/// 2. Loads shader file from disk.
 		/// 3. If GLSL convert to SPIRV else loads SPIRV code.
 		/// 4. Check for invalid shader stages.
-		/// </summary>
-		/// <param name="name">Name of the shader.</param>
-		/// <param name="filePath">File path of the shader.</param>
-		/// <param name="userMacros">Optional user provided macros.</param>
-		/// <param name="outShaderDesc">Output binary shader description.</param>
-		/// <param name="outFailShader">Optional Output used if pre initialization failed.</param>
-		/// <returns>
-		/// True on successful pre initialization, false otherwise.
+		/// @param name Name of the shader.
+		/// @param filePath File path of the shader.
+		/// @param userMacros Optional user provided macros.
+		/// @param outShaderDesc Output binary shader description.
+		/// @param outFailShader Optional Output used if pre initialization failed.
+		/// @return True on successful pre initialization, false otherwise.
 		/// If false outFailShader may be filled with a fail shader.
-		/// </returns>
 		[[nodiscard]] static bool PreInit(const std::string& name, const std::filesystem::path& filePath, const std::vector<Macro>* userMacros, RendererAPI::BinaryShaderDesc& outShaderDesc, Ref<Shader>& outFailShader);
 
 		inline constinit static bool s_glslangInitialized = false;

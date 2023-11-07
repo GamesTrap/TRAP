@@ -17,69 +17,45 @@ namespace TRAP::Graphics::API
 		inline static constexpr u32 DESCRIPTOR_TYPE_RANGE_SIZE = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT + 2;
 
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="numDescriptorSets">Max number of descriptor sets that can be allocated from the pool.</param>
+		/// @brief Constructor.
+		/// @param numDescriptorSets Max number of descriptor sets that can be allocated from the pool.
 		explicit VulkanDescriptorPool(u32 numDescriptorSets);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanDescriptorPool() override;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		VulkanDescriptorPool(const VulkanDescriptorPool&) = delete;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanDescriptorPool& operator=(const VulkanDescriptorPool&) = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanDescriptorPool(VulkanDescriptorPool&&) = delete;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanDescriptorPool& operator=(VulkanDescriptorPool&&) = delete;
 
-		/// <summary>
-		/// Reset the descriptor pool.
-		/// Note: This implicitly frees all descriptor sets allocated from the pool.
-		/// </summary>
+		/// @brief Reset the descriptor pool.
+		/// @note This implicitly frees all descriptor sets allocated from the pool.
 		void Reset() override;
 
-		/// <summary>
-		/// Retrieve the current VkDescriptorPool handle.
-		/// </summary>
-		/// <returns>VkDescriptorPool handle.</returns>
+		/// @brief Retrieve the current VkDescriptorPool handle.
+		/// @return VkDescriptorPool handle.
 		[[nodiscard]] constexpr VkDescriptorPool GetCurrentVkDescriptorPool() const noexcept;
-		/// <summary>
-		/// Retrieve the descriptor pool sizes for each descriptor type.
-		/// </summary>
-		/// <returns>Descriptor pool sizes.</returns>
+		/// @brief Retrieve the descriptor pool sizes for each descriptor type.
+		/// @return Descriptor pool sizes.
 		[[nodiscard]] constexpr const std::vector<VkDescriptorPoolSize>& GetDescriptorPoolSizes() const noexcept;
-		/// <summary>
-		/// Retrieve the count of used descriptor sets.
-		/// </summary>
-		/// <returns>Count of used descriptor sets.</returns>
+		/// @brief Retrieve the count of used descriptor sets.
+		/// @return Count of used descriptor sets.
 		[[nodiscard]] constexpr u32 GetUsedDescriptorSetsCount() const noexcept;
 
-		/// <summary>
-		/// Retrieve a new descriptor set from description.
-		/// </summary>
-		/// <param name="desc">Descriptor set description.</param>
-		/// <returns>New descriptor set.</returns>
+		/// @brief Retrieve a new descriptor set from description.
+		/// @param desc Descriptor set description.
+		/// @return New descriptor set.
 		[[nodiscard]] TRAP::Scope<DescriptorSet> RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc) override;
 
 		inline static constexpr u32 DescriptorTypeRangeSize = DESCRIPTOR_TYPE_RANGE_SIZE - 1;
 	private:
-		/// <summary>
-		/// Retrieve a new VkDescriptorSet with the given layout.
-		/// </summary>
-		/// <param name="layout">Descriptor set layout.</param>
-		/// <returns>VkDescriptorSet handle.</returns>
+		/// @brief Retrieve a new VkDescriptorSet with the given layout.
+		/// @param layout Descriptor set layout.
+		/// @return VkDescriptorSet handle.
 		[[nodiscard]] VkDescriptorSet RetrieveVkDescriptorSet(VkDescriptorSetLayout layout);
 
 		VkDescriptorPool m_currentPool = VK_NULL_HANDLE;

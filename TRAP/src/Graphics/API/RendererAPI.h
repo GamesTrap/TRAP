@@ -56,9 +56,7 @@ namespace TRAP::Graphics::API
 
 namespace TRAP::Graphics
 {
-	/// <summary>
-	/// Supported render APIs.
-	/// </summary>
+	/// @brief Supported render APIs.
 	enum class RenderAPI
 	{
 		NONE = 0,
@@ -95,826 +93,701 @@ namespace TRAP::Graphics
 		struct PerViewportData;
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		constexpr RendererAPI() noexcept = default;
 	public:
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr virtual ~RendererAPI() = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr RendererAPI(const RendererAPI&) = delete;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr RendererAPI& operator=(const RendererAPI&) = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr RendererAPI(RendererAPI&&) = delete;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr RendererAPI& operator=(RendererAPI&&) = delete;
 
-		/// <summary>
-		/// Initialize the Renderer.
-		/// </summary>
-		/// <param name="gameName">Name of the game.</param>
-		/// <param name="renderAPI">Render API to use.</param>
+		/// @brief Initialize the Renderer.
+		/// @param gameName Name of the game.
+		/// @param renderAPI Render API to use.
 		static void Init(std::string_view gameName, RenderAPI renderAPI);
-		/// <summary>
-		/// Shutdown the Renderer.
-		/// </summary>
+		/// @brief Shutdown the Renderer.
 		static void Shutdown();
 
-		/// <summary>
-		/// Retrieve the Renderer singleton.
-		/// </summary>
-		/// <returns>Renderer.</returns>
+		/// @brief Retrieve the Renderer singleton.
+		/// @return Renderer.
 		[[nodiscard]] static RendererAPI* GetRenderer();
-		/// <summary>
-		/// Retrieve the resource loader singleton.
-		/// </summary>
-		/// <returns>Resource loader.</returns>
+		/// @brief Retrieve the resource loader singleton.
+		/// @return Resource loader.
 		[[nodiscard]] static API::ResourceLoader* GetResourceLoader() noexcept;
 
-		/// <summary>
-		/// Auto select a supported render API.
-		/// </summary>
-		/// <returns>Auto selected render API.</returns>
+		/// @brief Auto select a supported render API.
+		/// @return Auto selected render API.
 		[[nodiscard]] static RenderAPI AutoSelectRenderAPI();
-		/// <summary>
-		/// Check whether a render API is supported by the system.
-		/// </summary>
-		/// <returns>True if supported, false otherwise.</returns>
+		/// @brief Check whether a render API is supported by the system.
+		/// @return True if supported, false otherwise.
 		[[nodiscard]] static bool IsSupported(RenderAPI api);
-		/// <summary>
-		/// Retrieve the currently used render API.
-		/// </summary>
-		/// <returns>Currently used render API.</returns>
+		/// @brief Retrieve the currently used render API.
+		/// @return Currently used render API.
 		[[nodiscard]] static RenderAPI GetRenderAPI() noexcept;
 
-		/// <summary>
-		/// Set a new GPU to use.
-		///
-		/// Note: This only takes effect after a restart of the engine.
-		/// </summary>
-		/// <param name="GPUUUID">UUID of the GPU to use.</param>
+		/// @brief Set a new GPU to use.
+		/// @param GPUUUID UUID of the GPU to use.
+		/// @note This only takes effect after a restart of the engine.
 		static constexpr void SetNewGPU(const TRAP::Utils::UUID& GPUUUID) noexcept;
-		/// <summary>
-		/// Get the UUID of the new GPU to use.
-		///
-		/// Note: This will return an empty UUID if no new GPU was set.
-		/// </summary>
-		/// <returns>UUID of the new GPU to use.</returns>
+		/// @brief Get the UUID of the new GPU to use.
+		/// @return UUID of the new GPU to use.
+		/// @note This will return an empty UUID if no new GPU was set.
 		[[nodiscard]] static TRAP::Utils::UUID GetNewGPU() noexcept;
 
-		/// <summary>
-		/// On post update function.
+		/// @brief On post update function.
 		/// This function performs several tasks that need to be done after LayerStack::OnUpdate() calls.
 		/// Currently this only performs scaling of the render targets, dependening on the current render scale.
-		/// </summary>
 		static void OnPostUpdate();
 
-		/// <summary>
-		/// Initialize the internal renderer.
-		/// </summary>
-		/// <param name="gameName">Name of the game.</param>
+		/// @brief Initialize the internal renderer.
+		/// @param gameName Name of the game.
 		virtual void InitInternal(std::string_view gameName) = 0;
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Flush renderer for the given window.
+		/// @brief Flush renderer for the given window.
 		///
 		/// 1. Stops graphics and compute recording.
 		/// 2. Submits the graphics and compute commands.
 		/// 3. Presents the rendered image to the screen.
 		/// 4. Starts graphics and compute recording for the next frame.
-		/// </summary>
-		/// <param name="window">Window to flush.</param>
+		/// @param window Window to flush.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void Flush(const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Flush renderer.
+		/// @brief Flush renderer.
 		///
 		/// 1. Stops graphics and compute recording.
 		/// 2. Submits the graphics and compute commands.
 		/// 3. Starts graphics and compute recording for the next frame.
-		/// </summary>
+		/// @remark This function is only available in headless mode.
 		virtual void Flush() const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Dispatch to the given window.
-		/// </summary>
-		/// <param name="workGroupElements">
-		/// Number of elements to dispatch for each dimension.
+		/// @brief Dispatch to the given window.
+		/// @param workGroupElements Number of elements to dispatch for each dimension.
 		/// The elements are automatically divided by the number of threads in the work group and rounded up.
-		/// </param>
-		/// <param name="window">Window to Dispatch.</param>
+		/// @param window Window to Dispatch.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void Dispatch(std::array<u32, 3> workGroupElements, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Dispatch.
-		/// </summary>
-		/// <param name="workGroupElements">
-		/// Number of elements to dispatch for each dimension.
+		/// @brief Dispatch.
+		/// @param workGroupElements Number of elements to dispatch for each dimension.
 		/// The elements are automatically divided by the number of threads in the work group and rounded up.
-		/// </param>
+		/// @remark This function is only available in headless mode.
 		virtual void Dispatch(std::array<u32, 3> workGroupElements) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the VSync state for the given window.
-		/// </summary>
-		/// <param name="vsync">Enable or disable VSync.</param>
-		/// <param name="window">Window to set VSync for.</param>
+		/// @brief Set the VSync state for the given window.
+		/// @param vsync Enable or disable VSync.
+		/// @param window Window to set VSync for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetVSync(bool vsync, const Window* window) const = 0;
-		/// <summary>
-		/// Retrieve whether VSync is enabled or not for the given window.
-		/// </summary>
-		/// <param name="window">Window to retrieve VSync for.</param>
-		/// <returns>True if VSync is enabled, false otherwise.</returns>
+		/// @brief Retrieve whether VSync is enabled or not for the given window.
+		/// @param window Window to retrieve VSync for.
+		/// @return True if VSync is enabled, false otherwise.
+		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] virtual bool GetVSync(const Window* window) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the FPS limit for NVIDIA-Reflex.
-		/// Note: This function affects all windows.
-		/// Note: Do not call this function in user code! Use TRAP::Application::SetFPSLimit() instead.
-		///       This function is only used internally for NVIDIA-Reflex.
-		/// </summary>
-		/// <param name="limit">FPS target to limit to.</param>
+		/// @brief Set the FPS limit for NVIDIA-Reflex.
+		/// @param limit FPS target to limit to.
+		/// @note This function affects all windows.
+		/// @warning Do not call this function in user code!
+		///          Use TRAP::Application::SetFPSLimit() instead.
+		///          This function is only used internally for NVIDIA-Reflex.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetReflexFPSLimit(u32 limit) = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 		//RenderTarget Stuff
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the render scale for the given window.
-		/// Note: This functon takes effect on the next frame.
-		/// </summary>
-		/// <param name="scale">Render scale value (valid range: 0.5f-1.0f inclusive).</param>
-		/// <param name="window">Window to set render scale for.</param>
+		/// @brief Set the render scale for the given window.
+		/// @param scale Render scale value (valid range: 0.5f-1.0f inclusive).
+		/// @param window Window to set render scale for.
+		/// @note This functon takes effect on the next frame.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetRenderScale(f32 scale, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the render scale.
-		/// Note: This functon takes effect on the next frame.
-		/// </summary>
-		/// <param name="scale">Render scale value (valid range: 0.5f-1.0f inclusive).</param>
+		/// @brief Set the render scale.
+		/// @param scale Render scale value (valid range: 0.5f-1.0f inclusive).
+		/// @note This functon takes effect on the next frame.
+		/// @remark This function is only available in headless mode.
 		virtual void SetRenderScale(f32 scale) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Retrieve the used render scale value of the given window.
-		/// </summary>
-		/// <param name="window">Window to retrieve render scale from.</param>
-		/// <returns>Render scale (between 0.5f and 2.0f inclusive).</returns>
+		/// @brief Retrieve the used render scale value of the given window.
+		/// @param window Window to retrieve render scale from.
+		/// @return Render scale (between 0.5f and 2.0f inclusive).
+		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] virtual f32 GetRenderScale(const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Retrieve the used render scale value.
-		/// </summary>
-		/// <returns>Render scale (between 0.5f and 2.0f inclusive).</returns>
+		/// @brief Retrieve the used render scale value.
+		/// @return Render scale (between 0.5f and 2.0f inclusive).
+		/// @remark This function is only available in headless mode.
 		[[nodiscard]] virtual f32 GetRenderScale() const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the clear color to be used by the given window.
-		/// </summary>
-		/// <param name="color">New clear color.</param>
-		/// <param name="window">Window to set clear color for.</param>
+		/// @brief Set the clear color to be used by the given window.
+		/// @param color New clear color.
+		/// @param window Window to set clear color for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetClearColor(const Color& color /*= { 0.1f, 0.1f, 0.1f, 1.0f }*/,
 		                           const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the clear color.
-		/// </summary>
-		/// <param name="color">New clear color.</param>
+		/// @brief Set the clear color.
+		/// @param color New clear color.
+		/// @remark This function is only available in headless mode.
 		virtual void SetClearColor(const Color& color /*= { 0.1f, 0.1f, 0.1f, 1.0f }*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the clear depth value to be used by the given window.
-		/// </summary>
-		/// <param name="depth">New clear depth value. Must be between 0.0f and 1.0f</param>
-		/// <param name="window">Window to set clear depth value for.</param>
+		/// @brief Set the clear depth value to be used by the given window.
+		/// @param depth New clear depth value. Must be between 0.0f and 1.0f
+		/// @param window Window to set clear depth value for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetClearDepth(f32 depth /*= 0.0f*/, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the clear depth value.
-		/// </summary>
-		/// <param name="depth">New clear depth value. Must be between 0.0f and 1.0f</param>
+		/// @brief Set the clear depth value.
+		/// @param depth New clear depth value. Must be between 0.0f and 1.0f
+		/// @remark This function is only available in headless mode.
 		virtual void SetClearDepth(f32 depth /*= 0.0f*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the clear stencil value to be used by the given window.
-		/// </summary>
-		/// <param name="stencil">New clear stencil value.</param>
-		/// <param name="window">Window to set clear stencil value for.</param>
+		/// @brief Set the clear stencil value to be used by the given window.
+		/// @param stencil New clear stencil value.
+		/// @param window Window to set clear stencil value for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetClearStencil(u32 stencil /*= 0*/, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the clear stencil value.
-		/// </summary>
-		/// <param name="stencil">New clear stencil value.</param>
+		/// @brief Set the clear stencil value.
+		/// @param stencil New clear stencil value.
+		/// @remark This function is only available in headless mode.
 		virtual void SetClearStencil(u32 stencil /*= 0*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifdef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the resolution of the render targets.
-		/// </summary>
-		/// <param name="width">New width.</param>
-		/// <param name="height">New height.</param>
+		/// @brief Set the resolution of the render targets.
+		/// @param width New width.
+		/// @param height New height.
+		/// @remark This function is only available in headless mode.
 		virtual void SetResolution(u32 width, u32 height) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 		//Pipeline Stuff
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Enable or disable depth testing for the given window.
-		/// </summary>
-		/// <param name="enabled">Enable or disable depth testing.</param>
-		/// <param name="window">Window to set depth testing for.</param>
+		/// @brief Enable or disable depth testing for the given window.
+		/// @param enabled Enable or disable depth testing.
+		/// @param window Window to set depth testing for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetDepthTesting(bool enabled, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Enable or disable depth testing.
-		/// </summary>
-		/// <param name="enabled">Enable or disable depth testing.</param>
+		/// @brief Enable or disable depth testing.
+		/// @param enabled Enable or disable depth testing.
+		/// @remark This function is only available in headless mode.
 		virtual void SetDepthTesting(bool enabled) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Enable or disable depth writing for the given window.
-		/// </summary>
-		/// <param name="enabled">Enable or disable depth writing.</param>
-		/// <param name="window">Window to set depth writing for.</param>
+		/// @brief Enable or disable depth writing for the given window.
+		/// @param enabled Enable or disable depth writing.
+		/// @param window Window to set depth writing for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetDepthWriting(bool enabled, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Enable or disable depth writing.
-		/// </summary>
-		/// <param name="enabled">Enable or disable depth writing.</param>
+		/// @brief Enable or disable depth writing.
+		/// @param enabled Enable or disable depth writing.
+		/// @remark This function is only available in headless mode.
 		virtual void SetDepthWriting(bool enabled) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the depth function for the given window.
-		/// </summary>
-		/// <param name="function">Function to use for depth testing.</param>
-		/// <param name="window">Window to set depth function for.</param>
+		/// @brief Set the depth function for the given window.
+		/// @param function Function to use for depth testing.
+		/// @param window Window to set depth function for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetDepthFunction(CompareMode function, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the depth function.
-		/// </summary>
-		/// <param name="function">Function to use for depth testing.</param>
+		/// @brief Set the depth function.
+		/// @param function Function to use for depth testing.
+		/// @remark This function is only available in headless mode.
 		virtual void SetDepthFunction(CompareMode function) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the depth action to perform when depth testing fails for the given window.
-		/// </summary>
-		/// <param name="front">Depth action to perform when depth testing fails.</param>
-		/// <param name="back">Depth action to perform when depth testing fails.</param>
-		/// <param name="window">Window to set the depth fail action for.</param>
+		/// @brief Set the depth action to perform when depth testing fails for the given window.
+		/// @param front Depth action to perform when depth testing fails.
+		/// @param back Depth action to perform when depth testing fails.
+		/// @param window Window to set the depth fail action for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetDepthFail(StencilOp front, StencilOp back, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the depth action to perform when depth testing fails.
-		/// </summary>
-		/// <param name="front">Depth action to perform when depth testing fails.</param>
-		/// <param name="back">Depth action to perform when depth testing fails.</param>
+		/// @brief Set the depth action to perform when depth testing fails.
+		/// @param front Depth action to perform when depth testing fails.
+		/// @param back Depth action to perform when depth testing fails.
+		/// @remark This function is only available in headless mode.
 		virtual void SetDepthFail(StencilOp front, StencilOp back) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the depth bias (scalar factor to add to each fragments depth value) for the given window.
-		/// </summary>
-		/// <param name="depthBias">Depth bias.</param>
-		/// <param name="window">Window to set the depth bias for.</param>
+		/// @brief Set the depth bias (scalar factor to add to each fragments depth value) for the given window.
+		/// @param depthBias Depth bias.
+		/// @param window Window to set the depth bias for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetDepthBias(i32 depthBias, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the depth bias (scalar factor to add to each fragments depth value).
-		/// </summary>
-		/// <param name="depthBias">Depth bias.</param>
+		/// @brief Set the depth bias (scalar factor to add to each fragments depth value).
+		/// @param depthBias Depth bias.
+		/// @remark This function is only available in headless mode.
 		virtual void SetDepthBias(i32 depthBias) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the depth bias slope factor (scalar factor applied to fragment's slope in depth bias calculation) for the given window.
-		/// </summary>
-		/// <param name="factor">Depth bias slope factor.</param>
-		/// <param name="window">Window to set the depth bias slope factor for.</param>
+		/// @brief Set the depth bias slope factor (scalar factor applied to fragment's slope in depth bias calculation) for the given window.
+		/// @param factor Depth bias slope factor.
+		/// @param window Window to set the depth bias slope factor for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetDepthBiasSlopeFactor(f32 factor, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the depth bias slope factor (scalar factor applied to fragment's slope in depth bias calculation).
-		/// </summary>
-		/// <param name="factor">Depth bias slope factor.</param>
+		/// @brief Set the depth bias slope factor (scalar factor applied to fragment's slope in depth bias calculation).
+		/// @param factor Depth bias slope factor.
+		/// @remark This function is only available in headless mode.
 		virtual void SetDepthBiasSlopeFactor(f32 factor) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Enable or disable stencil testing for the given window.
-		/// </summary>
-		/// <param name="enabled">Enable or disable stencil testing.</param>
-		/// <param name="window">Window to set stencil testing for.</param>
+		/// @brief Enable or disable stencil testing for the given window.
+		/// @param enabled Enable or disable stencil testing.
+		/// @param window Window to set stencil testing for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetStencilTesting(bool enabled, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Enable or disable stencil testing.
-		/// </summary>
-		/// <param name="enabled">Enable or disable stencil testing.</param>
+		/// @brief Enable or disable stencil testing.
+		/// @param enabled Enable or disable stencil testing.
+		/// @remark This function is only available in headless mode.
 		virtual void SetStencilTesting(bool enabled) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the stencil action to perform when stencil testing fails for the given window.
-		/// </summary>
-		/// <param name="front">Stencil action to perform when stencil testing fails.</param>
-		/// <param name="back">Stencil action to perform when stencil testing fails.</param>
-		/// <param name="window">Window to set the stencil fail action for.</param>
+		/// @brief Set the stencil action to perform when stencil testing fails for the given window.
+		/// @param front Stencil action to perform when stencil testing fails.
+		/// @param back Stencil action to perform when stencil testing fails.
+		/// @param window Window to set the stencil fail action for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetStencilFail(StencilOp front, StencilOp back, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the stencil action to perform when stencil testing fails.
-		/// </summary>
-		/// <param name="front">Stencil action to perform when stencil testing fails.</param>
-		/// <param name="back">Stencil action to perform when stencil testing fails.</param>
+		/// @brief Set the stencil action to perform when stencil testing fails.
+		/// @param front Stencil action to perform when stencil testing fails.
+		/// @param back Stencil action to perform when stencil testing fails.
+		/// @remark This function is only available in headless mode.
 		virtual void SetStencilFail(StencilOp front, StencilOp back) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the stencil action to perform when stencil testing passes for the given window.
-		/// </summary>
-		/// <param name="front">Stencil action to perform when passed.</param>
-		/// <param name="back">Stencil action to perform when passed.</param>
-		/// <param name="window">Window to set the stencil pass action for.</param>
+		/// @brief Set the stencil action to perform when stencil testing passes for the given window.
+		/// @param front Stencil action to perform when passed.
+		/// @param back Stencil action to perform when passed.
+		/// @param window Window to set the stencil pass action for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetStencilPass(StencilOp front, StencilOp back, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the stencil action to perform when stencil testing passes.
-		/// </summary>
-		/// <param name="front">Stencil action to perform when passed.</param>
-		/// <param name="back">Stencil action to perform when passed.</param>
+		/// @brief Set the stencil action to perform when stencil testing passes.
+		/// @param front Stencil action to perform when passed.
+		/// @param back Stencil action to perform when passed.
+		/// @remark This function is only available in headless mode.
 		virtual void SetStencilPass(StencilOp front, StencilOp back) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the stencil functions for the given window.
-		/// </summary>
-		/// <param name="front">Function to use on the front for stencil testing.</param>
-		/// <param name="back">Function to use on the back for stencil testing.</param>
-		/// <param name="window">Window to set stencil functions for.</param>
+		/// @brief Set the stencil functions for the given window.
+		/// @param front Function to use on the front for stencil testing.
+		/// @param back Function to use on the back for stencil testing.
+		/// @param window Window to set stencil functions for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetStencilFunction(CompareMode front, CompareMode back, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the stencil functions.
-		/// </summary>
-		/// <param name="front">Function to use on the front for stencil testing.</param>
-		/// <param name="back">Function to use on the back for stencil testing.</param>
+		/// @brief Set the stencil functions.
+		/// @param front Function to use on the front for stencil testing.
+		/// @param back Function to use on the back for stencil testing.
+		/// @remark This function is only available in headless mode.
 		virtual void SetStencilFunction(CompareMode front, CompareMode back) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the stencil mask for the given window.
-		/// </summary>
-		/// <param name="read">Select the bits of the stencil values to test.</param>
-		/// <param name="write">Select the bits of the stencil values updated by the stencil test.</param>
-		/// <param name="window">Window to set stencil mask for.</param>
+		/// @brief Set the stencil mask for the given window.
+		/// @param read Select the bits of the stencil values to test.
+		/// @param write Select the bits of the stencil values updated by the stencil test.
+		/// @param window Window to set stencil mask for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetStencilMask(u8 read, u8 write, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the stencil mask.
-		/// </summary>
-		/// <param name="read">Select the bits of the stencil values to test.</param>
-		/// <param name="write">Select the bits of the stencil values updated by the stencil test.</param>
+		/// @brief Set the stencil mask.
+		/// @param read Select the bits of the stencil values to test.
+		/// @param write Select the bits of the stencil values updated by the stencil test.
+		/// @remark This function is only available in headless mode.
 		virtual void SetStencilMask(u8 read, u8 write) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the cull mode for the given window.
-		/// </summary>
-		/// <param name="mode">Cull mode to use.</param>
-		/// <param name="window">Window to set cull mode for.</param>
+		/// @brief Set the cull mode for the given window.
+		/// @param mode Cull mode to use.
+		/// @param window Window to set cull mode for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetCullMode(CullMode mode, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the cull mode.
-		/// </summary>
-		/// <param name="mode">Cull mode to use.</param>
+		/// @brief Set the cull mode.
+		/// @param mode Cull mode to use.
+		/// @remark This function is only available in headless mode.
 		virtual void SetCullMode(CullMode mode) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the fill mode for the given window.
-		/// </summary>
-		/// <param name="mode">Fill mode to use.</param>
-		/// <param name="window">Window to set fill mode for.</param>
+		/// @brief Set the fill mode for the given window.
+		/// @param mode Fill mode to use.
+		/// @param window Window to set fill mode for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetFillMode(FillMode mode, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the fill mode.
-		/// </summary>
-		/// <param name="mode">Fill mode to use.</param>
+		/// @brief Set the fill mode.
+		/// @param mode Fill mode to use.
+		/// @remark This function is only available in headless mode.
 		virtual void SetFillMode(FillMode mode) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the primitive topology for the given window.
-		/// </summary>
-		/// <param name="topology">Primitive topology to use.</param>
-		/// <param name="window">Window to set primitive topology for.</param>
+		/// @brief Set the primitive topology for the given window.
+		/// @param topology Primitive topology to use.
+		/// @param window Window to set primitive topology for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetPrimitiveTopology(PrimitiveTopology topology, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the primitive topology.
-		/// </summary>
-		/// <param name="topology">Primitive topology to use.</param>
+		/// @brief Set the primitive topology.
+		/// @param topology Primitive topology to use.
+		/// @remark This function is only available in headless mode.
 		virtual void SetPrimitiveTopology(PrimitiveTopology topology) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the front face winding order for the given window.
-		/// </summary>
-		/// <param name="face">Front face winding order to use.</param>
-		/// <param name="window">Window to set front face winding order for.</param>
+		/// @brief Set the front face winding order for the given window.
+		/// @param face Front face winding order to use.
+		/// @param window Window to set front face winding order for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetFrontFace(FrontFace face, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the front face winding order.
-		/// </summary>
-		/// <param name="face">Front face winding order to use.</param>
+		/// @brief Set the front face winding order.
+		/// @param face Front face winding order to use.
+		/// @remark This function is only available in headless mode.
 		virtual void SetFrontFace(FrontFace face) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the blend mode for the given window.
-		/// </summary>
-		/// <param name="modeRGB">Blend mode to use for the RGB channels.</param>
-		/// <param name="modeAlpha">Blend mode to use for the alpha channel.</param>
-		/// <param name="window">Window to set the blend mode for.</param>
+		/// @brief Set the blend mode for the given window.
+		/// @param modeRGB Blend mode to use for the RGB channels.
+		/// @param modeAlpha Blend mode to use for the alpha channel.
+		/// @param window Window to set the blend mode for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetBlendMode(BlendMode modeRGB, BlendMode modeAlpha, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the blend mode.
-		/// </summary>
-		/// <param name="modeRGB">Blend mode to use for the RGB channels.</param>
-		/// <param name="modeAlpha">Blend mode to use for the alpha channel.</param>
+		/// @brief Set the blend mode.
+		/// @param modeRGB Blend mode to use for the RGB channels.
+		/// @param modeAlpha Blend mode to use for the alpha channel.
+		/// @remark This function is only available in headless mode.
 		virtual void SetBlendMode(BlendMode modeRGB, BlendMode modeAlpha) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the blend constants/factors for the given window.
-		/// </summary>
-		/// <param name="sourceRGB">Specifies how the red, green, and blue blending factors are computed.</param>
-		/// <param name="sourceAlpha">Specifies how the alpha source blending factor is computed.</param>
-		/// <param name="destinationRGB">Specifies how the red, green, and blue destination blending factors are computed.</param>
-		/// <param name="destinationAlpha">Specified how the alpha destination blending factor is computed.</param>
-		/// <param name="window">Window to set the blend constants for.</param>
+		/// @brief Set the blend constants/factors for the given window.
+		/// @param sourceRGB Specifies how the red, green, and blue blending factors are computed.
+		/// @param sourceAlpha Specifies how the alpha source blending factor is computed.
+		/// @param destinationRGB Specifies how the red, green, and blue destination blending factors are computed.
+		/// @param destinationAlpha Specified how the alpha destination blending factor is computed.
+		/// @param window Window to set the blend constants for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetBlendConstant(BlendConstant sourceRGB, BlendConstant sourceAlpha,
 			                          BlendConstant destinationRGB, BlendConstant destinationAlpha,
 									  const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the blend constants/factors.
-		/// </summary>
-		/// <param name="sourceRGB">Specifies how the red, green, and blue blending factors are computed.</param>
-		/// <param name="sourceAlpha">Specifies how the alpha source blending factor is computed.</param>
-		/// <param name="destinationRGB">Specifies how the red, green, and blue destination blending factors are computed.</param>
-		/// <param name="destinationAlpha">Specified how the alpha destination blending factor is computed.</param>
+		/// @brief Set the blend constants/factors.
+		/// @param sourceRGB Specifies how the red, green, and blue blending factors are computed.
+		/// @param sourceAlpha Specifies how the alpha source blending factor is computed.
+		/// @param destinationRGB Specifies how the red, green, and blue destination blending factors are computed.
+		/// @param destinationAlpha Specified how the alpha destination blending factor is computed.
+		/// @remark This function is only available in headless mode.
 		virtual void SetBlendConstant(BlendConstant sourceRGB, BlendConstant sourceAlpha,
 			                          BlendConstant destinationRGB, BlendConstant destinationAlpha) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
-		/// </summary>
-		/// <param name="shadingRate">Shading rate to use.</param>
-		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
-		/// <param name="finalRate">Shading rate combiner to use.</param>
-		/// <param name="window">Window to set the shading rate for.</param>
+		/// @brief Set the pipeline fragment shading rate and combiner operation for the command buffer.
+		/// @param shadingRate Shading rate to use.
+		/// @param postRasterizerRate Shading rate combiner to use.
+		/// @param finalRate Shading rate combiner to use.
+		/// @param window Window to set the shading rate for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetShadingRate(ShadingRate shadingRate,
 		                            ShadingRateCombiner postRasterizerRate,
 							        ShadingRateCombiner finalRate, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
-		/// </summary>
-		/// <param name="shadingRate">Shading rate to use.</param>
-		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
-		/// <param name="finalRate">Shading rate combiner to use.</param>
+		/// @brief Set the pipeline fragment shading rate and combiner operation for the command buffer.
+		/// @param shadingRate Shading rate to use.
+		/// @param postRasterizerRate Shading rate combiner to use.
+		/// @param finalRate Shading rate combiner to use.
+		/// @remark This function is only available in headless mode.
 		virtual void SetShadingRate(ShadingRate shadingRate,
 		                            ShadingRateCombiner postRasterizerRate,
 							        ShadingRateCombiner finalRate) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the pipeline fragment shading rate via texture.
-		/// </summary>
-		/// <param name="texture">
-		/// Shading rate texture to use.
-		/// Note: The texture must be in ResourceState::ShadingRateSource.
-		/// </param>
-		/// <param name="window">Window to set shading rate for.</param>
+		/// @brief Set the pipeline fragment shading rate via texture.
+		/// @param texture Shading rate texture to use.
+		/// @param window Window to set shading rate for.
+		/// @note The texture must be in ResourceState::ShadingRateSource resource state.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetShadingRate(Ref<RenderTarget> texture, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set the pipeline fragment shading rate via texture.
-		/// </summary>
-		/// <param name="texture">
-		/// Shading rate texture to use.
-		/// Note: The texture must be in ResourceState::ShadingRateSource.
-		/// </param>
+		/// @brief Set the pipeline fragment shading rate via texture.
+		/// @param texture Shading rate texture to use.
+		/// @note The texture must be in ResourceState::ShadingRateSource resource state.
+		/// @remark This function is only available in headless mode.
 		virtual void SetShadingRate(Ref<RenderTarget> texture) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Clear the given window's render target.
-		/// </summary>
-		/// <param name="clearType">Type of buffer to clear.</param>
-		/// <param name="window">Window to clear.</param>
+		/// @brief Clear the given window's render target.
+		/// @param clearType Type of buffer to clear.
+		/// @param window Window to clear.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void Clear(ClearBufferType clearType, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Clear the given render target.
-		/// </summary>
-		/// <param name="clearType">Type of buffer to clear.</param>
+		/// @brief Clear the given render target.
+		/// @param clearType Type of buffer to clear.
+		/// @remark This function is only available in headless mode.
 		virtual void Clear(ClearBufferType clearType) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 		//CommandBuffer Stuff
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set viewport size for the given window.
-		/// </summary>
-		/// <param name="x">X coordinate of the top left corner of the viewport.</param>
-		/// <param name="y">Y coordinate of the top left corner of the viewport.</param>
-		/// <param name="width">New viewport width.</param>
-		/// <param name="height">New viewport height.</param>
-		/// <param name="minDepth">New min depth value. Default: 0.0f.</param>
-		/// <param name="maxDepth">New max depth value. Default: 1.0f.</param>
-		/// <param name="window">Window to set viewport for.</param>
+		/// @brief Set viewport size for the given window.
+		/// @param x X coordinate of the top left corner of the viewport.
+		/// @param y Y coordinate of the top left corner of the viewport.
+		/// @param width New viewport width.
+		/// @param height New viewport height.
+		/// @param minDepth New min depth value. Default: 0.0f.
+		/// @param maxDepth New max depth value. Default: 1.0f.
+		/// @param window Window to set viewport for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetViewport(u32 x, u32 y, u32 width, u32 height, f32 minDepth /*= 0.0f*/,
 		                         f32 maxDepth /*= 1.0f*/, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set viewport size.
-		/// </summary>
-		/// <param name="x">X coordinate of the top left corner of the viewport.</param>
-		/// <param name="y">Y coordinate of the top left corner of the viewport.</param>
-		/// <param name="width">New viewport width.</param>
-		/// <param name="height">New viewport height.</param>
-		/// <param name="minDepth">New min depth value. Default: 0.0f.</param>
-		/// <param name="maxDepth">New max depth value. Default: 1.0f.</param>
+		/// @brief Set viewport size.
+		/// @param x X coordinate of the top left corner of the viewport.
+		/// @param y Y coordinate of the top left corner of the viewport.
+		/// @param width New viewport width.
+		/// @param height New viewport height.
+		/// @param minDepth New min depth value. Default: 0.0f.
+		/// @param maxDepth New max depth value. Default: 1.0f.
+		/// @remark This function is only available in headless mode.
 		virtual void SetViewport(u32 x, u32 y, u32 width, u32 height, f32 minDepth /*= 0.0f*/,
 		                         f32 maxDepth /*= 1.0f*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set scissor size for the given window.
-		/// </summary>
-		/// <param name="x">Upper left corner.</param>
-		/// <param name="y">Upper left corner.</param>
-		/// <param name="width">New scissor width.</param>
-		/// <param name="height">New scissor height.</param>
-		/// <param name="window">Window to set scissor size for.</param>
+		/// @brief Set scissor size for the given window.
+		/// @param x Upper left corner.
+		/// @param y Upper left corner.
+		/// @param width New scissor width.
+		/// @param height New scissor height.
+		/// @param window Window to set scissor size for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetScissor(u32 x, u32 y, u32 width, u32 height,
 		                        const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Set scissor size.
-		/// </summary>
-		/// <param name="x">Upper left corner.</param>
-		/// <param name="y">Upper left corner.</param>
-		/// <param name="width">New scissor width.</param>
-		/// <param name="height">New scissor height.</param>
+		/// @brief Set scissor size.
+		/// @param x Upper left corner.
+		/// @param y Upper left corner.
+		/// @param width New scissor width.
+		/// @param height New scissor height.
+		/// @remark This function is only available in headless mode.
 		virtual void SetScissor(u32 x, u32 y, u32 width, u32 height) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Draw non-indexed, non-instanced geometry for the given window.
-		/// </summary>
-		/// <param name="vertexCount">Number of vertices to draw.</param>
-		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
-		/// <param name="window">Window to draw for.</param>
+		/// @brief Draw non-indexed, non-instanced geometry for the given window.
+		/// @param vertexCount Number of vertices to draw.
+		/// @param firstVertex Index of the first vertex to draw. Default: 0.
+		/// @param window Window to draw for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void Draw(u32 vertexCount, u32 firstVertex /*= 0*/, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Draw non-indexed, non-instanced geometry.
-		/// </summary>
-		/// <param name="vertexCount">Number of vertices to draw.</param>
-		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
+		/// @brief Draw non-indexed, non-instanced geometry.
+		/// @param vertexCount Number of vertices to draw.
+		/// @param firstVertex Index of the first vertex to draw. Default: 0.
+		/// @remark This function is only available in headless mode.
 		virtual void Draw(u32 vertexCount, u32 firstVertex /*= 0*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Draw indexed, non-instanced geometry for the given window.
-		/// </summary>
-		/// <param name="indexCount">Number of indices to draw.</param>
-		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
-		/// <param name="vertexOffset">Index of the first vertex to draw. Default: 0.</param>
-		/// <param name="window">Window to draw for.</param>
+		/// @brief Draw indexed, non-instanced geometry for the given window.
+		/// @param indexCount Number of indices to draw.
+		/// @param firstIndex Index of the first indice to draw. Default: 0.
+		/// @param vertexOffset Index of the first vertex to draw. Default: 0.
+		/// @param window Window to draw for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void DrawIndexed(u32 indexCount, u32 firstIndex /*= 0*/, i32 vertexOffset /*= 0*/,
 		                         const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Draw indexed, non-instanced geometry.
-		/// </summary>
-		/// <param name="indexCount">Number of indices to draw.</param>
-		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
-		/// <param name="vertexOffset">Index of the first vertex to draw. Default: 0.</param>
+		/// @brief Draw indexed, non-instanced geometry.
+		/// @param indexCount Number of indices to draw.
+		/// @param firstIndex Index of the first indice to draw. Default: 0.
+		/// @param vertexOffset Index of the first vertex to draw. Default: 0.
+		/// @remark This function is only available in headless mode.
 		virtual void DrawIndexed(u32 indexCount, u32 firstIndex /*= 0*/, i32 vertexOffset /*= 0*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Draw non-indexed, instanced geometry for the given window.
-		/// </summary>
-		/// <param name="vertexCount">Number of vertices to draw.</param>
-		/// <param name="instanceCount">Number of instances to draw.</param>
-		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
-		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
-		/// <param name="window">Window to draw for.</param>
+		/// @brief Draw non-indexed, instanced geometry for the given window.
+		/// @param vertexCount Number of vertices to draw.
+		/// @param instanceCount Number of instances to draw.
+		/// @param firstVertex Index of the first vertex to draw. Default: 0.
+		/// @param firstInstance Index of the first instance to draw. Default: 0.
+		/// @param window Window to draw for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void DrawInstanced(u32 vertexCount, u32 instanceCount, u32 firstVertex /*= 0*/,
 		                           u32 firstInstance /*= 0*/, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Draw non-indexed, instanced geometry.
-		/// </summary>
-		/// <param name="vertexCount">Number of vertices to draw.</param>
-		/// <param name="instanceCount">Number of instances to draw.</param>
-		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
-		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
+		/// @brief Draw non-indexed, instanced geometry.
+		/// @param vertexCount Number of vertices to draw.
+		/// @param instanceCount Number of instances to draw.
+		/// @param firstVertex Index of the first vertex to draw. Default: 0.
+		/// @param firstInstance Index of the first instance to draw. Default: 0.
+		/// @remark This function is only available in headless mode.
 		virtual void DrawInstanced(u32 vertexCount, u32 instanceCount, u32 firstVertex /*= 0*/,
 		                           u32 firstInstance /*= 0*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Draw indexed, instanced geometry for the given window.
-		/// </summary>
-		/// <param name="indexCount">Number of indices to draw.</param>
-		/// <param name="instanceCount">Number of instances to draw.</param>
-		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
-		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
-		/// <param name="vertexOffset">Index of the first vertex to draw. Default: 0.</param>
-		/// <param name="window">Window to draw for.</param>
+		/// @brief Draw indexed, instanced geometry for the given window.
+		/// @param indexCount Number of indices to draw.
+		/// @param instanceCount Number of instances to draw.
+		/// @param firstIndex Index of the first indice to draw. Default: 0.
+		/// @param firstInstance Index of the first instance to draw. Default: 0.
+		/// @param vertexOffset Index of the first vertex to draw. Default: 0.
+		/// @param window Window to draw for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void DrawIndexedInstanced(u32 indexCount, u32 instanceCount,
 		                                  u32 firstIndex /*= 0*/, u32 firstInstance /*= 0*/,
 										  i32 vertexOffset /*= 0*/, const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Draw indexed, instanced geometry.
-		/// </summary>
-		/// <param name="indexCount">Number of indices to draw.</param>
-		/// <param name="instanceCount">Number of instances to draw.</param>
-		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
-		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
-		/// <param name="vertexOffset">Index of the first vertex to draw. Default: 0.</param>
+		/// @brief Draw indexed, instanced geometry.
+		/// @param indexCount Number of indices to draw.
+		/// @param instanceCount Number of instances to draw.
+		/// @param firstIndex Index of the first indice to draw. Default: 0.
+		/// @param firstInstance Index of the first instance to draw. Default: 0.
+		/// @param vertexOffset Index of the first vertex to draw. Default: 0.
+		/// @remark This function is only available in headless mode.
 		virtual void DrawIndexedInstanced(u32 indexCount, u32 instanceCount,
 		                                  u32 firstIndex /*= 0*/, u32 firstInstance /*= 0*/,
 										  i32 vertexOffset /*= 0*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Bind vertex buffer on the given window.
-		/// </summary>
-		/// <param name="vBuffer">Vertex buffer to bind.</param>
-		/// <param name="layout">Layout of the vertex buffer.</param>
-		/// <param name="window">Window to bind the vertex buffer for.</param>
+		/// @brief Bind vertex buffer on the given window.
+		/// @param vBuffer Vertex buffer to bind.
+		/// @param layout Layout of the vertex buffer.
+		/// @param window Window to bind the vertex buffer for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const VertexBufferLayout& layout,
 		                              const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Bind vertex buffer.
-		/// </summary>
-		/// <param name="vBuffer">Vertex buffer to bind.</param>
-		/// <param name="layout">Layout of the vertex buffer.</param>
+		/// @brief Bind vertex buffer.
+		/// @param vBuffer Vertex buffer to bind.
+		/// @param layout Layout of the vertex buffer.
+		/// @remark This function is only available in headless mode.
 		virtual void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const VertexBufferLayout& layout) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Bind an index buffer on the given window.
-		/// </summary>
-		/// <param name="iBuffer">Index buffer to bind.</param>
-		/// <param name="indexType">Data type used by the index buffer.</param>
-		/// <param name="window">Window to bind the vertex buffer for.</param>
+		/// @brief Bind an index buffer on the given window.
+		/// @param iBuffer Index buffer to bind.
+		/// @param indexType Data type used by the index buffer.
+		/// @param window Window to bind the vertex buffer for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType,
 		                             const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Bind an index buffer.
-		/// </summary>
-		/// <param name="iBuffer">Index buffer to bind.</param>
-		/// <param name="indexType">Data type used by the index buffer.</param>
+		/// @brief Bind an index buffer.
+		/// @param iBuffer Index buffer to bind.
+		/// @param indexType Data type used by the index buffer.
+		/// @remark This function is only available in headless mode.
 		virtual void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Bind a descriptor set on the given window.
-		/// </summary>
-		/// <param name="dSet">Descriptor set to bind.</param>
-		/// <param name="index">Index for which descriptor set to bind.</param>
-		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
-		/// <param name="window">Window to bind the descriptor set for.</param>
+		/// @brief Bind a descriptor set on the given window.
+		/// @param dSet Descriptor set to bind.
+		/// @param index Index for which descriptor set to bind.
+		/// @param queueType Queue type on which to perform the bind operation. Default: Graphics.
+		/// @param window Window to bind the descriptor set for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void BindDescriptorSet(DescriptorSet& dSet, u32 index,
 		                               QueueType queueType /*= QueueType::Graphics*/,
 									   const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Bind a descriptor set.
-		/// </summary>
-		/// <param name="dSet">Descriptor set to bind.</param>
-		/// <param name="index">Index for which descriptor set to bind.</param>
-		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
+		/// @brief Bind a descriptor set.
+		/// @param dSet Descriptor set to bind.
+		/// @param index Index for which descriptor set to bind.
+		/// @param queueType Queue type on which to perform the bind operation. Default: Graphics.
+		/// @remark This function is only available in headless mode.
 		virtual void BindDescriptorSet(DescriptorSet& dSet, u32 index,
 		                               QueueType queueType /*= QueueType::Graphics*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Bind push constant buffer data on the given window.
-		/// Note: There is an optimized function which uses the index into the RootSignature
+		/// @brief Bind push constant buffer data on the given window.
+		/// @param name Name of the push constant block.
+		/// @param constantsData Pointer to the constant buffer data.
+		/// @param constantsLength Length in bytes of the constant buffer data.
+		/// @param queueType Queue type on which to perform the bind operation. Default: Graphics.
+		/// @param window Window to bind the push constants for.
+		/// @note There is an optimized function which uses the index into the RootSignature
 		///       instead of the name of the push constant block.
-		/// </summary>
-		/// <param name="name">Name of the push constant block.</param>
-		/// <param name="constantsData">Pointer to the constant buffer data.</param>
-		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
-		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
-		/// <param name="window">Window to bind the push constants for.</param>
+		/// @remark @headless This function is not available in headless mode.
 		virtual void BindPushConstants(std::string_view name, const void* constantsData,
 							           usize constantsLength, QueueType queueType /*= QueueType::Graphics*/,
 									   const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Bind push constant buffer data.
-		/// Note: There is an optimized function which uses the index into the RootSignature
+		/// @brief Bind push constant buffer data.
+		/// @param name Name of the push constant block.
+		/// @param constantsData Pointer to the constant buffer data.
+		/// @param constantsLength Length in bytes of the constant buffer data.
+		/// @param queueType Queue type on which to perform the bind operation. Default: Graphics.
+		/// @note There is an optimized function which uses the index into the RootSignature
 		///       instead of the name of the push constant block.
-		/// </summary>
-		/// <param name="name">Name of the push constant block.</param>
-		/// <param name="constantsData">Pointer to the constant buffer data.</param>
-		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
-		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
+		/// @remark This function is only available in headless mode.
 		virtual void BindPushConstants(std::string_view name, const void* constantsData,
 		                               usize constantsLength,
 		                               QueueType queueType /*= QueueType::Graphics*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Bind push constant buffer data on the given window.
-		/// </summary>
-		/// <param name="paramIndex">Index of the push constant block in the RootSignatures descriptors array.</param>
-		/// <param name="constantsData">Pointer to the constant buffer data.</param>
-		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
-		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
-		/// <param name="window">Window to bind the push constants for.</param>
+		/// @brief Bind push constant buffer data on the given window.
+		/// @param paramIndex Index of the push constant block in the RootSignatures descriptors array.
+		/// @param constantsData Pointer to the constant buffer data.
+		/// @param constantsLength Length in bytes of the constant buffer data.
+		/// @param queueType Queue type on which to perform the bind operation. Default: Graphics.
+		/// @param window Window to bind the push constants for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void BindPushConstantsByIndex(u32 paramIndex, const void* constantsData,
 										      usize constantsLength, QueueType queueType /*= QueueType::Graphics*/,
 											  const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Bind push constant buffer data.
-		/// </summary>
-		/// <param name="paramIndex">Index of the push constant block in the RootSignatures descriptors array.</param>
-		/// <param name="constantsData">Pointer to the constant buffer data.</param>
-		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
-		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
+		/// @brief Bind push constant buffer data.
+		/// @param paramIndex Index of the push constant block in the RootSignatures descriptors array.
+		/// @param constantsData Pointer to the constant buffer data.
+		/// @param constantsLength Length in bytes of the constant buffer data.
+		/// @param queueType Queue type on which to perform the bind operation. Default: Graphics.
+		/// @remark This function is only available in headless mode.
 		virtual void BindPushConstantsByIndex(u32 paramIndex, const void* constantsData,
 		                                      usize constantsLength,
 											  QueueType queueType /*= QueueType::Graphics*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Bind render target(s) on the given window.
-		///
-		/// Note: This functions ends the currently running render pass and starts a new one.
-		/// </summary>
-		/// <param name="colorTarget">Color render target to bind.</param>
-		/// <param name="depthStencil">Optional depth stencil target to bind. Default: nullptr.</param>
-		/// <param name="loadActions">Optional load actions for each render target. Default: nullptr.</param>
-		/// <param name="colorArraySlices">Optional color array slices for each render target. Default: nullptr.</param>
-		/// <param name="colorMipSlices">Optional color mip slices for each render target. Default: nullptr.</param>
-		/// <param name="depthArraySlice">Optional depth array slice for the depth stencil target. Default: -1.</param>
-		/// <param name="depthMipSlice">Optional depth mip slice for the depth stencil target. Default: -1.</param>
-		/// <param name="window">Window to bind the render target(s) for.</param>
+		/// @brief Bind render target(s) on the given window.
+		/// @param colorTarget Color render target to bind.
+		/// @param depthStencil Optional depth stencil target to bind. Default: nullptr.
+		/// @param loadActions Optional load actions for each render target. Default: nullptr.
+		/// @param colorArraySlices Optional color array slices for each render target. Default: nullptr.
+		/// @param colorMipSlices Optional color mip slices for each render target. Default: nullptr.
+		/// @param depthArraySlice Optional depth array slice for the depth stencil target. Default: -1.
+		/// @param depthMipSlice Optional depth mip slice for the depth stencil target. Default: -1.
+		/// @param window Window to bind the render target(s) for.
+		/// @note This functions ends the currently running render pass and starts a new one.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
 									  const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
@@ -923,18 +796,16 @@ namespace TRAP::Graphics
 									  u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/,
 									  const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Bind render target(s).
-		///
-		/// Note: This functions ends the currently running render pass and starts a new one.
-		/// </summary>
-		/// <param name="colorTarget">Color render target to bind.</param>
-		/// <param name="depthStencil">Optional depth stencil target to bind. Default: nullptr.</param>
-		/// <param name="loadActions">Optional load actions for each render target. Default: nullptr.</param>
-		/// <param name="colorArraySlices">Optional color array slices for each render target. Default: nullptr.</param>
-		/// <param name="colorMipSlices">Optional color mip slices for each render target. Default: nullptr.</param>
-		/// <param name="depthArraySlice">Optional depth array slice for the depth stencil target. Default: -1.</param>
-		/// <param name="depthMipSlice">Optional depth mip slice for the depth stencil target. Default: -1.</param>
+		/// @brief Bind render target(s).
+		/// @param colorTarget Color render target to bind.
+		/// @param depthStencil Optional depth stencil target to bind. Default: nullptr.
+		/// @param loadActions Optional load actions for each render target. Default: nullptr.
+		/// @param colorArraySlices Optional color array slices for each render target. Default: nullptr.
+		/// @param colorMipSlices Optional color mip slices for each render target. Default: nullptr.
+		/// @param depthArraySlice Optional depth array slice for the depth stencil target. Default: -1.
+		/// @param depthMipSlice Optional depth mip slice for the depth stencil target. Default: -1.
+		/// @note This functions ends the currently running render pass and starts a new one.
+		/// @remark This function is only available in headless mode.
 		virtual void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
 									  const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
@@ -943,19 +814,17 @@ namespace TRAP::Graphics
 									  u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Bind render target(s) on the given window.
-		///
-		/// Note: This functions ends the currently running render pass and starts a new one.
-		/// </summary>
-		/// <param name="colorTargets">Color render target(s) to bind.</param>
-		/// <param name="depthStencil">Optional depth stencil target to bind. Default: nullptr.</param>
-		/// <param name="loadActions">Optional load actions for each render target. Default: nullptr.</param>
-		/// <param name="colorArraySlices">Optional color array slices for each render target. Default: nullptr.</param>
-		/// <param name="colorMipSlices">Optional color mip slices for each render target. Default: nullptr.</param>
-		/// <param name="depthArraySlice">Optional depth array slice for the depth stencil target. Default: -1.</param>
-		/// <param name="depthMipSlice">Optional depth mip slice for the depth stencil target. Default: -1.</param>
-		/// <param name="window">Window to bind the render target(s) for.</param>
+		/// @brief Bind render target(s) on the given window.
+		/// @param colorTargets Color render target(s) to bind.
+		/// @param depthStencil Optional depth stencil target to bind. Default: nullptr.
+		/// @param loadActions Optional load actions for each render target. Default: nullptr.
+		/// @param colorArraySlices Optional color array slices for each render target. Default: nullptr.
+		/// @param colorMipSlices Optional color mip slices for each render target. Default: nullptr.
+		/// @param depthArraySlice Optional depth array slice for the depth stencil target. Default: -1.
+		/// @param depthMipSlice Optional depth mip slice for the depth stencil target. Default: -1.
+		/// @param window Window to bind the render target(s) for.
+		/// @note This functions ends the currently running render pass and starts a new one.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                               const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
 									   const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
@@ -964,18 +833,16 @@ namespace TRAP::Graphics
 									   u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/,
 									   const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Bind render target(s).
-		///
-		/// Note: This functions ends the currently running render pass and starts a new one.
-		/// </summary>
-		/// <param name="colorTargets">Color render target(s) to bind.</param>
-		/// <param name="depthStencil">Optional depth stencil target to bind. Default: nullptr.</param>
-		/// <param name="loadActions">Optional load actions for each render target. Default: nullptr.</param>
-		/// <param name="colorArraySlices">Optional color array slices for each render target. Default: nullptr.</param>
-		/// <param name="colorMipSlices">Optional color mip slices for each render target. Default: nullptr.</param>
-		/// <param name="depthArraySlice">Optional depth array slice for the depth stencil target. Default: -1.</param>
-		/// <param name="depthMipSlice">Optional depth mip slice for the depth stencil target. Default: -1.</param>
+		/// @brief Bind render target(s).
+		/// @param colorTargets Color render target(s) to bind.
+		/// @param depthStencil Optional depth stencil target to bind. Default: nullptr.
+		/// @param loadActions Optional load actions for each render target. Default: nullptr.
+		/// @param colorArraySlices Optional color array slices for each render target. Default: nullptr.
+		/// @param colorMipSlices Optional color mip slices for each render target. Default: nullptr.
+		/// @param depthArraySlice Optional depth array slice for the depth stencil target. Default: -1.
+		/// @param depthMipSlice Optional depth mip slice for the depth stencil target. Default: -1.
+		/// @note This functions ends the currently running render pass and starts a new one.
+		/// @remark This function is only available in headless mode.
 		virtual void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                               const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
 									   const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
@@ -985,472 +852,387 @@ namespace TRAP::Graphics
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Add a resource barrier (memory dependency) for the given window.
-		/// </summary>
-		/// <param name="bufferBarrier">Buffer barrier.</param>
-		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
-		/// <param name="window">Window to add the barrier for.</param>
+		/// @brief Add a resource barrier (memory dependency) for the given window.
+		/// @param bufferBarrier Buffer barrier.
+		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
+		/// @param window Window to add the barrier for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
 										   QueueType queueType /*= QueueType::Graphics*/,
 								           const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Add a resource barrier (memory dependency).
-		/// </summary>
-		/// <param name="bufferBarrier">Buffer barrier.</param>
-		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
+		/// @brief Add a resource barrier (memory dependency).
+		/// @param bufferBarrier Buffer barrier.
+		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
+		/// @remark This function is only available in headless mode.
 		virtual void ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
 										   QueueType queueType /*= QueueType::Graphics*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Add resource barriers (memory dependencies) for the given window.
-		/// </summary>
-		/// <param name="bufferBarriers">Buffer barriers.</param>
-		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
-		/// <param name="window">Window to add the barriers for.</param>
+		/// @brief Add resource barriers (memory dependencies) for the given window.
+		/// @param bufferBarriers Buffer barriers.
+		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
+		/// @param window Window to add the barriers for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
 											QueueType queueType /*= QueueType::Graphics*/,
 									        const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Add resource barriers (memory dependencies).
-		/// </summary>
-		/// <param name="bufferBarriers">Buffer barriers.</param>
-		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
+		/// @brief Add resource barriers (memory dependencies).
+		/// @param bufferBarriers Buffer barriers.
+		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
+		/// @remark This function is only available in headless mode.
 		virtual void ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
 											QueueType queueType /*= QueueType::Graphics*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Add a resource barrier (memory dependency) for the given window.
-		/// </summary>
-		/// <param name="textureBarrier">Texture barrier.</param>
-		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
-		/// <param name="window">Window to add the barrier for.</param>
+		/// @brief Add a resource barrier (memory dependency) for the given window.
+		/// @param textureBarrier Texture barrier.
+		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
+		/// @param window Window to add the barrier for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
 											QueueType queueType /*= QueueType::Graphics*/,
 									        const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Add a resource barrier (memory dependency).
-		/// </summary>
-		/// <param name="textureBarrier">Texture barrier.</param>
-		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
+		/// @brief Add a resource barrier (memory dependency).
+		/// @param textureBarrier Texture barrier.
+		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
+		/// @remark This function is only available in headless mode.
 		virtual void ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
 											QueueType queueType /*= QueueType::Graphics*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Add resource barriers (memory dependencies) for the given window.
-		/// </summary>
-		/// <param name="textureBarriers">Texture barriers.</param>
-		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
-		/// <param name="window">Window to add the barriers for.</param>
+		/// @brief Add resource barriers (memory dependencies) for the given window.
+		/// @param textureBarriers Texture barriers.
+		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
+		/// @param window Window to add the barriers for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
 											 QueueType queueType /*= QueueType::Graphics*/,
 									         const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Add resource barriers (memory dependencies).
-		/// </summary>
-		/// <param name="textureBarriers">Texture barriers.</param>
-		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
+		/// @brief Add resource barriers (memory dependencies).
+		/// @param textureBarriers Texture barriers.
+		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
+		/// @remark This function is only available in headless mode.
 		virtual void ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
 											 QueueType queueType /*= QueueType::Graphics*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Add a resource barrier (memory dependency) for the given window.
-		/// </summary>
-		/// <param name="renderTargetBarrier">Render target barrier.</param>
-		/// <param name="window">Window to add the barrier for.</param>
+		/// @brief Add a resource barrier (memory dependency) for the given window.
+		/// @param renderTargetBarrier Render target barrier.
+		/// @param window Window to add the barrier for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier,
 									             const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Add a resource barrier (memory dependency).
-		/// </summary>
-		/// <param name="renderTargetBarrier">Render target barrier.</param>
+		/// @brief Add a resource barrier (memory dependency).
+		/// @param renderTargetBarrier Render target barrier.
+		/// @remark This function is only available in headless mode.
 		virtual void ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Add resource barriers (memory dependencies) for the given window.
-		/// </summary>
-		/// <param name="renderTargetBarriers">Render target barriers.</param>
-		/// <param name="window">Window to add the barriers for.</param>
+		/// @brief Add resource barriers (memory dependencies) for the given window.
+		/// @param renderTargetBarriers Render target barriers.
+		/// @param window Window to add the barriers for.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
 									              const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Add resource barriers (memory dependencies).
-		/// </summary>
-		/// <param name="renderTargetBarriers">Render target barriers.</param>
+		/// @brief Add resource barriers (memory dependencies).
+		/// @param renderTargetBarriers Render target barriers.
+		/// @remark This function is only available in headless mode.
 		virtual void ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// NVIDIA-Reflex Sleep/synchronize on the given window.
-		/// </summary>
+		/// @brief NVIDIA-Reflex Sleep/synchronize on the given window.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void ReflexSleep() const = 0;
-		/// <summary>
-		/// NVIDIA-Reflex latency marker.
-		/// </summary>
-		/// <param name="frame">Frame to set marker for. Must be unique for each frame!</param>
-		/// <param name="marker">Enum value of the marker to set.</param>
+		/// @brief NVIDIA-Reflex latency marker.
+		/// @param frame Frame to set marker for. Must be unique for each frame!
+		/// @param marker Enum value of the marker to set.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void ReflexMarker(u32 frame, u32 marker) const = 0;
 #ifdef NVIDIA_REFLEX_AVAILABLE
-		/// <summary>
-		/// Retrieve the latency report from NVIDIA-Reflex.
-		/// </summary>
-		/// <returns>Latency report.</returns>
+		/// @brief Retrieve the latency report from NVIDIA-Reflex.
+		/// @return Latency report.
+		/// @remark @headless This function is not available in headless mode.
+	    /// @remark This function is only available when NVIDIA Reflex SDK is provided.
 		[[nodiscard]] virtual NVLL_VK_LATENCY_RESULT_PARAMS ReflexGetLatency() const = 0;
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Retrieve the renderer title.
+		/// @brief Retrieve the renderer title.
 		/// Example title: "[Vulkan 1.3.0]".
-		/// </summary>
-		/// <returns>Renderer title.</returns>
+		/// @return Renderer title.
 		[[nodiscard]] constexpr virtual std::string GetTitle() const noexcept = 0;
 
-		/// <summary>
-		/// Retrieve the currently used GPUs UUID.
-		/// </summary>
-		/// <returns>GPU's UUID.</returns>
+		/// @brief Retrieve the currently used GPUs UUID.
+		/// @return GPU's UUID.
 		[[nodiscard]] virtual TRAP::Utils::UUID GetCurrentGPUUUID() const noexcept = 0;
-		/// <summary>
-		/// Retrieve the name of the currently used GPU.
-		/// </summary>
-		/// <returns>GPU's name.</returns>
+		/// @brief Retrieve the name of the currently used GPU.
+		/// @return GPU's name.
 		[[nodiscard]] virtual std::string GetCurrentGPUName() const noexcept = 0;
-		/// <summary>
-		/// Retrieve the vendor of the currently used GPU.
-		/// </summary>
-		/// <returns>GPU vendor.</returns>
+		/// @brief Retrieve the vendor of the currently used GPU.
+		/// @return GPU vendor.
 		[[nodiscard]] virtual GPUVendor GetCurrentGPUVendor() const noexcept = 0;
-		/// <summary>
-		/// Retrieve a list of all supported GPUs.
+		/// @brief Retrieve a list of all supported GPUs.
 		/// The list contains the GPUs name and UUID.
-		/// </summary>
-		/// <returns>List of all supported GPUs.</returns>
+		/// @return List of all supported GPUs.
 		[[nodiscard]] virtual std::vector<std::pair<std::string, TRAP::Utils::UUID>> GetAllGPUs() const = 0;
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Capture a screenshot of the last presented frame.
-		/// </summary>
-		/// <param name="window">Window to capture screenshot on.</param>
-		/// <returns>Captured screenshot as TRAP::Image on success, nullptr otherwise.</returns>
+		/// @brief Capture a screenshot of the last presented frame.
+		/// @param window Window to capture screenshot on.
+		/// @return Captured screenshot as TRAP::Image on success, nullptr otherwise.
+		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] virtual TRAP::Scope<TRAP::Image> CaptureScreenshot(const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Capture a screenshot of the last presented frame.
-		/// </summary>
-		/// <returns>Captured screenshot as TRAP::Image on success, nullptr otherwise.</returns>
+		/// @brief Capture a screenshot of the last presented frame.
+		/// @return Captured screenshot as TRAP::Image on success, nullptr otherwise.
+		/// @remark This function is only available in headless mode.
 		[[nodiscard]] virtual TRAP::Scope<TRAP::Image> CaptureScreenshot() const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Resolve a MSAA render target to a non MSAA render target.
+		/// @brief Resolve a MSAA render target to a non MSAA render target.
 		/// Needed to transfer MSAA rendered image data to a presentable non-MSAA target.
-		///
-		/// Note: source and destination must be in ResourceState::RenderTarget.
-		/// </summary>
-		/// <param name="source">Source MSAA render target to resolve.</param>
-		/// <param name="destination">Destination non MSAA render target to resolve into.</param>
-		/// <param name="cmd">CommadBuffer to resolve on.</param>
+		/// @param source Source MSAA render target to resolve.
+		/// @param destination Destination non MSAA render target to resolve into.
+		/// @param cmd CommadBuffer to resolve on.
+		/// @note source and destination must be in ResourceState::RenderTarget resource state.
 		virtual void MSAAResolvePass(TRAP::Ref<RenderTarget> source, TRAP::Ref<RenderTarget> destination,
 		                             CommandBuffer* cmd) const = 0;
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Scale image from internal resolution to the final output resolution.
-		///
-		/// Note: source and destination must be in ResourceState::RenderTarget.
-		/// </summary>
-		/// <param name="source">Source render target to resolve.</param>
-		/// <param name="destination">Destination render target to resolve into.</param>
-		/// <param name="window">Window to do the scaling pass on.</param>
+		/// @brief Scale image from internal resolution to the final output resolution.
+		/// @param source Source render target to resolve.
+		/// @param destination Destination render target to resolve into.
+		/// @param window Window to do the scaling pass on.
+		/// @note source and destination must be in ResourceState::RenderTarget resource state.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void RenderScalePass(TRAP::Ref<RenderTarget> source,
 									 TRAP::Ref<RenderTarget> destination,
 		                             const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Scale image from internal resolution to the final output resolution.
-		///
-		/// Note: source and destination must be in ResourceState::RenderTarget.
-		/// </summary>
-		/// <param name="source">Source render target to resolve.</param>
-		/// <param name="destination">Destination render target to resolve into.</param>
+		/// @brief Scale image from internal resolution to the final output resolution.
+		/// @param source Source render target to resolve.
+		/// @param destination Destination render target to resolve into.
+		/// @note source and destination must be in ResourceState::RenderTarget resource state.
+		/// @remark This function is only available in headless mode.
 		virtual void RenderScalePass(TRAP::Ref<RenderTarget> source,
 									 TRAP::Ref<RenderTarget> destination) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Set the latency mode.
+		/// @brief Set the latency mode.
 		/// The actual latency mode may differ from the requested one so check
 		/// the actual used mode with GetLatencyMode().
-		/// Note: Only LatencyMode::Disabled is supported everywhere.
-		///       Other LatencyModes are only available on Windows 10 or
-		///       newer with NVIDIA hardware.
-		/// </summary>
-		/// <param name="mode">LatencyMode to set.</param>
-		/// <param name="window">Window to set latency mode for.</param>
+		/// @param mode LatencyMode to set.
+		/// @param window Window to set latency mode for.
+		/// @note Only LatencyMode::Disabled is supported everywhere.
+		/// @remark @win32 Other LatencyModes are only available on Windows 10 or newer with NVIDIA hardware.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void SetLatencyMode(LatencyMode mode, const Window* window) = 0;
-		/// <summary>
-		/// Retrieve the currently used latency mode.
-		/// Note: This may differ from the requested mode set with SetLatencyMode().
-		/// </summary>
-		/// <param name="window">Window to retrieve latency mode for.</param>
-		/// <returns>Used latency mode.</returns>
+		/// @brief Retrieve the currently used latency mode.
+		/// @param window Window to retrieve latency mode for.
+		/// @return Used latency mode.
+		/// @note The returned value may differ from the requested mode set with SetLatencyMode().
+		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] virtual LatencyMode GetLatencyMode(const Window* window) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Retrieve the used descriptor pool.
-		/// </summary>
-		/// <returns>Descriptor pool.</returns>
+		/// @brief Retrieve the used descriptor pool.
+		/// @return Descriptor pool.
 		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::DescriptorPool> GetDescriptorPool() noexcept;
-		/// <summary>
-		/// Retrieve the used graphics queue.
-		/// </summary>
-		/// <returns>Graphics queue.</returns>
+		/// @brief Retrieve the used graphics queue.
+		/// @return Graphics queue.
 		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::Queue> GetGraphicsQueue() noexcept;
-		/// <summary>
-		/// Retrieve the used compute queue.
-		/// </summary>
-		/// <returns>Compute queue.</returns>
+		/// @brief Retrieve the used compute queue.
+		/// @return Compute queue.
 		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::Queue> GetComputeQueue() noexcept;
-		/// <summary>
-		/// Retrieve the used transfer queue.
-		/// </summary>
-		/// <returns>Transfer queue.</returns>
+		/// @brief Retrieve the used transfer queue.
+		/// @return Transfer queue.
 		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::Queue> GetTransferQueue() noexcept;
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Retrieve the currently used graphics root signature of the given window.
-		/// </summary>
-		/// <param name="window">Window to retrieve the graphics root signature from.</param>
-		/// <returns>Graphics root signature.</returns>
+		/// @brief Retrieve the currently used graphics root signature of the given window.
+		/// @param window Window to retrieve the graphics root signature from.
+		/// @return Graphics root signature.
+		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(const Window* window);
 #else
-		/// <summary>
-		/// Retrieve the currently used graphics root signature.
-		/// </summary>
-		/// <returns>Graphics root signature.</returns>
+		/// @brief Retrieve the currently used graphics root signature.
+		/// @return Graphics root signature.
+		/// @remark This function is only available in headless mode.
 		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature();
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Retrieve the currently used internal render resolution of the given window.
-		/// </summary>
-		/// <param name="window">Window to get internal render resolution from.</param>
-		/// <returns>Internal render resolution.</returns>
+		/// @brief Retrieve the currently used internal render resolution of the given window.
+		/// @param window Window to get internal render resolution from.
+		/// @return Internal render resolution.
+		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] static TRAP::Math::Vec2ui GetInternalRenderResolution(const Window* window);
 #else
-		/// <summary>
-		/// Retrieve the currently used internal render resolution.
-		/// </summary>
-		/// <returns>Internal render resolution.</returns>
+		/// @brief Retrieve the currently used internal render resolution.
+		/// @return Internal render resolution.
+		/// @remark This function is only available in headless mode.
 		[[nodiscard]] static TRAP::Math::Vec2ui GetInternalRenderResolution();
 #endif /*TRAP_HEADLESS_MODE*/
 #ifdef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Get the resolution of the render targets.
-		/// </summary>
-		/// <param name="width">Output: Width.</param>
-		/// <param name="height">Output: Height.</param>
+		/// @brief Get the resolution of the render targets.
+		/// @param width Output: Width.
+		/// @param height Output: Height.
+		/// @remark This function is only available in headless mode.
 		virtual void GetResolution(u32& width, u32& height) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Start a render pass for the given window.
-		///
-		/// Note: This will bind the render target for the current frame again.
-		/// </summary>
-		/// <param name="window">Window to start render pass for.</param>
+		/// @brief Start a render pass for the given window.
+		/// @param window Window to start render pass for.
+		/// @note This will rebind the render target for the current frame.
+		/// @remark @headless This function is not available in headless mode.
 		static void StartRenderPass(const Window* window);
 #else
-		/// <summary>
-		/// Start a render pass.
-		///
-		/// Note: This will bind the render target for the current frame again.
-		/// </summary>
+		/// @brief Start a render pass.
+		/// @note This will rebind the render target for the current frame again.
+		/// @remark This function is only available in headless mode.
 		static void StartRenderPass();
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Stop running render pass of the given window.
-		/// </summary>
-		/// <param name="window">Window to stop render pass on.</param>
+		/// @brief Stop running render pass of the given window.
+		/// @param window Window to stop render pass on.
+		/// @remark @headless This function is not available in headless mode.
 		static void StopRenderPass(const Window* window);
 #else
-		/// <summary>
-		/// Stop running render pass.
-		/// </summary>
+		/// @brief Stop running render pass.
+		/// @remark This function is only available in headless mode.
 		static void StopRenderPass();
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Transition a texture from old layout to the new layout.
+		/// @brief Transition a texture from old layout to the new layout.
 		/// The transition happens immediately and is guaranteed to be complete when the function returns.
-		/// </summary>
-		/// <param name="texture">Texture to transition layout.</param>
-		/// <param name="oldLayout">Current resource state of the given texture.</param>
-		/// <param name="newLayout">New resource state for the given texture.</param>
-		/// <param name="queueType">Queue type on which to perform the transition. Default: Graphics.</param>
+		/// @param texture Texture to transition layout.
+		/// @param oldLayout Current resource state of the given texture.
+		/// @param newLayout New resource state for the given texture.
+		/// @param queueType Queue type on which to perform the transition. Default: Graphics.
 		static void Transition(const Ref<TRAP::Graphics::Texture>& texture,
 							   TRAP::Graphics::RendererAPI::ResourceState oldLayout,
 							   TRAP::Graphics::RendererAPI::ResourceState newLayout,
 							   TRAP::Graphics::RendererAPI::QueueType queueType = QueueType::Graphics);
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Retrieve the currently used anti aliasing method and the sample count.
-		/// </summary>
-		/// <param name="outAntiAliasing">Output: Used anti aliasing method.</param>
-		/// <param name="outSampleCount">Output: Used sample count.</param>
-		/// <param name="window">Window to get anti aliasing from.</param>
+		/// @brief Retrieve the currently used anti aliasing method and the sample count.
+		/// @param outAntiAliasing Output: Used anti aliasing method.
+		/// @param outSampleCount Output: Used sample count.
+		/// @param window Window to get anti aliasing from.
+		/// @remark @headless This function is not available in headless mode.
 		static void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount, const Window* window) noexcept;
 #else
-		/// <summary>
-		/// Retrieve the currently used anti aliasing method and the sample count.
-		/// </summary>
-		/// <param name="outAntiAliasing">Output: Used anti aliasing method.</param>
-		/// <param name="outSampleCount">Output: Used sample count.</param>
+		/// @brief Retrieve the currently used anti aliasing method and the sample count.
+		/// @param outAntiAliasing Output: Used anti aliasing method.
+		/// @param outSampleCount Output: Used sample count.
+		/// @remark This function is only available in headless mode.
 		static void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount) noexcept;
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Set the anti aliasing method and the sample count.
+		/// @brief Set the anti aliasing method and the sample count.
 		/// Use AntiAliasing::Off to disable anti aliasing.
-		///
-		/// Note: This won't affect the currently recorded frame.
-		/// Note: A sample count of 1 is only valid if anti aliasing is disabled.
-		/// </summary>
-		/// <param name="antiAliasing">Anti aliasing method to use.</param>
-		/// <param name="sampleCount">Sample count to use.</param>
+		/// @param antiAliasing Anti aliasing method to use.
+		/// @param sampleCount Sample count to use.
+		/// @note This takes effect on the next frame onwards.
+		/// @note A sample count of 1 is only valid if anti aliasing is disabled.
 		static void SetAntiAliasing(AntiAliasing antiAliasing, SampleCount sampleCount);
 
-		/// <summary>
-		/// Retrieve the currently used anisotropy level.
-		/// </summary>
-		/// <returns>Used anisotropy level.</returns>
+		/// @brief Retrieve the currently used anisotropy level.
+		/// @return Used anisotropy level.
 		[[nodiscard]] static SampleCount GetAnisotropyLevel() noexcept;
 
-		/// <summary>
-		/// Set the anisotropy level.
+		/// @brief Set the anisotropy level.
 		/// A value of SampleCount::One effectively disables anisotropic filtering.
-		///
-		/// Note: User created samplers need to be recreated in order to use the new anisotropy level.
-		/// </summary>
-		/// <param name="anisotropyLevel">Anisotropy level to use.</param>
+		/// @param anisotropyLevel Anisotropy level to use.
+		/// @note User created samplers need to be recreated in order to use the new anisotropy level.
 		static void SetAnisotropyLevel(SampleCount anisotropyLevel);
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Notify the RendererAPI that the SwapChain needs to be resized.
+		/// @brief Notify the RendererAPI that the SwapChain needs to be resized.
 		/// This function should be called inside FrameBufferResizeEvent callbacks.
-		/// </summary>
-		/// <param name="window">Window that needs an updated SwapChain.</param>
+		/// @param window Window that needs an updated SwapChain.
+		/// @remark @headless This function is not available in headless mode.
 		static void ResizeSwapChain(const Window* window);
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Retrieve the GPU side frame time for the graphics queue.
-		/// </summary>
-		/// <param name="window">Window to get frame time from.</param>
-		/// <returns>GPU Graphics frame time in milliseconds.</returns>
+		/// @brief Retrieve the GPU side frame time for the graphics queue.
+		/// @param window Window to get frame time from.
+		/// @return GPU Graphics frame time in milliseconds.
+		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] static f32 GetGPUGraphicsFrameTime(const Window* window);
 #else
-		/// <summary>
-		/// Retrieve the GPU side frame time for the graphics queue.
-		/// </summary>
-		/// <returns>GPU Graphics frame time in milliseconds.</returns>
+		/// @brief Retrieve the GPU side frame time for the graphics queue.
+		/// @return GPU Graphics frame time in milliseconds.
+		/// @remark This function is only available in headless mode.
 		[[nodiscard]] static f32 GetGPUGraphicsFrameTime();
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Retrieve the GPU side frame time for the compute queue.
-		/// </summary>
-		/// <param name="window">Window to get frame time from.</param>
-		/// <returns>GPU Compute frame time in milliseconds.</returns>
+		/// @brief Retrieve the GPU side frame time for the compute queue.
+		/// @param window Window to get frame time from.
+		/// @return GPU Compute frame time in milliseconds.
+		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] static f32 GetGPUComputeFrameTime(const Window* window);
 #else
-		/// <summary>
-		/// Retrieve the GPU side frame time for the compute queue.
-		/// </summary>
-		/// <returns>GPU Compute frame time in milliseconds.</returns>
+		/// @brief Retrieve the GPU side frame time for the compute queue.
+		/// @return GPU Compute frame time in milliseconds.
+		/// @remark This function is only available in headless mode.
 		[[nodiscard]] static f32 GetGPUComputeFrameTime();
 #endif /*TRAP_HEADLESS_MODE*/
 
 	//protected:
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Retrieve internal rendering data.
-		/// </summary>
-		/// <returns>Windows internal rendering data.</returns>
+		/// @brief Retrieve internal rendering data.
+		/// @return Windows internal rendering data.
+		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] static PerViewportData& GetViewportData(const Window* window);
 #else
-		/// <summary>
-		/// Retrieve internal rendering data.
-		/// </summary>
-		/// <returns>Internal rendering data.</returns>
+		/// @brief Retrieve internal rendering data.
+		/// @return Internal rendering data.
+		/// @remark This function is only available in headless mode.
 		[[nodiscard]] static PerViewportData& GetViewportData();
 #endif /*TRAP_HEADLESS_MODE*/
 
 	public:
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Initialize the internal rendering data of the given window.
-		/// </summary>
-		/// <param name="window">Window to initialize the internal rendering data for.</param>
-		/// <param name="VSyncEnabled">Whether to enable or disable VSync.</param>
+		/// @brief Initialize the internal rendering data of the given window.
+		/// @param window Window to initialize the internal rendering data for.
+		/// @param VSyncEnabled Whether to enable or disable VSync.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void InitPerViewportData(Window* window, bool VSyncEnabled) const = 0;
 #else
-		/// <summary>
-		/// Initialize the internal rendering data.
-		/// </summary>
-		/// <param name="width">Width for the viewport.</param>
-		/// <param name="height">Height for the viewport.</param>
+		/// @brief Initialize the internal rendering data.
+		/// @param width Width for the viewport.
+		/// @param height Height for the viewport.
+		/// @remark This function is only available in headless mode.
 		virtual void InitPerViewportData(u32 width, u32 height) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Remove the internal rendering data of the given window.
-		/// </summary>
-		/// <param name="window">Window to remove the internal rendering data from.</param>
+		/// @brief Remove the internal rendering data of the given window.
+		/// @param window Window to remove the internal rendering data from.
+		/// @remark @headless This function is not available in headless mode.
 		virtual void RemovePerViewportData(const Window* window) const = 0;
 #else
-		/// <summary>
-		/// Remove the internal rendering data.
-		/// </summary>
+		/// @brief Remove the internal rendering data.
+		/// @remark This function is only available in headless mode.
 		virtual void RemovePerViewportData() const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Wait for the GPU to idle.
-		/// </summary>
+		/// @brief Wait for the GPU to idle.
 		virtual void WaitIdle() const = 0;
 
-		/// <summary>
-		/// Check if the system is Vulkan API capable.
-		///
-		/// Note: The first call to this function will run the Vulkan capability tester.
-		/// </summary>
-		/// <returns>True if the system is Vulkan API capable, false otherwise.</returns>
+		/// @brief Check if the system is Vulkan API capable.
+		/// @return True if the system is Vulkan API capable, false otherwise.
+		/// @note The first call to this function will run the Vulkan capability tester.
 		[[nodiscard]] static bool IsVulkanCapable();
 
-		/// <summary>
-		/// Enum bit flag for the different wave operations.
-		/// </summary>
+		/// @brief Enum bit flag for the different wave operations.
 		enum class WaveOpsSupportFlags : u32
 		{
 			None = 0x0,
@@ -1467,9 +1249,7 @@ namespace TRAP::Graphics
 			WAVE_OPS_SUPPORT_FLAG_ALL = 0x7FFFFFFF
 		};
 
-		/// <summary>
-		/// Enum describing the different types of queues.
-		/// </summary>
+		/// @brief Enum describing the different types of queues.
 		enum class QueueType : u32
 		{
 			Graphics = 0,
@@ -1479,9 +1259,7 @@ namespace TRAP::Graphics
 			MAX_QUEUE_TYPE
 		};
 
-		/// <summary>
-		/// Enum describing queue flags.
-		/// </summary>
+		/// @brief Enum describing queue flags.
 		enum class QueueFlag : u32
 		{
 			None = 0x0,
@@ -1490,9 +1268,7 @@ namespace TRAP::Graphics
 			MAX_QUEUE_FLAG = 0xFFFFFFFF
 		};
 
-		/// <summary>
-		/// Enum describing the different priorities for a queue (DirectX 12).
-		/// </summary>
+		/// @brief Enum describing the different priorities for a queue (DirectX 12).
 		enum class QueuePriority
 		{
 			Normal,
@@ -1502,9 +1278,7 @@ namespace TRAP::Graphics
 			MAX_QUEUE_PRIORITY
 		};
 
-		/// <summary>
-		/// Enum describing the status of a fence.
-		/// </summary>
+		/// @brief Enum describing the status of a fence.
 		enum class FenceStatus
 		{
 			Complete = 0,
@@ -1512,9 +1286,7 @@ namespace TRAP::Graphics
 			NotSubmitted
 		};
 
-		/// <summary>
-		/// Enum describing the different types of load actions.
-		/// </summary>
+		/// @brief Enum describing the different types of load actions.
 		enum class LoadActionType : u32
 		{
 			DontCare,
@@ -1524,9 +1296,7 @@ namespace TRAP::Graphics
 			MAX_LOAD_ACTION_TYPE
 		};
 
-		/// <summary>
-		/// Enum describing the different types of store actions.
-		/// </summary>
+		/// @brief Enum describing the different types of store actions.
 		enum class StoreActionType : u32
 		{
 			//Store is the most common use case so keep that as default
@@ -1537,9 +1307,7 @@ namespace TRAP::Graphics
 			MAX_STORE_ACTION_TYPE
 		};
 
-		/// <summary>
-		/// Enum describing the different types of cube textures.
-		/// </summary>
+		/// @brief Enum describing the different types of cube textures.
 		enum class TextureCubeType
 		{
 			NONE = 0,
@@ -1550,9 +1318,7 @@ namespace TRAP::Graphics
 			//Equirectangular
 		};
 
-		/// <summary>
-		/// Enum describing the different sample counts.
-		/// </summary>
+		/// @brief Enum describing the different sample counts.
 		enum class SampleCount
 		{
 			One = BIT(0u),
@@ -1562,18 +1328,14 @@ namespace TRAP::Graphics
 			Sixteen = BIT(4u)
 		};
 
-		/// <summary>
-		/// Enum describing the different anti aliasing methods.
-		/// </summary>
+		/// @brief Enum describing the different anti aliasing methods.
 		enum class AntiAliasing
 		{
 			Off,
 			MSAA
 		};
 
-		/// <summary>
-		/// Enum describing the different GPU vendors.
-		/// </summary>
+		/// @brief Enum describing the different GPU vendors.
 		enum class GPUVendor : i32
 		{
 			Unknown     = -1,
@@ -1592,9 +1354,7 @@ namespace TRAP::Graphics
 			Mesa        = 0x10005
 		};
 
-		/// <summary>
-		/// Enum bit flags used by texture creation.
-		/// </summary>
+		/// @brief Enum bit flags used by texture creation.
 		enum class TextureCreationFlags : u32
 		{
 			//Default flag (Texture will use default allocation strategy decided by the API specific allocator)
@@ -1629,9 +1389,7 @@ namespace TRAP::Graphics
 			Storage = BIT(14u)
 		};
 
-		/// <summary>
-		/// Enum describing the state of a resource.
-		/// </summary>
+		/// @brief Enum describing the state of a resource.
 		enum class ResourceState : u32
 		{
 			Undefined = 0x0,
@@ -1655,9 +1413,7 @@ namespace TRAP::Graphics
 			ShadingRateSource = BIT(15u)
 		};
 
-		/// <summary>
-		/// Enum describing the type of a descriptor.
-		/// </summary>
+		/// @brief Enum describing the type of a descriptor.
 		enum class DescriptorType : u32
 		{
 			Undefined = 0,
@@ -1706,9 +1462,7 @@ namespace TRAP::Graphics
 
 		//Choosing Memory Type
 
-		/// <summary>
-		/// Enum describing the different memory usage types for a resource.
-		/// </summary>
+		/// @brief Enum describing the different memory usage types for a resource.
 		enum class ResourceMemoryUsage
 		{
 			//No intended memory usage specified
@@ -1727,9 +1481,7 @@ namespace TRAP::Graphics
 			RESOURCE_MEMORY_USAGE_MAX_ENUM = 0x7FFFFFFF
 		};
 
-		/// <summary>
-		/// Enum describing flags for the buffer creation.
-		/// </summary>
+		/// @brief Enum describing flags for the buffer creation.
 		enum class BufferCreationFlags : u32
 		{
 			//Default flag (Buffer will use aliased memory, buffer will not be CPU accessible until MapBuffer
@@ -1749,9 +1501,7 @@ namespace TRAP::Graphics
 			HostCoherent = 0x200
 		};
 
-		/// <summary>
-		/// Enum describing the different types of buffers for clearing.
-		/// </summary>
+		/// @brief Enum describing the different types of buffers for clearing.
 		enum class ClearBufferType : u32
 		{
 			NONE = 0,
@@ -1765,9 +1515,8 @@ namespace TRAP::Graphics
 		};
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Enum describing the different latency modes.
-		/// </summary>
+		/// @brief Enum describing the different latency modes.
+		/// @remark @headless This function is not available in headless mode.
 		enum class LatencyMode : u32
 		{
 			Disabled,
@@ -1776,9 +1525,7 @@ namespace TRAP::Graphics
 		};
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// <summary>
-		/// Enum describing the type of an indirect argument.
-		/// </summary>
+		/// @brief Enum describing the type of an indirect argument.
 		enum class IndirectArgumentType
 		{
 			IndirectDraw,
@@ -1791,42 +1538,32 @@ namespace TRAP::Graphics
 			IndirectPipeline
 		};
 
-		/// <summary>
-		/// Enum describing the update frequency of a descriptor.
-		/// Note: The same update frequency order should be used by shaders.
-		/// </summary>
+		/// @brief Enum describing the update frequency of a descriptor.
+		/// @note: The same update frequency order should be used by shaders.
 		enum class DescriptorUpdateFrequency : u32
 		{
 			Static = 0,
 			Dynamic
 		};
 
-		/// <summary>
-		/// The maximum amount of descriptor sets that can be used.
-		/// </summary>
+		/// @brief The maximum amount of descriptor sets that can be used.
 		inline static constexpr u32 MaxDescriptorSets = 4;
 
-		/// <summary>
-		/// Enum describing the different types of filtering used by samplers.
-		/// </summary>
+		/// @brief Enum describing the different types of filtering used by samplers.
 		enum class FilterType
 		{
 			Nearest = 0,
 			Linear
 		};
 
-		/// <summary>
-		/// Enum describing the different modes of mip mapping used by samplers.
-		/// </summary>
+		/// @brief Enum describing the different modes of mip mapping used by samplers.
 		enum class MipMapMode
 		{
 			Nearest = 0,
 			Linear
 		};
 
-		/// <summary>
-		/// Enum describing the different address modes used by samplers.
-		/// </summary>
+		/// @brief Enum describing the different address modes used by samplers.
 		enum class AddressMode
 		{
 			Mirror,
@@ -1835,9 +1572,7 @@ namespace TRAP::Graphics
 			ClampToBorder
 		};
 
-		/// <summary>
-		/// Enum describing the different compare modes used by depth/stencil testing and samplers.
-		/// </summary>
+		/// @brief Enum describing the different compare modes used by depth/stencil testing and samplers.
 		enum class CompareMode : u32
 		{
 			Never,
@@ -1852,9 +1587,7 @@ namespace TRAP::Graphics
 			MAX_COMPARE_MODES
 		};
 
-		/// <summary>
-		/// Enum describing the different shader stages making up a shader.
-		/// </summary>
+		/// @brief Enum describing the different shader stages making up a shader.
 		enum class ShaderStage : u32
 		{
 			None = 0,
@@ -1875,9 +1608,7 @@ namespace TRAP::Graphics
 			SHADER_STAGE_COUNT = 7
 		};
 
-		/// <summary>
-		/// Enum describing the different flags for root signature creation.
-		/// </summary>
+		/// @brief Enum describing the different flags for root signature creation.
 		enum class RootSignatureFlags : u32
 		{
 			//Default flag
@@ -1886,9 +1617,7 @@ namespace TRAP::Graphics
 			Local = BIT(0u)
 		};
 
-		/// <summary>
-		/// Enum describing the different pipeline types.
-		/// </summary>
+		/// @brief Enum describing the different pipeline types.
 		enum class PipelineType : u32
 		{
 			Undefined = 0,
@@ -1899,18 +1628,14 @@ namespace TRAP::Graphics
 			PIPELINE_TYPE_COUNT
 		};
 
-		/// <summary>
-		/// Enum describing the different data types used by index buffers.
-		/// </summary>
+		/// @brief Enum describing the different data types used by index buffers.
 		enum class IndexType
 		{
 			UInt32 = 0,
 			UInt16
 		};
 
-		/// <summary>
-		/// Enum describing the different blend constants used for blending.
-		/// </summary>
+		/// @brief Enum describing the different blend constants used for blending.
 		enum class BlendConstant : u32
 		{
 			Zero = 0,
@@ -1930,9 +1655,7 @@ namespace TRAP::Graphics
 			MAX_BLEND_CONSTANTS
 		};
 
-		/// <summary>
-		/// Enum describing the different blend modes/functions used for blending.
-		/// </summary>
+		/// @brief Enum describing the different blend modes/functions used for blending.
 		enum class BlendMode : u32
 		{
 			Add,
@@ -1944,9 +1667,7 @@ namespace TRAP::Graphics
 			MAX_BLEND_MODES
 		};
 
-		/// <summary>
-		/// Enum describing which render target to affect with the blend state.
-		/// </summary>
+		/// @brief Enum describing which render target to affect with the blend state.
 		enum class BlendStateTargets : u32
 		{
 			BlendStateTarget0 = BIT(0u),
@@ -1961,9 +1682,7 @@ namespace TRAP::Graphics
 			BlendStateTargetAll = 0xFF,
 		};
 
-		/// <summary>
-		/// Enum describing the different stencil/depth operations.
-		/// </summary>
+		/// @brief Enum describing the different stencil/depth operations.
 		enum class StencilOp : u32
 		{
 			Keep,
@@ -1978,9 +1697,7 @@ namespace TRAP::Graphics
 			MAX_STENCIL_OPS
 		};
 
-		/// <summary>
-		/// Enum describing the different cull modes.
-		/// </summary>
+		/// @brief Enum describing the different cull modes.
 		enum class CullMode : u32
 		{
 			None = 0,
@@ -1991,18 +1708,14 @@ namespace TRAP::Graphics
 			MAX_CULL_MODES
 		};
 
-		/// <summary>
-		/// Enum describing the different front face winding orders.
-		/// </summary>
+		/// @brief Enum describing the different front face winding orders.
 		enum class FrontFace : u32
 		{
 			CounterClockwise = 0,
 			Clockwise
 		};
 
-		/// <summary>
-		/// Enum describing the different fill modes.
-		/// </summary>
+		/// @brief Enum describing the different fill modes.
 		enum class FillMode : u32
 		{
 			Solid,
@@ -2012,18 +1725,14 @@ namespace TRAP::Graphics
 			MAX_FILL_MODES
 		};
 
-		/// <summary>
-		/// Enum describing flags for pipeline cache creation.
-		/// </summary>
+		/// @brief Enum describing flags for pipeline cache creation.
 		enum class PipelineCacheFlags : u32
 		{
 			None = 0x0,
 			ExternallySynchronized = BIT(0u)
 		};
 
-		/// <summary>
-		/// Enum describing the different primitive topologies.
-		/// </summary>
+		/// @brief Enum describing the different primitive topologies.
 		enum class PrimitiveTopology
 		{
 			PointList = 0,
@@ -2036,9 +1745,7 @@ namespace TRAP::Graphics
 			PRIMITIVE_TOPOLOGY_COUNT
 		};
 
-		/// <summary>
-		/// Enum describing the different vertex attribute rates.
-		/// </summary>
+		/// @brief Enum describing the different vertex attribute rates.
 		enum class VertexAttributeRate
 		{
 			Vertex = 0,
@@ -2047,9 +1754,7 @@ namespace TRAP::Graphics
 			VERTEX_ATTRIBUTE_RATE_COUNT
 		};
 
-		/// <summary>
-		/// Enum describing the different types of queries.
-		/// </summary>
+		/// @brief Enum describing the different types of queries.
 		enum class QueryType
 		{
 			Timestamp = 0,
@@ -2059,9 +1764,7 @@ namespace TRAP::Graphics
 			QUERY_TYPE_COUNT
 		};
 
-		/// <summary>
-		/// Enum describing the different presentation statuses.
-		/// </summary>
+		/// @brief Enum describing the different presentation statuses.
 		enum class PresentStatus
 		{
 			Success = 0,
@@ -2070,18 +1773,14 @@ namespace TRAP::Graphics
 			OutOfDate = 3
 		};
 
-		/// <summary>
-		/// Enum describing the different sampler ranges used by YUV conversion samplers.
-		/// </summary>
+		/// @brief Enum describing the different sampler ranges used by YUV conversion samplers.
 		enum class SamplerRange
 		{
 			Full = 0,
 			Narrow = 1
 		};
 
-		/// <summary>
-		/// Enum describing the different sampler models used by YUV conversion samplers.
-		/// </summary>
+		/// @brief Enum describing the different sampler models used by YUV conversion samplers.
 		enum class SamplerModelConversion
 		{
 			RGBIdentity = 0,
@@ -2091,18 +1790,14 @@ namespace TRAP::Graphics
 			YCBCR2020 = 4
 		};
 
-		/// <summary>
-		/// Enum describing the different sample locations used by YUV conversion samplers.
-		/// </summary>
+		/// @brief Enum describing the different sample locations used by YUV conversion samplers.
 		enum class SampleLocation
 		{
 			Cosited = 0,
 			Midpoint = 1
 		};
 
-		/// <summary>
-		/// Enum describing the shading rates used by fragment/pixel shaders.
-		/// </summary>
+		/// @brief Enum describing the shading rates used by fragment/pixel shaders.
 		enum class ShadingRate : u32
 		{
 			NotSupported = 0x0,
@@ -2116,9 +1811,7 @@ namespace TRAP::Graphics
 			FourXTwo = BIT(7u)
 		};
 
-		/// <summary>
-		/// Enum describing how to combine different shading rates.
-		/// </summary>
+		/// @brief Enum describing how to combine different shading rates.
 		enum class ShadingRateCombiner : u32
 		{
 			Passthrough = BIT(0u),
@@ -2128,9 +1821,7 @@ namespace TRAP::Graphics
 			Sum = BIT(4u)
 		};
 
-		/// <summary>
-		/// Enum describing the shading rate capabilities supported by the GPU.
-		/// </summary>
+		/// @brief Enum describing the shading rate capabilities supported by the GPU.
 		enum class ShadingRateCaps : u32
 		{
 			NotSupported = 0x0,
@@ -2161,10 +1852,8 @@ namespace TRAP::Graphics
 
 		using ClearValue = std::variant<Color, DepthStencil>;
 
-		/// <summary>
-		/// Description of a subresource.
+		/// @brief Description of a subresource.
 		/// Used to update a existing resource.
-		/// </summary>
 		struct SubresourceDataDesc
 		{
 			u64 SrcOffset;
@@ -2175,9 +1864,7 @@ namespace TRAP::Graphics
 			u32 SlicePitch;
 		};
 
-		/// <summary>
-		/// Description of a render target.
-		/// </summary>
+		/// @brief Description of a render target.
 		struct RenderTargetDesc
 		{
 			//Texture creation flags (decides memory allocation strategy, sharing access, ...)
@@ -2212,9 +1899,7 @@ namespace TRAP::Graphics
 			void* NativeHandle{};
 		};
 
-		/// <summary>
-		/// Description of a texture.
-		/// </summary>
+		/// @brief Description of a texture.
 		struct TextureDesc
 		{
 			//Texture creation flags (decides memory allocation strategy, sharing access, ...)
@@ -2253,9 +1938,7 @@ namespace TRAP::Graphics
 			::VkSamplerYcbcrConversionInfo* VkSamplerYcbcrConversionInfo{};
 		};
 
-		/// <summary>
-		/// Description for a texture load.
-		/// </summary>
+		/// @brief Description for a texture load.
 		struct TextureLoadDesc
 		{
 			//Target to load texture info into.
@@ -2275,9 +1958,7 @@ namespace TRAP::Graphics
 			TextureCubeType Type = TextureCubeType::NONE;
 		};
 
-		/// <summary>
-		/// Description of a buffer.
-		/// </summary>
+		/// @brief Description of a buffer.
 		struct BufferDesc
 		{
 			//Size of the buffer (in bytes)
@@ -2314,9 +1995,7 @@ namespace TRAP::Graphics
 			std::string Name{};
 		};
 
-		/// <summary>
-		/// Description of a sampler.
-		/// </summary>
+		/// @brief Description of a sampler.
 		struct SamplerDesc
 		{
 			//Minification filter
@@ -2346,9 +2025,7 @@ namespace TRAP::Graphics
 			//Comparison function compares sampled data against existing sampled data
 			CompareMode CompareFunc{};
 
-			/// <summary>
-			/// Description of YCbCr(YUV) conversion sampler.
-			/// </summary>
+			/// @brief Description of YCbCr(YUV) conversion sampler.
 			struct SamplerConversionDesc
 			{
 				//YCbCr(YUV) image format
@@ -2374,9 +2051,7 @@ namespace TRAP::Graphics
 			[[nodiscard]] constexpr bool operator!=(const SamplerDesc& other) const noexcept = default;
 		};
 
-		/// <summary>
-		/// Description of a binary shader stage.
-		/// </summary>
+		/// @brief Description of a binary shader stage.
 		struct BinaryShaderStageDesc
 		{
 			//Shader data
@@ -2385,9 +2060,7 @@ namespace TRAP::Graphics
 			std::string EntryPoint{};
 		};
 
-		/// <summary>
-		/// Description of a binary shader.
-		/// </summary>
+		/// @brief Description of a binary shader.
 		struct BinaryShaderDesc
 		{
 			//Shader stages contained in the binary shader
@@ -2406,9 +2079,7 @@ namespace TRAP::Graphics
 			BinaryShaderStageDesc Compute{};
 		};
 
-		/// <summary>
-		/// Description of a root signature.
-		/// </summary>
+		/// @brief Description of a root signature.
 		struct RootSignatureDesc
 		{
 			//Shaders to manage
@@ -2423,9 +2094,7 @@ namespace TRAP::Graphics
 			RootSignatureFlags Flags{};
 		};
 
-		/// <summary>
-		/// Struct containing information about a descriptor.
-		/// </summary>
+		/// @brief Struct containing information about a descriptor.
 		struct DescriptorInfo
 		{
 			//Name of descriptor
@@ -2455,9 +2124,7 @@ namespace TRAP::Graphics
 			u32 VkStages{};
 		};
 
-		/// <summary>
-		/// Description of a descriptor set.
-		/// </summary>
+		/// @brief Description of a descriptor set.
 		struct DescriptorSetDesc
 		{
 			//Root signature to use
@@ -2468,9 +2135,7 @@ namespace TRAP::Graphics
 			u32 MaxSets{};
 		};
 
-		/// <summary>
-		/// Description of a command pool.
-		/// </summary>
+		/// @brief Description of a command pool.
 		struct CommandPoolDesc
 		{
 			//Queue to be used by the command pool
@@ -2479,9 +2144,7 @@ namespace TRAP::Graphics
 			bool Transient;
 		};
 
-		/// <summary>
-		/// Description of a queue.
-		/// </summary>
+		/// @brief Description of a queue.
 		struct QueueDesc
 		{
 			//Type of queue
@@ -2492,9 +2155,7 @@ namespace TRAP::Graphics
 			QueuePriority Priority{};
 		};
 
-		/// <summary>
-		/// Read range used for buffer mapping.
-		/// </summary>
+		/// @brief Read range used for buffer mapping.
 		struct ReadRange
 		{
 			//Offset from the start of the buffer
@@ -2503,9 +2164,7 @@ namespace TRAP::Graphics
 			u64 Range{};
 		};
 
-		/// <summary>
-		/// Description for a queue submission.
-		/// </summary>
+		/// @brief Description for a queue submission.
 		struct QueueSubmitDesc
 		{
 			//Command buffers to submit
@@ -2518,9 +2177,7 @@ namespace TRAP::Graphics
 			std::vector<TRAP::Ref<Semaphore>> SignalSemaphores{};
 		};
 
-		/// <summary>
-		/// Description of a blend state.
-		/// </summary>
+		/// @brief Description of a blend state.
 		struct BlendStateDesc
 		{
 			//Source blend factor per render target.
@@ -2544,9 +2201,7 @@ namespace TRAP::Graphics
 			bool IndependentBlend{};
 		};
 
-		/// <summary>
-		/// Description of a depth state.
-		/// </summary>
+		/// @brief Description of a depth state.
 		struct DepthStateDesc
 		{
 			//Enable depth testing?
@@ -2579,9 +2234,7 @@ namespace TRAP::Graphics
 			StencilOp StencilBackPass{};
 		};
 
-		/// <summary>
-		/// Description of a rasterizer state.
-		/// </summary>
+		/// @brief Description of a rasterizer state.
 		struct RasterizerStateDesc
 		{
 			//Cull mode
@@ -2598,9 +2251,7 @@ namespace TRAP::Graphics
 			bool DepthClampEnable{};
 		};
 
-		/// <summary>
-		/// Description of a pipeline cache.
-		/// </summary>
+		/// @brief Description of a pipeline cache.
 		struct PipelineCacheDesc
 		{
 			//Pipeline data
@@ -2609,9 +2260,7 @@ namespace TRAP::Graphics
 			PipelineCacheFlags Flags{};
 		};
 
-		/// <summary>
-		/// Description of a pipeline cache to load.
-		/// </summary>
+		/// @brief Description of a pipeline cache to load.
 		struct PipelineCacheLoadDesc
 		{
 			//Path to pipeline cache
@@ -2620,9 +2269,7 @@ namespace TRAP::Graphics
 			PipelineCacheFlags Flags{};
 		};
 
-		/// <summary>
-		/// Description of a compute pipeline.
-		/// </summary>
+		/// @brief Description of a compute pipeline.
 		struct ComputePipelineDesc
 		{
 			//Shader to use
@@ -2631,9 +2278,7 @@ namespace TRAP::Graphics
 			TRAP::Ref<TRAP::Graphics::RootSignature> RootSignature{};
 		};
 
-		/// <summary>
-		/// Description of a single vertex attribute.
-		/// </summary>
+		/// @brief Description of a single vertex attribute.
 		struct VertexAttribute
 		{
 			//Attribute format
@@ -2648,9 +2293,7 @@ namespace TRAP::Graphics
 			VertexAttributeRate Rate{};
 		};
 
-		/// <summary>
-		/// Description of a vertex layout.
-		/// </summary>
+		/// @brief Description of a vertex layout.
 		struct VertexLayout
 		{
 			//Amount of attributes in the layout
@@ -2659,9 +2302,7 @@ namespace TRAP::Graphics
 			std::array<VertexAttribute, 15> Attributes{};
 		};
 
-		/// <summary>
-		/// Description of a graphics pipeline.
-		/// </summary>
+		/// @brief Description of a graphics pipeline.
 		struct GraphicsPipelineDesc
 		{
 			//Shader to use
@@ -2696,16 +2337,12 @@ namespace TRAP::Graphics
 			TRAP::Ref<TRAP::Graphics::RenderTarget> ShadingRateTexture{};
 		};
 
-		/// <summary>
-		/// Description of a RayTracing pipeline.
-		/// </summary>
+		/// @brief Description of a RayTracing pipeline.
 		struct RayTracingPipelineDesc
 		{
 		};
 
-		/// <summary>
-		/// Description of a pipeline.
-		/// </summary>
+		/// @brief Description of a pipeline.
 		struct PipelineDesc
 		{
 			//Type of pipeline
@@ -2725,9 +2362,7 @@ namespace TRAP::Graphics
 			std::string Name{};
 		};
 
-		/// <summary>
-		/// Description of a query pool.
-		/// </summary>
+		/// @brief Description of a query pool.
 		struct QueryPoolDesc
 		{
 			//Type of query to hold
@@ -2736,18 +2371,14 @@ namespace TRAP::Graphics
 			u32 QueryCount{};
 		};
 
-		/// <summary>
-		/// Description of a query.
-		/// </summary>
+		/// @brief Description of a query.
 		struct QueryDesc
 		{
 			//Index of the query into the query pool
 			u32 Index{};
 		};
 
-		/// <summary>
-		/// Struct holding indirect draw arguments.
-		/// </summary>
+		/// @brief Struct holding indirect draw arguments.
 		struct IndirectDrawArguments
 		{
 			//How many vertices to draw
@@ -2760,9 +2391,7 @@ namespace TRAP::Graphics
 			u32 StartInstance{};
 		};
 
-		/// <summary>
-		/// Struct holding indirect indexed draw arguments.
-		/// </summary>
+		/// @brief Struct holding indirect indexed draw arguments.
 		struct IndirectDrawIndexArguments
 		{
 			//How many indices to draw
@@ -2777,9 +2406,7 @@ namespace TRAP::Graphics
 			u32 StartInstance{};
 		};
 
-		/// <summary>
-		/// Struct holding indirect dispatch arguments.
-		/// </summary>
+		/// @brief Struct holding indirect dispatch arguments.
 		struct IndirectDispatchArguments
 		{
 			//X work group size
@@ -2790,9 +2417,7 @@ namespace TRAP::Graphics
 			u32 GroupCountZ{};
 		};
 
-		/// <summary>
-		/// Struct holding indirect descriptor argument.
-		/// </summary>
+		/// @brief Struct holding indirect descriptor argument.
 		struct IndirectArgumentDescriptor
 		{
 			//Type of indirect argument
@@ -2803,9 +2428,7 @@ namespace TRAP::Graphics
 			u32 Index{};
 		};
 
-		/// <summary>
-		/// Description of a command signature.
-		/// </summary>
+		/// @brief Description of a command signature.
 		struct CommandSignatureDesc
 		{
 			//Root signature.
@@ -2816,9 +2439,7 @@ namespace TRAP::Graphics
 			bool Packed{};
 		};
 
-		/// <summary>
-		/// Description of a swapchain.
-		/// </summary>
+		/// @brief Description of a swapchain.
 		struct SwapChainDesc
 		{
 			//Window handle
@@ -2844,9 +2465,7 @@ namespace TRAP::Graphics
 			SwapChain* OldSwapChain = nullptr;
 		};
 
-		/// <summary>
-		/// Struct holding a render target barrier.
-		/// </summary>
+		/// @brief Struct holding a render target barrier.
 		struct RenderTargetBarrier
 		{
 			//Render target
@@ -2876,9 +2495,7 @@ namespace TRAP::Graphics
 			u16 ArrayLayer{};
 		};
 
-		/// <summary>
-		/// Struct holding a buffer barrier.
-		/// </summary>
+		/// @brief Struct holding a buffer barrier.
 		struct BufferBarrier
 		{
 			//Buffer
@@ -2899,9 +2516,7 @@ namespace TRAP::Graphics
 			TRAP::Graphics::RendererAPI::QueueType QueueType{};
 		};
 
-		/// <summary>
-		/// Struct holding a texture barrier.
-		/// </summary>
+		/// @brief Struct holding a texture barrier.
 		struct TextureBarrier
 		{
 			//Texture
@@ -2931,17 +2546,13 @@ namespace TRAP::Graphics
 			u16 ArrayLayer{};
 		};
 
-		/// <summary>
-		/// Struct holding a data of a descriptor.
-		/// </summary>
+		/// @brief Struct holding a data of a descriptor.
 		struct DescriptorData
 		{
 			//User can either set name of descriptor or index (index in RootSignature->Descriptors array)
 			//Name of descriptor
 			std::string Name{};
-			/// <summary>
-			/// Range(s) to bind (buffer, offset, size)
-			/// </summary>
+			/// @brief Range(s) to bind (buffer, offset, size)
 			struct BufferOffset
 			{
 				//Offset to bind the buffer descriptor
@@ -2950,9 +2561,7 @@ namespace TRAP::Graphics
 				std::vector<u64> Sizes{};
 			};
 
-			/// <summary>
-			/// Descriptor set buffer extraction options
-			/// </summary>
+			/// @brief Descriptor set buffer extraction options
 			struct DescriptorSetExtraction
 			{
 				//Index of the descriptor set to extract
@@ -2988,9 +2597,7 @@ namespace TRAP::Graphics
 			u32 Index = std::numeric_limits<u32>::max();
 		};
 
-		/// <summary>
-		/// Description of a queue presentation.
-		/// </summary>
+		/// @brief Description of a queue presentation.
 		struct QueuePresentDesc
 		{
 			//Swapchain to preesent
@@ -3001,9 +2608,7 @@ namespace TRAP::Graphics
 			u32 Index{};
 		};
 
-		/// <summary>
-		/// Description of actions to perform on load.
-		/// </summary>
+		/// @brief Description of actions to perform on load.
 		struct LoadActionsDesc
 		{
 			//Action to perform on the color attachment(s) on load.
@@ -3024,14 +2629,10 @@ namespace TRAP::Graphics
 			StoreActionType StoreActionStencil{};
 		};
 
-		/// <summary>
-		/// Map resolving a name to its descriptor index in a root signature.
-		/// </summary>
+		/// @brief Map resolving a name to its descriptor index in a root signature.
 		using DescriptorIndexMap = std::unordered_map<std::string, u32>;
 
-		/// <summary>
-		/// Struct holding data about a mapped memory range.
-		/// </summary>
+		/// @brief Struct holding data about a mapped memory range.
 		struct MappedMemoryRange
 		{
 			//Pointer to mapped buffer data with offset already applied to
@@ -3045,10 +2646,8 @@ namespace TRAP::Graphics
 			u32 Flags = 0;
 		};
 
-		/// <summary>
-		/// Description for a texture update.
-		/// Note: Only use for procedural textures which are created on CPU (noise textures, font texture, ...)
-		/// </summary>
+		/// @brief Description for a texture update.
+		/// @note Only use for procedural textures which are created on CPU (noise textures, font texture, ...)
 		struct TextureUpdateDesc
 		{
 			//Texture to update
@@ -3117,9 +2716,7 @@ namespace TRAP::Graphics
 			u64 BufferOffset;
 		};
 
-		/// <summary>
-		/// Description for the resource loader.
-		/// </summary>
+		/// @brief Description for the resource loader.
 		struct ResourceLoaderDesc
 		{
 			//Size for each staging buffer
@@ -3128,9 +2725,7 @@ namespace TRAP::Graphics
 			u32 BufferCount;
 		};
 
-		/// <summary>
-		/// Description for a buffer load.
-		/// </summary>
+		/// @brief Description for a buffer load.
 		struct BufferLoadDesc
 		{
 			//Output buffer with uploaded data.
@@ -3144,9 +2739,7 @@ namespace TRAP::Graphics
 			bool ForceReset;
 		};
 
-		/// <summary>
-		/// Description for a buffer update.
-		/// </summary>
+		/// @brief Description for a buffer update.
 		struct BufferUpdateDesc
 		{
 			//Buffer to update
@@ -3166,9 +2759,7 @@ namespace TRAP::Graphics
 			} Internal;
 		};
 
-		/// <summary>
-		/// Struct holding data about a GPUs features, limits and other properties.
-		/// </summary>
+		/// @brief Struct holding data about a GPUs features, limits and other properties.
 		inline static struct GPUSettings
 		{
 			u64 UniformBufferAlignment;
@@ -3216,17 +2807,15 @@ namespace TRAP::Graphics
 		inline static constexpr u32 ImageCount = 3; //Triple Buffered
 
 #ifndef TRAP_HEADLESS_MODE
-		/// <summary>
-		/// Retrieve the image index currently used for rendering from the given window.
-		/// </summary>
-		/// <param name="window">Window to retrieve image index from.</param>
-		/// <returns>Image index.</returns>
+		/// @brief Retrieve the image index currently used for rendering from the given window.
+		/// @param window Window to retrieve image index from.
+		/// @return Image index.
+		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] static u32 GetCurrentImageIndex(const TRAP::Window* window);
 #else
-		/// <summary>
-		/// Retrieve the image index currently used for rendering.
-		/// </summary>
-		/// <returns>Image index.</returns>
+		/// @brief Retrieve the image index currently used for rendering.
+		/// @return Image index.
+		/// @remark This function is only available in headless mode.
 		[[nodiscard]] static u32 GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -3260,24 +2849,22 @@ namespace TRAP::Graphics
 			PostUpdate,
 		};
 
-		/// <summary>
-		/// Per window data used for rendering.
-		/// </summary>
+		/// @brief Per window data used for rendering.
 		struct PerViewportData
 		{
-			/// <summary>
-			/// Constructor.
-			/// </summary>
+			/// @brief Constructor.
 			constexpr PerViewportData() = default;
 
-			/// <summary>
-			/// Destructor.
-			/// </summary>
+			/// @brief Destructor.
 			~PerViewportData();
 
+			/// @brief Copy constructor.
 			constexpr PerViewportData(const PerViewportData&) = delete;
+			/// @brief Move constructor.
 			PerViewportData(PerViewportData&&) = default;
+			/// @brief Copy assignment operator.
 			constexpr PerViewportData& operator=(const PerViewportData &) = delete;
+			/// @brief Move assignment operator.
 			PerViewportData& operator=(PerViewportData &&) = default;
 
 #ifndef TRAP_HEADLESS_MODE

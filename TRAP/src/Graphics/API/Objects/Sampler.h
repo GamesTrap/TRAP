@@ -8,103 +8,67 @@ namespace TRAP::Graphics
 	class Sampler
 	{
 	public:
-		/// <summary>
-		/// Create a new sampler from the given description.
-		/// </summary>
-		/// <param name="desc">Sampler description.</param>
-		/// <returns>Created sampler.</returns>
+		/// @brief Create a new sampler from the given description.
+		/// @param desc Sampler description.
+		/// @return Created sampler.
 		[[nodiscard]] static TRAP::Ref<Sampler> Create(RendererAPI::SamplerDesc desc);
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~Sampler();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Sampler(const Sampler&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		Sampler& operator=(const Sampler&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr Sampler(Sampler&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		Sampler& operator=(Sampler&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the minification filter of the sampler.
-		/// </summary>
-		/// <returns>Minification filter.</returns>
+		/// @brief Retrieve the minification filter of the sampler.
+		/// @return Minification filter.
 		[[nodiscard]] constexpr FilterType GetMinFilter() const noexcept;
-		/// <summary>
-		/// Retrieve the magnification filter of the sampler.
-		/// </summary>
-		/// <returns>Magnification filter.</returns>
+		/// @brief Retrieve the magnification filter of the sampler.
+		/// @return Magnification filter.
 		[[nodiscard]] constexpr FilterType GetMagFilter() const noexcept;
-		/// <summary>
-		/// Retrieve the mip map mode of the sampler.
-		/// </summary>
-		/// <returns>Mip map mode.</returns>
+		/// @brief Retrieve the mip map mode of the sampler.
+		/// @return Mip map mode.
 		[[nodiscard]] constexpr MipMapMode GetMipMapMode() const noexcept;
-		/// <summary>
-		/// Retrieve the address mode of the U coordinate of the sampler.
-		/// </summary>
-		/// <returns>Address mode.</returns>
+		/// @brief Retrieve the address mode of the U coordinate of the sampler.
+		/// @return Address mode.
 		[[nodiscard]] constexpr AddressMode GetAddressU() const noexcept;
-		/// <summary>
-		/// Retrieve the address mode of the V coordinate of the sampler.
-		/// </summary>
-		/// <returns>Address mode.</returns>
+		/// @brief Retrieve the address mode of the V coordinate of the sampler.
+		/// @return Address mode.
 		[[nodiscard]] constexpr AddressMode GetAddressV() const noexcept;
-		/// <summary>
-		/// Retrieve the address mode of the W coordinate of the sampler.
-		/// </summary>
-		/// <returns>Address mode.</returns>
+		/// @brief Retrieve the address mode of the W coordinate of the sampler.
+		/// @return Address mode.
 		[[nodiscard]] constexpr AddressMode GetAddressW() const noexcept;
-		/// <summary>
-		/// Retrieve the mip lod bias of the sampler.
-		/// </summary>
-		/// <returns>Address mode.</returns>
+		/// @brief Retrieve the mip lod bias of the sampler.
+		/// @return Address mode.
 		[[nodiscard]] constexpr f32 GetMipLodBias() const noexcept;
-		/// <summary>
-		/// Retrieve the max anisotropy of the sampler.
-		/// </summary>
-		/// <returns>Max anisotropy.</returns>
+		/// @brief Retrieve the max anisotropy of the sampler.
+		/// @return Max anisotropy.
 		[[nodiscard]] constexpr f32 GetAnisotropyLevel() const noexcept;
-		/// <summary>
-		/// Retrieve the compare function of the sampler.
-		/// </summary>
-		/// <returns>Compare function.</returns>
+		/// @brief Retrieve the compare function of the sampler.
+		/// @return Compare function.
 		[[nodiscard]] constexpr CompareMode GetCompareFunc() const noexcept;
-		/// <summary>
-		/// Retrieve whether the sampler uses the engines anisotropy level or not.
-		/// </summary>
-		/// <returns>True if engine set anisotropy level is used, false otherwise.</returns>
+		/// @brief Retrieve whether the sampler uses the engines anisotropy level or not.
+		/// @return True if engine set anisotropy level is used, false otherwise.
 		[[nodiscard]] constexpr bool UsesEngineAnisotropyLevel() const noexcept;
 
-		/// <summary>
-		/// Clear all cached samplers.
-		/// </summary>
+		/// @brief Clear all cached samplers.
 		static void ClearCache() noexcept;
 
-		/// <summary>
-		/// Updates all samplers currently in use.
-		/// Only call this between Frames!
-		/// </summary>
+		/// @brief Updates all samplers currently in use.
+		/// @warning Only call this function between frames!
 		static void UpdateSamplers();
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		explicit Sampler(const RendererAPI::SamplerDesc& desc);
 
+		/// @brief Update the anisotropy value of the sampler.
+		/// @param anisotropy New anisotropy to use.
 		virtual void UpdateAnisotropy(f32 anisotropy) = 0;
 
 		RendererAPI::SamplerDesc m_samplerDesc{};

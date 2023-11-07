@@ -168,25 +168,19 @@
 
 namespace TRAP::Utils::Windows
 {
-	/// <summary>
-	/// An exception safe RAII wrapper class that manages the
+	/// @brief An exception safe RAII wrapper class that manages the
 	/// lifetime of the COM library in a given scope.
 	///
 	/// Source: https://learn.microsoft.com/en-us/cpp/parallel/concrt/walkthrough-using-the-concurrency-runtime-in-a-com-enabled-application?view=msvc-170#code-try-2
-	/// </summary>
 	class COMInitializer final
 	{
 	public:
-		/// <summary>
-		/// This constructs a new COMInitializer instance which directly
+		/// @brief This constructs a new COMInitializer instance which directly
 		/// initializes the COM library for the current thread.
 		///
 		/// The COM library will be uninitialized when the destructor gets called.
-		/// </summary>
-		/// <param name="dwCoInit">
-		/// The concurrency model and initialization options for the thread.
+		/// @param dwCoInit The concurrency model and initialization options for the thread.
 		/// Default: COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE.
-		/// </param>
 		explicit COMInitializer(DWORD dwCoInit = COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE)
 		{
 			//Initialize the COM library on the current thread
@@ -195,10 +189,8 @@ namespace TRAP::Utils::Windows
 				m_COMInitialized = true;
 		}
 
-		/// <summary>
-		/// Destructors.
+		/// @brief Destructors.
 		/// This uninitializes the COM library.
-		/// </summary>
 		~COMInitializer()
 		{
 			//Free COM library
@@ -206,10 +198,8 @@ namespace TRAP::Utils::Windows
 				CoUninitialize();
 		}
 
-		/// <summary>
-		/// Retrieve whether the COM library was successfully initialized or not.
-		/// </summary>
-		/// <returns>True on successful COM library initialization, false otherwise.</returns>
+		/// @brief Retrieve whether the COM library was successfully initialized or not.
+		/// @return True on successful COM library initialization, false otherwise.
 		[[nodiscard]] constexpr bool IsInitialized() const noexcept
 		{
 			return m_COMInitialized;

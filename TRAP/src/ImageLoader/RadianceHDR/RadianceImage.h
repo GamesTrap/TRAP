@@ -10,112 +10,80 @@ namespace TRAP::INTERNAL
 	class RadianceImage final : public Image
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="filepath">File path of the image to load.</param>
+		/// @brief Constructor.
+		/// @param filepath File path of the image to load.
 		explicit RadianceImage(std::filesystem::path filepath);
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		RadianceImage(const RadianceImage&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		RadianceImage& operator=(const RadianceImage&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		RadianceImage(RadianceImage&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		RadianceImage& operator=(RadianceImage&&) noexcept = default;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~RadianceImage() override = default;
 
-		/// <summary>
-		/// Retrieve the raw pixel data of the image.
-		/// </summary>
-		/// <returns>Constant pointer to the raw pixel data.</returns>
+		/// @brief Retrieve the raw pixel data of the image.
+		/// @return Constant pointer to the raw pixel data.
 		[[nodiscard]] constexpr const void* GetPixelData() const noexcept override;
-		/// <summary>
-		/// Retrieve the size of the raw pixel data of the image.
-		/// </summary>
-		/// <returns>Size of the raw pixel data in bytes.</returns>
+		/// @brief Retrieve the size of the raw pixel data of the image.
+		/// @return Size of the raw pixel data in bytes.
 		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
 
 	private:
 		using RGBE = std::array<u8, 4>;
 
-		/// <summary>
-		/// Convert exponent and value to floating point.
+		/// @brief Convert exponent and value to floating point.
 		/// As specified in the Radiance HDR specification.
-		/// </summary>
-		/// <param name="exponent">Exponent.</param>
-		/// <param name="value">Value.</param>
-		/// <returns>Floating point value.</returns>
+		/// @param exponent Exponent.
+		/// @param value Value.
+		/// @return Floating point value.
 		[[nodiscard]] static f32 ConvertComponent(i8 exponent, i32 value);
-		/// <summary>
-		/// Decode the given scanline.
+		/// @brief Decode the given scanline.
 		/// Used for RLE encoding and uncompressed data.
-		/// </summary>
-		/// <param name="scanline">Storage for the decoded scanline.</param>
-		/// <param name="length">Scanline length.</param>
-		/// <param name="file">Open Radiance HDR file.</param>
-		/// <returns>True if successful, false otherwise.</returns>
+		/// @param scanline Storage for the decoded scanline.
+		/// @param length Scanline length.
+		/// @param file Open Radiance HDR file.
+		/// @return True if successful, false otherwise.
 		[[nodiscard]] static bool Decrunch(std::vector<RGBE>& scanline, u32 length, std::ifstream& file);
-		/// <summary>
-		/// Decode the given scanline.
+		/// @brief Decode the given scanline.
 		/// Used for old RLE encoding.
-		/// </summary>
-		/// <param name="scanline">Storage for the decoded scanline.</param>
-		/// <param name="scanlineIndex">Start index for decoding.</param>
-		/// <param name="length">Scanline length.</param>
-		/// <param name="file">Open Radiance HDR file.</param>
-		/// <returns>True if successful, false otherwise.</returns>
+		/// @param scanline Storage for the decoded scanline.
+		/// @param scanlineIndex Start index for decoding.
+		/// @param length Scanline length.
+		/// @param file Open Radiance HDR file.
+		/// @return True if successful, false otherwise.
 		[[nodiscard]] static bool OldDecrunch(std::vector<RGBE>& scanline, u32 scanlineIndex,
 		                                      u32 length, std::ifstream& file);
-		/// <summary>
-		/// Extract color values from the scanlines.
-		/// </summary>
-		/// <param name="scanline">Scanlines.</param>
-		/// <param name="data">Output storage for color data.</param>
-		/// <param name="dataIndex">Index in the output storage to store data at.</param>
+		/// @brief Extract color values from the scanlines.
+		/// @param scanline Scanlines.
+		/// @param data Output storage for color data.
+		/// @param dataIndex Index in the output storage to store data at.
 		void WorkOnRGBE(std::vector<RGBE>& scanline, std::vector<f32>& data, u64 dataIndex);
 
-		/// <summary>
-		/// Check if file contains the magic number "#?".
-		/// </summary>
-		/// <param name="file">File to check.</param>
-		/// <returns>True if magic number was found, false otherwise.</returns>
+		/// @brief Check if file contains the magic number "#?".
+		/// @param file File to check.
+		/// @return True if magic number was found, false otherwise.
 		[[nodiscard]] static bool ContainsMagicNumber(std::ifstream& file);
 
-		/// <summary>
-		/// Check if file contains a valid/known format.
+		/// @brief Check if file contains a valid/known format.
 		/// Currently only "32-bit_rle_rgbe" is supported.
-		/// </summary>
-		/// <param name="file">File to check.</param>
-		/// <returns>True if valid/known format was found, false otherwise.</returns>
+		/// @param file File to check.
+		/// @return True if valid/known format was found, false otherwise.
 		[[nodiscard]] static bool ContainsSupportedFormat(std::ifstream& file);
 
-		/// <summary>
-		/// Skip lines which are not used for decoding.
-		/// </summary>
-		/// <param name="file">File to skip lines.</param>
+		/// @brief Skip lines which are not used for decoding.
+		/// @param file File to skip lines.
 		static void SkipUnusedLines(std::ifstream& file);
 
-		/// <summary>
-		/// Retrieve the resolution data from file.
-		/// </summary>
-		/// <param name="file">File to retrieve data from.</param>
-		/// <param name="outNeedXFlip">True if image needs to be flipped on X axis.</param>
-		/// <param name="outNeedYFlip">True if image needs to be flipped on Y axis.</param>
-		/// <param name="outNeedRotateClockwise">True if image needs to be rotated 90 degrees clockwise.</param>
-		/// <param name="outNeedRotateCounterClockwise">True if image needs to be rotated 90 degrees counter clockwise.</param>
-		/// <returns>Image resolution on success, empty optional otherwise.</returns>
+		/// @brief Retrieve the resolution data from file.
+		/// @param file File to retrieve data from.
+		/// @param outNeedXFlip True if image needs to be flipped on X axis.
+		/// @param outNeedYFlip True if image needs to be flipped on Y axis.
+		/// @param outNeedRotateClockwise True if image needs to be rotated 90 degrees clockwise.
+		/// @param outNeedRotateCounterClockwise True if image needs to be rotated 90 degrees counter clockwise.
+		/// @return Image resolution on success, empty optional otherwise.
 		[[nodiscard]] static std::optional<TRAP::Math::Vec2ui> RetrieveImageResolution(std::ifstream& file, bool& outNeedXFlip, bool& outNeedYFlip,
 		                                                                               bool& outNeedRotateClockwise, bool& outNeedRotateCounterClockwise);
 

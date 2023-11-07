@@ -9,44 +9,28 @@ namespace TRAP::Graphics
 	class Semaphore
 	{
 	public:
-		/// <summary>
-		/// Create a new semaphore.
-		/// </summary>
-		/// <returns>Created semaphore.</returns>
+		/// @brief Create a new semaphore.
+		/// @return Created semaphore.
 		[[nodiscard]] static TRAP::Ref<Semaphore> Create();
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~Semaphore();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Semaphore(const Semaphore&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		Semaphore& operator=(const Semaphore&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr Semaphore(Semaphore&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		Semaphore& operator=(Semaphore&&) noexcept = default;
 
-		/// <summary>
-		/// Is the semaphore signaled?
-		/// </summary>
-		/// <returns>True if the semaphore is signaled, false otherwise.</returns>
+		/// @brief Is the semaphore signaled?
+		/// @return True if the semaphore is signaled, false otherwise.
 		[[nodiscard]] constexpr bool IsSignaled() const noexcept;
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		Semaphore();
 
 		bool m_signaled = false;

@@ -29,11 +29,11 @@ basedothExists = exists(basedotHPath)
 if basedothExists:
     with open(basedotHPath) as f:
         for line in f:
-            if line.startswith('constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION('):
-                #Remove 'constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION('
-                line = line[len('constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION('):]
-                #Remove ');\n' from end
-                line = line[:-len(');\n')]
+            if line.startswith('inline constexpr u32 TRAP_VERSION = TRAP_MAKE_VERSION<'):
+                #Remove 'inline constexpr u32 TRAP_VERSION = TRAP_MAKE_VERSION<'
+                line = line[len('inline constexpr u32 TRAP_VERSION = TRAP_MAKE_VERSION<'):]
+                #Remove '>();\n' from end
+                line = line[:-len('>();\n')]
                 #Replace ', ' with '.'
                 line = line.replace(', ', '.')
                 release = line
@@ -142,7 +142,7 @@ exhale_args = {
     "containmentFolder": "./api",
     "rootFileName": "library_root.rst",
     "rootFileTitle": "API Reference",
-    "doxygenStripFromPath": "..",
+    "doxygenStripFromPath": "../../",
     "createTreeView": True,
     #"contentsDirectives": False,
     "contentsSpecifiers": [":local:", ":backlinks: none", ":class: this-will-duplicate-information-and-it-is-still-useful-here"],

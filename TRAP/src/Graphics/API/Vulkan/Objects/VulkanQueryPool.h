@@ -11,47 +11,29 @@ namespace TRAP::Graphics::API
 	class VulkanQueryPool final : public QueryPool
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="desc">Query pool description.</param>
+		/// @brief Constructor.
+		/// @param desc Query pool description.
 		explicit VulkanQueryPool(const RendererAPI::QueryPoolDesc& desc);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanQueryPool() override;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr VulkanQueryPool(const VulkanQueryPool&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanQueryPool& operator=(const VulkanQueryPool&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr VulkanQueryPool(VulkanQueryPool&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanQueryPool& operator=(VulkanQueryPool&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the Vulkan query pool handle.
-		/// </summary>
-		/// <returns>Vulkan query pool handle</returns>
+		/// @brief Retrieve the Vulkan query pool handle.
+		/// @return Vulkan query pool handle
 		[[nodiscard]] constexpr VkQueryPool GetVkQueryPool() const noexcept;
-		/// <summary>
-		/// Retrieve the Vulkan query type.
-		/// </summary>
-		/// <returns>Vulkan query type</returns>
+		/// @brief Retrieve the Vulkan query type.
+		/// @return Vulkan query type
 		[[nodiscard]] constexpr VkQueryType GetVkQueryType() const noexcept;
-		/// <summary>
-		/// Retrieve the number of queries managed by the pool.
-		/// </summary>
-		/// <returns>Number of queries</returns>
+		/// @brief Retrieve the number of queries managed by the pool.
+		/// @return Number of queries
 		[[nodiscard]] constexpr u32 GetCount() const noexcept;
 
 	private:

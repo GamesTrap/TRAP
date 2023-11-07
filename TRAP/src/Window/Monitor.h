@@ -12,23 +12,19 @@
 
 namespace TRAP
 {
-	/// <summary>
-	/// Class representing a physical monitor.
-	/// </summary>
+	/// @brief Class representing a physical monitor.
+	/// @remark @headless This class is not available in headless mode.
 	class Monitor
 	{
 	public:
-		/// <summary>
-		/// Struct representing a video mode used by TRAP::Monitors.
-		/// </summary>
+		/// @brief Struct representing a video mode used by TRAP::Monitors.
+		/// @remark @headless This struct is not available in headless mode.
 		struct VideoMode
 		{
-			/// <summary>
-			/// Constructor.
-			/// </summary>
-			/// <param name="width">Width.</param>
-			/// <param name="height">Height.</param>
-			/// <param name="refreshRate">Refresh rate.</param>
+			/// @brief Constructor.
+			/// @param width Width.
+			/// @param height Height.
+			/// @param refreshRate Refresh rate.
 			constexpr VideoMode(u32 width, u32 height, f64 refreshRate) noexcept;
 
 			u32 Width = 0;
@@ -39,139 +35,86 @@ namespace TRAP
 		};
 
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~Monitor() = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Monitor(const Monitor&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		Monitor& operator=(const Monitor&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr Monitor(Monitor&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		Monitor& operator=(Monitor&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the name of a monitor.
-		/// </summary>
-		/// <returns>Name of the monitor.</returns>
+		/// @brief Retrieve the name of a monitor.
+		/// @return Name of the monitor.
 		[[nodiscard]] constexpr std::string GetName() const noexcept;
-		/// <summary>
-		/// Retrieve a list of available video modes for the monitor.
-		/// </summary>
-		/// <returns>Vector of video modes.</returns>
+		/// @brief Retrieve a list of available video modes for the monitor.
+		/// @return Vector of video modes.
 		[[nodiscard]] std::vector<VideoMode> GetVideoModes() const;
-		/// <summary>
-		/// Retrieve the native video mode.
-		/// </summary>
-		/// <returns>Native video mode on success, empty optional otherwise.</returns>
+		/// @brief Retrieve the native video mode.
+		/// @return Native video mode on success, empty optional otherwise.
 		[[nodiscard]] std::optional<TRAP::Monitor::VideoMode> GetNativeVideoMode() const noexcept;
-		/// <summary>
-		/// Retrieve the current video mode.
-		/// </summary>
-		/// <returns>Current video mode on success, empty optional otherwise.</returns>
+		/// @brief Retrieve the current video mode.
+		/// @return Current video mode on success, empty optional otherwise.
 		[[nodiscard]] std::optional<TRAP::Monitor::VideoMode> GetCurrentVideoMode() const noexcept;
-		/// <summary>
-		/// Retrieve the monitors content scale.
-		/// </summary>
-		/// <returns>Vec2 containing the content scale.</returns>
+		/// @brief Retrieve the monitors content scale.
+		/// @return Vec2 containing the content scale.
 		[[nodiscard]] Math::Vec2 GetContentScale() const;
-		/// <summary>
-		/// Retrieve the monitors X content scale.
-		/// </summary>
-		/// <returns>Monitors X content scale.</returns>
+		/// @brief Retrieve the monitors X content scale.
+		/// @return Monitors X content scale.
 		[[nodiscard]] f32 GetContentScaleX() const;
-		/// <summary>
-		/// Retrieve the monitors Y content scale.
-		/// </summary>
-		/// <returns>Monitors Y content scale.</returns>
+		/// @brief Retrieve the monitors Y content scale.
+		/// @return Monitors Y content scale.
 		[[nodiscard]] f32 GetContentScaleY() const;
-		/// <summary>
-		/// Retrieve the monitors viewport position.
-		/// </summary>
-		/// <returns>Vec2i containing the monitors viewport position.</returns>
+		/// @brief Retrieve the monitors viewport position.
+		/// @return Vec2i containing the monitors viewport position.
 		[[nodiscard]] Math::Vec2i GetPosition() const;
-		/// <summary>
-		/// Retrieve the monitors X viewport position.
-		/// </summary>
-		/// <returns>Monitors X viewport position.</returns>
+		/// @brief Retrieve the monitors X viewport position.
+		/// @return Monitors X viewport position.
 		[[nodiscard]] i32 GetPositionX() const;
-		/// <summary>
-		/// Retrieve the monitors Y viewport position.
-		/// </summary>
-		/// <returns>Monitors Y viewport position.</returns>
+		/// @brief Retrieve the monitors Y viewport position.
+		/// @return Monitors Y viewport position.
 		[[nodiscard]] i32 GetPositionY() const;
-		/// <summary>
-		/// Retrieve the monitors work area.
+		/// @brief Retrieve the monitors work area.
 		///
 		/// Work area is the area of a monitor without task bars or menu bars.
-		/// </summary>
-		/// <returns>Vec4i containing the monitors work area.</returns>
+		/// @return Vec4i containing the monitors work area.
 		[[nodiscard]] Math::Vec4i GetWorkArea() const;
-		/// <summary>
-		/// Retrieve the monitors X work area.
-		/// </summary>
-		/// <returns>Monitors X work area.</returns>
+		/// @brief Retrieve the monitors X work area.
+		/// @return Monitors X work area.
 		[[nodiscard]] i32 GetWorkAreaX() const;
-		/// <summary>
-		/// Retrieve the monitors Y work area.
-		/// </summary>
-		/// <returns>Monitors Y work area.</returns>
+		/// @brief Retrieve the monitors Y work area.
+		/// @return Monitors Y work area.
 		[[nodiscard]] i32 GetWorkAreaY() const;
-		/// <summary>
-		/// Retrieve the monitors work area width.
-		/// </summary>
-		/// <returns>Monitors work area width.</returns>
+		/// @brief Retrieve the monitors work area width.
+		/// @return Monitors work area width.
 		[[nodiscard]] i32 GetWorkAreaWidth() const;
-		/// <summary>
-		/// Retrieve the monitors work area height.
-		/// </summary>
-		/// <returns>Monitors work area height.</returns>
+		/// @brief Retrieve the monitors work area height.
+		/// @return Monitors work area height.
 		[[nodiscard]] i32 GetWorkAreaHeight() const;
-		/// <summary>
-		/// Check whether the monitor is currently used by a window.
-		/// </summary>
-		/// <returns>True if monitor is currently used, false otherwise.</returns>
+		/// @brief Check whether the monitor is currently used by a window.
+		/// @return True if monitor is currently used, false otherwise.
 		[[nodiscard]] constexpr bool IsInUse() const noexcept;
-		/// <summary>
-		/// Retrieve the monitors ID.
-		///
-		/// Note: ID 0 is always the primary monitor!
-		/// </summary>
-		/// <returns>Monitors ID.</returns>
+		/// @brief Retrieve the monitors ID.
+		/// @return Monitors ID.
+		/// @note ID 0 is always the primary monitor!
 		[[nodiscard]] u32 GetID() const;
 
-		/// <summary>
-		/// Retrieve a pointer to the internal monitor.
-		/// </summary>
-		/// <returns>Pointer to the internal monitor of the Monitor.</returns>
+		/// @brief Retrieve a pointer to the internal monitor.
+		/// @return Pointer to the internal monitor of the Monitor.
 		[[nodiscard]] constexpr void* GetInternalMonitor() const noexcept;
 
-		/// <summary>
-		/// Retrieve all currently connected monitors.
-		/// </summary>
-		/// <returns>Vector with all monitors.</returns>
+		/// @brief Retrieve all currently connected monitors.
+		/// @return Vector with all monitors.
 		[[nodiscard]] static std::vector<Monitor> GetAllMonitors();
-		/// <summary>
-		/// Retrieve the primary monitor.
-		/// </summary>
-		/// <returns>Primary monitor.</returns>
+		/// @brief Retrieve the primary monitor.
+		/// @return Primary monitor.
 		[[nodiscard]] static Monitor GetPrimaryMonitor();
 
 	private:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="monitor">Pointer to the InternalMonitor handle.</param>
+		/// @brief Constructor.
+		/// @param monitor Pointer to the InternalMonitor handle.
 		explicit Monitor(INTERNAL::WindowingAPI::InternalMonitor* monitor);
 
 		INTERNAL::WindowingAPI::InternalMonitor* m_handle{};

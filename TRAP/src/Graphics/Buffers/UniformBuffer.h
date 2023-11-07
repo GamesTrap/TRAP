@@ -14,98 +14,66 @@ namespace TRAP::Graphics
 	class UniformBuffer
 	{
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="updateFrequency">Update frequency of the uniform buffer.</param>
+		/// @brief Constructor.
+		/// @param updateFrequency Update frequency of the uniform buffer.
 		constexpr explicit UniformBuffer(RendererAPI::DescriptorUpdateFrequency updateFrequency);
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr UniformBuffer(const UniformBuffer&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr UniformBuffer& operator=(const UniformBuffer&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr UniformBuffer(UniformBuffer&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr UniformBuffer& operator=(UniformBuffer&&) noexcept = default;
 
 	public:
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~UniformBuffer() = default;
 
-		/// <summary>
-		/// Retrieve the byte size of the UBO.
-		/// </summary>
-		/// <returns>Byte size of the UBO.</returns>
+		/// @brief Retrieve the byte size of the UBO.
+		/// @return Byte size of the UBO.
 		[[nodiscard]] u64 GetSize() const noexcept;
-		/// <summary>
-		/// Retrieve the update frequency of the UBO.
-		/// </summary>
-		/// <returns>Update frequency of the UBO.</returns>
+		/// @brief Retrieve the update frequency of the UBO.
+		/// @return Update frequency of the UBO.
 		[[nodiscard]] constexpr UpdateFrequency GetUpdateFrequency() const noexcept;
-		/// <summary>
-		/// Retrieve the underlying buffers.
-		/// </summary>
-		/// <returns>Underlying buffers.</returns>
+		/// @brief Retrieve the underlying buffers.
+		/// @return Underlying buffers.
 		[[nodiscard]] constexpr const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetUBOs() const noexcept;
 
-		/// <summary>
-		/// Update data of the UBO.
-		/// </summary>
-		/// <param name="data">New data.</param>
-		/// <param name="size">Byte size of the data.</param>
-		/// <param name="offset">Offset into the currently used data.</param>
+		/// @brief Update data of the UBO.
+		/// @param data New data.
+		/// @param size Byte size of the data.
+		/// @param offset Offset into the currently used data.
 		void SetData(const void* data, u64 size, u64 offset = 0);
 
-		/// <summary>
-		/// Check whether uploading data to the GPU has finished.
-		/// </summary>
-		/// <returns>True if uploading data to the GPU has finished.</returns>
+		/// @brief Check whether uploading data to the GPU has finished.
+		/// @return True if uploading data to the GPU has finished.
 		[[nodiscard]] bool IsLoaded() const;
-		/// <summary>
-		/// Wait until uploading data to the GPU has finished.
-		/// </summary>
+		/// @brief Wait until uploading data to the GPU has finished.
 		void AwaitLoading() const;
 
-		/// <summary>
-		/// Calculate the aligned size of the UBO.
-		/// </summary>
-		/// <param name="byteSize">Byte size of the UBO.</param>
+		/// @brief Calculate the aligned size of the UBO.
+		/// @param byteSize Byte size of the UBO.
 		[[nodiscard]] static u64 CalculateAlignedSize(u64 byteSize) noexcept;
 
-		/// <summary>
-		/// Create a new uniform buffer and set its size.
-		/// </summary>
-		/// <param name="size">Byte size for the uniform buffer.</param>
-		/// <param name="updateFrequency">Update frequency for the buffer.</param>
-		/// <returns>New uniform buffer.</returns>
+		/// @brief Create a new uniform buffer and set its size.
+		/// @param size Byte size for the uniform buffer.
+		/// @param updateFrequency Update frequency for the buffer.
+		/// @return New uniform buffer.
 		[[nodiscard]] static Scope<UniformBuffer> Create(u64 size, UpdateFrequency updateFrequency);
-		/// <summary>
-		/// Create a new uniform buffer and set its data.
-		/// </summary>
-		/// <param name="data">Pointer to the data to upload.</param>
-		/// <param name="size">Byte size of the data to upload.</param>
-		/// <param name="updateFrequency">Update frequency for the buffer.</param>
-		/// <returns>New uniform buffer.</returns>
+		/// @brief Create a new uniform buffer and set its data.
+		/// @param data Pointer to the data to upload.
+		/// @param size Byte size of the data to upload.
+		/// @param updateFrequency Update frequency for the buffer.
+		/// @return New uniform buffer.
 		[[nodiscard]] static Scope<UniformBuffer> Create(const void* data, u64 size, UpdateFrequency updateFrequency);
 
 	private:
-		/// <summary>
-		/// Initialize uniform buffer with given data.
-		/// </summary>
-		/// <param name="data">Pointer to the data to upload.</param>
-		/// <param name="size">Byte size of the data to upload.</param>
-		/// <param name="updateFrequency">Update frequency for the buffer.</param>
-		/// <returns>New uniform buffer.</returns>
+		/// @brief Initialize uniform buffer with given data.
+		/// @param data Pointer to the data to upload.
+		/// @param size Byte size of the data to upload.
+		/// @param updateFrequency Update frequency for the buffer.
+		/// @return New uniform buffer.
 		[[nodiscard]] static Scope<UniformBuffer> Init(const void* data, u64 size, UpdateFrequency updateFrequency);
 
 		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_uniformBuffers;

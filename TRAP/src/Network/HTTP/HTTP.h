@@ -38,22 +38,16 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 namespace TRAP::Network
 {
-	/// <summary>
-	/// A HTTP client.
+	/// @brief A HTTP client.
 	/// Prioritizes IPv6 over IPv4.
-	/// </summary>
 	class HTTP
 	{
 	public:
-		/// <summary>
-		/// Define a HTTP request.
-		/// </summary>
+		/// @brief Define a HTTP request.
 		class Request
 		{
 		public:
-			/// <summary>
-			/// Enumerate the available HTTP methods for a request.
-			/// </summary>
+			/// @brief Enumerate the available HTTP methods for a request.
 			enum class Method
 			{
 				GET,   //Request in get mode, standard method to retrieve a page
@@ -63,89 +57,73 @@ namespace TRAP::Network
 				DELETE //Request in delete mode, useful for a REST API
 			};
 
-			/// <summary>
-			/// Constructor.
+			/// @brief Constructor.
 			///
 			/// This constructor creates a GET request, with the root
 			/// URI ("/") and an empty body.
-			/// </summary>
-			/// <param name="uri">Target URI.</param>
-			/// <param name="method">Method to use for the request.</param>
-			/// <param name="body">Content of the request's body.</param>
+			/// @param uri Target URI.
+			/// @param method Method to use for the request.
+			/// @param body Content of the request's body.
 			explicit Request(std::string uri = "/", Method method = Method::GET, std::string body = "");
 
-			/// <summary>
-			/// Set the value of a field.
+			/// @brief Set the value of a field.
 			///
 			/// The field is created if it doesn't exist.
 			/// The name of the field is case-insensitive.
 			/// By default, a request doesn't contain any field (but the
 			/// mandatory fields are added later by the HTTP client when
 			/// sending the request).
-			/// </summary>
-			/// <param name="field">Name of the field to set.</param>
-			/// <param name="value">Value of the field.</param>
+			/// @param field Name of the field to set.
+			/// @param value Value of the field.
 			void SetField(const std::string& field, const std::string& value);
 
-			/// <summary>
-			/// Set the request method.
+			/// @brief Set the request method.
 			///
 			/// See the Method enumeration for a complete list of all
 			/// the available methods.
 			/// The method is HTTP::Request::GET by default.
-			/// </summary>
-			/// <param name="method">Method to use for the request.</param>
+			/// @param method Method to use for the request.
 			constexpr void SetMethod(Method method) noexcept;
 
-			/// <summary>
-			/// Set the requested URI.
+			/// @brief Set the requested URI.
 			///
 			/// The URI is the resource (usually a web page or a file)
 			/// that you want to get or post.
 			/// The URI is "/" (the root page) by default.
-			/// </summary>
-			/// <param name="uri">URI to request, relative to the host.</param>
+			/// @param uri URI to request, relative to the host.
 			constexpr void SetURI(std::string uri);
 
-			/// <summary>
-			/// Set the HTTP version for the request.
+			/// @brief Set the HTTP version for the request.
 			///
 			/// The HTTP version is 1.0 by default.
-			/// </summary>
-			/// <param name="major">Major HTTP version number.</param>
-			/// <param name="minor">Minor HTTP version number.</param>
+			/// @param major Major HTTP version number.
+			/// @param minor Minor HTTP version number.
 			constexpr void SetHTTPVersion(u32 major, u32 minor) noexcept;
 
-			/// <summary>
-			/// Set the body of the request.
+			/// @brief Set the body of the request.
 			///
 			/// The body of a request is optional and only makes sense
 			/// for POST requests.
 			/// It is ignored for all other methods.
 			/// The body is empty by default.
-			/// </summary>
-			/// <param name="body">Content of the body.</param>
+			/// @param body Content of the body.
 			constexpr void SetBody(std::string body);
 
 		private:
 			friend class HTTP;
 
-			/// <summary>
-			/// Prepare the final request to send to the server.
+			/// @brief Prepare the final request to send to the server.
 			///
 			/// This is used internally by HTTP before sending the
 			/// request to the web server.
-			/// </summary>
-			/// <returns>String containing the request, ready to be sent.</returns>
+			/// @return String containing the request, ready to be sent.
 			[[nodiscard]] std::string Prepare() const;
 
-			/// <summary>
-			/// Check if the request defines a field.
+			/// @brief Check if the request defines a field.
 			///
 			/// This function uses case-insensitive comparisons.
-			/// </summary>
-			/// <param name="field">Name of the field to test.</param>
-			/// <returns>True if the field exists, false otherwise.</returns>
+			/// @param field Name of the field to test.
+			/// @return True if the field exists, false otherwise.
 			[[nodiscard]] bool HasField(const std::string& field) const;
 
 			using FieldTable = std::map<std::string, std::string>;
@@ -158,15 +136,11 @@ namespace TRAP::Network
 			std::string m_body;      //Body of the request
 		};
 
-		/// <summary>
-		/// Define a HTTP response.
-		/// </summary>
+		/// @brief Define a HTTP response.
 		class Response
 		{
 		public:
-			/// <summary>
-			/// Enumerate all the valid status codes for a response.
-			/// </summary>
+			/// @brief Enumerate all the valid status codes for a response.
 			enum class Status
 			{
 				//2XX: Success
@@ -203,76 +177,60 @@ namespace TRAP::Network
 				ConnectionFailed = 1001  //Connection with server failed
 			};
 
-			/// <summary>
-			/// Constructor.
-			/// </summary>
+			/// @brief Constructor.
 			Response() noexcept;
 
-			/// <summary>
-			/// Get the value of a field.
+			/// @brief Get the value of a field.
 			///
 			/// If the field field is not found in the response header,
 			/// the empty string is returned.
 			/// This function uses case-insensitive comparisons.
-			/// </summary>
-			/// <param name="field">Name of the field to get.</param>
-			/// <returns>Value of the field, or empty string if not found.</returns>
+			/// @param field Name of the field to get.
+			/// @return Value of the field, or empty string if not found.
 			[[nodiscard]] std::string GetField(const std::string& field) const;
 
-			/// <summary>
-			/// Get the response status code.
+			/// @brief Get the response status code.
 			///
 			/// The status code should be the first thing to be checked
 			/// after receiving a response, it defines whether it is a
 			/// success, a failure or anything else (see the Status
 			/// enumeration).
-			/// </summary>
-			/// <returns>Status code of the response.</returns>
+			/// @return Status code of the response.
 			[[nodiscard]] constexpr Status GetStatus() const noexcept;
 
-			/// <summary>
-			/// Get the major HTTP version number of the response.
-			/// </summary>
-			/// <returns>Major HTTP version number.</returns>
+			/// @brief Get the major HTTP version number of the response.
+			/// @return Major HTTP version number.
 			[[nodiscard]] constexpr u32 GetMajorHTTPVersion() const noexcept;
 
-			/// <summary>
-			/// Get the minor HTTP version number of the response.
-			/// </summary>
-			/// <returns>Minor HTTP version number.</returns>
+			/// @brief Get the minor HTTP version number of the response.
+			/// @return Minor HTTP version number.
 			[[nodiscard]] constexpr u32 GetMinorHTTPVersion() const noexcept;
 
-			/// <summary>
-			/// Get the body of the response.
+			/// @brief Get the body of the response.
 			///
 			/// The body of a response may contain:
 			/// - the requested page (for GET requests)
 			/// - a response from the server (for POST requests)
 			/// - nothing (for HEAD requests)
 			/// - an error message (in case of an error)
-			/// </summary>
-			/// <returns>The response body.</returns>
+			/// @return The response body.
 			[[nodiscard]] constexpr std::string GetBody() const noexcept;
 
 		private:
 			friend class HTTP;
 
-			/// <summary>
-			/// Construct the header from a response string.
+			/// @brief Construct the header from a response string.
 			///
 			/// This function is used by HTTP to build the response
 			/// of a request.
-			/// </summary>
-			/// <param name="data">Content of the response to parse.</param>
+			/// @param data Content of the response to parse.
 			void Parse(const std::string& data);
 
-			/// <summary>
-			/// Read values passed in the answer header.
+			/// @brief Read values passed in the answer header.
 			///
 			/// This function is used by HTTP to extract values passed
 			/// in the response.
-			/// </summary>
-			/// <param name="in">String stream containing the header values.</param>
+			/// @param in String stream containing the header values.
 			void ParseFields(std::istream& in);
 
 			using FieldTable = std::map<std::string, std::string>;
@@ -284,13 +242,10 @@ namespace TRAP::Network
 			std::string m_body;      //Body of the response
 		};
 
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		HTTP() noexcept;
 
-		/// <summary>
-		/// Construct the HTTP client with the target host.
+		/// @brief Construct the HTTP client with the target host.
 		///
 		/// This is equivalent to calling SetHost(host, port).
 		/// The port has a default value of 0, which means that the
@@ -298,34 +253,22 @@ namespace TRAP::Network
 		/// protocol used (80 for HTTP).
 		/// You should leave it like this unless you rally need a part other than the
 		/// standard one, or use an unknown protocol.
-		/// </summary>
-		/// <param name="host">Web server to connect to.</param>
-		/// <param name="port">Port to use for connection.</param>
+		/// @param host Web server to connect to.
+		/// @param port Port to use for connection.
 		explicit HTTP(const std::string& host, u16 port = 0);
 
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		HTTP(HTTP&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		HTTP& operator=(HTTP&&) noexcept = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		HTTP(const HTTP&) = delete;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		HTTP& operator=(const HTTP&) = delete;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~HTTP() = default;
 
-		/// <summary>
-		/// Set target host.
+		/// @brief Set target host.
 		///
 		/// This function just stores the host address and port, it
 		/// doesn't actually connect to it until you send a request.
@@ -334,26 +277,24 @@ namespace TRAP::Network
 		/// protocol used (80 for HTTP).
 		/// You should leave it like this unless you really need a port other than the
 		/// standard one, or use an unknown protocol.
-		/// </summary>
-		/// <param name="host">Web server to connect to.</param>
-		/// <param name="port">Port to use for connection.</param>
+		/// @param host Web server to connect to.
+		/// @param port Port to use for connection.
 		void SetHost(const std::string& host, u16 port = 0);
 
-		/// <summary>
-		/// Send a HTTP request and return the server's response.
+		/// @brief Send a HTTP request and return the server's response.
 		///
 		/// You must have a valid host before sending a request (see SetHost).
 		/// Any missing mandatory header field in the request will be added
 		/// with an appropriate value.
-		/// Warning: this function waits for the server's response and may
-		/// not return instantly; use a thread if you don't want to block your
-		/// application, or use a timeout to limit the time to wait.
+		///
 		/// A value of Utils::TimeStep(0.0f) means that the client will use the system default timeout
 		/// (which is usually pretty long).
-		/// </summary>
-		/// <param name="request">Request to send.</param>
-		/// <param name="timeout">Maximum time to wait.</param>
-		/// <returns>Server response.</returns>
+		/// @param request Request to send.
+		/// @param timeout Maximum time to wait.
+		/// @return Server response.
+		/// @warning This function waits for the server's response and may not return instantly;
+		///          use a thread if you don't want to block your application, or use a
+		///          timeout to limit the time to wait.
 		[[nodiscard]] Response SendRequest(const Request& request, Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 
 	private:

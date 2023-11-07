@@ -8,39 +8,25 @@ namespace TRAP::Graphics
 	class QueryPool
 	{
 	public:
-		/// <summary>
-		/// Create a new query pool from the given description.
-		/// </summary>
-		/// <param name="desc">Query pool description.</param>
-		/// <returns>Created query pool.</returns>
+		/// @brief Create a new query pool from the given description.
+		/// @param desc Query pool description.
+		/// @return Created query pool.
 		[[nodiscard]] static TRAP::Ref<QueryPool> Create(const RendererAPI::QueryPoolDesc& desc);
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~QueryPool();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr QueryPool(const QueryPool&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		QueryPool& operator=(const QueryPool&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr QueryPool(QueryPool&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		QueryPool& operator=(QueryPool&&) noexcept = default;
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		QueryPool();
 
 		//No Graphic API independent data

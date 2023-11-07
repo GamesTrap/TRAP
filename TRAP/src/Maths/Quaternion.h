@@ -52,17 +52,11 @@ namespace TRAP::Math
 	requires std::floating_point<T>
 	struct tQuat
 	{
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr tQuat(tQuat&&) noexcept = default;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~tQuat() = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr tQuat<T>& operator=(tQuat&&) noexcept = default;
 
 		//Implementation detail
@@ -75,26 +69,19 @@ private:
 public:
 		//Implicit basic constructors
 
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		constexpr tQuat() noexcept = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr tQuat(const tQuat& q) noexcept = default;
 
-		/// <summary>
-		/// Explicit basic constructor.
-		/// </summary>
+		/// @brief Explicit basic constructor.
 		constexpr tQuat(T s, const Vec<3, T>& v) noexcept;
-		/// <summary>
-		/// Explicit basic constructor.
-		/// </summary>
+		/// @brief Explicit basic constructor.
 		constexpr tQuat(T w_, T x_, T y_, T z_) noexcept;
 
 		//Conversion constructors
 
+		/// @brief Explicit conversion constructor
 		template<typename U>
 		requires std::floating_point<U>
 		explicit constexpr tQuat(const tQuat<U>& q) noexcept;
@@ -103,17 +90,15 @@ public:
 		//explicit operator Mat<3, 3, T>() const;
 		//explicit operator Mat<4, 4, T>() const;
 
-		/// <summary>
-		/// Create a quaternion from two normalized axis.
-		/// </summary>
+		/// @brief Create a quaternion from two normalized axis.
 		constexpr tQuat(const Vec<3, T>& u, const Vec<3, T>& v);
 
-		/// <summary>
-		/// Build a quaternion from euler angles (pitch, yaw, roll).
-		/// </summary>
-		/// <param name="eulerAnglesInRadians">Euler angles (pitch, yaw, roll).</param>
+		/// @brief Build a quaternion from euler angles (pitch, yaw, roll).
+		/// @param eulerAnglesInRadians Euler angles (pitch, yaw, roll).
 		explicit constexpr tQuat(const Vec<3, T>& eulerAnglesInRadians);
+		/// @brief Build a quaternion from a 3x3 matrix.
 		explicit constexpr tQuat(const Mat<3, 3, T>& m);
+		/// @brief Build a quaternion from a 4x4 matrix.
 		explicit constexpr tQuat(const Mat<4, 4, T>& m);
 
 		//Unary arithmetic operators
@@ -136,32 +121,63 @@ public:
 		template<typename U>
 		constexpr tQuat<T>& operator/=(U s) noexcept;
 
-		/// <summary>
-		/// Retrieve the count of components of a quaternion.
-		/// </summary>
-		/// <returns>Count.</returns>
+		/// @brief Retrieve the count of components of a quaternion.
+		/// @return Count.
 		[[nodiscard]] static constexpr usize Length() noexcept;
 
 		//Component Access
+
+		/// @brief Retrieve the w component of the quaternion.
+		/// @return w component.
 		[[nodiscard]] constexpr T& w() noexcept;
+		/// @brief Retrieve the w component of the quaternion.
+		/// @return w component.
 		[[nodiscard]] constexpr const T& w() const noexcept;
+		/// @brief Retrieve the x component of the quaternion.
+		/// @return x component.
 		[[nodiscard]] constexpr T& x() noexcept;
+		/// @brief Retrieve the x component of the quaternion.
+		/// @return x component.
 		[[nodiscard]] constexpr const T& x() const noexcept;
+		/// @brief Retrieve the y component of the quaternion.
+		/// @return y component.
 		[[nodiscard]] constexpr T& y() noexcept;
+		/// @brief Retrieve the y component of the quaternion.
+		/// @return y component.
 		[[nodiscard]] constexpr const T& y() const noexcept;
+		/// @brief Retrieve the z component of the quaternion.
+		/// @return z component.
 		[[nodiscard]] constexpr T& z() noexcept;
+		/// @brief Retrieve the z component of the quaternion.
+		/// @return z component.
 		[[nodiscard]] constexpr const T& z() const noexcept;
 
+		/// @brief Returns a reference to the element at specified location i.
+		/// @param i Position of the element to return.
+		/// @return Reference to the requested element.
+		/// @note No bounds checking is performed.
 		[[nodiscard]] constexpr T& operator[](usize i);
+		/// @brief Returns a constant reference to the element at specified location i.
+		/// @param i Position of the element to return.
+		/// @return Constant reference to the requested element.
+		/// @note No bounds checking is performed.
 		[[nodiscard]] constexpr const T& operator[](usize i) const;
 
+		/// @brief Returns a reference to the element at specified location i, with bounds checking via asserts.
+		/// @param i Position of the element to return.
+		/// @return Reference to the requested element.
 		[[nodiscard]] T& at(usize i);
+		/// @brief Returns a constant reference to the element at specified location i, with bounds checking via asserts.
+		/// @param i Position of the element to return.
+		/// @return Constant reference to the requested element.
 		[[nodiscard]] const T& at(usize i) const;
 
 		[[nodiscard]] constexpr auto operator<=>(const tQuat<T>& rhs) const noexcept = default;
 		[[nodiscard]] constexpr bool operator==(const tQuat<T>& rhs) const noexcept = default;
 		[[nodiscard]] constexpr bool operator!=(const tQuat<T>& rhs) const noexcept = default;
 
+		/// @brief Retrieve a string representation of the quaternion.
+		/// @return String representation of the quaternion.
 		[[nodiscard]] std::string ToString() const;
 	};
 

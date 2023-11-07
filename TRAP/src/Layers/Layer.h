@@ -15,65 +15,39 @@ namespace TRAP
 	class Layer
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="debugName">Layer name for debugging.</param>
+		/// @brief Constructor.
+		/// @param debugName Layer name for debugging.
 		constexpr explicit Layer(std::string debugName = "Layer") noexcept;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Layer(const Layer&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		constexpr Layer& operator=(const Layer&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr Layer(Layer&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		constexpr Layer& operator=(Layer&&) noexcept = default;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr virtual ~Layer() = default;
 
-		/// <summary>
-		/// Called when Layer gets pushed to a layer stack.
-		/// </summary>
+		/// @brief Called when Layer gets pushed to a layer stack.
 		virtual void OnAttach();
-		/// <summary>
-		/// Called when Layer gets popped from a layer stack.
-		/// </summary>
+		/// @brief Called when Layer gets popped from a layer stack.
 		virtual void OnDetach();
-		/// <summary>
-		/// Called every frame.
-		/// </summary>
-		/// <param name="deltaTime">Time difference between current and last frame.</param>
+		/// @brief Called every frame.
+		/// @param deltaTime Time difference between current and last frame.
 		virtual void OnUpdate(const Utils::TimeStep& deltaTime);
-		/// <summary>
-		/// Called every tick (default 100 ticks).
-		/// </summary>
-		/// <param name="deltaTime">Time difference between current and last tick.</param>
+		/// @brief Called every tick (default 100 ticks).
+		/// @param deltaTime Time difference between current and last tick.
 		virtual void OnTick(const Utils::TimeStep& deltaTime);
-		/// <summary>
-		/// Called every frame.
+		/// @brief Called every frame.
 		/// Should be used for debug GUIs.
-		/// </summary>
 		virtual void OnImGuiRender();
-		/// <summary>
-		/// Called when an event occurs.
-		/// </summary>
-		/// <param name="event">Event that occurred.</param>
+		/// @brief Called when an event occurs.
+		/// @param event Event that occurred.
 		virtual void OnEvent(Events::Event& event);
 
-		/// <summary>
-		/// Retrieve the debug name of the layer.
-		/// </summary>
-		/// <returns>Name of the layer.</returns>
+		/// @brief Retrieve the debug name of the layer.
+		/// @return Name of the layer.
 		[[nodiscard]] constexpr std::string GetName() const noexcept;
 
 	protected:

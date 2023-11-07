@@ -13,116 +13,76 @@ namespace TRAP::Graphics::API
 	class VulkanTexture final : public Texture
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		VulkanTexture();
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="name">Name for the texture.</param>
-		/// <param name="filepaths">Filepaths to images used by the texture.</param>
+		/// @brief Constructor.
+		/// @param name Name for the texture.
+		/// @param filepaths Filepaths to images used by the texture.
 		VulkanTexture(std::string name, std::array<std::filesystem::path, 6> filepaths);
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="name">Name for the texture.</param>
-		/// <param name="filepath">Filepath to image used by the texture.</param>
-		/// <param name="type">Type of texture.</param>
-		/// <param name="cubeFormat">Cube format used by the texture. Ignored when using TextureType::Texture2D.</param>
+		/// @brief Constructor.
+		/// @param name Name for the texture.
+		/// @param filepath Filepath to image used by the texture.
+		/// @param type Type of texture.
+		/// @param cubeFormat Cube format used by the texture. Ignored when using TextureType::Texture2D.
 		VulkanTexture(std::string name, std::filesystem::path filepath,
 					  TextureType type, TextureCubeFormat cubeFormat);
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="type">Type of texture.</param>
+		/// @brief Constructor.
+		/// @param type Type of texture.
 		explicit VulkanTexture(TextureType type);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanTexture() override;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		VulkanTexture(const VulkanTexture&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanTexture& operator=(const VulkanTexture&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanTexture(VulkanTexture&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanTexture& operator=(VulkanTexture&&) noexcept = default;
 
-		/// <summary>
-		/// Initialize the Texture.
-		/// </summary>
-		/// <param name="desc">Texture description.</param>
+		/// @brief Initialize the Texture.
+		/// @param desc Texture description.
 		void Init(const RendererAPI::TextureDesc& desc) override;
 
-		/// <summary>
-		/// Retrieve the read only color Vulkan image view handle of the texture.
-		/// </summary>
-		/// <returns>Vulkan image view handle.</returns>
+		/// @brief Retrieve the read only color Vulkan image view handle of the texture.
+		/// @return Vulkan image view handle.
 		[[nodiscard]] constexpr VkImageView GetSRVVkImageView() const noexcept;
-		/// <summary>
-		/// Retrieve the read only  stencil Vulkan image view handle of the texture.
-		/// </summary>
-		/// <returns>Vulkan image view handle.</returns>
+		/// @brief Retrieve the read only  stencil Vulkan image view handle of the texture.
+		/// @return Vulkan image view handle.
 		[[nodiscard]] constexpr VkImageView GetSRVStencilVkImageView() const noexcept;
-		/// <summary>
-		/// Retrieve all read-writable Vulkan image view handles of the texture.
-		/// </summary>
-		/// <returns>
+		/// @brief Retrieve all read-writable Vulkan image view handles of the texture.
+		/// @return Vulkan image view handles.
 		[[nodiscard]] constexpr const std::vector<VkImageView>& GetUAVVkImageViews() const noexcept;
-		/// <summary>
-		/// Retrieve the Vulkan image handle.
-		/// </summary>
-		/// <returns>Vulkan image handle.</returns>
+		/// @brief Retrieve the Vulkan image handle.
+		/// @return Vulkan image handle.
 		[[nodiscard]] constexpr VkImage GetVkImage() const noexcept;
-		/// <summary>
-		/// Retrieve the VMA allocation handle used by the texture.
-		/// </summary>
-		/// <returns>VMA allocation handle.</returns>
+		/// @brief Retrieve the VMA allocation handle used by the texture.
+		/// @return VMA allocation handle.
 		[[nodiscard]] constexpr VmaAllocation GetVMAAllocation() const noexcept;
 
-		/// <summary>
-		/// Retrieve whether the texture is lazily allocated or not.
-		/// </summary>
-		/// <returns>True if the texture is lazily allocated, false otherwise.</returns>
+		/// @brief Retrieve whether the texture is lazily allocated or not.
+		/// @return True if the texture is lazily allocated, false otherwise.
 		[[nodiscard]] constexpr bool IsLazilyAllocated() const noexcept;
 
-		/// <summary>
-		/// Set the name of the texture.
-		/// </summary>
-		/// <param name="name">Name for the texture.</param>
+		/// @brief Set the name of the texture.
+		/// @param name Name for the texture.
 		void SetTextureName(std::string_view name) const override;
 
 	protected:
-		/// <summary>
-		/// Shutdown API dependent texture.
-		/// </summary>
+		/// @brief Shutdown API dependent texture.
 		void Shutdown() override;
 
 	private:
-		/// <summary>
-		/// Pre Initialization step run by every constructor.
-		/// </summary>
+		/// @brief Pre Initialization step run by every constructor.
 		void PreInit();
 
-		/// <summary>
-		/// Retrieve the memory type index via the given parameters.
-		/// </summary>
-		/// <param name="typeBits">Memory type bits from Vulkan memory requirements.</param>
-		/// <param name="memProps">Vulkan physical device memory properties.</param>
-		/// <param name="props">Vulkan memory property flags.</param>
-		/// <param name="memTypeFound">Output: True if memory type found, false otherwise.</param>
-		/// <returns>Index of memory type.</returns>
+		/// @brief Retrieve the memory type index via the given parameters.
+		/// @param typeBits Memory type bits from Vulkan memory requirements.
+		/// @param memProps Vulkan physical device memory properties.
+		/// @param props Vulkan memory property flags.
+		/// @param memTypeFound Output: True if memory type found, false otherwise.
+		/// @return Index of memory type.
 		[[nodiscard]] static u32 GetMemoryType(u32 typeBits, const VkPhysicalDeviceMemoryProperties& memProps,
 		                                            VkMemoryPropertyFlags props, VkBool32* memTypeFound = nullptr);
 

@@ -40,11 +40,9 @@ namespace TRAP::Utils::Decompress
 	{
 		struct BitReader
 		{
-			/// <summary>
-			/// Constructor.
+			/// @brief Constructor.
 			/// BitReader reads byte data bit by bit.
-			/// </summary>
-			/// <param name="data">Data to read in bytes.</param>
+			/// @param data Data to read in bytes.
 			constexpr explicit BitReader(std::span<const u8> data);
 
 			std::span<const u8> Data;
@@ -53,77 +51,57 @@ namespace TRAP::Utils::Decompress
 			u32 Buffer{}; //Buffer for reading bits.
 			bool Error = false;
 
-			/// <summary>
-			/// Ensure the reader can at least read 9 bits in one or more ReadBits calls,
+			/// @brief Ensure the reader can at least read 9 bits in one or more ReadBits calls,
 			/// safely even if not enough bits are available.
-			/// </summary>
 			constexpr void EnsureBits9();
-			/// <summary>
-			/// Ensure the reader can at least read 17 bits in one or more ReadBits calls,
+			/// @brief Ensure the reader can at least read 17 bits in one or more ReadBits calls,
 			/// safely even if not enough bits are available.
-			/// </summary>
 			constexpr void EnsureBits17();
-			/// <summary>
-			/// Ensure the reader can at least read 25 bits in one or more ReadBits calls,
+			/// @brief Ensure the reader can at least read 25 bits in one or more ReadBits calls,
 			/// safely even if not enough bits are available.
-			/// </summary>
 			constexpr void EnsureBits25();
-			/// <summary>
-			/// Ensure the reader can at least read 32 bits in one or more ReadBits calls,
+			/// @brief Ensure the reader can at least read 32 bits in one or more ReadBits calls,
 			/// safely even if not enough bits are available.
-			/// </summary>
 			constexpr void EnsureBits32();
-			/// <summary>
-			/// Read n amount of bits.
-			/// Note: Must have enough bits available with EnsureBits.
-			/// </summary>
-			/// <param name="nBits">How many bits.</param>
-			/// <returns>N bits read.</returns>
+			/// @brief Read n amount of bits.
+			/// @param nBits How many bits.
+			/// @return N bits read.
+			/// @note Must have enough bits available with EnsureBits.
 			[[nodiscard]] constexpr u32 ReadBits(usize nBits);
-			/// <summary>
-			/// Safely check if a + b > c, even if overflow could happen.
-			/// </summary>
-			/// <returns>True if no overflow will happen, false otherwise.</returns>
+			/// @brief Safely check if a + b > c, even if overflow could happen.
+			/// @return True if no overflow will happen, false otherwise.
 			[[nodiscard]] static constexpr bool GreaterOverflow(usize a, usize b, usize c);
-			/// <summary>
-			/// Get bits without advancing the bit pointer.
-			/// Note: Must have enough bits available with EnsureBits.
-			/// </summary>
-			/// <param name="nBits">How many bits up to 31.</param>
-			/// <returns>N bits read.</returns>
+			/// @brief Get bits without advancing the bit pointer.
+			/// @param nBits How many bits up to 31.
+			/// @return N bits read.
+			/// @note Must have enough bits available with EnsureBits.
 			[[nodiscard]] constexpr u32 PeekBits(usize nBits) const noexcept;
-			/// <summary>
-			/// Advance n amount of bits in the reader.
-			/// Note: Must have enough bits available with EnsureBits.
-			/// </summary>
-			/// <param name="nBits">How many bits.</param>
+			/// @brief Advance n amount of bits in the reader.
+			/// @param nBits How many bits.
+			/// @note Must have enough bits available with EnsureBits.
 			void constexpr AdvanceBits(usize nBits) noexcept;
 
 		private:
-			/// <summary>
-			/// Safely check if multiplying two integers will overflow(no undefined behavior,
+			/// @brief Safely check if multiplying two integers will overflow(no undefined behavior,
 			/// compiler removing the code, etc...) and output result.
-			/// </summary>
-			/// <param name="result">Output variable for the result of the multiplication.</param>
-			/// <returns>True if no overflow happens, false otherwise.</returns>
+			/// @param result Output variable for the result of the multiplication.
+			/// @param a First integer.
+			/// @param b Second integer.
+			/// @return True if no overflow happens, false otherwise.
 			[[nodiscard]] static constexpr bool MultiplyOverflow(usize a, usize b, usize& result) noexcept;
-			/// <summary>
-			/// Safely check if adding two integers will overflow(no undefined behavior,
+			/// @brief Safely check if adding two integers will overflow(no undefined behavior,
 			/// compiler removing the code, etc...) and output result.
-			/// </summary>
-			/// <param name="result">Output variable for the result of the sum.</param>
-			/// <returns>True if no overflow happens, false otherwise.</returns>
+			/// @param a First integer.
+			/// @param b Second integer.
+			/// @param result Output variable for the result of the sum.
+			/// @return True if no overflow happens, false otherwise.
 			[[nodiscard]] static constexpr bool AddOverflow(usize a, usize b, usize& result) noexcept;
 		};
 
-		/// <summary>
-		/// Huffman tree struct, containing multiple representations of the tree
-		/// </summary>
+		/// @brief Huffman tree struct, containing multiple representations of the tree
 		struct HuffmanTree
 		{
-			/// <summary>
-			/// Constructor.
-			/// </summary>
+			/// @brief Constructor.
 			constexpr HuffmanTree() noexcept = default;
 
 			std::vector<u32> Codes; //The Huffman codes(bit patterns representing the symbols)
@@ -131,28 +109,22 @@ namespace TRAP::Utils::Decompress
 			u32 MaxBitLength{}; //Maximum number of bits a single code can get
 			u32 NumCodes{}; //Number of symbols in the alphabet = number of codes
 
-			/// <summary>
-			/// Get the tree of a deflated block with fixed tree, as specified in the deflate specification.
-			/// </summary>
-			/// <param name="treeLL">Literal length huffman tree.</param>
-			/// <param name="treeD">Distance huffman tree.</param>
-			/// <returns>True on success, false otherwise.</returns>
+			/// @brief Get the tree of a deflated block with fixed tree, as specified in the deflate specification.
+			/// @param treeLL Literal length huffman tree.
+			/// @param treeD Distance huffman tree.
+			/// @return True on success, false otherwise.
 			[[nodiscard]] static constexpr bool GetTreeInflateFixed(HuffmanTree& treeLL, HuffmanTree& treeD);
-			/// <summary>
-			/// Get the tree of a deflated block with dynamic tree, the tree itself is also Huffman
+			/// @brief Get the tree of a deflated block with dynamic tree, the tree itself is also Huffman
 			/// compressed with a known tree.
-			/// </summary>
-			/// <param name="treeLL">Literal length huffman tree.</param>
-			/// <param name="treeD">Distance huffman tree.</param>
-			/// <param name="reader">BitReader.</param>
-			/// <returns>True on success, false otherwise.</returns>
+			/// @param treeLL Literal length huffman tree.
+			/// @param treeD Distance huffman tree.
+			/// @param reader BitReader.
+			/// @return True on success, false otherwise.
 			[[nodiscard]] static constexpr bool GetTreeInflateDynamic(HuffmanTree& treeLL, HuffmanTree& treeD, BitReader& reader);
 
-			/// <summary>
-			/// The bit reader must already have been ensured at least 15 bits.
-			/// </summary>
-			/// <param name="reader">BitReader to decode symbol from.</param>
-			/// <returns>Code.</returns>
+			/// @brief The bit reader must already have been ensured at least 15 bits.
+			/// @param reader BitReader to decode symbol from.
+			/// @return Code.
 			[[nodiscard]] constexpr u32 DecodeSymbol(BitReader& reader) const;
 
 			//The base lengths represented by codes 257-285
@@ -209,44 +181,32 @@ namespace TRAP::Utils::Decompress
 			std::vector<u8> TableLength; //Length of symbol from lookup table, or max length if secondary lookup needed
 			std::vector<u16> TableValue; //Value of symbol from lookup table, or pointer to secondary table if needed
 
-			/// <summary>
-			/// Get the literal and length code tree of a deflated block with fixed tree,
+			/// @brief Get the literal and length code tree of a deflated block with fixed tree,
 			/// as per the deflate specification.
-			/// </summary>
-			/// <returns>True on success, false otherwise.</returns>
+			/// @return True on success, false otherwise.
 			[[nodiscard]] constexpr bool GenerateFixedLiteralLengthTree();
 
-			/// <summary>
-			/// Get the distance code tree of a deflated block with fixed tree,
+			/// @brief Get the distance code tree of a deflated block with fixed tree,
 			/// as specified in the deflate specification.
-			/// </summary>
-			/// <returns>True on success, false otherwise.</returns>
+			/// @return True on success, false otherwise.
 			[[nodiscard]] constexpr bool GenerateFixedDistanceTree();
 
-			/// <summary>
-			/// Given the code lengths(as stored in the PNG file), generate the tree as defined by Deflate.
-			/// </summary>
-			/// <param name="bitLength">Code length in bits.</param>
-			/// <param name="numCodes">Amount of codes.</param>
-			/// <param name="maxBitLength">Maximum bits that a code in the tree can have.</param>
-			/// <returns>True on success, false otherwise.</returns>
+			/// @brief Given the code lengths(as stored in the PNG file), generate the tree as defined by Deflate.
+			/// @param bitLength Code length in bits.
+			/// @param numCodes Amount of codes.
+			/// @param maxBitLength Maximum bits that a code in the tree can have.
+			/// @return True on success, false otherwise.
 			[[nodiscard]] constexpr bool MakeFromLengths(const u32* bitLength, usize numCodes, u32 maxBitLength);
 
-			/// <summary>
-			/// Second step for the ...MakeFromLengths and ...MakeFromFrequencies functions.
+			/// @brief Second step for the ...MakeFromLengths and ...MakeFromFrequencies functions.
 			/// numCodes, lengths and maxBitLength must already be filled in correctly.
-			/// </summary>
-			/// <returns>True on success, false otherwise.</returns>
+			/// @return True on success, false otherwise.
 			[[nodiscard]] constexpr bool MakeFromLengths2();
 
-			/// <summary>
-			/// Make table for huffman decoding.
-			/// </summary>
-			/// <returns>True on success, false otherwise.</returns>
+			/// @brief Make table for huffman decoding.
+			/// @return True on success, false otherwise.
 			[[nodiscard]] constexpr bool MakeTable();
-			/// <summary>
-			/// Reverse bits.
-			/// </summary>
+			/// @brief Reverse bits.
 			[[nodiscard]] static constexpr u32 ReverseBits(u32 bits, u32 num) noexcept;
 
 			static constexpr u16 NumDeflateCodeSymbols = 288;
@@ -270,12 +230,10 @@ namespace TRAP::Utils::Decompress
 		                                                 u32 btype);
 	}
 
-	/// <summary>
-	/// Inflate algorithm.
-	/// </summary>
-	/// <param name="source">Source data in bytes.</param>
-	/// <param name="destination">Destination where to put inflated data to.</param>
-	/// <returns>True on success, false otherwise.</returns>
+	/// @brief Inflate algorithm.
+	/// @param source Source data in bytes.
+	/// @param destination Destination where to put inflated data to.
+	/// @return True on success, false otherwise.
 	[[nodiscard]] constexpr bool Inflate(std::span<const u8> source, std::span<u8> destination);
 }
 

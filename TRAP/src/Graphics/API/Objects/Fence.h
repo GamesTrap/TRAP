@@ -9,66 +9,41 @@ namespace TRAP::Graphics
 	class Fence
 	{
 	public:
-		/// <summary>
-		/// Create a new fence.
-		/// Fence is not signaled.
-		/// </summary>
-		/// <returns>Created fence.</returns>
-		/// <param name="signalled">Whether the Fence should be in signalled state or not. Default: Not signalled.</param>
+		/// @brief Create a new fence. Fence is not signaled.
+		/// @return Created fence.
+		/// @param signalled Whether the Fence should be in signalled state or not. Default: Not signalled.
 		[[nodiscard]] static TRAP::Ref<Fence> Create(bool signalled = false);
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~Fence();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Fence(const Fence&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		Fence& operator=(const Fence&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr Fence(Fence&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		Fence& operator=(Fence&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve whether the Fence was submitted or not.
-		/// </summary>
-		/// <returns>True if Fence was submitted, false otherwise.</returns>
+		/// @brief Retrieve whether the Fence was submitted or not.
+		/// @return True if Fence was submitted, false otherwise.
 		[[nodiscard]] constexpr bool IsSubmitted() const noexcept;
 
-		/// <summary>
-		/// Retrieve the current status of the fence.
-		/// </summary>
-		/// <returns>Fence status.</returns>
+		/// @brief Retrieve the current status of the fence.
+		/// @return Fence status.
 		[[nodiscard]] virtual RendererAPI::FenceStatus GetStatus() = 0;
-		/// <summary>
-		/// Wait for the fence to be signaled.
-		///
-		/// 1. Waits for the fence to be signaled.
-		/// 2. Resets the fence.
-		/// </summary>
+		/// @brief Wait for the fence to be signaled.
+		///        1. Waits for the fence to be signaled.
+		///        2. Resets the fence.
 		virtual void Wait() = 0;
 
-		/// <summary>
-		/// Utility function to wait for multiple fences.
-		/// </summary>
-		/// <param name="fences">Fences to wait for.</param>
+		/// @brief Utility function to wait for multiple fences.
+		/// @param fences Fences to wait for.
 		static void WaitForFences(std::vector<Fence>& fences);
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// Fence is not signaled.
-		/// </summary>
+		/// @brief Constructor. Fence is not signaled.
 		Fence();
 
 		bool m_submitted = false;

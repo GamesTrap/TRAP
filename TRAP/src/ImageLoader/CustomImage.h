@@ -8,48 +8,32 @@ namespace TRAP::INTERNAL
 	class CustomImage final : public Image
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="filepath">File path of image.</param>
-		/// <param name="width">Width for the image.</param>
-		/// <param name="height">Height for the image.</param>
-		/// <param name="format">Color format of the pixel data.</param>
-		/// <param name="pixelData">Raw pixel data.</param>
+		/// @brief Constructor.
+		/// @param filepath File path of image.
+		/// @param width Width for the image.
+		/// @param height Height for the image.
+		/// @param format Color format of the pixel data.
+		/// @param pixelData Raw pixel data.
 		template<typename T>
 		requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 		CustomImage(std::filesystem::path filepath, u32 width, u32 height, ColorFormat format,
 		            std::vector<T> pixelData);
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		CustomImage(const CustomImage&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		CustomImage& operator=(const CustomImage&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		CustomImage(CustomImage&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		CustomImage& operator=(CustomImage&&) noexcept = default;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~CustomImage() override = default;
 
-		/// <summary>
-		/// Retrieve the raw pixel data of the image.
-		/// </summary>
-		/// <returns>Constant pointer to the raw pixel data.</returns>
+		/// @brief Retrieve the raw pixel data of the image.
+		/// @return Constant pointer to the raw pixel data.
 		[[nodiscard]] constexpr const void* GetPixelData() const noexcept override;
-		/// <summary>
-		/// Retrieve the size of the raw pixel data of the image.
-		/// </summary>
-		/// <returns>Size of the raw pixel data in bytes.</returns>
+		/// @brief Retrieve the size of the raw pixel data of the image.
+		/// @return Size of the raw pixel data in bytes.
 		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
 
 	private:

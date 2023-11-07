@@ -5,33 +5,23 @@
 
 namespace TRAP::Utils
 {
-	/// <summary>
-	/// Struct for a single step in time.
-	/// </summary>
+	/// @brief Struct for a single step in time.
 	struct TimeStep
 	{
-		/// <summary>
-		/// Constructor for a single step in time.
-		/// </summary>
-		/// <param name="time">Time for the time step in seconds.</param>
+		/// @brief Constructor for a single step in time.
+		/// @param time Time for the time step in seconds.
 		constexpr explicit TimeStep(f32 time) noexcept;
 
-		/// <summary>
-		/// Convenience operator.
+		/// @brief Convenience operator.
 		/// Same as GetSeconds();
-		/// </summary>
-		/// <returns>Time of the time step in seconds.</returns>
+		/// @return Time of the time step in seconds.
 		[[nodiscard]] constexpr operator f32() const noexcept;
 
-		/// <summary>
-		/// Get time of the time step in seconds.
-		/// </summary>
-		/// <returns>Time in seconds.</returns>
+		/// @brief Get time of the time step in seconds.
+		/// @return Time in seconds.
 		[[nodiscard]] constexpr f32 GetSeconds() const noexcept;
-		/// <summary>
-		/// Get time of the time step in milliseconds.
-		/// </summary>
-		/// <returns>Time in milliseconds.</returns>
+		/// @brief Get time of the time step in milliseconds.
+		/// @return Time in milliseconds.
 		[[nodiscard]] constexpr f32 GetMilliseconds() const noexcept;
 
 	private:

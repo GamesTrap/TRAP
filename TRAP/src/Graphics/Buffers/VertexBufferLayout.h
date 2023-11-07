@@ -5,9 +5,7 @@
 
 namespace TRAP::Graphics
 {
-	/// <summary>
-	/// Different data types used by shaders.
-	/// </summary>
+	/// @brief Different data types used by shaders.
 	enum class ShaderDataType
 	{
 		None = 0,
@@ -18,16 +16,12 @@ namespace TRAP::Graphics
 		Bool
 	};
 
-	/// <summary>
-	/// Retrieve the byte size of a given shader data type.
-	/// </summary>
-	/// <param name="type">Shader data type.</param>
-	/// <returns>Byte size of the shader data type.</returns>
+	/// @brief Retrieve the byte size of a given shader data type.
+	/// @param type Shader data type.
+	/// @return Byte size of the shader data type.
 	[[nodiscard]] u32 ShaderDataTypeSize(ShaderDataType type);
 
-	/// <summary>
-	/// Struct used to describe a single vertex attribute.
-	/// </summary>
+	/// @brief Struct used to describe a single vertex attribute.
 	struct VertexBufferElement
 	{
 		std::string Name;
@@ -36,62 +30,61 @@ namespace TRAP::Graphics
 		u32 Offset{};
 		bool Normalized{};
 
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		constexpr VertexBufferElement() noexcept = default;
-		/// <summary>
-		/// Constructor.
+		/// @brief Constructor.
 		/// Initialize the vertex buffer element with the given data.
-		/// </summary>
-		/// <param name="type">Shader data type.</param>
-		/// <param name="name">Name of the vertex attribute.</param>
-		/// <param name="normalized">Whether data is normalized.</param>
+		/// @param type Shader data type.
+		/// @param name Name of the vertex attribute.
+		/// @param normalized Whether data is normalized.
 		VertexBufferElement(ShaderDataType type, std::string name, bool normalized = false) noexcept;
 
-		/// <summary>
-		/// Retrieve the component count of this vertex attribute.
-		/// </summary>
-		/// <returns>Component count of this vertex attribute.</returns>
+		/// @brief Retrieve the component count of this vertex attribute.
+		/// @return Component count of this vertex attribute.
 		[[nodiscard]] u32 GetComponentCount() const;
 	};
 
-	/// <summary>
-	/// Describes a vertex buffer layout.
-	/// </summary>
+	/// @brief Describes a vertex buffer layout.
 	class VertexBufferLayout
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		constexpr VertexBufferLayout() noexcept = default;
-		/// <summary>
-		/// Constructor.
+		/// @brief Constructor.
 		/// Initialize the vertex buffer layout with the given elements.
-		/// </summary>
-		/// <param name="elements">Vertex buffer elements.</param>
+		/// @param elements Vertex buffer elements.
 		constexpr VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements) noexcept;
 
-		/// <summary>
-		/// Retrieve the total byte size of all vertex buffer elements used in this layout.
-		/// </summary>
+		/// @brief Retrieve the total byte size of all vertex buffer elements used in this layout.
 		[[nodiscard]] constexpr u32 GetStride() const noexcept;
-		/// <summary>
-		/// Retrieve the vertex buffer elements described by this layout.
-		/// </summary>
-		/// <returns>Vertex buffer elements.</returns>
+		/// @brief Retrieve the vertex buffer elements described by this layout.
+		/// @return Vertex buffer elements.
 		[[nodiscard]] constexpr const std::vector<VertexBufferElement>& GetElements() const noexcept;
 
+		/// @brief Returns an iterator to the first element of the vertexbuffer layout.
+		/// @return Iterator to the first element.
 		[[nodiscard]] constexpr std::vector<VertexBufferElement>::iterator begin() noexcept;
-		[[nodiscard]] constexpr std::vector<VertexBufferElement>::iterator end() noexcept;
+		/// @brief Returns an iterator to the first element of the vertexbuffer layout.
+		/// @return Iterator to the first element.
 		[[nodiscard]] constexpr std::vector<VertexBufferElement>::const_iterator begin() const noexcept;
+		/// @brief Returns an iterator to the first element of the vertexbuffer layout.
+		/// @return Iterator to the first element.
+		[[nodiscard]] constexpr std::vector<VertexBufferElement>::const_iterator cbegin() const noexcept;
+		/// @brief Returns an iterator to the element following the last element of the vertex buffer layout.
+		/// @return Iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
+		[[nodiscard]] constexpr std::vector<VertexBufferElement>::iterator end() noexcept;
+		/// @brief Returns an iterator to the element following the last element of the vertex buffer layout.
+		/// @return Iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
 		[[nodiscard]] constexpr std::vector<VertexBufferElement>::const_iterator end() const noexcept;
+		/// @brief Returns an iterator to the element following the last element of the vertex buffer layout.
+		/// @return Iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
+		[[nodiscard]] constexpr std::vector<VertexBufferElement>::const_iterator cend() const noexcept;
 
 	private:
-		/// <summary>
-		/// Update the offset and stride values of all vertex buffer elements.
-		/// </summary>
+		/// @brief Update the offset and stride values of all vertex buffer elements.
 		constexpr void CalculateOffsetsAndStride() noexcept;
 
 		std::vector<VertexBufferElement> m_elements;
@@ -130,13 +123,6 @@ constexpr TRAP::Graphics::VertexBufferLayout::VertexBufferLayout(const std::init
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::VertexBufferLayout::end() noexcept
-{
-	return m_elements.end();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] constexpr std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::begin() const noexcept
 {
 	return m_elements.begin();
@@ -144,9 +130,30 @@ constexpr TRAP::Graphics::VertexBufferLayout::VertexBufferLayout(const std::init
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::cbegin() const noexcept
+{
+	return m_elements.cbegin();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::VertexBufferLayout::end() noexcept
+{
+	return m_elements.end();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::end() const noexcept
 {
 	return m_elements.end();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::cend() const noexcept
+{
+	return m_elements.cend();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -12,83 +12,53 @@ namespace TRAP::FileSystem
 
 namespace TRAP::Events
 {
-    /// <summary>
-	/// File change event.
-	/// </summary>
+	/// @brief File change event.
 	class FileChangeEvent final : public Event
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-        /// <param name="status">Status of the provided file or folder.</param>
-        /// <param name="path">Path to a file or folder.</param>
-        /// <param name="oldName">Optional: Old name of the file or folder. Only set if status is FileStatus::Renamed.</param>
+		/// @brief Constructor.
+		/// @param status Status of the provided file or folder.
+		/// @param path Path to a file or folder.
+		/// @param oldName Optional: Old name of the file or folder. Only set if status is FileStatus::Renamed.
 		FileChangeEvent(TRAP::FileSystem::FileStatus status, std::filesystem::path path,
                         const std::optional<std::filesystem::path>& oldName = std::nullopt) noexcept;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~FileChangeEvent() override = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		FileChangeEvent(const FileChangeEvent&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		FileChangeEvent& operator=(const FileChangeEvent&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		FileChangeEvent(FileChangeEvent&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		FileChangeEvent& operator=(FileChangeEvent&&) noexcept = default;
 
-        /// <summary>
-        /// Get the status of the file.
-        /// </summary>
-        /// <returns>The status of the file.</returns>
+		/// @brief Get the status of the file.
+		/// @return The status of the file.
         [[nodiscard]] constexpr TRAP::FileSystem::FileStatus GetStatus() const noexcept;
-        /// <summary>
-        /// Get the path of the file.
-        /// </summary>
-        /// <returns>The path of the file.</returns>
+		/// @brief Get the path of the file.
+		/// @return The path of the file.
         [[nodiscard]] std::filesystem::path GetPath() const noexcept;
-        /// <summary>
-        /// Get the old name of the file.
-        /// Only set when FileStatus::Renamed.
-        /// </summary>
-        /// <returns>The old name of the file.</returns>
+		/// @brief Get the old name of the file.
+		/// @return The old name of the file.
+		/// @note Only set when FileStatus is FileStatus::Renamed.
         [[nodiscard]] std::optional<std::filesystem::path> GetOldName() const noexcept;
 
-		/// <summary>
-		/// Get a string representation of the FileEvent.
-		/// </summary>
-		/// <returns>String representation.</returns>
+		/// @brief Get a string representation of the FileEvent.
+		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
 
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
-		/// <summary>
-		/// Retrieve the EventType of the event.
-		/// </summary>
-		/// <returns>EventType.</returns>
+		/// @brief Retrieve the EventType of the event.
+		/// @return EventType.
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
-		/// <summary>
-		/// Retrieve the name of the event.
-		/// </summary>
-		/// <returns>Name.</returns>
+		/// @brief Retrieve the name of the event.
+		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
-		/// <summary>
-		/// Retrieve the category flags of the event.
-		/// </summary>
-		/// <returns>Combination of one or more EventCategory's.</returns>
+		/// @brief Retrieve the category flags of the event.
+		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	private:

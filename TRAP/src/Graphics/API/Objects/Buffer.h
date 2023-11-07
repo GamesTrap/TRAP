@@ -8,77 +8,48 @@ namespace TRAP::Graphics
 	class Buffer
 	{
 	public:
-		/// <summary>
-		/// Create a new buffer from the given description.
-		/// </summary>
-		/// <param name="desc">Buffer description.</param>
-		/// <returns>Created buffer.</returns>
+		/// @brief Create a new buffer from the given description.
+		/// @param desc Buffer description.
+		/// @return Created buffer.
 		[[nodiscard]] static TRAP::Ref<Buffer> Create(const RendererAPI::BufferDesc& desc);
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		virtual ~Buffer();
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		constexpr Buffer(const Buffer&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		Buffer& operator=(const Buffer&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		constexpr Buffer(Buffer&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		Buffer& operator=(Buffer&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the size of the buffer in bytes.
-		/// </summary>
-		/// <returns>Size of the buffer in bytes.</returns>
+		/// @brief Retrieve the size of the buffer in bytes.
+		/// @return Size of the buffer in bytes.
 		[[nodiscard]] constexpr u64 GetSize() const noexcept;
-		/// <summary>
-		/// Retrieve the type of descriptor.
-		/// </summary>
-		/// <returns>Type of descriptor.</returns>
+		/// @brief Retrieve the type of descriptor.
+		/// @return Type of descriptor.
 		[[nodiscard]] constexpr RendererAPI::DescriptorType GetDescriptors() const noexcept;
-		/// <summary>
-		/// Retrieve the usage of the buffer memory.
-		/// </summary>
-		/// <returns>Usage of the buffer memory.</returns>
+		/// @brief Retrieve the usage of the buffer memory.
+		/// @return Usage of the buffer memory.
 		[[nodiscard]] constexpr RendererAPI::ResourceMemoryUsage GetMemoryUsage() const noexcept;
 
-		/// <summary>
-		/// Retrieve the CPU mapped address of the buffer.
-		///
-		/// Note: MapBuffer must be called before accessing the buffer on the CPU.
-		/// </summary>
-		/// <returns>CPU mapped address of the buffer.</returns>
+		/// @brief Retrieve the CPU mapped address of the buffer.
+		/// @return CPU mapped address of the buffer.
+		/// @note MapBuffer must be called before accessing the buffer on the CPU.
 		[[nodiscard]] constexpr void* GetCPUMappedAddress() const noexcept;
 
-		/// <summary>
-		/// Map a region of the buffer to the CPU.
-		///
-		/// Note: MapBuffer must not be called if memory usage is GPU only.
-		/// </summary>
-		/// <param name="range">Optional range of the buffer to map. Default: Whole buffer.</param>
+		/// @brief Map a region of the buffer to the CPU.
+		/// @param range Optional range of the buffer to map. Default: Whole buffer.
+		/// @note MapBuffer must not be called if memory usage is GPU only.
 		virtual void MapBuffer(const RendererAPI::ReadRange* range) = 0;
-		/// <summary>
-		/// Unmap CPU mapped memory region.
-		///
-		/// Note: UnMapBuffer must not be called if memory usage is GPU only.
-		/// </summary>
+		/// @brief Unmap CPU mapped memory region.
+		/// @note UnMapBuffer must not be called if memory usage is GPU only.
 		virtual void UnMapBuffer() = 0;
 
 	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
+		/// @brief Constructor.
 		Buffer(u64 size, RendererAPI::DescriptorType descriptorType, RendererAPI::ResourceMemoryUsage memoryUsage);
 
 		//CPU address of the mapped buffer (applicable to buffers created in CPU accessible heaps

@@ -12,46 +12,30 @@ namespace TRAP::Graphics::API
 	class VulkanPipelineCache final : public PipelineCache
 	{
 	public:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="desc">Pipeline cache description.</param>
+		/// @brief Constructor.
+		/// @param desc Pipeline cache description.
 		explicit VulkanPipelineCache(const RendererAPI::PipelineCacheDesc& desc);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		~VulkanPipelineCache() override;
 
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
+		/// @brief Copy constructor.
 		VulkanPipelineCache(const VulkanPipelineCache&) noexcept = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
+		/// @brief Copy assignment operator.
 		VulkanPipelineCache& operator=(const VulkanPipelineCache&) noexcept = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
+		/// @brief Move constructor.
 		VulkanPipelineCache(VulkanPipelineCache&&) noexcept = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
+		/// @brief Move assignment operator.
 		VulkanPipelineCache& operator=(VulkanPipelineCache&&) noexcept = default;
 
-		/// <summary>
-		/// Retrieve the cached pipeline data.
+		/// @brief Retrieve the cached pipeline data.
 		///
 		/// To retrieve the size of cached data call this function with data = nullptr.
-		/// </summary>
-		/// <param name="size">Output: Size of the data.</param>
-		/// <param name="data">Output: Pointer to store the data.</param>
+		/// @param size Output: Size of the data.
+		/// @param data Output: Pointer to store the data.
 		void GetPipelineCacheData(usize* size, void* data) const override;
 
-		/// <summary>
-		/// Retrieve the Vulkan pipeline cache handle.
-		/// </summary>
-		/// <returns>Vulkan pipeline cache handle</returns>
+		/// @brief Retrieve the Vulkan pipeline cache handle.
+		/// @return Vulkan pipeline cache handle
 		[[nodiscard]] constexpr VkPipelineCache GetVkPipelineCache() const noexcept;
 
 	private:

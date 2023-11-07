@@ -17,62 +17,70 @@
 
 namespace TRAP
 {
-	/// <summary>
-	/// Unique identifier component.
+	/// @brief Unique identifier component.
 	/// Every entity has a global unique identifier.
 	/// This component may not be added/removed to/from an entity.
-	/// </summary>
 	struct UIDComponent
 	{
 		TRAP::Utils::UID UID;
 
+		/// @brief Constructor.
 		UIDComponent() = default;
+		/// @brief Constructor.
+		/// @param uid Unique identifier to use.
 		constexpr explicit UIDComponent(TRAP::Utils::UID uid)
 			: UID(uid)
 		{}
 	};
 
-	/// <summary>
-	/// Tag component.
+	/// @brief Tag component.
 	/// Every entity has a tag component containing the name for the entity.
 	/// This component may not be added/removed to/from an entity.
-	/// </summary>
 	struct TagComponent
 	{
 		std::string Tag;
 
+		/// @brief Constructor.
 		constexpr TagComponent() noexcept = default;
+		/// @brief Constructor.
+		/// @param tag Tag to use.
 		inline constexpr explicit TagComponent(std::string tag) noexcept
 			: Tag(std::move(tag))
 		{}
 	};
 
-	/// <summary>
-	/// Transform component.
+	/// @brief Transform component.
 	/// Every entity has a transform component containing position, rotation and scale.
-	/// </summary>
 	struct TransformComponent
 	{
 		Math::Vec3 Position{ 0.0f, 0.0f, 0.0f };
 		Math::Vec3 Rotation{ 0.0f, 0.0f, 0.0f };
 		Math::Vec3 Scale{ 1.0f, 1.0f, 1.0f };
 
+		/// @brief Constructor.
 		constexpr TransformComponent() noexcept = default;
+		/// @brief Constructor.
+		/// @param position Position to use.
 		explicit TransformComponent(const TRAP::Math::Vec3& position) noexcept
 			: Position(position)
 		{}
+		/// @brief Constructor.
+		/// @param position Position to use.
+		/// @param rotationInRadians Rotation to use.
 		constexpr TransformComponent(const TRAP::Math::Vec3& position, const TRAP::Math::Vec3& rotationInRadians) noexcept
 			: Position(position), Rotation(rotationInRadians)
 		{}
+		/// @brief Constructor.
+		/// @param position Position to use.
+		/// @param rotationInRadians Rotation to use.
+		/// @param scale Scale to use.
 		constexpr TransformComponent(const TRAP::Math::Vec3& position, const TRAP::Math::Vec3& rotationInRadians,
 		                             const TRAP::Math::Vec3& scale) noexcept
 			: Position(position), Rotation(rotationInRadians), Scale(scale)
 		{}
 
-		/// <summary>
-		/// Retrieve the transform calculated from current position, rotation and scale.
-		/// </summary>
-		/// <returns>Transform as Math::Mat4.</returns>
+		/// @brief Retrieve the transform calculated from current position, rotation and scale.
+		/// @return Transform as Math::Mat4.
 		[[nodiscard]] constexpr Math::Mat4 GetTransform() const noexcept
 		{
 			if(Rotation.x() != 0.0f || Rotation.y() != 0.0f || Rotation.z() != 0.0f)
@@ -85,43 +93,42 @@ namespace TRAP
 		}
 	};
 
-	/// <summary>
-	/// Sprite renderer component.
+	/// @brief Sprite renderer component.
 	/// Optional component containing sprite renderer data.
-	/// </summary>
 	struct SpriteRendererComponent
 	{
 		Math::Vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
 
+		/// @brief Constructor.
 		constexpr SpriteRendererComponent() noexcept = default;
+		/// @brief Constructor.
+		/// @param color Color to use.
 		constexpr explicit SpriteRendererComponent(const TRAP::Math::Vec4& color) noexcept
 			: Color(color)
 		{}
 	};
 
-	/// <summary>
-	/// Circle renderer component.
+	/// @brief Circle renderer component.
 	/// Optional component containing circle renderer data.
-	/// </summary>
 	struct CircleRendererComponent
 	{
 		Math::Vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
 		f32 Thickness = 1.0f;
 		f32 Fade = 0.005f;
 
+		/// @brief Constructor.
 		constexpr CircleRendererComponent() noexcept = default;
 	};
 
-	/// <summary>
-	/// Camera component.
+	/// @brief Camera component.
 	/// Optional component containing camera data.
-	/// </summary>
 	struct CameraComponent
 	{
 		SceneCamera Camera;
 		bool Primary = true; //TODO Maybe move to Scene
 		bool FixedAspectRatio = false;
 
+		/// @brief Constructor.
 		CameraComponent() = default;
 	};
 
@@ -160,6 +167,7 @@ namespace TRAP
 		//Storage for runtime data
 		b2Body* RuntimeBody = nullptr;
 
+		/// @brief Constructor.
 		constexpr Rigidbody2DComponent() noexcept = default;
 	};
 
@@ -177,6 +185,7 @@ namespace TRAP
 		//Storage for runtime data
 		b2Fixture* RuntimeFixture = nullptr;
 
+		/// @brief Constructor.
 		constexpr BoxCollider2DComponent() noexcept = default;
 	};
 
@@ -194,6 +203,7 @@ namespace TRAP
 		//Storage for runtime data
 		b2Fixture* RuntimeFixture = nullptr;
 
+		/// @brief Constructor.
 		constexpr CircleCollider2DComponent() noexcept = default;
 	};
 

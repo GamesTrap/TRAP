@@ -18,86 +18,56 @@ namespace TRAP::Graphics
 	class SpriteAnimation
 	{
 	public:
-		/// <summary>
-		/// Create a sprite animation from a list of sprites.
-		/// </summary>
-		/// <param name="name">Name for the animation.</param>
-		/// <param name="sprites">Sprites to be used by the animation.</param>
-		/// <param name="speed">Speed of the animation in seconds.</param>
-		/// <returns>Created SpriteAnimation.</returns>
+		/// @brief Create a sprite animation from a list of sprites.
+		/// @param name Name for the animation.
+		/// @param sprites Sprites to be used by the animation.
+		/// @param speed Speed of the animation in seconds.
+		/// @return Created SpriteAnimation.
 		[[nodiscard]] static TRAP::Ref<SpriteAnimation> Create(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, f32 speed);
 
-		/// <summary>
-		/// Constructor.
+		/// @brief Constructor.
 		/// Creates a new sprite animation
-		/// </summary>
-		/// <param name="name">Name for the animation.</param>
-		/// <param name="sprites">Sprites used by the animation.</param>
-		/// <param name="speed">Speed of the animation in seconds.</param>
+		/// @param name Name for the animation.
+		/// @param sprites Sprites used by the animation.
+		/// @param speed Speed of the animation in seconds.
 		constexpr SpriteAnimation(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, f32 speed) noexcept;
-		/// <summary>
-		/// Copy Constructor.
-		/// </summary>
+		/// @brief Copy Constructor.
 		constexpr SpriteAnimation(const SpriteAnimation&) noexcept = default;
-		/// <summary>
-		/// Move Constructor.
-		/// </summary>
+		/// @brief Move Constructor.
 		constexpr SpriteAnimation(SpriteAnimation&&) noexcept = default;
-		/// <summary>
-		/// Copy Assignment Operator.
-		/// </summary>
+		/// @brief Copy Assignment Operator.
 		constexpr SpriteAnimation& operator=(const SpriteAnimation&) noexcept = default;
-		/// <summary>
-		/// Move Assignment Operator.
-		/// </summary>
+		/// @brief Move Assignment Operator.
 		constexpr SpriteAnimation& operator=(SpriteAnimation&&) noexcept = default;
 
-		/// <summary>
-		/// Destructor.
-		/// </summary>
+		/// @brief Destructor.
 		constexpr ~SpriteAnimation() = default;
 
-		/// <summary>
-		/// Update the sprite animation.
-		/// </summary>
-		/// <param name="deltaTime">Delta time.</param>
+		/// @brief Update the sprite animation.
+		/// @param deltaTime Delta time.
 		constexpr void OnUpdate(const Utils::TimeStep& deltaTime) noexcept;
 
-		/// <summary>
-		/// Retrieve all sprites used by the animation.
-		/// </summary>
-		/// <returns>List of sprites.</returns>
+		/// @brief Retrieve all sprites used by the animation.
+		/// @return List of sprites.
 		[[nodiscard]] constexpr const std::vector<TRAP::Ref<SubTexture2D>>& GetAllSprites() const noexcept;
 
-		/// <summary>
-		/// Retrieve the current sprite of the animation.
-		/// </summary>
-		/// <returns>Current sprite.</returns>
+		/// @brief Retrieve the current sprite of the animation.
+		/// @return Current sprite.
 		[[nodiscard]] TRAP::Ref<SubTexture2D> GetCurrentSprite();
 
-		/// <summary>
-		/// Set the animation speed.
-		/// </summary>
-		/// <param name="speed">Speed in seconds.</param>
+		/// @brief Set the animation speed.
+		/// @param speed Speed in seconds.
 		constexpr void SetSpeed(f32 speed) noexcept;
 
-		/// <summary>
-		/// Retrieve the animation speed.
-		/// </summary>
-		/// <returns>Animation speed:</returns>
+		/// @brief Retrieve the animation speed.
+		/// @return Animation speed:
 		[[nodiscard]] constexpr f32 GetSpeed() const noexcept;
 
-		/// <summary>
-		/// Play the animation.
-		/// </summary>
+		/// @brief Play the animation.
 		constexpr void Play() noexcept;
-		/// <summary>
-		/// Pause the animation
-		/// </summary>
+		/// @brief Pause the animation
 		constexpr void Pause() noexcept;
-		/// <summary>
-		/// Stop the animation.
-		/// </summary>
+		/// @brief Stop the animation.
 		constexpr void Stop() noexcept;
 
 	private:
