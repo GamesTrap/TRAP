@@ -348,7 +348,8 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 
 			TP_TRACE(Log::SceneSerializerPrefix, "Deserialized entity with UID = ", uid, ", name = ", name);
 
-			Entity deserializedEntity = m_scene->CreateEntityWithUID(TRAP::Utils::UID(uid), name);
+			Entity deserializedEntity = m_scene->CreateEntity(name);
+			deserializedEntity.GetComponent<UIDComponent>().UID = TRAP::Utils::UID(uid);
 
 			auto transformComponent = entity["TransformComponent"];
 			if (transformComponent)

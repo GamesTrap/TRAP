@@ -22,15 +22,10 @@ namespace TRAP
 	/// This component may not be added/removed to/from an entity.
 	struct UIDComponent
 	{
-		TRAP::Utils::UID UID;
+		TRAP::Utils::UID UID{};
 
 		/// @brief Constructor.
 		UIDComponent() = default;
-		/// @brief Constructor.
-		/// @param uid Unique identifier to use.
-		constexpr explicit UIDComponent(TRAP::Utils::UID uid)
-			: UID(uid)
-		{}
 	};
 
 	/// @brief Tag component.

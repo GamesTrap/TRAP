@@ -43,7 +43,7 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename... Component>
-static void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<TRAP::Utils::UID, entt::entity>& enttMap)
+static void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<entt::entity, entt::entity>& enttMap)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -52,7 +52,7 @@ static void CopyComponent(entt::registry& dst, entt::registry& src, const std::u
 		const auto view = src.view<Component>();
 		for(const auto srcEntity : view)
 		{
-			const entt::entity dstEntity = enttMap.at(src.get<TRAP::UIDComponent>(srcEntity).UID);
+			const entt::entity dstEntity = enttMap.at(srcEntity);
 
 			auto& srcComponent = src.get<Component>(srcEntity);
 			dst.emplace_or_replace<Component>(dstEntity, srcComponent);
@@ -64,7 +64,7 @@ static void CopyComponent(entt::registry& dst, entt::registry& src, const std::u
 
 template<typename... Component>
 static void CopyComponent([[maybe_unused]] TRAP::ComponentGroup<Component...> components, entt::registry& dst,
-                          entt::registry& src, const std::unordered_map<TRAP::Utils::UID, entt::entity>& enttMap)
+                          entt::registry& src, const std::unordered_map<entt::entity, entt::entity>& enttMap)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -109,17 +109,16 @@ static void CopyComponentIfExists([[maybe_unused]] TRAP::ComponentGroup<Componen
 
 	auto& srcSceneRegistry = other->m_registry;
 	auto& dstSceneRegistry = newScene->m_registry;
-	std::unordered_map<Utils::UID, entt::entity> enttMap{};
+	std::unordered_map<entt::entity, entt::entity> enttMap{};
 
 	//Create entities with UID and Tag in newScene for each entity with an UID component in other scene.
 	//Reversed so the entities have the same order as in the original scene.
 	auto UIDView = srcSceneRegistry.view<UIDComponent>();
 	for(auto it : std::ranges::reverse_view(UIDView))
 	{
-		Utils::UID uid = srcSceneRegistry.get<UIDComponent>(it).UID;
 		const auto& name = srcSceneRegistry.get<TagComponent>(it).Tag;
-		Entity newEntity = newScene->CreateEntityWithUID(uid, name);
-		enttMap[uid] = static_cast<entt::entity>(newEntity);
+		Entity newEntity = newScene->CreateEntity(name);
+		enttMap[it] = static_cast<entt::entity>(newEntity);
 	}
 
 	//Copy components (except UIDComponent and TagComponent)
@@ -134,17 +133,8 @@ TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
-	return CreateEntityWithUID(Utils::UID(), name);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Entity TRAP::Scene::CreateEntityWithUID(Utils::UID uid, const std::string& name)
-{
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
-
 	Entity entity = { m_registry.create(), this };
-	entity.AddComponent<UIDComponent>(uid);
+	entity.AddComponent<UIDComponent>();
 	entity.AddComponent<TransformComponent>();
 	auto& tag = entity.AddComponent<TagComponent>();
 	tag.Tag = name.empty() ? "Entity" : name;

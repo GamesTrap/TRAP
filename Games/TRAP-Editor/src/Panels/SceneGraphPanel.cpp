@@ -210,7 +210,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 	if (entity.HasComponent<TagComponent>() && entity.HasComponent<UIDComponent>())
 	{
 		auto& tag = entity.GetComponent<TagComponent>().Tag;
-		const Utils::UID uid = entity.GetUID();
+		const Utils::UID& uid = entity.GetUID();
 
 		std::string buffer = tag;
 		if(ImGui::InputText("##Tag", &buffer))

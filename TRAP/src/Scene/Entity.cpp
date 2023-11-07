@@ -4,7 +4,7 @@
 #include "Scene/Components.h"
 #include "Utils/Hash/UID.h"
 
-[[nodiscard]] TRAP::Utils::UID TRAP::Entity::GetUID()
+[[nodiscard]] const TRAP::Utils::UID& TRAP::Entity::GetUID()
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

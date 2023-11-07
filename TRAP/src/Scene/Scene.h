@@ -53,11 +53,6 @@ namespace TRAP
 		/// @param name Name for the entity.
 		/// @return Newly created entity.
 		Entity CreateEntity(const std::string& name = std::string());
-		/// @brief Create a new entity with the given unique identifier and name.
-		/// @param uid Unique identifier for the entity.
-		/// @param name Name for the entity.
-		/// @return Newly created entity.
-		Entity CreateEntityWithUID(Utils::UID uid, const std::string& name = std::string());
 		/// @brief Destroy the given entity from the scene.
 		/// @param entity Entity to destroy.
 		void DestroyEntity(Entity entity);

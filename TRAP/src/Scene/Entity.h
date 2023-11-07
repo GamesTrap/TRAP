@@ -107,7 +107,7 @@ namespace TRAP
 
 		/// @brief Retrieve the unique identifier of the entity.
 		/// @return Unique identifier of the entity.
-		[[nodiscard]] Utils::UID GetUID();
+		[[nodiscard]] const Utils::UID& GetUID();
 		/// @brief Retrieve the name of the entity.
 		/// @return Name of the entity.
 		[[nodiscard]] const std::string& GetName();

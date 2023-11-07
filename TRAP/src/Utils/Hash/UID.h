@@ -2,8 +2,10 @@
 #define TRAP_UID_H
 
 #include <functional>
+#include <filesystem>
 
 #include "Core/Types.h"
+#include "Scene/SceneSerializer.h"
 
 namespace TRAP::Utils
 {
@@ -13,19 +15,17 @@ namespace TRAP::Utils
     public:
         /// @brief Constructor. Generated a new unique identifier.
         UID();
-        /// @brief Constructor.
-        constexpr explicit UID(u64 uid) noexcept;
 
         /// @brief Destructor.
         constexpr ~UID() = default;
 
         /// @brief Copy constructor.
-        constexpr UID(const UID& other) noexcept = default;
+        constexpr UID(const UID& other) noexcept = delete;
         /// @brief Move constructor.
         constexpr UID(UID&& other) noexcept = default;
 
         /// @brief Copy assignment operator.
-        constexpr UID& operator=(const UID& other) noexcept = default;
+        constexpr UID& operator=(const UID& other) noexcept = delete;
         /// @brief Move assignment operator.
         constexpr UID& operator=(UID&& other) noexcept = default;
 
@@ -34,7 +34,12 @@ namespace TRAP::Utils
         [[nodiscard]] constexpr operator u64() const noexcept;
 
     private:
+        /// @brief Constructor.
+        constexpr explicit UID(u64 uid) noexcept;
+
         u64 m_uid;
+
+        friend bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath);
     };
 }
 
