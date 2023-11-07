@@ -164,13 +164,13 @@ if __name__ == "__main__":
 				type = 'VkInstance'
 
 			if is_descendant_type(types, type, 'VkDevice') and name not in instance_commands:
-				blocks['LOAD_DEVICE'] += '\t' + name + ' = (PFN_' + name + ')load(context, "' + name + '");\n'
+				blocks['LOAD_DEVICE'] += '\t' + name + ' = reinterpret_cast<PFN_' + name + '>(load(context, "' + name + '"));\n'
 				blocks['DEVICE_TABLE'] += '\tPFN_' + name + ' ' + name + ';\n'
-				blocks['LOAD_DEVICE_TABLE'] += '\ttable->' + name + ' = (PFN_' + name + ')load(context, "' + name + '");\n'
+				blocks['LOAD_DEVICE_TABLE'] += '\ttable.' + name + ' = reinterpret_cast<PFN_' + name + '>(load(device, "' + name + '"));\n'
 			elif is_descendant_type(types, type, 'VkInstance'):
-				blocks['LOAD_INSTANCE'] += '\t' + name + ' = (PFN_' + name + ')load(context, "' + name + '");\n'
+				blocks['LOAD_INSTANCE'] += '\t' + name + ' = reinterpret_cast<PFN_' + name + '>(load(instance, "' + name + '"));\n'
 			elif type != '':
-				blocks['LOAD_LOADER'] += '\t' + name + ' = (PFN_' + name + ')load(context, "' + name + '");\n'
+				blocks['LOAD_LOADER'] += '\t' + name + ' = reinterpret_cast<PFN_' + name + '>(load(context, "' + name + '"));\n'
 
 			blocks['PROTOTYPES_H'] += 'extern PFN_' + name + ' ' + name + ';\n'
 			blocks['PROTOTYPES_C'] += 'inline PFN_' + name + ' ' + name + ';\n'

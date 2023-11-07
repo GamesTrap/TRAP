@@ -37,13 +37,13 @@ Modified by: Jan "GamesTrap" Schuerkamp
 		This is necessary to avoid including <windows.h> which is very heavy - it takes 200ms to parse without WIN32_LEAN_AND_MEAN
 		and 100ms to parse with it. vulkan_win32.h only needs a few symbols that are easy to redefine ourselves.
 		*/
-		typedef unsigned long DWORD;
-		typedef const wchar_t* LPCWSTR;
-		typedef void* HANDLE;
-		typedef struct HINSTANCE__* HINSTANCE;
-		typedef struct HWND__* HWND;
-		typedef struct HMONITOR__* HMONITOR;
-		typedef struct _SECURITY_ATTRIBUTES SECURITY_ATTRIBUTES;
+		using DWORD = unsigned long;
+		using LPCWSTR = const wchar_t*;
+		using HANDLE = void*;
+		using HINSTANCE = struct HINSTANCE__*;
+		using HWND = struct HWND__*;
+		using HMONITOR = struct HMONITOR__*;
+		using SECURITY_ATTRIBUTES = struct _SECURITY_ATTRIBUTES;
 
         #include <vulkan/vulkan_win32.h>
 
@@ -77,6 +77,9 @@ struct VkDeviceTable;
 /// @param handler Function pointer for custom loading.
 void VkInitializeCustom(PFN_vkGetInstanceProcAddr handler);
 
+/// @brief Finalize library by unloading Vulkan loader and resetting global symbols to NULL.
+void VkFinalize();
+
 /// @brief Get Vulkan instance version supported by the Vulkan loader, or an empty optional if Vulkan isn't supported.
 /// @return Empty optional if VkInitialize wasn't called or failed.
 [[nodiscard]] std::optional<u32> VkGetInstanceVersion();
@@ -97,17 +100,17 @@ void VkLoadDevice(VkDevice device);
 
 /// @brief Retrieve the last VkInstance for which global function pointers have been loaded via VkLoadInstance().
 /// @return VkInstance, or VK_NULL_HANDLE if VkLoadInstance() has not been called.
-[[nodiscard]] VkInstance VkGetLoadedInstance();
+[[nodiscard]] VkInstance VkGetLoadedInstance() noexcept;
 
 /// @brief Retrieve the last VkDevice for which global function pointers have been loaded via VkLoadDevice().
 /// @return VkDevice, or VK_NULL_HANDLE if VkLoadDevice() has not been called.
-[[nodiscard]] VkDevice VkGetLoadedDevice();
+[[nodiscard]] VkDevice VkGetLoadedDevice() noexcept;
 
 /// @brief Load function pointers using application-created VkDevice into a table.
 ///        Application should use function pointers from that table instead of using global function pointers.
-/// @param table Pointer where to store loaded functions into.
+/// @param table Table where to store loaded functions into.
 /// @param device Device from which function pointers should be loaded.
-void VkLoadDeviceTable(struct VkDeviceTable* table, VkDevice device);
+void VkLoadDeviceTable(VkDeviceTable& table, VkDevice device);
 
 //Device-specific function pointer table
 struct VkDeviceTable
@@ -130,9 +133,9 @@ struct VkDeviceTable
 #undef VULKANLOADER_IMPLEMENTATION
 
 #ifdef _WIN32
-	typedef const char* LPCSTR;
-	typedef struct HINSTANCE__* HINSTANCE;
-	typedef HINSTANCE HMODULE;
+	using LPCSTR = const char*;
+	using HINSTANCE = struct HINSTANCE__*;
+	using HMODULE = HINSTANCE;
 	#if defined(_MINWINDEF_)
 		/*minwindef.h defined FARPROC, and attempting to redefine it may conflict with -Wstrict-prototypes*/
 	#elif defined(_WIN64)
@@ -144,49 +147,51 @@ struct VkDeviceTable
     #include <dlfcn.h>
 #endif
 
-#ifdef _WIN32
-    __declspec(dllimport) HMODULE __stdcall LoadLibraryA(LPCSTR);
-    __declspec(dllimport) FARPROC __stdcall GetProcAddress(HMODULE, LPCSTR);
-#endif /*_WIN32*/
+#include "Utils/DynamicLoading/DynamicLoading.h"
 
+static void* loadedModule = NULL;
 static VkInstance loadedInstance = VK_NULL_HANDLE;
 static VkDevice loadedDevice = VK_NULL_HANDLE;
 
-static void VkGenLoadLoader(void* context, PFN_vkVoidFunction (*load)(void*, const char*));
-static void VkGenLoadInstance(void* context, PFN_vkVoidFunction (*load)(void*, const char*));
-static void VkGenLoadDevice(void* context, PFN_vkVoidFunction (*load)(void*, const char*));
-static void VkGenLoadDeviceTable(struct VkDeviceTable* table, void* context, PFN_vkVoidFunction (*load)(void*, const char*));
+using VkGenLoaderFunction = PFN_vkVoidFunction (*)(void*, std::string_view);
 
-static PFN_vkVoidFunction vkGetInstanceProcAddrStub(void* context, const char* name)
+static void VkGenLoadLoader(void* context, VkGenLoaderFunction load);
+static void VkGenLoadInstance(VkInstance instance, VkGenLoaderFunction load);
+static void VkGenLoadDevice(void* context, VkGenLoaderFunction load);
+static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoaderFunction load);
+
+static PFN_vkVoidFunction vkGetInstanceProcAddrStub(void* context, std::string_view name)
 {
-	return vkGetInstanceProcAddr((VkInstance)context, name);
+	return vkGetInstanceProcAddr(static_cast<VkInstance>(context), name.data());
 }
 
-static PFN_vkVoidFunction vkGetDeviceProcAddrStub(void* context, const char* name)
+static PFN_vkVoidFunction vkGetDeviceProcAddrStub(void* context, std::string_view name)
 {
-	return vkGetDeviceProcAddr((VkDevice)context, name);
+	return vkGetDeviceProcAddr(static_cast<VkDevice>(context), name.data());
+}
+
+static PFN_vkVoidFunction nullProcAddrStub([[maybe_unused]] void* context, [[maybe_unused]] std::string_view name) noexcept
+{
+	return nullptr;
 }
 
 [[nodiscard]] VkResult VkInitialize()
 {
 #if defined(_WIN32)
-	HMODULE module = LoadLibraryA("vulkan-1.dll");
-	if (!module)
-		return VK_ERROR_INITIALIZATION_FAILED;
-
-	//Note: function pointer is cast through void function pointer to silence cast-function-type warning on gcc8
-	vkGetInstanceProcAddr = (PFN_vkGetInstanceProcAddr)(void(*)(void))GetProcAddress(module, "vkGetInstanceProcAddr");
+	HMODULE module = static_cast<HMODULE>(TRAP::Utils::DynamicLoading::LoadLibrary("vulkan-1.dll"));
 #else
-	void* module = dlopen("libvulkan.so.1", RTLD_NOW | RTLD_LOCAL);
+	void* module = TRAP::Utils::DynamicLoading::LoadLibrary("libvulkan.so.1");
 	if (!module)
-		module = dlopen("libvulkan.so", RTLD_NOW | RTLD_LOCAL);
-	if (!module)
-		return VK_ERROR_INITIALIZATION_FAILED;
-
-	vkGetInstanceProcAddr = (PFN_vkGetInstanceProcAddr)dlsym(module, "vkGetInstanceProcAddr");
+		module = TRAP::Utils::DynamicLoading::LoadLibrary("libvulkan.so");
 #endif
 
-	VkGenLoadLoader(NULL, vkGetInstanceProcAddrStub);
+	if (!module)
+		return VK_ERROR_INITIALIZATION_FAILED;
+
+	vkGetInstanceProcAddr = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_vkGetInstanceProcAddr>(static_cast<void*>(module), "vkGetInstanceProcAddr");
+
+	loadedModule = module;
+	VkGenLoadLoader(nullptr, vkGetInstanceProcAddrStub);
 
 	return VK_SUCCESS;
 }
@@ -195,7 +200,23 @@ void VkInitializeCustom(PFN_vkGetInstanceProcAddr handler)
 {
 	vkGetInstanceProcAddr = handler;
 
-	VkGenLoadLoader(NULL, vkGetInstanceProcAddrStub);
+	loadedModule = nullptr;
+	VkGenLoadLoader(nullptr, vkGetInstanceProcAddrStub);
+}
+
+void VkFinalize()
+{
+	if(loadedModule)
+		TRAP::Utils::DynamicLoading::FreeLibrary(loadedModule);
+
+	vkGetInstanceProcAddr = nullptr;
+	VkGenLoadLoader(nullptr, nullProcAddrStub);
+	VkGenLoadInstance(VK_NULL_HANDLE, nullProcAddrStub);
+	VkGenLoadDevice(VK_NULL_HANDLE, nullProcAddrStub);
+
+	loadedModule = nullptr;
+	loadedInstance = VK_NULL_HANDLE;
+	loadedDevice = VK_NULL_HANDLE;
 }
 
 [[nodiscard]] std::optional<u32> VkGetInstanceVersion()
@@ -225,7 +246,7 @@ void VkLoadInstanceOnly(VkInstance instance)
     VkGenLoadInstance(instance, vkGetInstanceProcAddrStub);
 }
 
-[[nodiscard]] VkInstance VkGetLoadedInstance()
+[[nodiscard]] VkInstance VkGetLoadedInstance() noexcept
 {
 	return loadedInstance;
 }
@@ -236,35 +257,35 @@ void VkLoadDevice(VkDevice device)
 	VkGenLoadDevice(device, vkGetDeviceProcAddrStub);
 }
 
-[[nodiscard]] VkDevice VkGetLoadedDevice()
+[[nodiscard]] VkDevice VkGetLoadedDevice() noexcept
 {
 	return loadedDevice;
 }
 
-void VkLoadDeviceTable(struct VkDeviceTable* table, VkDevice device)
+void VkLoadDeviceTable(VkDeviceTable& table, VkDevice device)
 {
 	VkGenLoadDeviceTable(table, device, vkGetDeviceProcAddrStub);
 }
 
-static void VkGenLoadLoader(void* context, PFN_vkVoidFunction (*load)(void*, const char*))
+static void VkGenLoadLoader(void* context, VkGenLoaderFunction load)
 {
 	/* VULKANLOADER_GENERATE_LOAD_LOADER */
 	/* VULKANLOADER_GENERATE_LOAD_LOADER */
 }
 
-static void VkGenLoadInstance(void* context, PFN_vkVoidFunction (*load)(void*, const char*))
+static void VkGenLoadInstance(VkInstance instance, VkGenLoaderFunction load)
 {
 	/* VULKANLOADER_GENERATE_LOAD_INSTANCE */
 	/* VULKANLOADER_GENERATE_LOAD_INSTANCE */
 }
 
-static void VkGenLoadDevice(void* context, PFN_vkVoidFunction (*load)(void*, const char*))
+static void VkGenLoadDevice(void* context, VkGenLoaderFunction load)
 {
 	/* VULKANLOADER_GENERATE_LOAD_DEVICE */
 	/* VULKANLOADER_GENERATE_LOAD_DEVICE */
 }
 
-static void VkGenLoadDeviceTable(struct VkDeviceTable* table, void* context, PFN_vkVoidFunction (*load)(void*, const char*))
+static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoaderFunction load)
 {
 	/* VULKANLOADER_GENERATE_LOAD_DEVICE_TABLE */
 	/* VULKANLOADER_GENERATE_LOAD_DEVICE_TABLE */

@@ -12,6 +12,8 @@
 		TP_ERROR(Log::UtilsPrefix, "Failed to load library: ", path);
 		TP_ERROR(Log::UtilsPrefix, Utils::String::GetStrError());
 	}
+	else
+		TP_TRACE(Log::UtilsPrefix, "Loaded shared library \"", path, "\"");
     return handle;
 #elif defined(TRAP_PLATFORM_LINUX)
 
@@ -28,6 +30,8 @@
 		TP_ERROR(Log::UtilsPrefix, "Failed to load library: ", path);
 		TP_ERROR(Log::UtilsPrefix, dlerror());
 	}
+	else
+		TP_TRACE(Log::UtilsPrefix, "Loaded shared library \"", path, "\"");
 	return handle;
 #else
     return nullptr;

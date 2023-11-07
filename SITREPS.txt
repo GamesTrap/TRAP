@@ -4635,3 +4635,4 @@ SITREP 11/07/2023|23w44b2
     - Fully excluded SwapChain from Headless mode ~<5 mins
     - Base Replaced TRAP_MAKE_VERSION(), TRAP_VERSION_MAJOR(), TRAP_VERSION_MINOR() and TRAP_VERSION_PATCH() with SemanticVersion class ~<10 mins
     - Made UID really unique ~<10 mins
+    - Updated VulkanLoader ~<15 mins
