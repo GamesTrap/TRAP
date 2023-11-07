@@ -15,7 +15,7 @@
 		.pApplicationName = appName.data(),
 		.applicationVersion = VK_MAKE_VERSION(1, 0, 0),
 		.pEngineName = "TRAP",
-		.engineVersion = TRAP_VERSION,
+		.engineVersion = TRAP_VERSION.GetPackedVersion(),
 		.apiVersion = VK_API_VERSION_1_1
 	};
 }

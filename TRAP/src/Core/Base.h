@@ -16,6 +16,7 @@
 #include "PlatformDetection.h"
 #include "TRAP_Assert.h"
 #include "Backports.h"
+#include "Version.h"
 
 //Set this define to enable RenderDoc layer
 //#define USE_RENDER_DOC
@@ -117,55 +118,8 @@ enum class ProfileSystems : u32
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// @brief Construct a version number.
-/// @tparam major Major version number.
-/// @tparam minor Minor version number.
-/// @tparam patch Patch version number.
-/// @return Version number packed into a single u32.
-template<u32 major, u32 minor, u32 patch>
-[[nodiscard]] consteval u32 TRAP_MAKE_VERSION()
-{
-	static_assert(major < 1024, "Major version number must be less than 1024.");
-	static_assert(minor < 1024,"Minor version number must be less than 1024.");
-	static_assert(patch < 4096, "Patch version number must be less than 4096.");
-
-	return major << 22u | minor << 12u | patch;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-/// @brief Extract major version from a version number created with TRAP_MAKE_VERSION.
-/// @param version Version number created with TRAP_MAKE_VERSION.
-/// @return Major version number.
-[[nodiscard]] inline consteval u32 TRAP_VERSION_MAJOR(const u32 version) noexcept
-{
-	return version >> 22u;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-/// @brief Extract minor version from a version number created with TRAP_MAKE_VERSION.
-/// @param version Version number created with TRAP_MAKE_VERSION.
-/// @return Minor version number.
-[[nodiscard]] inline consteval u32 TRAP_VERSION_MINOR(const u32 version) noexcept
-{
-	return version >> 12u;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-/// @brief Extract patch version from a version number created with TRAP_MAKE_VERSION.
-/// @param version Version number created with TRAP_MAKE_VERSION.
-/// @return Patch version number.
-[[nodiscard]] inline consteval u32 TRAP_VERSION_PATCH(const u32 version) noexcept
-{
-	return version & 0xFFFu;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 /// @brief TRAP version number created with TRAP_MAKE_VERSION
-inline constexpr u32 TRAP_VERSION = TRAP_MAKE_VERSION<0, 10, 1>();
+inline constexpr TRAP::SemanticVersion<0, 10, 1> TRAP_VERSION{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 

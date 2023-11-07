@@ -3002,10 +3002,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInitWayland()
     s_Data.Wayland.KeyRepeatTimerFD = -1;
     s_Data.Wayland.CursorTimerFD = -1;
 
-    s_Data.Wayland.Tag = fmt::format("{}.{}.{} Wayland",
-                                     TRAP_VERSION_MAJOR(TRAP_VERSION),
-                                     TRAP_VERSION_MINOR(TRAP_VERSION),
-                                     TRAP_VERSION_PATCH(TRAP_VERSION));
+    s_Data.Wayland.Tag = TRAP_VERSION.ToString() + " Wayland";
     s_Data.Wayland.TagCStr = s_Data.Wayland.Tag.c_str();
 
     {
