@@ -446,8 +446,10 @@ void TRAP::Application::SetTimeScale(const f32 timeScale)
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(s_Instance, "Application::SetTimeScale(): Application is nullptr!");
+	TRAP_ASSERT(timeScale >= 0.0f, "Application::SetTimeScale(): timeScale is negative!");
 
-	s_Instance->m_timeScale = timeScale;
+	if(timeScale >= 0.0f)
+		s_Instance->m_timeScale = timeScale;
 }
 
 //------------------------------------------------------------------------------------------------------------------//
