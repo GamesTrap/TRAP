@@ -14,16 +14,17 @@ namespace TRAP::Graphics
 		/// @brief Constructor.
 		/// @param indexType Index type of the index buffer.
 		constexpr explicit IndexBuffer(RendererAPI::IndexType indexType) noexcept;
-		/// @brief Copy constructor.
-		IndexBuffer(const IndexBuffer&) noexcept = default;
-		/// @brief Copy assignment operator.
-		IndexBuffer& operator=(const IndexBuffer&) noexcept = default;
 		/// @brief Move constructor.
 		IndexBuffer(IndexBuffer&&) noexcept = default;
 		/// @brief Move assignment operator.
 		IndexBuffer& operator=(IndexBuffer&&) noexcept = default;
 
 	public:
+		/// @brief Copy constructor.
+		consteval IndexBuffer(const IndexBuffer&) noexcept = delete;
+		/// @brief Copy assignment operator.
+		consteval IndexBuffer& operator=(const IndexBuffer&) noexcept = delete;
+
 		/// @brief Destructor.
 		~IndexBuffer() = default;
 

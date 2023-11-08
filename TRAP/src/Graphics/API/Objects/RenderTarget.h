@@ -19,9 +19,9 @@ namespace TRAP::Graphics
 		virtual ~RenderTarget();
 
 		/// @brief Copy constructor.
-		constexpr RenderTarget(const RenderTarget&) = delete;
+		consteval RenderTarget(const RenderTarget&) = delete;
 		/// @brief Copy assignment operator.
-		constexpr RenderTarget& operator=(const RenderTarget&) = delete;
+		consteval RenderTarget& operator=(const RenderTarget&) = delete;
 		/// @brief Move constructor.
 		RenderTarget(RenderTarget&&) noexcept = default;
 		/// @brief Move assignment operator.

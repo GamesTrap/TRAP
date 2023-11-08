@@ -14,6 +14,18 @@ namespace TRAP
 		/// @brief Constructor.
 		constexpr LayerStack() = default;
 
+		/// @brief Copy constructor.
+		consteval LayerStack(const LayerStack &) noexcept = delete;
+		/// @brief Move constructor.
+		constexpr LayerStack(LayerStack &&) noexcept = default;
+		/// @brief Copy assignment operator.
+		consteval LayerStack &operator=(const LayerStack &) noexcept = delete;
+		/// @brief Move assignment operator.
+		constexpr LayerStack &operator=(LayerStack &&) noexcept = default;
+
+		/// @brief Destructor.
+		constexpr ~LayerStack() = default;
+
 		/// @brief Shut down the LayerStack.
 		/// This detaches and destroys all Layers.
 		void Shutdown();

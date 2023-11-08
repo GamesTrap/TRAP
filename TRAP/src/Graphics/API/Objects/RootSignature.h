@@ -16,9 +16,9 @@ namespace TRAP::Graphics
 		virtual ~RootSignature();
 
 		/// @brief Copy constructor.
-		constexpr RootSignature(const RootSignature&) = delete;
+		consteval RootSignature(const RootSignature&) = delete;
 		/// @brief Copy assignment operator.
-		constexpr RootSignature& operator=(const RootSignature&) = delete;
+		consteval RootSignature& operator=(const RootSignature&) = delete;
 		/// @brief Move constructor.
 		RootSignature(RootSignature&&) noexcept = default;
 		/// @brief Move assignment operator.

@@ -21,9 +21,9 @@ namespace TRAP::Graphics::API
 		~VulkanBuffer() override;
 
 		/// @brief Copy constructor.
-		VulkanBuffer(const VulkanBuffer&) noexcept = default;
+		consteval VulkanBuffer(const VulkanBuffer&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanBuffer& operator=(const VulkanBuffer&) noexcept = default;
+		consteval VulkanBuffer& operator=(const VulkanBuffer&) noexcept = delete;
 		/// @brief Move constructor.
 		VulkanBuffer(VulkanBuffer&&) noexcept = default;
 		/// @brief Move assignment operator.

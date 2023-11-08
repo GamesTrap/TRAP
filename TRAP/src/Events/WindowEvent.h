@@ -21,9 +21,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~WindowResizeEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr WindowResizeEvent(const WindowResizeEvent&) noexcept = default;
+		consteval WindowResizeEvent(const WindowResizeEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		WindowResizeEvent& operator=(const WindowResizeEvent&) noexcept = default;
+		consteval WindowResizeEvent& operator=(const WindowResizeEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr WindowResizeEvent(WindowResizeEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -72,9 +72,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~WindowMinimizeEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr WindowMinimizeEvent(const WindowMinimizeEvent&) noexcept = default;
+		consteval WindowMinimizeEvent(const WindowMinimizeEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		WindowMinimizeEvent& operator=(const WindowMinimizeEvent&) noexcept = default;
+		consteval WindowMinimizeEvent& operator=(const WindowMinimizeEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr WindowMinimizeEvent(WindowMinimizeEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -116,9 +116,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~WindowMaximizeEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr WindowMaximizeEvent(const WindowMaximizeEvent&) noexcept = default;
+		consteval WindowMaximizeEvent(const WindowMaximizeEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		WindowMaximizeEvent& operator=(const WindowMaximizeEvent&) noexcept = default;
+		consteval WindowMaximizeEvent& operator=(const WindowMaximizeEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr WindowMaximizeEvent(WindowMaximizeEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -159,9 +159,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~WindowRestoreEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr WindowRestoreEvent(const WindowRestoreEvent&) noexcept = default;
+		consteval WindowRestoreEvent(const WindowRestoreEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		WindowRestoreEvent& operator=(const WindowRestoreEvent&) noexcept = default;
+		consteval WindowRestoreEvent& operator=(const WindowRestoreEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr WindowRestoreEvent(WindowRestoreEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -203,9 +203,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~WindowCloseEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr WindowCloseEvent(const WindowCloseEvent&) noexcept = default;
+		consteval WindowCloseEvent(const WindowCloseEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		WindowCloseEvent& operator=(const WindowCloseEvent&) noexcept = default;
+		consteval WindowCloseEvent& operator=(const WindowCloseEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr WindowCloseEvent(WindowCloseEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -249,9 +249,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~WindowMoveEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr WindowMoveEvent(const WindowMoveEvent&) noexcept = default;
+		consteval WindowMoveEvent(const WindowMoveEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		WindowMoveEvent& operator=(const WindowMoveEvent&) noexcept = default;
+		consteval WindowMoveEvent& operator=(const WindowMoveEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr WindowMoveEvent(WindowMoveEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -303,9 +303,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~WindowFocusEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr WindowFocusEvent(const WindowFocusEvent&) noexcept = default;
+		consteval WindowFocusEvent(const WindowFocusEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		WindowFocusEvent& operator=(const WindowFocusEvent&) noexcept = default;
+		consteval WindowFocusEvent& operator=(const WindowFocusEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr WindowFocusEvent(WindowFocusEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -347,9 +347,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~WindowLostFocusEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr WindowLostFocusEvent(const WindowLostFocusEvent&) noexcept = default;
+		consteval WindowLostFocusEvent(const WindowLostFocusEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		WindowLostFocusEvent& operator=(const WindowLostFocusEvent&) noexcept = default;
+		consteval WindowLostFocusEvent& operator=(const WindowLostFocusEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr WindowLostFocusEvent(WindowLostFocusEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -392,9 +392,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~WindowDropEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr WindowDropEvent(const WindowDropEvent&) noexcept = default;
+		consteval WindowDropEvent(const WindowDropEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		WindowDropEvent& operator=(const WindowDropEvent&) noexcept = default;
+		consteval WindowDropEvent& operator=(const WindowDropEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr WindowDropEvent(WindowDropEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -442,9 +442,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~WindowContentScaleEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr WindowContentScaleEvent(const WindowContentScaleEvent&) noexcept = default;
+		consteval WindowContentScaleEvent(const WindowContentScaleEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		WindowContentScaleEvent& operator=(const WindowContentScaleEvent&) noexcept = default;
+		consteval WindowContentScaleEvent& operator=(const WindowContentScaleEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr WindowContentScaleEvent(WindowContentScaleEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -499,9 +499,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~FrameBufferResizeEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr FrameBufferResizeEvent(const FrameBufferResizeEvent&) noexcept = default;
+		consteval FrameBufferResizeEvent(const FrameBufferResizeEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		FrameBufferResizeEvent& operator=(const FrameBufferResizeEvent&) noexcept = default;
+		consteval FrameBufferResizeEvent& operator=(const FrameBufferResizeEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr FrameBufferResizeEvent(FrameBufferResizeEvent&&) noexcept = default;
 		/// @brief Move assignment operator.

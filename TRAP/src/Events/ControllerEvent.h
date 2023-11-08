@@ -13,8 +13,13 @@ namespace TRAP::Events
 	class ControllerEvent : public Event
 	{
 	public:
+		/// @brief Copy constructor.
+		consteval ControllerEvent(const ControllerEvent&) noexcept = delete;
+		/// @brief Copy assignment operator.
+		consteval ControllerEvent& operator=(const ControllerEvent&) noexcept = delete;
+
 		/// @brief Destructor.
-		constexpr  ~ControllerEvent() override = default;
+		constexpr ~ControllerEvent() override = default;
 
 		/// @brief Retrieve the affected controller.
 		/// @return Controller.
@@ -28,10 +33,7 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param controller Affected controller.
 		constexpr explicit ControllerEvent(Input::Controller controller) noexcept;
-		/// @brief Copy constructor.
-		constexpr ControllerEvent(const ControllerEvent&) noexcept = default;
-		/// @brief Copy assignment operator.
-		constexpr ControllerEvent& operator=(const ControllerEvent&) noexcept = default;
+
 		/// @brief Move constructor.
 		constexpr ControllerEvent(ControllerEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -48,12 +50,15 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param controller Newly connected controller.
 		constexpr explicit ControllerConnectEvent(Input::Controller controller) noexcept;
+
 		/// @brief Destructor.
 		constexpr ~ControllerConnectEvent() override = default;
+
 		/// @brief Copy constructor.
-		constexpr ControllerConnectEvent(const ControllerConnectEvent&) noexcept = default;
+		consteval ControllerConnectEvent(const ControllerConnectEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		constexpr ControllerConnectEvent& operator=(const ControllerConnectEvent&) noexcept = default;
+		consteval ControllerConnectEvent& operator=(const ControllerConnectEvent&) noexcept = delete;
+
 		/// @brief Move constructor.
 		constexpr ControllerConnectEvent(ControllerConnectEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -82,12 +87,15 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param controller Disconnected controller.
 		constexpr explicit ControllerDisconnectEvent(Input::Controller controller) noexcept;
+
 		/// @brief Destructor.
 		constexpr ~ControllerDisconnectEvent() override = default;
+
 		/// @brief Copy constructor.
-		constexpr ControllerDisconnectEvent(const ControllerDisconnectEvent&) noexcept = default;
+		consteval ControllerDisconnectEvent(const ControllerDisconnectEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		constexpr ControllerDisconnectEvent& operator=(const ControllerDisconnectEvent&) noexcept = default;
+		consteval ControllerDisconnectEvent& operator=(const ControllerDisconnectEvent&) noexcept = delete;
+
 		/// @brief Move constructor.
 		constexpr ControllerDisconnectEvent(ControllerDisconnectEvent&&) noexcept = default;
 		/// @brief Move assignment operator.

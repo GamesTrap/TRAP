@@ -12,9 +12,9 @@ namespace TRAP::Graphics
 		constexpr virtual ~DescriptorSet() = default;
 
 		/// @brief Copy constructor.
-		constexpr DescriptorSet(const DescriptorSet&) noexcept = default;
+		consteval DescriptorSet(const DescriptorSet&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		constexpr DescriptorSet& operator=(const DescriptorSet&) noexcept = default;
+		consteval DescriptorSet& operator=(const DescriptorSet&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr DescriptorSet(DescriptorSet&&) noexcept = default;
 		/// @brief Move assignment operator.

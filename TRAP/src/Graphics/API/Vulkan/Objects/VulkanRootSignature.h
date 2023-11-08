@@ -17,9 +17,9 @@ namespace TRAP::Graphics::API
 		~VulkanRootSignature() override;
 
 		/// @brief Copy constructor.
-		constexpr VulkanRootSignature(const VulkanRootSignature&) = delete;
+		consteval VulkanRootSignature(const VulkanRootSignature&) = delete;
 		/// @brief Copy assignment operator.
-		constexpr VulkanRootSignature& operator=(const VulkanRootSignature&) = delete;
+		consteval VulkanRootSignature& operator=(const VulkanRootSignature&) = delete;
 		/// @brief Move constructor.
 		VulkanRootSignature(VulkanRootSignature&&) noexcept = default;
 		/// @brief Move assignment operator.

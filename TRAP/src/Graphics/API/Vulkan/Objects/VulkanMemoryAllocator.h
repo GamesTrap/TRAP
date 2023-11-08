@@ -27,9 +27,9 @@ namespace TRAP::Graphics::API
 		~VulkanMemoryAllocator();
 
 		/// @brief Copy constructor.
-		constexpr VulkanMemoryAllocator(const VulkanMemoryAllocator&) noexcept = default;
+		consteval VulkanMemoryAllocator(const VulkanMemoryAllocator&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanMemoryAllocator& operator=(const VulkanMemoryAllocator&) noexcept = default;
+		consteval VulkanMemoryAllocator& operator=(const VulkanMemoryAllocator&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr VulkanMemoryAllocator(VulkanMemoryAllocator&&) noexcept = default;
 		/// @brief Move assignment operator.

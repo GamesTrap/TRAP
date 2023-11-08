@@ -45,6 +45,18 @@ namespace TRAP::Utils::Decompress
 			/// @param data Data to read in bytes.
 			constexpr explicit BitReader(std::span<const u8> data);
 
+			/// @brief Copy constructor.
+			consteval BitReader(const BitReader&) = delete;
+			/// @brief Copy assignment operator.
+			consteval BitReader& operator=(const BitReader&) = delete;
+			/// @brief Move constructor.
+			constexpr BitReader(BitReader&&) noexcept = default;
+			/// @brief Move assignment operator,
+			constexpr BitReader& operator=(BitReader&&) noexcept = default;
+
+			/// @brief Destructor.
+			constexpr ~BitReader() = default;
+
 			std::span<const u8> Data;
 			usize BitSize{}; // Size of data in bits, end of valid BP values, should be 8 * size
 			usize BP{};
@@ -103,6 +115,18 @@ namespace TRAP::Utils::Decompress
 		{
 			/// @brief Constructor.
 			constexpr HuffmanTree() noexcept = default;
+
+			/// @brief Copy constructor.
+			consteval HuffmanTree(const HuffmanTree&) = delete;
+			/// @brief Copy assignment operator.
+			consteval HuffmanTree& operator=(const HuffmanTree&) = delete;
+			/// @brief Move constructor.
+			constexpr HuffmanTree(HuffmanTree&&) noexcept = default;
+			/// @brief Move assignment operator,
+			constexpr HuffmanTree& operator=(HuffmanTree&&) noexcept = default;
+
+			/// @brief Destructor.
+			constexpr ~HuffmanTree() = default;
 
 			std::vector<u32> Codes; //The Huffman codes(bit patterns representing the symbols)
 			std::vector<u32> Lengths; //The lengths of the huffman codes

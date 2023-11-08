@@ -32,6 +32,18 @@ namespace TRAP
 		/// @param scene Scene which the new Entity is associated with.
 		constexpr Entity(entt::entity handle, Scene* scene) noexcept;
 
+		/// @brief Copy constructor.
+		consteval Entity(const Entity&) = default;
+		/// @brief Copy assignment operator.
+		consteval Entity& operator=(const Entity&) = default;
+		/// @brief Move constructor.
+		constexpr Entity(Entity&&) noexcept = default;
+		/// @brief Move assignment operator.
+		constexpr Entity& operator=(Entity&&) noexcept = default;
+
+		/// @brief Destructor.
+		constexpr ~Entity() = default;
+
 		/// @brief Add component T to the entity.
 		/// @tparam T Type of component to add.
 		/// @param args Arguments to forward to the component.
@@ -69,7 +81,7 @@ namespace TRAP
 		/// @return Requested component.
 		/// @warning Behaviour is undefined if entity doesnt have the requested component.
 		template<typename T>
-		[[nodiscard]] T& GetComponent()
+		[[nodiscard]] T& GetComponent() const
 		{
 			ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -82,7 +94,7 @@ namespace TRAP
 		/// @tparam T Type of component.
 		/// @return True if entity contains component T, false otherwise.
 		template<typename T>
-		[[nodiscard]] bool HasComponent()
+		[[nodiscard]] bool HasComponent() const
 		{
 			ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -107,10 +119,10 @@ namespace TRAP
 
 		/// @brief Retrieve the unique identifier of the entity.
 		/// @return Unique identifier of the entity.
-		[[nodiscard]] const Utils::UID& GetUID();
+		[[nodiscard]] const Utils::UID& GetUID() const;
 		/// @brief Retrieve the name of the entity.
 		/// @return Name of the entity.
-		[[nodiscard]] const std::string& GetName();
+		[[nodiscard]] const std::string& GetName() const;
 
 		/// @brief Retrieve whether the entity is valid or null.
 		/// @return True if entity is valid, false if the entity is null.

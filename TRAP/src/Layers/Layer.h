@@ -19,9 +19,9 @@ namespace TRAP
 		/// @param debugName Layer name for debugging.
 		constexpr explicit Layer(std::string debugName = "Layer") noexcept;
 		/// @brief Copy constructor.
-		constexpr Layer(const Layer&) noexcept = default;
+		consteval Layer(const Layer&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		constexpr Layer& operator=(const Layer&) noexcept = default;
+		consteval Layer& operator=(const Layer&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr Layer(Layer&&) noexcept = default;
 		/// @brief Move assignment operator.

@@ -17,9 +17,9 @@ namespace TRAP::Graphics
 		virtual ~CommandSignature();
 
 		/// @brief Copy constructor.
-		constexpr CommandSignature(const CommandSignature&) noexcept = default;
+		consteval CommandSignature(const CommandSignature&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		CommandSignature& operator=(const CommandSignature&) noexcept = default;
+		consteval CommandSignature& operator=(const CommandSignature&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr CommandSignature(CommandSignature&&) noexcept = default;
 		/// @brief Move assignment operator.

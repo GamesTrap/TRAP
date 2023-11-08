@@ -31,9 +31,9 @@ namespace TRAP::Graphics
 		virtual ~SwapChain();
 
 		/// @brief Copy constructor.
-		constexpr SwapChain(const SwapChain&) noexcept = default;
+		consteval SwapChain(const SwapChain&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		SwapChain& operator=(const SwapChain&) noexcept = default;
+		consteval SwapChain& operator=(const SwapChain&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr SwapChain(SwapChain&&) noexcept = default;
 		/// @brief Move assignment operator.

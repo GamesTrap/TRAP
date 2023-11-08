@@ -22,9 +22,9 @@ namespace TRAP::Graphics::API
 		~VulkanFence() override;
 
 		/// @brief Copy constructor.
-		VulkanFence(const VulkanFence&) noexcept = default;
+		consteval VulkanFence(const VulkanFence&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanFence& operator=(const VulkanFence&) noexcept = default;
+		consteval VulkanFence& operator=(const VulkanFence&) noexcept = delete;
 		/// @brief Move constructor.
 		VulkanFence(VulkanFence&&) noexcept = default;
 		/// @brief Move assignment operator.

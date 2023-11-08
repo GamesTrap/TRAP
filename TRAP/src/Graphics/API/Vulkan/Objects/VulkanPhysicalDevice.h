@@ -22,9 +22,9 @@ namespace TRAP::Graphics::API
 		~VulkanPhysicalDevice();
 
 		/// @brief Copy constructor.
-		constexpr VulkanPhysicalDevice(const VulkanPhysicalDevice&) noexcept = default;
+		consteval VulkanPhysicalDevice(const VulkanPhysicalDevice&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanPhysicalDevice& operator=(const VulkanPhysicalDevice&) noexcept = default;
+		consteval VulkanPhysicalDevice& operator=(const VulkanPhysicalDevice&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr VulkanPhysicalDevice(VulkanPhysicalDevice&&) noexcept = default;
 		/// @brief Move assignment operator.

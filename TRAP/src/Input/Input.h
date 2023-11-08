@@ -64,18 +64,18 @@ namespace TRAP
 	{
 	public:
 		/// @brief Constructor.
-		Input() = delete;
+		consteval Input() = delete;
 		/// @brief Destructor.
 		constexpr ~Input() = default;
 
 		/// @brief Copy constructor.
-		Input(const Input&) = delete;
+		consteval Input(const Input&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		Input& operator=(const Input&) = delete;
+		consteval Input& operator=(const Input&) noexcept = delete;
 		/// @brief Move constructor.
-		Input(Input&&) = delete;
+		consteval Input(Input&&) noexcept = delete;
 		/// @brief Move assignment operator.
-		Input& operator=(Input&&) = delete;
+		consteval Input& operator=(Input&&) noexcept = delete;
 
 		/// @brief Keyboard keys.
 		enum class Key

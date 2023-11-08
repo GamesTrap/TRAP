@@ -21,9 +21,9 @@ namespace TRAP::Graphics::API
 		~VulkanRenderTarget() override;
 
 		/// @brief Copy constructor.
-		constexpr VulkanRenderTarget(const VulkanRenderTarget&) = delete;
+		consteval VulkanRenderTarget(const VulkanRenderTarget&) = delete;
 		/// @brief Copy assignment operator.
-		constexpr VulkanRenderTarget& operator=(const VulkanRenderTarget&) = delete;
+		consteval VulkanRenderTarget& operator=(const VulkanRenderTarget&) = delete;
 		/// @brief Move constructor.
 		VulkanRenderTarget(VulkanRenderTarget&&) noexcept = default;
 		/// @brief Move assignment operator.

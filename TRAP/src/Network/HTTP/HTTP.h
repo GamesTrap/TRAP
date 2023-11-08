@@ -66,6 +66,18 @@ namespace TRAP::Network
 			/// @param body Content of the request's body.
 			explicit Request(std::string uri = "/", Method method = Method::GET, std::string body = "");
 
+			/// @brief Copy constructor.
+			Request(const Request&) = default;
+			/// @brief Copy assignment operator.
+			Request& operator=(const Request&) = default;
+			/// @brief Move constructor.
+			Request(Request&&) noexcept = default;
+			/// @brief Move assignment operator.
+			Request& operator=(Request&&) noexcept = default;
+
+			/// @brief Destructor.
+			~Request() = default;
+
 			/// @brief Set the value of a field.
 			///
 			/// The field is created if it doesn't exist.
@@ -180,6 +192,18 @@ namespace TRAP::Network
 			/// @brief Constructor.
 			Response() noexcept;
 
+			/// @brief Copy constructor.
+			Response(const Response&) = default;
+			/// @brief Copy assignment operator.
+			Response& operator=(const Response&) = default;
+			/// @brief Move constructor.
+			Response(Response&&) noexcept = default;
+			/// @brief Move assignment operator.
+			Response& operator=(Response&&) noexcept = default;
+
+			/// @brief Destructor.
+			~Response() = default;
+
 			/// @brief Get the value of a field.
 			///
 			/// If the field field is not found in the response header,
@@ -258,13 +282,13 @@ namespace TRAP::Network
 		explicit HTTP(const std::string& host, u16 port = 0);
 
 		/// @brief Move constructor.
-		HTTP(HTTP&&) noexcept = default;
+		constexpr HTTP(HTTP&&) noexcept = default;
 		/// @brief Move assignment operator.
 		HTTP& operator=(HTTP&&) noexcept = default;
 		/// @brief Copy constructor.
-		HTTP(const HTTP&) = delete;
+		consteval HTTP(const HTTP&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		HTTP& operator=(const HTTP&) = delete;
+		consteval HTTP& operator=(const HTTP&) noexcept = delete;
 		/// @brief Destructor.
 		~HTTP() = default;
 

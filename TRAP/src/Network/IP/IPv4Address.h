@@ -78,6 +78,18 @@ namespace TRAP::Network
 		/// @param address 4 Bytes of the address packed into a 32 bit integer.
 		constexpr explicit IPv4Address(u32 address);
 
+		/// @brief Copy constructor.
+		constexpr IPv4Address(const IPv4Address&) = default;
+		/// @brief Copy assignment operator.
+		constexpr IPv4Address& operator=(const IPv4Address&) = default;
+		/// @brief Move constructor.
+		constexpr IPv4Address(IPv4Address&&) noexcept = default;
+		/// @brief Move assignment operator.
+		constexpr IPv4Address& operator=(IPv4Address&&) noexcept = default;
+
+		/// @brief Destructor.
+		constexpr ~IPv4Address() = default;
+
 		/// @brief Get a string representation of the address.
 		///
 		/// The returned string is the decimal representation of the

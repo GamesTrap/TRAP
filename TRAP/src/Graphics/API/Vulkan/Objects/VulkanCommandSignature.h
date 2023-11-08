@@ -16,9 +16,9 @@ namespace TRAP::Graphics::API
 		~VulkanCommandSignature() override;
 
 		/// @brief Copy constructor.
-		constexpr VulkanCommandSignature(const VulkanCommandSignature&) noexcept = default;
+		consteval VulkanCommandSignature(const VulkanCommandSignature&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanCommandSignature& operator=(const VulkanCommandSignature&) noexcept = default;
+		consteval VulkanCommandSignature& operator=(const VulkanCommandSignature&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr VulkanCommandSignature(VulkanCommandSignature&&) noexcept = default;
 		/// @brief Move assignment operator.

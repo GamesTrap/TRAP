@@ -17,9 +17,9 @@ namespace TRAP::Graphics
 		virtual ~Queue();
 
 		/// @brief Copy constructor.
-		constexpr Queue(const Queue&) noexcept = default;
+		consteval Queue(const Queue&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		Queue& operator=(const Queue&) noexcept = default;
+		consteval Queue& operator=(const Queue&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr Queue(Queue&&) noexcept = default;
 		/// @brief Move assignment operator.

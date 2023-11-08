@@ -18,9 +18,9 @@ namespace TRAP::Graphics::API
 		~VulkanFrameBuffer();
 
 		/// @brief Copy constructor.
-		VulkanFrameBuffer(const VulkanFrameBuffer&) noexcept = default;
+		consteval VulkanFrameBuffer(const VulkanFrameBuffer&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanFrameBuffer& operator=(const VulkanFrameBuffer&) noexcept = default;
+		consteval VulkanFrameBuffer& operator=(const VulkanFrameBuffer&) noexcept = delete;
 		/// @brief Move constructor.
 		VulkanFrameBuffer(VulkanFrameBuffer&&) noexcept = default;
 		/// @brief Move assignment operator.

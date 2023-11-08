@@ -23,9 +23,9 @@ namespace TRAP::Graphics::API
 		~VulkanInstance();
 
 		/// @brief Copy constructor.
-		constexpr VulkanInstance(const VulkanInstance&) noexcept = default;
+		consteval VulkanInstance(const VulkanInstance&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanInstance& operator=(const VulkanInstance&) noexcept = default;
+		consteval VulkanInstance& operator=(const VulkanInstance&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr VulkanInstance(VulkanInstance&&) noexcept = default;
 		/// @brief Move assignment operator.

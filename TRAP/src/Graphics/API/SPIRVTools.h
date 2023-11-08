@@ -143,6 +143,14 @@ namespace TRAP::Graphics::API::SPIRVTools
 		/// @param binarySize Size of the SPIRV binary data.
 		CrossCompiler(const u32* SPIRVBinary, usize binarySize);
 
+		/// @brief Destructor.
+		~CrossCompiler() = default;
+
+		consteval CrossCompiler(const CrossCompiler&) = delete;
+		CrossCompiler(CrossCompiler&&) noexcept = default;
+		consteval CrossCompiler& operator=(const CrossCompiler&) noexcept = delete;
+		CrossCompiler& operator=(CrossCompiler&&) = default;
+
 		/// @brief Reflect the shaders entry point.
 		void ReflectEntryPoint();
 		/// @brief Reflect the shaders used resources.

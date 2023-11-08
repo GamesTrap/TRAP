@@ -38,9 +38,9 @@ namespace TRAP::Graphics::API
 		~VulkanRenderer() override;
 
 		/// @brief Copy constructor.
-		constexpr VulkanRenderer(const VulkanRenderer&) = delete;
+		consteval VulkanRenderer(const VulkanRenderer&) = delete;
 		/// @brief Copy assignment operator.
-		constexpr VulkanRenderer& operator=(const VulkanRenderer&) = delete;
+		consteval VulkanRenderer& operator=(const VulkanRenderer&) = delete;
 		/// @brief Move constructor.
 		constexpr VulkanRenderer(VulkanRenderer&&) noexcept = delete;
 		/// @brief Move assignment operator.

@@ -23,9 +23,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~MouseMoveEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr MouseMoveEvent(const MouseMoveEvent&) noexcept = default;
+		consteval MouseMoveEvent(const MouseMoveEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		MouseMoveEvent& operator=(const MouseMoveEvent&) noexcept = default;
+		consteval MouseMoveEvent& operator=(const MouseMoveEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr MouseMoveEvent(MouseMoveEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -79,9 +79,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~MouseScrollEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr MouseScrollEvent(const MouseScrollEvent&) noexcept = default;
+		consteval MouseScrollEvent(const MouseScrollEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		MouseScrollEvent& operator=(const MouseScrollEvent&) noexcept = default;
+		consteval MouseScrollEvent& operator=(const MouseScrollEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr MouseScrollEvent(MouseScrollEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -127,6 +127,11 @@ namespace TRAP::Events
 	class MouseButtonEvent : public Event
 	{
 	public:
+		/// @brief Copy constructor.
+		consteval MouseButtonEvent(const MouseButtonEvent&) noexcept = delete;
+		/// @brief Copy assignment operator.
+		consteval MouseButtonEvent& operator=(const MouseButtonEvent&) noexcept = delete;
+
 		/// @brief Destructor.
 		constexpr ~MouseButtonEvent() override = default;
 
@@ -142,10 +147,6 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param button Affected mouse button.
 		explicit constexpr MouseButtonEvent(Input::MouseButton button) noexcept;
-		/// @brief Copy constructor.
-		constexpr MouseButtonEvent(const MouseButtonEvent&) noexcept = default;
-		/// @brief Copy assignment operator.
-		constexpr MouseButtonEvent& operator=(const MouseButtonEvent&) noexcept = default;
 		/// @brief Move constructor.
 		constexpr MouseButtonEvent(MouseButtonEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -166,9 +167,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~MouseButtonPressEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr MouseButtonPressEvent(const MouseButtonPressEvent&) noexcept = default;
+		consteval MouseButtonPressEvent(const MouseButtonPressEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		MouseButtonPressEvent& operator=(const MouseButtonPressEvent&) noexcept = default;
+		consteval MouseButtonPressEvent& operator=(const MouseButtonPressEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr MouseButtonPressEvent(MouseButtonPressEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -208,9 +209,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~MouseButtonReleaseEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr MouseButtonReleaseEvent(const MouseButtonReleaseEvent&) noexcept = default;
+		consteval MouseButtonReleaseEvent(const MouseButtonReleaseEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		MouseButtonReleaseEvent& operator=(const MouseButtonReleaseEvent&) noexcept = default;
+		consteval MouseButtonReleaseEvent& operator=(const MouseButtonReleaseEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr MouseButtonReleaseEvent(MouseButtonReleaseEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -249,9 +250,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~MouseEnterEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr MouseEnterEvent(const MouseEnterEvent&) noexcept = default;
+		consteval MouseEnterEvent(const MouseEnterEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		MouseEnterEvent& operator=(const MouseEnterEvent&) noexcept = default;
+		consteval MouseEnterEvent& operator=(const MouseEnterEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr MouseEnterEvent(MouseEnterEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -289,9 +290,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~MouseLeaveEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr MouseLeaveEvent(const MouseLeaveEvent&) noexcept = default;
+		consteval MouseLeaveEvent(const MouseLeaveEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		MouseLeaveEvent& operator=(const MouseLeaveEvent&) noexcept = default;
+		consteval MouseLeaveEvent& operator=(const MouseLeaveEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr MouseLeaveEvent(MouseLeaveEvent&&) noexcept = default;
 		/// @brief Move assignment operator.

@@ -47,6 +47,18 @@ namespace TRAP::Network
 		/// @brief Constructor.
 		constexpr TCPSocket() noexcept;
 
+		/// @brief Copy constructor.
+		consteval TCPSocket(const TCPSocket&) = delete;
+		/// @brief Copy assignment operator.
+		consteval TCPSocket& operator=(const TCPSocket&) = delete;
+		/// @brief Move constructor.
+		constexpr TCPSocket(TCPSocket&&) noexcept = default;
+		/// @brief Move assignment operator.
+		TCPSocket& operator=(TCPSocket&&) noexcept = default;
+
+		/// @brief Destructor.
+		~TCPSocket() override = default;
+
 		/// @brief Get the port to which the socket is bound locally.
 		///
 		/// If the socket is not connected, this function returns 0.

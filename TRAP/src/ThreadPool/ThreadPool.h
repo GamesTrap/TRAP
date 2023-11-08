@@ -21,13 +21,13 @@ namespace TRAP
 		~ThreadPool();
 
 		/// @brief Copy constructor.
-		constexpr ThreadPool(const ThreadPool&) = delete;
+		consteval ThreadPool(const ThreadPool&) = delete;
 		/// @brief Copy assignment operator.
-		constexpr ThreadPool& operator=(const ThreadPool&) = delete;
+		consteval ThreadPool& operator=(const ThreadPool&) = delete;
 		/// @brief Move constructor.
-		constexpr ThreadPool(ThreadPool&&) = delete;
+		consteval ThreadPool(ThreadPool&&) noexcept = delete;
 		/// @brief Move assignment operator.
-		constexpr ThreadPool& operator=(ThreadPool&&) = delete;
+		consteval ThreadPool& operator=(ThreadPool&&) noexcept = delete;
 
 		/// @brief Enqueue work (Call given function on separate thread).
 		/// @tparam F Functor to work on.

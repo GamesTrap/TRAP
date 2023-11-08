@@ -47,9 +47,9 @@ namespace TRAP::Network
 		/// @brief Move assignment operator.
 		Socket& operator=(Socket&&) noexcept = default;
 		/// @brief Copy constructor.
-		constexpr Socket(const Socket&) = delete;
+		consteval Socket(const Socket&) = delete;
 		/// @brief Copy assignment operator.
-		constexpr Socket& operator=(const Socket&) = delete;
+		consteval Socket& operator=(const Socket&) = delete;
 
 		/// @brief Status codes that may be returned by socket functions.
 		enum class Status

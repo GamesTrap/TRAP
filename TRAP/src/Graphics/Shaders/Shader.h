@@ -38,9 +38,9 @@ namespace TRAP::Graphics
 		Shader(std::string name, bool valid, RendererAPI::ShaderStage stages, const std::vector<Macro>* userMacros = nullptr, const std::filesystem::path& filepath = "");
 	public:
 		/// @brief Copy constructor.
-		constexpr Shader(const Shader&) = delete;
+		consteval Shader(const Shader&) = delete;
 		/// @brief Copy assignment operator.
-		constexpr Shader& operator=(const Shader&) = delete;
+		consteval Shader& operator=(const Shader&) = delete;
 		/// @brief Move constructor.
 		Shader(Shader&&) noexcept = default;
 		/// @brief Move assignment operator.

@@ -12,6 +12,18 @@ namespace TRAP::Utils
 		/// @param time Time for the time step in seconds.
 		constexpr explicit TimeStep(f32 time) noexcept;
 
+		/// @brief Copy constructor.
+		constexpr TimeStep(const TimeStep&) = default;
+		/// @brief Copy assignment operator,
+		constexpr TimeStep& operator=(const TimeStep&) = default;
+		/// @brief Move constructor.
+		constexpr TimeStep(TimeStep&&) noexcept = default;
+		/// @brief Move assignment operator.
+		constexpr TimeStep& operator=(TimeStep&&) noexcept = default;
+
+		/// @brief Destructor,
+		constexpr ~TimeStep() = default;
+
 		/// @brief Convenience operator.
 		/// Same as GetSeconds();
 		/// @return Time of the time step in seconds.

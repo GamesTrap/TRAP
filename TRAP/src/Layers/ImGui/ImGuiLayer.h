@@ -31,6 +31,18 @@ namespace TRAP
 		/// @brief Constructor.
 		constexpr ImGuiLayer();
 
+		/// @brief Copy constructor.
+		consteval ImGuiLayer(const ImGuiLayer &) noexcept = delete;
+		/// @brief Copy assignment operator.
+		consteval ImGuiLayer &operator=(const ImGuiLayer &) noexcept = delete;
+		/// @brief Move constructor.
+		consteval ImGuiLayer(ImGuiLayer &&) noexcept = delete;
+		/// @brief Move assignment operator.
+		consteval ImGuiLayer &operator=(ImGuiLayer &&) noexcept = delete;
+
+		/// @brief Destructor
+		~ImGuiLayer() override = default;
+
 		/// @brief Called when pushed to a layer stack.
 		void OnAttach() override;
 		/// @brief Called when popped from a layer stack.

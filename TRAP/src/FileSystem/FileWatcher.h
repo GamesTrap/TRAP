@@ -39,13 +39,13 @@ namespace TRAP::FileSystem
         /// @brief Destructor.
 		~FileWatcher() = default;
 		/// @brief Copy constructor.
-		FileWatcher(const FileWatcher&) = delete;
+		consteval FileWatcher(const FileWatcher&) = delete;
 		/// @brief Move constructor.
-		FileWatcher(FileWatcher&&) = default;
+		FileWatcher(FileWatcher&&) noexcept = default;
 		/// @brief Copy assignment operator.
-		FileWatcher& operator=(const FileWatcher&) = delete;
+		consteval FileWatcher& operator=(const FileWatcher&) = delete;
 		/// @brief Move assignment operator.
-		FileWatcher& operator=(FileWatcher&&) = default;
+		FileWatcher& operator=(FileWatcher&&) noexcept = default;
 
         /// @brief Sets the callback function that is called when a file event occurs.
         /// @param callback Callback function used to report events to.

@@ -18,9 +18,9 @@ namespace TRAP::Graphics::API
 		~VulkanDebug();
 
 		/// @brief Copy constructor.
-		VulkanDebug(const VulkanDebug&) noexcept = default;
+		consteval VulkanDebug(const VulkanDebug&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanDebug& operator=(const VulkanDebug&) noexcept = default;
+		consteval VulkanDebug& operator=(const VulkanDebug&) noexcept = delete;
 		/// @brief Move constructor.
 		VulkanDebug(VulkanDebug&&) noexcept = default;
 		/// @brief Move assignment operator.

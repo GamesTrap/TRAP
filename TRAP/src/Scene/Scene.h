@@ -35,11 +35,11 @@ namespace TRAP
 		~Scene() noexcept = default;
 
 		/// @brief Copy constructor.
-		constexpr Scene(const Scene&) = delete;
+		consteval Scene(const Scene&) = delete;
 		/// @brief Move constructor.
 		Scene(Scene&&) noexcept = default;
 		/// @brief Copy assignment operator.
-		constexpr Scene& operator=(const Scene&) = delete;
+		consteval Scene& operator=(const Scene&) = delete;
 		/// @brief Move assignment operator.
 		Scene& operator=(Scene&&) noexcept = default;
 

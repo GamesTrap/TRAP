@@ -19,9 +19,9 @@ namespace TRAP::Graphics::API
 		~VulkanSampler() override;
 
 		/// @brief Copy constructor.
-		VulkanSampler(const VulkanSampler&) noexcept = default;
+		consteval VulkanSampler(const VulkanSampler&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanSampler& operator=(const VulkanSampler&) noexcept = default;
+		consteval VulkanSampler& operator=(const VulkanSampler&) noexcept = delete;
 		/// @brief Move constructor.
 		VulkanSampler(VulkanSampler&&) noexcept = default;
 		/// @brief Move assignment operator.

@@ -17,9 +17,9 @@ namespace TRAP::Graphics
 		virtual ~QueryPool();
 
 		/// @brief Copy constructor.
-		constexpr QueryPool(const QueryPool&) noexcept = default;
+		consteval QueryPool(const QueryPool&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		QueryPool& operator=(const QueryPool&) noexcept = default;
+		consteval QueryPool& operator=(const QueryPool&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr QueryPool(QueryPool&&) noexcept = default;
 		/// @brief Move assignment operator.

@@ -31,6 +31,19 @@ namespace TRAP
         {
         }
 
+        /// @brief Copy constructor.
+        consteval SemanticVersion(const SemanticVersion&) = delete;
+        /// @brief Move constructor.
+        consteval SemanticVersion(SemanticVersion&&) noexcept = default;
+
+        /// @brief Copy assignment operator.
+        consteval SemanticVersion& operator=(const SemanticVersion&) = delete;
+        /// @brief Move assignment operator.
+        consteval SemanticVersion& operator=(SemanticVersion&&) noexcept = default;
+
+        /// @brief Destructor.
+        constexpr ~SemanticVersion() = default;
+
         /// @brief Retrieve packed version.
         /// @return Packed version.
         [[nodiscard]] consteval u32 GetPackedVersion() const noexcept

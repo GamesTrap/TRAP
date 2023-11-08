@@ -21,9 +21,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		~TextureReloadEvent() override = default;
 		/// @brief Copy constructor.
-		TextureReloadEvent(const TextureReloadEvent&) noexcept = default;
+		consteval TextureReloadEvent(const TextureReloadEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		TextureReloadEvent& operator=(const TextureReloadEvent&) noexcept = default;
+		consteval TextureReloadEvent& operator=(const TextureReloadEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		TextureReloadEvent(TextureReloadEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -64,9 +64,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		~ShaderReloadEvent() override = default;
 		/// @brief Copy constructor.
-		ShaderReloadEvent(const ShaderReloadEvent&) noexcept = default;
+		consteval ShaderReloadEvent(const ShaderReloadEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		ShaderReloadEvent& operator=(const ShaderReloadEvent&) noexcept = default;
+		consteval ShaderReloadEvent& operator=(const ShaderReloadEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		ShaderReloadEvent(ShaderReloadEvent&&) noexcept = default;
 		/// @brief Move assignment operator.

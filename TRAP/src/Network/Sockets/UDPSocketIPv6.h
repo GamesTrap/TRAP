@@ -19,6 +19,18 @@ namespace TRAP::Network
 		/// @brief Constructor.
 		constexpr UDPSocketIPv6();
 
+		/// @brief Copy constructor.
+		consteval UDPSocketIPv6(const UDPSocketIPv6&) = delete;
+		/// @brief Copy assignment operator.
+		consteval UDPSocketIPv6& operator=(const UDPSocketIPv6&) = delete;
+		/// @brief Move constructor.
+		constexpr UDPSocketIPv6(UDPSocketIPv6&&) noexcept = default;
+		/// @brief Move assignment operator.
+		UDPSocketIPv6& operator=(UDPSocketIPv6&&) noexcept = default;
+
+		/// @brief Destructor.
+		~UDPSocketIPv6() override = default;
+
 		/// @brief Get the port to which the socket is bound locally.
 		///
 		/// If the socket is not bound to a port, this function returns 0.

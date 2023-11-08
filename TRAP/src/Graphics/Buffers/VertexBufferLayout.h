@@ -39,6 +39,18 @@ namespace TRAP::Graphics
 		/// @param normalized Whether data is normalized.
 		VertexBufferElement(ShaderDataType type, std::string name, bool normalized = false) noexcept;
 
+		/// @brief Copy constructor.
+		constexpr VertexBufferElement(const VertexBufferElement&) = default;
+		/// @brief Copy assignment operator.
+		constexpr VertexBufferElement& operator=(const VertexBufferElement&) = default;
+		/// @brief Move constructor
+		constexpr VertexBufferElement(VertexBufferElement&&) noexcept= default;
+		/// @brief Move assignment operator.
+		constexpr VertexBufferElement& operator=(VertexBufferElement&&) noexcept = default;
+
+		/// @brief Destructor.
+		constexpr ~VertexBufferElement() = default;
+
 		/// @brief Retrieve the component count of this vertex attribute.
 		/// @return Component count of this vertex attribute.
 		[[nodiscard]] u32 GetComponentCount() const;
@@ -54,6 +66,18 @@ namespace TRAP::Graphics
 		/// Initialize the vertex buffer layout with the given elements.
 		/// @param elements Vertex buffer elements.
 		constexpr VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements) noexcept;
+
+		/// @brief Copy constructor.
+		constexpr VertexBufferLayout(const VertexBufferLayout&) = default;
+		/// @brief Copy assignment operator.
+		constexpr VertexBufferLayout& operator=(const VertexBufferLayout&) = default;
+		/// @brief Move constructor.
+		constexpr VertexBufferLayout(VertexBufferLayout&&) noexcept = default;
+		/// @brief Move assignment operator.
+		constexpr VertexBufferLayout& operator=(VertexBufferLayout&&) noexcept = default;
+
+		/// @brief Destructor.
+		constexpr ~VertexBufferLayout() = default;
 
 		/// @brief Retrieve the total byte size of all vertex buffer elements used in this layout.
 		[[nodiscard]] constexpr u32 GetStride() const noexcept;

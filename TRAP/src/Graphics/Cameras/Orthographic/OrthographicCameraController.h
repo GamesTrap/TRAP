@@ -42,11 +42,11 @@ namespace TRAP::Graphics
 		/// @brief Copy constructor.
 		constexpr OrthographicCameraController(const OrthographicCameraController&) noexcept = default;
 		/// @brief Copy assignment operator.
-		constexpr OrthographicCameraController& operator=(const OrthographicCameraController&) = delete;
+		constexpr OrthographicCameraController& operator=(const OrthographicCameraController&) = default;
 		/// @brief Move constructor.
 		constexpr OrthographicCameraController(OrthographicCameraController&&) noexcept = default;
 		/// @brief Move assignment operator.
-		constexpr OrthographicCameraController& operator=(OrthographicCameraController&&) = delete;
+		constexpr OrthographicCameraController& operator=(OrthographicCameraController&&) = default;
 
 		/// @brief Update the camera.
 		///

@@ -19,9 +19,9 @@ namespace TRAP::Graphics
 		virtual ~CommandPool();
 
 		/// @brief Copy constructor.
-		CommandPool(const CommandPool&) noexcept = default;
+		consteval CommandPool(const CommandPool&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		CommandPool& operator=(const CommandPool&) noexcept = default;
+		consteval CommandPool& operator=(const CommandPool&) noexcept = delete;
 		/// @brief Move constructor.
 		CommandPool(CommandPool&&) noexcept = default;
 		/// @brief Move assignment operator.

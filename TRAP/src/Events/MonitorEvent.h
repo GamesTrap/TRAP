@@ -13,6 +13,11 @@ namespace TRAP::Events
 	class MonitorEvent : public Event
 	{
 	public:
+		/// @brief Copy constructor.
+		consteval MonitorEvent(const MonitorEvent&) noexcept = delete;
+		/// @brief Copy assignment operator.
+		consteval MonitorEvent& operator=(const MonitorEvent&) noexcept = delete;
+
 		/// @brief Destructor.
 		constexpr ~MonitorEvent() override = default;
 
@@ -29,10 +34,6 @@ namespace TRAP::Events
 		/// @param monitor Affected monitor.
 		// explicit MonitorEvent(Monitor monitor) noexcept;
 		explicit constexpr MonitorEvent(const Monitor& monitor) noexcept;
-		/// @brief Copy constructor.
-		constexpr MonitorEvent(const MonitorEvent&) noexcept = default;
-		/// @brief Copy assignment operator.
-		MonitorEvent& operator=(const MonitorEvent&) noexcept = default;
 		/// @brief Move constructor.
 		constexpr MonitorEvent(MonitorEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -53,9 +54,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~MonitorConnectEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr MonitorConnectEvent(const MonitorConnectEvent&) noexcept = default;
+		consteval MonitorConnectEvent(const MonitorConnectEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		MonitorConnectEvent& operator=(const MonitorConnectEvent&) noexcept = default;
+		consteval MonitorConnectEvent& operator=(const MonitorConnectEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr MonitorConnectEvent(MonitorConnectEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -88,9 +89,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~MonitorDisconnectEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr MonitorDisconnectEvent(const MonitorDisconnectEvent&) noexcept = default;
+		consteval MonitorDisconnectEvent(const MonitorDisconnectEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		MonitorDisconnectEvent& operator=(const MonitorDisconnectEvent&) noexcept = default;
+		consteval MonitorDisconnectEvent& operator=(const MonitorDisconnectEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr MonitorDisconnectEvent(MonitorDisconnectEvent&&) noexcept = default;
 		/// @brief Move assignment operator.

@@ -99,13 +99,13 @@ namespace TRAP::Graphics
 		/// @brief Destructor.
 		constexpr virtual ~RendererAPI() = default;
 		/// @brief Copy constructor.
-		constexpr RendererAPI(const RendererAPI&) = delete;
+		consteval RendererAPI(const RendererAPI&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		constexpr RendererAPI& operator=(const RendererAPI&) = delete;
+		consteval RendererAPI& operator=(const RendererAPI&) noexcept = delete;
 		/// @brief Move constructor.
-		constexpr RendererAPI(RendererAPI&&) = delete;
+		consteval RendererAPI(RendererAPI&&) noexcept = delete;
 		/// @brief Move assignment operator.
-		constexpr RendererAPI& operator=(RendererAPI&&) = delete;
+		consteval RendererAPI& operator=(RendererAPI&&) noexcept = delete;
 
 		/// @brief Initialize the Renderer.
 		/// @param gameName Name of the game.
@@ -2859,13 +2859,13 @@ namespace TRAP::Graphics
 			~PerViewportData();
 
 			/// @brief Copy constructor.
-			constexpr PerViewportData(const PerViewportData&) = delete;
+			consteval PerViewportData(const PerViewportData&) noexcept = delete;
 			/// @brief Move constructor.
-			PerViewportData(PerViewportData&&) = default;
+			PerViewportData(PerViewportData&&) noexcept = default;
 			/// @brief Copy assignment operator.
-			constexpr PerViewportData& operator=(const PerViewportData &) = delete;
+			consteval PerViewportData& operator=(const PerViewportData &) noexcept = delete;
 			/// @brief Move assignment operator.
-			PerViewportData& operator=(PerViewportData &&) = default;
+			PerViewportData& operator=(PerViewportData &&) noexcept = default;
 
 #ifndef TRAP_HEADLESS_MODE
 			TRAP::Window* Window{};

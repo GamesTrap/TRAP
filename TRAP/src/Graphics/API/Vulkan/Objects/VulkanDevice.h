@@ -22,9 +22,9 @@ namespace TRAP::Graphics::API
 		~VulkanDevice();
 
 		/// @brief Copy constructor.
-		constexpr VulkanDevice(const VulkanDevice&) = delete;
+		consteval VulkanDevice(const VulkanDevice&) = delete;
 		/// @brief Copy assignment operator.
-		constexpr VulkanDevice& operator=(const VulkanDevice&) = delete;
+		consteval VulkanDevice& operator=(const VulkanDevice&) = delete;
 		/// @brief Move constructor.
 		VulkanDevice(VulkanDevice&&) noexcept = default;
 		/// @brief Move assignment operator.

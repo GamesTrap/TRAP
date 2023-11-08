@@ -19,9 +19,9 @@ namespace TRAP::Graphics::API
 		~VulkanRenderPass();
 
 		/// @brief Copy constructor.
-		VulkanRenderPass(const VulkanRenderPass&) noexcept = default;
+		consteval VulkanRenderPass(const VulkanRenderPass&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanRenderPass& operator=(const VulkanRenderPass&) noexcept = default;
+		consteval VulkanRenderPass& operator=(const VulkanRenderPass&) noexcept = delete;
 		/// @brief Move constructor.
 		VulkanRenderPass(VulkanRenderPass&&) noexcept = default;
 		/// @brief Move assignment operator.

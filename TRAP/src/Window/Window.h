@@ -42,9 +42,9 @@ namespace TRAP
 		/// @param props Properties to be applied to the new window.
 		explicit Window(const WindowProps& props);
 		/// @brief Copy constructor.
-		constexpr Window(const Window&) = delete;
+		consteval Window(const Window&) = delete;
 		/// @brief Copy assignment operator.
-		constexpr Window& operator=(const Window&) = delete;
+		consteval Window& operator=(const Window&) = delete;
 		/// @brief Move constructor.
 		Window(Window&&) noexcept = default;
 		/// @brief Move assignment operator.

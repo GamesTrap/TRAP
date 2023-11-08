@@ -27,9 +27,9 @@ namespace TRAP::Graphics::API
 		~VulkanSurface();
 
 		/// @brief Copy constructor.
-		VulkanSurface(const VulkanSurface&) noexcept = default;
+		consteval VulkanSurface(const VulkanSurface&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanSurface& operator=(const VulkanSurface&) noexcept = default;
+		consteval VulkanSurface& operator=(const VulkanSurface&) noexcept = delete;
 		/// @brief Move constructor.
 		VulkanSurface(VulkanSurface&&) noexcept = default;
 		/// @brief Move assignment operator.

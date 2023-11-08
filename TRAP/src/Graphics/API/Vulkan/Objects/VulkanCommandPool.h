@@ -21,9 +21,9 @@ namespace TRAP::Graphics::API
 		~VulkanCommandPool() override;
 
 		/// @brief Copy constructor.
-		VulkanCommandPool(const VulkanCommandPool&) noexcept = default;
+		consteval VulkanCommandPool(const VulkanCommandPool&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanCommandPool& operator=(const VulkanCommandPool&) noexcept = default;
+		consteval VulkanCommandPool& operator=(const VulkanCommandPool&) noexcept = delete;
 		/// @brief Move constructor.
 		VulkanCommandPool(VulkanCommandPool&&) noexcept = default;
 		/// @brief Move assignment operator.

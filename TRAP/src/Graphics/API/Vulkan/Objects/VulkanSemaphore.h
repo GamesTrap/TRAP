@@ -18,9 +18,9 @@ namespace TRAP::Graphics::API
 		~VulkanSemaphore() override;
 
 		/// @brief Copy constructor.
-		VulkanSemaphore(const VulkanSemaphore&) noexcept = default;
+		consteval VulkanSemaphore(const VulkanSemaphore&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanSemaphore& operator=(const VulkanSemaphore&) noexcept = default;
+		consteval VulkanSemaphore& operator=(const VulkanSemaphore&) noexcept = delete;
 		/// @brief Move constructor.
 		VulkanSemaphore(VulkanSemaphore&&) noexcept = default;
 		/// @brief Move assignment operator.

@@ -17,9 +17,9 @@ namespace TRAP::Graphics
 		virtual ~Sampler();
 
 		/// @brief Copy constructor.
-		constexpr Sampler(const Sampler&) noexcept = default;
+		consteval Sampler(const Sampler&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		Sampler& operator=(const Sampler&) noexcept = default;
+		consteval Sampler& operator=(const Sampler&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr Sampler(Sampler&&) noexcept = default;
 		/// @brief Move assignment operator.

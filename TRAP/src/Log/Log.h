@@ -28,13 +28,13 @@ namespace TRAP
 		///	@brief Destructor.
 		~Log();
 		/// @brief Copy constructor.
-		constexpr Log(const Log&) = delete;
+		consteval Log(const Log&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		constexpr Log& operator=(const Log&) = delete;
+		consteval Log& operator=(const Log&) noexcept = delete;
 		/// @brief Move constructor.
-		constexpr Log(Log&&) = delete;
+		constexpr Log(Log&&) noexcept = delete;
 		/// @brief Move assignment operator.
-		constexpr Log& operator=(Log&&) = delete;
+		constexpr Log& operator=(Log&&) noexcept = delete;
 
 		/// @brief Get the current used file path for saving.
 		/// @return File path.
@@ -104,7 +104,7 @@ namespace TRAP
 		/// @brief Clears all buffered messages.
 		constexpr void Clear() noexcept;
 
-		inline static constexpr auto WindowVersion =                        "[23w44b2]";
+		inline static constexpr auto WindowVersion =                        "[23w45b1]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";

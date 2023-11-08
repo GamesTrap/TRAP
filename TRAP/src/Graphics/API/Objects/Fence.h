@@ -18,9 +18,9 @@ namespace TRAP::Graphics
 		virtual ~Fence();
 
 		/// @brief Copy constructor.
-		constexpr Fence(const Fence&) noexcept = default;
+		consteval Fence(const Fence&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		Fence& operator=(const Fence&) noexcept = default;
+		consteval Fence& operator=(const Fence&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr Fence(Fence&&) noexcept = default;
 		/// @brief Move assignment operator.

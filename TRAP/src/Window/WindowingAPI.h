@@ -53,18 +53,18 @@ namespace TRAP::INTERNAL
 	{
 	public:
 		/// @brief Constructor.
-		constexpr WindowingAPI() = delete;
+		consteval WindowingAPI() = delete;
 		/// @brief Destructor.
 		constexpr ~WindowingAPI() = default;
 
 		/// @brief Copy constructor.
-		constexpr WindowingAPI(const WindowingAPI&) = delete;
+		consteval WindowingAPI(const WindowingAPI&) = delete;
 		/// @brief Copy assignment operator.
-		constexpr WindowingAPI& operator=(const WindowingAPI&) = delete;
+		consteval WindowingAPI& operator=(const WindowingAPI&) = delete;
 		/// @brief Move constructor.
-		constexpr WindowingAPI(WindowingAPI&&) = delete;
+		consteval WindowingAPI(WindowingAPI&&) = delete;
 		/// @brief Move assignment operator.
-		constexpr WindowingAPI& operator=(WindowingAPI&&) = delete;
+		consteval WindowingAPI& operator=(WindowingAPI&&) = delete;
 
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Forward Declarations-----------------------------------------------------------------------------------------------//

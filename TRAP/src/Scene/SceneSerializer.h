@@ -15,9 +15,9 @@ namespace TRAP
 		/// @brief Destructor.
 		~SceneSerializer() = default;
 		/// @brief Copy constructor.
-		SceneSerializer(const SceneSerializer&) noexcept = default;
+		consteval SceneSerializer(const SceneSerializer&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		SceneSerializer& operator=(const SceneSerializer&) noexcept = default;
+		consteval SceneSerializer& operator=(const SceneSerializer&) noexcept = delete;
 		/// @brief Move constructor.
 		SceneSerializer(SceneSerializer&&) noexcept = default;
 		/// @brief Move assignment operator.

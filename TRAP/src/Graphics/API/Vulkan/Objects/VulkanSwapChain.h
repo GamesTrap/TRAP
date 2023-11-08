@@ -25,9 +25,9 @@ namespace TRAP::Graphics::API
 		~VulkanSwapChain() override;
 
 		/// @brief Copy constructor.
-		VulkanSwapChain(const VulkanSwapChain&) noexcept = default;
+		consteval VulkanSwapChain(const VulkanSwapChain&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanSwapChain& operator=(const VulkanSwapChain&) noexcept = default;
+		consteval VulkanSwapChain& operator=(const VulkanSwapChain&) noexcept = delete;
 		/// @brief Move constructor.
 		VulkanSwapChain(VulkanSwapChain&&) noexcept = default;
 		/// @brief Move assignment operator.

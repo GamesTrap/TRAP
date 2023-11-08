@@ -94,9 +94,9 @@ namespace TRAP::Graphics
 		/// @brief Destructor.
 		virtual ~Texture() = default;
 		/// @brief Copy constructor.
-		Texture(const Texture&) noexcept = default;
+		consteval Texture(const Texture&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		Texture& operator=(const Texture&) noexcept = default;
+		consteval Texture& operator=(const Texture&) noexcept = delete;
 		/// @brief Move constructor.
 		Texture(Texture&&) noexcept = default;
 		/// @brief Move assignment operator.

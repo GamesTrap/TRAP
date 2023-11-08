@@ -36,13 +36,13 @@ namespace TRAP::Utils
         ~CrashHandler();
 
         /// @brief Copy constructor.
-        CrashHandler(const CrashHandler&) = delete;
+        consteval CrashHandler(const CrashHandler&) = delete;
         /// @brief Move constructor.
-        CrashHandler(CrashHandler&&) = delete;
+        consteval CrashHandler(CrashHandler&&) noexcept = delete;
         /// @brief Copy assignment operator.
-        CrashHandler& operator=(const CrashHandler&) = delete;
+        consteval CrashHandler& operator=(const CrashHandler&) = delete;
         /// @brief Move assignment operator.
-        CrashHandler& operator=(CrashHandler&&) = delete;
+        consteval CrashHandler& operator=(CrashHandler&&) noexcept = delete;
 
     private:
 #ifdef TRAP_PLATFORM_LINUX

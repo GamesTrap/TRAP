@@ -41,9 +41,9 @@ namespace TRAP::Graphics::API
 		~VulkanShader() override;
 
 		/// @brief Copy constructor.
-		VulkanShader(const VulkanShader&) = delete;
+		consteval VulkanShader(const VulkanShader&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanShader& operator=(const VulkanShader&) = delete;
+		consteval VulkanShader& operator=(const VulkanShader&) noexcept = delete;
 		/// @brief Move constructor.
 		VulkanShader(VulkanShader&&) noexcept = default;
 		/// @brief Move assignment operator.

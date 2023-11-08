@@ -9,45 +9,59 @@ namespace TRAP::Graphics
 	class OrthographicCamera final
 	{
 	public:
-		/// @brief Constructor.
-		/// Initializes the Orthographic/2D camera.
-		/// @param left Left screen coordinate.
-		/// @param right Right screen coordinate.
-		/// @param bottom Bottom screen coordinate.
-		/// @param top Top screen coordinate.
-		/// @param near Near distance.
-		/// @param far Far distance.
-		constexpr OrthographicCamera(f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far);
+			/// @brief Constructor.
+			/// Initializes the Orthographic/2D camera.
+			/// @param left Left screen coordinate.
+			/// @param right Right screen coordinate.
+			/// @param bottom Bottom screen coordinate.
+			/// @param top Top screen coordinate.
+			/// @param near Near distance.
+			/// @param far Far distance.
+			constexpr OrthographicCamera(f32 left, f32 right, f32 bottom, f32 top,
+										 f32 near, f32 far);
 
-		/// @brief Set the projection matrix via screen coordinates.
-		/// @param left Left screen coordinate.
-		/// @param right Right screen coordinate.
-		/// @param bottom Bottom screen coordinate.
-		/// @param top Top screen coordinate.
-		/// @param near Near distance.
-		/// @param far Far distance.
-		constexpr void SetProjection(f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far);
+			/// @brief Copy constructor.
+			constexpr OrthographicCamera(const OrthographicCamera &) = default;
+			/// @brief Copy assignment operator.
+			constexpr OrthographicCamera &operator=(const OrthographicCamera &) = default;
+			/// @brief Move constructor.
+			constexpr OrthographicCamera(OrthographicCamera &&) noexcept = default;
+			/// @brief Move assignment operator.
+			constexpr OrthographicCamera &operator=(OrthographicCamera &&) noexcept = default;
 
-		/// @brief Retrieve the current camera position.
-		/// @return Current camera position.
-		[[nodiscard]] constexpr const Math::Vec3& GetPosition() const noexcept;
-		/// @brief Set the camera position.
-		/// @param position New camera position.
-		constexpr void SetPosition(const Math::Vec3& position);
+			/// @brief Destructor.
+			constexpr ~OrthographicCamera() = default;
 
-		/// @brief Retrieve the current camera rotation.
-		/// @return Current camera rotation.
-		[[nodiscard]] constexpr const Math::Vec3& GetRotation() const noexcept;
-		/// @brief Set the camera rotation.
-		/// @param rotation New camera rotation.
-		constexpr void SetRotation(const Math::Vec3& rotation);
+			/// @brief Set the projection matrix via screen coordinates.
+			/// @param left Left screen coordinate.
+			/// @param right Right screen coordinate.
+			/// @param bottom Bottom screen coordinate.
+			/// @param top Top screen coordinate.
+			/// @param near Near distance.
+			/// @param far Far distance.
+			constexpr void SetProjection(f32 left, f32 right, f32 bottom, f32 top,
+										f32 near, f32 far);
 
-		/// @brief Retrieve the projection matrix.
-		/// @return Projection matrix.
-		[[nodiscard]] constexpr const Math::Mat4& GetProjectionMatrix() const noexcept;
-		/// @brief Retrieve the view matrix.
-		/// @return View matrix.
-		[[nodiscard]] constexpr const Math::Mat4& GetViewMatrix() const noexcept;
+			/// @brief Retrieve the current camera position.
+			/// @return Current camera position.
+			[[nodiscard]] constexpr const Math::Vec3& GetPosition() const noexcept;
+			/// @brief Set the camera position.
+			/// @param position New camera position.
+			constexpr void SetPosition(const Math::Vec3 &position);
+
+			/// @brief Retrieve the current camera rotation.
+			/// @return Current camera rotation.
+			[[nodiscard]] constexpr const Math::Vec3& GetRotation() const noexcept;
+			/// @brief Set the camera rotation.
+			/// @param rotation New camera rotation.
+			constexpr void SetRotation(const Math::Vec3 &rotation);
+
+			/// @brief Retrieve the projection matrix.
+			/// @return Projection matrix.
+			[[nodiscard]] constexpr const Math::Mat4& GetProjectionMatrix() const noexcept;
+			/// @brief Retrieve the view matrix.
+			/// @return View matrix.
+			[[nodiscard]] constexpr const Math::Mat4& GetViewMatrix() const noexcept;
 
 	private:
 		/// @brief Recalculate the view matrix.

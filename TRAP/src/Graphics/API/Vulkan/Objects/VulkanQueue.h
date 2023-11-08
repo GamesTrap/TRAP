@@ -21,13 +21,13 @@ namespace TRAP::Graphics::API
 		~VulkanQueue() override;
 
 		/// @brief Copy constructor.
-		VulkanQueue(const VulkanQueue&) noexcept = default;
+		consteval VulkanQueue(const VulkanQueue&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		constexpr VulkanQueue& operator=(const VulkanQueue&) = delete;
+		consteval VulkanQueue& operator=(const VulkanQueue&) = delete;
 		/// @brief Move constructor.
 		VulkanQueue(VulkanQueue&&) noexcept = default;
 		/// @brief Move assignment operator.
-		constexpr VulkanQueue& operator=(VulkanQueue&&) = delete;
+		consteval VulkanQueue& operator=(VulkanQueue&&) = delete;
 
 		/// @brief Retrieve the Vulkan queue handle.
 		/// @return Vulkan queue handle.

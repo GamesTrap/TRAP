@@ -19,9 +19,9 @@ namespace TRAP::Graphics::API
 		~VulkanPipeline() override;
 
 		/// @brief Copy constructor.
-		VulkanPipeline(const VulkanPipeline&) noexcept = default;
+		consteval VulkanPipeline(const VulkanPipeline&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanPipeline& operator=(const VulkanPipeline&) noexcept = default;
+		consteval VulkanPipeline& operator=(const VulkanPipeline&) noexcept = delete;
 		/// @brief Move constructor.
 		VulkanPipeline(VulkanPipeline&&) noexcept = default;
 		/// @brief Move assignment operator.

@@ -23,7 +23,7 @@ namespace TRAP
 		constexpr ScriptableEntity& operator=(ScriptableEntity&&) noexcept = default;
 
 		template<typename T>
-		[[nodiscard]] T& GetComponent()
+		[[nodiscard]] T& GetComponent() const
 		{
 			return m_entity.GetComponent<T>();
 		}

@@ -13,6 +13,11 @@ namespace TRAP::Events
 	class KeyEvent : public Event
 	{
 	public:
+		/// @brief Copy constructor.
+		consteval KeyEvent(const KeyEvent&) noexcept = delete;
+		/// @brief Copy assignment operator.
+		consteval KeyEvent& operator=(const KeyEvent&) noexcept = delete;
+
 		/// @brief Destructor.
 		constexpr ~KeyEvent() override = default;
 
@@ -28,10 +33,6 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param key Affected key.
 		explicit constexpr KeyEvent(Input::Key key) noexcept;
-		/// @brief Copy constructor.
-		constexpr KeyEvent(const KeyEvent&) noexcept = default;
-		/// @brief Copy assignment operator.
-		constexpr KeyEvent& operator=(const KeyEvent&) noexcept = default;
 		/// @brief Move constructor.
 		constexpr KeyEvent(KeyEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -52,9 +53,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~KeyPressEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr KeyPressEvent(const KeyPressEvent&) noexcept = default;
+		consteval KeyPressEvent(const KeyPressEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		KeyPressEvent& operator=(const KeyPressEvent&) noexcept = default;
+		consteval KeyPressEvent& operator=(const KeyPressEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr KeyPressEvent(KeyPressEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -95,9 +96,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~KeyRepeatEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr KeyRepeatEvent(const KeyRepeatEvent&) noexcept = default;
+		consteval KeyRepeatEvent(const KeyRepeatEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		KeyRepeatEvent& operator=(const KeyRepeatEvent&) noexcept = default;
+		consteval KeyRepeatEvent& operator=(const KeyRepeatEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr KeyRepeatEvent(KeyRepeatEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -137,9 +138,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~KeyReleaseEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr KeyReleaseEvent(const KeyReleaseEvent&) noexcept = default;
+		consteval KeyReleaseEvent(const KeyReleaseEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		KeyReleaseEvent& operator=(const KeyReleaseEvent&) noexcept = default;
+		consteval KeyReleaseEvent& operator=(const KeyReleaseEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr KeyReleaseEvent(KeyReleaseEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -179,9 +180,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~KeyTypeEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr KeyTypeEvent(const KeyTypeEvent&) noexcept = default;
+		consteval KeyTypeEvent(const KeyTypeEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		KeyTypeEvent& operator=(const KeyTypeEvent&) noexcept = default;
+		consteval KeyTypeEvent& operator=(const KeyTypeEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr KeyTypeEvent(KeyTypeEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
@@ -227,9 +228,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~KeyLayoutEvent() override = default;
 		/// @brief Copy constructor.
-		constexpr KeyLayoutEvent(const KeyLayoutEvent&) noexcept = default;
+		consteval KeyLayoutEvent(const KeyLayoutEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		constexpr KeyLayoutEvent& operator=(const KeyLayoutEvent&) noexcept = default;
+		consteval KeyLayoutEvent& operator=(const KeyLayoutEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr KeyLayoutEvent(KeyLayoutEvent&&) noexcept = default;
 		/// @brief Move assignment operator.

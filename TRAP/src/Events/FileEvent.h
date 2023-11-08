@@ -25,9 +25,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		~FileChangeEvent() override = default;
 		/// @brief Copy constructor.
-		FileChangeEvent(const FileChangeEvent&) noexcept = default;
+		consteval FileChangeEvent(const FileChangeEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		FileChangeEvent& operator=(const FileChangeEvent&) noexcept = default;
+		consteval FileChangeEvent& operator=(const FileChangeEvent&) noexcept = delete;
 		/// @brief Move constructor.
 		FileChangeEvent(FileChangeEvent&&) noexcept = default;
 		/// @brief Move assignment operator.

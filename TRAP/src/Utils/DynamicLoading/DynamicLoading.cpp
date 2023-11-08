@@ -31,7 +31,7 @@
 		TP_ERROR(Log::UtilsPrefix, dlerror());
 	}
 	else
-		TP_TRACE(Log::UtilsPrefix, "Loaded shared library \"", path, "\"");
+		TP_INFO(Log::UtilsPrefix, "Loaded shared library \"", path, "\"");
 	return handle;
 #else
     return nullptr;

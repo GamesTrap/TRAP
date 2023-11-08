@@ -21,9 +21,9 @@ namespace TRAP::Graphics
 		virtual ~PipelineCache();
 
 		/// @brief Copy constructor.
-		constexpr PipelineCache(const PipelineCache&) noexcept = default;
+		consteval PipelineCache(const PipelineCache&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		PipelineCache& operator=(const PipelineCache&) noexcept = default;
+		consteval PipelineCache& operator=(const PipelineCache&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr PipelineCache(PipelineCache&&) noexcept = default;
 		/// @brief Move assignment operator.

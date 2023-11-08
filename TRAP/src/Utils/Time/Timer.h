@@ -15,6 +15,14 @@ namespace TRAP::Utils
 		/// Creates and starts a new timer.
 		Timer() noexcept;
 
+		constexpr Timer(const Timer&) = default;
+		Timer& operator=(const Timer&) = default;
+		constexpr Timer(Timer&&) noexcept = default;
+		Timer& operator=(Timer&&) noexcept = default;
+
+		/// @brief Destructor.
+		constexpr ~Timer() = default;
+
 		/// @brief Resets and restarts the timer.
 		void Reset() noexcept;
 		/// @brief Retrieve elapsed time in seconds.

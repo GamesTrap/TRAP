@@ -48,13 +48,13 @@ namespace TRAP::Utils
     	/// @brief Destructor.
         constexpr ~BasicRandomStatic() = delete;
         /// @brief Copy constructor.
-        constexpr BasicRandomStatic(const BasicRandomStatic&) = delete;
+        consteval BasicRandomStatic(const BasicRandomStatic&) = delete;
         /// @brief Copy assignment operator.
-        constexpr BasicRandomStatic operator=(const BasicRandomStatic&) = delete;
+        consteval BasicRandomStatic operator=(const BasicRandomStatic&) = delete;
         /// @brief Move constructor.
-        constexpr BasicRandomStatic(BasicRandomStatic&&) = delete;
+        consteval BasicRandomStatic(BasicRandomStatic&&) noexcept = delete;
         /// @brief Move assignment operator.
-        constexpr BasicRandomStatic operator=(BasicRandomStatic&&) = delete;
+        consteval BasicRandomStatic operator=(BasicRandomStatic&&) noexcept = delete;
 
         /// @brief Type of used random number engine.
         using EngineType = engine;
@@ -422,13 +422,13 @@ namespace TRAP::Utils
         /// @brief Destructor.
         constexpr ~BasicRandomThreadLocal() = delete;
         /// @brief Copy constructor.
-        constexpr BasicRandomThreadLocal(const BasicRandomThreadLocal&) = delete;
+        consteval BasicRandomThreadLocal(const BasicRandomThreadLocal&) = delete;
         /// @brief Copy assignment operator.
-        constexpr BasicRandomThreadLocal operator=(const BasicRandomThreadLocal&) = delete;
+        consteval BasicRandomThreadLocal operator=(const BasicRandomThreadLocal&) = delete;
         /// @brief Move constructor.
-        constexpr BasicRandomThreadLocal(BasicRandomThreadLocal&&) = delete;
+        consteval BasicRandomThreadLocal(BasicRandomThreadLocal&&) noexcept = delete;
         /// @brief Move assignment operator.
-        constexpr BasicRandomThreadLocal operator=(BasicRandomThreadLocal&&) = delete;
+        consteval BasicRandomThreadLocal operator=(BasicRandomThreadLocal&&) noexcept = delete;
 
         /// @brief Type of used random number engine.
         using EngineType = engine;

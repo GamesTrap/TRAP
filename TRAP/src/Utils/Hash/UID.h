@@ -20,12 +20,12 @@ namespace TRAP::Utils
         constexpr ~UID() = default;
 
         /// @brief Copy constructor.
-        constexpr UID(const UID& other) noexcept = delete;
+        consteval UID(const UID& other) noexcept = delete;
         /// @brief Move constructor.
         constexpr UID(UID&& other) noexcept = default;
 
         /// @brief Copy assignment operator.
-        constexpr UID& operator=(const UID& other) noexcept = delete;
+        consteval UID& operator=(const UID& other) noexcept = delete;
         /// @brief Move assignment operator.
         constexpr UID& operator=(UID&& other) noexcept = default;
 

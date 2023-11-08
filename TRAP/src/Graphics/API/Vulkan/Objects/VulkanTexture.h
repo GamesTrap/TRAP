@@ -33,9 +33,9 @@ namespace TRAP::Graphics::API
 		~VulkanTexture() override;
 
 		/// @brief Copy constructor.
-		VulkanTexture(const VulkanTexture&) noexcept = default;
+		consteval VulkanTexture(const VulkanTexture&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanTexture& operator=(const VulkanTexture&) noexcept = default;
+		consteval VulkanTexture& operator=(const VulkanTexture&) noexcept = delete;
 		/// @brief Move constructor.
 		VulkanTexture(VulkanTexture&&) noexcept = default;
 		/// @brief Move assignment operator.

@@ -16,14 +16,14 @@ namespace TRAP::Utils
 		constexpr ~Config() = default;
 
 		/// @brief Copy constructor.
-		constexpr Config(const Config&) = delete;
+		consteval Config(const Config&) = delete;
 		/// @brief Move constructor.
-		constexpr Config(Config&&) = default;
+		constexpr Config(Config&&) noexcept = default;
 
 		/// @brief Copy assignment operator.
-		constexpr Config& operator=(const Config&) = delete;
+		consteval Config& operator=(const Config&) = delete;
 		/// @brief Move assignment operator.
-		constexpr Config& operator=(Config&&) = default;
+		constexpr Config& operator=(Config&&) noexcept = default;
 
 		/// @brief Load a config file from disk.
 		/// @param file File path to load.

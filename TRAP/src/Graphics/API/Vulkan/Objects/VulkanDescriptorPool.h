@@ -24,13 +24,13 @@ namespace TRAP::Graphics::API
 		~VulkanDescriptorPool() override;
 
 		/// @brief Copy constructor.
-		VulkanDescriptorPool(const VulkanDescriptorPool&) = delete;
+		consteval VulkanDescriptorPool(const VulkanDescriptorPool&) = delete;
 		/// @brief Copy assignment operator.
-		VulkanDescriptorPool& operator=(const VulkanDescriptorPool&) = delete;
+		consteval VulkanDescriptorPool& operator=(const VulkanDescriptorPool&) = delete;
 		/// @brief Move constructor.
-		VulkanDescriptorPool(VulkanDescriptorPool&&) = delete;
+		consteval VulkanDescriptorPool(VulkanDescriptorPool&&) = delete;
 		/// @brief Move assignment operator.
-		VulkanDescriptorPool& operator=(VulkanDescriptorPool&&) = delete;
+		consteval VulkanDescriptorPool& operator=(VulkanDescriptorPool&&) = delete;
 
 		/// @brief Reset the descriptor pool.
 		/// @note This implicitly frees all descriptor sets allocated from the pool.

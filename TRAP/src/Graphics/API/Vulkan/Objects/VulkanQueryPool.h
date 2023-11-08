@@ -18,9 +18,9 @@ namespace TRAP::Graphics::API
 		~VulkanQueryPool() override;
 
 		/// @brief Copy constructor.
-		constexpr VulkanQueryPool(const VulkanQueryPool&) noexcept = default;
+		consteval VulkanQueryPool(const VulkanQueryPool&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanQueryPool& operator=(const VulkanQueryPool&) noexcept = default;
+		consteval VulkanQueryPool& operator=(const VulkanQueryPool&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr VulkanQueryPool(VulkanQueryPool&&) noexcept = default;
 		/// @brief Move assignment operator.

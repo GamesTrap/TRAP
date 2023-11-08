@@ -19,16 +19,17 @@ namespace TRAP::Graphics
 		/// @brief Constructor.
 		/// @param updateFrequency Update frequency for the storage buffer.
 		constexpr explicit StorageBuffer(RendererAPI::DescriptorUpdateFrequency updateFrequency);
-		/// @brief Copy constructor.
-		constexpr StorageBuffer(const StorageBuffer&) noexcept = default;
-		/// @brief Copy assignment operator.
-		constexpr StorageBuffer& operator=(const StorageBuffer&) noexcept = default;
 		/// @brief Move constructor.
 		constexpr StorageBuffer(StorageBuffer&&) noexcept = default;
 		/// @brief Move assignment operator.
 		constexpr StorageBuffer& operator=(StorageBuffer&&) noexcept = default;
 
 	public:
+		/// @brief Copy constructor.
+		consteval StorageBuffer(const StorageBuffer&) noexcept = delete;
+		/// @brief Copy assignment operator.
+		consteval StorageBuffer& operator=(const StorageBuffer&) noexcept = delete;
+
 		/// @brief Destructor.
 		constexpr ~StorageBuffer() = default;
 

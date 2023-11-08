@@ -125,6 +125,18 @@ namespace TRAP::Network
 			/// @param message Response message.
 			constexpr explicit Response(Status code = Status::InvalidResponse, std::string message = "") noexcept;
 
+			/// @brief Copy constructor.
+			constexpr Response(const Response&) = default;
+			/// @brief Copy assignment operator.
+			constexpr Response& operator=(const Response&) = default;
+			/// @brief Move constructor.
+			constexpr Response(Response&&) noexcept = default;
+			/// @brief Move assignment operator.
+			constexpr Response& operator=(Response&&) noexcept = default;
+
+			/// @brief Destructor.
+			constexpr ~Response() = default;
+
 			/// @brief Check if the status code means a success.
 			///
 			/// This function is defined for convenience, it is
@@ -158,6 +170,18 @@ namespace TRAP::Network
 			/// @param response Source response.
 			explicit DirectoryResponse(const Response& response);
 
+			/// @brief Copy constructor.
+			DirectoryResponse(const DirectoryResponse&) = default;
+			/// @brief Copy assignment operator.
+			DirectoryResponse& operator=(const DirectoryResponse&) = default;
+			/// @brief Move constructor.
+			DirectoryResponse(DirectoryResponse&&) noexcept = default;
+			/// @brief Move assignment operator.
+			DirectoryResponse& operator=(DirectoryResponse&&) noexcept = default;
+
+			/// @brief Destructor.
+			~DirectoryResponse() = default;
+
 			/// @brief Get the directory returned in the response.
 			/// @return Directory name.
 			[[nodiscard]] const std::filesystem::path& GetDirectory() const noexcept;
@@ -175,6 +199,18 @@ namespace TRAP::Network
 			/// @param data Data containing the raw listing.
 			constexpr ListingResponse(const Response& response, std::string_view data);
 
+			/// @brief Copy constructor.
+			ListingResponse(const ListingResponse&) = default;
+			/// @brief Copy assignment operator.
+			ListingResponse& operator=(const ListingResponse&) = default;
+			/// @brief Move constructor.
+			ListingResponse(ListingResponse&&) noexcept = default;
+			/// @brief Move assignment operator.
+			ListingResponse& operator=(ListingResponse&&) noexcept = default;
+
+			/// @brief Destructor.
+			~ListingResponse() = default;
+
 			/// @brief Return the array of directory/file names.
 			/// @return Array containing the requested listing.
 			[[nodiscard]] constexpr const std::vector<std::filesystem::path>& GetListing() const noexcept;
@@ -190,10 +226,10 @@ namespace TRAP::Network
 		~FTP();
 
 		/// @brief Copy constructor.
-		constexpr FTP(const FTP&) = delete;
+		consteval FTP(const FTP&) noexcept = delete;
 
 		/// @brief Copy assignment operator.
-		constexpr FTP& operator=(const FTP&) = delete;
+		consteval FTP& operator=(const FTP&) noexcept = delete;
 
 		/// @brief Move constructor.
 		constexpr FTP(FTP&&) noexcept = default;

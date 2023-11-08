@@ -31,13 +31,13 @@ namespace TRAP::Graphics::API
 		~ResourceLoader() = default;
 
 		/// @brief Copy constructor.
-		constexpr ResourceLoader(const ResourceLoader&) = delete;
+		consteval ResourceLoader(const ResourceLoader&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		constexpr ResourceLoader& operator=(const ResourceLoader&) = delete;
+		consteval ResourceLoader& operator=(const ResourceLoader&) noexcept = delete;
 		/// @brief Move constructor.
-		constexpr ResourceLoader(ResourceLoader&&) = delete;
+		consteval ResourceLoader(ResourceLoader&&) noexcept = delete;
 		/// @brief Move assignment operator.
-		constexpr ResourceLoader& operator=(ResourceLoader&&) = delete;
+		consteval ResourceLoader& operator=(ResourceLoader&&) noexcept = delete;
 
 		//Adding and updating resources can be done using a AddResource or BeginUpdateResource/EndUpdateResource
 		//pair.

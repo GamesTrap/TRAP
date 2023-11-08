@@ -17,9 +17,9 @@ namespace TRAP::Graphics
 		virtual ~Semaphore();
 
 		/// @brief Copy constructor.
-		constexpr Semaphore(const Semaphore&) noexcept = default;
+		consteval Semaphore(const Semaphore&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		Semaphore& operator=(const Semaphore&) noexcept = default;
+		consteval Semaphore& operator=(const Semaphore&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr Semaphore(Semaphore&&) noexcept = default;
 		/// @brief Move assignment operator.

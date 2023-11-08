@@ -56,13 +56,13 @@ namespace TRAP
 		virtual ~Application();
 
 		/// @brief Copy constructor.
-		constexpr Application(const Application&) = delete;
+		consteval Application(const Application&) = delete;
 		/// @brief Copy assignment operator.
-		constexpr Application& operator=(const Application&) = delete;
+		consteval Application& operator=(const Application&) = delete;
 		/// @brief Move constructor.
-		constexpr Application(Application&&) = delete;
+		consteval Application(Application&&) noexcept = delete;
 		/// @brief Move assignment operator.
-		constexpr Application& operator=(Application&&) = delete;
+		consteval Application& operator=(Application&&) noexcept = delete;
 
 		/// @brief Pushes a layer to the applications layer stack.
 		/// @param layer Unique ptr containing the layer to be pushed.

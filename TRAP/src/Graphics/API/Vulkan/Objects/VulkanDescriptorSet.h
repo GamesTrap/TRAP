@@ -25,9 +25,9 @@ namespace TRAP::Graphics::API
 							u32 set);
 
 		/// @brief Copy constructor.
-		VulkanDescriptorSet(const VulkanDescriptorSet&) noexcept = default;
+		consteval VulkanDescriptorSet(const VulkanDescriptorSet&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		VulkanDescriptorSet& operator=(const VulkanDescriptorSet&) noexcept = default;
+		consteval VulkanDescriptorSet& operator=(const VulkanDescriptorSet&) noexcept = delete;
 		/// @brief Move constructor.
 		VulkanDescriptorSet(VulkanDescriptorSet&&) noexcept = default;
 		/// @brief Move assignment operator.

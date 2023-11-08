@@ -17,9 +17,9 @@ namespace TRAP::Graphics
 		virtual ~Pipeline();
 
 		/// @brief Copy constructor.
-		constexpr Pipeline(const Pipeline&) noexcept = default;
+		consteval Pipeline(const Pipeline&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		Pipeline& operator=(const Pipeline&) noexcept = default;
+		consteval Pipeline& operator=(const Pipeline&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr Pipeline(Pipeline&&) noexcept = default;
 		/// @brief Move assignment operator.

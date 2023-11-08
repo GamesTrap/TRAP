@@ -17,16 +17,17 @@ namespace TRAP::Graphics
 		/// @brief Constructor.
 		/// @param updateFrequency Update frequency of the uniform buffer.
 		constexpr explicit UniformBuffer(RendererAPI::DescriptorUpdateFrequency updateFrequency);
-		/// @brief Copy constructor.
-		constexpr UniformBuffer(const UniformBuffer&) noexcept = default;
-		/// @brief Copy assignment operator.
-		constexpr UniformBuffer& operator=(const UniformBuffer&) noexcept = default;
 		/// @brief Move constructor.
 		constexpr UniformBuffer(UniformBuffer&&) noexcept = default;
 		/// @brief Move assignment operator.
 		constexpr UniformBuffer& operator=(UniformBuffer&&) noexcept = default;
 
 	public:
+		/// @brief Copy constructor.
+		consteval UniformBuffer(const UniformBuffer&) noexcept = delete;
+		/// @brief Copy assignment operator.
+		consteval UniformBuffer& operator=(const UniformBuffer&) noexcept = delete;
+
 		/// @brief Destructor.
 		constexpr ~UniformBuffer() = default;
 

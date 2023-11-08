@@ -17,9 +17,9 @@ namespace TRAP::Graphics
 		virtual ~Buffer();
 
 		/// @brief Copy constructor.
-		constexpr Buffer(const Buffer&) noexcept = default;
+		consteval Buffer(const Buffer&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		Buffer& operator=(const Buffer&) noexcept = default;
+		consteval Buffer& operator=(const Buffer&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr Buffer(Buffer&&) noexcept = default;
 		/// @brief Move assignment operator.

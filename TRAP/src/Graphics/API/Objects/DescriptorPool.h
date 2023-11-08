@@ -17,9 +17,9 @@ namespace TRAP::Graphics
 		virtual ~DescriptorPool();
 
 		/// @brief Copy constructor.
-		constexpr DescriptorPool(const DescriptorPool&) noexcept = default;
+		consteval DescriptorPool(const DescriptorPool&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		DescriptorPool& operator=(const DescriptorPool&) noexcept = default;
+		consteval DescriptorPool& operator=(const DescriptorPool&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr DescriptorPool(DescriptorPool&&) noexcept = default;
 		/// @brief Move assignment operator.
