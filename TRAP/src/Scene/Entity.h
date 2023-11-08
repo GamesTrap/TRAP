@@ -33,9 +33,9 @@ namespace TRAP
 		constexpr Entity(entt::entity handle, Scene* scene) noexcept;
 
 		/// @brief Copy constructor.
-		consteval Entity(const Entity&) = default;
+		constexpr Entity(const Entity&) = default;
 		/// @brief Copy assignment operator.
-		consteval Entity& operator=(const Entity&) = default;
+		constexpr Entity& operator=(const Entity&) = default;
 		/// @brief Move constructor.
 		constexpr Entity(Entity&&) noexcept = default;
 		/// @brief Move assignment operator.
