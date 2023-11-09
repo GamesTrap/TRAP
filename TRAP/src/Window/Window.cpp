@@ -237,7 +237,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 	std::string newTitle = fmt::format("{} - TRAP™ V{}[INDEV]{}{}", m_data.Title, TRAP_VERSION,
 	                                   Log::WindowVersion, Graphics::RendererAPI::GetRenderer()->GetTitle());
 #ifdef TRAP_PLATFORM_LINUX
-		newTitle += fmt::format("[{}]", Utils::String::ConvertToString(Utils::GetLinuxWindowManager()));
+		newTitle += fmt::format("[{}]", Utils::GetLinuxWindowManager());
 #elif defined(TRAP_PLATFORM_WINDOWS)
 		newTitle += "[Win32]";
 #endif
@@ -294,10 +294,8 @@ void TRAP::Window::SetFullscreen(const Monitor::VideoMode& videoMode)
 		return;
 	}
 
-	TP_INFO(Log::WindowPrefix, "\"", m_data.Title, "\" changing display mode from ",
-	        Utils::String::ConvertToString(m_data.displayMode), " to ",
-			Utils::String::ConvertToString(DisplayMode::Fullscreen), ": ",
-	        videoMode.Width, 'x', videoMode.Height, '@', videoMode.RefreshRate, "Hz");
+	TP_INFO(Log::WindowPrefix, "\"", m_data.Title, "\" changing display mode from ", m_data.displayMode, " to ",
+			DisplayMode::Fullscreen, ": ", videoMode.Width, 'x', videoMode.Height, '@', videoMode.RefreshRate, "Hz");
 
 	INTERNAL::WindowingAPI::SetWindowMonitor(*m_window, static_cast<INTERNAL::WindowingAPI::InternalMonitor*>(m_data.Monitor.GetInternalMonitor()),
 	                                         0, 0, NumericCast<i32>(videoMode.Width),
@@ -323,10 +321,8 @@ void TRAP::Window::SetFullscreenBorderless()
 	if(m_data.displayMode == DisplayMode::Windowed) //Stash current window position
 		INTERNAL::WindowingAPI::GetWindowPos(*m_window, m_data.windowModeParams.XPos, m_data.windowModeParams.YPos);
 
-	TP_INFO(Log::WindowPrefix, "\"", m_data.Title, "\" changing display mode from ",
-	        Utils::String::ConvertToString(m_data.displayMode), " to ",
-			Utils::String::ConvertToString(DisplayMode::Borderless), ": ",
-	        nativeMode->Width, 'x', nativeMode->Height, '@', nativeMode->RefreshRate, "Hz");
+	TP_INFO(Log::WindowPrefix, "\"", m_data.Title, "\" changing display mode from ", m_data.displayMode, " to ",
+			DisplayMode::Borderless, ": ", nativeMode->Width, 'x', nativeMode->Height, '@', nativeMode->RefreshRate, "Hz");
 
 	INTERNAL::WindowingAPI::SetWindowMonitorBorderless(*m_window, *static_cast<INTERNAL::WindowingAPI::InternalMonitor*>(m_data.Monitor.GetInternalMonitor()));
 
@@ -357,9 +353,8 @@ void TRAP::Window::SetWindowed(const u32 width, const u32 height)
 
 	if(m_data.displayMode != DisplayMode::Windowed) //Change to windowed and resize
 	{
-		TP_INFO(Log::WindowPrefix, "\"", m_data.Title, "\" changing display mode from ",
-				Utils::String::ConvertToString(m_data.displayMode), " to ",
-				Utils::String::ConvertToString(DisplayMode::Windowed), ": ", width, 'x', height);
+		TP_INFO(Log::WindowPrefix, "\"", m_data.Title, "\" changing display mode from ", m_data.displayMode, " to ",
+				DisplayMode::Windowed, ": ", width, 'x', height);
 
 		INTERNAL::WindowingAPI::SetWindowMonitor(*m_window, nullptr, m_data.windowModeParams.XPos,
 												 m_data.windowModeParams.YPos, NumericCast<i32>(width),
@@ -825,7 +820,7 @@ void TRAP::Window::Init(const WindowProps& props)
 											 Graphics::RendererAPI::GetRenderer()->GetTitle(),
 
 #ifdef TRAP_PLATFORM_LINUX
-						         Utils::String::ConvertToString(Utils::GetLinuxWindowManager())
+						                     Utils::GetLinuxWindowManager()
 #elif defined(TRAP_PLATFORM_LINUX)
 						         "[Win32]"
 #else

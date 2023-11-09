@@ -252,7 +252,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 	{
 		desc.Desc.StartState = UtilDetermineResourceStartState(desc.Desc);
 		TP_WARN(Log::RendererBufferPrefix, "Buffer start state not provided. Determined the start state as ",
-				Utils::String::ConvertToString(desc.Desc.StartState), "(", std::to_underlying(desc.Desc.StartState),
+				desc.Desc.StartState, "(", std::to_underlying(desc.Desc.StartState),
 				") based on the provided BufferDesc");
 	}
 

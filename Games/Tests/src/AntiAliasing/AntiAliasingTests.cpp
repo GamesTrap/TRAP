@@ -50,12 +50,12 @@ void AntiAliasingTests::OnImGuiRender()
 	                                      ImGuiWindowFlags_AlwaysAutoResize);
 
 	bool updateAA = false;
-	if(ImGui::BeginCombo("Anti aliasing", TRAP::Utils::String::ConvertToString(m_antiAliasing).c_str()))
+	if(ImGui::BeginCombo("Anti aliasing", fmt::format("{}", m_antiAliasing).c_str()))
 	{
 		for(usize i = 0; i < m_antiAliasingMethods.size(); ++i)
 		{
 			const bool isSelected = (NumericCast<usize>(std::to_underlying(m_antiAliasing)) == i);
-			if(ImGui::Selectable(TRAP::Utils::String::ConvertToString(m_antiAliasingMethods[i]).c_str(), isSelected))
+			if(ImGui::Selectable(fmt::format("{}", m_antiAliasingMethods[i]).c_str(), isSelected))
 			{
 				updateAA = true;
 				m_antiAliasing = m_antiAliasingMethods[i];

@@ -4,7 +4,10 @@
 #include <array>
 #include <string>
 
+#include <fmt/core.h>
+
 #include "Core/Types.h"
+#include "TRAP_Assert.h"
 
 namespace TRAP::Utils
 {
@@ -148,5 +151,41 @@ namespace TRAP::Utils
 	//Check if machine is using little-endian or big-endian
 	return static_cast<Endian>(std::endian::native == std::endian::little);
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::Utils::LinuxWindowManager>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Utils::LinuxWindowManager linuxWM,
+	                                            fmt::format_context& ctx)
+    {
+        std::string enumStr{};
+        switch(linuxWM)
+        {
+        case TRAP::Utils::LinuxWindowManager::Unknown:
+            enumStr = "Off";
+            break;
+        case TRAP::Utils::LinuxWindowManager::X11:
+            enumStr = "X11";
+            break;
+        case TRAP::Utils::LinuxWindowManager::Wayland:
+            enumStr = "Wayland";
+            break;
+
+        default:
+            TRAP_ASSERT(false, "fmt::formatter<TRAP::Utils::LinuxWindowManager>: Missing enum value!");
+            enumStr = "<MISSING ENUM VALUE>";
+            break;
+        }
+
+        return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
 
 #endif /*TRAP_UTILS_H*/

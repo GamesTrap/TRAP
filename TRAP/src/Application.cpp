@@ -910,7 +910,7 @@ void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const u32 fpsLim
 			GPUUUID = Graphics::RendererAPI::GetNewGPU();
 		else
 			GPUUUID = Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
-		config.Set(Utils::String::ConvertToString(Graphics::RendererAPI::GetRenderAPI()) + "GPU", Utils::UUIDToString(GPUUUID));
+		config.Set(fmt::format("{}GPU", Graphics::RendererAPI::GetRenderAPI()), Utils::UUIDToString(GPUUUID));
 
 		Graphics::AntiAliasing antiAliasing = Graphics::AntiAliasing::Off;
 		Graphics::SampleCount antiAliasingSampleCount = Graphics::SampleCount::Two;
@@ -918,7 +918,7 @@ void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const u32 fpsLim
 		const Graphics::SampleCount anisotropyLevel = Graphics::RenderCommand::GetAnisotropyLevel();
 		config.Set("AntiAliasing", antiAliasing);
 		config.Set("AntiAliasingQuality", antiAliasingSampleCount);
-		config.Set("AnisotropyLevel", (anisotropyLevel == Graphics::SampleCount::One) ? "Off" : Utils::String::ConvertToString(anisotropyLevel));
+		config.Set("AnisotropyLevel", (anisotropyLevel == Graphics::SampleCount::One) ? "Off" : fmt::format("{}", anisotropyLevel));
 		config.Set("RenderScale", Graphics::RenderCommand::GetRenderScale());
 
 		//NVIDIA Reflex

@@ -65,14 +65,14 @@ void InputLagTests::OnImGuiRender()
 		ImGui::Text("NVIDIA Reflex is not supported on this GPU!");
 	else
 	{
-		ImGui::Text("Current Latency Mode: %s", TRAP::Utils::String::ConvertToString(m_latencyMode).c_str());
+		ImGui::Text("Current Latency Mode: %s", fmt::format("{}", m_latencyMode).c_str());
 
-		if(ImGui::BeginCombo("Latency Mode", TRAP::Utils::String::ConvertToString(m_latencyMode).c_str()))
+		if(ImGui::BeginCombo("Latency Mode", fmt::format("{}", m_latencyMode).c_str()))
 		{
 			for(u32 i = 0; i <= std::to_underlying(TRAP::Graphics::LatencyMode::EnabledBoost); ++i)
 			{
 				const bool isSelected = (std::to_underlying(m_latencyMode) == i);
-				if(ImGui::Selectable(TRAP::Utils::String::ConvertToString(static_cast<TRAP::Graphics::LatencyMode>(i)).c_str(), isSelected))
+				if(ImGui::Selectable(fmt::format("{}", static_cast<TRAP::Graphics::LatencyMode>(i)).c_str(), isSelected))
 				{
 					TRAP::Graphics::RenderCommand::SetLatencyMode(static_cast<TRAP::Graphics::LatencyMode>(i));
 					m_latencyMode = TRAP::Graphics::RenderCommand::GetLatencyMode();

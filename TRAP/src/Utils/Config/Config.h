@@ -145,11 +145,11 @@ void TRAP::Utils::Config::Set(const std::string& key, const T value)
 			return Utils::String::CompareAnyCase(test.first, key);
 		});
 	if(elementIterator != m_data.end())
-		elementIterator->second = String::ConvertToString<T>(value);
+		elementIterator->second = fmt::format("{}", value);
 	else
 	{
 		//If not it creates a new element
-		m_data.emplace_back(key, String::ConvertToString<T>(value));
+		m_data.emplace_back(key, fmt::format("{}", value));
 	}
 }
 
@@ -163,8 +163,8 @@ void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& valu
 	//Transform the vector into a string that separates the elements with a comma
 	std::string valueAsString;
 	for (usize i = 0; i < value.size() - 1; ++i)
-		valueAsString += String::ConvertToString<T>(value[i]) + ',';
-	valueAsString += String::ConvertToString<T>(value.back());
+		valueAsString += fmt::format("{},", value[i]);
+	valueAsString += fmt::format("{}", value.back());
 
 	//Replace the value if the key is found
 	m_hasChanged = true;

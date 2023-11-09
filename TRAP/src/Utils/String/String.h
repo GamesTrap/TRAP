@@ -168,12 +168,6 @@ namespace TRAP::Utils::String
 	/// @return String converted to type T.
 	template<typename T>
 	[[nodiscard]] T ConvertToType(const std::string& input);
-	/// @brief Convert a value of type T to a string.
-	/// @tparam T Type to convert
-	/// @param value Value to convert.
-	/// @return Type T value converted to string.
-	template<typename T>
-	[[nodiscard]] std::string ConvertToString(T value);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

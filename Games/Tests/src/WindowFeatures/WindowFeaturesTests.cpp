@@ -18,13 +18,13 @@ void WindowFeaturesTests::OnImGuiRender()
 	ImGui::Text("Press ESC to close");
 	ImGui::Separator();
 
-	if(ImGui::BeginCombo("Display Mode", TRAP::Utils::String::ConvertToString<TRAP::Window::DisplayMode>(TRAP::Application::GetWindow()->GetDisplayMode()).c_str()))
+	if(ImGui::BeginCombo("Display Mode", fmt::format("{}", TRAP::Application::GetWindow()->GetDisplayMode()).c_str()))
 	{
-		if(ImGui::Selectable(TRAP::Utils::String::ConvertToString<TRAP::Window::DisplayMode>(TRAP::Window::DisplayMode::Windowed).c_str(), TRAP::Application::GetWindow()->GetDisplayMode() == TRAP::Window::DisplayMode::Windowed))
+		if(ImGui::Selectable(fmt::format("{}", TRAP::Window::DisplayMode::Windowed).c_str(), TRAP::Application::GetWindow()->GetDisplayMode() == TRAP::Window::DisplayMode::Windowed))
 			TRAP::Application::GetWindow()->SetWindowed();
-		if(ImGui::Selectable(TRAP::Utils::String::ConvertToString<TRAP::Window::DisplayMode>(TRAP::Window::DisplayMode::Borderless).c_str(), TRAP::Application::GetWindow()->GetDisplayMode() == TRAP::Window::DisplayMode::Borderless))
+		if(ImGui::Selectable(fmt::format("{}", TRAP::Window::DisplayMode::Borderless).c_str(), TRAP::Application::GetWindow()->GetDisplayMode() == TRAP::Window::DisplayMode::Borderless))
 			TRAP::Application::GetWindow()->SetFullscreenBorderless();
-		if(ImGui::Selectable(TRAP::Utils::String::ConvertToString<TRAP::Window::DisplayMode>(TRAP::Window::DisplayMode::Fullscreen).c_str(), TRAP::Application::GetWindow()->GetDisplayMode() == TRAP::Window::DisplayMode::Fullscreen))
+		if(ImGui::Selectable(fmt::format("{}", TRAP::Window::DisplayMode::Fullscreen).c_str(), TRAP::Application::GetWindow()->GetDisplayMode() == TRAP::Window::DisplayMode::Fullscreen))
 			TRAP::Application::GetWindow()->SetFullscreen();
 
 		ImGui::EndCombo();

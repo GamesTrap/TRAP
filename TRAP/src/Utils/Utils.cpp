@@ -232,8 +232,7 @@
 		//Return if a valid window manager was set via TRAP_WM
 		if(windowManager != LinuxWindowManager::Unknown)
 		{
-			TP_INFO(Log::EngineLinuxPrefix, "TRAP_WM env var detected, now using ",
-			                                Utils::String::ConvertToString(windowManager));
+			TP_INFO(Log::EngineLinuxPrefix, "TRAP_WM env var detected, now using ", windowManager);
 			return windowManager;
 		}
 	}

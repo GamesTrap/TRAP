@@ -220,7 +220,7 @@ namespace TRAP
 			out << YAML::BeginMap; //Rigidbody2DComponent
 
 			auto& rigidbody2DComponent = entity.GetComponent<Rigidbody2DComponent>();
-			out << YAML::Key << "BodyType" << YAML::Value << Utils::String::ConvertToString<Rigidbody2DComponent::BodyType>(rigidbody2DComponent.Type);
+			out << YAML::Key << "BodyType" << YAML::Value << fmt::format("{}", rigidbody2DComponent.Type);
 			out << YAML::Key << "FixedRotation" << YAML::Value << rigidbody2DComponent.FixedRotation;
 
 			out << YAML::EndMap; //Rigidbody2DComponent

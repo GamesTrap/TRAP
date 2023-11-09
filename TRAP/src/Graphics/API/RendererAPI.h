@@ -2974,4 +2974,330 @@ constexpr void TRAP::Graphics::RendererAPI::SetNewGPU(const TRAP::Utils::UUID& G
 	s_newGPUUUID = GPUUUID;
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::Graphics::RenderAPI>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Graphics::RenderAPI renderAPI,
+	                                            fmt::format_context& ctx)
+    {
+        std::string enumStr{};
+        switch(renderAPI)
+        {
+        case TRAP::Graphics::RenderAPI::Vulkan:
+            enumStr = "Vulkan";
+            break;
+        case TRAP::Graphics::RenderAPI::NONE:
+            enumStr = "NONE";
+            break;
+
+        default:
+            TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RenderAPI>: Missing enum value!");
+            enumStr = "<MISSING ENUM VALUE>";
+            break;
+        }
+
+        return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::Graphics::RendererAPI::AntiAliasing>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Graphics::RendererAPI::AntiAliasing antiAliasing,
+	                                            fmt::format_context& ctx)
+    {
+        std::string enumStr{};
+        switch(antiAliasing)
+        {
+        case TRAP::Graphics::RendererAPI::AntiAliasing::Off:
+            enumStr = "Off";
+            break;
+        case TRAP::Graphics::RendererAPI::AntiAliasing::MSAA:
+            enumStr = "MSAA";
+            break;
+
+        default:
+            TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RendererAPI::AntiAliasing>: Missing enum value!");
+            enumStr = "<MISSING ENUM VALUE>";
+            break;
+        }
+
+        return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::Graphics::RendererAPI::SampleCount>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Graphics::RendererAPI::SampleCount sampleCount,
+	                                            fmt::format_context& ctx)
+    {
+        switch(sampleCount)
+        {
+        case TRAP::Graphics::RendererAPI::SampleCount::One:
+			[[fallthrough]];
+        case TRAP::Graphics::RendererAPI::SampleCount::Two:
+			[[fallthrough]];
+        case TRAP::Graphics::RendererAPI::SampleCount::Four:
+			[[fallthrough]];
+        case TRAP::Graphics::RendererAPI::SampleCount::Eight:
+			[[fallthrough]];
+        case TRAP::Graphics::RendererAPI::SampleCount::Sixteen:
+            return fmt::format_to(ctx.out(), "{}", std::to_underlying(sampleCount));
+
+        default:
+            TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RendererAPI::SampleCount>: Missing enum value!");
+            return fmt::format_to(ctx.out(), "<MISSING ENUM VALUE>");
+        }
+    }
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::Graphics::RendererAPI::GPUVendor>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Graphics::RendererAPI::GPUVendor gpuVendor,
+	                                            fmt::format_context& ctx)
+    {
+        std::string enumStr{};
+        switch(gpuVendor)
+        {
+        case TRAP::Graphics::RendererAPI::GPUVendor::Unknown:
+            enumStr = "Unknown";
+            break;
+		case TRAP::Graphics::RendererAPI::GPUVendor::AMD:
+            enumStr = "AMD";
+            break;
+		case TRAP::Graphics::RendererAPI::GPUVendor::ImgTec:
+            enumStr = "ImgTec";
+            break;
+		case TRAP::Graphics::RendererAPI::GPUVendor::NVIDIA:
+            enumStr = "NVIDIA";
+            break;
+		case TRAP::Graphics::RendererAPI::GPUVendor::ARM:
+            enumStr = "ARM";
+            break;
+		case TRAP::Graphics::RendererAPI::GPUVendor::Broadcom:
+            enumStr = "Broadcom";
+            break;
+		case TRAP::Graphics::RendererAPI::GPUVendor::Qualcomm:
+            enumStr = "Qualcomm";
+            break;
+		case TRAP::Graphics::RendererAPI::GPUVendor::Intel:
+            enumStr = "Intel";
+            break;
+		case TRAP::Graphics::RendererAPI::GPUVendor::Apple:
+            enumStr = "Apple";
+            break;
+		case TRAP::Graphics::RendererAPI::GPUVendor::Vivante:
+            enumStr = "Vivante";
+            break;
+		case TRAP::Graphics::RendererAPI::GPUVendor::VeriSilicon:
+            enumStr = "VeriSilicon";
+            break;
+		case TRAP::Graphics::RendererAPI::GPUVendor::Kazan:
+            enumStr = "Kazan";
+            break;
+		case TRAP::Graphics::RendererAPI::GPUVendor::Codeplay:
+            enumStr = "Codeplay";
+            break;
+		case TRAP::Graphics::RendererAPI::GPUVendor::Mesa:
+            enumStr = "Mesa";
+            break;
+
+        default:
+            TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RendererAPI::GPUVendor>: Missing enum value!");
+            enumStr = "<MISSING ENUM VALUE>";
+            break;
+        }
+
+        return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+template<>
+struct fmt::formatter<TRAP::Graphics::RendererAPI::LatencyMode>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Graphics::RendererAPI::LatencyMode latencyMode,
+	                                            fmt::format_context& ctx)
+    {
+        std::string enumStr{};
+        switch(latencyMode)
+        {
+        case TRAP::Graphics::RendererAPI::LatencyMode::Disabled:
+            enumStr = "Disabled";
+            break;
+        case TRAP::Graphics::RendererAPI::LatencyMode::Enabled:
+            enumStr = "Enabled";
+            break;
+        case TRAP::Graphics::RendererAPI::LatencyMode::EnabledBoost:
+            enumStr = "Enabled+Boost";
+            break;
+
+        default:
+            TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RendererAPI::LatencyMode>: Missing enum value!");
+            enumStr = "<MISSING ENUM VALUE>";
+            break;
+        }
+
+        return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::Graphics::RendererAPI::ResourceState>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Graphics::RendererAPI::ResourceState resourceState,
+	                                            fmt::format_context& ctx)
+    {
+        std::string enumStr{};
+        switch(resourceState)
+        {
+        case TRAP::Graphics::RendererAPI::ResourceState::Undefined:
+            enumStr = "Undefined";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::VertexAndConstantBuffer:
+            enumStr = "VertexAndConstantBuffer";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::IndexBuffer:
+            enumStr = "IndexBuffer";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::RenderTarget:
+            enumStr = "RenderTarget";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess:
+            enumStr = "UnorderedAccess";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::DepthWrite:
+            enumStr = "DepthWrite";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::DepthRead:
+            enumStr = "DepthRead";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::NonPixelShaderResource:
+            enumStr = "NonPixelShaderResource";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource:
+            enumStr = "PixelShaderResource";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::ShaderResource:
+            enumStr = "ShaderResource";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::StreamOut:
+            enumStr = "StreamOut";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::IndirectArgument:
+            enumStr = "IndirectArgument";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::CopyDestination:
+            enumStr = "CopyDestination";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::CopySource:
+            enumStr = "CopySource";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::GenericRead:
+            enumStr = "GenericRead";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::Present:
+            enumStr = "Present";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::Common:
+            enumStr = "Common";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::RayTracingAccelerationStructure:
+            enumStr = "RayTracingAccelerationStructure";
+            break;
+        case TRAP::Graphics::RendererAPI::ResourceState::ShadingRateSource:
+            enumStr = "ShadingRateSource";
+            break;
+
+        default:
+            TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RendererAPI::ResourceState>: Missing enum value!");
+            enumStr = "<MISSING ENUM VALUE>";
+            break;
+        }
+
+        return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::Graphics::RendererAPI::QueueType>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Graphics::RendererAPI::QueueType queueType,
+	                                            fmt::format_context& ctx)
+    {
+        std::string enumStr{};
+        switch(queueType)
+        {
+        case TRAP::Graphics::RendererAPI::QueueType::Graphics:
+            enumStr = "Graphics";
+            break;
+        case TRAP::Graphics::RendererAPI::QueueType::Transfer:
+            enumStr = "Transfer";
+            break;
+        case TRAP::Graphics::RendererAPI::QueueType::Compute:
+            enumStr = "Compute";
+            break;
+
+        default:
+            TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RendererAPI::QueueType>: Missing enum value!");
+            enumStr = "<MISSING ENUM VALUE>";
+            break;
+        }
+
+        return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+
 #endif /*TRAP_RENDERERAPI_H*/

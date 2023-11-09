@@ -217,4 +217,40 @@ namespace TRAP
 						  std::same_as<T, BoxCollider2DComponent>  || std::same_as<T, CircleCollider2DComponent>;
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::Rigidbody2DComponent::BodyType>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Rigidbody2DComponent::BodyType bodyType,
+	                                            fmt::format_context& ctx)
+    {
+        std::string enumStr{};
+        switch(bodyType)
+        {
+        case TRAP::Rigidbody2DComponent::BodyType::Static:
+            enumStr = "Static";
+            break;
+        case TRAP::Rigidbody2DComponent::BodyType::Dynamic:
+            enumStr = "Dynamic";
+            break;
+        case TRAP::Rigidbody2DComponent::BodyType::Kinematic:
+            enumStr = "Kinematic";
+            break;
+
+        default:
+            TRAP_ASSERT(false, "fmt::formatter<TRAP::Rigidbody2DComponent::BodyType>: Missing enum value!");
+            enumStr = "<MISSING ENUM VALUE>";
+            break;
+        }
+
+        return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+
 #endif /*TRAP_COMPONENTS_H*/

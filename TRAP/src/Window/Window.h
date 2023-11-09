@@ -394,6 +394,42 @@ constexpr TRAP::WindowProps::AdvancedProps::AdvancedProps(const bool resizable,
 {
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::Window::DisplayMode>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Window::DisplayMode displayMode,
+	                                            fmt::format_context& ctx)
+    {
+        std::string enumStr{};
+        switch(displayMode)
+        {
+        case TRAP::Window::DisplayMode::Windowed:
+            enumStr = "Windowed";
+            break;
+        case TRAP::Window::DisplayMode::Fullscreen:
+            enumStr = "Fullscreen";
+            break;
+        case TRAP::Window::DisplayMode::Borderless:
+            enumStr = "Fullscreen (Borderless)";
+            break;
+
+        default:
+            TRAP_ASSERT(false, "fmt::formatter<TRAP::Window::DisplayMod>: Missing enum value!");
+            enumStr = "<MISSING ENUM VALUE>";
+            break;
+        }
+
+        return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+
 #endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_WINDOW_H*/

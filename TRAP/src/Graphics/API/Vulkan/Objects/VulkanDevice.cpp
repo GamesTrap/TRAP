@@ -345,8 +345,8 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 		qfi = 0;
 		qi = 0;
 
-		TP_WARN(Log::RendererVulkanDevicePrefix, "Could not find queue of type ",
-		        Utils::String::ConvertToString(queueType), '(', std::to_underlying(queueType), "). Using default queue");
+		TP_WARN(Log::RendererVulkanDevicePrefix, "Could not find queue of type ", queueType, '(',
+		        std::to_underlying(queueType), "). Using default queue");
 	}
 
 	queueFamilyIndex = NumericCast<u8>(qfi);
@@ -423,8 +423,8 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 		qfi = 0;
 		qi = 0;
 
-		TP_WARN(Log::RendererVulkanDevicePrefix, "Could not find queue of type ",
-		        Utils::String::ConvertToString(queueType), '(', std::to_underlying(queueType), "). Using default queue");
+		TP_WARN(Log::RendererVulkanDevicePrefix, "Could not find queue of type ", queueType, '(',
+		        std::to_underlying(queueType), "). Using default queue");
 	}
 
 	queueFamilyProperties = props[qfi];
