@@ -4644,3 +4644,4 @@ SITREP 11/08/2023|23w45b1
 SITREP 11/09/2023|23w45b2
     - Changed TRAP Engine version to 23w45b2(0.10.3)
     - Replaced ostream operators with fmt formatters ~<45 mins
+    - Linux Fixed a bug which made X11/XWayland the default instead of Wayland ~<5 mins

@@ -83,7 +83,7 @@ namespace TRAP::Utils
 	/// TRAP::Application::LinuxWindowManager::X11, TRAP::Application::LinuxWindowManager::Wayland or
 	/// TRAP::Application::LinuxWindowManager::Unknown(If window manager is unknown or system OS
 	/// is not Linux based).
-	LinuxWindowManager GetLinuxWindowManager();
+	[[nodiscard]] LinuxWindowManager GetLinuxWindowManager();
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

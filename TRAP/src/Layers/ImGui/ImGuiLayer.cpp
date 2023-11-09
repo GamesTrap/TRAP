@@ -128,10 +128,13 @@ void TRAP::ImGuiLayer::OnAttach()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; //Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; //Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; //Enable Docking
-#if !defined(TRAP_PLATFORM_LINUX) || !defined(ENABLE_WAYLAND_SUPPORT)
-	//On Wayland we are unable to track global window and mouse positions, so we disable multi-viewport support
+#ifdef TRAP_PLATFORM_WINDOWS
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; //Enable Multi-Viewport / Platform Windows
-#endif /*!TRAP_PLATFORM_LINUX || !ENABLE_WAYLAND_SUPPORT*/
+#elif defined(TRAP_PLATFORM_LINUX)
+	//On Wayland we are unable to track global window and mouse positions, so we disable multi-viewport support
+	if(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Wayland)
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; //Enable Multi-Viewport / Platform Windows
+#endif
 
 	//Set imgui.ini path
 	const auto docsFolder = TRAP::FileSystem::GetGameDocumentsFolderPath();

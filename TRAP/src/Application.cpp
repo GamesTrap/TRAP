@@ -42,7 +42,7 @@ TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std:
 #endif /*TRACY_ENABLE*/
 
 	Utils::CheckSingleProcess();
-	Utils::GetLinuxWindowManager(); //On Linux if no known window manager is found this will exit the engine
+	[[maybe_unused]] const auto _ = Utils::GetLinuxWindowManager(); //On Linux if no known window manager is found this will exit the engine
 
 	TP_DEBUG(Log::ApplicationPrefix, "Initializing TRAP modules...");
 

@@ -204,7 +204,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
+[[nodiscard]] TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -256,18 +256,6 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 		return LinuxWindowManager::Unknown;
 #endif /*TRAP_HEADLESS_MODE*/
 	}
-
-#ifndef ENABLE_WAYLAND_SUPPORT
-	//Replace Wayland with X11 (thus forcing to use Xwayland)
-	using namespace std::string_view_literals;
-	if(windowManager == LinuxWindowManager::Wayland)
-	{
-		if(getenv("DISPLAY") || getenv("XDG_SESSION_TYPE") == "x11"sv)
-			windowManager = LinuxWindowManager::X11;
-		else
-			windowManager = LinuxWindowManager::Unknown;
-	}
-#endif /*ENABLE_WAYLAND_SUPPORT*/
 #endif /*TRAP_PLATFORM_LINUX*/
 
 	return windowManager;
