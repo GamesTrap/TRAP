@@ -62,7 +62,7 @@ void MonitorTests::OnEvent(TRAP::Events::Event& event)
 
 bool MonitorTests::OnMonitorConnect(const TRAP::Events::MonitorConnectEvent& event)
 {
-	TP_TRACE(event.ToString());
+	TP_TRACE(event);
 
 	return true;
 }
@@ -71,7 +71,7 @@ bool MonitorTests::OnMonitorConnect(const TRAP::Events::MonitorConnectEvent& eve
 
 bool MonitorTests::OnMonitorDisconnect(const TRAP::Events::MonitorDisconnectEvent& event)
 {
-	TP_TRACE(event.ToString());
+	TP_TRACE(event);
 
 	return true;
 }

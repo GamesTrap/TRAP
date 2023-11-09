@@ -11,31 +11,11 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	std::stringstream s;
-
-	s << std::hex << std::setfill('0')
-	  << std::setw(2) << NumericCast<u32>(std::get<0>(uuid))
-	  << std::setw(2) << NumericCast<u32>(std::get<1>(uuid))
-	  << std::setw(2) << NumericCast<u32>(std::get<2>(uuid))
-	  << std::setw(2) << NumericCast<u32>(std::get<3>(uuid))
-	  << '-'
-	  << std::setw(2) << NumericCast<u32>(std::get<4>(uuid))
-	  << std::setw(2) << NumericCast<u32>(std::get<5>(uuid))
-	  << '-'
-	  << std::setw(2) << NumericCast<u32>(std::get<6>(uuid))
-	  << std::setw(2) << NumericCast<u32>(std::get<7>(uuid))
-	  << '-'
-	  << std::setw(2) << NumericCast<u32>(std::get<8>(uuid))
-	  << std::setw(2) << NumericCast<u32>(std::get<9>(uuid))
-	  << '-'
-	  << std::setw(2) << NumericCast<u32>(std::get<10>(uuid))
-	  << std::setw(2) << NumericCast<u32>(std::get<11>(uuid))
-	  << std::setw(2) << NumericCast<u32>(std::get<12>(uuid))
-	  << std::setw(2) << NumericCast<u32>(std::get<13>(uuid))
-	  << std::setw(2) << NumericCast<u32>(std::get<14>(uuid))
-	  << std::setw(2) << NumericCast<u32>(std::get<15>(uuid));
-
-	return s.str();
+	return fmt::format("{:02x}{:02x}{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}",
+					   std::get<0>(uuid), std::get<1>(uuid), std::get<2>(uuid), std::get<3>(uuid),
+					   std::get<4>(uuid), std::get<5>(uuid), std::get<6>(uuid), std::get<7>(uuid),
+					   std::get<8>(uuid), std::get<9>(uuid), std::get<10>(uuid), std::get<11>(uuid),
+					   std::get<12>(uuid), std::get<13>(uuid), std::get<14>(uuid), std::get<15>(uuid));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

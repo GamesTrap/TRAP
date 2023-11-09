@@ -15,11 +15,8 @@ TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, TRAP::Window* w
 
 [[nodiscard]] std::string TRAP::Events::KeyPressEvent::ToString() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	const std::string name = TRAP::Input::GetKeyName(m_key);
-
-	return fmt::format("KeyPressEvent: {}({})", name, std::to_underlying(m_key));
+	return fmt::format("KeyPressEvent: {}({}) (\"{}\")", name, std::to_underlying(m_key), m_window->GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -36,11 +33,8 @@ TRAP::Events::KeyRepeatEvent::KeyRepeatEvent(const Input::Key key, TRAP::Window*
 
 [[nodiscard]] std::string TRAP::Events::KeyRepeatEvent::ToString() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	const std::string name = TRAP::Input::GetKeyName(m_key);
-
-	return fmt::format("KeyRepeatEvent: {}({})", name, std::to_underlying(m_key));
+	return fmt::format("KeyRepeatEvent: {}({}) (\"{}\")", name, std::to_underlying(m_key), m_window->GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -57,11 +51,8 @@ TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, TRAP::Windo
 
 [[nodiscard]] std::string TRAP::Events::KeyReleaseEvent::ToString() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	const std::string name = TRAP::Input::GetKeyName(m_key);
-
-	return fmt::format("KeyReleaseEvent: {}({})", name, std::to_underlying(m_key));
+	return fmt::format("KeyReleaseEvent: {}({}) (\"{}\")", name, std::to_underlying(m_key), m_window->GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -78,9 +69,17 @@ TRAP::Events::KeyTypeEvent::KeyTypeEvent(const u32 codePoint, TRAP::Window* wind
 
 [[nodiscard]] std::string TRAP::Events::KeyTypeEvent::ToString() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	return fmt::format("KeyTypeEvent: {}({}) (\"{}\")", TRAP::Utils::String::EncodeUTF8(m_codePoint), m_codePoint,
+	                   m_window->GetTitle());
+}
 
-	return fmt::format("KeyTypeEvent: {}({})", Utils::String::EncodeUTF8(m_codePoint), m_codePoint);
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::string TRAP::Events::KeyLayoutEvent::ToString() const
+{
+	return fmt::format("KeyLayoutEvent: {}", m_layout);
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

@@ -111,19 +111,11 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 		}
 	}
 
-	std::stringstream ss;
+	std::string outputContent{};
 	for (const auto& [key, value] : fileContents)
-	{
-		ss << key; //Write the key
+		outputContent += fmt::format("{}{}\n", key, (!value.empty() ? fmt::format(" = {}", value) : ""));
 
-		if (!value.empty())
-			//If this line is not empty or a comment also write the assignment and the value
-			ss << " = " << value;
-
-		ss << '\n';
-	}
-
-	return FileSystem::WriteTextFile(file, ss.str());
+	return FileSystem::WriteTextFile(file, outputContent);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

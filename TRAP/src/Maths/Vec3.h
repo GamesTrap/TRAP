@@ -270,10 +270,6 @@ public:
 		[[nodiscard]] constexpr auto operator<=>(const Vec<3, T>& rhs) const noexcept = default;
 		[[nodiscard]] constexpr bool operator==(const Vec<3, T>& rhs) const noexcept = default;
 		[[nodiscard]] constexpr bool operator!=(const Vec<3, T>& rhs) const noexcept = default;
-
-		/// @brief Retrieve a string representation of the vector.
-		/// @return String representation of the vector.
-		[[nodiscard]] std::string ToString() const;
 	};
 
 	//Unary operators
@@ -997,35 +993,41 @@ constexpr TRAP::Math::Vec<3, T>& TRAP::Math::Vec<3, T>::operator>>=(const Vec<3,
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-[[nodiscard]] std::string TRAP::Math::Vec<3, T>::ToString() const
+struct fmt::formatter<TRAP::Math::Vec<3, T>>
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
 
-	if constexpr(std::same_as<T, f32>)
-		return fmt::format("Vec3f({}, {}, {})", x(), y(), z());
-	else if constexpr(std::same_as<T, f64>)
-		return fmt::format("Vec3d({}, {}, {})", x(), y(), z());
-	else if constexpr(std::same_as<T, bool>)
-		return fmt::format("Vec3b({}, {}, {})", (x() ? "true" : "false"), (y() ? "true" : "false"), (z() ? "true" : "false"));
-	else if constexpr(std::same_as<T, i8>)
-		return fmt::format("Vec3i8({}, {}, {})", x(), y(), z());
-	else if constexpr(std::same_as<T, i16>)
-		return fmt::format("Vec3i16({}, {}, {})", x(), y(), z());
-	else if constexpr(std::same_as<T, i32>)
-		return fmt::format("Vec3i32({}, {}, {})", x(), y(), z());
-	else if constexpr(std::same_as<T, i64>)
-		return fmt::format("Vec3i64({}, {}, {})", x(), y(), z());
-	else if constexpr(std::same_as<T, u8>)
-		return fmt::format("Vec3ui8({}, {}, {})", x(), y(), z());
-	else if constexpr(std::same_as<T, u16>)
-		return fmt::format("Vec3ui16({}, {}, {})", x(), y(), z());
-	else if constexpr(std::same_as<T, u32>)
-		return fmt::format("Vec3ui32({}, {}, {})", x(), y(), z());
-	else if constexpr(std::same_as<T, u64>)
-		return fmt::format("Vec3ui64({}, {}, {})", x(), y(), z());
-	else
-		return "Unknown type";
-}
+    static fmt::format_context::iterator format(const TRAP::Math::Vec<3, T>& vec, fmt::format_context& ctx)
+    {
+		if constexpr(std::same_as<T, f32>)
+			return fmt::format_to(ctx.out(), "Vec3f({}, {}, {})", vec.x(), vec.y(), vec.z());
+		else if constexpr(std::same_as<T, f64>)
+			return fmt::format_to(ctx.out(), "Vec3d({}, {}, {})", vec.x(), vec.y(), vec.z());
+		else if constexpr(std::same_as<T, bool>)
+			return fmt::format_to(ctx.out(), "Vec3b({}, {}, {})", vec.x(), vec.y(), vec.z());
+		else if constexpr(std::same_as<T, i8>)
+			return fmt::format_to(ctx.out(), "Vec3i8({}, {}, {})", vec.x(), vec.y(), vec.z());
+		else if constexpr(std::same_as<T, i16>)
+			return fmt::format_to(ctx.out(), "Vec3i16({}, {}, {})", vec.x(), vec.y(), vec.z());
+		else if constexpr(std::same_as<T, i32>)
+			return fmt::format_to(ctx.out(), "Vec3i32({}, {}, {})", vec.x(), vec.y(), vec.z());
+		else if constexpr(std::same_as<T, i64>)
+			return fmt::format_to(ctx.out(), "Vec3i64({}, {}, {})", vec.x(), vec.y(), vec.z());
+		else if constexpr(std::same_as<T, u8>)
+			return fmt::format_to(ctx.out(), "Vec3ui8({}, {}, {})", vec.x(), vec.y(), vec.z());
+		else if constexpr(std::same_as<T, u16>)
+			return fmt::format_to(ctx.out(), "Vec3ui16({}, {}, {})", vec.x(), vec.y(), vec.z());
+		else if constexpr(std::same_as<T, u32>)
+			return fmt::format_to(ctx.out(), "Vec3ui32({}, {}, {})", vec.x(), vec.y(), vec.z());
+		else if constexpr(std::same_as<T, u64>)
+			return fmt::format_to(ctx.out(), "Vec3ui64({}, {}, {})", vec.x(), vec.y(), vec.z());
+		else
+			return fmt::format_to(ctx.out(), "Unknown type");
+    }
+};
 
 //-------------------------------------------------------------------------------------------------------------------//
 //Unary arithmetic operators

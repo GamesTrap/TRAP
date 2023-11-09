@@ -74,7 +74,7 @@ namespace TRAP::Graphics::API
 		/// @brief Dispatch to the given window.
 		/// @param workGroupElements Number of elements to dispatch for each dimension.
 		/// The elements are automatically divided by the number of threads in the work group and rounded up.
-		/// 
+		///
 		/// @param window Window to Dispatch.
 		/// @remark @headless This function is not available in headless mode.
 		void Dispatch(std::array<u32, 3> workGroupElements, const Window* window) const override;

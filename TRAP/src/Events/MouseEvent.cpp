@@ -15,9 +15,7 @@ TRAP::Events::MouseMoveEvent::MouseMoveEvent(const f32 x, const f32 y, TRAP::Win
 
 [[nodiscard]] std::string TRAP::Events::MouseMoveEvent::ToString() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return fmt::format("MouseMoveEvent: {}, {}", m_mouseX, m_mouseY);
+	return fmt::format("MouseMoveEvent: {}, {} (\"{}\")", m_mouseX, m_mouseY, m_window->GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -35,9 +33,7 @@ TRAP::Events::MouseScrollEvent::MouseScrollEvent(const f32 xOffset, const f32 yO
 
 [[nodiscard]] std::string TRAP::Events::MouseScrollEvent::ToString() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return fmt::format("MouseScrollEvent: {}, {}", GetXOffset(), GetYOffset());
+	return fmt::format("MouseScrollEvent: {}, {} (\"{}\")", m_xOffset, m_yOffset, m_window->GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -55,10 +51,8 @@ TRAP::Events::MouseButtonPressEvent::MouseButtonPressEvent(const Input::MouseBut
 
 [[nodiscard]] std::string TRAP::Events::MouseButtonPressEvent::ToString() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return fmt::format("MouseButtonPressEvent: {}({})", Utils::String::ConvertToString<Input::MouseButton>(m_button),
-	                   std::to_underlying(m_button));
+	return fmt::format("MouseButtonPressEvent: {}({}) (\"{}\")", m_button, std::to_underlying(m_button),
+	                   m_window->GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -76,10 +70,8 @@ TRAP::Events::MouseButtonReleaseEvent::MouseButtonReleaseEvent(const Input::Mous
 
 [[nodiscard]] std::string TRAP::Events::MouseButtonReleaseEvent::ToString() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return fmt::format("MouseButtonReleaseEvent: {}({})",
-	                   Utils::String::ConvertToString<Input::MouseButton>(m_button), std::to_underlying(m_button));
+	return fmt::format("MouseButtonReleaseEvent: {}({}) (\"{}\")", m_button, std::to_underlying(m_button),
+	                   m_window->GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -93,6 +85,13 @@ TRAP::Events::MouseEnterEvent::MouseEnterEvent(TRAP::Window* const window)
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::string TRAP::Events::MouseEnterEvent::ToString() const
+{
+	return fmt::format("MouseEnterEvent (\"{}\")", m_window->GetTitle());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -100,6 +99,13 @@ TRAP::Events::MouseLeaveEvent::MouseLeaveEvent(TRAP::Window* const window)
 	: m_window(window)
 {
 	TRAP_ASSERT(window, "Events::MouseLeaveEvent(): Window is nullptr!");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::string TRAP::Events::MouseLeaveEvent::ToString() const
+{
+	return fmt::format("MouseLeaveEvent (\"{}\")", m_window->GetTitle());
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

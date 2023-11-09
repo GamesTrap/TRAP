@@ -62,10 +62,6 @@ namespace TRAP::Events
 		/// @brief Move assignment operator.
 		MonitorConnectEvent& operator=(MonitorConnectEvent&&) noexcept = default;
 
-		/// @brief Get a string representation of the MonitorConnectEvent.
-		/// @return String representation.
-		[[nodiscard]] std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -75,6 +71,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 	};
 
 	/// @brief Monitor disconnected.
@@ -97,10 +96,6 @@ namespace TRAP::Events
 		/// @brief Move assignment operator.
 		MonitorDisconnectEvent& operator=(MonitorDisconnectEvent&&) noexcept = default;
 
-		/// @brief Get a string representation of the MonitorDisconnectEvent.
-		/// @return String representation.
-		[[nodiscard]] std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -110,6 +105,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 	};
 }
 

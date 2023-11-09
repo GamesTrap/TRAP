@@ -70,6 +70,16 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+/// @brief Shift 1 x times.
+/// @param x Amount to shift.
+/// @return Shifted value.
+[[nodiscard]] inline constexpr std::unsigned_integral auto BIT(const std::unsigned_integral auto x) noexcept
+{
+	return decltype(x)(1) << x;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshadow"
@@ -79,20 +89,20 @@
 
 enum class ProfileSystems : u32
 {
-	Events = 1u << 0u,
-	FileSystem = 1u << 1u,
-	Graphics = 1u << 2u,
-	Vulkan = 1u << 3u,
-	ImageLoader = 1u << 4u,
-	Input = 1u << 5u,
-	Layers = 1u << 6u,
-	Network = 1u << 7u,
-	Scene = 1u << 8u,
-	ThreadPool = 1u << 9u,
-	Utils = 1u << 10u,
-	Window = 1u << 11u,
-	WindowingAPI = 1u << 12u,
-	Verbose = 1u << 13u, //Toggles profiling of very trivial functions (i.e. getters, setters, etc.)
+	Events = BIT(0u),
+	FileSystem = BIT(1u),
+	Graphics = BIT(2u),
+	Vulkan = BIT(3u),
+	ImageLoader = BIT(4u),
+	Input = BIT(5u),
+	Layers = BIT(6u),
+	Network = BIT(7u),
+	Scene = BIT(8u),
+	ThreadPool = BIT(9u),
+	Utils = BIT(10u),
+	Window = BIT(11u),
+	WindowingAPI = BIT(12u),
+	Verbose = BIT(13u), //Toggles profiling of very trivial functions (i.e. getters, setters, etc.)
 
 	All = Events | FileSystem | Graphics | Vulkan | ImageLoader | Input | Layers |
 	      Network | Scene | ThreadPool | Utils | Window | WindowingAPI,
@@ -119,7 +129,7 @@ enum class ProfileSystems : u32
 //-------------------------------------------------------------------------------------------------------------------//
 
 /// @brief TRAP version number created with TRAP_MAKE_VERSION
-inline constexpr TRAP::SemanticVersion<0, 10, 2> TRAP_VERSION{};
+inline constexpr TRAP::SemanticVersion<0, 10, 3> TRAP_VERSION{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -136,16 +146,6 @@ inline constexpr TRAP::SemanticVersion<0, 10, 2> TRAP_VERSION{};
 	inline constexpr ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a | b); }\
 	inline constexpr ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a & b); }
 #endif /*MAKE_ENUM_FLAG*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-/// @brief Shift 1 x times.
-/// @param x Amount to shift.
-/// @return Shifted value.
-[[nodiscard]] inline constexpr std::unsigned_integral auto BIT(const std::unsigned_integral auto x) noexcept
-{
-	return decltype(x)(1) << x;
-}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

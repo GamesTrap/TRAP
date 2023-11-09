@@ -448,11 +448,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::SendCommand(const std::string& 
 
 						//Append it to the message
 						if (code == lastCode)
-						{
-							std::ostringstream out;
-							out << code << separator << line;
-							message += out.str();
-						}
+							message += fmt::format("{}{}{}", code, separator, line);
 						else
 							message = separator + line;
 
@@ -477,9 +473,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::SendCommand(const std::string& 
 						line.erase(line.length() - 1);
 
 						//Append it to the current message
-						std::ostringstream out;
-						out << code << separator << line << '\n';
-						message += out.str();
+						message += fmt::format("{}{}{}\n", code, separator, line);
 					}
 				}
 			}

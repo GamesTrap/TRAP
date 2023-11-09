@@ -2,6 +2,8 @@
 #define TRAP_HOTRELOADEVENT_H
 
 #include "Event.h"
+#include "Graphics/Shaders/Shader.h"
+#include "Graphics/Textures/Texture.h"
 
 namespace TRAP::Graphics
 {
@@ -33,10 +35,6 @@ namespace TRAP::Events
 		/// @return Texture pointer.
 		[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> GetTexture() const noexcept;
 
-		/// @brief Get a string representation of the TextureReloadEvent.
-		/// @return String representation.
-		[[nodiscard]] std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -49,6 +47,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
         TRAP::Ref<TRAP::Graphics::Texture> m_texture;
@@ -76,10 +77,6 @@ namespace TRAP::Events
 		/// @return Shader.
 		[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> GetShader() const noexcept;
 
-		/// @brief Get a string representation of the ShaderReloadEvent.
-		/// @return String representation.
-		[[nodiscard]] std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -92,6 +89,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
         TRAP::Ref<TRAP::Graphics::Shader> m_shader;

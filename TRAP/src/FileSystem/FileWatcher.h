@@ -6,6 +6,10 @@
 #include <thread>
 #include <atomic>
 
+#include <fmt/core.h>
+
+#include "TRAP_Assert.h"
+
 namespace TRAP::Events
 {
     class Event;
@@ -99,6 +103,44 @@ namespace TRAP::FileSystem
         std::jthread m_thread{}; //Stay at the bottom so stop requests can join thread without hitting exceptions or deadlock
     };
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::FileSystem::FileStatus>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::FileSystem::FileStatus& status, fmt::format_context& ctx)
+    {
+        std::string enumStr{};
+        switch(status)
+        {
+        case TRAP::FileSystem::FileStatus::Created:
+            enumStr = "Created";
+            break;
+        case TRAP::FileSystem::FileStatus::Renamed:
+            enumStr = "Renamed";
+            break;
+        case TRAP::FileSystem::FileStatus::Modified:
+            enumStr = "Modified";
+            break;
+        case TRAP::FileSystem::FileStatus::Erased:
+            enumStr = "Erased";
+            break;
+
+        default:
+            TRAP_ASSERT(false, "fmt::formatter<TRAP::FileSystem::FileStatus>: Missing enum value!");
+            enumStr = "<MISSING ENUM VALUE>";
+            break;
+        }
+
+        return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
 
 //-------------------------------------------------------------------------------------------------------------------//
 

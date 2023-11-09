@@ -175,10 +175,6 @@ public:
 		[[nodiscard]] constexpr auto operator<=>(const tQuat<T>& rhs) const noexcept = default;
 		[[nodiscard]] constexpr bool operator==(const tQuat<T>& rhs) const noexcept = default;
 		[[nodiscard]] constexpr bool operator!=(const tQuat<T>& rhs) const noexcept = default;
-
-		/// @brief Retrieve a string representation of the quaternion.
-		/// @return String representation of the quaternion.
-		[[nodiscard]] std::string ToString() const;
 	};
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -547,20 +543,25 @@ requires std::floating_point<T>
 
 template<typename T>
 requires std::floating_point<T>
-[[nodiscard]] std::string TRAP::Math::tQuat<T>::ToString() const
+struct fmt::formatter<TRAP::Math::tQuat<T>>
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
 
-	std::string postfix;
-	if constexpr(std::same_as<T, f32>)
-		postfix = "f";
-	else if constexpr(std::same_as<T, f64>)
-		postfix = "d";
-	else
-		return "Unknown type";
+    static fmt::format_context::iterator format(const TRAP::Math::tQuat<T>& quat, fmt::format_context& ctx)
+    {
+		char postfix = '\0';
+		if constexpr(std::same_as<T, f32>)
+			postfix = 'f';
+		else if constexpr(std::same_as<T, f64>)
+			postfix = 'd';
 
-	return fmt::format("Quat{}({}, {{}, {}, {}}})", postfix, w(), x(), y(), z());
-}
+		return fmt::format_to(ctx.out(), "Quat{}({}, {{}, {}, {}}})", postfix, quat.w(), quat.x(), quat.y(),
+		                      quat.z());
+    }
+};
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//

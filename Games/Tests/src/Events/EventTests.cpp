@@ -9,5 +9,5 @@ void EventTests::OnAttach()
 
 void EventTests::OnEvent(TRAP::Events::Event& event)
 {
-	TP_TRACE(event.ToString());
+	TP_TRACE(event);
 }

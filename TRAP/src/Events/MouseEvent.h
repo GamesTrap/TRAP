@@ -44,10 +44,6 @@ namespace TRAP::Events
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// @brief Get a string representation of the MouseMoveEvent.
-		/// @return String representation.
-		[[nodiscard]] std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -60,6 +56,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		f32 m_mouseX, m_mouseY;
@@ -100,10 +99,6 @@ namespace TRAP::Events
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// @brief Get a string representation of the MouseScrollEvent.
-		/// @return String representation.
-		[[nodiscard]] std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -116,6 +111,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		f32 m_xOffset, m_yOffset;
@@ -179,10 +177,6 @@ namespace TRAP::Events
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// @brief Get a string representation of the MouseButtonPressEvent.
-		/// @return String representation.
-		[[nodiscard]] std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -192,6 +186,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		TRAP::Window* m_window;
@@ -221,10 +218,6 @@ namespace TRAP::Events
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// @brief Get a string representation of the MouseButtonReleaseEvent.
-		/// @return String representation.
-		[[nodiscard]] std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -234,6 +227,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		TRAP::Window* m_window;
@@ -274,6 +270,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		TRAP::Window* m_window;
@@ -314,6 +313,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		TRAP::Window* m_window;

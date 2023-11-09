@@ -333,6 +333,150 @@ namespace TRAP::Network
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+template<>
+struct fmt::formatter<TRAP::Network::HTTP::Request::Method>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Network::HTTP::Request::Method method,
+	                                            fmt::format_context& ctx)
+    {
+		std::string enumStr{};
+
+		switch(method)
+		{
+			case TRAP::Network::HTTP::Request::Method::GET:
+				enumStr = "GET";
+				break;
+			case TRAP::Network::HTTP::Request::Method::POST:
+				enumStr = "POST";
+				break;
+			case TRAP::Network::HTTP::Request::Method::HEAD:
+				enumStr = "HEAD";
+				break;
+			case TRAP::Network::HTTP::Request::Method::PUT:
+				enumStr = "PUT";
+				break;
+			case TRAP::Network::HTTP::Request::Method::DELETE:
+				enumStr = "DELETE";
+				break;
+
+		default:
+            TRAP_ASSERT(false, "fmt::formatter<TRAP::Network::HTTP::Request::Method>: Missing enum value!");
+            enumStr = "<MISSING ENUM VALUE>";
+            break;
+		}
+
+		return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::Network::HTTP::Response::Status>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Network::HTTP::Response::Status method,
+	                                            fmt::format_context& ctx)
+    {
+		std::string enumStr{};
+
+		switch(method)
+		{
+			case TRAP::Network::HTTP::Response::Status::OK:
+				enumStr = "OK";
+				break;
+			case TRAP::Network::HTTP::Response::Status::Created:
+				enumStr = "Created";
+				break;
+			case TRAP::Network::HTTP::Response::Status::Accepted:
+				enumStr = "Accepted";
+				break;
+			case TRAP::Network::HTTP::Response::Status::NoContent:
+				enumStr = "NoContent";
+				break;
+			case TRAP::Network::HTTP::Response::Status::ResetContent:
+				enumStr = "ResetContent";
+				break;
+			case TRAP::Network::HTTP::Response::Status::PartialContent:
+				enumStr = "PartialContent";
+				break;
+
+			case TRAP::Network::HTTP::Response::Status::MultipleChoices:
+				enumStr = "MultipleChoices";
+				break;
+			case TRAP::Network::HTTP::Response::Status::MovedPermanently:
+				enumStr = "MovedPermanently";
+				break;
+			case TRAP::Network::HTTP::Response::Status::MovedTemporarily:
+				enumStr = "MovedTemporarily";
+				break;
+			case TRAP::Network::HTTP::Response::Status::NotModified:
+				enumStr = "NotModified";
+				break;
+
+			case TRAP::Network::HTTP::Response::Status::BadRequest:
+				enumStr = "BadRequest";
+				break;
+			case TRAP::Network::HTTP::Response::Status::Unauthorized:
+				enumStr = "Unauthorized";
+				break;
+			case TRAP::Network::HTTP::Response::Status::Forbidden:
+				enumStr = "Forbidden";
+				break;
+			case TRAP::Network::HTTP::Response::Status::NotFound:
+				enumStr = "NotFound";
+				break;
+			case TRAP::Network::HTTP::Response::Status::RangeNotSatisfiable:
+				enumStr = "RangeNotSatisfiable";
+				break;
+
+			case TRAP::Network::HTTP::Response::Status::InternalServerError:
+				enumStr = "InternalServerError";
+				break;
+			case TRAP::Network::HTTP::Response::Status::NotImplemented:
+				enumStr = "NotImplemented";
+				break;
+			case TRAP::Network::HTTP::Response::Status::BadGateway:
+				enumStr = "BadGateway";
+				break;
+			case TRAP::Network::HTTP::Response::Status::ServiceNotAvailable:
+				enumStr = "ServiceNotAvailable";
+				break;
+			case TRAP::Network::HTTP::Response::Status::GatewayTimeout:
+				enumStr = "GatewayTimeout";
+				break;
+			case TRAP::Network::HTTP::Response::Status::VersionNotSupported:
+				enumStr = "VersionNotSupported";
+				break;
+
+			case TRAP::Network::HTTP::Response::Status::InvalidResponse:
+				enumStr = "InvalidResponse";
+				break;
+			case TRAP::Network::HTTP::Response::Status::ConnectionFailed:
+				enumStr = "ConnectionFailed";
+				break;
+
+		default:
+            TRAP_ASSERT(false, "fmt::formatter<TRAP::Network::HTTP::Response::Status>: Missing enum value!");
+            enumStr = "<MISSING ENUM VALUE>";
+            break;
+		}
+
+		return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 constexpr void TRAP::Network::HTTP::Request::SetMethod(const Method method) noexcept
 {
 	m_method = method;

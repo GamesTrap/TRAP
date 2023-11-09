@@ -67,7 +67,7 @@ namespace TRAP::Events
 
 		/// @brief Get a string representation of the event.
 		/// @return String representation.
-		[[nodiscard]] constexpr virtual std::string ToString() const;
+		[[nodiscard]] virtual std::string ToString() const = 0;
 
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
@@ -131,13 +131,6 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::Event::ToString() const
-{
-	return GetName();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 constexpr TRAP::Events::EventDispatcher::EventDispatcher(Event& event) noexcept
 	: m_event(event)
 {}
@@ -175,8 +168,6 @@ inline bool TRAP::Events::EventDispatcher::Dispatch(ClassType* obj, const F& fun
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::ostream& operator<<(std::ostream& os, const TRAP::Events::Event& e);
-
 MAKE_ENUM_FLAG(TRAP::Events::EventCategory)
 
 [[nodiscard]] constexpr TRAP::Events::EventCategory operator ^(const TRAP::Events::EventCategory lhs,
@@ -205,8 +196,13 @@ MAKE_ENUM_FLAG(TRAP::Events::EventCategory)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<>
-struct fmt::formatter<TRAP::Events::Event> : fmt::ostream_formatter
-{};
+template<typename T>
+struct fmt::formatter<T, std::enable_if_t<std::is_base_of_v<TRAP::Events::Event, T>, char>> : fmt::formatter<std::string>
+{
+    fmt::format_context::iterator format(const TRAP::Events::Event& event, fmt::format_context& ctx) const
+    {
+		return fmt::formatter<std::string>::format(event.ToString(), ctx);
+    }
+};
 
 #endif /*TRAP_EVENT_H*/

@@ -4,6 +4,7 @@
 #include <optional>
 
 #include "Event.h"
+#include "FileSystem/FileWatcher.h"
 
 namespace TRAP::FileSystem
 {
@@ -44,10 +45,6 @@ namespace TRAP::Events
 		/// @note Only set when FileStatus is FileStatus::Renamed.
         [[nodiscard]] std::optional<std::filesystem::path> GetOldName() const noexcept;
 
-		/// @brief Get a string representation of the FileEvent.
-		/// @return String representation.
-		[[nodiscard]] std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -60,6 +57,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
         TRAP::FileSystem::FileStatus m_status;

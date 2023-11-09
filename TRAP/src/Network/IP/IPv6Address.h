@@ -125,21 +125,7 @@ namespace TRAP::Network
 	/// @param address IP address to extract.
 	/// @return Reference to the input stream.
 	std::istream& operator>>(std::istream& stream, TRAP::Network::IPv6Address& address);
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
-	/// @brief Overload of << operator to print an IP address to an output stream.
-	/// @param stream Output stream.
-	/// @param address IP address to print.
-	/// @return Reference to the output stream.
-	std::ostream& operator<<(std::ostream& stream, const TRAP::Network::IPv6Address& address);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template<>
-struct fmt::formatter<TRAP::Network::IPv6Address> : fmt::ostream_formatter
-{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -154,5 +140,22 @@ inline constexpr TRAP::Network::IPv6Address::IPv6Address(const std::array<u8, 16
 {
 	return m_address;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::Network::IPv6Address>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Network::IPv6Address& ip,
+	                                            fmt::format_context& ctx)
+    {
+		return fmt::format_to(ctx.out(), "{}", ip.ToString());
+    }
+};
 
 #endif /*TRAP_IPV6ADDRESS_H*/

@@ -13,11 +13,9 @@
 
 #include "Types.h"
 
-template <typename T>
-requires ( std::is_unsigned_v<T> && std::is_integral_v<T>)
-[[nodiscard]] constexpr T BIT(const T x) noexcept
+[[nodiscard]] inline constexpr std::unsigned_integral auto BIT(const std::unsigned_integral auto x) noexcept
 {
-	return T(1) << x;
+	return decltype(x)(1) << x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -197,12 +197,3 @@ std::istream& TRAP::Network::operator>>(std::istream& stream, TRAP::Network::IPv
 
 	return stream;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::ostream& TRAP::Network::operator<<(std::ostream& stream, const TRAP::Network::IPv4Address& address)
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
-
-	return stream << address.ToString();
-}

@@ -4640,3 +4640,7 @@ SITREP 11/07/2023|23w45a1
 SITREP 11/08/2023|23w45b1
     - Changed TRAP Engine version to 23w45b1(0.10.2)
     - Deleted copy constructor of various classes ~<30 mins
+
+SITREP 11/09/2023|23w45b2
+    - Changed TRAP Engine version to 23w45b2(0.10.3)
+    - Replaced ostream operators with fmt formatters ~<45 mins

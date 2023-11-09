@@ -36,6 +36,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Core/Backports.h"
 #include "Network/Sockets/TCPSocket.h"
+#include "TRAP_Assert.h"
 
 namespace TRAP::Network
 {
@@ -156,11 +157,6 @@ namespace TRAP::Network
 			Status m_status; //Status code returned from the server
 			std::string m_message; //Last message received from the server
 		};
-
-		friend std::ostream& operator<<(std::ostream& stream, const Response& response)
-		{
-			return stream << std::to_string(std::to_underlying(response.GetStatus())) << response.GetMessage();
-		}
 
 		/// @brief Specialization of FTP response returning a directory.
 		class DirectoryResponse : public Response
@@ -415,16 +411,181 @@ namespace TRAP::Network
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<>
-struct fmt::formatter<TRAP::Network::FTP::Response> : fmt::ostream_formatter
-{};
+struct fmt::formatter<TRAP::Network::FTP::Response::Status>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
 
-template<>
-struct fmt::formatter<TRAP::Network::FTP::DirectoryResponse> : fmt::ostream_formatter
-{};
+    static fmt::format_context::iterator format(const TRAP::Network::FTP::Response::Status status,
+	                                            fmt::format_context& ctx)
+    {
+		std::string enumStr{};
 
-template<>
-struct fmt::formatter<TRAP::Network::FTP::ListingResponse> : fmt::ostream_formatter
-{};
+		switch(status)
+		{
+			case TRAP::Network::FTP::Response::Status::RestartMarkerReply:
+				enumStr = "RestartMarkerReply";
+				break;
+			case TRAP::Network::FTP::Response::Status::ServiceReadySoon:
+				enumStr = "ServiceReadySoon";
+				break;
+			case TRAP::Network::FTP::Response::Status::DataConnectionAlreadyOpened:
+				enumStr = "DataConnectionAlreadyOpened";
+				break;
+			case TRAP::Network::FTP::Response::Status::OpeningDataConnection:
+				enumStr = "OpeningDataConnection";
+				break;
+
+			case TRAP::Network::FTP::Response::Status::OK:
+				enumStr = "OK";
+				break;
+			case TRAP::Network::FTP::Response::Status::PointlessCommand:
+				enumStr = "PointlessCommand";
+				break;
+			case TRAP::Network::FTP::Response::Status::SystemStatus:
+				enumStr = "SystemStatus";
+				break;
+			case TRAP::Network::FTP::Response::Status::DirectoryStatus:
+				enumStr = "DirectoryStatus";
+				break;
+			case TRAP::Network::FTP::Response::Status::FileStatus:
+				enumStr = "FileStatus";
+				break;
+			case TRAP::Network::FTP::Response::Status::HelpMessage:
+				enumStr = "HelpMessage";
+				break;
+			case TRAP::Network::FTP::Response::Status::SystemType:
+				enumStr = "SystemType";
+				break;
+			case TRAP::Network::FTP::Response::Status::ServiceReady:
+				enumStr = "ServiceReady";
+				break;
+			case TRAP::Network::FTP::Response::Status::ClosingConnection:
+				enumStr = "ClosingConnection";
+				break;
+			case TRAP::Network::FTP::Response::Status::DataConnectionOpened:
+				enumStr = "DataConnectionOpened";
+				break;
+			case TRAP::Network::FTP::Response::Status::ClosingDataConnection:
+				enumStr = "ClosingDataConnection";
+				break;
+			case TRAP::Network::FTP::Response::Status::EnteringPassiveMode:
+				enumStr = "EnteringPassiveMode";
+				break;
+			case TRAP::Network::FTP::Response::Status::LoggedIn:
+				enumStr = "LoggedIn";
+				break;
+			case TRAP::Network::FTP::Response::Status::FileActionOK:
+				enumStr = "FileActionOK";
+				break;
+			case TRAP::Network::FTP::Response::Status::DirectoryOK:
+				enumStr = "DirectoryOK";
+				break;
+
+			case TRAP::Network::FTP::Response::Status::NeedPassword:
+				enumStr = "NeedPassword";
+				break;
+			case TRAP::Network::FTP::Response::Status::NeedAccountToLogIn:
+				enumStr = "NeedAccountToLogIn";
+				break;
+			case TRAP::Network::FTP::Response::Status::NeedInformation:
+				enumStr = "NeedInformation";
+				break;
+
+			case TRAP::Network::FTP::Response::Status::ServiceUnavailable:
+				enumStr = "ServiceUnavailable";
+				break;
+			case TRAP::Network::FTP::Response::Status::DataConnectionUnavailable:
+				enumStr = "DataConnectionUnavailable";
+				break;
+			case TRAP::Network::FTP::Response::Status::TransferAborted:
+				enumStr = "TransferAborted";
+				break;
+			case TRAP::Network::FTP::Response::Status::FileActionAborted:
+				enumStr = "FileActionAborted";
+				break;
+			case TRAP::Network::FTP::Response::Status::LocalError:
+				enumStr = "LocalError";
+				break;
+			case TRAP::Network::FTP::Response::Status::InsufficientStorageSpace:
+				enumStr = "InsufficientStorageSpace";
+				break;
+
+			case TRAP::Network::FTP::Response::Status::CommandUnknown:
+				enumStr = "CommandUnknown";
+				break;
+			case TRAP::Network::FTP::Response::Status::ParametersUnknown:
+				enumStr = "ParametersUnknown";
+				break;
+			case TRAP::Network::FTP::Response::Status::CommandNotImplemented:
+				enumStr = "CommandNotImplemented";
+				break;
+			case TRAP::Network::FTP::Response::Status::BadCommandSequence:
+				enumStr = "BadCommandSequence";
+				break;
+			case TRAP::Network::FTP::Response::Status::ParameterNotImplemented:
+				enumStr = "ParameterNotImplemented";
+				break;
+			case TRAP::Network::FTP::Response::Status::NotLoggedIn:
+				enumStr = "NotLoggedIn";
+				break;
+			case TRAP::Network::FTP::Response::Status::NeedAccountToStore:
+				enumStr = "NeedAccountToStore";
+				break;
+			case TRAP::Network::FTP::Response::Status::FileUnavailable:
+				enumStr = "FileUnavailable";
+				break;
+			case TRAP::Network::FTP::Response::Status::PageTypeUnknown:
+				enumStr = "PageTypeUnknown";
+				break;
+			case TRAP::Network::FTP::Response::Status::NotEnoughMemory:
+				enumStr = "NotEnoughMemory";
+				break;
+			case TRAP::Network::FTP::Response::Status::FilenameNotAllowed:
+				enumStr = "FilenameNotAllowed";
+				break;
+
+			case TRAP::Network::FTP::Response::Status::InvalidResponse:
+				enumStr = "InvalidResponse";
+				break;
+			case TRAP::Network::FTP::Response::Status::ConnectionFailed:
+				enumStr = "ConnectionFailed";
+				break;
+			case TRAP::Network::FTP::Response::Status::ConnectionClosed:
+				enumStr = "ConnectionClosed";
+				break;
+			case TRAP::Network::FTP::Response::Status::InvalidFile:
+				enumStr = "InvalidFile";
+				break;
+
+		default:
+            TRAP_ASSERT(false, "fmt::formatter<TRAP::Network::FTP::Response::Status>: Missing enum value!");
+            enumStr = "<MISSING ENUM VALUE>";
+            break;
+		}
+
+		return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+struct fmt::formatter<T, std::enable_if_t<std::is_base_of_v<TRAP::Network::FTP::Response, T>, char>>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Network::FTP::Response& response, fmt::format_context& ctx)
+    {
+		return fmt::format_to(ctx.out(), "{}({}): {}", response.GetStatus(),
+		                      std::to_underlying(response.GetStatus()), response.GetMessage());
+    }
+};
 
 //-------------------------------------------------------------------------------------------------------------------//
 

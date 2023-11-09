@@ -5,6 +5,7 @@
 
 #include "Input/Input.h"
 #include "Event.h"
+#include "Utils/String/String.h"
 
 namespace TRAP::Events
 {
@@ -65,10 +66,6 @@ namespace TRAP::Events
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// @brief Get a string representation of the KeyPressEvent.
-		/// @return String representation.
-		[[nodiscard]] std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -79,6 +76,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		TRAP::Window* m_window;
@@ -108,10 +108,6 @@ namespace TRAP::Events
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// @brief Get a string representation of the KeyRepeatEvent.
-		/// @return String representation.
-		[[nodiscard]] std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -121,6 +117,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		TRAP::Window* m_window;
@@ -150,10 +149,6 @@ namespace TRAP::Events
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// @brief Get a string representation of the KeyReleaseEvent.
-		/// @return String representation.
-		[[nodiscard]] std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -163,6 +158,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
 		[[nodiscard]] constexpr std::string GetName() const override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		TRAP::Window* m_window;
@@ -195,10 +193,6 @@ namespace TRAP::Events
 		/// @return Unicode code point.
 		[[nodiscard]] constexpr u32 GetCodePoint() const noexcept;
 
-		/// @brief Get a string representation of the KeyTypeEvent.
-		/// @return String representation.
-		[[nodiscard]] std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -211,6 +205,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		TRAP::Window* m_window;
@@ -240,10 +237,6 @@ namespace TRAP::Events
 		/// @return Name of new keyboard layout.
 		[[nodiscard]] constexpr std::string GetLayout() const noexcept;
 
-		/// @brief Get a string representation of the KeyLayoutEvent.
-		/// @return String representation.
-		[[nodiscard]] constexpr std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -256,6 +249,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		std::string m_layout;
@@ -458,13 +454,6 @@ constexpr TRAP::Events::KeyLayoutEvent::KeyLayoutEvent(std::string layout) noexc
 [[nodiscard]] constexpr std::string TRAP::Events::KeyLayoutEvent::GetLayout() const noexcept
 {
 	return m_layout;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr std::string TRAP::Events::KeyLayoutEvent::ToString() const
-{
-	return std::string("KeyLayoutEvent: ") + m_layout;
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

@@ -114,7 +114,7 @@ void TRAP::INTERNAL::PPMImage::Save(const Image* const img, const std::filesyste
 	std::ofstream file(filepath, std::ios::out | std::ios::binary);
 
 	//PPM Header
-	file << "P6\n" << img->GetWidth() << '\n' << img->GetHeight() << '\n' << 255 << '\n';
+	file << fmt::format("P6\n{}\n{}\n255\n", img->GetWidth(), img->GetHeight());
 
 	//PPM Data
 	std::vector<u8> pixelData;

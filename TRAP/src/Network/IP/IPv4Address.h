@@ -166,14 +166,6 @@ namespace TRAP::Network
 	/// @param address IP address to extract.
 	/// @return Reference to the input stream.
 	std::istream& operator>>(std::istream& stream, TRAP::Network::IPv4Address& address);
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
-	/// @brief Overload of << operator to print an IP address to an output stream.
-	/// @param stream Output stream.
-	/// @param address IP address to print.
-	/// @return Reference to the output stream.
-	std::ostream& operator<<(std::ostream& stream, const TRAP::Network::IPv4Address& address);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -211,7 +203,18 @@ constexpr TRAP::Network::IPv4Address::IPv4Address(const u32 address)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<>
-struct fmt::formatter<TRAP::Network::IPv4Address> : fmt::ostream_formatter
-{};
+struct fmt::formatter<TRAP::Network::IPv4Address>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Network::IPv4Address& ip,
+	                                            fmt::format_context& ctx)
+    {
+		return fmt::format_to(ctx.out(), "{}", ip.ToString());
+    }
+};
 
 #endif /*TRAP_IPV4ADDRESS_H*/

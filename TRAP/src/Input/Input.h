@@ -1028,6 +1028,81 @@ constexpr void TRAP::Input::InternalInputControllerButton(ControllerInternal* co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+template<>
+struct fmt::formatter<TRAP::Input::MouseButton>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Input::MouseButton button, fmt::format_context& ctx)
+    {
+		std::string enumStr{};
+		switch(button)
+		{
+		case TRAP::Input::MouseButton::Left:
+			enumStr = "Left";
+			break;
+
+		case TRAP::Input::MouseButton::Right:
+			enumStr = "Right";
+			break;
+
+		case TRAP::Input::MouseButton::Middle:
+			enumStr = "Middle";
+			break;
+
+		default:
+            break;
+		}
+
+		if(enumStr.empty())
+			enumStr = fmt::format("Button {}", std::to_underlying(button));
+
+		return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::Input::KeyState>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Input::KeyState keyState, fmt::format_context& ctx)
+    {
+		std::string enumStr{};
+		switch(keyState)
+		{
+		case TRAP::Input::KeyState::Released:
+			enumStr = "Released";
+			break;
+
+		case TRAP::Input::KeyState::Pressed:
+			enumStr = "Pressed";
+			break;
+
+		case TRAP::Input::KeyState::Repeat:
+			enumStr = "Repeat";
+			break;
+
+		default:
+            TRAP_ASSERT(false, "fmt::formatter<TRAP::Input::KeyState: Missing enum value!");
+            enumStr = "<MISSING ENUM VALUE>";
+            break;
+		}
+
+		return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 MAKE_ENUM_FLAG(TRAP::Input::ControllerDPad)
 
 #endif /*TRAP_HEADLESS_MODE*/

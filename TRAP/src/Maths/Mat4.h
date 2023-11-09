@@ -238,10 +238,6 @@ namespace TRAP::Math
 		[[nodiscard]] constexpr auto operator<=>(const Mat<4, 4, T>& rhs) const noexcept = default;
 		[[nodiscard]] constexpr bool operator==(const Mat<4, 4, T>& rhs) const noexcept = default;
 		[[nodiscard]] constexpr bool operator!=(const Mat<4, 4, T>& rhs) const noexcept = default;
-
-		/// @brief Retrieve a string representation of the matrix.
-		/// @return String representation of the matrix.
-		[[nodiscard]] std::string ToString() const;
 	};
 
 	//Unary operators
@@ -720,26 +716,33 @@ constexpr const TRAP::Math::Mat<4, 4, T> TRAP::Math::Mat<4, 4, T>::operator--(co
 
 template<typename T>
 requires std::floating_point<T>
-[[nodiscard]] std::string TRAP::Math::Mat<4, 4, T>::ToString() const
+struct fmt::formatter<TRAP::Math::Mat<4, 4, T>>
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
 
-	std::string postfix;
-	if constexpr(std::same_as<T, f32>)
-		postfix = "f";
-	else if constexpr(std::same_as<T, f64>)
-		postfix = "d";
-	else
-		return "Unknown type";
+    static fmt::format_context::iterator format(const TRAP::Math::Mat<4, 4, T>& mat, fmt::format_context& ctx)
+    {
+		char postfix = '\0';
+		if constexpr(std::same_as<T, f32>)
+			postfix = 'f';
+		else if constexpr(std::same_as<T, f64>)
+			postfix = 'd';
 
-	return fmt::format("Mat4{}(({},{},{},{}), ({},{},{},{}), ({},{},{},{}), ({},{},{},{}))", postfix,
-	                   std::get<0>(std::get<0>(value)), std::get<1>(std::get<0>(value)), std::get<2>(std::get<0>(value)),
-					   std::get<3>(std::get<0>(value)), std::get<0>(std::get<1>(value)), std::get<1>(std::get<1>(value)),
-					   std::get<2>(std::get<1>(value)), std::get<3>(std::get<1>(value)), std::get<0>(std::get<2>(value)),
-					   std::get<1>(std::get<2>(value)), std::get<2>(std::get<2>(value)), std::get<3>(std::get<2>(value)),
-					   std::get<0>(std::get<3>(value)), std::get<1>(std::get<3>(value)), std::get<2>(std::get<3>(value)),
-					   std::get<3>(std::get<3>(value)));
-}
+
+		return fmt::format(ctx.out(), "Mat4{}(({},{},{},{}), ({},{},{},{}), ({},{},{},{}), ({},{},{},{}))", postfix,
+						   std::get<0>(std::get<0>(mat)), std::get<1>(std::get<0>(mat)),
+						   std::get<2>(std::get<0>(mat)), std::get<3>(std::get<0>(mat)),
+						   std::get<0>(std::get<1>(mat)), std::get<1>(std::get<1>(mat)),
+						   std::get<2>(std::get<1>(mat)), std::get<3>(std::get<1>(mat)),
+						   std::get<0>(std::get<2>(mat)), std::get<1>(std::get<2>(mat)),
+						   std::get<2>(std::get<2>(mat)), std::get<3>(std::get<2>(mat)),
+						   std::get<0>(std::get<3>(mat)), std::get<1>(std::get<3>(mat)),
+						   std::get<2>(std::get<3>(mat)), std::get<3>(std::get<3>(mat)));
+    }
+};
 
 //-------------------------------------------------------------------------------------------------------------------//
 //Unary arithmetic operators

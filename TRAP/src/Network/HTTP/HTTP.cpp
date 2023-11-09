@@ -54,52 +54,12 @@ void TRAP::Network::HTTP::Request::SetField(const std::string& field, const std:
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	std::ostringstream out;
-
-	//Convert the method to its string representation
-	std::string method;
-	switch (m_method)
-	{
-	case Method::GET:
-		method = "GET";
-		break;
-
-	case Method::POST:
-		method = "POST";
-		break;
-
-	case Method::HEAD:
-		method = "HEAD";
-		break;
-
-	case Method::PUT:
-		method = "PUT";
-		break;
-
-	case Method::DELETE:
-		method = "DELETE";
-		break;
-
-	default:
-		method = "GET";
-		break;
-	}
-
-	//Write the first line containing the request type
-	out << method << " " << m_uri << " ";
-	out << "HTTP/" << m_majorVersion << '.' << m_minorVersion << "\r\n";
-
-	//Write fields
+	std::string out = fmt::format("{} {} HTTP/{}.{}\r\n", m_method, m_uri, m_majorVersion, m_minorVersion);
 	for (const auto& [fieldKey, fieldValue] : m_fields)
-		out << fieldKey << ": " << fieldValue << "\r\n";
+		out += fmt::format("{}: {}\r\n", fieldKey, fieldValue);
+	out += fmt::format("\r\n{}", m_body);
 
-	//Use an extra \r\n to separate the header from the body
-	out << "\r\n";
-
-	//Add the body
-	out << m_body;
-
-	return out.str();
+	return out;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -308,11 +268,7 @@ TRAP::Network::HTTP::Response TRAP::Network::HTTP::SendRequest(const Request& re
 	if (!toSend.HasField("Host"))
 		toSend.SetField("Host", m_hostName);
 	if(!toSend.HasField("Content-Length"))
-	{
-		std::ostringstream out;
-		out << toSend.m_body.size();
-		toSend.SetField("Content-Length", out.str());
-	}
+		toSend.SetField("Content-Length", fmt::format("{}", toSend.m_body.size()));
 	if ((toSend.m_method == Request::Method::POST) && !toSend.HasField("Content-Type"))
 		toSend.SetField("Content-Type", "application/x-www-form-urlencoded");
 	if ((toSend.m_majorVersion * 10 + toSend.m_minorVersion >= 11) && !toSend.HasField("Connection"))

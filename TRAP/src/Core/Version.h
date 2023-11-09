@@ -74,29 +74,16 @@ namespace TRAP
 
         /// @brief Extract the pre release identifier.
         /// @return Pre release identifier.
-        [[nodiscard]] consteval std::optional<std::string_view> PreReleaseIdentifier() const noexcept
+        [[nodiscard]] constexpr std::optional<std::string_view> PreReleaseIdentifier() const noexcept
         {
             return m_preReleaseIdentifier;
         }
 
         /// @brief Extract the metadata identifier.
         /// @return Metadata identifier.
-        [[nodiscard]] consteval std::optional<std::string_view> MetadataIdentifier() const noexcept
+        [[nodiscard]] constexpr std::optional<std::string_view> MetadataIdentifier() const noexcept
         {
             return m_metadataIdentifier;
-        }
-
-        [[nodiscard]] constexpr std::string ToString() const
-        {
-            std::string str = fmt::format("{}.{}.{}", major, minor, patch);
-
-            if(m_preReleaseIdentifier)
-                str += fmt::format("-{}", *m_preReleaseIdentifier);
-
-            if(m_metadataIdentifier)
-                str += fmt::format("+{}", *m_metadataIdentifier);
-
-            return str;
         }
 
     private:
@@ -104,5 +91,28 @@ namespace TRAP
         std::optional<std::string_view> m_metadataIdentifier = std::nullopt;
     };
 }
+
+template<u32 major, u32 minor, u32 patch>
+struct fmt::formatter<TRAP::SemanticVersion<major, minor, patch>>
+{
+    constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    fmt::format_context::iterator format(const TRAP::SemanticVersion<major, minor, patch>& semVer, fmt::format_context& ctx) const
+    {
+        auto out = ctx.out();
+        out = fmt::format_to(out, "{}.{}.{}", major, minor, patch);
+
+        if(semVer.PreReleaseIdentifier())
+            out = fmt::format_to(out, "-{}", *semVer.PreReleaseIdentifier());
+
+        if(semVer.MetadataIdentifier())
+            out = fmt::format_to(out, "+{}", *semVer.MetadataIdentifier());
+
+        return out;
+    }
+};
 
 #endif /*TRAP_VERSION_H*/

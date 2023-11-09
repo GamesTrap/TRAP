@@ -39,10 +39,6 @@ namespace TRAP::Events
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// @brief Get a string representation of the WindowResizeEvent.
-		/// @return String representation.
-		[[nodiscard]] std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -55,6 +51,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		u32 m_width, m_height;
@@ -84,10 +83,6 @@ namespace TRAP::Events
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// @brief Get a string representation of the WindowMinimizeEvent.
-		/// @return String representation.
-		[[nodiscard]] constexpr std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -100,6 +95,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		TRAP::Window* m_window;
@@ -127,9 +125,6 @@ namespace TRAP::Events
 		/// @brief Retrieve a pointer to the affected window.
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
-		/// @brief Get a string representation of the WindowMaximizeEvent.
-		/// @return String representation.
-		[[nodiscard]] constexpr std::string ToString() const override;
 
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
@@ -143,6 +138,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		TRAP::Window* m_window;
@@ -171,10 +169,6 @@ namespace TRAP::Events
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// @brief Get a string representation of the WindowRestoreEvent.
-		/// @return String representation.
-		[[nodiscard]] constexpr std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -187,6 +181,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		TRAP::Window* m_window;
@@ -215,10 +212,6 @@ namespace TRAP::Events
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// @brief Get a string representation of the WindowCloseEvent.
-		/// @return String representation.
-		[[nodiscard]] constexpr std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -231,6 +224,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		TRAP::Window* m_window;
@@ -270,10 +266,6 @@ namespace TRAP::Events
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// @brief Get a string representation of the WindowMoveEvent.
-		/// @return String representation.
-		[[nodiscard]] std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -286,6 +278,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		i32 m_x, m_y;
@@ -315,10 +310,6 @@ namespace TRAP::Events
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// @brief Get a string representation of the WindowFocusEvent.
-		/// @return String representation.
-		[[nodiscard]] constexpr std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -331,6 +322,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		TRAP::Window* m_window;
@@ -359,10 +353,6 @@ namespace TRAP::Events
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// @brief Get a string representation of the WindowLostFocusEvent.
-		/// @return String representation.
-		[[nodiscard]] constexpr std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -375,6 +365,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		TRAP::Window* m_window;
@@ -407,10 +400,6 @@ namespace TRAP::Events
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// @brief Get a string representation of the WindowDropEvent.
-		/// @return String representation.
-		[[nodiscard]] constexpr std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -423,6 +412,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		std::vector<std::string> m_paths{};
@@ -463,10 +455,6 @@ namespace TRAP::Events
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// @brief Get a string representation of the WindowContentScaleEvent.
-		/// @return String representation.
-		[[nodiscard]] std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -479,6 +467,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		f32 m_XScale;
@@ -523,10 +514,6 @@ namespace TRAP::Events
 		/// @return Window pointer.
 		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
-		/// @brief Get a string representation of the FrameBufferResizeEvent.
-		/// @return String representation.
-		[[nodiscard]] std::string ToString() const override;
-
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
 		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
@@ -539,6 +526,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
+		/// @brief Get a string representation of the event.
+		/// @return String representation.
+		[[nodiscard]] std::string ToString() const override;
 
 	private:
 		u32 m_width, m_height;
@@ -625,13 +615,6 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::WindowMinimizeEvent::ToString() const
-{
-	return std::string("WindowMinimizeEvent (\"") + m_window->GetTitle() + "\")";
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] constexpr std::string TRAP::Events::WindowMinimizeEvent::GetName() const
 {
 	return "WindowMinimize";
@@ -665,13 +648,6 @@ namespace TRAP::Events
 [[nodiscard]] constexpr TRAP::Events::EventCategory TRAP::Events::WindowMaximizeEvent::GetCategoryFlags() const noexcept
 {
 	return EventCategory::Window;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr std::string TRAP::Events::WindowMaximizeEvent::ToString() const
-{
-	return std::string("WindowMaximizeEvent (\"") + m_window->GetTitle() + "\")";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -713,13 +689,6 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::WindowRestoreEvent::ToString() const
-{
-	return std::string("WindowRestoreEvent (\"") + m_window->GetTitle() + "\")";
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] constexpr std::string TRAP::Events::WindowRestoreEvent::GetName() const
 {
 	return "WindowRestore";
@@ -753,13 +722,6 @@ namespace TRAP::Events
 [[nodiscard]] constexpr TRAP::Events::EventCategory TRAP::Events::WindowCloseEvent::GetCategoryFlags() const noexcept
 {
 	return EventCategory::Window;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr std::string TRAP::Events::WindowCloseEvent::ToString() const
-{
-	return std::string("WindowCloseEvent (\"") + m_window->GetTitle() + "\")";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -859,13 +821,6 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::WindowFocusEvent::ToString() const
-{
-	return std::string("WindowFocusEvent (\"") + m_window->GetTitle() + "\")";
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] constexpr std::string TRAP::Events::WindowFocusEvent::GetName() const
 {
 	return "WindowFocus";
@@ -899,13 +854,6 @@ namespace TRAP::Events
 [[nodiscard]] constexpr TRAP::Events::EventCategory TRAP::Events::WindowLostFocusEvent::GetCategoryFlags() const noexcept
 {
 	return EventCategory::Window;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr std::string TRAP::Events::WindowLostFocusEvent::ToString() const
-{
-	return std::string("WindowLostFocusEvent (\"") + m_window->GetTitle() + "\")";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -950,25 +898,6 @@ namespace TRAP::Events
 [[nodiscard]] constexpr std::vector<std::string> TRAP::Events::WindowDropEvent::GetPaths() const noexcept
 {
 	return m_paths;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr std::string TRAP::Events::WindowDropEvent::ToString() const
-{
-	std::string result = "WindowDropEvent: ";
-
-	if(!m_paths.empty())
-	{
-		result += "Path(s): ";
-		for (const std::string& path : m_paths)
-			result += path + '\n';
-		result.back() = ' ';
-	}
-
-	result += "(\"" + m_window->GetTitle() + "\")";
-
-	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

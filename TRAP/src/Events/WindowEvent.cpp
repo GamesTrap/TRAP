@@ -18,8 +18,6 @@ TRAP::Events::WindowResizeEvent::WindowResizeEvent(const u32 width, const u32 he
 
 [[nodiscard]] std::string TRAP::Events::WindowResizeEvent::ToString() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return fmt::format("WindowResizeEvent: {}x{} (\"{}\")", m_width, m_height, m_window->GetTitle());
 }
 
@@ -34,6 +32,13 @@ TRAP::Events::WindowMinimizeEvent::WindowMinimizeEvent(TRAP::Window* const windo
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::string TRAP::Events::WindowMinimizeEvent::ToString() const
+{
+	return fmt::format("WindowMinimizeEvent (\"{}\")", m_window->GetTitle());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -44,6 +49,13 @@ TRAP::Events::WindowMaximizeEvent::WindowMaximizeEvent(TRAP::Window* const windo
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::string TRAP::Events::WindowMaximizeEvent::ToString() const
+{
+	return fmt::format("WindowMaximizeEvent (\"{}\")", m_window->GetTitle());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -51,6 +63,13 @@ TRAP::Events::WindowRestoreEvent::WindowRestoreEvent(TRAP::Window* const window)
 	: m_window(window)
 {
 	TRAP_ASSERT(window, "Events::WindowRestoreEvent(): Window is nullptr!");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::string TRAP::Events::WindowRestoreEvent::ToString() const
+{
+	return fmt::format("WindowRestoreEvent (\"{}\")", m_window->GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -67,8 +86,6 @@ TRAP::Events::WindowMoveEvent::WindowMoveEvent(const i32 x, const i32 y, TRAP::W
 
 [[nodiscard]] std::string TRAP::Events::WindowMoveEvent::ToString() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return fmt::format("WindowMoveEvent: {}, {} (\"{}\")", m_x, m_y, m_window->GetTitle());
 }
 
@@ -83,6 +100,13 @@ TRAP::Events::WindowFocusEvent::WindowFocusEvent(TRAP::Window* const window)
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::string TRAP::Events::WindowFocusEvent::ToString() const
+{
+	return fmt::format("WindowMoveEvent (\"{}\")", m_window->GetTitle());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -90,6 +114,13 @@ TRAP::Events::WindowLostFocusEvent::WindowLostFocusEvent(TRAP::Window* const win
 	: m_window(window)
 {
 	TRAP_ASSERT(window, "Events::WindowLostFocusEvent(): Window is nullptr!");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::string TRAP::Events::WindowLostFocusEvent::ToString() const
+{
+	return fmt::format("WindowLostFocusEvent (\"{}\")", m_window->GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -103,6 +134,20 @@ TRAP::Events::WindowDropEvent::WindowDropEvent(std::vector<std::string> paths, T
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::string TRAP::Events::WindowDropEvent::ToString() const
+{
+	std::string out = fmt::format("WindowDropEvent: ");
+
+	if(!m_paths.empty())
+		out += fmt::format("Path(s): \"{}\" ", fmt::join(m_paths, "\", \""));
+
+	out += fmt::format("(\"{}\")", m_window->GetTitle());
+
+	return out;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -110,6 +155,13 @@ TRAP::Events::WindowCloseEvent::WindowCloseEvent(TRAP::Window* const window)
 	: m_window(window)
 {
 	TRAP_ASSERT(window, "Events::WindowCloseEvent(): Window is nullptr!");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::string TRAP::Events::WindowCloseEvent::ToString() const
+{
+	return fmt::format("WindowCloseEvent (\"{}\")", m_window->GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -127,8 +179,6 @@ TRAP::Events::WindowContentScaleEvent::WindowContentScaleEvent(const f32 xScale,
 
 [[nodiscard]] std::string TRAP::Events::WindowContentScaleEvent::ToString() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return fmt::format("WindowContentScaleEvent: {}x{} (\"{}\")", m_XScale, m_YScale, m_window->GetTitle());
 }
 
@@ -149,8 +199,6 @@ TRAP::Events::FrameBufferResizeEvent::FrameBufferResizeEvent(const u32 width, co
 
 [[nodiscard]] std::string TRAP::Events::FrameBufferResizeEvent::ToString() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return fmt::format("FrameBufferResizeEvent: {}x{} (\"{}\")", m_width, m_height, m_window->GetTitle());
 }
 

@@ -49,7 +49,7 @@ bool TRAP::Utils::Discord::Create([[maybe_unused]] const i64 appID)
     if(appID == TRAPDiscordAppID)
     {
         //Set activity to TRAP as default
-        const std::string version = fmt::format("{}[{}]", TRAP::Log::WindowVersion, TRAP_VERSION.ToString());
+        const std::string version = fmt::format("{}[{}]", TRAP::Log::WindowVersion, TRAP_VERSION);
 
         CurrentActivity.LargeImage = "trapwhitelogo2048x2048";
         CurrentActivity.LargeText = "TRAP™";

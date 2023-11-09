@@ -234,7 +234,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 		m_data.Title = "TRAP™";
 
 #ifndef TRAP_RELEASE
-	std::string newTitle = fmt::format("{} - TRAP™ V{}[INDEV]{}{}", m_data.Title, TRAP_VERSION.ToString(),
+	std::string newTitle = fmt::format("{} - TRAP™ V{}[INDEV]{}{}", m_data.Title, TRAP_VERSION,
 	                                   Log::WindowVersion, Graphics::RendererAPI::GetRenderer()->GetTitle());
 #ifdef TRAP_PLATFORM_LINUX
 		newTitle += fmt::format("[{}]", Utils::String::ConvertToString(Utils::GetLinuxWindowManager()));
@@ -821,7 +821,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	//Create Window
 #ifndef TRAP_RELEASE
 	const std::string newTitle = fmt::format("{} - TRAP™ V{}[INDEV]{}{}[{}]", m_data.Title,
-	                                         TRAP_VERSION.ToString(), Log::WindowVersion,
+	                                         TRAP_VERSION, Log::WindowVersion,
 											 Graphics::RendererAPI::GetRenderer()->GetTitle(),
 
 #ifdef TRAP_PLATFORM_LINUX

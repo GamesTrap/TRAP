@@ -49,7 +49,7 @@ void WindowStateTests::OnEvent(TRAP::Events::Event& event)
 
 bool WindowStateTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 {
-	TP_TRACE(event.ToString());
+	TP_TRACE(event);
 
 	const TRAP::Window* const window = TRAP::Application::GetWindow();
 
@@ -114,7 +114,7 @@ bool WindowStateTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 
 bool WindowStateTests::OnWindowResize(const TRAP::Events::WindowResizeEvent& event)
 {
-	TP_TRACE(event.ToString());
+	TP_TRACE(event);
 
 	return true;
 }
@@ -123,7 +123,7 @@ bool WindowStateTests::OnWindowResize(const TRAP::Events::WindowResizeEvent& eve
 
 bool WindowStateTests::OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event)
 {
-	TP_TRACE(event.ToString());
+	TP_TRACE(event);
 
 	return true;
 }
@@ -132,7 +132,7 @@ bool WindowStateTests::OnFrameBufferResize(const TRAP::Events::FrameBufferResize
 
 bool WindowStateTests::OnWindowFocus(const TRAP::Events::WindowFocusEvent& event)
 {
-	TP_TRACE(event.ToString());
+	TP_TRACE(event);
 
 	return true;
 }
@@ -141,7 +141,7 @@ bool WindowStateTests::OnWindowFocus(const TRAP::Events::WindowFocusEvent& event
 
 bool WindowStateTests::OnWindowLostFocus(const TRAP::Events::WindowLostFocusEvent& event)
 {
-	TP_TRACE(event.ToString());
+	TP_TRACE(event);
 
 	return true;
 }
@@ -150,7 +150,7 @@ bool WindowStateTests::OnWindowLostFocus(const TRAP::Events::WindowLostFocusEven
 
 bool WindowStateTests::OnWindowMinimize(const TRAP::Events::WindowMinimizeEvent& event)
 {
-	TP_TRACE(event.ToString());
+	TP_TRACE(event);
 
 	return true;
 }
@@ -159,7 +159,7 @@ bool WindowStateTests::OnWindowMinimize(const TRAP::Events::WindowMinimizeEvent&
 
 bool WindowStateTests::OnWindowMaximize(const TRAP::Events::WindowMaximizeEvent& event)
 {
-	TP_TRACE(event.ToString());
+	TP_TRACE(event);
 
 	return true;
 }
@@ -168,7 +168,7 @@ bool WindowStateTests::OnWindowMaximize(const TRAP::Events::WindowMaximizeEvent&
 
 bool WindowStateTests::OnWindowRestore(const TRAP::Events::WindowRestoreEvent& event)
 {
-	TP_TRACE(event.ToString());
+	TP_TRACE(event);
 
 	return true;
 }

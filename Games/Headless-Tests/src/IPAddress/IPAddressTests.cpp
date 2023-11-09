@@ -209,9 +209,7 @@ void IPAddressTests::TestIPv4Operators()
     std::istringstream("") >> ipAddress3;
     TRAP_ASSERT(ipAddress3 == TRAP::Network::IPv4Address::None);
 
-    std::ostringstream out;
-    out << TRAP::Network::IPv4Address(10, 9, 8, 7);
-    TRAP_ASSERT(out.str() == "10.9.8.7");
+    TRAP_ASSERT(fmt::format("{}", TRAP::Network::IPv4Address(10, 9, 8, 7)) == "10.9.8.7");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -313,7 +311,5 @@ void IPAddressTests::TestIPv6Operators()
     std::istringstream("") >> ipAddress3;
     TRAP_ASSERT(ipAddress3 == TRAP::Network::IPv6Address::None);
 
-    std::ostringstream out;
-    out << TRAP::Network::IPv6Address(arr);
-    TRAP_ASSERT(out.str() == "2a02:908:2226:1220:a2e6:22c4:86bd:20c0");
+    TRAP_ASSERT(fmt::format("{}", TRAP::Network::IPv6Address(arr)) == "2a02:908:2226:1220:a2e6:22c4:86bd:20c0");
 }
