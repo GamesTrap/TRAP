@@ -4647,3 +4647,7 @@ SITREP 11/09/2023|23w45b2
     - Linux Fixed a bug which made X11/XWayland the default instead of Wayland ~<5 mins
     - Replaced calls to ConvertToString() with fmt::format ~<15 mins
     - String Removed ConvertToString() ~<5 mins
+
+SITREP 11/11/2023|23w45c1
+    - Changed TRAP Engine version to 23w45c1(0.10.4)
+    - Added custom std::optional implementation with custom extensions ~>120 mins

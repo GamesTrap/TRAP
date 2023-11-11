@@ -4,6 +4,7 @@ project "UnitTests"
 	location "."
 	kind "ConsoleApp"
 	language "C++"
+	warnings "Off"
 
 	--Add all source and header files
 	files
