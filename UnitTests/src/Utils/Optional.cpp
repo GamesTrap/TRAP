@@ -1,5 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
+
 #include <unordered_set>
+#include <array>
 
 #include "Core/Types.h"
 #include "Utils/Optional.h"
@@ -361,10 +363,17 @@ TEST_CASE("TRAP::Optional", "[utils][optional]")
 
         static constexpr std::array<OptStr, 4> s{"ABC", "abc", TRAP::NullOpt, "def"};
 
+#ifdef TRAP_PLATFORM_LINUX
         REQUIRE(std::hash<OptStr>{}(std::get<0>(s)) == 11746482041453314842u);
         REQUIRE(std::hash<OptStr>{}(std::get<1>(s)) == 3663726644998027833);
         REQUIRE(std::hash<OptStr>{}(std::get<2>(s)) == 0u);
         REQUIRE(std::hash<OptStr>{}(std::get<3>(s)) == 11697390762615875584u);
+#elif defined(TRAP_PLATFORM_WINDOWS)
+        REQUIRE(std::hash<OptStr>{}(std::get<0>(s)) == 18027876433081418475u);
+        REQUIRE(std::hash<OptStr>{}(std::get<1>(s)) == 3663726644998027833);
+        REQUIRE(std::hash<OptStr>{}(std::get<2>(s)) == 0u);
+        REQUIRE(std::hash<OptStr>{}(std::get<3>(s)) == 11697390762615875584u);
+#endif
     }
 
     SECTION("In place")
