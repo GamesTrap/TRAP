@@ -525,21 +525,21 @@ namespace
                 .location = 0,
                 .binding = binding_desc.binding,
                 .format = VK_FORMAT_R32G32_SFLOAT,
-                .offset = IM_OFFSETOF(ImDrawVert, pos)
+                .offset = NumericCast<u32>(offsetof(ImDrawVert, pos))
             },
             VkVertexInputAttributeDescription
             {
                 .location = 1,
                 .binding = binding_desc.binding,
                 .format = VK_FORMAT_R32G32_SFLOAT,
-                .offset = IM_OFFSETOF(ImDrawVert, uv)
+                .offset = NumericCast<u32>(offsetof(ImDrawVert, uv))
             },
             VkVertexInputAttributeDescription
             {
                 .location = 2,
                 .binding = binding_desc.binding,
                 .format = VK_FORMAT_R8G8B8A8_UNORM,
-                .offset = IM_OFFSETOF(ImDrawVert, col)
+                .offset = NumericCast<u32>(offsetof(ImDrawVert, col))
             }
         };
 
