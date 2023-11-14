@@ -779,11 +779,15 @@ namespace TRAP::Graphics::API::VulkanInits
 
 [[nodiscard]] constexpr VkCommandBufferBeginInfo TRAP::Graphics::API::VulkanInits::CommandBufferBeginInfo(const bool oneTimeSubmit) noexcept
 {
+	VkCommandBufferUsageFlags usageFlags = 0u;
+	if(oneTimeSubmit)
+		usageFlags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
 	return VkCommandBufferBeginInfo
 	{
 		.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
 		.pNext = nullptr,
-		.flags = oneTimeSubmit ? VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT : VkCommandBufferUsageFlagBits{},
+		.flags = usageFlags,
 		.pInheritanceInfo = nullptr
 	};
 }
