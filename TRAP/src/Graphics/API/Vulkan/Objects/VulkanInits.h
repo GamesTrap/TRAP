@@ -346,8 +346,10 @@ namespace TRAP::Graphics::API::VulkanInits
 	[[nodiscard]] VkCommandBufferAllocateInfo CommandBufferAllocateInfo(VkCommandPool commandPool, bool secondary);
 
 	/// @brief Create a Vulkan command buffer begin info.
+	/// @param oneTimeSubmit Specify that each recording of the command buffer will only be submitted once, and the
+	///                      command buffer will be reset and recorded again between each submission.
 	/// @return VkCommandBufferBeginInfo.
-	[[nodiscard]] constexpr VkCommandBufferBeginInfo CommandBufferBeginInfo() noexcept;
+	[[nodiscard]] constexpr VkCommandBufferBeginInfo CommandBufferBeginInfo(bool oneTimeSubmit) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -775,13 +777,17 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkCommandBufferBeginInfo TRAP::Graphics::API::VulkanInits::CommandBufferBeginInfo() noexcept
+[[nodiscard]] constexpr VkCommandBufferBeginInfo TRAP::Graphics::API::VulkanInits::CommandBufferBeginInfo(const bool oneTimeSubmit) noexcept
 {
+	VkCommandBufferUsageFlags usageFlags = 0u;
+	if(oneTimeSubmit)
+		usageFlags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
 	return VkCommandBufferBeginInfo
 	{
 		.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
 		.pNext = nullptr,
-		.flags = 0,
+		.flags = usageFlags,
 		.pInheritanceInfo = nullptr
 	};
 }

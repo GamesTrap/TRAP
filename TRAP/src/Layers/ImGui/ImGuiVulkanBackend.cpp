@@ -74,6 +74,11 @@ Modified by Jan "GamesTrap" Schuerkamp
 // CHANGELOG
 // (minor and older changes stripped away, please see git history for details)
 //  2023-XX-XX: Platform: Added support for multiple windows via the ImGuiPlatformIO interface.
+//  2023-11-10: *BREAKING CHANGE*: Removed parameter from ImGui_ImplVulkan_CreateFontsTexture(): backend now creates its own command-buffer to upload fonts.
+//              *BREAKING CHANGE*: Removed DestroyFontUploadObjects() which is now unecessary as we create and destroy those objects in the backend.
+//              CreateFontsTexture() is automatically called by NewFrame() the first time.
+//              You can call CreateFontsTexture() again to recreate the font atlas texture.
+//              Added DestroyFontsTexture() but you probably never need to call this.
 //  2023-07-04: Vulkan: Added optional support for VK_KHR_dynamic_rendering. User needs to set init_info->UseDynamicRendering = true and init_info->ColorAttachmentFormat.
 //  2023-01-02: Vulkan: Fixed sampler passed to ImGui_ImplVulkan_AddTexture() not being honored + removed a bunch of duplicate code.
 //  2022-10-11: Using 'nullptr' instead of 'NULL' as per our switch to C++11.
@@ -331,7 +336,8 @@ namespace
         TRAP::Ref<TRAP::Graphics::API::VulkanSampler> FontSampler = nullptr;
         TRAP::Ref<TRAP::Graphics::API::VulkanTexture> FontImage = nullptr;
         VkDescriptorSet             FontDescriptorSet = VK_NULL_HANDLE;
-        TRAP::Ref<TRAP::Graphics::API::VulkanBuffer> UploadBuffer = nullptr;
+        TRAP::Ref<TRAP::Graphics::API::VulkanCommandPool> FontCommandPool = nullptr;
+        TRAP::Graphics::CommandBuffer* FontCommandBuffer = nullptr;
 
         // Render buffers for main window
         ImGui_ImplVulkanH_WindowRenderBuffers MainWindowRenderBuffers{};
@@ -353,8 +359,6 @@ namespace
     void CreatePipeline(const TRAP::Graphics::API::VulkanDevice& device, const VkAllocationCallbacks* allocator,
                         const TRAP::Graphics::API::VulkanPipelineCache* pipelineCache,
                         VkRenderPass renderPass, VkSampleCountFlagBits MSAASamples, VkPipeline& pipeline);
-    void CreateFontsTexture(const TRAP::Graphics::API::VulkanCommandBuffer& command_buffer);
-    void DestroyFontsTexture();
     void CreateDeviceObjects();
     void DestroyDeviceObjects();
 
@@ -525,21 +529,21 @@ namespace
                 .location = 0,
                 .binding = binding_desc.binding,
                 .format = VK_FORMAT_R32G32_SFLOAT,
-                .offset = IM_OFFSETOF(ImDrawVert, pos)
+                .offset = NumericCast<u32>(offsetof(ImDrawVert, pos))
             },
             VkVertexInputAttributeDescription
             {
                 .location = 1,
                 .binding = binding_desc.binding,
                 .format = VK_FORMAT_R32G32_SFLOAT,
-                .offset = IM_OFFSETOF(ImDrawVert, uv)
+                .offset = NumericCast<u32>(offsetof(ImDrawVert, uv))
             },
             VkVertexInputAttributeDescription
             {
                 .location = 2,
                 .binding = binding_desc.binding,
                 .format = VK_FORMAT_R8G8B8A8_UNORM,
-                .offset = IM_OFFSETOF(ImDrawVert, col)
+                .offset = NumericCast<u32>(offsetof(ImDrawVert, col))
             }
         };
 
@@ -631,129 +635,6 @@ namespace
 
     //-------------------------------------------------------------------------------------------------------------------//
 
-    void CreateFontsTexture(const TRAP::Graphics::API::VulkanCommandBuffer& command_buffer)
-    {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
-
-        const ImGuiIO& io = ImGui::GetIO();
-        ImGui_ImplVulkan_Data* const bd = GetBackendData();
-
-        u8* pixels = nullptr;
-        i32 width = 0, height = 0;
-        io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
-        const usize upload_size = NumericCast<usize>(width) * NumericCast<usize>(height) * 4u * sizeof(char);
-
-        // Create the Image:
-        bd->FontImage = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>(TRAP::Graphics::TextureType::Texture2D);
-        const TRAP::Graphics::RendererAPI::TextureDesc fontDesc
-        {
-            .Flags = TRAP::Graphics::RendererAPI::TextureCreationFlags::None,
-            .Width = NumericCast<u32>(width),
-            .Height = NumericCast<u32>(height),
-            .Depth = 1,
-            .ArraySize = 1,
-            .SampleCount = TRAP::Graphics::RendererAPI::SampleCount::One,
-            .SampleQuality = 1,
-            .Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM,
-            .ClearValue = {},
-            .StartState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
-            .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture,
-            .NativeHandle = nullptr,
-            .Name = "ImGui Font Texture",
-            .VkSamplerYcbcrConversionInfo = nullptr
-        };
-        bd->FontImage->Init(fontDesc);
-
-        // Create the Descriptor Set:
-        bd->FontDescriptorSet = static_cast<VkDescriptorSet>(AddTexture(bd->FontSampler, bd->FontImage, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
-
-        // Create the Upload Buffer:
-        {
-            const TRAP::Graphics::RendererAPI::BufferDesc bufferDesc
-            {
-                .Size = upload_size,
-                .Alignment = 0,
-                .MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU,
-                .Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::HostVisible,
-                .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
-                .StartState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
-                .FirstElement = 0,
-                .ElementCount = 0,
-                .StructStride = 0,
-                .ICBDrawType = {},
-                .ICBMaxVertexBufferBind = 0,
-                .ICBMaxFragmentBufferBind = 0,
-                .Format = TRAP::Graphics::API::ImageFormat::Undefined,
-                .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Undefined,
-                .Name = "ImGui UploadBuffer"
-            };
-            bd->UploadBuffer = TRAP::MakeRef<TRAP::Graphics::API::VulkanBuffer>(bufferDesc);
-        }
-
-        // Upload to Buffer:
-        {
-            u8* map = nullptr;
-            const TRAP::Graphics::RendererAPI::ReadRange readRange{.Offset = 0, .Range = upload_size};
-            bd->UploadBuffer->MapBuffer(&readRange);
-            map = reinterpret_cast<u8*>(bd->UploadBuffer->GetCPUMappedAddress());
-            std::copy_n(pixels, upload_size, map);
-            bd->UploadBuffer->UnMapBuffer();
-        }
-
-        // Copy to Image:
-        {
-            std::vector<TRAP::Graphics::RendererAPI::TextureBarrier> fontImageBarriers
-            {
-                TRAP::Graphics::RendererAPI::TextureBarrier
-                {
-                    .Texture = dynamic_cast<TRAP::Graphics::Texture*>(bd->FontImage.get()),
-                    .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
-                    .NewState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination,
-                    .BeginOnly = false,
-                    .EndOnly = false,
-                    .Acquire = false,
-                    .Release = false,
-                    .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
-                    .SubresourceBarrier = false,
-                    .MipLevel = 0,
-                    .ArrayLayer = 0
-                }
-            };
-            command_buffer.ResourceBarrier(nullptr, &fontImageBarriers, nullptr);
-
-            //TODO This currently only supports tightly packed (using image extent) textures
-            const TRAP::Graphics::RendererAPI::SubresourceDataDesc subresourceDesc
-            {
-                .SrcOffset = 0,
-                .MipLevel = 0,
-                .ArrayLayer = 0,
-                .RowPitch = NumericCast<u32>(width) * bd->FontImage->GetBytesPerPixel(),
-                .SlicePitch = 0
-            };
-            command_buffer.UpdateSubresource(bd->FontImage.get(), dynamic_pointer_cast<TRAP::Graphics::Buffer>(bd->UploadBuffer), subresourceDesc);
-
-            fontImageBarriers[0].CurrentState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination;
-            fontImageBarriers[0].NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
-            command_buffer.ResourceBarrier(nullptr, &fontImageBarriers, nullptr);
-        }
-
-        // Store our identifier
-        io.Fonts->SetTexID(static_cast<ImTextureID>(bd->FontDescriptorSet));
-    }
-
-    //-------------------------------------------------------------------------------------------------------------------//
-
-    void DestroyFontsTexture()
-    {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
-
-        ImGui_ImplVulkan_Data* const bd = GetBackendData();
-
-        bd->FontImage.reset();
-    }
-
-    //-------------------------------------------------------------------------------------------------------------------//
-
     void CreateDeviceObjects()
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -834,11 +715,11 @@ namespace
         ImGui_ImplVulkan_Data* const bd = GetBackendData();
         const InitInfo& v = bd->VulkanInitInfo;
         DestroyAllViewportsRenderBuffers();
-        DestroyFontUploadObjects();
+        DestroyFontsTexture();
 
+        bd->FontCommandPool.reset();
         if (bd->ShaderModuleVert != nullptr)     { vkDestroyShaderModule(v.Device->GetVkDevice(), bd->ShaderModuleVert, v.Allocator); bd->ShaderModuleVert = VK_NULL_HANDLE; }
         if (bd->ShaderModuleFrag != nullptr)     { vkDestroyShaderModule(v.Device->GetVkDevice(), bd->ShaderModuleFrag, v.Allocator); bd->ShaderModuleFrag = VK_NULL_HANDLE; }
-        bd->FontImage.reset();
         bd->FontSampler.reset();
         if (bd->DescriptorSetLayout != nullptr)  { vkDestroyDescriptorSetLayout(v.Device->GetVkDevice(), bd->DescriptorSetLayout, v.Allocator); bd->DescriptorSetLayout = VK_NULL_HANDLE; }
         if (bd->PipelineLayout != nullptr)       { vkDestroyPipelineLayout(v.Device->GetVkDevice(), bd->PipelineLayout, v.Allocator); bd->PipelineLayout = VK_NULL_HANDLE; }
@@ -953,7 +834,7 @@ namespace
             const TRAP::Graphics::RendererAPI::CommandPoolDesc cmdPoolDesc
             {
                 .Queue = queue,
-                .Transient = true
+                .CreateFlags = TRAP::Graphics::RendererAPI::CommandPoolCreateFlags::Transient
             };
             fd.CommandPool = TRAP::MakeScope<TRAP::Graphics::API::VulkanCommandPool>(cmdPoolDesc);
             fd.CommandBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(fd.CommandPool->AllocateCommandBuffer(false));
@@ -1546,6 +1427,175 @@ namespace
 // FUNCTIONS
 //-----------------------------------------------------------------------------
 
+void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
+{
+    ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
+    const ImGuiIO& io = ImGui::GetIO();
+    ImGui_ImplVulkan_Data* const bd = GetBackendData();
+    const InitInfo& v = bd->VulkanInitInfo;
+
+    //Destroy existing texture (if any)
+    if(bd->FontImage || bd->FontDescriptorSet == VK_NULL_HANDLE)
+    {
+        v.Queue->WaitQueueIdle();
+        DestroyFontsTexture();
+    }
+
+    //Create command pool/buffer
+    if(!bd->FontCommandPool)
+    {
+        const TRAP::Graphics::RendererAPI::CommandPoolDesc cmdPoolDesc
+        {
+            .Queue = v.Queue,
+            .CreateFlags = TRAP::Graphics::RendererAPI::CommandPoolCreateFlags::ResetCommandBuffer
+        };
+        bd->FontCommandPool = TRAP::MakeRef<TRAP::Graphics::API::VulkanCommandPool>(cmdPoolDesc);
+    }
+    if(bd->FontCommandBuffer == nullptr)
+    {
+        TRAP_ASSERT(bd->FontCommandPool != nullptr, "ImGui::INTERNAL::Vulkan::CreateFontsTexture(): bd->FontCommandPool is nullptr!");
+
+        bd->FontCommandBuffer = bd->FontCommandPool->AllocateCommandBuffer(false);
+    }
+
+    //Start command buffer
+    {
+        bd->FontCommandPool->Reset();
+        bd->FontCommandBuffer->Begin(true);
+    }
+
+    u8* pixels = nullptr;
+    i32 width = 0, height = 0;
+    io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
+    const usize upload_size = NumericCast<usize>(width) * NumericCast<usize>(height) * 4u * sizeof(char);
+
+    // Create the Image:
+    bd->FontImage = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>(TRAP::Graphics::TextureType::Texture2D);
+    const TRAP::Graphics::RendererAPI::TextureDesc fontDesc
+    {
+        .Flags = TRAP::Graphics::RendererAPI::TextureCreationFlags::None,
+        .Width = NumericCast<u32>(width),
+        .Height = NumericCast<u32>(height),
+        .Depth = 1,
+        .ArraySize = 1,
+        .SampleCount = TRAP::Graphics::RendererAPI::SampleCount::One,
+        .SampleQuality = 1,
+        .Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM,
+        .ClearValue = {},
+        .StartState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
+        .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture,
+        .NativeHandle = nullptr,
+        .Name = "ImGui Font Texture",
+        .VkSamplerYcbcrConversionInfo = nullptr
+    };
+    bd->FontImage->Init(fontDesc);
+
+    // Create the Descriptor Set:
+    bd->FontDescriptorSet = static_cast<VkDescriptorSet>(AddTexture(bd->FontSampler, bd->FontImage, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
+
+    // Create the Upload Buffer:
+    TRAP::Ref<TRAP::Graphics::API::VulkanBuffer> uploadBuffer = nullptr;
+    {
+        const TRAP::Graphics::RendererAPI::BufferDesc bufferDesc
+        {
+            .Size = upload_size,
+            .Alignment = 0,
+            .MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU,
+            .Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::HostVisible,
+            .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
+            .StartState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
+            .FirstElement = 0,
+            .ElementCount = 0,
+            .StructStride = 0,
+            .ICBDrawType = {},
+            .ICBMaxVertexBufferBind = 0,
+            .ICBMaxFragmentBufferBind = 0,
+            .Format = TRAP::Graphics::API::ImageFormat::Undefined,
+            .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Undefined,
+            .Name = "ImGui UploadBuffer"
+        };
+        uploadBuffer = TRAP::MakeRef<TRAP::Graphics::API::VulkanBuffer>(bufferDesc);
+    }
+
+    // Upload to Buffer:
+    {
+        u8* map = nullptr;
+        const TRAP::Graphics::RendererAPI::ReadRange readRange{.Offset = 0, .Range = upload_size};
+        uploadBuffer->MapBuffer(&readRange);
+        map = reinterpret_cast<u8*>(uploadBuffer->GetCPUMappedAddress());
+        std::copy_n(pixels, upload_size, map);
+        uploadBuffer->UnMapBuffer();
+    }
+
+    // Copy to Image:
+    {
+        std::vector<TRAP::Graphics::RendererAPI::TextureBarrier> fontImageBarriers
+        {
+            TRAP::Graphics::RendererAPI::TextureBarrier
+            {
+                .Texture = dynamic_cast<TRAP::Graphics::Texture*>(bd->FontImage.get()),
+                .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
+                .NewState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination,
+                .BeginOnly = false,
+                .EndOnly = false,
+                .Acquire = false,
+                .Release = false,
+                .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
+                .SubresourceBarrier = false,
+                .MipLevel = 0,
+                .ArrayLayer = 0
+            }
+        };
+        bd->FontCommandBuffer->ResourceBarrier(nullptr, &fontImageBarriers, nullptr);
+
+        //TODO This currently only supports tightly packed (using image extent) textures
+        const TRAP::Graphics::RendererAPI::SubresourceDataDesc subresourceDesc
+        {
+            .SrcOffset = 0,
+            .MipLevel = 0,
+            .ArrayLayer = 0,
+            .RowPitch = NumericCast<u32>(width) * bd->FontImage->GetBytesPerPixel(),
+            .SlicePitch = 0
+        };
+        bd->FontCommandBuffer->UpdateSubresource(bd->FontImage.get(), dynamic_pointer_cast<TRAP::Graphics::Buffer>(uploadBuffer), subresourceDesc);
+
+        fontImageBarriers[0].CurrentState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination;
+        fontImageBarriers[0].NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+        bd->FontCommandBuffer->ResourceBarrier(nullptr, &fontImageBarriers, nullptr);
+    }
+
+    // Store our identifier
+    io.Fonts->SetTexID(static_cast<ImTextureID>(bd->FontDescriptorSet));
+
+    //End command buffer
+    bd->FontCommandBuffer->End();
+    v.Queue->Submit({.Cmds{bd->FontCommandBuffer}});
+
+    v.Device->WaitIdle();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void ImGui::INTERNAL::Vulkan::DestroyFontsTexture()
+{
+    ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
+    ImGuiIO& io = ImGui::GetIO();
+    ImGui_ImplVulkan_Data* const bd = GetBackendData();
+
+    if(bd->FontDescriptorSet != nullptr)
+    {
+        RemoveTexture(bd->FontImage);
+        bd->FontDescriptorSet = VK_NULL_HANDLE;
+        io.Fonts->SetTexID(nullptr);
+    }
+
+    bd->FontImage.reset();
+}
+
+//-----------------------------------------------------------------------------
+
 // Render function
 void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
                                              const TRAP::Graphics::API::VulkanCommandBuffer& command_buffer,
@@ -1733,51 +1783,6 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui::INTERNAL::Vulkan::UploadFontsTexture()
-{
-    ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
-
-    //Destroy old font
-    DestroyFontsTexture();
-
-    const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(TRAP::Application::GetWindow());
-    //Execute a GPU command to upload ImGui font textures
-    TRAP::Graphics::CommandBuffer* const cmd = viewportData.GraphicCommandPools[viewportData.ImageIndex]->AllocateCommandBuffer(false);
-    TRAP_ASSERT(cmd != nullptr, "ImGuiVulkanBackend::UploadFontsTexture(): cmd is nullptr!");
-    cmd->Begin();
-    CreateFontsTexture(*dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(cmd));
-    cmd->End();
-
-    const TRAP::Ref<TRAP::Graphics::Fence> submitFence = TRAP::Graphics::Fence::Create();
-    const TRAP::Graphics::RendererAPI::QueueSubmitDesc submitDesc
-    {
-        .Cmds = {cmd},
-        .SignalFence = submitFence,
-        .WaitSemaphores = {},
-        .SignalSemaphores = {}
-    };
-
-    ImGui_ImplVulkan_Data* const bd = GetBackendData();
-    const InitInfo& v = bd->VulkanInitInfo;
-
-    v.Queue->Submit(submitDesc);
-    submitFence->Wait();
-    viewportData.GraphicCommandPools[viewportData.ImageIndex]->FreeCommandBuffer(cmd);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void ImGui::INTERNAL::Vulkan::DestroyFontUploadObjects()
-{
-    ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
-
-    ImGui_ImplVulkan_Data* const bd = GetBackendData();
-    if (bd->UploadBuffer != VK_NULL_HANDLE)
-        bd->UploadBuffer.reset();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void ImGui::INTERNAL::Vulkan::Init(const InitInfo& info, VkRenderPass render_pass)
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -1867,6 +1872,9 @@ void ImGui::INTERNAL::Vulkan::NewFrame()
 
     [[maybe_unused]] const ImGui_ImplVulkan_Data* const bd = GetBackendData();
     TRAP_ASSERT(bd != nullptr, "ImGuiVulkanBackend::NewFrame(): Renderer backend hasn't been initialized!");
+
+    if(bd->FontDescriptorSet == nullptr)
+        CreateFontsTexture();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

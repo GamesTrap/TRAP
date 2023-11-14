@@ -442,7 +442,7 @@ void TRAP::Graphics::RendererAPI::Transition(const Ref<TRAP::Graphics::Texture>&
 
 	CommandPoolDesc cmdPoolDesc{};
 	cmdPoolDesc.Queue = queue;
-	cmdPoolDesc.Transient = true;
+	cmdPoolDesc.CreateFlags = CommandPoolCreateFlags::Transient;
 	TRAP::Ref<CommandPool> cmdPool = TRAP::Graphics::CommandPool::Create(cmdPoolDesc);
 
 	CommandBuffer* const cmd = cmdPool->AllocateCommandBuffer(false);

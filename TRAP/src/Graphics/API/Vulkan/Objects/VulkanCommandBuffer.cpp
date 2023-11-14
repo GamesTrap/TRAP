@@ -492,11 +492,11 @@ void TRAP::Graphics::API::VulkanCommandBuffer::EndDebugMarker() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::Begin()
+void TRAP::Graphics::API::VulkanCommandBuffer::Begin(const bool oneTimeSubmit)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	const VkCommandBufferBeginInfo beginInfo = VulkanInits::CommandBufferBeginInfo();
+	const VkCommandBufferBeginInfo beginInfo = VulkanInits::CommandBufferBeginInfo(oneTimeSubmit);
 
 	VkCall(vkBeginCommandBuffer(m_vkCommandBuffer, &beginInfo));
 
