@@ -108,8 +108,9 @@ namespace ImGui::INTERNAL::Vulkan
                   void        Shutdown();
                   void        NewFrame();
                   void        RenderDrawData(const ImDrawData& draw_data, const TRAP::Graphics::API::VulkanCommandBuffer& command_buffer, VkPipeline pipeline = VK_NULL_HANDLE);
-                  void        UploadFontsTexture();
-                  void        DestroyFontUploadObjects();
+                  void        CreateFontsTexture();
+                  /// @note You probably never need to call this, as it is called by CreateFontsTexture() and Shutdown().
+                  void        DestroyFontsTexture();
     [[nodiscard]] ImTextureID AddTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanSampler>& sampler, const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& image, VkImageLayout image_layout);
                   void        RemoveTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& image_view);
                   ImTextureID UpdateTextureInfo(VkDescriptorSet descriptorSet, const TRAP::Graphics::API::VulkanSampler& sampler, VkImageView image_view, VkImageLayout image_layout);

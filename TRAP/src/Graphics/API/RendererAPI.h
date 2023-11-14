@@ -1832,6 +1832,13 @@ namespace TRAP::Graphics
 			PerPrimitive = BIT(2u)
 		};
 
+		/// @brief Enum describing flags that change the behaviour of a command pool.
+		enum class CommandPoolCreateFlags : u32
+		{
+			None = 0x0,
+			Transient = BIT(0u), //Indicate that the allocated command buffers will be short lived
+			ResetCommandBuffer = BIT(1u) //Allows to reset command buffers individually to initial state.
+		};
 
 		struct Color
 		{
@@ -2140,8 +2147,7 @@ namespace TRAP::Graphics
 		{
 			//Queue to be used by the command pool
 			TRAP::Ref<TRAP::Graphics::Queue> Queue;
-			//Indicate that the allocated command buffers will be short lived
-			bool Transient;
+			CommandPoolCreateFlags CreateFlags = CommandPoolCreateFlags::None;
 		};
 
 		/// @brief Description of a queue.
@@ -2966,6 +2972,7 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCaps)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCombiner)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearBufferType)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::LatencyMode)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::CommandPoolCreateFlags)
 
 //-------------------------------------------------------------------------------------------------------------------//
 

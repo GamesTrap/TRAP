@@ -2203,7 +2203,7 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 
 	CommandPoolDesc cmdPoolDesc{};
 	cmdPoolDesc.Queue = s_graphicQueue;
-	cmdPoolDesc.Transient = true;
+	cmdPoolDesc.CreateFlags = CommandPoolCreateFlags::Transient;
 	TRAP::Ref<VulkanCommandPool> cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
 
 	CommandBuffer* const cmd = cmdPool->AllocateCommandBuffer(false);
@@ -2734,7 +2734,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 	{
 		//Graphics
 		//Create Graphic Command Pool
-		p->GraphicCommandPools[i] = CommandPool::Create({ s_graphicQueue, false });
+		p->GraphicCommandPools[i] = CommandPool::Create({ s_graphicQueue });
 		//Allocate Graphic Command Buffer
 		p->GraphicCommandBuffers[i] = p->GraphicCommandPools[i]->AllocateCommandBuffer(false);
 
@@ -2751,7 +2751,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 		p->GraphicsTimestampReadbackBuffers[i] = loadDesc.Buffer;
 
 		//Compute
-		p->ComputeCommandPools[i] = CommandPool::Create({s_computeQueue, false});
+		p->ComputeCommandPools[i] = CommandPool::Create({s_computeQueue });
 		p->ComputeCommandBuffers[i] = p->ComputeCommandPools[i]->AllocateCommandBuffer(false);
 
 		p->ComputeCompleteFences[i] = Fence::Create();
@@ -3340,7 +3340,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 
 	CommandPoolDesc cmdPoolDesc{};
 	cmdPoolDesc.Queue = graphicsQueue;
-	cmdPoolDesc.Transient = true;
+	cmdPoolDesc.CreateFlags = CommandPoolCreateFlags::Transient;
 	const TRAP::Ref<VulkanCommandPool> cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
 
 	CommandBuffer* const cmd = cmdPool->AllocateCommandBuffer(false);

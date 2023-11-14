@@ -244,10 +244,6 @@ void TRAP::ImGuiLayer::OnAttach()
 
 		ImGui::INTERNAL::Vulkan::Init(initInfo, cmdBuffer->GetActiveVkRenderPass());
 
-		ImGui::INTERNAL::Vulkan::UploadFontsTexture();
-
-		//Clear font textures from CPU data
-		ImGui::INTERNAL::Vulkan::DestroyFontUploadObjects();
 		TP_TRACE(Log::ImGuiPrefix, "Finished Vulkan init");
 	}
 }
@@ -552,10 +548,7 @@ ImFont* ImGui::AddFontFromFileTTF(const std::string_view filename, const f32 siz
 	ImFont* const font = ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.data(), sizePixels, fontCfgTemplate, glyphRanges);
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
-		ImGui::INTERNAL::Vulkan::UploadFontsTexture();
-
-	//Clear font textures from CPU data
-	ImGui::INTERNAL::Vulkan::DestroyFontUploadObjects();
+		ImGui::INTERNAL::Vulkan::CreateFontsTexture();
 
 	return font;
 }
@@ -573,10 +566,7 @@ ImFont* ImGui::AddFontFromMemoryTTF(const std::span<const u8> fontData, const f3
 																	sizePixels, fontCfg, glyphRanges);
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
-		ImGui::INTERNAL::Vulkan::UploadFontsTexture();
-
-	//Clear font textures from CPU data
-	ImGui::INTERNAL::Vulkan::DestroyFontUploadObjects();
+		ImGui::INTERNAL::Vulkan::CreateFontsTexture();
 
 	return font;
 }

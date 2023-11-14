@@ -99,7 +99,9 @@ namespace TRAP::Graphics
 		virtual void EndDebugMarker() const = 0;
 
 		/// @brief Begin command buffer recording.
-		virtual void Begin() = 0;
+		/// @param oneTimeSubmit Whether each recording should only be submitted once. If true
+		///                      then the command buffer will be reset after submission to initial state.
+		virtual void Begin(bool oneTimeSubmit = false) = 0;
 		/// @brief End command buffer recording.
 		/// @note This function also ends the currently running render pass.
 		virtual void End() = 0;

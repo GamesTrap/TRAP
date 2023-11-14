@@ -114,7 +114,9 @@ namespace TRAP::Graphics::API
 		void EndDebugMarker() const override;
 
 		/// @brief Begin command buffer recording.
-		void Begin() override;
+		/// @param oneTimeSubmit Whether each recording should only be submitted once. If true
+		///                      then the command buffer will be reset after submission to initial state.
+		void Begin(bool oneTimeSubmit = false) override;
 		/// @brief End command buffer recording.
 		/// @note This function also ends the currently running render pass.
 		void End() override;
