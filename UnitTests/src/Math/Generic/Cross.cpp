@@ -60,10 +60,10 @@ namespace
         static constexpr T cross3 = TRAP::Math::Cross(T(1.0f, 0.0f, 0.0f, 0.0f), T(-1.0f, 0.0f, 0.0f, 0.0f));
         static constexpr T cross4 = TRAP::Math::Cross(T(0.0f, 0.0f, 0.0f, 0.0f), T( 0.1f, 0.2f, 0.3f, 0.4f));
 
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(cross1, T( 1.0f, 0.0f, 0.0f, 0.0f), Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(cross2, T( 0.0f, 1.0f, 0.0f, 0.0f), Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(cross3, T(-1.0f, 0.0f, 0.0f, 0.0f), Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(cross4, T( 0.0f, 0.0f, 0.0f, 0.0f), Epsilon)));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(cross1, T( 1.0f, 0.0f, 0.0f, 0.0f), Epsilon)));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(cross2, T( 0.0f, 1.0f, 0.0f, 0.0f), Epsilon)));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(cross3, T(-1.0f, 0.0f, 0.0f, 0.0f), Epsilon)));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(cross4, T( 0.0f, 0.0f, 0.0f, 0.0f), Epsilon)));
     }
 }
 

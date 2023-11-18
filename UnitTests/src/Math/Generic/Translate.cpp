@@ -67,7 +67,7 @@ namespace
                 static constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -3.40282347e+38f, 1.0f, 1.0f, 1.0f);
                 REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
             }
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(t, t2, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, t2, Epsilon)));
         }
         {
             static constexpr auto t = TRAP::Math::Translate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::tVec3<T>(max, 1.0f, 1.0f));
@@ -82,7 +82,7 @@ namespace
                 static constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 3.40282347e+38f, 1.0f, 1.0f, 1.0f);
                 REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
             }
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(t, t2, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, t2, Epsilon)));
         }
         {
             const auto t = TRAP::Math::Translate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::tVec3<T>(inf, 1.0f, 1.0f));

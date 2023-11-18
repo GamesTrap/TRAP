@@ -23,17 +23,17 @@ namespace
         {
             static constexpr TRAP::Math::tQuat<T> input(0.0f, 1.0f, 2.0f, 3.0f);
             static constexpr TRAP::Math::tQuat<T> res = TRAP::Math::Conjugate(input);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, TRAP::Math::tQuat<T>(0.0f, -1.0f, -2.0f, -3.0f), Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, TRAP::Math::tQuat<T>(0.0f, -1.0f, -2.0f, -3.0f), Epsilon)));
         }
         {
             static constexpr TRAP::Math::tQuat<T> input(2.0f, 0.0f, 0.0f, 0.0f);
             static constexpr TRAP::Math::tQuat<T> res = TRAP::Math::Conjugate(input);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, TRAP::Math::tQuat<T>(2.0f, 0.0f, 0.0f, 0.0f), Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, TRAP::Math::tQuat<T>(2.0f, 0.0f, 0.0f, 0.0f), Epsilon)));
         }
         {
             static constexpr TRAP::Math::tQuat<T> input(1.0f, 2.0f, -3.0f, 4.0f);
             static constexpr TRAP::Math::tQuat<T> res = TRAP::Math::Conjugate(input);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, TRAP::Math::tQuat<T>(1.0f, -2.0f, 3.0f, -4.0f), Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, TRAP::Math::tQuat<T>(1.0f, -2.0f, 3.0f, -4.0f), Epsilon)));
         }
         {
             const TRAP::Math::tQuat<T> input(1.0f, 2.0f, 3.0f, 4.0f);
@@ -43,12 +43,12 @@ namespace
         {
             static constexpr TRAP::Math::tQuat<T> input(1.0f, 0.0f, 0.0f, 0.0f);
             static constexpr TRAP::Math::tQuat<T> res = TRAP::Math::Conjugate(input);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, TRAP::Math::tQuat<T>(1.0f, 0.0f, 0.0f, 0.0f), Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, TRAP::Math::tQuat<T>(1.0f, 0.0f, 0.0f, 0.0f), Epsilon)));
         }
         {
             static constexpr TRAP::Math::tQuat<T> input(-1.0f, -2.0f, -3.0f, -4.0f);
             static constexpr TRAP::Math::tQuat<T> res = TRAP::Math::Conjugate(input);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, TRAP::Math::tQuat<T>(-1.0f, 2.0f, 3.0f, 4.0f), Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, TRAP::Math::tQuat<T>(-1.0f, 2.0f, 3.0f, 4.0f), Epsilon)));
         }
     }
 

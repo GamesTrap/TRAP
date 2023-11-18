@@ -67,8 +67,8 @@ namespace
         static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
 
         {
-            static_assert(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Radians(T(inf)))));
-            static_assert(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Radians(T(ninf)))));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Radians(T(inf)))));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Radians(T(ninf)))));
             REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Radians(T(nan)))));
         }
     }

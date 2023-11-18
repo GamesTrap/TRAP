@@ -59,14 +59,14 @@ namespace
         {
             static constexpr TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(min, 1.0f, min, 1.0f, 0.0f, 1.0f);
             static constexpr TRAP::Math::tMat4<T> expected(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ(T(min), T(5.0f), T(min), T(5.0f), T(1.0f), T(0.0f)), Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ(T(min), T(5.0f), T(min), T(5.0f), T(1.0f), T(0.0f)), Epsilon)));
         }
         {
             static constexpr TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(max, 1.0f, max, 1.0f, 0.0f, 1.0f);
             static constexpr TRAP::Math::tMat4<T> expected(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ(T(max), T(5.0f), T(max), T(5.0f), T(1.0f), T(0.0f)), Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ(T(max), T(5.0f), T(max), T(5.0f), T(1.0f), T(0.0f)), Epsilon)));
         }
         {
             const TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(inf, 1.0f, inf, 1.0f, 0.0f, 1.0f);

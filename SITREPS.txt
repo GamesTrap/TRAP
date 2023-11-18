@@ -4659,3 +4659,4 @@ SITREP 11/14/2023|23w46a1
 SITREP 11/18/2023|23w45c1
     - Changed TRAP Engine version to 23w46a1(0.10.6)
     - Added custom std::expected implementation with custom extensions ~>120 mins
+    - UnitTests Replaced static_assert with STATIC_REQUIRE where possible ~<10 mins

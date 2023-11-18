@@ -143,12 +143,12 @@ namespace
         {
             static constexpr T x(inf, 2.0f, 3.0f, 4.0f);
             static constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
-            static_assert(TRAP::Math::IsInf(TRAP::Math::Dot(x, y)));
+            STATIC_REQUIRE(TRAP::Math::IsInf(TRAP::Math::Dot(x, y)));
         }
         {
             static constexpr T x(ninf, 2.0f, 3.0f, 4.0f);
             static constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
-            static_assert(TRAP::Math::IsInf(TRAP::Math::Dot(x, y)));
+            STATIC_REQUIRE(TRAP::Math::IsInf(TRAP::Math::Dot(x, y)));
         }
         {
             static constexpr T x(nan, 2.0f, 3.0f, 4.0f);

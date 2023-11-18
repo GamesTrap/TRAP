@@ -53,12 +53,12 @@ namespace
         static constexpr T ninf = -std::numeric_limits<T>::infinity();
         static constexpr T nan = -std::numeric_limits<T>::quiet_NaN();
 
-        static_assert(TRAP::Math::Equal(TRAP::Math::Step(T( 0.0f), min), T(1.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Step(T(-1.0f), min), T(1.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Step(T( 1.0f), min), T(0.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Step(T( 0.0f), min), T(1.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Step(T(-1.0f), min), T(1.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Step(T( 1.0f), min), T(0.0f), Epsilon));
 
-        static_assert(TRAP::Math::Equal(TRAP::Math::Step(T( 0.0f), inf), T(1.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Step(T( 0.0f), ninf), T(0.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Step(T( 0.0f), inf), T(1.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Step(T( 0.0f), ninf), T(0.0f), Epsilon));
 
         REQUIRE(TRAP::Math::Equal(TRAP::Math::Step(T(-1.0f), nan), T(1.0f), Epsilon));
         REQUIRE(TRAP::Math::Equal(TRAP::Math::Step(T( 1.0f), nan), T(1.0f), Epsilon));

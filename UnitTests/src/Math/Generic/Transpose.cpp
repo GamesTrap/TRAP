@@ -47,25 +47,25 @@ namespace
             static constexpr T m(TRAP::Math::tMat4<typename T::value_type>(max, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
             static constexpr T t = TRAP::Math::Transpose(m);
             static constexpr T expected(TRAP::Math::tMat4<typename T::value_type>(max, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
         }
         {
             static constexpr T m(TRAP::Math::tMat4<typename T::value_type>(min, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
             static constexpr T t = TRAP::Math::Transpose(m);
             static constexpr T expected(TRAP::Math::tMat4<typename T::value_type>(min, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
         }
         {
             static constexpr T m(TRAP::Math::tMat4<typename T::value_type>(inf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
             static constexpr T t = TRAP::Math::Transpose(m);
             static constexpr T expected(TRAP::Math::tMat4<typename T::value_type>(inf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(t, expected)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected)));
         }
         {
             static constexpr T m(TRAP::Math::tMat4<typename T::value_type>(ninf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
             static constexpr T t = TRAP::Math::Transpose(m);
             static constexpr T expected(TRAP::Math::tMat4<typename T::value_type>(ninf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(t, expected)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected)));
         }
         {
             static constexpr T m(TRAP::Math::tMat4<typename T::value_type>(nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan));

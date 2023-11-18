@@ -16,7 +16,7 @@ namespace
             static constexpr TRAP::Math::tQuat<T> q1(1.0f, 0.0f, 0.0f, 0.0f);
             static constexpr TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
             static constexpr TRAP::Math::tMat3<T> expected(1.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
         }
         {
             const TRAP::Math::tQuat<T> q1 = TRAP::Math::AngleAxis(TRAP::Math::Radians(T(45.0f)), TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f));
@@ -28,7 +28,7 @@ namespace
             static constexpr TRAP::Math::tQuat<T> q1(0.7071f, 0.0f, 0.0f, 0.7071f);
             static constexpr TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
             static constexpr TRAP::Math::tMat3<T> expected(0.000019f, 0.999981f, 0.0f, -0.999981f, 0.000019f, 0.0f, 0.0f, 0.0f, 1.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, T(0.000001f))));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, T(0.000001f))));
         }
     }
 
@@ -79,7 +79,7 @@ namespace
             static constexpr TRAP::Math::tQuat<T> q1(1.0f, 0.0f, 0.0f, 0.0f);
             static constexpr TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
             static constexpr TRAP::Math::tMat4<T> expected(1.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
         }
         {
             const TRAP::Math::tQuat<T> q1 = TRAP::Math::AngleAxis(TRAP::Math::Radians(T(45.0f)), TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f));
@@ -91,7 +91,7 @@ namespace
             static constexpr TRAP::Math::tQuat<T> q1(0.7071f, 0.0f, 0.0f, 0.7071f);
             static constexpr TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
             static constexpr TRAP::Math::tMat4<T> expected(0.000019f, 0.999981f, 0.0f, 0.0f, -0.999981f, 0.000019f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, T(0.000001f))));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, T(0.000001f))));
         }
     }
 

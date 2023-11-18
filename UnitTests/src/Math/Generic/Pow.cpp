@@ -13,10 +13,10 @@ namespace
     {
         constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-        static_assert(TRAP::Math::Equal(TRAP::Math::Pow(T(0.5f), T(2.0f)), T(0.25f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Pow(T(1.5f), T(1.0f)), T(1.5f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Pow(T(2.0f), T(1.0f)), T(2.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Pow(T(2.0f), T(2.0f)), T(4.0f), T(0.00000000000001f)));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Pow(T(0.5f), T(2.0f)), T(0.25f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Pow(T(1.5f), T(1.0f)), T(1.5f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Pow(T(2.0f), T(1.0f)), T(2.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Pow(T(2.0f), T(2.0f)), T(4.0f), T(0.00000000000001f)));
     }
 
     template<typename T>

@@ -108,7 +108,7 @@ namespace
         static constexpr T inf = std::numeric_limits<T>::infinity();
         static constexpr T ninf = -std::numeric_limits<T>::infinity();
 
-        static_assert(TRAP::Math::Equal(TRAP::Math::Lerp(max, T(100.0f), T(0.5f)), (max / 2.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Lerp(max, T(100.0f), T(0.5f)), (max / 2.0f), Epsilon));
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Lerp(nan, T(10.0f), T(0.3f))));
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Lerp(ninf, inf, T(0.6f))));
     }

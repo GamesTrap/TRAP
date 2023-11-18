@@ -43,25 +43,25 @@ namespace
             static constexpr T m(TRAP::Math::tMat4<typename T::value_type>{min});
             static constexpr T m1(TRAP::Math::tMat4<typename T::value_type>(1.0f));
             static constexpr T n = TRAP::Math::MatrixCompMult(m, m1);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(n, m, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(n, m, Epsilon)));
         }
         {
             static constexpr T m(TRAP::Math::tMat4<typename T::value_type>{max});
             static constexpr T m1(TRAP::Math::tMat4<typename T::value_type>(1.0f));
             static constexpr T n = TRAP::Math::MatrixCompMult(m, m1);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(n, m, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(n, m, Epsilon)));
         }
         {
             static constexpr T m(TRAP::Math::tMat4<typename T::value_type>{inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf});
             static constexpr T m1(TRAP::Math::tMat4<typename T::value_type>(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
             static constexpr T n = TRAP::Math::MatrixCompMult(m, m1);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(n, m)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(n, m)));
         }
         {
             static constexpr T m(TRAP::Math::tMat4<typename T::value_type>{ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf});
             static constexpr T m1(TRAP::Math::tMat4<typename T::value_type>(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
             static constexpr T n = TRAP::Math::MatrixCompMult(m, m1);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(n, m)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(n, m)));
         }
         {
             static constexpr T m(TRAP::Math::tMat4<typename T::value_type>{nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan});

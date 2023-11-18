@@ -77,13 +77,13 @@ namespace
         static constexpr T inf = std::numeric_limits<T>::infinity();
         static constexpr T ninf = -std::numeric_limits<T>::infinity();
 
-        static_assert( TRAP::Math::LessThanEqual(max, max));
-        static_assert( TRAP::Math::LessThanEqual(min, min));
-        static_assert(!TRAP::Math::LessThanEqual(max, min));
-        static_assert( TRAP::Math::LessThanEqual(min, max));
+        STATIC_REQUIRE( TRAP::Math::LessThanEqual(max, max));
+        STATIC_REQUIRE( TRAP::Math::LessThanEqual(min, min));
+        STATIC_REQUIRE(!TRAP::Math::LessThanEqual(max, min));
+        STATIC_REQUIRE( TRAP::Math::LessThanEqual(min, max));
         REQUIRE(!TRAP::Math::LessThanEqual(nan, nan));
-        static_assert( TRAP::Math::LessThanEqual(inf, inf));
-        static_assert( TRAP::Math::LessThanEqual(ninf, ninf));
+        STATIC_REQUIRE( TRAP::Math::LessThanEqual(inf, inf));
+        STATIC_REQUIRE( TRAP::Math::LessThanEqual(ninf, ninf));
     }
 }
 

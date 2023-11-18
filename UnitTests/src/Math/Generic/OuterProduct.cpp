@@ -77,14 +77,14 @@ namespace
             static constexpr T v(TRAP::Math::Vec<4, typename T::value_type>{inf});
             static constexpr auto result = TRAP::Math::OuterProduct(v, v);
             static constexpr decltype(result) expected(TRAP::Math::tMat4<typename T::value_type>(inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(result, expected)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(result, expected)));
         }
         {
             static constexpr T v1(TRAP::Math::Vec<4, typename T::value_type>{inf});
             static constexpr T v2(TRAP::Math::Vec<4, typename T::value_type>{ninf});
             static constexpr auto result = TRAP::Math::OuterProduct(v1, v2);
             static constexpr decltype(result) expected(TRAP::Math::tMat4<typename T::value_type>(ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(result, expected)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(result, expected)));
         }
         {
             static constexpr T v1(TRAP::Math::Vec<4, typename T::value_type>{nan});

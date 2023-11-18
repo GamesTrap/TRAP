@@ -64,8 +64,8 @@ namespace
         static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
         static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
 
-        static_assert(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::FaceForward(T(inf), T(ninf), T(inf)))));
-        static_assert(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::FaceForward(T(ninf), T(inf), T(ninf)))));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::FaceForward(T(inf), T(ninf), T(inf)))));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::FaceForward(T(ninf), T(inf), T(ninf)))));
         REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::FaceForward(T(nan), T(nan), T(nan)))));
     }
 }

@@ -49,14 +49,14 @@ namespace
         {
             static constexpr TRAP::Math::tMat4<T> m = TRAP::Math::Frustum<T>(min, 1.0f, min, 1.0f, 1.0f, 10.0f);
             static constexpr TRAP::Math::tMat4<T> expected(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -1.0f, -1.111111f, -1.0f, 0.0f, 0.0f, -1.111111f, 0.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(m, expected, T(0.000001f))));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(m, TRAP::Math::FrustumReverseZ<T>(min, 1.0f, min, 1.0f, 10.0f, 1.0f), T(0.000001f))));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(m, expected, T(0.000001f))));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(m, TRAP::Math::FrustumReverseZ<T>(min, 1.0f, min, 1.0f, 10.0f, 1.0f), T(0.000001f))));
         }
         {
             static constexpr TRAP::Math::tMat4<T> m = TRAP::Math::Frustum<T>(max, 1.0f, max, 1.0f, 1.0f, 10.0f);
             static constexpr TRAP::Math::tMat4<T> expected(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -1.0f, -1.111111f, -1.0f, 0.0f, 0.0f, -1.111111f, 0.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(m, expected, T(0.000001f))));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(m, TRAP::Math::FrustumReverseZ<T>(max, 1.0f, max, 1.0f, 10.0f, 1.0f), T(0.000001f))));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(m, expected, T(0.000001f))));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(m, TRAP::Math::FrustumReverseZ<T>(max, 1.0f, max, 1.0f, 10.0f, 1.0f), T(0.000001f))));
         }
         {
             const TRAP::Math::tMat4<T> m = TRAP::Math::Frustum<T>(inf, 1.0f, inf, 1.0f, 1.0f, 10.0f);

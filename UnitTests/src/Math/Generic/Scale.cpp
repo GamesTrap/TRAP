@@ -65,15 +65,15 @@ namespace
             static constexpr TRAP::Math::tVec3<T> val(min);
             static constexpr TRAP::Math::tMat4<T> res = TRAP::Math::Scale(TRAP::Math::tMat4<T>(1.0f), val);
             static constexpr TRAP::Math::tMat4<T> expected = TRAP::Math::tMat4<T>(min, 0.0f, 0.0f, 0.0f, 0.0f, min, 0.0f, 0.0f, 0.0f, 0.0f, min, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Scale(val), res, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Scale(val), res, Epsilon)));
         }
         {
             static constexpr TRAP::Math::tVec3<T> val(max);
             static constexpr TRAP::Math::tMat4<T> res = TRAP::Math::Scale(TRAP::Math::tMat4<T>(1.0f), val);
             static constexpr TRAP::Math::tMat4<T> expected = TRAP::Math::tMat4<T>(max, 0.0f, 0.0f, 0.0f, 0.0f, max, 0.0f, 0.0f, 0.0f, 0.0f, max, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Scale(val), res, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Scale(val), res, Epsilon)));
         }
         {
             static constexpr TRAP::Math::tVec3<T> val(inf);

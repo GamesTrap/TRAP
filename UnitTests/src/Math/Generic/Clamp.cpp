@@ -53,11 +53,11 @@ namespace
         static constexpr T min = std::numeric_limits<T>::lowest();
         static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
 
-        static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(max, min, max), max, Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Clamp(max, min, max), max, Epsilon));
         if constexpr(std::floating_point<T>)
         {
             REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Clamp(nan, T(0.0), T(1.0))));
-            static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(T(5.0), nan, nan), T(5.0), Epsilon));
+            STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Clamp(T(5.0), nan, nan), T(5.0), Epsilon));
         }
     }
 }
