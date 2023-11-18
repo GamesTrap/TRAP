@@ -521,7 +521,7 @@ void TRAP::FileSystem::FileWatcher::Watch(const std::stop_token& stopToken)
         }
 
         usize offset = 0;
-        while(offset < NumericCast<usize>(len)) //Process events
+        while(std::cmp_less(offset, len)) //Process events
         {
             const inotify_event* const event = reinterpret_cast<const inotify_event*>(buf.data() + offset); //Must use reinterpret_cast because of flexible array member
             if(event->len == 0u)

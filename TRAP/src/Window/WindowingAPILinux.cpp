@@ -946,7 +946,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow& window
 TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKey(const i32 scanCode)
 {
 	//Use the pre-filled LUT (see CreateKeyTables())
-	if(scanCode < 0 || scanCode >= NumericCast<i32>(s_Data.KeyCodes.size()))
+	if(scanCode < 0 || std::cmp_greater_equal(scanCode, s_Data.KeyCodes.size()))
 		return Input::Key::Unknown;
 
 	return s_Data.KeyCodes[NumericCast<u32>(scanCode)];

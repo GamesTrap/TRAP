@@ -1001,11 +1001,11 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 
 		if(screens != nullptr)
 		{
-			for(j = 0; j < NumericCast<usize>(screenCount); j++)
+			for(j = 0; std::cmp_less(j, screenCount); j++)
 			{
 				if(screens[j].x_org == ci->x && screens[j].y_org == ci->y &&
-				   NumericCast<u32>(screens[j].width) == ci->width &&
-				   NumericCast<u32>(screens[j].height) == ci->height)
+				   std::cmp_equal(screens[j].width, ci->width) &&
+				   std::cmp_equal(screens[j].height, ci->height))
 				{
 					monitor->X11.Index = NumericCast<i32>(j);
 					break;
@@ -3593,7 +3593,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 
 				if(next.type == KeyPress &&
 					next.xkey.window == event.xkey.window &&
-					next.xkey.keycode == NumericCast<u32>(keyCode))
+					std::cmp_equal(next.xkey.keycode, keyCode))
 				{
 					//HACK: The time of repeat events sometimes doesn't match that of the press event, so add an epsilon
 					if((next.xkey.time - event.xkey.time) < 20)

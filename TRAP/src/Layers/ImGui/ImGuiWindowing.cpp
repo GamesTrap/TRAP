@@ -432,7 +432,7 @@ namespace
 		TRAP_ASSERT(bd->Window != nullptr, "ImGuiWindowing::KeyCallback(): bd->Window is nullptr!");
 		UpdateKeyModifiers(*bd->Window);
 
-		if(std::to_underlying(key) >= 0 && std::to_underlying(key) < NumericCast<i32>(bd->KeyOwnerWindows.size()))
+		if(std::to_underlying(key) >= 0 && std::cmp_less(std::to_underlying(key), bd->KeyOwnerWindows.size()))
 			bd->KeyOwnerWindows[NumericCast<usize>(std::to_underlying(key))] = (state == TRAP::Input::KeyState::Pressed) ? &window : nullptr;
 
 		key = TranslateUntranslateKey(key);

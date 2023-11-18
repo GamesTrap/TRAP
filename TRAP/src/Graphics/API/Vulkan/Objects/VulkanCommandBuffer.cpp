@@ -180,7 +180,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindVertexBuffer(const std::vecto
 	TRAP_ASSERT(!strides.empty(), "VulkanCommandBuffer::BindVertexBuffer(): Strides are empty!");
 
 	const u32 maxBuffers = RendererAPI::GPUSettings.MaxVertexInputBindings;
-	const u32 cappedBufferCount = (buffers.size() > NumericCast<usize>(maxBuffers)) ?
+	const u32 cappedBufferCount = (std::cmp_greater(buffers.size(), maxBuffers)) ?
 	                                   maxBuffers : NumericCast<u32>(buffers.size());
 
 	//Capped the number of buffers to the maximum allowed by the device

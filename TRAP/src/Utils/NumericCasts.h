@@ -97,7 +97,7 @@ requires std::is_arithmetic_v<To> && std::is_arithmetic_v<From>
 	static_assert(!std::is_scoped_enum_v<To> && !std::is_scoped_enum_v<From>, "NumericCast(): Casting to/from enum is not allowed!");
 	static_assert(!std::same_as<To, From>, "NumericCast(): Casting to the same type is not allowed!");
 
-#ifndef TRAP_DEBUG
+#if !defined(TRAP_DEBUG) && !defined(TRAP_UNITTESTS)
     return static_cast<To>(value);
 #else
     if constexpr(INTERNAL::NarrowFloatingPointToFloatingPoint<To, From> ||

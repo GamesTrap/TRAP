@@ -8,7 +8,7 @@ f32 CursorTests::Star(const u32 x, const u32 y, const f32 t)
 	const f32 k = 64.0f * 0.046875f * i;
 
 	const f32 dist = TRAP::Math::Sqrt((NumericCast<f32>(x) - c) * (NumericCast<f32>(x) - c) +
-		                                  (NumericCast<f32>(y) - c) * (NumericCast<f32>(y) - c));
+		                              (NumericCast<f32>(y) - c) * (NumericCast<f32>(y) - c));
 
 	const f32 sAlpha = 1.0f - dist / c;
 	const f32 xAlpha = NumericCast<f32>(x) == c ? c : k / TRAP::Math::Abs(NumericCast<f32>(x) - c);
@@ -240,7 +240,7 @@ bool CursorTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 			TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Shift))
 			index += 9;
 
-		if (index <= NumericCast<i32>(std::to_underlying(TRAP::Window::CursorType::NotAllowed)))
+		if (std::cmp_less_equal(index, std::to_underlying(TRAP::Window::CursorType::NotAllowed)))
 			TRAP::Application::GetWindow()->SetCursorType(static_cast<TRAP::Window::CursorType>(index));
 
 		break;

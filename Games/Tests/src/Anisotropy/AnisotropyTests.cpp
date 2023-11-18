@@ -76,8 +76,8 @@ void AnisotropyTests::OnImGuiRender()
 		{
 			for(usize i = 0; i < anisotropyLevels.size(); i++)
 			{
-				const bool isSelected = m_currAnisotropyLevelIdx == NumericCast<u32>(i);
-				if(ImGui::Selectable(anisotropyLevels[i], isSelected, (i > m_maxAnisotropyLevelIdx) ? ImGuiSelectableFlags_Disabled : ImGuiSelectableFlags_None))
+				const bool isSelected = std::cmp_equal(m_currAnisotropyLevelIdx, i);
+				if(ImGui::Selectable(anisotropyLevels[i], isSelected, std::cmp_greater(i, m_maxAnisotropyLevelIdx) ? ImGuiSelectableFlags_Disabled : ImGuiSelectableFlags_None))
 				{
 					m_currAnisotropyLevelIdx = NumericCast<u32>(i);
 					if(m_currAnisotropyLevelIdx == 0)

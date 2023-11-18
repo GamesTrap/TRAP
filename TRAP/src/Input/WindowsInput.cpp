@@ -566,7 +566,7 @@ bool TRAP::Input::SupportsXInput(const GUID* guid)
 		if (GetRawInputDeviceInfoA(ridl[i].hDevice, RIDI_DEVICEINFO, &rdi, &size) == std::numeric_limits<u32>::max())
 			continue;
 
-		if (MAKELONG(rdi.hid.dwVendorId, rdi.hid.dwProductId) != NumericCast<i64>(guid->Data1))
+		if (std::cmp_not_equal(MAKELONG(rdi.hid.dwVendorId, rdi.hid.dwProductId), guid->Data1))
 			continue;
 
 		size = NumericCast<u32>(name.size());

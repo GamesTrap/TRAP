@@ -1016,7 +1016,7 @@ constexpr void TRAP::Input::InternalInputControllerButton(ControllerInternal* co
 //Checks whether a controller mapping element is present in the hardware
 [[nodiscard]] constexpr bool TRAP::Input::IsValidElementForController(const MapElement* const e, const ControllerInternal* const con)
 {
-	if(e->Type == 3 && (e->Index >> 4u) >= NumericCast<i32>(con->DPads.size() + 1))
+	if(e->Type == 3 && std::cmp_greater_equal((e->Index >> 4u), (con->DPads.size() + 1)))
 		return false;
 	if(e->Type == 2 && e->Index >= (con->Buttons.size() + 1))
 		return false;

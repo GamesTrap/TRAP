@@ -54,7 +54,7 @@ void AntiAliasingTests::OnImGuiRender()
 	{
 		for(usize i = 0; i < m_antiAliasingMethods.size(); ++i)
 		{
-			const bool isSelected = (NumericCast<usize>(std::to_underlying(m_antiAliasing)) == i);
+			const bool isSelected = std::cmp_equal(std::to_underlying(m_antiAliasing), i);
 			if(ImGui::Selectable(fmt::format("{}", m_antiAliasingMethods[i]).c_str(), isSelected))
 			{
 				updateAA = true;

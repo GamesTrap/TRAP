@@ -624,7 +624,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 			break;
 
 		GetRawInputData(ri, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER));
-		if (size > NumericCast<UINT>(s_Data.RawInputSize))
+		if (std::cmp_greater(size, s_Data.RawInputSize))
 		{
 			s_Data.RawInput.clear();
 			s_Data.RawInput.resize(size);

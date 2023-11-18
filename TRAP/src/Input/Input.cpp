@@ -873,7 +873,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 
 		bool found = false;
 		u8 j = 0;
-		for (j = 0; j < NumericCast<u8>(fields.size()); j++)
+		for (j = 0; std::cmp_less(j, fields.size()); j++)
 		{
 			if (fields[j].Name == splittedField[0])
 			{
