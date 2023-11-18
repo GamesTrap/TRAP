@@ -122,7 +122,7 @@ namespace TRAP
             {
                 if (m_hasValue)
                 {
-                    m_value.~T();
+                    std::destroy_at(std::addressof(m_value));
                     m_hasValue = false;
                 }
             }
@@ -173,14 +173,14 @@ namespace TRAP
 
             constexpr void HardReset() noexcept
             {
-                Get().~T();
+                std::destroy_at(std::addressof(Get()));
                 this->m_hasValue = false;
             }
 
             template<typename... Args>
             constexpr void Construct(Args&&... args)
             {
-                new (std::addressof(this->m_value)) T(std::forward<Args>(args)...);
+                std::construct_at(std::addressof(this->m_value), std::forward<Args>(args)...);
                 this->m_hasValue = true;
             }
 
@@ -193,7 +193,7 @@ namespace TRAP
                         this->m_value = std::forward<Opt>(rhs).Get();
                     else
                     {
-                        this->m_value.~T();
+                        std::destroy_at(std::addressof(this->m_value));
                         this->m_hasValue = false;
                     }
                 }
@@ -1101,7 +1101,7 @@ namespace TRAP
         {
             if (HasValue())
             {
-                this->m_value.~T();
+                std::destroy_at(std::addressof(this->m_value));
                 this->m_hasValue = false;
             }
 
@@ -1259,14 +1259,14 @@ namespace TRAP
                     swap(**this, *rhs);
                 else
                 {
-                    new (std::addressof(rhs.m_value)) T(std::move(this->m_value));
-                    this->m_value.T::~T();
+                    std::construct_at(std::addressof(rhs.m_value), std::move(this->m_value));
+                    std::destroy_at(std::addressof(this->m_value));
                 }
             }
             else if (rhs.HasValue())
             {
-                new (std::addressof(this->m_value)) T(std::move(rhs.m_value));
-                rhs.m_value.T::~T();
+                std::construct_at(std::addressof(this->m_value), std::move(rhs.m_value));
+                std::destroy_at(std::addressof(rhs.m_value));
             }
             swap(this->m_hasValue, rhs.m_hasValue);
         }
@@ -1464,7 +1464,7 @@ namespace TRAP
         {
             if (HasValue())
             {
-                this->m_value.~T();
+                std::destroy_at(std::addressof(this->m_value));
                 this->m_hasValue = false;
             }
         }

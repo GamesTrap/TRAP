@@ -4655,3 +4655,7 @@ SITREP 11/11/2023|23w45c1
 SITREP 11/14/2023|23w46a1
     - Changed TRAP Engine version to 23w46a1(0.10.5)
     - ImGuiVulkanBackend/ImGuiLayer Changed how font uploading works ~<30 mins
+
+SITREP 11/18/2023|23w45c1
+    - Changed TRAP Engine version to 23w46a1(0.10.6)
+    - Added custom std::expected implementation with custom extensions ~>120 mins
