@@ -293,6 +293,11 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
             STATIC_REQUIRE(!std::is_trivially_move_assignable_v<TRAP::Expected<T, i32>>);
             STATIC_REQUIRE(!std::is_trivially_destructible_v<TRAP::Expected<T, i32>>);
         }
+
+        {
+            STATIC_REQUIRE(!std::is_trivially_destructible_v<std::vector<i32>>);
+            [[maybe_unused]] TRAP::Expected<void, std::vector<i32>> e = TRAP::MakeUnexpected(std::vector<i32>{1, 2, 3});
+        }
     }
 
     SECTION("Deletion")
@@ -625,6 +630,13 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
         //     REQUIRE(std::get<0>(e->t) == 2);
         //     REQUIRE(std::get<1>(e->t) == 3);
         // }
+
+        {
+            TRAP::Expected<i32, i32> e = TRAP::MakeUnexpected(10);
+            e.Emplace(2);
+            REQUIRE(e);
+            REQUIRE(*e == 2);
+        }
     }
 
     SECTION("Observers")
@@ -649,6 +661,16 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
         const MoveDetector o5 = std::move(o4).Value();
         REQUIRE(o4->BeenMoved);
         REQUIRE(!o5.BeenMoved);
+
+        TRAP::Expected<i32, i32> o6{TRAP::Unexpect, 0};
+        REQUIRE_THROWS_AS(o6.Value(), TRAP::BadExpectedAccess<i32>);
+        REQUIRE_THROWS_AS(std::move(o6).Value(), TRAP::BadExpectedAccess<i32>);
+        static constexpr TRAP::Expected<i32, i32> o7{TRAP::Unexpect, 0};
+        REQUIRE_THROWS_AS(o7.Value(), TRAP::BadExpectedAccess<i32>);
+        REQUIRE_THROWS_AS(std::move(o7.Value()), TRAP::BadExpectedAccess<i32>);
+
+        const TRAP::Expected<void, i32> o8{TRAP::Unexpect, 0};
+        REQUIRE(o8.Error() == 0);
     }
 
     SECTION("Relational operators")
@@ -664,6 +686,9 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
 
         const TRAP::Expected<void, i32> o6;
         REQUIRE(o6 == o6);
+
+        const TRAP::Expected<void, i32> o7(TRAP::Unexpect, 0);
+        REQUIRE(o7 == o7);
     }
 
 #if defined(__EXCEPTIONS) || defined(__cpp_exceptions)
@@ -681,10 +706,10 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
 
 #ifdef _MSC_VER
         REQUIRE_THROWS(std::swap(a, b));
-#endif /*_MSC_VER*/
-
+#else
         REQUIRE(a->i == s1);
         REQUIRE(b.Error().i == s2);
+#endif /*_MSC_VER*/
     }
 #endif
 
@@ -1382,5 +1407,20 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
             const i32 ret = std::move(e).ErrorOr(12);
             REQUIRE(ret == 5);
         }
+    }
+
+    SECTION("BadExpectedAccess")
+    {
+        const TRAP::BadExpectedAccess<i32> err(12);
+        [[maybe_unused]] const char* test = err.what();
+        REQUIRE(err.Error() == 12);
+
+        REQUIRE_THROWS_AS(TRAP::INTERNAL::ThrowOrAbort(err), TRAP::BadExpectedAccess<i32>);
+    }
+
+    SECTION("Guard")
+    {
+        i32 value = 10;
+        [[maybe_unused]] TRAP::INTERNAL::Guard<i32> guard(value);
     }
 }

@@ -215,7 +215,7 @@ namespace TRAP
         {
             using std::swap;
 
-            swap(Error(), other.Error());
+            swap(m_value, other.m_value);
         }
 
         /// @brief Compares the stored values, as if by return x.Error() == y.Error().
@@ -251,7 +251,7 @@ namespace TRAP
         friend constexpr void swap(Unexpected& lhs, Unexpected& rhs) noexcept(noexcept(lhs.Swap(rhs)))
         requires requires {lhs.Swap(rhs);}
         {
-            return lhs.Swap(rhs);
+            lhs.Swap(rhs);
         }
 
     private:
@@ -1495,7 +1495,7 @@ namespace TRAP
         ///        with that of rhs. Effectively calls lhs.Swap(rhs).
         /// @param lhs Expected objects whose states to swap.
         /// @param rhs Expected objects whose states to swap.
-        [[nodiscard]] friend constexpr void swap(Expected& lhs, Expected& rhs) noexcept(noexcept(lhs.Swap(rhs)))
+        friend constexpr void swap(Expected& lhs, Expected& rhs) noexcept(noexcept(lhs.Swap(rhs)))
         requires requires {lhs.Swap(rhs);}
         {
             lhs.Swap(rhs);

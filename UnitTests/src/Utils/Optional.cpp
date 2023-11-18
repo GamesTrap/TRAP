@@ -361,7 +361,7 @@ TEST_CASE("TRAP::Optional", "[utils][optional]")
 
         using OptStr = TRAP::Optional<std::string>;
 
-        static constexpr std::array<OptStr, 4> s{"ABC", "abc", TRAP::NullOpt, "def"};
+        const std::array<OptStr, 4> s{"ABC", "abc", TRAP::NullOpt, "def"};
 
 #ifdef TRAP_PLATFORM_LINUX
         REQUIRE(std::hash<OptStr>{}(std::get<0>(s)) == 11746482041453314842u);
@@ -715,39 +715,39 @@ TEST_CASE("TRAP::Optional", "[utils][optional]")
             STATIC_REQUIRE(4 >= o1);
         }
 
-        static constexpr TRAP::Optional<std::string> o4{"hello"};
-        static constexpr TRAP::Optional<std::string> o5{"xyz"};
+        const TRAP::Optional<std::string> o4{"hello"};
+        const TRAP::Optional<std::string> o5{"xyz"};
 
         //Self complex
         {
-            STATIC_REQUIRE(!(o4 == o5));
-            STATIC_REQUIRE(o4 == o4);
-            STATIC_REQUIRE(o4 != o5);
-            STATIC_REQUIRE(!(o4 != o4));
-            STATIC_REQUIRE(o4 < o5);
-            STATIC_REQUIRE(!(o4 < o4));
-            STATIC_REQUIRE(!(o4 > o5));
-            STATIC_REQUIRE(!(o4 > o4));
-            STATIC_REQUIRE(o4 <= o5);
-            STATIC_REQUIRE(o4 <= o4);
-            STATIC_REQUIRE(!(o4 >= o5));
-            STATIC_REQUIRE(o4 >= o4);
+            REQUIRE(!(o4 == o5));
+            REQUIRE(o4 == o4);
+            REQUIRE(o4 != o5);
+            REQUIRE(!(o4 != o4));
+            REQUIRE(o4 < o5);
+            REQUIRE(!(o4 < o4));
+            REQUIRE(!(o4 > o5));
+            REQUIRE(!(o4 > o4));
+            REQUIRE(o4 <= o5);
+            REQUIRE(o4 <= o4);
+            REQUIRE(!(o4 >= o5));
+            REQUIRE(o4 >= o4);
         }
 
         //Nullopt complex
         {
-            STATIC_REQUIRE(!(o4 == TRAP::NullOpt));
-            STATIC_REQUIRE(!(TRAP::NullOpt == o4));
-            STATIC_REQUIRE(o4 != TRAP::NullOpt);
-            STATIC_REQUIRE(TRAP::NullOpt != o4);
-            STATIC_REQUIRE(!(o4 < TRAP::NullOpt));
-            STATIC_REQUIRE(TRAP::NullOpt < o4);
-            STATIC_REQUIRE(o4 > TRAP::NullOpt);
-            STATIC_REQUIRE(!(TRAP::NullOpt > o4));
-            STATIC_REQUIRE(!(o4 <= TRAP::NullOpt));
-            STATIC_REQUIRE(TRAP::NullOpt <= o4);
-            STATIC_REQUIRE(o4 >= TRAP::NullOpt);
-            STATIC_REQUIRE(!(TRAP::NullOpt >= o4));
+            REQUIRE(!(o4 == TRAP::NullOpt));
+            REQUIRE(!(TRAP::NullOpt == o4));
+            REQUIRE(o4 != TRAP::NullOpt);
+            REQUIRE(TRAP::NullOpt != o4);
+            REQUIRE(!(o4 < TRAP::NullOpt));
+            REQUIRE(TRAP::NullOpt < o4);
+            REQUIRE(o4 > TRAP::NullOpt);
+            REQUIRE(!(TRAP::NullOpt > o4));
+            REQUIRE(!(o4 <= TRAP::NullOpt));
+            REQUIRE(TRAP::NullOpt <= o4);
+            REQUIRE(o4 >= TRAP::NullOpt);
+            REQUIRE(!(TRAP::NullOpt >= o4));
 
             STATIC_REQUIRE(o3 == TRAP::NullOpt);
             STATIC_REQUIRE(TRAP::NullOpt == o3);
@@ -765,31 +765,31 @@ TEST_CASE("TRAP::Optional", "[utils][optional]")
 
         //With T complex
         {
-            STATIC_REQUIRE(!(o4 == "a"));
-            STATIC_REQUIRE(!("a" == o4));
-            STATIC_REQUIRE(o4 != "a");
-            STATIC_REQUIRE("a" != o4);
-            STATIC_REQUIRE(!(o4 < "a"));
-            STATIC_REQUIRE("a" < o4);
-            STATIC_REQUIRE(o4 > "a");
-            STATIC_REQUIRE(!("a" > o4));
-            STATIC_REQUIRE(!(o4 <= "a"));
-            STATIC_REQUIRE("a" <= o4);
-            STATIC_REQUIRE(o4 >= "a");
-            STATIC_REQUIRE(!("a" >= o4));
+            REQUIRE(!(o4 == "a"));
+            REQUIRE(!("a" == o4));
+            REQUIRE(o4 != "a");
+            REQUIRE("a" != o4);
+            REQUIRE(!(o4 < "a"));
+            REQUIRE("a" < o4);
+            REQUIRE(o4 > "a");
+            REQUIRE(!("a" > o4));
+            REQUIRE(!(o4 <= "a"));
+            REQUIRE("a" <= o4);
+            REQUIRE(o4 >= "a");
+            REQUIRE(!("a" >= o4));
 
-            STATIC_REQUIRE(o4 == "hello");
-            STATIC_REQUIRE("hello" == o4);
-            STATIC_REQUIRE(!(o4 != "hello"));
-            STATIC_REQUIRE(!("hello" != o4));
-            STATIC_REQUIRE(!(o4 < "hello"));
-            STATIC_REQUIRE(!("hello" < o4));
-            STATIC_REQUIRE(!(o4 > "hello"));
-            STATIC_REQUIRE(!("hello" > o4));
-            STATIC_REQUIRE(o4 <= "hello");
-            STATIC_REQUIRE("hello" <= o4);
-            STATIC_REQUIRE(o4 >= "hello");
-            STATIC_REQUIRE("hello" >= o4);
+            REQUIRE(o4 == "hello");
+            REQUIRE("hello" == o4);
+            REQUIRE(!(o4 != "hello"));
+            REQUIRE(!("hello" != o4));
+            REQUIRE(!(o4 < "hello"));
+            REQUIRE(!("hello" < o4));
+            REQUIRE(!(o4 > "hello"));
+            REQUIRE(!("hello" > o4));
+            REQUIRE(o4 <= "hello");
+            REQUIRE("hello" <= o4);
+            REQUIRE(o4 >= "hello");
+            REQUIRE("hello" >= o4);
         }
     }
 
