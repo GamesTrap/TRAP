@@ -1094,7 +1094,7 @@ void TRAP::Window::SetupEventCallbacks()
 
 #ifdef TRAP_PLATFORM_WINDOWS
 			i32 winPosX = 0, winPosY = 0;
-			INTERNAL::WindowingAPI::GetWindowPos(data->Win, winPosX, winPosY);
+			INTERNAL::WindowingAPI::GetWindowPos(window, winPosX, winPosY);
 			xPos += winPosX;
 			yPos += winPosY;
 #endif /*TRAP_PLATFORM_WINDOWS*/
