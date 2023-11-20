@@ -201,6 +201,8 @@ jobs:
       run: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
     - name: Make pip3 available as pip
       run: sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10
+    - name: Make llvm-ar-17 available as llvm-ar
+      run: sudo update-alternatives --install /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-17 10
     - name: Make scripts and premake executable
       run: |
         chmod +x libs/premake5/linux/premake5
