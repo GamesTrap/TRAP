@@ -32,7 +32,6 @@ namespace TRAP::Events
 	protected:
 		/// @brief Constructor.
 		/// @param monitor Affected monitor.
-		// explicit MonitorEvent(Monitor monitor) noexcept;
 		explicit constexpr MonitorEvent(const Monitor& monitor) noexcept;
 		/// @brief Move constructor.
 		constexpr MonitorEvent(MonitorEvent&&) noexcept = default;
@@ -49,7 +48,6 @@ namespace TRAP::Events
 	public:
 		/// @brief Constructor.
 		/// @param monitor Newly connected monitor.
-		// explicit MonitorConnectEvent(Monitor monitor) noexcept;
 		explicit constexpr MonitorConnectEvent(const Monitor& monitor) noexcept;
 		/// @brief Destructor.
 		constexpr ~MonitorConnectEvent() override = default;
@@ -83,7 +81,6 @@ namespace TRAP::Events
 	public:
 		/// @brief Constructor.
 		/// @param monitor Disconnected monitor.
-		// explicit MonitorDisconnectEvent(Monitor monitor) noexcept;
 		explicit constexpr MonitorDisconnectEvent(const Monitor& monitor) noexcept;
 		/// @brief Destructor.
 		constexpr ~MonitorDisconnectEvent() override = default;

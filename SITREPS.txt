@@ -4656,9 +4656,13 @@ SITREP 11/14/2023|23w46a1
     - Changed TRAP Engine version to 23w46a1(0.10.5)
     - ImGuiVulkanBackend/ImGuiLayer Changed how font uploading works ~<30 mins
 
-SITREP 11/18/2023|23w45c1
-    - Changed TRAP Engine version to 23w46a1(0.10.6)
+SITREP 11/18/2023|23w46a2
+    - Changed TRAP Engine version to 23w46a2(0.10.6)
     - Added custom std::expected implementation with custom extensions ~>120 mins
     - UnitTests Replaced static_assert with STATIC_REQUIRE where possible ~<10 mins
     - NumericCast Enabled checks for UnitTests ~<5 mins
     - Resolved some NumericCasts with std::cmp_*** functions ~<15 mins
+
+SITREP 11/20/2023|23w47a1
+    - Changed TRAP Engine version to 23w47a1(0.10.7)
+    - Events now use std::reference_wrapper instead of pointers ~<10 mins

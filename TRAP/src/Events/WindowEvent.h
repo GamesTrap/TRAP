@@ -16,8 +16,9 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param width New Window width.
 		/// @param height New Window height.
-		/// @param window Pointer to the affected window.
-		WindowResizeEvent(u32 width, u32 height, TRAP::Window* window);
+		/// @param window The affected window.
+		/// @note The window must outlive the WindowResizeEvent!
+		WindowResizeEvent(u32 width, u32 height, TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowResizeEvent() override = default;
 		/// @brief Copy constructor.
@@ -35,9 +36,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the new window height.
 		/// @return Height.
 		[[nodiscard]] constexpr u32 GetHeight() const noexcept;
-		/// @brief Retrieve a pointer to the affected window.
-		/// @return Window pointer.
-		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
+		/// @brief Retrieve a reference to the affected window.
+		/// @return Window reference.
+		[[nodiscard]] constexpr TRAP::Window& GetWindow() const noexcept;
 
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
@@ -57,7 +58,7 @@ namespace TRAP::Events
 
 	private:
 		u32 m_width, m_height;
-		TRAP::Window* m_window;
+		std::reference_wrapper<TRAP::Window> m_window;
 	};
 
 	/// @brief Window minimized.
@@ -66,8 +67,9 @@ namespace TRAP::Events
 	{
 	public:
 		/// @brief Constructor.
-		/// @param window Pointer to the affected window.
-		explicit WindowMinimizeEvent(TRAP::Window* window);
+		/// @param window The affected window.
+		/// @note The window must outlive the WindowMinimizeEvent!
+		explicit WindowMinimizeEvent(TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowMinimizeEvent() override = default;
 		/// @brief Copy constructor.
@@ -79,9 +81,9 @@ namespace TRAP::Events
 		/// @brief Move assignment operator.
 		WindowMinimizeEvent& operator=(WindowMinimizeEvent&&) noexcept = default;
 
-		/// @brief Retrieve a pointer to the affected window.
-		/// @return Window pointer.
-		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
+		/// @brief Retrieve a reference to the affected window.
+		/// @return Window reference.
+		[[nodiscard]] constexpr TRAP::Window& GetWindow() const noexcept;
 
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
@@ -100,7 +102,7 @@ namespace TRAP::Events
 		[[nodiscard]] std::string ToString() const override;
 
 	private:
-		TRAP::Window* m_window;
+		std::reference_wrapper<TRAP::Window> m_window;
 	};
 
 	/// @brief Window maximized.
@@ -109,8 +111,9 @@ namespace TRAP::Events
 	{
 	public:
 		/// @brief Constructor.
-		/// @param window Pointer to the affected window.
-		explicit WindowMaximizeEvent(TRAP::Window* window);
+		/// @param window The affected window.
+		/// @note The window must outlive the WindowMaximizeEvent!
+		explicit WindowMaximizeEvent(TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowMaximizeEvent() override = default;
 		/// @brief Copy constructor.
@@ -122,9 +125,9 @@ namespace TRAP::Events
 		/// @brief Move assignment operator.
 		WindowMaximizeEvent& operator=(WindowMaximizeEvent&&) noexcept = default;
 
-		/// @brief Retrieve a pointer to the affected window.
-		/// @return Window pointer.
-		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
+		/// @brief Retrieve a reference to the affected window.
+		/// @return Window reference.
+		[[nodiscard]] constexpr TRAP::Window& GetWindow() const noexcept;
 
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
@@ -143,7 +146,7 @@ namespace TRAP::Events
 		[[nodiscard]] std::string ToString() const override;
 
 	private:
-		TRAP::Window* m_window;
+		std::reference_wrapper<TRAP::Window> m_window;
 	};
 
 	/// @brief Window restored.
@@ -152,8 +155,9 @@ namespace TRAP::Events
 	{
 	public:
 		/// @brief Constructor.
-		/// @param window Pointer to the affected window.
-		explicit WindowRestoreEvent(TRAP::Window* window);
+		/// @param window The affected window.
+		/// @note The window must outlive the WindowRestoreEvent!
+		explicit WindowRestoreEvent(TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowRestoreEvent() override = default;
 		/// @brief Copy constructor.
@@ -165,9 +169,9 @@ namespace TRAP::Events
 		/// @brief Move assignment operator.
 		WindowRestoreEvent& operator=(WindowRestoreEvent&&) noexcept = default;
 
-		/// @brief Retrieve a pointer to the affected window.
-		/// @return Window pointer.
-		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
+		/// @brief Retrieve a reference to the affected window.
+		/// @return Window reference.
+		[[nodiscard]] constexpr TRAP::Window& GetWindow() const noexcept;
 
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
@@ -186,7 +190,7 @@ namespace TRAP::Events
 		[[nodiscard]] std::string ToString() const override;
 
 	private:
-		TRAP::Window* m_window;
+		std::reference_wrapper<TRAP::Window> m_window;
 	};
 
 	/// @brief Window closed.
@@ -195,8 +199,9 @@ namespace TRAP::Events
 	{
 	public:
 		/// @brief Constructor.
-		/// @param window Pointer to the affected window.
-		explicit WindowCloseEvent(TRAP::Window* window);
+		/// @param window The affected window.
+		/// @note The window must outlive the WindowCloseEvent!
+		explicit WindowCloseEvent(TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowCloseEvent() override = default;
 		/// @brief Copy constructor.
@@ -208,9 +213,9 @@ namespace TRAP::Events
 		/// @brief Move assignment operator.
 		WindowCloseEvent& operator=(WindowCloseEvent&&) noexcept = default;
 
-		/// @brief Retrieve a pointer to the affected window.
-		/// @return Window pointer.
-		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
+		/// @brief Retrieve a reference to the affected window.
+		/// @return Window reference.
+		[[nodiscard]] constexpr TRAP::Window& GetWindow() const noexcept;
 
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
@@ -229,7 +234,7 @@ namespace TRAP::Events
 		[[nodiscard]] std::string ToString() const override;
 
 	private:
-		TRAP::Window* m_window;
+		std::reference_wrapper<TRAP::Window> m_window;
 	};
 
 	/// @brief Window moved.
@@ -240,8 +245,9 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param x New x position.
 		/// @param y New y position.
-		/// @param window Pointer to the affected window.
-		WindowMoveEvent(i32 x, i32 y, TRAP::Window* window);
+		/// @param window The affected window.
+		/// @note The window must outlive the WindowMoveEvent!
+		WindowMoveEvent(i32 x, i32 y, TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowMoveEvent() override = default;
 		/// @brief Copy constructor.
@@ -264,7 +270,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr Math::Vec2i GetPosition() const noexcept;
 		/// @brief Retrieve a pointer to the affected window.
 		/// @return Window pointer.
-		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
+		[[nodiscard]] constexpr TRAP::Window& GetWindow() const noexcept;
 
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
@@ -284,7 +290,7 @@ namespace TRAP::Events
 
 	private:
 		i32 m_x, m_y;
-		TRAP::Window* m_window;
+		std::reference_wrapper<TRAP::Window> m_window;
 	};
 
 	/// @brief Window focused.
@@ -293,8 +299,9 @@ namespace TRAP::Events
 	{
 	public:
 		/// @brief Constructor.
-		/// @param window Pointer to the affected window.
-		explicit WindowFocusEvent(TRAP::Window* window);
+		/// @param window The affected window.
+		/// @note The window must outlive the WindowFocusEvent!
+		explicit WindowFocusEvent(TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowFocusEvent() override = default;
 		/// @brief Copy constructor.
@@ -306,9 +313,9 @@ namespace TRAP::Events
 		/// @brief Move assignment operator.
 		WindowFocusEvent& operator=(WindowFocusEvent&&) noexcept = default;
 
-		/// @brief Retrieve a pointer to the affected window.
-		/// @return Window pointer.
-		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
+		/// @brief Retrieve a reference to the affected window.
+		/// @return Window reference.
+		[[nodiscard]] constexpr TRAP::Window& GetWindow() const noexcept;
 
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
@@ -327,7 +334,7 @@ namespace TRAP::Events
 		[[nodiscard]] std::string ToString() const override;
 
 	private:
-		TRAP::Window* m_window;
+		std::reference_wrapper<TRAP::Window> m_window;
 	};
 
 	/// @brief Window unfocused.
@@ -336,8 +343,9 @@ namespace TRAP::Events
 	{
 	public:
 		/// @brief Constructor.
-		/// @param window Pointer to the affected window.
-		explicit WindowLostFocusEvent(TRAP::Window* window);
+		/// @param window The affected window.
+		/// @note The window must outlive the WindowLostFocusEvent!
+		explicit WindowLostFocusEvent(TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowLostFocusEvent() override = default;
 		/// @brief Copy constructor.
@@ -349,9 +357,9 @@ namespace TRAP::Events
 		/// @brief Move assignment operator.
 		WindowLostFocusEvent& operator=(WindowLostFocusEvent&&) noexcept = default;
 
-		/// @brief Retrieve a pointer to the affected window.
-		/// @return Window pointer.
-		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
+		/// @brief Retrieve a reference to the affected window.
+		/// @return Window reference.
+		[[nodiscard]] constexpr TRAP::Window& GetWindow() const noexcept;
 
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
@@ -370,7 +378,7 @@ namespace TRAP::Events
 		[[nodiscard]] std::string ToString() const override;
 
 	private:
-		TRAP::Window* m_window;
+		std::reference_wrapper<TRAP::Window> m_window;
 	};
 
 	/// @brief Window drag and drop.
@@ -380,8 +388,9 @@ namespace TRAP::Events
 	public:
 		/// @brief Constructor.
 		/// @param paths Path(s) to the file(s) or folder(s) dropped onto the window.
-		/// @param window Pointer to the affected window.
-		explicit WindowDropEvent(std::vector<std::string> paths, TRAP::Window* window);
+		/// @param window The affected window.
+		/// @note The window must outlive the WindowDropEvent!
+		WindowDropEvent(std::vector<std::string> paths, TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowDropEvent() override = default;
 		/// @brief Copy constructor.
@@ -396,9 +405,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the dropped paths.
 		/// @return Vector of file or folder paths.
 		[[nodiscard]] constexpr std::vector<std::string> GetPaths() const noexcept;
-		/// @brief Retrieve a pointer to the affected window.
-		/// @return Window pointer.
-		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
+		/// @brief Retrieve a reference to the affected window.
+		/// @return Window reference.
+		[[nodiscard]] constexpr TRAP::Window& GetWindow() const noexcept;
 
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
@@ -418,7 +427,7 @@ namespace TRAP::Events
 
 	private:
 		std::vector<std::string> m_paths{};
-		TRAP::Window* m_window;
+		std::reference_wrapper<TRAP::Window> m_window;
 	};
 
 	/// @brief Window content scale.
@@ -429,8 +438,9 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param xScale New x content scale.
 		/// @param yScale New y content scale.
-		/// @param window Pointer to the affected window.
-		explicit WindowContentScaleEvent(f32 xScale, f32 yScale, TRAP::Window* window);
+		/// @param window The affected window.
+		/// @note The window must outlive the WindowContentScaleEvent!
+		explicit WindowContentScaleEvent(f32 xScale, f32 yScale, TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowContentScaleEvent() override = default;
 		/// @brief Copy constructor.
@@ -451,9 +461,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the new content scale.
 		/// @return Window content scale.
 		[[nodiscard]] constexpr Math::Vec2 GetScale() const noexcept;
-		/// @brief Retrieve a pointer to the affected window.
+		/// @brief Retrieve a reference to the affected window.
 		/// @return Window pointer.
-		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
+		[[nodiscard]] constexpr TRAP::Window& GetWindow() const noexcept;
 
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
@@ -474,7 +484,7 @@ namespace TRAP::Events
 	private:
 		f32 m_XScale;
 		f32 m_YScale;
-		TRAP::Window* m_window;
+		std::reference_wrapper<TRAP::Window> m_window;
 	};
 
 	/// @brief Window framebuffer resized.
@@ -485,8 +495,9 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param width New framebuffer width.
 		/// @param height New framebuffer height.
-		/// @param window Pointer to the affected window.
-		FrameBufferResizeEvent(u32 width, u32 height, TRAP::Window* window);
+		/// @param window The affected window.
+		/// @note The window must outlive the FrameBufferResizeEvent!
+		FrameBufferResizeEvent(u32 width, u32 height, TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~FrameBufferResizeEvent() override = default;
 		/// @brief Copy constructor.
@@ -510,9 +521,9 @@ namespace TRAP::Events
 		/// @brief Retrieve the aspect ratio of the framebuffer.
 		/// @return Aspect ratio.
 		[[nodiscard]] constexpr f32 GetAspectRatio() const noexcept;
-		/// @brief Retrieve a pointer to the affected window.
-		/// @return Window pointer.
-		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
+		/// @brief Retrieve a reference to the affected window.
+		/// @return Window reference.
+		[[nodiscard]] constexpr TRAP::Window& GetWindow() const noexcept;
 
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
@@ -532,7 +543,7 @@ namespace TRAP::Events
 
 	private:
 		u32 m_width, m_height;
-		TRAP::Window* m_window;
+		std::reference_wrapper<TRAP::Window> m_window;
 	};
 }
 
@@ -550,7 +561,7 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowResizeEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window& TRAP::Events::WindowResizeEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
@@ -587,7 +598,7 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowMinimizeEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window& TRAP::Events::WindowMinimizeEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
@@ -624,7 +635,7 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowMaximizeEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window& TRAP::Events::WindowMaximizeEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
@@ -661,7 +672,7 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowRestoreEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window& TRAP::Events::WindowRestoreEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
@@ -698,7 +709,7 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowCloseEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window& TRAP::Events::WindowCloseEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
@@ -756,7 +767,7 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowMoveEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window& TRAP::Events::WindowMoveEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
@@ -793,7 +804,7 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowFocusEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window& TRAP::Events::WindowFocusEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
@@ -830,7 +841,7 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowLostFocusEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window& TRAP::Events::WindowLostFocusEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
@@ -867,7 +878,7 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowDropEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window& TRAP::Events::WindowDropEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
@@ -932,7 +943,7 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowContentScaleEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window& TRAP::Events::WindowContentScaleEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
@@ -997,7 +1008,7 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Window* TRAP::Events::FrameBufferResizeEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window& TRAP::Events::FrameBufferResizeEvent::GetWindow() const noexcept
 {
 	return m_window;
 }

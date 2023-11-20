@@ -57,12 +57,13 @@ namespace TRAP::FileSystem
 	/// @brief Read the given binary file.
 	/// @param path File path.
 	/// @return File content as std::vector<u8> on success, empty std::optional otherwise.
-	/// @note This will read the whole file into memory.
+	/// @note This will read the whole file into memory, only use this for small files.
 	[[nodiscard]] std::optional<std::vector<u8>> ReadFile(const std::filesystem::path& path);
 	/// @brief Read the given text file.
 	/// @param path File path.
 	/// @return File content as std::string on success, empty std::optional otherwise.
 	/// @note CRLF line endings are automatically converted to LF (i.e. '\n').
+	/// @note This will read the whole file into memory, only use this for small files.
 	[[nodiscard]] std::optional<std::string> ReadTextFile(const std::filesystem::path& path);
 
 	/// @brief Write the given data as binary to the given file path.

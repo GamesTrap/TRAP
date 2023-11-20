@@ -188,7 +188,7 @@ bool InputLagTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 	{
 		m_vsync = !m_vsync;
 		TP_TRACE("[InputLag] VSync: ", m_vsync ? "On" : "Off");
-		event.GetWindow()->SetVSync(m_vsync);
+		event.GetWindow().SetVSync(m_vsync);
 		break;
 	}
 

@@ -616,7 +616,7 @@ bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& event) noexcept
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if(event.GetWindow() == m_window.get())
+	if(event.GetWindow() == *m_window)
 		m_running = false;
 
 	return true;
@@ -630,8 +630,7 @@ bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& even
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if(event.GetWindow() != nullptr)
-		Graphics::RendererAPI::ResizeSwapChain(event.GetWindow());
+	Graphics::RendererAPI::ResizeSwapChain(&event.GetWindow());
 
 	return false;
 }
@@ -644,19 +643,16 @@ bool TRAP::Application::OnKeyPress([[maybe_unused]] Events::KeyPressEvent& event
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if(event.GetWindow() == nullptr)
-		return false;
-
 	if ((event.GetKey() == Input::Key::Enter || event.GetKey() == Input::Key::KP_Enter) &&
-	    Input::IsKeyPressed(Input::Key::Left_ALT, event.GetWindow()))
+	    Input::IsKeyPressed(Input::Key::Left_ALT, &event.GetWindow()))
 	{
-		if (event.GetWindow()->GetDisplayMode() == Window::DisplayMode::Windowed ||
-			event.GetWindow()->GetDisplayMode() == Window::DisplayMode::Borderless)
+		if (event.GetWindow().GetDisplayMode() == Window::DisplayMode::Windowed ||
+			event.GetWindow().GetDisplayMode() == Window::DisplayMode::Borderless)
 		{
-			event.GetWindow()->SetFullscreen();
+			event.GetWindow().SetFullscreen();
 		}
-		else if (event.GetWindow()->GetDisplayMode() == Window::DisplayMode::Fullscreen)
-			event.GetWindow()->SetWindowed();
+		else if (event.GetWindow().GetDisplayMode() == Window::DisplayMode::Fullscreen)
+			event.GetWindow().SetWindowed();
 
 		return true;
 	}

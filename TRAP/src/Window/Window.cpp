@@ -903,13 +903,10 @@ void TRAP::Window::SetupEventCallbacks()
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const i32 w, const i32 h)
 		{
 			WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
-			if(data == nullptr)
+			if((data == nullptr) || !data->EventCallback || (data->Win == nullptr))
 				return;
 
-			if (!data->EventCallback)
-				return;
-
-			Events::WindowResizeEvent event(NumericCast<u32>(w), NumericCast<u32>(h), data->Win);
+			Events::WindowResizeEvent event(NumericCast<u32>(w), NumericCast<u32>(h), *data->Win);
 			data->EventCallback(event);
 		}
 	);
@@ -919,17 +916,17 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if ((data == nullptr) || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback || (data->Win == nullptr))
 				return;
 
 			if (restored)
 			{
-				Events::WindowRestoreEvent event(data->Win);
+				Events::WindowRestoreEvent event(*data->Win);
 				data->EventCallback(event);
 			}
 			else
 			{
-				Events::WindowMinimizeEvent event(data->Win);
+				Events::WindowMinimizeEvent event(*data->Win);
 				data->EventCallback(event);
 			}
 		}
@@ -940,17 +937,17 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if ((data == nullptr) || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback || (data->Win == nullptr))
 				return;
 
 			if (restored)
 			{
-				Events::WindowRestoreEvent event(data->Win);
+				Events::WindowRestoreEvent event(*data->Win);
 				data->EventCallback(event);
 			}
 			else
 			{
-				Events::WindowMaximizeEvent event(data->Win);
+				Events::WindowMaximizeEvent event(*data->Win);
 				data->EventCallback(event);
 			}
 		}
@@ -969,10 +966,10 @@ void TRAP::Window::SetupEventCallbacks()
 				data->windowModeParams.YPos = y;
 			}
 
-			if (!data->EventCallback)
+			if (!data->EventCallback || (data->Win == nullptr))
 				return;
 
-			Events::WindowMoveEvent event(x, y, data->Win);
+			Events::WindowMoveEvent event(x, y, *data->Win);
 			data->EventCallback(event);
 		}
 	);
@@ -982,17 +979,17 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if ((data == nullptr) || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback || (data->Win == nullptr))
 				return;
 
 			if (focused)
 			{
-				Events::WindowFocusEvent event(data->Win);
+				Events::WindowFocusEvent event(*data->Win);
 				data->EventCallback(event);
 			}
 			else
 			{
-				Events::WindowLostFocusEvent event(data->Win);
+				Events::WindowLostFocusEvent event(*data->Win);
 				data->EventCallback(event);
 			}
 		}
@@ -1003,10 +1000,10 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if ((data == nullptr) || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback || (data->Win == nullptr))
 				return;
 
-			Events::WindowCloseEvent event(data->Win);
+			Events::WindowCloseEvent event(*data->Win);
 			data->EventCallback(event);
 		}
 	);
@@ -1016,31 +1013,22 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if(data == nullptr)
+			if((data == nullptr) || !data->EventCallback || (data->Win == nullptr))
 				return;
 
 			if(state == Input::KeyState::Pressed)
 			{
-				if (!data->EventCallback)
-					return;
-
-				Events::KeyPressEvent event(key, data->Win);
+				Events::KeyPressEvent event(key, *data->Win);
 				data->EventCallback(event);
 			}
 			else if(state == Input::KeyState::Repeat)
 			{
-				if (!data->EventCallback)
-					return;
-
-				Events::KeyRepeatEvent event(key, data->Win);
+				Events::KeyRepeatEvent event(key, *data->Win);
 				data->EventCallback(event);
 			}
 			else /*if(state == Input::KeyState::Released)*/
 			{
-				if (!data->EventCallback)
-					return;
-
-				Events::KeyReleaseEvent event(key, data->Win);
+				Events::KeyReleaseEvent event(key, *data->Win);
 				data->EventCallback(event);
 			}
 		}
@@ -1051,10 +1039,10 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if ((data == nullptr) || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback || (data->Win == nullptr))
 				return;
 
-			Events::KeyTypeEvent event(codePoint, data->Win);
+			Events::KeyTypeEvent event(codePoint, *data->Win);
 			data->EventCallback(event);
 		}
 	);
@@ -1066,17 +1054,17 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if ((data == nullptr) || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback || (data->Win == nullptr))
 				return;
 
 			if (state == Input::KeyState::Pressed)
 			{
-				Events::MouseButtonPressEvent event(button, data->Win);
+				Events::MouseButtonPressEvent event(button, *data->Win);
 				data->EventCallback(event);
 			}
 			else
 			{
-				Events::MouseButtonReleaseEvent event(button, data->Win);
+				Events::MouseButtonReleaseEvent event(button, *data->Win);
 				data->EventCallback(event);
 			}
 		}
@@ -1088,10 +1076,10 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if ((data == nullptr) || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback || (data->Win == nullptr))
 				return;
 
-			Events::MouseScrollEvent event(NumericCast<f32>(xOffset), NumericCast<f32>(yOffset), data->Win);
+			Events::MouseScrollEvent event(NumericCast<f32>(xOffset), NumericCast<f32>(yOffset), *data->Win);
 			data->EventCallback(event);
 		}
 	);
@@ -1101,17 +1089,17 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback || (data->Win == nullptr))
 				return;
 
 #ifdef TRAP_PLATFORM_WINDOWS
 			i32 winPosX = 0, winPosY = 0;
-			INTERNAL::WindowingAPI::GetWindowPos(window, winPosX, winPosY);
+			INTERNAL::WindowingAPI::GetWindowPos(data->Win, winPosX, winPosY);
 			xPos += winPosX;
 			yPos += winPosY;
 #endif /*TRAP_PLATFORM_WINDOWS*/
 
-			Events::MouseMoveEvent event(NumericCast<f32>(xPos), NumericCast<f32>(yPos), data->Win);
+			Events::MouseMoveEvent event(NumericCast<f32>(xPos), NumericCast<f32>(yPos), *data->Win);
 			data->EventCallback(event);
 		}
 	);
@@ -1120,13 +1108,10 @@ void TRAP::Window::SetupEventCallbacks()
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const i32 w, const i32 h)
 		{
 			WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
-			if(data == nullptr)
+			if(data == nullptr || !data->EventCallback || (data->Win == nullptr) || w == 0 || h == 0)
 				return;
 
-			if (!data->EventCallback || w == 0 || h == 0)
-				return;
-
-			Events::FrameBufferResizeEvent event(NumericCast<u32>(w), NumericCast<u32>(h), data->Win);
+			Events::FrameBufferResizeEvent event(NumericCast<u32>(w), NumericCast<u32>(h), *data->Win);
 			data->EventCallback(event);
 		}
 	);
@@ -1136,17 +1121,17 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if ((data == nullptr) || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback || (data->Win == nullptr))
 				return;
 
 			if (entered)
 			{
-				Events::MouseEnterEvent event(data->Win);
+				Events::MouseEnterEvent event(*data->Win);
 				data->EventCallback(event);
 			}
 			else
 			{
-				Events::MouseLeaveEvent event(data->Win);
+				Events::MouseLeaveEvent event(*data->Win);
 				data->EventCallback(event);
 			}
 		}
@@ -1157,10 +1142,10 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if ((data == nullptr) || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback || (data->Win == nullptr))
 				return;
 
-			Events::WindowDropEvent event(std::move(paths), data->Win);
+			Events::WindowDropEvent event(std::move(paths), *data->Win);
 			data->EventCallback(event);
 		}
 	);
@@ -1170,10 +1155,10 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if ((data == nullptr) || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback || (data->Win == nullptr))
 				return;
 
-			Events::WindowContentScaleEvent event(xScale, yScale, data->Win);
+			Events::WindowContentScaleEvent event(xScale, yScale, *data->Win);
 			data->EventCallback(event);
 		}
 	);

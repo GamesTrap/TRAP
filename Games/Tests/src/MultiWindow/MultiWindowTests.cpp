@@ -172,7 +172,7 @@ void MultiWindowTests::OnEvent(TRAP::Events::Event& event)
 
 bool MultiWindowTests::OnWindowClose(const TRAP::Events::WindowCloseEvent& e)
 {
-	if (m_window && e.GetWindow() == m_window.get())
+	if (m_window && e.GetWindow() == *m_window)
 		m_window.reset();
 
 	return true;

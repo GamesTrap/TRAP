@@ -130,7 +130,7 @@ bool IcoSphereTests::OnKeyPress(const TRAP::Events::KeyPressEvent& e)
 	{
 		m_vsync = !m_vsync;
 		TP_TRACE("[IcoSphere] VSync: ", m_vsync ? "On" : "Off");
-		e.GetWindow()->SetVSync(m_vsync);
+		e.GetWindow().SetVSync(m_vsync);
 	}
 	if (e.GetKey() == TRAP::Input::Key::Escape)
 		TRAP::Application::Shutdown();

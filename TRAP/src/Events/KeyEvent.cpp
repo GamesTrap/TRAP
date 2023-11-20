@@ -5,10 +5,9 @@
 
 #include "Utils/String/String.h"
 
-TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, TRAP::Window* window)
+TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, TRAP::Window& window)
 	: KeyEvent(key), m_window(window)
 {
-	TRAP_ASSERT(window, "Events::KeyPressEvent(): Window is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -16,17 +15,16 @@ TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, TRAP::Window* w
 [[nodiscard]] std::string TRAP::Events::KeyPressEvent::ToString() const
 {
 	const std::string name = TRAP::Input::GetKeyName(m_key);
-	return fmt::format("KeyPressEvent: {}({}) (\"{}\")", name, std::to_underlying(m_key), m_window->GetTitle());
+	return fmt::format("KeyPressEvent: {}({}) (\"{}\")", name, std::to_underlying(m_key), m_window.get().GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::KeyRepeatEvent::KeyRepeatEvent(const Input::Key key, TRAP::Window* window)
+TRAP::Events::KeyRepeatEvent::KeyRepeatEvent(const Input::Key key, TRAP::Window& window)
 	: KeyEvent(key), m_window(window)
 {
-	TRAP_ASSERT(window, "Events::KeyRepeatEvent(): Window is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -34,17 +32,16 @@ TRAP::Events::KeyRepeatEvent::KeyRepeatEvent(const Input::Key key, TRAP::Window*
 [[nodiscard]] std::string TRAP::Events::KeyRepeatEvent::ToString() const
 {
 	const std::string name = TRAP::Input::GetKeyName(m_key);
-	return fmt::format("KeyRepeatEvent: {}({}) (\"{}\")", name, std::to_underlying(m_key), m_window->GetTitle());
+	return fmt::format("KeyRepeatEvent: {}({}) (\"{}\")", name, std::to_underlying(m_key), m_window.get().GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, TRAP::Window* window)
+TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, TRAP::Window& window)
 	: KeyEvent(key), m_window(window)
 {
-	TRAP_ASSERT(window, "Events::KeyReleaseEvent(): Window is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -52,17 +49,16 @@ TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, TRAP::Windo
 [[nodiscard]] std::string TRAP::Events::KeyReleaseEvent::ToString() const
 {
 	const std::string name = TRAP::Input::GetKeyName(m_key);
-	return fmt::format("KeyReleaseEvent: {}({}) (\"{}\")", name, std::to_underlying(m_key), m_window->GetTitle());
+	return fmt::format("KeyReleaseEvent: {}({}) (\"{}\")", name, std::to_underlying(m_key), m_window.get().GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::KeyTypeEvent::KeyTypeEvent(const u32 codePoint, TRAP::Window* window)
+TRAP::Events::KeyTypeEvent::KeyTypeEvent(const u32 codePoint, TRAP::Window& window)
 	: m_window(window), m_codePoint(codePoint)
 {
-	TRAP_ASSERT(window, "Events::KeyTypeEvent(): Window is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -70,7 +66,7 @@ TRAP::Events::KeyTypeEvent::KeyTypeEvent(const u32 codePoint, TRAP::Window* wind
 [[nodiscard]] std::string TRAP::Events::KeyTypeEvent::ToString() const
 {
 	return fmt::format("KeyTypeEvent: {}({}) (\"{}\")", TRAP::Utils::String::EncodeUTF8(m_codePoint), m_codePoint,
-	                   m_window->GetTitle());
+	                   m_window.get().GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

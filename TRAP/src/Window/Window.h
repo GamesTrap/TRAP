@@ -250,6 +250,12 @@ namespace TRAP
 		/// @brief Restore/Show the window.
 		void Restore() const;
 
+		[[nodiscard]] constexpr bool operator==(const Window& other) const
+		{
+			return m_window == other.m_window;
+		}
+		[[nodiscard]] constexpr bool operator!=(const Window& other) const = default;
+
 	private:
 		/// @brief Initializes a new window and also if not happened already the renderer.
 		/// @param props Window properties for the new window.
