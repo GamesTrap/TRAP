@@ -84,11 +84,11 @@ jobs:
     - name: Make scripts and premake executable
       run: |
        chmod +x libs/premake5/linux/premake5
-       chmod +x GeneratorScripts/GenerateProjectMake.sh
+       chmod +x GeneratorScripts/GenerateProjectMakeGCC.sh
     - name: Generate Make files
       run: |
        cd GeneratorScripts/
-       ./GenerateProjectMake.sh
+       ./GenerateProjectMakeGCC.sh
        cd ..
     - name: Setup problem matchers
       uses: ./.github/composite/problem-matchers
@@ -204,11 +204,11 @@ jobs:
     - name: Make scripts and premake executable
       run: |
         chmod +x libs/premake5/linux/premake5
-        chmod +x GeneratorScripts/GenerateProjectMake.sh
+        chmod +x GeneratorScripts/GenerateProjectMakeClang.sh
     - name: Generate Make files
       run: |
         cd GeneratorScripts/
-        ./GenerateProjectMake.sh
+        ./GenerateProjectMakeClang.sh
         cd ..
     - name: Setup problem matchers
       uses: ./.github/composite/problem-matchers

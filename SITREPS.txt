@@ -4666,3 +4666,4 @@ SITREP 11/18/2023|23w46a2
 SITREP 11/20/2023|23w47a1
     - Changed TRAP Engine version to 23w47a1(0.10.7)
     - Events now use std::reference_wrapper instead of pointers ~<10 mins
+    - GeneratorScripts Added separate scripts for GCC and Clang ~<5 mins
