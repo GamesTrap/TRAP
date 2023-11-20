@@ -4668,3 +4668,4 @@ SITREP 11/20/2023|23w47a1
     - Events now use std::reference_wrapper instead of pointers ~<10 mins
     - GeneratorScripts Added separate scripts for GCC and Clang ~<5 mins
     - Enabled warnings as errors ~<10 mins
+    - Build-CI Added llvm-17 to clang build ~<5 mins
