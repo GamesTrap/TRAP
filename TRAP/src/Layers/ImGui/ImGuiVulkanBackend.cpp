@@ -1129,7 +1129,15 @@ namespace
         }
 
         // Select Surface Format
+#ifdef IMGUI_IMPL_VULKAN_HAY_DYNAMIC_RENDERING
+        static constexpr std::array<VkFormat, 5> requestSurfaceImageFormat
+        {
+            (v.UseDynamicRendering && v.ColorAttachmentFormat) ? v.ColorAttachmentFormat : VK_FORMAT_B8G8R8A8_UNORM,
+            VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_B8G8R8_UNORM, VK_FORMAT_R8G8B8_UNORM
+        };
+#else
         static constexpr std::array<VkFormat, 4> requestSurfaceImageFormat{ VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_B8G8R8_UNORM, VK_FORMAT_R8G8B8_UNORM };
+#endif
         static constexpr VkColorSpaceKHR requestSurfaceColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
         wd.SurfaceFormat = SelectSurfaceFormat(*v.Device->GetPhysicalDevice(), wd.Surface, requestSurfaceImageFormat, requestSurfaceColorSpace);
 
