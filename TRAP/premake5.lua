@@ -76,7 +76,6 @@ project "TRAP-UnitTests"
 	location "."
 	kind "StaticLib"
 	language "C++"
-	warnings "Extra"
 
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
@@ -123,7 +122,6 @@ project "TRAP-Headless"
 	location "."
 	kind "StaticLib"
 	language "C++"
-	warnings "Extra"
 
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")

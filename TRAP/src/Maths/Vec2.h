@@ -75,23 +75,31 @@ public:
 		//Explicit conversions
 		template<typename A, typename B>
 		requires std::is_arithmetic_v<A> && std::is_arithmetic_v<B>
-		constexpr Vec(A x_, B y_) noexcept;
+		inline constexpr Vec(A x_, B y_) noexcept
+			: data{ static_cast<T>(x_), static_cast<T>(y_) }
+		{}
 
 		//Conversion vector constructors
 
 		//Explicit conversions
 		template<typename U>
 		requires std::is_arithmetic_v<U>
-		explicit constexpr Vec(const Vec<3, U> & v) noexcept;
+		inline explicit constexpr Vec(const Vec<3, U>& v) noexcept
+			: data{ static_cast<T>(v.x()), static_cast<T>(v.y()) }
+		{}
 		//Explicit conversions
 		template<typename U>
 		requires std::is_arithmetic_v<U>
-		explicit constexpr Vec(const Vec<4, U> & v) noexcept;
+		inline explicit constexpr Vec(const Vec<4, U>& v) noexcept
+			: data{ static_cast<T>(v.x()), static_cast<T>(v.y()) }
+		{}
 
 		//Explicit conversions
 		template<typename U>
 		requires std::is_arithmetic_v<U>
-		explicit constexpr Vec(const Vec<2, U> & v) noexcept;
+		inline explicit constexpr Vec(const Vec<2, U> & v) noexcept
+			: data{ static_cast<T>(v.x()), static_cast<T>(v.y()) }
+		{}
 
 		/// @brief Move constructor.
 		constexpr Vec(Vec&&) noexcept = default;
@@ -197,27 +205,81 @@ public:
 
 		template<typename U>
 		requires std::is_arithmetic_v<U>
-		constexpr Vec<2, T>& operator=(const Vec<2, U> & v) noexcept;
+		inline constexpr Vec<2, T>& operator=(const Vec<2, U>& v) noexcept
+		{
+			this->x() = static_cast<T>(v.x());
+			this->y() = static_cast<T>(v.y());
+
+			return *this;
+		}
 		template<typename U>
-		constexpr Vec<2, T>& operator+=(U scalar) noexcept;
-		template<typename U>
-		requires std::is_arithmetic_v<U>
-		constexpr Vec<2, T>& operator+=(const Vec<2, U> & v) noexcept;
-		template<typename U>
-		constexpr Vec<2, T>& operator-=(U scalar) noexcept;
-		template<typename U>
-		requires std::is_arithmetic_v<U>
-		constexpr Vec<2, T>& operator-=(const Vec<2, U> & v) noexcept;
-		template<typename U>
-		constexpr Vec<2, T>& operator*=(U scalar) noexcept;
-		template<typename U>
-		requires std::is_arithmetic_v<U>
-		constexpr Vec<2, T>& operator*=(const Vec<2, U> & v) noexcept;
-		template<typename U>
-		constexpr Vec<2, T>& operator/=(U scalar) noexcept;
+		inline constexpr Vec<2, T>& operator+=(U scalar) noexcept
+		{
+			this->x() += static_cast<T>(scalar);
+			this->y() += static_cast<T>(scalar);
+
+			return *this;
+		}
 		template<typename U>
 		requires std::is_arithmetic_v<U>
-		constexpr Vec<2, T>& operator/=(const Vec<2, U> & v) noexcept;
+		inline constexpr Vec<2, T>& operator+=(const Vec<2, U>& v) noexcept
+		{
+			this->x() += static_cast<T>(v.x());
+			this->y() += static_cast<T>(v.y());
+
+			return *this;
+		}
+		template<typename U>
+		inline constexpr Vec<2, T>& operator-=(U scalar) noexcept
+		{
+			this->x() -= static_cast<T>(scalar);
+			this->y() -= static_cast<T>(scalar);
+
+			return *this;
+		}
+		template<typename U>
+		requires std::is_arithmetic_v<U>
+		inline constexpr Vec<2, T>& operator-=(const Vec<2, U>& v) noexcept
+		{
+			this->x() -= static_cast<T>(v.x());
+			this->y() -= static_cast<T>(v.y());
+
+			return *this;
+		}
+		template<typename U>
+		inline constexpr Vec<2, T>& operator*=(U scalar) noexcept
+		{
+			this->x() *= static_cast<T>(scalar);
+			this->y() *= static_cast<T>(scalar);
+
+			return *this;
+		}
+		template<typename U>
+		requires std::is_arithmetic_v<U>
+		inline constexpr Vec<2, T>& operator*=(const Vec<2, U>& v) noexcept
+		{
+			this->x() *= static_cast<T>(v.x());
+			this->y() *= static_cast<T>(v.y());
+
+			return *this;
+		}
+		template<typename U>
+		inline constexpr Vec<2, T>& operator/=(U scalar) noexcept
+		{
+			this->x() /= static_cast<T>(scalar);
+			this->y() /= static_cast<T>(scalar);
+
+			return *this;
+		}
+		template<typename U>
+		requires std::is_arithmetic_v<U>
+		inline constexpr Vec<2, T>& operator/=(const Vec<2, U>& v) noexcept
+		{
+			this->x() /= static_cast<T>(v.x());
+			this->y() /= static_cast<T>(v.y());
+
+			return *this;
+		}
 
 		//Increment and decrement operators
 		constexpr Vec<2, T>& operator++() noexcept;
@@ -227,35 +289,107 @@ public:
 
 		//Unary bit operators
 		template<typename U>
-		constexpr Vec<2, T>& operator%=(U scalar) noexcept;
+		inline constexpr Vec<2, T>& operator%=(U scalar) noexcept
+		{
+			this->x() %= static_cast<T>(scalar);
+			this->y() %= static_cast<T>(scalar);
+
+			return *this;
+		}
 		template<typename U>
 		requires std::is_arithmetic_v<U>
-		constexpr Vec<2, T>& operator%=(const Vec<2, U>& v) noexcept;
+		inline constexpr Vec<2, T>& operator%=(const Vec<2, U>& v) noexcept
+		{
+			this->x() %= static_cast<T>(v.x());
+			this->y() %= static_cast<T>(v.y());
+
+			return *this;
+		}
 		template<typename U>
-		constexpr Vec<2, T>& operator&=(U scalar) noexcept;
-		template<typename U>
-		requires std::is_arithmetic_v<U>
-		constexpr Vec<2, T>& operator&=(const Vec<2, U>& v) noexcept;
-		template<typename U>
-		constexpr Vec<2, T>& operator|=(U scalar) noexcept;
-		template<typename U>
-		requires std::is_arithmetic_v<U>
-		constexpr Vec<2, T>& operator|=(const Vec<2, U>& v) noexcept;
-		template<typename U>
-		constexpr Vec<2, T>& operator^=(U scalar) noexcept;
-		template<typename U>
-		requires std::is_arithmetic_v<U>
-		constexpr Vec<2, T>& operator^=(const Vec<2, U>& v) noexcept;
-		template<typename U>
-		constexpr Vec<2, T>& operator<<=(U scalar) noexcept;
+		inline constexpr Vec<2, T>& operator&=(U scalar) noexcept
+		{
+			this->x() &= static_cast<T>(scalar);
+			this->y() &= static_cast<T>(scalar);
+
+			return *this;
+		}
 		template<typename U>
 		requires std::is_arithmetic_v<U>
-		constexpr Vec<2, T>& operator<<=(const Vec<2, U>& v) noexcept;
+		inline constexpr Vec<2, T>& operator&=(const Vec<2, U>& v) noexcept
+		{
+			this->x() &= static_cast<T>(v.x());
+			this->y() &= static_cast<T>(v.y());
+
+			return *this;
+		}
 		template<typename U>
-		constexpr Vec<2, T>& operator>>=(U scalar) noexcept;
+		inline constexpr Vec<2, T>& operator|=(U scalar) noexcept
+		{
+			this->x() |= static_cast<T>(scalar);
+			this->y() |= static_cast<T>(scalar);
+
+			return *this;
+		}
 		template<typename U>
 		requires std::is_arithmetic_v<U>
-		constexpr Vec<2, T>& operator>>=(const Vec<2, U>& v) noexcept;
+		inline constexpr Vec<2, T>& operator|=(const Vec<2, U>& v) noexcept
+		{
+			this->x() |= static_cast<T>(v.x());
+			this->y() |= static_cast<T>(v.y());
+
+			return *this;
+		}
+		template<typename U>
+		inline constexpr Vec<2, T>& operator^=(U scalar) noexcept
+		{
+			this->x() ^= static_cast<T>(scalar);
+			this->y() ^= static_cast<T>(scalar);
+
+			return *this;
+		}
+		template<typename U>
+		requires std::is_arithmetic_v<U>
+		inline constexpr Vec<2, T>& operator^=(const Vec<2, U>& v) noexcept
+		{
+			this->x() ^= static_cast<T>(v.x());
+			this->y() ^= static_cast<T>(v.y());
+
+			return *this;
+		}
+		template<typename U>
+		inline constexpr Vec<2, T>& operator<<=(U scalar) noexcept
+		{
+			this->x() <<= static_cast<T>(scalar);
+			this->y() <<= static_cast<T>(scalar);
+
+			return *this;
+		}
+		template<typename U>
+		requires std::is_arithmetic_v<U>
+		inline constexpr Vec<2, T>& operator<<=(const Vec<2, U>& v) noexcept
+		{
+			this->x() <<= static_cast<T>(v.x());
+			this->y() <<= static_cast<T>(v.y());
+
+			return *this;
+		}
+		template<typename U>
+		inline constexpr Vec<2, T>& operator>>=(U scalar) noexcept
+		{
+			this->x() >>= static_cast<T>(scalar);
+			this->y() >>= static_cast<T>(scalar);
+
+			return *this;
+		}
+		template<typename U>
+		requires std::is_arithmetic_v<U>
+		inline constexpr Vec<2, T>& operator>>=(const Vec<2, U>& v) noexcept
+		{
+			this->x() >>= static_cast<T>(v.x());
+			this->y() >>= static_cast<T>(v.y());
+
+			return *this;
+		}
 
 		[[nodiscard]] constexpr auto operator<=>(const Vec<2, T>& rhs) const noexcept = default;
 		[[nodiscard]] constexpr bool operator==(const Vec<2, T>& rhs) const noexcept = default;
@@ -455,44 +589,6 @@ constexpr TRAP::Math::Vec<2, T>::Vec(const T x_, const T y_) noexcept
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
-//Conversion scalar constructors
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename A, typename B>
-requires std::is_arithmetic_v<A> && std::is_arithmetic_v<B>
-constexpr TRAP::Math::Vec<2, T>::Vec(const A x_, const B y_) noexcept
-	: data{static_cast<T>(x_), static_cast<T>(y_)}
-{}
-
-//-------------------------------------------------------------------------------------------------------------------//
-//Conversion vector constructors
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-requires std::is_arithmetic_v<U>
-constexpr TRAP::Math::Vec<2, T>::Vec(const Vec<2, U>& v) noexcept
-	: data{static_cast<T>(v.x()), static_cast<T>(v.y())}
-{}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-requires std::is_arithmetic_v<U>
-constexpr TRAP::Math::Vec<2, T>::Vec(const Vec<3, U>& v) noexcept
-	: data{static_cast<T>(v.x()), static_cast<T>(v.y())}
-{}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-requires std::is_arithmetic_v<U>
-constexpr TRAP::Math::Vec<2, T>::Vec(const Vec<4, U>& v) noexcept
-	: data{static_cast<T>(v.x()), static_cast<T>(v.y())}
-{}
-
-//-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
 requires std::is_arithmetic_v<T>
@@ -651,113 +747,6 @@ requires std::is_arithmetic_v<T>
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
-//Unary arithmetic operators
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-requires std::is_arithmetic_v<U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator=(const Vec<2, U>& v) noexcept
-{
-	this->x() = static_cast<T>(v.x());
-	this->y() = static_cast<T>(v.y());
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator+=(const U scalar) noexcept
-{
-	this->x() += static_cast<T>(scalar);
-	this->y() += static_cast<T>(scalar);
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-requires std::is_arithmetic_v<U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator+=(const Vec<2, U>& v) noexcept
-{
-	this->x() += static_cast<T>(v.x());
-	this->y() += static_cast<T>(v.y());
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator-=(const U scalar) noexcept
-{
-	this->x() -= static_cast<T>(scalar);
-	this->y() -= static_cast<T>(scalar);
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-requires std::is_arithmetic_v<U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator-=(const Vec<2, U>& v) noexcept
-{
-	this->x() -= static_cast<T>(v.x());
-	this->y() -= static_cast<T>(v.y());
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator*=(const U scalar) noexcept
-{
-	this->x() *= static_cast<T>(scalar);
-	this->y() *= static_cast<T>(scalar);
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-requires std::is_arithmetic_v<U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator*=(const Vec<2, U>& v) noexcept
-{
-	this->x() *= static_cast<T>(v.x());
-	this->y() *= static_cast<T>(v.y());
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator/=(const U scalar) noexcept
-{
-	this->x() /= static_cast<T>(scalar);
-	this->y() /= static_cast<T>(scalar);
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-requires std::is_arithmetic_v<U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator/=(const Vec<2, U>& v) noexcept
-{
-	this->x() /= static_cast<T>(v.x());
-	this->y() /= static_cast<T>(v.y());
-
-	return *this;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
 //Increment and decrement operators
 
 template<typename T>
@@ -798,147 +787,6 @@ constexpr const TRAP::Math::Vec<2, T> TRAP::Math::Vec<2, T>::operator--(const i3
 	--*this;
 
 	return result;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-//Unary bit operators
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator%=(const U scalar) noexcept
-{
-	this->x() %= static_cast<T>(scalar);
-	this->y() %= static_cast<T>(scalar);
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-requires std::is_arithmetic_v<U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator%=(const Vec<2, U>& v) noexcept
-{
-	this->x() %= static_cast<T>(v.x());
-	this->y() %= static_cast<T>(v.y());
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator&=(const U scalar) noexcept
-{
-	this->x() &= static_cast<T>(scalar);
-	this->y() &= static_cast<T>(scalar);
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-requires std::is_arithmetic_v<U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator&=(const Vec<2, U>& v) noexcept
-{
-	this->x() &= static_cast<T>(v.x());
-	this->y() &= static_cast<T>(v.y());
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator|=(const U scalar) noexcept
-{
-	this->x() |= static_cast<T>(scalar);
-	this->y() |= static_cast<T>(scalar);
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-requires std::is_arithmetic_v<U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator|=(const Vec<2, U>& v) noexcept
-{
-	this->x() |= static_cast<T>(v.x());
-	this->y() |= static_cast<T>(v.y());
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator^=(const U scalar) noexcept
-{
-	this->x() ^= static_cast<T>(scalar);
-	this->y() ^= static_cast<T>(scalar);
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-requires std::is_arithmetic_v<U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator^=(const Vec<2, U>& v) noexcept
-{
-	this->x() ^= static_cast<T>(v.x());
-	this->y() ^= static_cast<T>(v.y());
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator<<=(const U scalar) noexcept
-{
-	this->x() <<= static_cast<T>(scalar);
-	this->y() <<= static_cast<T>(scalar);
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-requires std::is_arithmetic_v<U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator<<=(const Vec<2, U>& v) noexcept
-{
-	this->x() <<= static_cast<T>(v.x());
-	this->y() <<= static_cast<T>(v.y());
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator>>=(const U scalar) noexcept
-{
-	this->x() >>= static_cast<T>(scalar);
-	this->y() >>= static_cast<T>(scalar);
-
-	return *this;
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-template<typename U>
-requires std::is_arithmetic_v<U>
-constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator>>=(const Vec<2, U>& v) noexcept
-{
-	this->x() >>= static_cast<T>(v.x());
-	this->y() >>= static_cast<T>(v.y());
-
-	return *this;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

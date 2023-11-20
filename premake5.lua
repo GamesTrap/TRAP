@@ -11,7 +11,11 @@ workspace "TRAP"
 	vectorextensions "AVX2"
 	warnings "Extra"
 
-	flags "MultiProcessorCompile"
+	flags
+	{
+		"MultiProcessorCompile",
+		"FatalCompileWarnings"
+	}
 
 	outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
@@ -41,6 +45,9 @@ workspace "TRAP"
 		"RelWithDebInfo",
 		"Profiling"
 	}
+
+	filter {"language:C or C++", "toolset:gcc or clang"}
+		buildoptions "-Wno-error=deprecated-declarations"
 
 	filter "system:linux"
 		configurations

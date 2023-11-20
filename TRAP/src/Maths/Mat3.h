@@ -113,19 +113,25 @@ namespace TRAP::Math
 		requires std::floating_point<X1> && std::floating_point<Y1> && std::floating_point<Z1> &&
 				 std::floating_point<X2> && std::floating_point<Y2> && std::floating_point<Z2> &&
 				 std::floating_point<X3> && std::floating_point<Y3> && std::floating_point<Z3>
-		constexpr Mat(X1 x1, Y1 y1, Z1 z1,
-			          X2 x2, Y2 y2, Z2 z2,
-			          X3 x3, Y3 y3, Z3 z3) noexcept;
+		inline constexpr Mat(X1 x1, Y1 y1, Z1 z1,
+						     X2 x2, Y2 y2, Z2 z2,
+						     X3 x3, Y3 y3, Z3 z3) noexcept
+			: value{ col_type(x1, y1, z1), col_type(x2, y2, z2), col_type(x3, y3, z3) }
+		{}
 
 		/// @brief Column conversion constructor.
 		template<typename V1, typename V2, typename V3>
 		requires std::floating_point<V1> && std::floating_point<V2> && std::floating_point<V3>
-		constexpr Mat(const Vec<3, V1> & v1, const Vec<3, V2> & v2, const Vec<3, V3> & v3) noexcept;
+		inline constexpr Mat(const Vec<3, V1> & v1, const Vec<3, V2> & v2, const Vec<3, V3> & v3) noexcept
+			: value{ col_type(v1), col_type(v2), col_type(v3) }
+		{}
 
 		/// @brief Copy conversion constructor.
 		template<typename U>
 		requires std::floating_point<U>
-		constexpr Mat(const Mat<3, 3, U> & m) noexcept;
+		inline constexpr Mat(const Mat<3, 3, U> & m) noexcept
+			: value{ col_type(std::get<0>(m)), col_type(std::get<1>(m)), col_type(std::get<2>(m)) }
+		{}
 
 		/// @brief Copy conversion constructor.
 		constexpr Mat(const Mat<4, 4, T> & x) noexcept;
@@ -203,27 +209,82 @@ namespace TRAP::Math
 		//Unary arithmetic operators
 		template<typename U>
 		requires std::floating_point<U>
-		constexpr Mat<3, 3, T>& operator=(const Mat<3, 3, U>& m) noexcept;
+		inline constexpr Mat<3, 3, T>& operator=(const Mat<3, 3, U>& m) noexcept
+		{
+			std::get<0>(this->value) = static_cast<T>(std::get<0>(m.value));
+			std::get<1>(this->value) = static_cast<T>(std::get<1>(m.value));
+			std::get<2>(this->value) = static_cast<T>(std::get<2>(m.value));
+
+			return *this;
+		}
 		template<typename U>
-		constexpr Mat<3, 3, T>& operator+=(U s) noexcept;
+		inline constexpr Mat<3, 3, T>& operator+=(U s) noexcept
+		{
+			std::get<0>(this->value) += static_cast<T>(s);
+			std::get<1>(this->value) += static_cast<T>(s);
+			std::get<2>(this->value) += static_cast<T>(s);
+
+			return *this;
+		}
 		template<typename U>
 		requires std::floating_point<U>
-		constexpr Mat<3, 3, T>& operator+=(const Mat<3, 3, U>& m) noexcept;
+		inline constexpr Mat<3, 3, T>& operator+=(const Mat<3, 3, U>& m) noexcept
+		{
+			std::get<0>(this->value) += static_cast<T>(std::get<0>(m.value));
+			std::get<1>(this->value) += static_cast<T>(std::get<1>(m.value));
+			std::get<2>(this->value) += static_cast<T>(std::get<2>(m.value));
+
+			return *this;
+		}
 		template<typename U>
-		constexpr Mat<3, 3, T>& operator-=(U s) noexcept;
+		inline constexpr Mat<3, 3, T>& operator-=(U s) noexcept
+		{
+			std::get<0>(this->value) -= static_cast<T>(s);
+			std::get<1>(this->value) -= static_cast<T>(s);
+			std::get<2>(this->value) -= static_cast<T>(s);
+
+			return *this;
+		}
 		template<typename U>
 		requires std::floating_point<U>
-		constexpr Mat<3, 3, T>& operator-=(const Mat<3, 3, U>& m) noexcept;
+		inline constexpr Mat<3, 3, T>& operator-=(const Mat<3, 3, U>& m) noexcept
+		{
+			std::get<0>(this->value) -= static_cast<T>(std::get<0>(m.value));
+			std::get<1>(this->value) -= static_cast<T>(std::get<1>(m.value));
+			std::get<2>(this->value) -= static_cast<T>(std::get<2>(m.value));
+
+			return *this;
+		}
 		template<typename U>
-		constexpr Mat<3, 3, T>& operator*=(U s) noexcept;
+		inline constexpr Mat<3, 3, T>& operator*=(U s) noexcept
+		{
+			std::get<0>(this->value) *= static_cast<T>(s);
+			std::get<1>(this->value) *= static_cast<T>(s);
+			std::get<2>(this->value) *= static_cast<T>(s);
+
+			return *this;
+		}
 		template<typename U>
 		requires std::floating_point<U>
-		constexpr Mat<3, 3, T>& operator*=(const Mat<3, 3, U>& m) noexcept;
+		inline constexpr Mat<3, 3, T>& operator*=(const Mat<3, 3, U>& m) noexcept
+		{
+			return (*this = *this * m);
+		}
 		template<typename U>
-		constexpr Mat<3, 3, T>& operator/=(U s) noexcept;
+		inline constexpr Mat<3, 3, T>& operator/=(U s) noexcept
+		{
+			std::get<0>(this->value) /= static_cast<T>(s);
+			std::get<1>(this->value) /= static_cast<T>(s);
+			std::get<2>(this->value) /= static_cast<T>(s);
+
+			return *this;
+		}
 		template<typename U>
 		requires std::floating_point<U>
-		constexpr Mat<3, 3, T>& operator/=(const Mat<3, 3, U>& m) ;
+		inline constexpr Mat<3, 3, T>& operator/=(const Mat<3, 3, U>& m)
+		{
+			return *this *= Inverse(m);
+		}
 
 		//Increment and decrement operators
 		constexpr Mat<3, 3, T>& operator++() noexcept;
@@ -367,39 +428,7 @@ constexpr TRAP::Math::Mat<3, 3, T>::Mat(const col_type& v0, const col_type& v1, 
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
-//Conversion constructors
-
-template<typename T>
-requires std::floating_point<T>
-template<typename X1, typename Y1, typename Z1,
-	     typename X2, typename Y2, typename Z2,
-	     typename X3, typename Y3, typename Z3>
-requires std::floating_point<X1> && std::floating_point<Y1> && std::floating_point<Z1> &&
-         std::floating_point<X2> && std::floating_point<Y2> && std::floating_point<Z2> &&
-         std::floating_point<X3> && std::floating_point<Y3> && std::floating_point<Z3>
-constexpr TRAP::Math::Mat<3, 3, T>::Mat(const X1 x1, const Y1 y1, const Z1 z1,
-	                                    const X2 x2, const Y2 y2, const Z2 z2,
-	                                    const X3 x3, const Y3 y3, const Z3 z3) noexcept
-	: value{ col_type(x1, y1, z1), col_type(x2, y2, z2), col_type(x3, y3, z3) }
-{}
-
-template<typename T>
-requires std::floating_point<T>
-template<typename V1, typename V2, typename V3>
-requires std::floating_point<V1> && std::floating_point<V2> && std::floating_point<V3>
-constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Vec<3, V1>& v1, const Vec<3, V2>& v2, const Vec<3, V3>& v3) noexcept
-	: value{ col_type(v1), col_type(v2), col_type(v3) }
-{}
-
-//-------------------------------------------------------------------------------------------------------------------//
 //Matrix conversions
-template<typename T>
-requires std::floating_point<T>
-template<typename U>
-requires std::floating_point<U>
-constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Mat<3, 3, U>& m) noexcept
-	: value{ col_type(std::get<0>(m)), col_type(std::get<1>(m)), col_type(std::get<2>(m)) }
-{}
 
 template<typename T>
 requires std::floating_point<T>
@@ -535,114 +564,6 @@ requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<3, 3, T>::const_reverse_iterator TRAP::Math::Mat<3, 3, T>::crend() const noexcept
 {
 	return value.crend();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-//Unary updatable operators
-
-template<typename T>
-requires std::floating_point<T>
-template<typename U>
-requires std::floating_point<U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator=(const Mat<3, 3, U>& m) noexcept
-{
-	std::get<0>(this->value) = static_cast<T>(std::get<0>(m.value));
-	std::get<1>(this->value) = static_cast<T>(std::get<1>(m.value));
-	std::get<2>(this->value) = static_cast<T>(std::get<2>(m.value));
-
-	return *this;
-}
-
-template<typename T>
-requires std::floating_point<T>
-template<typename U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator+=(const U s) noexcept
-{
-	std::get<0>(this->value) += static_cast<T>(s);
-	std::get<1>(this->value) += static_cast<T>(s);
-	std::get<2>(this->value) += static_cast<T>(s);
-
-	return *this;
-}
-
-template<typename T>
-requires std::floating_point<T>
-template<typename U>
-requires std::floating_point<U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator+=(const Mat<3, 3, U>& m) noexcept
-{
-	std::get<0>(this->value) += static_cast<T>(std::get<0>(m.value));
-	std::get<1>(this->value) += static_cast<T>(std::get<1>(m.value));
-	std::get<2>(this->value) += static_cast<T>(std::get<2>(m.value));
-
-	return *this;
-}
-
-template<typename T>
-requires std::floating_point<T>
-template<typename U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator-=(const U s) noexcept
-{
-	std::get<0>(this->value) -= static_cast<T>(s);
-	std::get<1>(this->value) -= static_cast<T>(s);
-	std::get<2>(this->value) -= static_cast<T>(s);
-
-	return *this;
-}
-
-template<typename T>
-requires std::floating_point<T>
-template<typename U>
-requires std::floating_point<U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator-=(const Mat<3, 3, U>& m) noexcept
-{
-	std::get<0>(this->value) -= static_cast<T>(std::get<0>(m.value));
-	std::get<1>(this->value) -= static_cast<T>(std::get<1>(m.value));
-	std::get<2>(this->value) -= static_cast<T>(std::get<2>(m.value));
-
-	return *this;
-}
-
-template<typename T>
-requires std::floating_point<T>
-template<typename U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator*=(const U s) noexcept
-{
-	std::get<0>(this->value) *= static_cast<T>(s);
-	std::get<1>(this->value) *= static_cast<T>(s);
-	std::get<2>(this->value) *= static_cast<T>(s);
-
-	return *this;
-}
-
-template<typename T>
-requires std::floating_point<T>
-template<typename U>
-requires std::floating_point<U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator*=(const Mat<3, 3, U>& m) noexcept
-{
-	return (*this = *this * m);
-}
-
-template<typename T>
-requires std::floating_point<T>
-template<typename U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator/=(const U s) noexcept
-{
-	std::get<0>(this->value) /= static_cast<T>(s);
-	std::get<1>(this->value) /= static_cast<T>(s);
-	std::get<2>(this->value) /= static_cast<T>(s);
-
-	return *this;
-}
-
-template<typename T>
-requires std::floating_point<T>
-template<typename U>
-requires std::floating_point<U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator/=(const Mat<3, 3, U>& m)
-{
-	return *this *= Inverse(m);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

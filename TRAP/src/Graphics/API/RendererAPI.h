@@ -2859,7 +2859,7 @@ namespace TRAP::Graphics
 		struct PerViewportData
 		{
 			/// @brief Constructor.
-			constexpr PerViewportData() = default;
+			PerViewportData() = default;
 
 			/// @brief Destructor.
 			~PerViewportData();
