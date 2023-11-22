@@ -167,7 +167,7 @@ void WindowFeaturesTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep&
 void WindowFeaturesTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &WindowFeaturesTests::OnKeyPress);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&WindowFeaturesTests::OnKeyPress, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

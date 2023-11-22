@@ -426,7 +426,7 @@ void TRAPEditorLayer::OnEvent(TRAP::Events::Event& event)
 		m_editorCamera.OnEvent(event);
 
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &TRAPEditorLayer::OnKeyPress);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&TRAPEditorLayer::OnKeyPress, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

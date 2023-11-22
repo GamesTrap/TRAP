@@ -109,7 +109,7 @@ void VulkanTextureTests::OnImGuiRender()
 void VulkanTextureTests::OnEvent(TRAP::Events::Event& event)
 {
     TRAP::Events::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &VulkanTextureTests::OnKeyPress);
+    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&VulkanTextureTests::OnKeyPress, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

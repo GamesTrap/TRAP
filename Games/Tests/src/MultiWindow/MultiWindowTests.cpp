@@ -164,8 +164,8 @@ void MultiWindowTests::OnImGuiRender()
 void MultiWindowTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::WindowCloseEvent>(this, &MultiWindowTests::OnWindowClose);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &MultiWindowTests::OnKeyPress);
+	dispatcher.Dispatch<TRAP::Events::WindowCloseEvent>(std::bind_front(&MultiWindowTests::OnWindowClose, this));
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&MultiWindowTests::OnKeyPress, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

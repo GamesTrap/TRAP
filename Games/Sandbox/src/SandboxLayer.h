@@ -229,9 +229,9 @@ public:
 		m_cameraController.OnEvent(event);
 
 		TRAP::Events::EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &SandboxLayer::OnKeyPress);
-		dispatcher.Dispatch<TRAP::Events::TextureReloadEvent>(this, &SandboxLayer::OnTextureReload);
-		dispatcher.Dispatch<TRAP::Events::ShaderReloadEvent>(this, &SandboxLayer::OnShaderReload);
+		dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&SandboxLayer::OnKeyPress, this));
+		dispatcher.Dispatch<TRAP::Events::TextureReloadEvent>(std::bind_front(&SandboxLayer::OnTextureReload, this));
+		dispatcher.Dispatch<TRAP::Events::ShaderReloadEvent>(std::bind_front(&SandboxLayer::OnShaderReload, this));
 	}
 
 private:

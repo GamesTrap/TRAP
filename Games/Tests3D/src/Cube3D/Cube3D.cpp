@@ -419,9 +419,9 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 void Cube3D::OnEvent(TRAP::Events::Event& event)
 {
     TRAP::Events::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &Cube3D::OnKeyPress);
-    dispatcher.Dispatch<TRAP::Events::MouseMoveEvent>(this, &Cube3D::OnMouseMove);
-    dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(this, &Cube3D::OnFrameBufferResize);
+    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&Cube3D::OnKeyPress, this));
+    dispatcher.Dispatch<TRAP::Events::MouseMoveEvent>(std::bind_front(&Cube3D::OnMouseMove, this));
+    dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(std::bind_front(&Cube3D::OnFrameBufferResize, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

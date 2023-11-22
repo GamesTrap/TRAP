@@ -144,7 +144,7 @@ namespace TRAP::Graphics
         /// Used to zoom in and out and so set the camera speed.
         /// @param event MouseScrollEvent.
         /// @return False.
-        bool OnMouseScroll(Events::MouseScrollEvent& event);
+        bool OnMouseScroll(const Events::MouseScrollEvent& event);
 
         /// @brief Pan the camera via the given mouse delta.
         /// @param delta Mouse delta.

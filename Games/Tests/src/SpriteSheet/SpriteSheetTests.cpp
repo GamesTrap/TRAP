@@ -166,7 +166,7 @@ void SpriteSheetTests::OnEvent(TRAP::Events::Event& event)
 	m_cameraController.OnEvent(event);
 
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &SpriteSheetTests::OnKeyPress);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&SpriteSheetTests::OnKeyPress, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -70,8 +70,8 @@ void RenderScaleTests::OnEvent(TRAP::Events::Event& event)
 	m_cameraController.OnEvent(event);
 
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &RenderScaleTests::OnKeyPress);
-	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(this, &RenderScaleTests::OnFrameBufferResize);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&RenderScaleTests::OnKeyPress, this));
+	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(std::bind_front(&RenderScaleTests::OnFrameBufferResize, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

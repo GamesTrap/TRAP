@@ -28,7 +28,7 @@ void ClipboardTests::OnImGuiRender()
 void ClipboardTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &ClipboardTests::OnKeyPress);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&ClipboardTests::OnKeyPress, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

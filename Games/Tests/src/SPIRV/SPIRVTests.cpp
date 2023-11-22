@@ -98,7 +98,7 @@ void SPIRVTests::OnImGuiRender()
 void SPIRVTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &SPIRVTests::OnKeyPress);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&SPIRVTests::OnKeyPress, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -106,8 +106,8 @@ void AnisotropyTests::OnImGuiRender()
 void AnisotropyTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &AnisotropyTests::OnKeyPress);
-	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(this, &AnisotropyTests::OnFrameBufferResize);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&AnisotropyTests::OnKeyPress, this));
+	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(std::bind_front(&AnisotropyTests::OnFrameBufferResize, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -271,10 +271,10 @@ void TRAP::Application::OnEvent(Events::Event& event)
 	Events::EventDispatcher dispatcher(event);
 #ifndef TRAP_HEADLESS_MODE
 	dispatcher.Dispatch<Events::FrameBufferResizeEvent>(OnFrameBufferResize);
-	dispatcher.Dispatch<Events::WindowCloseEvent>(this, &Application::OnWindowClose);
+	dispatcher.Dispatch<Events::WindowCloseEvent>(std::bind_front(&Application::OnWindowClose, this));
 	dispatcher.Dispatch<Events::KeyPressEvent>(OnKeyPress);
 #endif /*TRAP_HEADLESS_MODE*/
-	dispatcher.Dispatch<Events::FileChangeEvent>(this, &Application::OnFileChangeEvent);
+	dispatcher.Dispatch<Events::FileChangeEvent>(std::bind_front(&Application::OnFileChangeEvent, this));
 
 	for (auto& it : std::ranges::reverse_view(m_layerStack))
 	{
@@ -612,7 +612,7 @@ void TRAP::Application::SetHotReloading(const bool enable)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& event) noexcept
+bool TRAP::Application::OnWindowClose(const Events::WindowCloseEvent& event) noexcept
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -626,7 +626,7 @@ bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& event) noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& event)
+bool TRAP::Application::OnFrameBufferResize(const Events::FrameBufferResizeEvent& event)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -639,7 +639,7 @@ bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& even
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-bool TRAP::Application::OnKeyPress([[maybe_unused]] Events::KeyPressEvent& event)
+bool TRAP::Application::OnKeyPress([[maybe_unused]] const Events::KeyPressEvent& event)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

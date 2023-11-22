@@ -112,8 +112,8 @@ void AntiAliasingTests::OnImGuiRender()
 void AntiAliasingTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &AntiAliasingTests::OnKeyPress);
-	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(this, &AntiAliasingTests::OnFrameBufferResize);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&AntiAliasingTests::OnKeyPress, this));
+	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(std::bind_front(&AntiAliasingTests::OnFrameBufferResize, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

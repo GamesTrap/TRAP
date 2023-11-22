@@ -191,21 +191,21 @@ namespace TRAP
 		/// @param event Window close event that occurred.
 		/// @return true.
 		/// @remark @headless This function is not available in headless mode.
-		bool OnWindowClose(Events::WindowCloseEvent& event) noexcept;
+		bool OnWindowClose(const Events::WindowCloseEvent& event) noexcept;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Handles window framebuffer resizes for the main render window.
 		/// @param event Framebuffer resize event that occurred.
 		/// @return false.
 		/// @remark @headless This function is not available in headless mode.
-		static bool OnFrameBufferResize(Events::FrameBufferResizeEvent& event);
+		static bool OnFrameBufferResize(const Events::FrameBufferResizeEvent& event);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Handles key presses for the main render window.
 		/// @param event Key press event that occurred.
 		/// @return false.
 		/// @remark @headless This function is not available in headless mode.
-		static bool OnKeyPress(Events::KeyPressEvent& event);
+		static bool OnKeyPress(const Events::KeyPressEvent& event);
 #endif /*TRAP_HEADLESS_MODE*/
 
 		/// @brief Handles file change events for the application. Used by HotReloading.

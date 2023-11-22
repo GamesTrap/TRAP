@@ -91,8 +91,8 @@ void CursorTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTi
 void CursorTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &CursorTests::OnKeyPress);
-	dispatcher.Dispatch<TRAP::Events::MouseMoveEvent>(this, &CursorTests::OnMouseMove);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&CursorTests::OnKeyPress, this));
+	dispatcher.Dispatch<TRAP::Events::MouseMoveEvent>(std::bind_front(&CursorTests::OnMouseMove, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

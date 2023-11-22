@@ -150,8 +150,8 @@ void VRSTests::OnEvent(TRAP::Events::Event& event)
 	m_cameraController.OnEvent(event);
 
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &VRSTests::OnKeyPress);
-	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(this, &VRSTests::OnFrameBufferResize);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&VRSTests::OnKeyPress, this));
+	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(std::bind_front(&VRSTests::OnFrameBufferResize, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

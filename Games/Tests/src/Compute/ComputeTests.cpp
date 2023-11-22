@@ -199,7 +199,7 @@ void ComputeTests::OnImGuiRender()
 void ComputeTests::OnEvent(TRAP::Events::Event& event)
 {
     TRAP::Events::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &ComputeTests::OnKeyPress);
+    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&ComputeTests::OnKeyPress, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

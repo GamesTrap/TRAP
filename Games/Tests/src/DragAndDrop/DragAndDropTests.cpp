@@ -34,8 +34,8 @@ void DragAndDropTests::OnAttach()
 void DragAndDropTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &DragAndDropTests::OnKeyPress);
-	dispatcher.Dispatch<TRAP::Events::WindowDropEvent>(this, &DragAndDropTests::OnDrop);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&DragAndDropTests::OnKeyPress, this));
+	dispatcher.Dispatch<TRAP::Events::WindowDropEvent>(std::bind_front(&DragAndDropTests::OnDrop, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

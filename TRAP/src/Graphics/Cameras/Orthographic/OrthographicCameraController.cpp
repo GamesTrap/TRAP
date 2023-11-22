@@ -120,8 +120,8 @@ void TRAP::Graphics::OrthographicCameraController::OnEvent(Events::Event& e)
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Events::EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<Events::MouseScrollEvent>(this, &OrthographicCameraController::OnMouseScroll);
-	dispatcher.Dispatch<Events::FrameBufferResizeEvent>(this, &OrthographicCameraController::OnFrameBufferResize);
+	dispatcher.Dispatch<Events::MouseScrollEvent>(std::bind_front(&OrthographicCameraController::OnMouseScroll, this));
+	dispatcher.Dispatch<Events::FrameBufferResizeEvent>(std::bind_front(&OrthographicCameraController::OnFrameBufferResize, this));
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

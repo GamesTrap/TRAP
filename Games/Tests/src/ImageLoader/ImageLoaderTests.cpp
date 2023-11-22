@@ -327,8 +327,8 @@ void ImageLoaderTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 void ImageLoaderTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(this, &ImageLoaderTests::OnFrameBufferResize);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &ImageLoaderTests::OnKeyPress);
+	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(std::bind_front(&ImageLoaderTests::OnFrameBufferResize, this));
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&ImageLoaderTests::OnKeyPress, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -1,6 +1,7 @@
 #ifndef TRAP_EVENT_H
 #define TRAP_EVENT_H
 
+#include <functional>
 #include <string>
 
 #include <fmt/ostream.h>
@@ -91,17 +92,18 @@ namespace TRAP::Events
 	public:
 		/// @brief Constructor.
 		/// @param event Event to dispatch.
+		/// @note The event must outlive the event dispatcher!
 		explicit constexpr EventDispatcher(Event& event) noexcept;
 		/// @brief Destructor.
 		constexpr ~EventDispatcher() = default;
 		/// @brief Copy constructor.
-		consteval EventDispatcher(const EventDispatcher&) noexcept = delete;
+		constexpr EventDispatcher(const EventDispatcher&) noexcept = default;
 		/// @brief Copy assignment operator.
-		consteval EventDispatcher& operator=(const EventDispatcher&) noexcept = delete;
+		constexpr EventDispatcher& operator=(const EventDispatcher&) noexcept = default;
 		/// @brief Move constructor.
 		constexpr EventDispatcher(EventDispatcher&&) noexcept = default;
 		/// @brief Move assignment operator.
-		consteval EventDispatcher& operator=(EventDispatcher&&) noexcept = delete;
+		constexpr EventDispatcher& operator=(EventDispatcher&&) noexcept = default;
 
 		/// @brief Dispatch a specific event to a function.
 		/// @tparam T Event to dispatch.
@@ -109,23 +111,18 @@ namespace TRAP::Events
 		/// @param func Function to call.
 		/// @return True if the received event matches the event to dispatch, false otherwise.
 		template<typename T, typename F>
-		requires std::is_invocable_r_v<bool, F, T&>
-		constexpr bool Dispatch(const F& func) noexcept;
+		constexpr bool Dispatch(F&& func) const& noexcept;
 
-		/// @brief Dispatch a specific event to a member function.
+		/// @brief Dispatch a specific event to a function.
 		/// @tparam T Event to dispatch.
-		/// @tparam ClassType Class to use member function from.
-		/// @tparam F Member function to call.
-		/// @param obj Pointer to class from which to call member function.
-		/// @param func Member function to call.
+		/// @tparam F Function to call.
+		/// @param func Function to call.
 		/// @return True if the received event matches the event to dispatch, false otherwise.
-		template<typename T, typename ClassType, typename F>
-		requires std::is_class_v<ClassType> && std::is_member_function_pointer_v<F> &&
-		         std::is_invocable_r_v<bool, typename std::remove_pointer_t<F>, ClassType*, T&>
-		bool Dispatch(ClassType* obj, const F& func) noexcept;
+		template<typename T, typename F>
+		constexpr bool Dispatch(F&& func) const&& noexcept;
 
 	private:
-		Event& m_event;
+		std::reference_wrapper<Event> m_event;
 	};
 }
 
@@ -138,30 +135,31 @@ constexpr TRAP::Events::EventDispatcher::EventDispatcher(Event& event) noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T, typename F>
-requires std::is_invocable_r_v<bool, F, T&>
-constexpr bool TRAP::Events::EventDispatcher::Dispatch(const F& func) noexcept
+constexpr bool TRAP::Events::EventDispatcher::Dispatch(F&& func) const& noexcept
 {
-	if (m_event.GetEventType() != T::GetStaticType() || m_event.Handled)
+	static_assert(std::derived_from<T, TRAP::Events::Event>, "T must be derived from TRAP::Events::Event!");
+	static_assert(std::is_invocable_r_v<bool, F, const T&>, "F must have the signature bool Foo(const T&)!");
+
+	if (m_event.get().GetEventType() != T::GetStaticType() || m_event.get().Handled)
 		return false;
 
-	m_event.Handled = func(static_cast<T&>(m_event));
+	m_event.get().Handled |= std::invoke(std::forward<F>(func), static_cast<const T&>(m_event.get()));
 
 	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <typename T, typename ClassType, typename F>
-requires std::is_class_v<ClassType> && std::is_member_function_pointer_v<F> &&
-         std::is_invocable_r_v<bool, typename std::remove_pointer_t<F>, ClassType*, T&>
-inline bool TRAP::Events::EventDispatcher::Dispatch(ClassType* obj, const F& func) noexcept
+template <typename T, typename F>
+constexpr bool TRAP::Events::EventDispatcher::Dispatch(F&& func) const&& noexcept
 {
-	TRAP_ASSERT(obj, "EventDispatcher::Dispatch(): obj is nullptr!");
+	static_assert(std::derived_from<T, TRAP::Events::Event>, "T must be derived from TRAP::Events::Event!");
+	static_assert(std::is_invocable_r_v<bool, F, const T&>, "F must have the signature bool Foo(const T&)!");
 
-	if (m_event.GetEventType() != T::GetStaticType() || m_event.Handled)
+	if (m_event.get().GetEventType() != T::GetStaticType() || m_event.get().Handled)
 		return false;
 
-	m_event.Handled = (obj->*func)(static_cast<T&>(m_event));
+	m_event.get().Handled |= std::invoke(std::forward<F>(func), std::move(static_cast<const T&>(m_event.get())));
 
 	return true;
 }
