@@ -118,6 +118,12 @@ project "TRAP-UnitTests"
 			"-Wpedantic", "-Wconversion", "-Wshadow"
 		}
 
+	filter { "system:linux", "configurations:Debug", "action:gmake*", "toolset:gcc" }
+		buildoptions
+		{
+			"-fdeclone-ctor-dtor"
+		}
+
 project "TRAP-Headless"
 	location "."
 	kind "StaticLib"

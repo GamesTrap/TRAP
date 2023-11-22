@@ -1,8 +1,10 @@
 #!/bin/bash
 
-lcov --directory ../bin-int/Debug-linux-x86_64/UnitTests --directory ../bin-int/Debug-linux-x86_64/TRAP-UnitTests --zerocounters
+if [ -d "../bin-int/Debug-linux-x86_64/UnitTests" ] && [ -d "../bin-int/Debug-linux-x86_64/TRAP-UnitTests" ]; then
+    lcov --directory ../bin-int/Debug-linux-x86_64/UnitTests --directory ../bin-int/Debug-linux-x86_64/TRAP-UnitTests --zerocounters
+fi
 
-make -C ../ config=debug UnitTests -j${nproc}
+make -C ../ config=debug UnitTests -j$(nproc)
 
 if [ -d "../Coverage" ]; then
     rm -Rf ../Coverage
@@ -24,4 +26,4 @@ lcov -a ../Coverage/coverage_baseline.info -a ../Coverage/coverage.info --output
 
 #Generate HTML page
 prefix=${PWD%/*}
-genhtml --output-directory=../Coverage --num-spaces 4 ../Coverage/coverage_total.info --prefix $prefix --parallel --title "TRAP test coverage" --header-title "TRAP test coverage" --footer "© 2023 TrappedGames. All Rights Reserved." -branch-coverage
+genhtml --output-directory=../Coverage --demangle-cpp --num-spaces 4 ../Coverage/coverage_total.info --prefix $prefix --parallel --title "TRAP test coverage" --header-title "TRAP test coverage" --footer "© 2023 TrappedGames. All Rights Reserved." -branch-coverage

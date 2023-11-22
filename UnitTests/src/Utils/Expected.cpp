@@ -1416,6 +1416,8 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
         REQUIRE(err.Error() == 12);
 
         REQUIRE_THROWS_AS(TRAP::INTERNAL::ThrowOrAbort(err), TRAP::BadExpectedAccess<i32>);
+
+        [[maybe_unused]] const TRAP::BadExpectedAccess<i32> err2(err);
     }
 
     SECTION("Guard")

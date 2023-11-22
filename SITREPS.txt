@@ -4674,3 +4674,6 @@ SITREP 11/22/2023|23w47b1
     - Changed TRAP Engine version to 23w47b1(0.10.8)
     - EventDispatcher now uses std::reference_wrapper ~<5 mins
     - EventDispatcher Dispatch() now forwards Event as const reference ~<5 mins
+    - GenerateCodeCoverage Fixed make using wrong amount of cpu cores ~<5 mins
+    - GenerateCodeCoverage Added demangling of function names ~<5 mins
+    - Improved code coverage of TRAP::Expected and TRAP::Optional ~<10 mins

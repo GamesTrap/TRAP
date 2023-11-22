@@ -77,7 +77,7 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	TRAP::Graphics::Renderer2D::ResetStats();
 	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
 	{
-		f32 size = 5.0f;
+		static constexpr f32 size = 5.0f;
 		for(f32 y = -size; y < size; y += 0.5f)
 		{
 			for(f32 x = -size; x < size; x += 0.5f)

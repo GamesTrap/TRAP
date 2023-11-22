@@ -32,7 +32,8 @@ project "UnitTests"
 	filter { "system:linux", "configurations:Debug", "action:gmake*", "toolset:gcc" }
 		buildoptions
 		{
-			"--coverage"
+			"--coverage",
+			"-fdeclone-ctor-dtor"
 		}
 		links
 		{
