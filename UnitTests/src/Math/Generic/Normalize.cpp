@@ -125,6 +125,11 @@ namespace
             constexpr T n = TRAP::Math::Normalize(q);
             static_assert(TRAP::Math::Equal(TRAP::Math::Length(n), typename T::value_type(1.0f), Epsilon));
         }
+        {
+            constexpr T input(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+            constexpr T expected(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Normalize(input), expected, Epsilon)));
+        }
     }
 
     template<typename T>
@@ -158,6 +163,11 @@ namespace
             const T q = TRAP::Math::AngleAxis(PI * typename T::value_type(0.25f), TRAP::Math::Vec<3, typename T::value_type>(1.0f, 2.0f, 3.0f));
             const T n = TRAP::Math::Normalize(q);
             REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(n), typename T::value_type(1.0f), Epsilon));
+        }
+        {
+            const T input(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+            const T expected(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Normalize(input), expected, Epsilon)));
         }
     }
 

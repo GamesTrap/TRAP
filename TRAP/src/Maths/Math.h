@@ -2998,7 +2998,7 @@ requires std::floating_point<T>
 	const T cosTheta = Dot(x, y);
 
 	//Perform a linear interpolation when cosTheta is close to 1
-	//to avoid sie effect of Sin(angle) becoming a zero denominator
+	//to avoid side effect of Sin(angle) becoming a zero denominator
 	if(cosTheta > static_cast<T>(1) - Epsilon<T>())
 	{
 		//Linear interpolation
@@ -3390,7 +3390,7 @@ requires std::floating_point<T>
 
 		//Prevent a division by 0 error later on
 		const T vectorMagnitude = x.x() * x.x() + x.y() * x.y() + x.z() * x.z();
-		//Despite the compiler might say, we actually want to compare vectorMagnitude ti 0.
+		//Despite the compiler might say, we actually want to compare vectorMagnitude to 0.
 		//Here, we could use denorm_int() compiling a project with unsafe maths optimizations
 		//might make the comparison always false, even when vectorMagnitude is 0.
 		if(vectorMagnitude < std::numeric_limits<T>::min())
@@ -4815,8 +4815,7 @@ requires std::floating_point<T>
 		                biggestVal);
 
 	default:
-		TRAP_ASSERT(false, "Math::QuaternionCast(): Invalid Index!");
-		return tQuat<T>(static_cast<T>(1), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
+		std::unreachable();
 	}
 }
 

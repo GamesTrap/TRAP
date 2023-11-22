@@ -4677,3 +4677,4 @@ SITREP 11/22/2023|23w47b1
     - GenerateCodeCoverage Fixed make using wrong amount of cpu cores ~<5 mins
     - GenerateCodeCoverage Added demangling of function names ~<5 mins
     - Improved code coverage of TRAP::Expected and TRAP::Optional ~<10 mins
+    - Improved code coverage of TRAP::Math ~<20 mins

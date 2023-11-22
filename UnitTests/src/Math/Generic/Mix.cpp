@@ -126,6 +126,126 @@ namespace
         }
     }
 
+    template<typename T, typename X>
+    requires (std::is_arithmetic_v<T> || (TRAP::Math::IsVec<T> && std::is_arithmetic_v<typename T::value_type>)) &&
+            (std::floating_point<X> || (TRAP::Math::IsVec<X> && std::same_as<typename X::value_type, bool>) || std::same_as<X, bool>)
+    void RunRunTimeMixTest()
+    {
+        if constexpr(TRAP::Math::IsVec<T>)
+        {
+            typename T::value_type Epsilon = TRAP::Math::Epsilon<typename T::value_type>();
+
+            T res1 = TRAP::Math::Mix(T(0), T(1), X(0.0f));
+            T res2 = TRAP::Math::Mix(T(0), T(1), X(1.0f));
+
+            if constexpr(std::signed_integral<typename T::value_type> || std::floating_point<typename T::value_type>)
+            {
+                T res3 = TRAP::Math::Mix(T(-1), T(1), X(0.0f));
+                T res4 = TRAP::Math::Mix(T(-1), T(1), X(1.0f));
+
+                if constexpr(T::Length() == 2)
+                {
+                    REQUIRE(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
+
+                    REQUIRE(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
+
+                    REQUIRE(TRAP::Math::Equal(res3.x(), T(-1).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res3.y(), T(-1).y(), Epsilon));
+
+                    REQUIRE(TRAP::Math::Equal(res4.x(), T(1).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res4.y(), T(1).y(), Epsilon));
+                }
+                else if constexpr(T::Length() == 3)
+                {
+                    REQUIRE(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res1.z(), T(0).z(), Epsilon));
+
+                    REQUIRE(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res2.z(), T(1).z(), Epsilon));
+
+                    REQUIRE(TRAP::Math::Equal(res3.x(), T(-1).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res3.y(), T(-1).y(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res3.z(), T(-1).z(), Epsilon));
+
+                    REQUIRE(TRAP::Math::Equal(res4.x(), T(1).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res4.y(), T(1).y(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res4.z(), T(1).z(), Epsilon));
+                }
+                else if constexpr(T::Length() == 4)
+                {
+                    REQUIRE(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res1.z(), T(0).z(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res1.w(), T(0).w(), Epsilon));
+
+                    REQUIRE(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res2.z(), T(1).z(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res2.w(), T(1).w(), Epsilon));
+
+                    REQUIRE(TRAP::Math::Equal(res3.x(), T(-1).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res3.y(), T(-1).y(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res3.z(), T(-1).z(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res3.w(), T(-1).w(), Epsilon));
+
+                    REQUIRE(TRAP::Math::Equal(res4.x(), T(1).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res4.y(), T(1).y(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res4.z(), T(1).z(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res4.w(), T(1).w(), Epsilon));
+                }
+            }
+            else
+            {
+                if constexpr(T::Length() == 2)
+                {
+                    REQUIRE(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
+
+                    REQUIRE(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
+                }
+                else if constexpr(T::Length() == 3)
+                {
+                    REQUIRE(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res1.z(), T(0).z(), Epsilon));
+
+                    REQUIRE(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res2.z(), T(1).z(), Epsilon));
+                }
+                else if constexpr(T::Length() == 4)
+                {
+                    REQUIRE(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res1.z(), T(0).z(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res1.w(), T(0).w(), Epsilon));
+
+                    REQUIRE(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res2.z(), T(1).z(), Epsilon));
+                    REQUIRE(TRAP::Math::Equal(res2.w(), T(1).w(), Epsilon));
+                }
+            }
+        }
+        else
+        {
+            T Epsilon = TRAP::Math::Epsilon<T>();
+
+            REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(T(0.0f), T(1.0f), X(0.0f)), T(0.0f), Epsilon));
+            REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(T(0.0f), T(1.0f), X(1.0f)), T(1.0f), Epsilon));
+            if constexpr(std::floating_point<T> || std::signed_integral<T>)
+            {
+                REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(T(-1.0f), T(1.0f), X(0.0f)), T(-1.0f), Epsilon));
+                REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(T(-1.0f), T(1.0f), X(1.0f)), T(1.0f), Epsilon));
+            }
+        }
+    }
+
     template<typename T>
     requires std::floating_point<T>
     consteval void RunCompileTimeMixEdgeTest()
@@ -179,6 +299,12 @@ namespace
         static_assert(TRAP::Math::Equal(C.y(), D.y(), static_cast<T::value_type>(0.01f)));
         static_assert(TRAP::Math::Equal(C.z(), D.z(), static_cast<T::value_type>(0.01f)));
         static_assert(TRAP::Math::Equal(C.w(), D.w(), static_cast<T::value_type>(0.01f)));
+
+        constexpr T e(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+        constexpr T f(typename T::value_type(1.0f), typename T::value_type(0.1f), typename T::value_type(0.1f), typename T::value_type(0.1f));
+        constexpr typename T::value_type a = typename T::value_type(0.5f) * (typename T::value_type(1.0f) + TRAP::Math::Epsilon<typename T::value_type>());
+        constexpr T expected(typename T::value_type(1.0f), typename T::value_type(0.05f), typename T::value_type(0.05f), typename T::value_type(0.05f));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mix(e, f, a), expected, TRAP::Math::Epsilon<typename T::value_type>())));
     }
 
     template<typename T>
@@ -203,6 +329,13 @@ namespace
         REQUIRE(TRAP::Math::Equal(C.y(), D.y(), static_cast<T::value_type>(0.01f)));
         REQUIRE(TRAP::Math::Equal(C.z(), D.z(), static_cast<T::value_type>(0.01f)));
         REQUIRE(TRAP::Math::Equal(C.w(), D.w(), static_cast<T::value_type>(0.01f)));
+
+        //Linear interpolation
+        const T e(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+        const T f(typename T::value_type(1.0f), typename T::value_type(0.1f), typename T::value_type(0.1f), typename T::value_type(0.1f));
+        const typename T::value_type a = typename T::value_type(0.5f) * (typename T::value_type(1.0f) + TRAP::Math::Epsilon<typename T::value_type>());
+        constexpr T expected(typename T::value_type(1.0f), typename T::value_type(0.05f), typename T::value_type(0.05f), typename T::value_type(0.05f));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mix(e, f, a), expected, TRAP::Math::Epsilon<typename T::value_type>())));
     }
 }
 
@@ -213,60 +346,88 @@ TEST_CASE("TRAP::Math::Mix()", "[math][generic][mix]")
         RunCompileTimeMixTest<i8, bool>();
         RunCompileTimeMixTest<i8, f32>();
         RunCompileTimeMixTest<i8, f64>();
+        RunRunTimeMixTest<i8, bool>();
+        RunRunTimeMixTest<i8, f32>();
+        RunRunTimeMixTest<i8, f64>();
     }
     SECTION("Scalar - u8")
     {
         RunCompileTimeMixTest<u8, bool>();
         RunCompileTimeMixTest<u8, f32>();
         RunCompileTimeMixTest<u8, f64>();
+        RunRunTimeMixTest<u8, bool>();
+        RunRunTimeMixTest<u8, f32>();
+        RunRunTimeMixTest<u8, f64>();
     }
     SECTION("Scalar - i16")
     {
         RunCompileTimeMixTest<i16, bool>();
         RunCompileTimeMixTest<i16, f32>();
         RunCompileTimeMixTest<i16, f64>();
+        RunRunTimeMixTest<i16, bool>();
+        RunRunTimeMixTest<i16, f32>();
+        RunRunTimeMixTest<i16, f64>();
     }
     SECTION("Scalar - u16")
     {
         RunCompileTimeMixTest<u16, bool>();
         RunCompileTimeMixTest<u16, f32>();
         RunCompileTimeMixTest<u16, f64>();
+        RunRunTimeMixTest<u16, bool>();
+        RunRunTimeMixTest<u16, f32>();
+        RunRunTimeMixTest<u16, f64>();
     }
     SECTION("Scalar - i32")
     {
         RunCompileTimeMixTest<i32, bool>();
         RunCompileTimeMixTest<i32, f32>();
         RunCompileTimeMixTest<i32, f64>();
+        RunRunTimeMixTest<i32, bool>();
+        RunRunTimeMixTest<i32, f32>();
+        RunRunTimeMixTest<i32, f64>();
     }
     SECTION("Scalar - u32")
     {
         RunCompileTimeMixTest<u32, bool>();
         RunCompileTimeMixTest<u32, f32>();
         RunCompileTimeMixTest<u32, f64>();
+        RunRunTimeMixTest<u32, bool>();
+        RunRunTimeMixTest<u32, f32>();
+        RunRunTimeMixTest<u32, f64>();
     }
     SECTION("Scalar - i64")
     {
         RunCompileTimeMixTest<i64, bool>();
         RunCompileTimeMixTest<i64, f32>();
         RunCompileTimeMixTest<i64, f64>();
+        RunRunTimeMixTest<i64, bool>();
+        RunRunTimeMixTest<i64, f32>();
+        RunRunTimeMixTest<i64, f64>();
     }
     SECTION("Scalar - u64")
     {
         RunCompileTimeMixTest<u64, bool>();
         RunCompileTimeMixTest<u64, f32>();
         RunCompileTimeMixTest<u64, f64>();
+        RunRunTimeMixTest<u64, bool>();
+        RunRunTimeMixTest<u64, f32>();
+        RunRunTimeMixTest<u64, f64>();
     }
     SECTION("Scalar - f64")
     {
         RunCompileTimeMixTest<f64, bool>();
         RunCompileTimeMixTest<f64, f64>();
         RunCompileTimeMixEdgeTest<f64>();
+        RunRunTimeMixTest<f64, bool>();
+        RunRunTimeMixTest<f64, f64>();
     }
     SECTION("Scalar - f32")
     {
         RunCompileTimeMixTest<f32, bool>();
         RunCompileTimeMixTest<f32, f32>();
         RunCompileTimeMixEdgeTest<f32>();
+        RunRunTimeMixTest<f32, bool>();
+        RunRunTimeMixTest<f32, f32>();
     }
 
     SECTION("Vec2 - i8")

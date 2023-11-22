@@ -54,10 +54,27 @@ namespace
     consteval void RunLogQuatCompileTimeTests()
     {
         constexpr typename T::value_type Epsilon = typename T::value_type(0.001f);
+        constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
 
-        constexpr T q(TRAP::Math::Vec<3, typename T::value_type>(1.0f, 0.0f, 0.0f), TRAP::Math::Vec<3, typename T::value_type>(0.0f, 1.0f, 0.0f));
-        constexpr T p = TRAP::Math::Log(q);
-        static_assert(TRAP::Math::Any(TRAP::Math::NotEqual(q, p, Epsilon)));
+        {
+            constexpr T q(TRAP::Math::Vec<3, typename T::value_type>(1.0f, 0.0f, 0.0f), TRAP::Math::Vec<3, typename T::value_type>(0.0f, 1.0f, 0.0f));
+            constexpr T p = TRAP::Math::Log(q);
+            static_assert(TRAP::Math::Any(TRAP::Math::NotEqual(q, p, Epsilon)));
+        }
+        {
+            constexpr T input(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+            constexpr T expected(TRAP::Math::Log(input.w()), input.x(), input.y(), input.z());
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(input), expected, Epsilon)));
+        }
+        {
+            constexpr T input(typename T::value_type(-1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+            constexpr T expected(TRAP::Math::Log(-input.w()), TRAP::Math::PI<typename T::value_type>(), input.y(), input.z());
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(input), expected, Epsilon)));
+        }
+        {
+            constexpr T input(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+            static_assert(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Log(input))));
+        }
     }
 
     template<typename T>
@@ -66,9 +83,25 @@ namespace
     {
         static constexpr typename T::value_type Epsilon = typename T::value_type(0.001f);
 
-        const T q(TRAP::Math::Vec<3, typename T::value_type>(1.0f, 0.0f, 0.0f), TRAP::Math::Vec<3, typename T::value_type>(0.0f, 1.0f, 0.0f));
-        const T p = TRAP::Math::Log(q);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::NotEqual(q, p, Epsilon)));
+        {
+            const T q(TRAP::Math::Vec<3, typename T::value_type>(1.0f, 0.0f, 0.0f), TRAP::Math::Vec<3, typename T::value_type>(0.0f, 1.0f, 0.0f));
+            const T p = TRAP::Math::Log(q);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::NotEqual(q, p, Epsilon)));
+        }
+        {
+            const T input(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+            const T expected(TRAP::Math::Log(input.w()), input.x(), input.y(), input.z());
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(input), expected, Epsilon)));
+        }
+        {
+            const T input(typename T::value_type(-1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+            const T expected(TRAP::Math::Log(-input.w()), TRAP::Math::PI<typename T::value_type>(), input.y(), input.z());
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(input), expected, Epsilon)));
+        }
+        {
+            const T input(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+            REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Log(input))));
+        }
     }
 
     template<typename T>

@@ -79,6 +79,35 @@ namespace
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(m, TRAP::Math::Recompose(translation, rotationQuat, scale), Epsilon)));
         }
     }
+
+    template<typename T>
+    requires std::floating_point<T>
+    void RunDecomposeEdgeRunTimeTests()
+    {
+        {
+            TRAP::Math::tMat4<T> m{};
+
+            TRAP::Math::tVec3<T> translation{};
+            TRAP::Math::tQuat<T> rotationQuat{};
+            TRAP::Math::tVec3<T> rotationVec{};
+            TRAP::Math::tVec3<T> scale{};
+
+            REQUIRE(!TRAP::Math::Decompose(m, translation, rotationQuat, scale));
+            REQUIRE(!TRAP::Math::Decompose(m, translation, rotationVec, scale));
+        }
+        {
+            TRAP::Math::tMat4<T> m{};
+            m[3][3] = T(1.0f);
+
+            TRAP::Math::tVec3<T> translation{};
+            TRAP::Math::tQuat<T> rotationQuat{};
+            TRAP::Math::tVec3<T> rotationVec{};
+            TRAP::Math::tVec3<T> scale{};
+
+            REQUIRE(!TRAP::Math::Decompose(m, translation, rotationQuat, scale));
+            REQUIRE(!TRAP::Math::Decompose(m, translation, rotationVec, scale));
+        }
+    }
 }
 
 TEST_CASE("TRAP::Math::Decompose()", "[math][generic][decompose]")
@@ -86,9 +115,11 @@ TEST_CASE("TRAP::Math::Decompose()", "[math][generic][decompose]")
     SECTION("Scalar - f64")
     {
         RunDecomposeRunTimeTests<f64>();
+        RunDecomposeEdgeRunTimeTests<f64>();
     }
     SECTION("Scalar - f32")
     {
         RunDecomposeRunTimeTests<f32>();
+        RunDecomposeEdgeRunTimeTests<f32>();
     }
 }

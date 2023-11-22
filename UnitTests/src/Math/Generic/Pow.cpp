@@ -73,6 +73,16 @@ namespace
             constexpr T r = q * q;
             static_assert(TRAP::Math::All(TRAP::Math::Equal(p, r, Epsilon)));
         }
+        {
+            constexpr T input = T(typename T::value_type(5.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+            constexpr T expected = T(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Pow(input, typename T::value_type(0)), expected, Epsilon)));
+        }
+        {
+            constexpr T input = T(typename T::value_type(0.999f), typename T::value_type(0.1f), typename T::value_type(0.2f), typename T::value_type(0.3f));
+            constexpr T expected = T(typename T::value_type(0.858001f), typename T::value_type(0.199800f), typename T::value_type(0.399600f), typename T::value_type(0.599400f));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Pow(input, typename T::value_type(2.0f)), expected, Epsilon)));
+        }
     }
 
     template<typename T>
@@ -93,6 +103,16 @@ namespace
             const T p = TRAP::Math::Pow(q, two);
             const T r = q * q;
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(p, r, Epsilon)));
+        }
+        {
+            const T input = T(typename T::value_type(5.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+            const T expected = T(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Pow(input, typename T::value_type(0)), expected, Epsilon)));
+        }
+        {
+            const T input = T(typename T::value_type(0.999f), typename T::value_type(0.1f), typename T::value_type(0.2f), typename T::value_type(0.3f));
+            const T expected = T(typename T::value_type(0.858001f), typename T::value_type(0.199800f), typename T::value_type(0.399600f), typename T::value_type(0.599400f));
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Pow(input, typename T::value_type(2.0f)), expected, Epsilon)));
         }
     }
 

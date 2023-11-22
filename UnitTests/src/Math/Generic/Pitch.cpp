@@ -89,6 +89,7 @@ namespace
         static constexpr T inf = std::numeric_limits<T>::infinity();
         static constexpr T ninf = -std::numeric_limits<T>::infinity();
         static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        static constexpr T epsilon = std::numeric_limits<T>::epsilon();
 
         {
             const T expected = inf;
@@ -107,6 +108,11 @@ namespace
             const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(expected, 0.0f, 0.0f)));
             const T pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
             REQUIRE(TRAP::Math::IsNaN(pitch));
+        }
+        {
+            const TRAP::Math::tQuat<T> input{};
+            const T expected = T(0.0f);
+            REQUIRE(TRAP::Math::Equal(TRAP::Math::Pitch(input), expected, epsilon));
         }
     }
 }
