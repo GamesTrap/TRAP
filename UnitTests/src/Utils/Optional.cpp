@@ -6,40 +6,43 @@
 #include "Core/Types.h"
 #include "Utils/Optional.h"
 
-struct TakesInitAndVariadic
+namespace
 {
-    std::vector<i32> v;
-    std::tuple<i32, i32> t;
+    struct TakesInitAndVariadic
+    {
+        std::vector<i32> v;
+        std::tuple<i32, i32> t;
 
-    template<typename... Args>
-    constexpr TakesInitAndVariadic(std::initializer_list<i32> l, Args&&... args)
-        : v(l), t(std::forward<Args>(args)...)
-    {}
-};
+        template<typename... Args>
+        constexpr TakesInitAndVariadic(std::initializer_list<i32> l, Args&&... args)
+            : v(l), t(std::forward<Args>(args)...)
+        {}
+    };
 
-[[nodiscard]] constexpr i32 GetInt([[maybe_unused]] const i32 _) noexcept
-{
-    return 42;
+    [[nodiscard]] constexpr i32 GetInt([[maybe_unused]] const i32 _) noexcept
+    {
+        return 42;
+    }
+
+    constexpr TRAP::Optional<i32> GetOptInt([[maybe_unused]] const i32 _) noexcept
+    {
+        return 42;
+    }
+
+    template<typename T, typename = std::void_t<>>
+    struct IsHashable : std::false_type
+    {};
+
+    template<typename T>
+    struct IsHashable<T, std::void_t<decltype(std::declval<std::hash<T>>()(std::declval<T>()))>> : std::true_type
+    {};
+
+    template<typename T>
+    constexpr bool IsHashableV = IsHashable<T>::value;
+
+    struct NotHashable
+    {};
 }
-
-constexpr TRAP::Optional<i32> GetOptInt([[maybe_unused]] const i32 _) noexcept
-{
-    return 42;
-}
-
-template<typename T, typename = std::void_t<>>
-struct IsHashable : std::false_type
-{};
-
-template<typename T>
-struct IsHashable<T, std::void_t<decltype(std::declval<std::hash<T>>()(std::declval<T>()))>> : std::true_type
-{};
-
-template<typename T>
-constexpr bool IsHashableV = IsHashable<T>::value;
-
-struct NotHashable
-{};
 
 TEST_CASE("TRAP::Optional", "[utils][optional]")
 {

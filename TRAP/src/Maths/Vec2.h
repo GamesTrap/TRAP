@@ -39,6 +39,10 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 namespace TRAP::Math
 {
+	template<typename T>
+	requires std::floating_point<T>
+	[[nodiscard]] constexpr T FMod(T x, T y);
+
 	/// @brief Struct for a 2-dimensional vector.
 	template<class T>
 	requires std::is_arithmetic_v<T>
@@ -213,6 +217,7 @@ public:
 			return *this;
 		}
 		template<typename U>
+		requires std::is_arithmetic_v<U>
 		inline constexpr Vec<2, T>& operator+=(U scalar) noexcept
 		{
 			this->x() += static_cast<T>(scalar);
@@ -230,6 +235,7 @@ public:
 			return *this;
 		}
 		template<typename U>
+		requires std::is_arithmetic_v<U>
 		inline constexpr Vec<2, T>& operator-=(U scalar) noexcept
 		{
 			this->x() -= static_cast<T>(scalar);
@@ -247,6 +253,7 @@ public:
 			return *this;
 		}
 		template<typename U>
+		requires std::is_arithmetic_v<U>
 		inline constexpr Vec<2, T>& operator*=(U scalar) noexcept
 		{
 			this->x() *= static_cast<T>(scalar);
@@ -264,6 +271,7 @@ public:
 			return *this;
 		}
 		template<typename U>
+		requires std::is_arithmetic_v<U>
 		inline constexpr Vec<2, T>& operator/=(U scalar) noexcept
 		{
 			this->x() /= static_cast<T>(scalar);
@@ -289,10 +297,19 @@ public:
 
 		//Unary bit operators
 		template<typename U>
+		requires std::is_arithmetic_v<U>
 		inline constexpr Vec<2, T>& operator%=(U scalar) noexcept
 		{
-			this->x() %= static_cast<T>(scalar);
-			this->y() %= static_cast<T>(scalar);
+			if constexpr(std::floating_point<T>)
+			{
+				this->x() = TRAP::Math::FMod(this->x(), static_cast<T>(scalar));
+				this->y() = TRAP::Math::FMod(this->y(), static_cast<T>(scalar));
+			}
+			else
+			{
+				this->x() %= static_cast<T>(scalar);
+				this->y() %= static_cast<T>(scalar);
+			}
 
 			return *this;
 		}
@@ -300,12 +317,21 @@ public:
 		requires std::is_arithmetic_v<U>
 		inline constexpr Vec<2, T>& operator%=(const Vec<2, U>& v) noexcept
 		{
-			this->x() %= static_cast<T>(v.x());
-			this->y() %= static_cast<T>(v.y());
+			if constexpr(std::floating_point<T>)
+			{
+				this->x() = TRAP::Math::FMod(this->x(), static_cast<T>(v.x()));
+				this->y() = TRAP::Math::FMod(this->y(), static_cast<T>(v.y()));
+			}
+			else
+			{
+				this->x() %= static_cast<T>(v.x());
+				this->y() %= static_cast<T>(v.y());
+			}
 
 			return *this;
 		}
 		template<typename U>
+		requires std::integral<U>
 		inline constexpr Vec<2, T>& operator&=(U scalar) noexcept
 		{
 			this->x() &= static_cast<T>(scalar);
@@ -314,7 +340,7 @@ public:
 			return *this;
 		}
 		template<typename U>
-		requires std::is_arithmetic_v<U>
+		requires std::integral<U>
 		inline constexpr Vec<2, T>& operator&=(const Vec<2, U>& v) noexcept
 		{
 			this->x() &= static_cast<T>(v.x());
@@ -323,6 +349,7 @@ public:
 			return *this;
 		}
 		template<typename U>
+		requires std::integral<U>
 		inline constexpr Vec<2, T>& operator|=(U scalar) noexcept
 		{
 			this->x() |= static_cast<T>(scalar);
@@ -331,7 +358,7 @@ public:
 			return *this;
 		}
 		template<typename U>
-		requires std::is_arithmetic_v<U>
+		requires std::integral<U>
 		inline constexpr Vec<2, T>& operator|=(const Vec<2, U>& v) noexcept
 		{
 			this->x() |= static_cast<T>(v.x());
@@ -340,6 +367,7 @@ public:
 			return *this;
 		}
 		template<typename U>
+		requires std::integral<U>
 		inline constexpr Vec<2, T>& operator^=(U scalar) noexcept
 		{
 			this->x() ^= static_cast<T>(scalar);
@@ -348,7 +376,7 @@ public:
 			return *this;
 		}
 		template<typename U>
-		requires std::is_arithmetic_v<U>
+		requires std::integral<U>
 		inline constexpr Vec<2, T>& operator^=(const Vec<2, U>& v) noexcept
 		{
 			this->x() ^= static_cast<T>(v.x());
@@ -357,6 +385,7 @@ public:
 			return *this;
 		}
 		template<typename U>
+		requires std::integral<U>
 		inline constexpr Vec<2, T>& operator<<=(U scalar) noexcept
 		{
 			this->x() <<= static_cast<T>(scalar);
@@ -365,7 +394,7 @@ public:
 			return *this;
 		}
 		template<typename U>
-		requires std::is_arithmetic_v<U>
+		requires std::integral<U>
 		inline constexpr Vec<2, T>& operator<<=(const Vec<2, U>& v) noexcept
 		{
 			this->x() <<= static_cast<T>(v.x());
@@ -374,6 +403,7 @@ public:
 			return *this;
 		}
 		template<typename U>
+		requires std::integral<U>
 		inline constexpr Vec<2, T>& operator>>=(U scalar) noexcept
 		{
 			this->x() >>= static_cast<T>(scalar);
@@ -382,7 +412,7 @@ public:
 			return *this;
 		}
 		template<typename U>
-		requires std::is_arithmetic_v<U>
+		requires std::integral<U>
 		inline constexpr Vec<2, T>& operator>>=(const Vec<2, U>& v) noexcept
 		{
 			this->x() >>= static_cast<T>(v.x());
@@ -391,145 +421,143 @@ public:
 			return *this;
 		}
 
-		[[nodiscard]] constexpr auto operator<=>(const Vec<2, T>& rhs) const noexcept = default;
-		[[nodiscard]] constexpr bool operator==(const Vec<2, T>& rhs) const noexcept = default;
-		[[nodiscard]] constexpr bool operator!=(const Vec<2, T>& rhs) const noexcept = default;
+		[[nodiscard]] consteval auto operator<=>(const Vec<2, T>& rhs) const noexcept = delete;
 	};
 
 	//Unary operators
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator+(const Vec<2, T>& v) noexcept;
+	[[nodiscard]] constexpr Vec<2, T> operator+(const Vec<2, T>& v) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator-(const Vec<2, T>& v) noexcept;
+	requires std::signed_integral<T> || std::floating_point<T>
+	[[nodiscard]] constexpr Vec<2, T> operator-(const Vec<2, T>& v) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	//Binary operators
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator+(const Vec<2, T>& v, T scalar) noexcept;
+	[[nodiscard]] constexpr Vec<2, T> operator+(const Vec<2, T>& v, T scalar) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator+(T scalar, const Vec<2, T>& v) noexcept;
+	[[nodiscard]] constexpr Vec<2, T> operator+(T scalar, const Vec<2, T>& v) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator+(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
+	[[nodiscard]] constexpr Vec<2, T> operator+(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator-(const Vec<2, T>& v, T scalar) noexcept;
+	[[nodiscard]] constexpr Vec<2, T> operator-(const Vec<2, T>& v, T scalar) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator-(T scalar, const Vec<2, T>& v) noexcept;
+	[[nodiscard]] constexpr Vec<2, T> operator-(T scalar, const Vec<2, T>& v) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator-(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
+	[[nodiscard]] constexpr Vec<2, T> operator-(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator*(const Vec<2, T>& v, T scalar) noexcept;
+	[[nodiscard]] constexpr Vec<2, T> operator*(const Vec<2, T>& v, T scalar) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator*(T scalar, const Vec<2, T>& v) noexcept;
+	[[nodiscard]] constexpr Vec<2, T> operator*(T scalar, const Vec<2, T>& v) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator*(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
+	[[nodiscard]] constexpr Vec<2, T> operator*(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator/(const Vec<2, T>& v, T scalar) noexcept;
+	[[nodiscard]] constexpr Vec<2, T> operator/(const Vec<2, T>& v, T scalar) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator/(T scalar, const Vec<2, T>& v) noexcept;
+	[[nodiscard]] constexpr Vec<2, T> operator/(T scalar, const Vec<2, T>& v) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator/(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
+	[[nodiscard]] constexpr Vec<2, T> operator/(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator%(const Vec<2, T>& v, T scalar) noexcept;
+	[[nodiscard]] constexpr Vec<2, T> operator%(const Vec<2, T>& v, T scalar) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator%(T scalar, const Vec<2, T>& v) noexcept;
+	[[nodiscard]] constexpr Vec<2, T> operator%(T scalar, const Vec<2, T>& v) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator%(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
+	[[nodiscard]] constexpr Vec<2, T> operator%(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator&(const Vec<2, T>& v, T scalar) noexcept;
+	requires std::integral<T>
+	[[nodiscard]] constexpr Vec<2, T> operator&(const Vec<2, T>& v, T scalar) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator&(T scalar, const Vec<2, T>& v) noexcept;
+	requires std::integral<T>
+	[[nodiscard]] constexpr Vec<2, T> operator&(T scalar, const Vec<2, T>& v) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator&(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
+	requires std::integral<T>
+	[[nodiscard]] constexpr Vec<2, T> operator&(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator|(const Vec<2, T>& v, T scalar) noexcept;
+	requires std::integral<T>
+	[[nodiscard]] constexpr Vec<2, T> operator|(const Vec<2, T>& v, T scalar) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator|(T scalar, const Vec<2, T>& v) noexcept;
+	requires std::integral<T>
+	[[nodiscard]] constexpr Vec<2, T> operator|(T scalar, const Vec<2, T>& v) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator|(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
+	requires std::integral<T>
+	[[nodiscard]] constexpr Vec<2, T> operator|(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator^(const Vec<2, T>& v, T scalar) noexcept;
+	requires std::integral<T>
+	[[nodiscard]] constexpr Vec<2, T> operator^(const Vec<2, T>& v, T scalar) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator^(T scalar, const Vec<2, T>& v) noexcept;
+	requires std::integral<T>
+	[[nodiscard]] constexpr Vec<2, T> operator^(T scalar, const Vec<2, T>& v) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator^(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
+	requires std::integral<T>
+	[[nodiscard]] constexpr Vec<2, T> operator^(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator<<(const Vec<2, T>& v, T scalar) noexcept;
+	requires std::integral<T>
+	[[nodiscard]] constexpr Vec<2, T> operator<<(const Vec<2, T>& v, T scalar) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator<<(T scalar, const Vec<2, T>& v) noexcept;
+	requires std::integral<T>
+	[[nodiscard]] constexpr Vec<2, T> operator<<(T scalar, const Vec<2, T>& v) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator<<(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
+	requires std::integral<T>
+	[[nodiscard]] constexpr Vec<2, T> operator<<(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator>>(const Vec<2, T>& v, T scalar) noexcept;
+	requires std::integral<T>
+	[[nodiscard]] constexpr Vec<2, T> operator>>(const Vec<2, T>& v, T scalar) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator>>(T scalar, const Vec<2, T>& v) noexcept;
+	requires std::integral<T>
+	[[nodiscard]] constexpr Vec<2, T> operator>>(T scalar, const Vec<2, T>& v) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
-	constexpr Vec<2, T> operator>>(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
+	requires std::integral<T>
+	[[nodiscard]] constexpr Vec<2, T> operator>>(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::integral<T>
 	constexpr Vec<2, T> operator~(const Vec<2, T>& v) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -537,15 +565,15 @@ public:
 	//Boolean operators
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr bool operator==(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
+	[[nodiscard]] constexpr bool operator==(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr bool operator!=(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
+	[[nodiscard]] constexpr bool operator!=(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept;
 
-	constexpr Vec<2, bool> operator&&(const Vec<2, bool>& v1, const Vec<2, bool>& v2) noexcept;
+	[[nodiscard]] constexpr Vec<2, bool> operator&&(const Vec<2, bool>& v1, const Vec<2, bool>& v2) noexcept;
 
-	constexpr Vec<2, bool> operator||(const Vec<2, bool>& v1, const Vec<2, bool>& v2) noexcept;
+	[[nodiscard]] constexpr Vec<2, bool> operator||(const Vec<2, bool>& v1, const Vec<2, bool>& v2) noexcept;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -561,7 +589,7 @@ namespace std
 		[[nodiscard]] constexpr usize operator()(const TRAP::Math::Vec<2, T>& v) const noexcept
 		{
 			usize seed = 0;
-			hash<T> hasher;
+			constexpr hash<T> hasher;
 			TRAP::Utils::HashCombine(seed, hasher(v.x()), hasher(v.y()));
 			return seed;
 		}
@@ -795,12 +823,12 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 struct fmt::formatter<TRAP::Math::Vec<2, T>>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    [[nodiscard]] static constexpr auto parse(fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }
 
-    static fmt::format_context::iterator format(const TRAP::Math::Vec<2, T>& vec, fmt::format_context& ctx)
+    [[nodiscard]] static fmt::format_context::iterator format(const TRAP::Math::Vec<2, T>& vec, fmt::format_context& ctx)
     {
 		if constexpr(std::same_as<T, f32>)
 			return fmt::format_to(ctx.out(), "Vec2f({}, {})", vec.x(), vec.y());
@@ -817,13 +845,13 @@ struct fmt::formatter<TRAP::Math::Vec<2, T>>
 		else if constexpr(std::same_as<T, i64>)
 			return fmt::format_to(ctx.out(), "Vec2i64({}, {})", vec.x(), vec.y());
 		else if constexpr(std::same_as<T, u8>)
-			return fmt::format_to(ctx.out(), "Vec2ui8({}, {})", vec.x(), vec.y());
+			return fmt::format_to(ctx.out(), "Vec2u8({}, {})", vec.x(), vec.y());
 		else if constexpr(std::same_as<T, u16>)
-			return fmt::format_to(ctx.out(), "Vec2ui16({}, {})", vec.x(), vec.y());
+			return fmt::format_to(ctx.out(), "Vec2u16({}, {})", vec.x(), vec.y());
 		else if constexpr(std::same_as<T, u32>)
-			return fmt::format_to(ctx.out(), "Vec2ui32({}, {})", vec.x(), vec.y());
+			return fmt::format_to(ctx.out(), "Vec2u32({}, {})", vec.x(), vec.y());
 		else if constexpr(std::same_as<T, u64>)
-			return fmt::format_to(ctx.out(), "Vec2ui64({}, {})", vec.x(), vec.y());
+			return fmt::format_to(ctx.out(), "Vec2u64({}, {})", vec.x(), vec.y());
 		else
 			return fmt::format_to(ctx.out(), "Unknown type");
     }
@@ -840,7 +868,7 @@ constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator+(const Vec<2, T>& v) noexce
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::signed_integral<T> || std::floating_point<T>
 constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator-(const Vec<2, T>& v) noexcept
 {
 	return Vec<2, T>(-v.x(), -v.y());
@@ -851,84 +879,84 @@ constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator-(const Vec<2, T>& v) noexce
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator+(const Vec<2, T>& v, const T scalar) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator+(const Vec<2, T>& v, const T scalar) noexcept
 {
 	return Vec<2, T>(v.x() + scalar, v.y() + scalar);
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator+(const T scalar, const Vec<2, T>& v) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator+(const T scalar, const Vec<2, T>& v) noexcept
 {
 	return Vec<2, T>(scalar + v.x(), scalar + v.y());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator+(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator+(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
 {
 	return Vec<2, T>(v1.x() + v2.x(), v1.y() + v2.y());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator-(const Vec<2, T>& v, const T scalar) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator-(const Vec<2, T>& v, const T scalar) noexcept
 {
 	return Vec<2, T>(v.x() - scalar, v.y() - scalar);
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator-(const T scalar, const Vec<2, T>& v) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator-(const T scalar, const Vec<2, T>& v) noexcept
 {
 	return Vec<2, T>(scalar - v.x(), scalar - v.y());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator-(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator-(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
 {
 	return Vec<2, T>(v1.x() - v2.x(), v1.y() - v2.y());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator*(const Vec<2, T>& v, const T scalar) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator*(const Vec<2, T>& v, const T scalar) noexcept
 {
 	return Vec<2, T>(v.x() * scalar, v.y() * scalar);
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator*(const T scalar, const Vec<2, T>& v) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator*(const T scalar, const Vec<2, T>& v) noexcept
 {
 	return Vec<2, T>(scalar * v.x(), scalar * v.y());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator*(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator*(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
 {
 	return Vec<2, T>(v1.x() * v2.x(), v1.y() * v2.y());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator/(const Vec<2, T>& v, const T scalar) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator/(const Vec<2, T>& v, const T scalar) noexcept
 {
 	return Vec<2, T>(v.x() / scalar, v.y() / scalar);
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator/(const T scalar, const Vec<2, T>& v) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator/(const T scalar, const Vec<2, T>& v) noexcept
 {
 	return Vec<2, T>(scalar / v.x(), scalar / v.y());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator/(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator/(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
 {
 	return Vec<2, T>(v1.x() / v2.x(), v1.y() / v2.y());
 }
@@ -938,132 +966,153 @@ constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator/(const Vec<2, T>& v1, const
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator%(const Vec<2, T>& v, const T scalar) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator%(const Vec<2, T>& v, const T scalar) noexcept
 {
-	return Vec<2, T>(v.x() % scalar, v.y() % scalar);
+	if constexpr(std::floating_point<T>)
+	{
+		return Vec<2, T>(TRAP::Math::FMod(v.x(), scalar), TRAP::Math::FMod(v.y(), scalar));
+	}
+	else
+	{
+		return Vec<2, T>(v.x() % scalar, v.y() % scalar);
+	}
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator%(const T scalar, const Vec<2, T>& v) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator%(const T scalar, const Vec<2, T>& v) noexcept
 {
-	return Vec<2, T>(scalar % v.x(), scalar % v.y());
+	if constexpr(std::floating_point<T>)
+	{
+		return Vec<2, T>(TRAP::Math::FMod(scalar, v.x()), TRAP::Math::FMod(scalar, v.y()));
+	}
+	else
+	{
+		return Vec<2, T>(scalar % v.x(), scalar % v.y());
+	}
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator%(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator%(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
 {
-	return Vec<2, T>(v1.x() % v2.x(), v1.y() % v2.y());
+	if constexpr(std::floating_point<T>)
+	{
+		return Vec<2, T>(TRAP::Math::FMod(v1.x(), v2.x()), TRAP::Math::FMod(v1.y(), v2.y()));
+	}
+	else
+	{
+		return Vec<2, T>(v1.x() % v2.x(), v1.y() % v2.y());
+	}
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator&(const Vec<2, T>& v, const T scalar) noexcept
+requires std::integral<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator&(const Vec<2, T>& v, const T scalar) noexcept
 {
 	return Vec<2, T>(v.x() & scalar, v.y() & scalar);
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator&(const T scalar, const Vec<2, T>& v) noexcept
+requires std::integral<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator&(const T scalar, const Vec<2, T>& v) noexcept
 {
 	return Vec<2, T>(scalar & v.x(), scalar & v.y());
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator&(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
+requires std::integral<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator&(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
 {
 	return Vec<2, T>(v1.x() & v2.x(), v1.y() & v2.y());
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator|(const Vec<2, T>& v, const T scalar) noexcept
+requires std::integral<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator|(const Vec<2, T>& v, const T scalar) noexcept
 {
 	return Vec<2, T>(v.x() | scalar, v.y() | scalar);
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator|(const T scalar, const Vec<2, T>& v) noexcept
+requires std::integral<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator|(const T scalar, const Vec<2, T>& v) noexcept
 {
 	return Vec<2, T>(scalar | v.x(), scalar | v.y());
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator|(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
+requires std::integral<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator|(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
 {
 	return Vec<2, T>(v1.x() | v2.x(), v1.y() | v2.y());
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator^(const Vec<2, T>& v, const T scalar) noexcept
+requires std::integral<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator^(const Vec<2, T>& v, const T scalar) noexcept
 {
 	return Vec<2, T>(v.x() ^ scalar, v.y() ^ scalar);
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator^(const T scalar, const Vec<2, T>& v) noexcept
+requires std::integral<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator^(const T scalar, const Vec<2, T>& v) noexcept
 {
 	return Vec<2, T>(scalar ^ v.x(), scalar ^ v.y());
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator^(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
+requires std::integral<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator^(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
 {
 	return Vec<2, T>(v1.x() ^ v2.x(), v1.y() ^ v2.y());
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator<<(const Vec<2, T>& v, const T scalar) noexcept
+requires std::integral<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator<<(const Vec<2, T>& v, const T scalar) noexcept
 {
 	return Vec<2, T>(v.x() << scalar, v.y() << scalar);
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator<<(const T scalar, const Vec<2, T>& v) noexcept
+requires std::integral<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator<<(const T scalar, const Vec<2, T>& v) noexcept
 {
 	return Vec<2, T>(scalar << v.x(), scalar << v.y());
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator<<(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
+requires std::integral<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator<<(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
 {
 	return Vec<2, T>(v1.x() << v2.x(), v1.y() << v2.y());
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator>>(const Vec<2, T>& v, const T scalar) noexcept
+requires std::integral<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator>>(const Vec<2, T>& v, const T scalar) noexcept
 {
 	return Vec<2, T>(v.x() >> scalar, v.y() >> scalar);
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator>>(const T scalar, const Vec<2, T>& v) noexcept
+requires std::integral<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator>>(const T scalar, const Vec<2, T>& v) noexcept
 {
 	return Vec<2, T>(scalar >> v.x(), scalar >> v.y());
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator>>(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
+requires std::integral<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator>>(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
 {
 	return Vec<2, T>(v1.x() >> v2.x(), v1.y() >> v2.y());
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::integral<T>
 constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator~(const Vec<2, T>& v) noexcept
 {
 	return Vec<2, T>(~v.x(), ~v.y());
@@ -1074,24 +1123,24 @@ constexpr TRAP::Math::Vec<2, T> TRAP::Math::operator~(const Vec<2, T>& v) noexce
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr bool TRAP::Math::operator==(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
+[[nodiscard]] constexpr bool TRAP::Math::operator==(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
 {
 	return v1.x() == v2.x() && v1.y() == v2.y();
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr bool TRAP::Math::operator!=(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
+[[nodiscard]] constexpr bool TRAP::Math::operator!=(const Vec<2, T>& v1, const Vec<2, T>& v2) noexcept
 {
 	return !(v1 == v2);
 }
 
-constexpr TRAP::Math::Vec<2, bool> TRAP::Math::operator&&(const Vec<2, bool>& v1, const Vec<2, bool>& v2) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<2, bool> TRAP::Math::operator&&(const Vec<2, bool>& v1, const Vec<2, bool>& v2) noexcept
 {
 	return Vec<2, bool>(v1.x() && v2.x(), v1.y() && v2.y());
 }
 
-constexpr TRAP::Math::Vec<2, bool> TRAP::Math::operator||(const Vec<2, bool>& v1, const Vec<2, bool>& v2) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<2, bool> TRAP::Math::operator||(const Vec<2, bool>& v1, const Vec<2, bool>& v2) noexcept
 {
 	return Vec<2, bool>(v1.x() || v2.x(), v1.y() || v2.y());
 }
@@ -1120,12 +1169,10 @@ namespace std
 		{
 			return v.y();
 		}
-#if __cpp_lib_unreachable >= 202202L
 		else
 		{
 			std::unreachable();
 		}
-#endif /*__cpp_lib_unreachable >= 202202L*/
 	}
 
 	/// @brief Extracts the Ith element from the vector.
@@ -1141,18 +1188,16 @@ namespace std
 
 		if constexpr(I == 0)
 		{
-			return v.x();
+			return std::move(v.x());
 		}
 		else if constexpr(I == 1)
 		{
-			return v.y();
+			return std::move(v.y());
 		}
-#if __cpp_lib_unreachable >= 202202L
 		else
 		{
 			std::unreachable();
 		}
-#endif /*__cpp_lib_unreachable >= 202202L*/
 	}
 
 	/// @brief Extracts the Ith element from the vector.
@@ -1174,12 +1219,10 @@ namespace std
 		{
 			return v.y();
 		}
-#if __cpp_lib_unreachable >= 202202L
 		else
 		{
 			std::unreachable();
 		}
-#endif /*__cpp_lib_unreachable >= 202202L*/
 	}
 
 	/// @brief Extracts the Ith element from the vector.
@@ -1195,18 +1238,16 @@ namespace std
 
 		if constexpr(I == 0)
 		{
-			return v.x();
+			return std::move(v.x());
 		}
 		else if constexpr(I == 1)
 		{
-			return v.y();
+			return std::move(v.y());
 		}
-#if __cpp_lib_unreachable >= 202202L
 		else
 		{
 			std::unreachable();
 		}
-#endif /*__cpp_lib_unreachable >= 202202L*/
 	}
 }
 

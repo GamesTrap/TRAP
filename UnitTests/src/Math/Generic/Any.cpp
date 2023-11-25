@@ -12,7 +12,7 @@ namespace
         static_assert(TRAP::Math::Any(TRAP::Math::Equal(T(TRAP::Math::tVec4<typename T::value_type>(true)),
                                                         T(TRAP::Math::tVec4<typename T::value_type>(true, false, true, false)))));
     }
-    }
+}
 
 TEST_CASE("TRAP::Math::Any()", "[math][generic][any]")
 {

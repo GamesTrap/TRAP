@@ -7,135 +7,138 @@
 #include "Core/Types.h"
 #include "Utils/Expected.h"
 
-struct TakesInitAndVariadic
+namespace
 {
-    std::vector<i32> v;
-    std::tuple<i32, i32> t;
-    template<typename... Args>
-    TakesInitAndVariadic(std::initializer_list<i32> l, Args&&... args)
-        : v(l), t(std::forward<Args>(args)...)
-    {}
-};
-
-struct MoveDetector
-{
-    constexpr MoveDetector() = default;
-    constexpr ~MoveDetector() = default;
-    constexpr MoveDetector(MoveDetector&& rhs)
+    struct TakesInitAndVariadic
     {
-        rhs.BeenMoved = true;
-    }
-    constexpr MoveDetector(const MoveDetector&) = default;
-    constexpr MoveDetector& operator=(const MoveDetector&) = default;
-    constexpr MoveDetector& operator=(MoveDetector&&) = default;
+        std::vector<i32> v;
+        std::tuple<i32, i32> t;
+        template<typename... Args>
+        TakesInitAndVariadic(std::initializer_list<i32> l, Args&&... args)
+            : v(l), t(std::forward<Args>(args)...)
+        {}
+    };
 
-    bool BeenMoved = false;
-};
-
-struct NoThrow
-{
-    constexpr NoThrow(std::string i)
-        : i(i)
-    {}
-
-    std::string i;
-};
-
-struct CanThrowMove
-{
-    constexpr CanThrowMove(std::string i)
-        : i(i)
-    {}
-    constexpr CanThrowMove() = default;
-    constexpr ~CanThrowMove() = default;
-    constexpr CanThrowMove(const CanThrowMove&) = default;
-    constexpr CanThrowMove(CanThrowMove&& other) noexcept(false)
-        : i(other.i)
-    {}
-    constexpr CanThrowMove& operator=(CanThrowMove&&) = default;
-    constexpr CanThrowMove& operator=(const CanThrowMove&) = default;
-
-    std::string i;
-};
-
-bool ShouldThrow = false;
-
-#if defined(__EXCEPTIONS) || defined(__cpp_exceptions)
-struct WillThrowMove
-{
-    constexpr WillThrowMove(std::string i)
-        : i(i)
-    {}
-    constexpr ~WillThrowMove() = default;
-    constexpr WillThrowMove(const WillThrowMove&) = default;
-    constexpr WillThrowMove(WillThrowMove&& other)
-        : i(other.i)
+    struct MoveDetector
     {
-        if(ShouldThrow)
-            throw std::exception();
+        constexpr MoveDetector() = default;
+        constexpr ~MoveDetector() = default;
+        constexpr MoveDetector(MoveDetector&& rhs)
+        {
+            rhs.BeenMoved = true;
+        }
+        constexpr MoveDetector(const MoveDetector&) = default;
+        constexpr MoveDetector& operator=(const MoveDetector&) = default;
+        constexpr MoveDetector& operator=(MoveDetector&&) = default;
+
+        bool BeenMoved = false;
+    };
+
+    struct NoThrow
+    {
+        constexpr NoThrow(std::string i)
+            : i(i)
+        {}
+
+        std::string i;
+    };
+
+    struct CanThrowMove
+    {
+        constexpr CanThrowMove(std::string i)
+            : i(i)
+        {}
+        constexpr CanThrowMove() = default;
+        constexpr ~CanThrowMove() = default;
+        constexpr CanThrowMove(const CanThrowMove&) = default;
+        constexpr CanThrowMove(CanThrowMove&& other) noexcept(false)
+            : i(other.i)
+        {}
+        constexpr CanThrowMove& operator=(CanThrowMove&&) = default;
+        constexpr CanThrowMove& operator=(const CanThrowMove&) = default;
+
+        std::string i;
+    };
+
+    bool ShouldThrow = false;
+
+    #if defined(__EXCEPTIONS) || defined(__cpp_exceptions)
+    struct WillThrowMove
+    {
+        constexpr WillThrowMove(std::string i)
+            : i(i)
+        {}
+        constexpr ~WillThrowMove() = default;
+        constexpr WillThrowMove(const WillThrowMove&) = default;
+        constexpr WillThrowMove(WillThrowMove&& other)
+            : i(other.i)
+        {
+            if(ShouldThrow)
+                throw std::exception();
+        }
+        constexpr WillThrowMove& operator=(WillThrowMove&&) = default;
+        constexpr WillThrowMove& operator=(const WillThrowMove&) = default;
+
+        std::string i;
+    };
+    #endif
+
+    static_assert(std::is_swappable_v<NoThrow>);
+
+    template<typename T1, typename T2>
+    void SwapTest()
+    {
+        const std::string s1 = "abcdefghijklmnopqrstuvwxyz";
+        const std::string s2 = "zyxwvutsrqponmlkjihgfedcba";
+
+        TRAP::Expected<T1, T2> a{s1};
+        TRAP::Expected<T1, T2> b{s2};
+        std::swap(a, b);
+        REQUIRE(a->i == s2);
+        REQUIRE(b->i == s1);
+
+        a = s1;
+        b = TRAP::Unexpected<T2>(s2);
+        std::swap(a, b);
+        REQUIRE(a.Error().i == s2);
+        REQUIRE(b->i == s1);
+
+        a = TRAP::Unexpected<T2>(s1);
+        b = s2;
+        std::swap(a, b);
+        REQUIRE(a->i == s2);
+        REQUIRE(b.Error().i == s1);
+
+        a = TRAP::Unexpected<T2>(s1);
+        b = TRAP::Unexpected<T2>(s2);
+        std::swap(a, b);
+        REQUIRE(a.Error().i == s2);
+        REQUIRE(b.Error().i == s1);
+
+        a = s1;
+        b = s2;
+        a.Swap(b);
+        REQUIRE(a->i == s2);
+        REQUIRE(b->i == s1);
+
+        a = s1;
+        b = TRAP::Unexpected<T2>(s2);
+        a.Swap(b);
+        REQUIRE(a.Error().i == s2);
+        REQUIRE(b->i == s1);
+
+        a = TRAP::Unexpected<T2>(s1);
+        b = s2;
+        a.Swap(b);
+        REQUIRE(a->i == s2);
+        REQUIRE(b.Error().i == s1);
+
+        a = TRAP::Unexpected<T2>(s1);
+        b = TRAP::Unexpected<T2>(s2);
+        a.Swap(b);
+        REQUIRE(a.Error().i == s2);
+        REQUIRE(b.Error().i == s1);
     }
-    constexpr WillThrowMove& operator=(WillThrowMove&&) = default;
-    constexpr WillThrowMove& operator=(const WillThrowMove&) = default;
-
-    std::string i;
-};
-#endif
-
-static_assert(std::is_swappable_v<NoThrow>);
-
-template<typename T1, typename T2>
-void SwapTest()
-{
-    const std::string s1 = "abcdefghijklmnopqrstuvwxyz";
-    const std::string s2 = "zyxwvutsrqponmlkjihgfedcba";
-
-    TRAP::Expected<T1, T2> a{s1};
-    TRAP::Expected<T1, T2> b{s2};
-    std::swap(a, b);
-    REQUIRE(a->i == s2);
-    REQUIRE(b->i == s1);
-
-    a = s1;
-    b = TRAP::Unexpected<T2>(s2);
-    std::swap(a, b);
-    REQUIRE(a.Error().i == s2);
-    REQUIRE(b->i == s1);
-
-    a = TRAP::Unexpected<T2>(s1);
-    b = s2;
-    std::swap(a, b);
-    REQUIRE(a->i == s2);
-    REQUIRE(b.Error().i == s1);
-
-    a = TRAP::Unexpected<T2>(s1);
-    b = TRAP::Unexpected<T2>(s2);
-    std::swap(a, b);
-    REQUIRE(a.Error().i == s2);
-    REQUIRE(b.Error().i == s1);
-
-    a = s1;
-    b = s2;
-    a.Swap(b);
-    REQUIRE(a->i == s2);
-    REQUIRE(b->i == s1);
-
-    a = s1;
-    b = TRAP::Unexpected<T2>(s2);
-    a.Swap(b);
-    REQUIRE(a.Error().i == s2);
-    REQUIRE(b->i == s1);
-
-    a = TRAP::Unexpected<T2>(s1);
-    b = s2;
-    a.Swap(b);
-    REQUIRE(a->i == s2);
-    REQUIRE(b.Error().i == s1);
-
-    a = TRAP::Unexpected<T2>(s1);
-    b = TRAP::Unexpected<T2>(s2);
-    a.Swap(b);
-    REQUIRE(a.Error().i == s2);
-    REQUIRE(b.Error().i == s1);
 }
 
 TEST_CASE("TRAP::Expected", "[utils][expected]")

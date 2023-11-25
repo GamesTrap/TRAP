@@ -147,34 +147,4 @@ void TRAP::Log::Critical(Args&& ... args)
 	}
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-//Math ToString for streams
-
-//Vectors
-template<typename OStream, uint32_t L, typename T>
-inline OStream& operator<<(OStream& os, const TRAP::Math::Vec<L, T>& vec)
-{
-	ZoneScoped;
-
-	return os << vec.ToString();
-}
-
-//Matrices
-template<typename OStream, uint32_t L, typename T>
-inline OStream& operator<<(OStream& os, const TRAP::Math::Mat<L, L, T>& mat)
-{
-	ZoneScoped;
-
-	return os << mat.ToString();
-}
-
-//Quaternion
-template<typename OStream, typename T>
-inline OStream& operator<<(OStream& os, const TRAP::Math::tQuat<T>& quat)
-{
-	ZoneScoped;
-
-	return os << quat.ToString();
-}
-
 #endif /*TRAP_LOG_INL*/
