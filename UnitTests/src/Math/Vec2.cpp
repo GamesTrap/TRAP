@@ -188,30 +188,6 @@ namespace
 
     template<typename T>
     requires std::is_arithmetic_v<T>
-    consteval void RunVec2AssignmentsCompileTimeTests()
-    {
-        using Vec = TRAP::Math::Vec<2, T>;
-
-        //Move assignment operator
-        {
-        }
-
-        //Copy assignment operator
-        {
-            constexpr Vec v(T(5), T(10));
-            constexpr Vec vCopy = v;
-
-            static_assert(vCopy.x() == T(5));
-            static_assert(vCopy.y() == T(10));
-        }
-
-        //Conversion copy assignment operator
-        {
-        }
-    }
-
-    template<typename T>
-    requires std::is_arithmetic_v<T>
     void RunVec2AssignmentsRunTimeTests()
     {
         using Vec = TRAP::Math::Vec<2, T>;
@@ -219,7 +195,8 @@ namespace
         //Move assignment operator
         {
             Vec v(T(5), T(10));
-            Vec vMove = std::move(v);
+            Vec vMove{};
+            vMove = std::move(v);
 
             REQUIRE(vMove.x() == T(5));
             REQUIRE(vMove.y() == T(10));
@@ -227,8 +204,9 @@ namespace
 
         //Copy assignment operator
         {
-            Vec v(T(5), T(10));
-            Vec vCopy = v;
+            const Vec v(T(5), T(10));
+            Vec vCopy{};
+            vCopy = v;
 
             REQUIRE(vCopy.x() == T(5));
             REQUIRE(vCopy.y() == T(10));
@@ -237,11 +215,11 @@ namespace
         //Conversion copy assignment operator
         {
             TRAP::Math::tVec2<f64> v(f64(5.0), f64(10.0));
-            Vec vCopy{};
-            vCopy = v;
+            Vec vConversion{};
+            vConversion = v;
 
-            REQUIRE(vCopy.x() == T(5));
-            REQUIRE(vCopy.y() == T(10));
+            REQUIRE(vConversion.x() == T(5));
+            REQUIRE(vConversion.y() == T(10));
         }
     }
 
@@ -1240,17 +1218,6 @@ TEST_CASE("TRAP::Math::Vec2", "[math][vec][vec2]")
 
     SECTION("Assignments")
     {
-        RunVec2AssignmentsCompileTimeTests<u8>();
-        RunVec2AssignmentsCompileTimeTests<u16>();
-        RunVec2AssignmentsCompileTimeTests<u32>();
-        RunVec2AssignmentsCompileTimeTests<u64>();
-        RunVec2AssignmentsCompileTimeTests<i8>();
-        RunVec2AssignmentsCompileTimeTests<i16>();
-        RunVec2AssignmentsCompileTimeTests<i32>();
-        RunVec2AssignmentsCompileTimeTests<i64>();
-        RunVec2AssignmentsCompileTimeTests<f32>();
-        RunVec2AssignmentsCompileTimeTests<f64>();
-
         RunVec2AssignmentsRunTimeTests<u8>();
         RunVec2AssignmentsRunTimeTests<u16>();
         RunVec2AssignmentsRunTimeTests<u32>();

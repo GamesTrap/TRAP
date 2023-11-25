@@ -298,32 +298,6 @@ namespace
 
     template<typename T>
     requires std::is_arithmetic_v<T>
-    consteval void RunVec4AssignmentsCompileTimeTests()
-    {
-        using Vec = TRAP::Math::Vec<4, T>;
-
-        //Move assignment operator
-        {
-        }
-
-        //Copy assignment operator
-        {
-            constexpr Vec v(T(5), T(10), T(15), T(20));
-            constexpr Vec vCopy = v;
-
-            static_assert(vCopy.x() == T(5));
-            static_assert(vCopy.y() == T(10));
-            static_assert(vCopy.z() == T(15));
-            static_assert(vCopy.w() == T(20));
-        }
-
-        //Conversion copy assignment operator
-        {
-        }
-    }
-
-    template<typename T>
-    requires std::is_arithmetic_v<T>
     void RunVec4AssignmentsRunTimeTests()
     {
         using Vec = TRAP::Math::Vec<4, T>;
@@ -331,7 +305,8 @@ namespace
         //Move assignment operator
         {
             Vec v(T(5), T(10), T(15), T(20));
-            Vec vMove = std::move(v);
+            Vec vMove{};
+            vMove = std::move(v);
 
             REQUIRE(vMove.x() == T(5));
             REQUIRE(vMove.y() == T(10));
@@ -341,8 +316,9 @@ namespace
 
         //Copy assignment operator
         {
-            Vec v(T(5), T(10), T(15), T(20));
-            Vec vCopy = v;
+            const Vec v(T(5), T(10), T(15), T(20));
+            Vec vCopy{};
+            vCopy = v;
 
             REQUIRE(vCopy.x() == T(5));
             REQUIRE(vCopy.y() == T(10));
@@ -353,13 +329,13 @@ namespace
         //Conversion copy assignment operator
         {
             TRAP::Math::tVec4<f64> v(f64(5.0), f64(10.0), f64(9.0), f64(20.0));
-            Vec vCopy{};
-            vCopy = v;
+            Vec vConversion{};
+            vConversion = v;
 
-            REQUIRE(vCopy.x() == T(5));
-            REQUIRE(vCopy.y() == T(10));
-            REQUIRE(vCopy.z() == T(9));
-            REQUIRE(vCopy.w() == T(20));
+            REQUIRE(vConversion.x() == T(5));
+            REQUIRE(vConversion.y() == T(10));
+            REQUIRE(vConversion.z() == T(9));
+            REQUIRE(vConversion.w() == T(20));
         }
     }
 
@@ -1578,17 +1554,6 @@ TEST_CASE("TRAP::Math::Vec4", "[math][vec][vec4]")
 
     SECTION("Assignments")
     {
-        RunVec4AssignmentsCompileTimeTests<u8>();
-        RunVec4AssignmentsCompileTimeTests<u16>();
-        RunVec4AssignmentsCompileTimeTests<u32>();
-        RunVec4AssignmentsCompileTimeTests<u64>();
-        RunVec4AssignmentsCompileTimeTests<i8>();
-        RunVec4AssignmentsCompileTimeTests<i16>();
-        RunVec4AssignmentsCompileTimeTests<i32>();
-        RunVec4AssignmentsCompileTimeTests<i64>();
-        RunVec4AssignmentsCompileTimeTests<f32>();
-        RunVec4AssignmentsCompileTimeTests<f64>();
-
         RunVec4AssignmentsRunTimeTests<u8>();
         RunVec4AssignmentsRunTimeTests<u16>();
         RunVec4AssignmentsRunTimeTests<u32>();

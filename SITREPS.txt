@@ -4683,3 +4683,4 @@ SITREP 11/25/2023|23w47c1
     - Changed TRAP Engine version to 23w47c1(0.10.9)
     - UnitTests Optional/Expected moved functions to anonymous namespace ~<5 mins
     - UnitTests Added tests for Vec2/3/4 ~<45 mins
+    - UnitTests Added tests for Quaternion ~<30 mins

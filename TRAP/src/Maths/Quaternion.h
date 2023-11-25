@@ -36,8 +36,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAP_Assert.h"
 #include "Utils/Utils.h"
 
-//Forward declarations
-
 namespace TRAP::Math
 {
 	template<typename T>
@@ -61,6 +59,12 @@ namespace TRAP::Math
 
 		//Implementation detail
 		using value_type = T;
+		using pointer = T*;
+		using const_pointer = const T*;
+		using reference = T&;
+		using const_reference = const T&;
+		using size_type = u32;
+		using difference_type = isize;
 
 		//Data
 private:
@@ -172,9 +176,7 @@ public:
 		/// @return Constant reference to the requested element.
 		[[nodiscard]] const T& at(usize i) const;
 
-		[[nodiscard]] constexpr auto operator<=>(const tQuat<T>& rhs) const noexcept = default;
-		[[nodiscard]] constexpr bool operator==(const tQuat<T>& rhs) const noexcept = default;
-		[[nodiscard]] constexpr bool operator!=(const tQuat<T>& rhs) const noexcept = default;
+		[[nodiscard]] consteval auto operator<=>(const tQuat<T>& rhs) const noexcept = delete;
 	};
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -182,65 +184,65 @@ public:
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr tQuat<T> operator+(const tQuat<T>& q) noexcept;
+	[[nodiscard]] constexpr tQuat<T> operator+(const tQuat<T>& q) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr tQuat<T> operator-(const tQuat<T>& q) noexcept;
+	[[nodiscard]] constexpr tQuat<T> operator-(const tQuat<T>& q) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Binary operators
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr tQuat<T> operator+(const tQuat<T>& q, const tQuat<T>& p) noexcept;
+	[[nodiscard]] constexpr tQuat<T> operator+(const tQuat<T>& q, const tQuat<T>& p) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr tQuat<T> operator-(const tQuat<T>& q, const tQuat<T>& p) noexcept;
+	[[nodiscard]] constexpr tQuat<T> operator-(const tQuat<T>& q, const tQuat<T>& p) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr tQuat<T> operator*(const tQuat<T>& q, const tQuat<T>& p) noexcept;
+	[[nodiscard]] constexpr tQuat<T> operator*(const tQuat<T>& q, const tQuat<T>& p) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr Vec<3, T> operator*(const tQuat<T>& q, const Vec<3, T>& v);
+	[[nodiscard]] constexpr Vec<3, T> operator*(const tQuat<T>& q, const Vec<3, T>& v);
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr Vec<3, T> operator*(const Vec<3, T>& v, const tQuat<T>& q);
+	[[nodiscard]] constexpr Vec<3, T> operator*(const Vec<3, T>& v, const tQuat<T>& q);
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr Vec<4, T> operator*(const tQuat<T>& q, const Vec<4, T>& v) noexcept;
+	[[nodiscard]] constexpr Vec<4, T> operator*(const tQuat<T>& q, const Vec<4, T>& v) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr Vec<4, T> operator*(const Vec<4, T>& v, const tQuat<T>& q);
+	[[nodiscard]] constexpr Vec<4, T> operator*(const Vec<4, T>& v, const tQuat<T>& q);
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr tQuat<T> operator*(const tQuat<T>& q, const T& s) noexcept;
+	[[nodiscard]] constexpr tQuat<T> operator*(const tQuat<T>& q, const T& s) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr tQuat<T> operator*(const T& s, const tQuat<T>& q) noexcept;
+	[[nodiscard]] constexpr tQuat<T> operator*(const T& s, const tQuat<T>& q) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr tQuat<T> operator/(const tQuat<T>& q, const T& s) noexcept;
+	[[nodiscard]] constexpr tQuat<T> operator/(const tQuat<T>& q, const T& s) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Boolean operators
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr bool operator==(const tQuat<T>& q1, const tQuat<T>& q2) noexcept;
+	[[nodiscard]] constexpr bool operator==(const tQuat<T>& q1, const tQuat<T>& q2) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr bool operator!=(const tQuat<T>& q1, const tQuat<T>& q2) noexcept;
+	[[nodiscard]] constexpr bool operator!=(const tQuat<T>& q1, const tQuat<T>& q2) noexcept;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -387,8 +389,12 @@ template <typename U>
 requires std::floating_point<U>
 constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator+=(const tQuat<U>& q) noexcept
 {
-	return (*this = tQuat<T>(this->w() + static_cast<T>(q.w()), this->x + static_cast<T>(q.x()),
-	                         this->y() + static_cast<T>(q.y()), this->z + static_cast<T>(q.z())));
+	this->w() += static_cast<T>(q.w());
+	this->x() += static_cast<T>(q.x());
+	this->y() += static_cast<T>(q.y());
+	this->z() += static_cast<T>(q.z());
+
+	return *this;
 }
 
 template <typename T>
@@ -397,8 +403,12 @@ template <typename U>
 requires std::floating_point<U>
 constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator-=(const tQuat<U>& q) noexcept
 {
-	return (*this = tQuat<T>(this->w() - static_cast<T>(q.w()), this->x - static_cast<T>(q.x()),
-	                         this->y() - static_cast<T>(q.y()), this->z - static_cast<T>(q.z())));
+	this->w() -= static_cast<T>(q.w());
+	this->x() -= static_cast<T>(q.x());
+	this->y() -= static_cast<T>(q.y());
+	this->z() -= static_cast<T>(q.z());
+
+	return *this;
 }
 
 template <typename T>
@@ -422,8 +432,12 @@ requires std::floating_point<T>
 template <typename U>
 constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator*=(const U s) noexcept
 {
-	return (*this = tQuat<T>(this->w() * static_cast<T>(s), this->x * static_cast<T>(s),
-	                         this->y() * static_cast<T>(s), this->z * static_cast<T>(s)));
+	this->w() *= static_cast<T>(s);
+	this->x() *= static_cast<T>(s);
+	this->y() *= static_cast<T>(s);
+	this->z() *= static_cast<T>(s);
+
+	return *this;
 }
 
 template <typename T>
@@ -431,8 +445,12 @@ requires std::floating_point<T>
 template <typename U>
 constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator/=(const U s) noexcept
 {
-	return (*this = tQuat<T>(this->w() / static_cast<T>(s), this->x / static_cast<T>(s),
-	                         this->y() / static_cast<T>(s), this->z / static_cast<T>(s)));
+	this->w() /= static_cast<T>(s);
+	this->x() /= static_cast<T>(s);
+	this->y() /= static_cast<T>(s);
+	this->z() /= static_cast<T>(s);
+
+	return *this;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -545,12 +563,12 @@ template<typename T>
 requires std::floating_point<T>
 struct fmt::formatter<TRAP::Math::tQuat<T>>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    [[nodiscard]] static constexpr auto parse(fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }
 
-    static fmt::format_context::iterator format(const TRAP::Math::tQuat<T>& quat, fmt::format_context& ctx)
+    [[nodiscard]] static fmt::format_context::iterator format(const TRAP::Math::tQuat<T>& quat, fmt::format_context& ctx)
     {
 		char postfix = '\0';
 		if constexpr(std::same_as<T, f32>)
@@ -558,7 +576,7 @@ struct fmt::formatter<TRAP::Math::tQuat<T>>
 		else if constexpr(std::same_as<T, f64>)
 			postfix = 'd';
 
-		return fmt::format_to(ctx.out(), "Quat{}({}, {{}, {}, {}}})", postfix, quat.w(), quat.x(), quat.y(),
+		return fmt::format_to(ctx.out(), "Quat{}({}, {{{}, {}, {}}})", postfix, quat.w(), quat.x(), quat.y(),
 		                      quat.z());
     }
 };
@@ -572,14 +590,14 @@ struct fmt::formatter<TRAP::Math::tQuat<T>>
 
 template <typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::tQuat<T> TRAP::Math::operator+(const tQuat<T>& q) noexcept
+[[nodiscard]] constexpr TRAP::Math::tQuat<T> TRAP::Math::operator+(const tQuat<T>& q) noexcept
 {
 	return q;
 }
 
 template <typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::tQuat<T> TRAP::Math::operator-(const tQuat<T>& q) noexcept
+[[nodiscard]] constexpr TRAP::Math::tQuat<T> TRAP::Math::operator-(const tQuat<T>& q) noexcept
 {
 	return tQuat<T>(-q.w(), -q.x(), -q.y(), -q.z());
 }
@@ -589,21 +607,21 @@ constexpr TRAP::Math::tQuat<T> TRAP::Math::operator-(const tQuat<T>& q) noexcept
 
 template <typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::tQuat<T> TRAP::Math::operator+(const tQuat<T>& q, const tQuat<T>& p) noexcept
+[[nodiscard]] constexpr TRAP::Math::tQuat<T> TRAP::Math::operator+(const tQuat<T>& q, const tQuat<T>& p) noexcept
 {
 	return tQuat<T>(q.w() + p.w(), q.x() + p.x(), q.y() + p.y(), q.z() + p.z());
 }
 
 template <typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::tQuat<T> TRAP::Math::operator-(const tQuat<T>& q, const tQuat<T>& p) noexcept
+[[nodiscard]] constexpr TRAP::Math::tQuat<T> TRAP::Math::operator-(const tQuat<T>& q, const tQuat<T>& p) noexcept
 {
 	return tQuat<T>(q.w() - p.w(), q.x() - p.x(), q.y() - p.y(), q.z() - p.z());
 }
 
 template <typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::tQuat<T> TRAP::Math::operator*(const tQuat<T>& q, const tQuat<T>& p) noexcept
+[[nodiscard]] constexpr TRAP::Math::tQuat<T> TRAP::Math::operator*(const tQuat<T>& q, const tQuat<T>& p) noexcept
 {
 	return tQuat<T>
 	{
@@ -616,7 +634,7 @@ constexpr TRAP::Math::tQuat<T> TRAP::Math::operator*(const tQuat<T>& q, const tQ
 
 template <typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::Vec<3, T> TRAP::Math::operator*(const tQuat<T>& q, const Vec<3, T>& v)
+[[nodiscard]] constexpr TRAP::Math::Vec<3, T> TRAP::Math::operator*(const tQuat<T>& q, const Vec<3, T>& v)
 {
 	const Vec<3, T> quaternionVector(q.x(), q.y(), q.z());
 	const Vec<3, T> uv(Cross(quaternionVector, v));
@@ -627,42 +645,42 @@ constexpr TRAP::Math::Vec<3, T> TRAP::Math::operator*(const tQuat<T>& q, const V
 
 template <typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::Vec<3, T> TRAP::Math::operator*(const Vec<3, T>& v, const tQuat<T>& q)
+[[nodiscard]] constexpr TRAP::Math::Vec<3, T> TRAP::Math::operator*(const Vec<3, T>& v, const tQuat<T>& q)
 {
 	return Inverse(q) * v;
 }
 
 template <typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const tQuat<T>& q, const Vec<4, T>& v) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const tQuat<T>& q, const Vec<4, T>& v) noexcept
 {
 	return Vec<4, T>(q * Vec<3, T>(v), v.w());
 }
 
 template <typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const Vec<4, T>& v, const tQuat<T>& q)
+[[nodiscard]] constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const Vec<4, T>& v, const tQuat<T>& q)
 {
 	return Inverse(q) * v;
 }
 
 template <typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::tQuat<T> TRAP::Math::operator*(const tQuat<T>& q, const T& s) noexcept
+[[nodiscard]] constexpr TRAP::Math::tQuat<T> TRAP::Math::operator*(const tQuat<T>& q, const T& s) noexcept
 {
 	return tQuat<T>(q.w() * s, q.x() * s, q.y() * s, q.z() * s);
 }
 
 template <typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::tQuat<T> TRAP::Math::operator*(const T& s, const tQuat<T>& q) noexcept
+[[nodiscard]] constexpr TRAP::Math::tQuat<T> TRAP::Math::operator*(const T& s, const tQuat<T>& q) noexcept
 {
 	return q * s;
 }
 
 template <typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::tQuat<T> TRAP::Math::operator/(const tQuat<T>& q, const T& s) noexcept
+[[nodiscard]] constexpr TRAP::Math::tQuat<T> TRAP::Math::operator/(const tQuat<T>& q, const T& s) noexcept
 {
 	return tQuat<T>(q.w() / s, q.x() / s, q.y() / s, q.z() / s);
 }
@@ -672,14 +690,14 @@ constexpr TRAP::Math::tQuat<T> TRAP::Math::operator/(const tQuat<T>& q, const T&
 
 template <typename T>
 requires std::floating_point<T>
-constexpr bool TRAP::Math::operator==(const tQuat<T>& q1, const tQuat<T>& q2) noexcept
+[[nodiscard]] constexpr bool TRAP::Math::operator==(const tQuat<T>& q1, const tQuat<T>& q2) noexcept
 {
 	return q1.w() == q2.w() && q1.x() == q2.x() && q1.y() == q2.y() && q1.z() == q2.z();
 }
 
 template <typename T>
 requires std::floating_point<T>
-constexpr bool TRAP::Math::operator!=(const tQuat<T>& q1, const tQuat<T>& q2) noexcept
+[[nodiscard]] constexpr bool TRAP::Math::operator!=(const tQuat<T>& q1, const tQuat<T>& q2) noexcept
 {
 	return q1.w() != q2.w() && q1.x() != q2.x() && q1.y() != q2.y() && q1.z() != q2.z();
 }

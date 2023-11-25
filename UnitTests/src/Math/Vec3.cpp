@@ -224,31 +224,6 @@ namespace
 
     template<typename T>
     requires std::is_arithmetic_v<T>
-    consteval void RunVec3AssignmentsCompileTimeTests()
-    {
-        using Vec = TRAP::Math::Vec<3, T>;
-
-        //Move assignment operator
-        {
-        }
-
-        //Copy assignment operator
-        {
-            constexpr Vec v(T(5), T(10), T(15));
-            constexpr Vec vCopy = v;
-
-            static_assert(vCopy.x() == T(5));
-            static_assert(vCopy.y() == T(10));
-            static_assert(vCopy.z() == T(15));
-        }
-
-        //Conversion copy assignment operator
-        {
-        }
-    }
-
-    template<typename T>
-    requires std::is_arithmetic_v<T>
     void RunVec3AssignmentsRunTimeTests()
     {
         using Vec = TRAP::Math::Vec<3, T>;
@@ -256,7 +231,8 @@ namespace
         //Move assignment operator
         {
             Vec v(T(5), T(10), T(15));
-            Vec vMove = std::move(v);
+            Vec vMove{};
+            vMove = std::move(v);
 
             REQUIRE(vMove.x() == T(5));
             REQUIRE(vMove.y() == T(10));
@@ -265,8 +241,9 @@ namespace
 
         //Copy assignment operator
         {
-            Vec v(T(5), T(10), T(15));
-            Vec vCopy = v;
+            const Vec v(T(5), T(10), T(15));
+            Vec vCopy{};
+            vCopy = v;
 
             REQUIRE(vCopy.x() == T(5));
             REQUIRE(vCopy.y() == T(10));
@@ -276,12 +253,12 @@ namespace
         //Conversion copy assignment operator
         {
             TRAP::Math::tVec3<f64> v(f64(5.0), f64(10.0), f64(9.0));
-            Vec vCopy{};
-            vCopy = v;
+            Vec vConversion{};
+            vConversion = v;
 
-            REQUIRE(vCopy.x() == T(5));
-            REQUIRE(vCopy.y() == T(10));
-            REQUIRE(vCopy.z() == T(9));
+            REQUIRE(vConversion.x() == T(5));
+            REQUIRE(vConversion.y() == T(10));
+            REQUIRE(vConversion.z() == T(9));
         }
     }
 
@@ -1390,17 +1367,6 @@ TEST_CASE("TRAP::Math::Vec3", "[math][vec][vec3]")
 
     SECTION("Assignments")
     {
-        RunVec3AssignmentsCompileTimeTests<u8>();
-        RunVec3AssignmentsCompileTimeTests<u16>();
-        RunVec3AssignmentsCompileTimeTests<u32>();
-        RunVec3AssignmentsCompileTimeTests<u64>();
-        RunVec3AssignmentsCompileTimeTests<i8>();
-        RunVec3AssignmentsCompileTimeTests<i16>();
-        RunVec3AssignmentsCompileTimeTests<i32>();
-        RunVec3AssignmentsCompileTimeTests<i64>();
-        RunVec3AssignmentsCompileTimeTests<f32>();
-        RunVec3AssignmentsCompileTimeTests<f64>();
-
         RunVec3AssignmentsRunTimeTests<u8>();
         RunVec3AssignmentsRunTimeTests<u16>();
         RunVec3AssignmentsRunTimeTests<u32>();
