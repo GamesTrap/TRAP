@@ -4684,3 +4684,8 @@ SITREP 11/25/2023|23w47c1
     - UnitTests Optional/Expected moved functions to anonymous namespace ~<5 mins
     - UnitTests Added tests for Vec2/3/4 ~<45 mins
     - UnitTests Added tests for Quaternion ~<30 mins
+
+SITREP 11/26/2023|23w47c2
+    - Changed TRAP Engine version to 23w47c2(0.10.10)
+    - GitHub Actions Runners Removed manually installed nodejs ~<5 mins
+    - Rebuilt and deployed Windows GitHub Actions Runners ~<30 mins

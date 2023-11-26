@@ -43,7 +43,6 @@ RUN echo en_US.UTF-8 UTF-8 >> /etc/locale.gen \
     git \
     git-man \
     git-lfs \
-    nodejs \
     btop \
     p7zip-full \
   && DPKG_ARCH="$(dpkg --print-architecture)" \
