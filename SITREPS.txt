@@ -4694,3 +4694,8 @@ SITREP 11/26/2023|23w47c2
     - UnitTests Added tests for Mat3/4 ~<45 mins
     - Quaternion Added std::get support ~<10 mins
     - Quat, Mat3/4, Vec2/3/4 Added std::swap support ~<15 mins
+
+SITREP 11/27/2023|23w48a1
+    - Changed TRAP Engine version to 23w48a1(0.10.11)
+    - Quat, Mat3/4, Vec2/3/4 at() now throws std::out_of_range exception instead of asserting ~<5 mins
+    - Quat, Mat3/4, Vec2/3/4 at() is now constexpr ~<5 mins

@@ -181,11 +181,11 @@ public:
 		/// @brief Returns a reference to the element at specified location i, with bounds checking via asserts.
 		/// @param i Position of the element to return.
 		/// @return Reference to the requested element.
-		[[nodiscard]] T& at(usize i);
+		[[nodiscard]] constexpr T& at(usize i);
 		/// @brief Returns a constant reference to the element at specified location i, with bounds checking via asserts.
 		/// @param i Position of the element to return.
 		/// @return Constant reference to the requested element.
-		[[nodiscard]] const T& at(usize i) const;
+		[[nodiscard]] constexpr const T& at(usize i) const;
 
 		//Iterator
 
@@ -781,18 +781,20 @@ requires std::is_arithmetic_v<T>
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-[[nodiscard]] T& TRAP::Math::Vec<4, T>::at(const usize i)
+[[nodiscard]] constexpr T& TRAP::Math::Vec<4, T>::at(const usize i)
 {
-	TRAP_ASSERT(i < this->Length(), "Math::Vec<4, T>::at(): index out of range!");
+	if(i >= this->Length())
+		throw std::out_of_range(fmt::format("Math::Vec<4, T>::at(): Index {} is out of range!", i));
 
 	return data[i];
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-[[nodiscard]] const T& TRAP::Math::Vec<4, T>::at(const usize i) const
+[[nodiscard]] constexpr const T& TRAP::Math::Vec<4, T>::at(const usize i) const
 {
-	TRAP_ASSERT(i < this->Length(), "Math::Vec<4, T>::at(): index out of range!");
+	if(i >= this->Length())
+		throw std::out_of_range(fmt::format("Math::Vec<4, T>::at(): Index {} is out of range!", i));
 
 	return data[i];
 }

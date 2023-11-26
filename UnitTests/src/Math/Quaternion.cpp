@@ -325,6 +325,18 @@ namespace
             //Check that v[0] returns const T&
             static_assert(std::is_reference_v<decltype(v[0])> && std::is_const_v<std::remove_reference_t<decltype(v[0])>>);
         }
+
+        //at()
+        {
+            constexpr Quat v(T(1), T(2), T(3), T(4));
+
+            static_assert(v.at(0) == T(1));
+            static_assert(v.at(1) == T(2));
+            static_assert(v.at(2) == T(3));
+            static_assert(v.at(3) == T(4));
+            //Check that v.at(0) returns const T&
+            static_assert(std::is_reference_v<decltype(v.at(0))> && std::is_const_v<std::remove_reference_t<decltype(v.at(0))>>);
+        }
     }
 
     template<typename T>
@@ -388,6 +400,7 @@ namespace
             REQUIRE(v.at(1) == T(2));
             REQUIRE(v.at(2) == T(3));
             REQUIRE(v.at(3) == T(4));
+            REQUIRE_THROWS_AS(v.at(10), std::out_of_range);
             //Check that v.at(0) returns const T&
             static_assert(std::is_reference_v<decltype(v.at(0))> && std::is_const_v<std::remove_reference_t<decltype(v.at(0))>>);
 
@@ -397,6 +410,7 @@ namespace
             REQUIRE(v2.at(1) == T(2));
             REQUIRE(v2.at(2) == T(3));
             REQUIRE(v2.at(3) == T(4));
+            REQUIRE_THROWS_AS(v2.at(10), std::out_of_range);
             //Check that v2.at(0) returns T&
             static_assert(std::is_reference_v<decltype(v2.at(0))> && !std::is_const_v<std::remove_reference_t<decltype(v2.at(0))>>);
         }

@@ -170,11 +170,11 @@ public:
 		/// @brief Returns a reference to the element at specified location i, with bounds checking via asserts.
 		/// @param i Position of the element to return.
 		/// @return Reference to the requested element.
-		[[nodiscard]] T& at(usize i);
+		[[nodiscard]] constexpr T& at(usize i);
 		/// @brief Returns a constant reference to the element at specified location i, with bounds checking via asserts.
 		/// @param i Position of the element to return.
 		/// @return Constant reference to the requested element.
-		[[nodiscard]] const T& at(usize i) const;
+		[[nodiscard]] constexpr const T& at(usize i) const;
 
 		[[nodiscard]] consteval auto operator<=>(const tQuat<T>& rhs) const noexcept = delete;
 
@@ -545,9 +545,10 @@ requires std::floating_point<T>
 
 template <typename T>
 requires std::floating_point<T>
-[[nodiscard]] T& TRAP::Math::tQuat<T>::at(const usize i)
+[[nodiscard]] constexpr T& TRAP::Math::tQuat<T>::at(const usize i)
 {
-	TRAP_ASSERT(i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
+	if(i >= this->Length())
+		throw std::out_of_range(fmt::format("Math::tQuat<T>::at(): Index {} is out of range!", i));
 
 	return data[i];
 }
@@ -556,9 +557,10 @@ requires std::floating_point<T>
 
 template <typename T>
 requires std::floating_point<T>
-[[nodiscard]] const T& TRAP::Math::tQuat<T>::at(const usize i) const
+[[nodiscard]] constexpr const T& TRAP::Math::tQuat<T>::at(const usize i) const
 {
-	TRAP_ASSERT(i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
+	if(i >= this->Length())
+		throw std::out_of_range(fmt::format("Math::tQuat<T>::at(): Index {} is out of range!", i));
 
 	return data[i];
 }

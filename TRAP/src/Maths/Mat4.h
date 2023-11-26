@@ -156,10 +156,10 @@ namespace TRAP::Math
 
 		/// @brief Retrieve a column of the matrix.
 		/// @param i Column to retrieve.
-		[[nodiscard]] col_type& at(usize i);
+		[[nodiscard]] constexpr col_type& at(usize i);
 		/// @brief Retrieve a column of the matrix.
 		/// @param i Column to retrieve.
-		[[nodiscard]] const col_type& at(usize i) const;
+		[[nodiscard]] constexpr const col_type& at(usize i) const;
 
 		//Iterator
 
@@ -479,18 +479,20 @@ requires std::floating_point<T>
 
 template<typename T>
 requires std::floating_point<T>
-[[nodiscard]] typename TRAP::Math::Mat<4, 4, T>::col_type& TRAP::Math::Mat<4, 4, T>::at(const usize i)
+[[nodiscard]] constexpr typename TRAP::Math::Mat<4, 4, T>::col_type& TRAP::Math::Mat<4, 4, T>::at(const usize i)
 {
-	TRAP_ASSERT(i < this->Length(), "Math::Mat<4, 4, T>::at(): Index out of range!");
+	if(i >= this->Length())
+		throw std::out_of_range(fmt::format("Math::Mat<4, 4, T>::at(): Index {} is out of range!", i));
 
 	return this->value[i];
 }
 
 template<typename T>
 requires std::floating_point<T>
-[[nodiscard]] const typename TRAP::Math::Mat<4, 4, T>::col_type& TRAP::Math::Mat<4, 4, T>::at(const usize i) const
+[[nodiscard]] constexpr const typename TRAP::Math::Mat<4, 4, T>::col_type& TRAP::Math::Mat<4, 4, T>::at(const usize i) const
 {
-	TRAP_ASSERT(i < this->Length(), "Math::Mat<4, 4, T>::at(): Index out of range!");
+	if(i >= this->Length())
+		throw std::out_of_range(fmt::format("Math::Mat<4, 4, T>::at(): Index {} is out of range!", i));
 
 	return this->value[i];
 }

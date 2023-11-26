@@ -254,6 +254,16 @@ namespace
             static_assert(std::is_reference_v<decltype(v[0])> && std::is_const_v<std::remove_reference_t<decltype(v[0])>>);
         }
 
+        //at()
+        {
+            constexpr Vec v(T(10), T(5));
+
+            static_assert(v.at(0) == T(10));
+            static_assert(v.at(1) == T(5));
+            //Check that v.at(0) returns const T&
+            static_assert(std::is_reference_v<decltype(v.at(0))> && std::is_const_v<std::remove_reference_t<decltype(v.at(0))>>);
+        }
+
 #ifndef TRAP_PLATFORM_WINDOWS
         //iterators
         {
@@ -322,6 +332,7 @@ namespace
 
             REQUIRE(v.at(0) == T(10));
             REQUIRE(v.at(1) == T(5));
+            REQUIRE_THROWS_AS(v.at(10), std::out_of_range);
             //Check that v.at(0) returns const T&
             static_assert(std::is_reference_v<decltype(v.at(0))> && std::is_const_v<std::remove_reference_t<decltype(v.at(0))>>);
 
@@ -329,6 +340,7 @@ namespace
 
             REQUIRE(v2.at(0) == T(10));
             REQUIRE(v2.at(1) == T(5));
+            REQUIRE_THROWS_AS(v2.at(10), std::out_of_range);
             //Check that v2.at(0) returns T&
             static_assert(std::is_reference_v<decltype(v2.at(0))> && !std::is_const_v<std::remove_reference_t<decltype(v2.at(0))>>);
         }

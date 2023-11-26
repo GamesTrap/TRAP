@@ -361,6 +361,17 @@ namespace
             static_assert(std::same_as<decltype(m[0]), const Col&>);
         }
 
+        //at()
+        {
+            constexpr Mat m1(T(1), T(2), T(3), T(4), T(5), T(6), T(7), T(8), T(9));
+
+            static_assert(m1.at(0) == Col(T(1), T(2), T(3)));
+            static_assert(m1.at(1) == Col(T(4), T(5), T(6)));
+            static_assert(m1.at(2) == Col(T(7), T(8), T(9)));
+            //Check that m1[0] returns const Col&
+            static_assert(std::same_as<decltype(m1[0]), const Col&>);
+        }
+
 #ifndef TRAP_PLATFORM_WINDOWS
         //iterators
         {
@@ -416,6 +427,7 @@ namespace
             REQUIRE(m.at(0) == Col(T(1), T(2), T(3)));
             REQUIRE(m.at(1) == Col(T(4), T(5), T(6)));
             REQUIRE(m.at(2) == Col(T(7), T(8), T(9)));
+            REQUIRE_THROWS_AS(m.at(10), std::out_of_range);
             //Check that m[0] returns Col&
             REQUIRE(std::same_as<decltype(m[0]), Col&>);
 
@@ -424,6 +436,7 @@ namespace
             REQUIRE(m1.at(0) == Col(T(1), T(2), T(3)));
             REQUIRE(m1.at(1) == Col(T(4), T(5), T(6)));
             REQUIRE(m1.at(2) == Col(T(7), T(8), T(9)));
+            REQUIRE_THROWS_AS(m1.at(10), std::out_of_range);
             //Check that m1[0] returns const Col&
             REQUIRE(std::same_as<decltype(m1[0]), const Col&>);
         }
