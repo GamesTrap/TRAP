@@ -217,10 +217,10 @@ namespace TRAP::Math
 		requires std::floating_point<U>
 		inline constexpr Mat<4, 4, T>& operator=(const Mat<4, 4, U>& m) noexcept
 		{
-			std::get<0>(this->value) = static_cast<T>(std::get<0>(m));
-			std::get<1>(this->value) = static_cast<T>(std::get<1>(m));
-			std::get<2>(this->value) = static_cast<T>(std::get<2>(m));
-			std::get<3>(this->value) = static_cast<T>(std::get<3>(m));
+			std::get<0>(this->value) = static_cast<col_type>(std::get<0>(m));
+			std::get<1>(this->value) = static_cast<col_type>(std::get<1>(m));
+			std::get<2>(this->value) = static_cast<col_type>(std::get<2>(m));
+			std::get<3>(this->value) = static_cast<col_type>(std::get<3>(m));
 
 			return *this;
 		}
@@ -238,10 +238,10 @@ namespace TRAP::Math
 		requires std::floating_point<U>
 		inline constexpr Mat<4, 4, T>& operator+=(const Mat<4, 4, U>& m) noexcept
 		{
-			std::get<0>(this->value) += static_cast<T>(std::get<0>(m));
-			std::get<1>(this->value) += static_cast<T>(std::get<1>(m));
-			std::get<2>(this->value) += static_cast<T>(std::get<2>(m));
-			std::get<3>(this->value) += static_cast<T>(std::get<3>(m));
+			std::get<0>(this->value) += static_cast<col_type>(std::get<0>(m));
+			std::get<1>(this->value) += static_cast<col_type>(std::get<1>(m));
+			std::get<2>(this->value) += static_cast<col_type>(std::get<2>(m));
+			std::get<3>(this->value) += static_cast<col_type>(std::get<3>(m));
 
 			return *this;
 		}
@@ -259,10 +259,10 @@ namespace TRAP::Math
 		requires std::floating_point<U>
 		inline constexpr Mat<4, 4, T>& operator-=(const Mat<4, 4, U>& m) noexcept
 		{
-			std::get<0>(this->value) -= static_cast<T>(std::get<0>(m));
-			std::get<1>(this->value) -= static_cast<T>(std::get<1>(m));
-			std::get<2>(this->value) -= static_cast<T>(std::get<2>(m));
-			std::get<3>(this->value) -= static_cast<T>(std::get<3>(m));
+			std::get<0>(this->value) -= static_cast<col_type>(std::get<0>(m));
+			std::get<1>(this->value) -= static_cast<col_type>(std::get<1>(m));
+			std::get<2>(this->value) -= static_cast<col_type>(std::get<2>(m));
+			std::get<3>(this->value) -= static_cast<col_type>(std::get<3>(m));
 
 			return *this;
 		}
@@ -280,7 +280,12 @@ namespace TRAP::Math
 		requires std::floating_point<U>
 		inline constexpr Mat<4, 4, T>& operator*=(const Mat<4, 4, U>& m) noexcept
 		{
-			return (*this = *this * m);
+			std::get<0>(this->value) *= static_cast<col_type>(std::get<0>(m));
+			std::get<1>(this->value) *= static_cast<col_type>(std::get<1>(m));
+			std::get<2>(this->value) *= static_cast<col_type>(std::get<2>(m));
+			std::get<3>(this->value) *= static_cast<col_type>(std::get<3>(m));
+
+			return *this;
 		}
 		template<typename U>
 		inline constexpr Mat<4, 4, T>& operator/=(U s) noexcept
@@ -305,9 +310,7 @@ namespace TRAP::Math
 		constexpr const Mat<4, 4, T> operator++(i32) noexcept;
 		constexpr const Mat<4, 4, T> operator--(i32) noexcept;
 
-		[[nodiscard]] constexpr auto operator<=>(const Mat<4, 4, T>& rhs) const noexcept = default;
-		[[nodiscard]] constexpr bool operator==(const Mat<4, 4, T>& rhs) const noexcept = default;
-		[[nodiscard]] constexpr bool operator!=(const Mat<4, 4, T>& rhs) const noexcept = default;
+		[[nodiscard]] consteval auto operator<=>(const Mat<4, 4, T>& rhs) const noexcept = delete;
 	};
 
 	//Unary operators
@@ -322,76 +325,76 @@ namespace TRAP::Math
 	//Binary operators
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr Mat<4, 4, T> operator+(const Mat<4, 4, T>& m, T scalar) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> operator+(const Mat<4, 4, T>& m, T scalar) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr Mat<4, 4, T> operator+(T scalar, const Mat<4, 4, T>& m) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> operator+(T scalar, const Mat<4, 4, T>& m) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr Mat<4, 4, T> operator+(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> operator+(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr Mat<4, 4, T> operator-(const Mat<4, 4, T>& m, T scalar) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> operator-(const Mat<4, 4, T>& m, T scalar) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr Mat<4, 4, T> operator-(T scalar, const Mat<4, 4, T>& m) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> operator-(T scalar, const Mat<4, 4, T>& m) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr Mat<4, 4, T> operator-(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> operator-(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr Mat<4, 4, T> operator*(const Mat<4, 4, T>& m, T scalar) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> operator*(const Mat<4, 4, T>& m, T scalar) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr Mat<4, 4, T> operator*(T scalar, const Mat<4, 4, T>& m) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> operator*(T scalar, const Mat<4, 4, T>& m) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr typename Mat<4, 4, T>::col_type operator*(const Mat<4, 4, T>& m, const typename Mat<4, 4, T>::row_type& v) noexcept;
+	[[nodiscard]] constexpr typename Mat<4, 4, T>::col_type operator*(const Mat<4, 4, T>& m, const typename Mat<4, 4, T>::row_type& v) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr typename Mat<4, 4, T>::row_type operator*(const typename Mat<4, 4, T>::col_type& v, const Mat<4, 4, T>& m) noexcept;
+	[[nodiscard]] constexpr typename Mat<4, 4, T>::row_type operator*(const typename Mat<4, 4, T>::col_type& v, const Mat<4, 4, T>& m) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr Mat<4, 4, T> operator*(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> operator*(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr Mat<4, 4, T> operator/(const Mat<4, 4, T>& m, T scalar) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> operator/(const Mat<4, 4, T>& m, T scalar) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr Mat<4, 4, T> operator/(T scalar, const Mat<4, 4, T>& m) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> operator/(T scalar, const Mat<4, 4, T>& m) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr typename Mat<4, 4, T>::col_type operator/(const Mat<4, 4, T>& m, const typename Mat<4, 4, T>::row_type& v);
+	[[nodiscard]] constexpr typename Mat<4, 4, T>::col_type operator/(const Mat<4, 4, T>& m, const typename Mat<4, 4, T>::row_type& v);
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr typename Mat<4, 4, T>::row_type operator/(const typename Mat<4, 4, T>::col_type& v, const Mat<4, 4, T>& m);
+	[[nodiscard]] constexpr typename Mat<4, 4, T>::row_type operator/(const typename Mat<4, 4, T>::col_type& v, const Mat<4, 4, T>& m);
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr Mat<4, 4, T> operator/(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> operator/(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept;
 
 	//Boolean operators
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr bool operator==(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept;
+	[[nodiscard]] constexpr bool operator==(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept;
 
 	template<typename T>
 	requires std::floating_point<T>
-	constexpr bool operator!=(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept;
+	[[nodiscard]] constexpr bool operator!=(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -407,7 +410,7 @@ namespace std
 		[[nodiscard]] constexpr usize operator()(const TRAP::Math::Mat<4, 4, T>& m) const noexcept
 		{
 			usize seed = 0;
-			hash<TRAP::Math::Vec<4, T>> hasher;
+			constexpr hash<TRAP::Math::Vec<4, T>> hasher;
 			TRAP::Utils::HashCombine(seed, hasher(std::get<0>(m)), hasher(std::get<1>(m)), hasher(std::get<2>(m)), hasher(std::get<3>(m)));
 			return seed;
 		}
@@ -626,12 +629,12 @@ template<typename T>
 requires std::floating_point<T>
 struct fmt::formatter<TRAP::Math::Mat<4, 4, T>>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    [[nodiscard]] static constexpr auto parse(fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }
 
-    static fmt::format_context::iterator format(const TRAP::Math::Mat<4, 4, T>& mat, fmt::format_context& ctx)
+    [[nodiscard]] static fmt::format_context::iterator format(const TRAP::Math::Mat<4, 4, T>& mat, fmt::format_context& ctx)
     {
 		char postfix = '\0';
 		if constexpr(std::same_as<T, f32>)
@@ -640,15 +643,15 @@ struct fmt::formatter<TRAP::Math::Mat<4, 4, T>>
 			postfix = 'd';
 
 
-		return fmt::format(ctx.out(), "Mat4{}(({},{},{},{}), ({},{},{},{}), ({},{},{},{}), ({},{},{},{}))", postfix,
-						   std::get<0>(std::get<0>(mat)), std::get<1>(std::get<0>(mat)),
-						   std::get<2>(std::get<0>(mat)), std::get<3>(std::get<0>(mat)),
-						   std::get<0>(std::get<1>(mat)), std::get<1>(std::get<1>(mat)),
-						   std::get<2>(std::get<1>(mat)), std::get<3>(std::get<1>(mat)),
-						   std::get<0>(std::get<2>(mat)), std::get<1>(std::get<2>(mat)),
-						   std::get<2>(std::get<2>(mat)), std::get<3>(std::get<2>(mat)),
-						   std::get<0>(std::get<3>(mat)), std::get<1>(std::get<3>(mat)),
-						   std::get<2>(std::get<3>(mat)), std::get<3>(std::get<3>(mat)));
+		return fmt::format_to(ctx.out(), "Mat4{}(({},{},{},{}), ({},{},{},{}), ({},{},{},{}), ({},{},{},{}))", postfix,
+						      std::get<0>(std::get<0>(mat)), std::get<1>(std::get<0>(mat)),
+						      std::get<2>(std::get<0>(mat)), std::get<3>(std::get<0>(mat)),
+						      std::get<0>(std::get<1>(mat)), std::get<1>(std::get<1>(mat)),
+						      std::get<2>(std::get<1>(mat)), std::get<3>(std::get<1>(mat)),
+						      std::get<0>(std::get<2>(mat)), std::get<1>(std::get<2>(mat)),
+						      std::get<2>(std::get<2>(mat)), std::get<3>(std::get<2>(mat)),
+						      std::get<0>(std::get<3>(mat)), std::get<1>(std::get<3>(mat)),
+						      std::get<2>(std::get<3>(mat)), std::get<3>(std::get<3>(mat)));
     }
 };
 
@@ -674,64 +677,64 @@ constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator-(const Mat<4, 4, T>& m) 
 
 template<typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator+(const Mat<4, 4, T>& m, const T scalar) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator+(const Mat<4, 4, T>& m, const T scalar) noexcept
 {
 	return Mat<4, 4, T>(std::get<0>(m) + scalar, std::get<1>(m) + scalar, std::get<2>(m) + scalar, std::get<3>(m) + scalar);
 }
 
 template<typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator+(const T scalar, const Mat<4, 4, T>& m) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator+(const T scalar, const Mat<4, 4, T>& m) noexcept
 {
 	return Mat<4, 4, T>(std::get<0>(m) + scalar, std::get<1>(m) + scalar, std::get<2>(m) + scalar, std::get<3>(m) + scalar);
 }
 
 template<typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator+(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator+(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept
 {
 	return Mat<4, 4, T>(std::get<0>(m1) + std::get<0>(m2), std::get<1>(m1) + std::get<1>(m2), std::get<2>(m1) + std::get<2>(m2), std::get<3>(m1) + std::get<3>(m2));
 }
 
 template<typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator-(const Mat<4, 4, T>& m, const T scalar) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator-(const Mat<4, 4, T>& m, const T scalar) noexcept
 {
 	return Mat<4, 4, T>(std::get<0>(m) - scalar, std::get<1>(m) - scalar, std::get<2>(m) - scalar, std::get<3>(m) - scalar);
 }
 
 template<typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator-(const T scalar, const Mat<4, 4, T>& m) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator-(const T scalar, const Mat<4, 4, T>& m) noexcept
 {
 	return Mat<4, 4, T>(scalar - std::get<0>(m), scalar - std::get<1>(m), scalar - std::get<2>(m), scalar - std::get<3>(m));
 }
 
 template<typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator-(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator-(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept
 {
 	return Mat<4, 4, T>(std::get<0>(m1) - std::get<0>(m2), std::get<1>(m1) - std::get<1>(m2), std::get<2>(m1) - std::get<2>(m2), std::get<3>(m1) - std::get<3>(m2));
 }
 
 template<typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator*(const Mat<4, 4, T>& m, const T scalar) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator*(const Mat<4, 4, T>& m, const T scalar) noexcept
 {
 	return Mat<4, 4, T>(std::get<0>(m) * scalar, std::get<1>(m) * scalar, std::get<2>(m) * scalar, std::get<3>(m) * scalar);
 }
 
 template<typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator*(const T scalar, const Mat<4, 4, T>& m) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator*(const T scalar, const Mat<4, 4, T>& m) noexcept
 {
 	return Mat<4, 4, T>(std::get<0>(m) * scalar, std::get<1>(m) * scalar, std::get<2>(m) * scalar, std::get<3>(m) * scalar);
 }
 
 template<typename T>
 requires std::floating_point<T>
-constexpr typename TRAP::Math::Mat<4, 4, T>::col_type TRAP::Math::operator*(const Mat<4, 4, T>& m,
-                                                                           const typename Mat<4, 4, T>::row_type& v) noexcept
+[[nodiscard]] constexpr typename TRAP::Math::Mat<4, 4, T>::col_type TRAP::Math::operator*(const Mat<4, 4, T>& m,
+                                                                                          const typename Mat<4, 4, T>::row_type& v) noexcept
 {
 	typename Mat<4, 4, T>::col_type const mov0(std::get<0>(v));
 	typename Mat<4, 4, T>::col_type const mov1(std::get<1>(v));
@@ -750,8 +753,8 @@ constexpr typename TRAP::Math::Mat<4, 4, T>::col_type TRAP::Math::operator*(cons
 
 template<typename T>
 requires std::floating_point<T>
-constexpr typename TRAP::Math::Mat<4, 4, T>::row_type TRAP::Math::operator*(const typename Mat<4, 4, T>::col_type& v,
-                                                                           const Mat<4, 4, T>& m) noexcept
+[[nodiscard]] constexpr typename TRAP::Math::Mat<4, 4, T>::row_type TRAP::Math::operator*(const typename Mat<4, 4, T>::col_type& v,
+                                                                                          const Mat<4, 4, T>& m) noexcept
 {
 	return typename Mat<4, 4, T>::row_type(std::get<0>(std::get<0>(m)) * std::get<0>(v) + std::get<1>(std::get<0>(m)) * std::get<1>(v) + std::get<2>(std::get<0>(m)) * std::get<2>(v) + std::get<3>(std::get<0>(m)) * std::get<3>(v),
 		                                  std::get<0>(std::get<1>(m)) * std::get<0>(v) + std::get<1>(std::get<1>(m)) * std::get<1>(v) + std::get<2>(std::get<1>(m)) * std::get<2>(v) + std::get<3>(std::get<1>(m)) * std::get<3>(v),
@@ -761,7 +764,7 @@ constexpr typename TRAP::Math::Mat<4, 4, T>::row_type TRAP::Math::operator*(cons
 
 template<typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator*(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator*(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept
 {
 	typename Mat<4, 4, T>::col_type const srcA0 = std::get<0>(m1);
 	typename Mat<4, 4, T>::col_type const srcA1 = std::get<1>(m1);
@@ -784,37 +787,37 @@ constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator*(const Mat<4, 4, T>& m1,
 
 template<typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator/(const Mat<4, 4, T>& m, const T scalar) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator/(const Mat<4, 4, T>& m, const T scalar) noexcept
 {
 	return Mat<4, 4, T>(std::get<0>(m) / scalar, std::get<1>(m) / scalar, std::get<2>(m) / scalar, std::get<3>(m) / scalar);
 }
 
 template<typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator/(const T scalar, const Mat<4, 4, T>& m) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator/(const T scalar, const Mat<4, 4, T>& m) noexcept
 {
 	return Mat<4, 4, T>(scalar / std::get<0>(m), scalar / std::get<1>(m), scalar / std::get<2>(m), scalar / std::get<3>(m));
 }
 
 template<typename T>
 requires std::floating_point<T>
-constexpr typename TRAP::Math::Mat<4, 4, T>::col_type TRAP::Math::operator/(const Mat<4, 4, T>& m,
-                                                                           const typename Mat<4, 4, T>::row_type& v)
+[[nodiscard]] constexpr typename TRAP::Math::Mat<4, 4, T>::col_type TRAP::Math::operator/(const Mat<4, 4, T>& m,
+                                                                                          const typename Mat<4, 4, T>::row_type& v)
 {
 	return Inverse(m) * v;
 }
 
 template<typename T>
 requires std::floating_point<T>
-constexpr typename TRAP::Math::Mat<4, 4, T>::row_type TRAP::Math::operator/(const typename Mat<4, 4, T>::col_type& v,
-                                                                           const Mat<4, 4, T>& m)
+[[nodiscard]] constexpr typename TRAP::Math::Mat<4, 4, T>::row_type TRAP::Math::operator/(const typename Mat<4, 4, T>::col_type& v,
+                                                                                          const Mat<4, 4, T>& m)
 {
 	return v * Inverse(m);
 }
 
 template<typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator/(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator/(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept
 {
 	Mat<4, 4, T> m1Copy(m1);
 
@@ -826,14 +829,14 @@ constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator/(const Mat<4, 4, T>& m1,
 
 template<typename T>
 requires std::floating_point<T>
-constexpr bool TRAP::Math::operator==(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept
+[[nodiscard]] constexpr bool TRAP::Math::operator==(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept
 {
 	return (std::get<0>(m1) == std::get<0>(m2)) && (std::get<1>(m1) == std::get<1>(m2)) && (std::get<2>(m1) == std::get<2>(m2)) && (std::get<3>(m1) == std::get<3>(m2));
 }
 
 template<typename T>
 requires std::floating_point<T>
-constexpr bool TRAP::Math::operator!=(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept
+[[nodiscard]] constexpr bool TRAP::Math::operator!=(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept
 {
 	return (std::get<0>(m1) != std::get<0>(m2)) || (std::get<1>(m1) != std::get<1>(m2)) || (std::get<2>(m1) != std::get<2>(m2)) || (std::get<3>(m1) != std::get<3>(m2));
 }
