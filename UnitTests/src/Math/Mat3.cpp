@@ -1006,6 +1006,41 @@ namespace
 
         REQUIRE(std::get<0>(std::move(m1)) == Col{1, 2, 3});
     }
+
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    void RunMat3SwapRunTimeTests()
+    {
+        using Mat = TRAP::Math::tMat3<T>;
+        using Col = Mat::col_type;
+
+        {
+            Mat m(T(1), T(2), T(3), T(4), T(5), T(6), T(7), T(8), T(9));
+            Mat m1(T(9), T(8), T(7), T(6), T(5), T(4), T(3), T(2), T(1));
+
+            m.Swap(m1);
+
+            REQUIRE(std::get<0>(m) == Col{9, 8, 7});
+            REQUIRE(std::get<1>(m) == Col{6, 5, 4});
+            REQUIRE(std::get<2>(m) == Col{3, 2, 1});
+            REQUIRE(std::get<0>(m1) == Col{1, 2, 3});
+            REQUIRE(std::get<1>(m1) == Col{4, 5, 6});
+            REQUIRE(std::get<2>(m1) == Col{7, 8, 9});
+        }
+        {
+            Mat m(T(1), T(2), T(3), T(4), T(5), T(6), T(7), T(8), T(9));
+            Mat m1(T(9), T(8), T(7), T(6), T(5), T(4), T(3), T(2), T(1));
+
+            std::swap(m, m1);
+
+            REQUIRE(std::get<0>(m) == Col{9, 8, 7});
+            REQUIRE(std::get<1>(m) == Col{6, 5, 4});
+            REQUIRE(std::get<2>(m) == Col{3, 2, 1});
+            REQUIRE(std::get<0>(m1) == Col{1, 2, 3});
+            REQUIRE(std::get<1>(m1) == Col{4, 5, 6});
+            REQUIRE(std::get<2>(m1) == Col{7, 8, 9});
+        }
+    }
 }
 
 TEST_CASE("TRAP::Math::Mat3", "[math][mat][mat3]")
@@ -1068,5 +1103,11 @@ TEST_CASE("TRAP::Math::Mat3", "[math][mat][mat3]")
 
         RunMat3GetRunTimeTests<f32>();
         RunMat3GetRunTimeTests<f64>();
+    }
+
+    SECTION("std::swap")
+    {
+        RunMat3SwapRunTimeTests<f32>();
+        RunMat3SwapRunTimeTests<f64>();
     }
 }

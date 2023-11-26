@@ -1177,6 +1177,36 @@ namespace
             REQUIRE(std::get<0>(std::move(v)) == T(5));
         }
     }
+
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    void RunVec2SwapRunTimeTests()
+    {
+        using Vec = TRAP::Math::Vec<2, T>;
+
+        {
+            Vec v(T(5), T(10));
+            Vec v1(T(10), T(5));
+
+            v.Swap(v1);
+
+            REQUIRE(v.x() == T(10));
+            REQUIRE(v.y() == T(5));
+            REQUIRE(v1.x() == T(5));
+            REQUIRE(v1.y() == T(10));
+        }
+        {
+            Vec v(T(5), T(10));
+            Vec v1(T(10), T(5));
+
+            std::swap(v, v1);
+
+            REQUIRE(v.x() == T(10));
+            REQUIRE(v.y() == T(5));
+            REQUIRE(v1.x() == T(5));
+            REQUIRE(v1.y() == T(10));
+        }
+    }
 }
 
 TEST_CASE("TRAP::Math::Vec2", "[math][vec][vec2]")
@@ -1335,5 +1365,19 @@ TEST_CASE("TRAP::Math::Vec2", "[math][vec][vec2]")
         RunVec2GetRunTimeTests<i64>();
         RunVec2GetRunTimeTests<f32>();
         RunVec2GetRunTimeTests<f64>();
+    }
+
+    SECTION("std::swap")
+    {
+        RunVec2SwapRunTimeTests<u8>();
+        RunVec2SwapRunTimeTests<u16>();
+        RunVec2SwapRunTimeTests<u32>();
+        RunVec2SwapRunTimeTests<u64>();
+        RunVec2SwapRunTimeTests<i8>();
+        RunVec2SwapRunTimeTests<i16>();
+        RunVec2SwapRunTimeTests<i32>();
+        RunVec2SwapRunTimeTests<i64>();
+        RunVec2SwapRunTimeTests<f32>();
+        RunVec2SwapRunTimeTests<f64>();
     }
 }

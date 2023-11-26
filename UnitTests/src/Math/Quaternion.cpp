@@ -833,6 +833,44 @@ namespace
 
         REQUIRE(std::get<0>(std::move(q1)) == T(1));
     }
+
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    void RunQuatSwapRunTimeTests()
+    {
+        using Quat = TRAP::Math::tQuat<T>;
+
+        {
+            Quat q(T(1), T(2), T(3), T(4));
+            Quat q1(T(4), T(3), T(2), T(1));
+
+            q.Swap(q1);
+
+            REQUIRE(q.w() == T(4));
+            REQUIRE(q.x() == T(3));
+            REQUIRE(q.y() == T(2));
+            REQUIRE(q.z() == T(1));
+            REQUIRE(q1.w() == T(1));
+            REQUIRE(q1.x() == T(2));
+            REQUIRE(q1.y() == T(3));
+            REQUIRE(q1.z() == T(4));
+        }
+        {
+            Quat q(T(1), T(2), T(3), T(4));
+            Quat q1(T(4), T(3), T(2), T(1));
+
+            std::swap(q, q1);
+
+            REQUIRE(q.w() == T(4));
+            REQUIRE(q.x() == T(3));
+            REQUIRE(q.y() == T(2));
+            REQUIRE(q.z() == T(1));
+            REQUIRE(q1.w() == T(1));
+            REQUIRE(q1.x() == T(2));
+            REQUIRE(q1.y() == T(3));
+            REQUIRE(q1.z() == T(4));
+        }
+    }
 }
 
 TEST_CASE("TRAP::Math::Quat", "[math][quat]")
@@ -895,5 +933,11 @@ TEST_CASE("TRAP::Math::Quat", "[math][quat]")
 
         RunQuatGetRunTimeTests<f32>();
         RunQuatGetRunTimeTests<f64>();
+    }
+
+    SECTION("std::swap")
+    {
+        RunQuatSwapRunTimeTests<f32>();
+        RunQuatSwapRunTimeTests<f64>();
     }
 }

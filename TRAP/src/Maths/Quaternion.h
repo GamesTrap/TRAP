@@ -177,6 +177,12 @@ public:
 		[[nodiscard]] const T& at(usize i) const;
 
 		[[nodiscard]] consteval auto operator<=>(const tQuat<T>& rhs) const noexcept = delete;
+
+		inline constexpr void Swap(tQuat<T>& other) noexcept(std::is_nothrow_move_constructible_v<tQuat<T>> &&
+		                                                     std::is_nothrow_move_assignable_v<tQuat<T>>)
+		{
+			std::swap(data, other.data);
+		}
 	};
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -760,6 +766,20 @@ namespace std
 		static_assert(I < TRAP::Math::tQuat<T>::Length());
 
 		return std::move(q[I]);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//std::swap support
+
+namespace std
+{
+	template<typename T>
+	requires std::is_arithmetic_v<T>
+	inline constexpr void swap(TRAP::Math::tQuat<T>& lhs, TRAP::Math::tQuat<T>& rhs) noexcept(std::is_nothrow_move_constructible_v<TRAP::Math::tQuat<T>> &&
+																                              std::is_nothrow_move_assignable_v<TRAP::Math::tQuat<T>>)
+	{
+		lhs.Swap(rhs);
 	}
 }
 

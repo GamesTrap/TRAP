@@ -1100,6 +1100,45 @@ namespace
 
         REQUIRE(std::get<0>(std::move(m1)) == Col{1, 2, 3, 4});
     }
+
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    void RunMat4SwapRunTimeTests()
+    {
+        using Mat = TRAP::Math::tMat4<T>;
+        using Col = Mat::col_type;
+
+        {
+            Mat m(T(1), T(2), T(3), T(4), T(5), T(6), T(7), T(8), T(9), T(10), T(11), T(12), T(13), T(14), T(15), T(16));
+            Mat m1(T(16), T(15), T(14), T(13), T(12), T(11), T(10), T(9), T(8), T(7), T(6), T(5), T(4), T(3), T(2), T(1));
+
+            m.Swap(m1);
+
+            REQUIRE(std::get<0>(m) == Col{16, 15, 14, 13});
+            REQUIRE(std::get<1>(m) == Col{12, 11, 10, 9});
+            REQUIRE(std::get<2>(m) == Col{8, 7, 6, 5});
+            REQUIRE(std::get<3>(m) == Col{4, 3, 2, 1});
+            REQUIRE(std::get<0>(m1) == Col{1, 2, 3, 4});
+            REQUIRE(std::get<1>(m1) == Col{5, 6, 7, 8});
+            REQUIRE(std::get<2>(m1) == Col{9, 10, 11, 12});
+            REQUIRE(std::get<3>(m1) == Col{13, 14, 15, 16});
+        }
+        {
+            Mat m(T(1), T(2), T(3), T(4), T(5), T(6), T(7), T(8), T(9), T(10), T(11), T(12), T(13), T(14), T(15), T(16));
+            Mat m1(T(16), T(15), T(14), T(13), T(12), T(11), T(10), T(9), T(8), T(7), T(6), T(5), T(4), T(3), T(2), T(1));
+
+            std::swap(m, m1);
+
+            REQUIRE(std::get<0>(m) == Col{16, 15, 14, 13});
+            REQUIRE(std::get<1>(m) == Col{12, 11, 10, 9});
+            REQUIRE(std::get<2>(m) == Col{8, 7, 6, 5});
+            REQUIRE(std::get<3>(m) == Col{4, 3, 2, 1});
+            REQUIRE(std::get<0>(m1) == Col{1, 2, 3, 4});
+            REQUIRE(std::get<1>(m1) == Col{5, 6, 7, 8});
+            REQUIRE(std::get<2>(m1) == Col{9, 10, 11, 12});
+            REQUIRE(std::get<3>(m1) == Col{13, 14, 15, 16});
+        }
+    }
 }
 
 TEST_CASE("TRAP::Math::Mat4", "[math][mat][mat4]")
@@ -1162,5 +1201,11 @@ TEST_CASE("TRAP::Math::Mat4", "[math][mat][mat4]")
 
         RunMat4GetRunTimeTests<f32>();
         RunMat4GetRunTimeTests<f64>();
+    }
+
+    SECTION("std::swap")
+    {
+        RunMat4SwapRunTimeTests<f32>();
+        RunMat4SwapRunTimeTests<f64>();
     }
 }

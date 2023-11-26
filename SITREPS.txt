@@ -4693,3 +4693,4 @@ SITREP 11/26/2023|23w47c2
     - Updated Build-CI workflow ~<5 mins
     - UnitTests Added tests for Mat3/4 ~<45 mins
     - Quaternion Added std::get support ~<10 mins
+    - Quat, Mat3/4, Vec2/3/4 Added std::swap support ~<15 mins

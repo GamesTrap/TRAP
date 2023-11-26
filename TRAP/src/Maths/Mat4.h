@@ -311,6 +311,12 @@ namespace TRAP::Math
 		constexpr const Mat<4, 4, T> operator--(i32) noexcept;
 
 		[[nodiscard]] consteval auto operator<=>(const Mat<4, 4, T>& rhs) const noexcept = delete;
+
+		inline constexpr void Swap(Mat<4, 4, T>& other) noexcept(std::is_nothrow_move_constructible_v<Mat<4, 4, T>> &&
+		                                                         std::is_nothrow_move_assignable_v<Mat<4, 4, T>>)
+		{
+			std::swap(value, other.value);
+		}
 	};
 
 	//Unary operators
@@ -899,6 +905,20 @@ namespace std
 		static_assert(I < TRAP::Math::Mat<4, 4, T>::Length());
 
 		return std::move(m[I]);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//std::swap support
+
+namespace std
+{
+	template<typename T>
+	requires std::floating_point<T>
+	inline constexpr void swap(TRAP::Math::Mat<4, 4, T>& lhs, TRAP::Math::Mat<4, 4, T>& rhs) noexcept(std::is_nothrow_move_constructible_v<TRAP::Math::Mat<4, 4, T>> &&
+																                                      std::is_nothrow_move_assignable_v<TRAP::Math::Mat<4, 4, T>>)
+	{
+		lhs.Swap(rhs);
 	}
 }
 

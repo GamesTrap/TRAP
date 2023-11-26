@@ -422,6 +422,12 @@ public:
 		}
 
 		[[nodiscard]] consteval auto operator<=>(const Vec<2, T>& rhs) const noexcept = delete;
+
+		inline constexpr void Swap(Vec<2, T>& other) noexcept(std::is_nothrow_move_constructible_v<Vec<2, T>> &&
+		                                                      std::is_nothrow_move_assignable_v<Vec<2, T>>)
+		{
+			std::swap(data, other.data);
+		}
 	};
 
 	//Unary operators
@@ -1248,6 +1254,20 @@ namespace std
 		{
 			std::unreachable();
 		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//std::swap support
+
+namespace std
+{
+	template<typename T>
+	requires std::is_arithmetic_v<T>
+	inline constexpr void swap(TRAP::Math::Vec<2, T>& lhs, TRAP::Math::Vec<2, T>& rhs) noexcept(std::is_nothrow_move_constructible_v<TRAP::Math::Vec<2, T>> &&
+																                                std::is_nothrow_move_assignable_v<TRAP::Math::Vec<2, T>>)
+	{
+		lhs.Swap(rhs);
 	}
 }
 
