@@ -1062,6 +1062,21 @@ namespace
 
     template<typename T>
     requires std::is_arithmetic_v<T>
+    consteval void RunMat4GetCompileTimeTests()
+    {
+        using Mat = TRAP::Math::tMat4<T>;
+        using Col = Mat::col_type;
+
+        constexpr Mat m(T(1), T(2), T(3), T(4), T(5), T(6), T(7), T(8), T(9), T(10), T(11), T(12), T(13), T(14), T(15), T(16));
+
+        static_assert(std::get<0>(m) == Col{1, 2, 3, 4});
+        static_assert(std::get<1>(m) == Col{5, 6, 7, 8});
+        static_assert(std::get<2>(m) == Col{9, 10, 11, 12});
+        static_assert(std::get<3>(m) == Col{13, 14, 15, 16});
+    }
+
+    template<typename T>
+    requires std::is_arithmetic_v<T>
     void RunMat4GetRunTimeTests()
     {
         using Mat = TRAP::Math::tMat4<T>;
@@ -1142,6 +1157,9 @@ TEST_CASE("TRAP::Math::Mat4", "[math][mat][mat4]")
 
     SECTION("std::get")
     {
+        RunMat4GetCompileTimeTests<f32>();
+        RunMat4GetCompileTimeTests<f64>();
+
         RunMat4GetRunTimeTests<f32>();
         RunMat4GetRunTimeTests<f64>();
     }

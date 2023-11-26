@@ -794,6 +794,45 @@ namespace
             REQUIRE(str == fmt::format("Quatd({}, {{{}, {}, {}}})", q.w(), q.x(), q.y(), q.z()));
         }
     }
+
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    consteval void RunQuatGetCompileTimeTests()
+    {
+        using Quat = TRAP::Math::tQuat<T>;
+
+        constexpr Quat q(T(1), T(2), T(3), T(4));
+
+        static_assert(std::get<0>(q) == T(1));
+        static_assert(std::get<1>(q) == T(2));
+        static_assert(std::get<2>(q) == T(3));
+        static_assert(std::get<3>(q) == T(4));
+    }
+
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    void RunQuatGetRunTimeTests()
+    {
+        using Quat = TRAP::Math::tQuat<T>;
+
+        const Quat q(T(1), T(2), T(3), T(4));
+
+        REQUIRE(std::get<0>(q) == T(1));
+        REQUIRE(std::get<1>(q) == T(2));
+        REQUIRE(std::get<2>(q) == T(3));
+        REQUIRE(std::get<3>(q) == T(4));
+
+        REQUIRE(std::get<0>(std::move(q)) == T(1));
+
+        Quat q1(T(1), T(2), T(3), T(4));
+
+        REQUIRE(std::get<0>(q1) == T(1));
+        REQUIRE(std::get<1>(q1) == T(2));
+        REQUIRE(std::get<2>(q1) == T(3));
+        REQUIRE(std::get<3>(q1) == T(4));
+
+        REQUIRE(std::get<0>(std::move(q1)) == T(1));
+    }
 }
 
 TEST_CASE("TRAP::Math::Quat", "[math][quat]")
@@ -847,5 +886,14 @@ TEST_CASE("TRAP::Math::Quat", "[math][quat]")
     {
         RunQuatFormatRunTimeTests<f32>();
         RunQuatFormatRunTimeTests<f64>();
+    }
+
+    SECTION("std::get")
+    {
+        RunQuatGetCompileTimeTests<f32>();
+        RunQuatGetCompileTimeTests<f64>();
+
+        RunQuatGetRunTimeTests<f32>();
+        RunQuatGetRunTimeTests<f64>();
     }
 }

@@ -702,4 +702,65 @@ requires std::floating_point<T>
 	return q1.w() != q2.w() && q1.x() != q2.x() && q1.y() != q2.y() && q1.z() != q2.z();
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+//std::get support
+namespace std
+{
+	/// @brief Extracts the Ith element from the quaternion.
+	/// I must be an integer value in range [0, 4).
+	/// This is enforced at compile time!
+	/// @param q Quaternion whose contents to extract.
+	/// @return A reference to the Ith element of q.
+	template<usize I, typename T>
+	requires std::floating_point<T>
+	[[nodiscard]] constexpr T& get(TRAP::Math::tQuat<T>& q) noexcept
+	{
+		static_assert(I < TRAP::Math::tQuat<T>::Length());
+
+		return q[I];
+	}
+
+	/// @brief Extracts the Ith element from the quaternion.
+	/// I must be an integer value in range [0, 4).
+	/// This is enforced at compile time!
+	/// @param q Quaternion whose contents to extract.
+	/// @return A reference to the Ith element of q.
+	template<usize I, typename T>
+	requires std::floating_point<T>
+	[[nodiscard]] constexpr T&& get(TRAP::Math::tQuat<T>&& q) noexcept
+	{
+		static_assert(I < TRAP::Math::tQuat<T>::Length());
+
+		return std::move(q[I]);
+	}
+
+	/// @brief Extracts the Ith element from the quaternion.
+	/// I must be an integer value in range [0, 4).
+	/// This is enforced at compile time!
+	/// @param q Quaternion whose contents to extract.
+	/// @return A reference to the Ith element of q.
+	template<usize I, typename T>
+	requires std::floating_point<T>
+	[[nodiscard]] constexpr const T& get(const TRAP::Math::tQuat<T>& q) noexcept
+	{
+		static_assert(I < TRAP::Math::tQuat<T>::Length());
+
+		return q[I];
+	}
+
+	/// @brief Extracts the Ith element from the quaternion.
+	/// I must be an integer value in range [0, 4).
+	/// This is enforced at compile time!
+	/// @param q Quaternion whose contents to extract.
+	/// @return A reference to the Ith element of q.
+	template<usize I, typename T>
+	requires std::floating_point<T>
+	[[nodiscard]] constexpr const T&& get(const TRAP::Math::tQuat<T>&& q) noexcept
+	{
+		static_assert(I < TRAP::Math::tQuat<T>::Length());
+
+		return std::move(q[I]);
+	}
+}
+
 #endif /*TRAP_QUATERNION_H*/
