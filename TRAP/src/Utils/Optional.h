@@ -12,7 +12,7 @@
 #include <utility>
 #include <variant>
 
-#ifdef __EXCEPTIONS
+#if defined(__EXCEPTIONS) || defined(_HAS_EXCEPTIONS) || defined(__cpp_exceptions)
     #define TRAP_OPTIONAL_THROW(e) throw e
 #else
     #define TRAP_OPTIONAL_THROW(e) std::abort()

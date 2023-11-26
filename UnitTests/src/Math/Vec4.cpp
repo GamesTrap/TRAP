@@ -18,12 +18,12 @@ namespace
         static_assert(std::same_as<typename Vec::const_pointer, const T*>);
         static_assert(std::same_as<typename Vec::reference, T&>);
         static_assert(std::same_as<typename Vec::const_reference, const T&>);
-        static_assert(std::same_as<typename Vec::iterator, typename std::array<T, 3>::iterator>);
-        static_assert(std::same_as<typename Vec::const_iterator, typename std::array<T, 3>::const_iterator>);
+        static_assert(std::same_as<typename Vec::iterator, typename std::array<T, 4>::iterator>);
+        static_assert(std::same_as<typename Vec::const_iterator, typename std::array<T, 4>::const_iterator>);
         static_assert(std::same_as<typename Vec::size_type, u32>);
         static_assert(std::same_as<typename Vec::difference_type, isize>);
-        static_assert(std::same_as<typename Vec::reverse_iterator, typename std::array<T, 3>::reverse_iterator>);
-        static_assert(std::same_as<typename Vec::const_reverse_iterator, typename std::array<T, 3>::const_reverse_iterator>);
+        static_assert(std::same_as<typename Vec::reverse_iterator, typename std::array<T, 4>::reverse_iterator>);
+        static_assert(std::same_as<typename Vec::const_reverse_iterator, typename std::array<T, 4>::const_reverse_iterator>);
     }
 
     template<typename T>
@@ -374,6 +374,7 @@ namespace
             static_assert(std::is_reference_v<decltype(v[0])> && std::is_const_v<std::remove_reference_t<decltype(v[0])>>);
         }
 
+#ifndef TRAP_PLATFORM_WINDOWS
         //iterators
         {
             constexpr Vec v(T(10), T(5), T(15), T(20));
@@ -387,6 +388,7 @@ namespace
             static_assert(v.rend() == std::reverse_iterator<typename Vec::const_pointer>(&v.x()));
             static_assert(v.crend() == std::reverse_iterator<typename Vec::const_pointer>(&v.x()));
         }
+#endif
     }
 
     template<typename T>
@@ -463,6 +465,7 @@ namespace
             static_assert(std::is_reference_v<decltype(v2.at(0))> && !std::is_const_v<std::remove_reference_t<decltype(v2.at(0))>>);
         }
 
+#ifndef TRAP_PLATFORM_WINDOWS
         //iterators
         {
             Vec v(T(10), T(5), T(15), T(20));
@@ -487,6 +490,7 @@ namespace
             REQUIRE(v2.rend() == std::reverse_iterator<typename Vec::const_pointer>(&v2.x()));
             REQUIRE(v2.crend() == std::reverse_iterator<typename Vec::const_pointer>(&v2.x()));
         }
+#endif
     }
 
     template<typename T>

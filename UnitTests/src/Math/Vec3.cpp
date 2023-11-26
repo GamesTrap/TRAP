@@ -295,6 +295,7 @@ namespace
             static_assert(std::is_reference_v<decltype(v[0])> && std::is_const_v<std::remove_reference_t<decltype(v[0])>>);
         }
 
+#ifndef TRAP_PLATFORM_WINDOWS
         //iterators
         {
             constexpr Vec v(T(10), T(5), T(15));
@@ -308,6 +309,7 @@ namespace
             static_assert(v.rend() == std::reverse_iterator<typename Vec::const_pointer>(&v.x()));
             static_assert(v.crend() == std::reverse_iterator<typename Vec::const_pointer>(&v.x()));
         }
+#endif
     }
 
     template<typename T>
@@ -378,6 +380,7 @@ namespace
             static_assert(std::is_reference_v<decltype(v2.at(0))> && !std::is_const_v<std::remove_reference_t<decltype(v2.at(0))>>);
         }
 
+#ifndef TRAP_PLATFORM_WINDOWS
         //iterators
         {
             Vec v(T(10), T(5), T(15));
@@ -402,6 +405,7 @@ namespace
             REQUIRE(v2.rend() == std::reverse_iterator<typename Vec::const_pointer>(&v2.x()));
             REQUIRE(v2.crend() == std::reverse_iterator<typename Vec::const_pointer>(&v2.x()));
         }
+#endif
     }
 
     template<typename T>

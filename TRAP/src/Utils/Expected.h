@@ -346,7 +346,7 @@ namespace TRAP
         template<typename E>
         constexpr void ThrowOrAbort(E&& e)
         {
-#if defined(__EXCEPTIONS) || defined(__cpp_exceptions)
+#if defined(__EXCEPTIONS) || defined(_HAS_EXCEPTIONS) || defined(__cpp_exceptions)
             throw std::forward<E>(e);
 #else
             std::abort();

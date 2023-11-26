@@ -62,7 +62,7 @@ namespace
 
     bool ShouldThrow = false;
 
-    #if defined(__EXCEPTIONS) || defined(__cpp_exceptions)
+    #if defined(__EXCEPTIONS) || defined(_HAS_EXCEPTIONS) || defined(__cpp_exceptions)
     struct WillThrowMove
     {
         constexpr WillThrowMove(std::string i)
@@ -694,7 +694,7 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
         REQUIRE(o7 == o7);
     }
 
-#if defined(__EXCEPTIONS) || defined(__cpp_exceptions)
+#if defined(__EXCEPTIONS) || defined(_HAS_EXCEPTIONS) || defined(__cpp_exceptions)
     SECTION("Swap")
     {
         SwapTest<NoThrow, NoThrow>();
