@@ -4689,3 +4689,5 @@ SITREP 11/26/2023|23w47c2
     - Changed TRAP Engine version to 23w47c2(0.10.10)
     - GitHub Actions Runners Removed manually installed nodejs ~<5 mins
     - Rebuilt and deployed Windows GitHub Actions Runners ~<30 mins
+    - artifact-upload Removed run_attempt from upload path ~<5 mins
+    - Updated Build-CI workflow ~<5 mins

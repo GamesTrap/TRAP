@@ -28,11 +28,11 @@ runs:
       id: build-dest-path
       run: |
           if [[ "${{ github.event_name }}" == 'push' ]]; then
-            echo "TARGET_PATH=${{ github.event.repository.name }}/branch/${{ github.ref_name }}/${{github.run_number}}_${{github.run_attempt}}_${{github.sha}}" >> "$GITHUB_OUTPUT"
+            echo "TARGET_PATH=${{ github.event.repository.name }}/branch/${{ github.ref_name }}/${{github.run_number}}_${{github.sha}}" >> "$GITHUB_OUTPUT"
           elif [[ "${{ github.event_name }}" == 'pull_request' ]]; then
-            echo "TARGET_PATH=${{ github.event.repository.name }}/pull_request/${{github.event.pull_request.number}}/${{github.run_number}}_${{github.run_attempt}}_${{github.sha}}" >> "$GITHUB_OUTPUT"
+            echo "TARGET_PATH=${{ github.event.repository.name }}/pull_request/${{github.event.pull_request.number}}/${{github.run_number}}_${{github.sha}}" >> "$GITHUB_OUTPUT"
           elif [[ "${{ github.event_name }}" == 'workflow_dispatch' ]]; then
-            echo "TARGET_PATH=${{ github.event.repository.name }}/workflow_dispatch/${{github.run_number}}_${{github.run_attempt}}_${{github.sha}}" >> "$GITHUB_OUTPUT"
+            echo "TARGET_PATH=${{ github.event.repository.name }}/workflow_dispatch/${{github.run_number}}_${{github.sha}}" >> "$GITHUB_OUTPUT"
           fi
     - name: Archive artifact (7z)
       shell: bash
@@ -51,7 +51,7 @@ runs:
       if: runner.os == 'Linux'
       run: |
           sudo apt install -y smbclient
-          smbclient //${{inputs.server-hostname}}/${{inputs.server-share}} -U ${{inputs.server-username}}%${{inputs.server-password}} -c 'prompt; recurse; mkdir "${{steps.build-dest-path.outputs.TARGET_PATH}}"; put "${{inputs.target-filename}}.7z" "${{steps.build-dest-path.outputs.TARGET_PATH}}/${{inputs.target-filename}}.7z"'
+          smbclient //${{inputs.server-hostname}}/${{inputs.server-share}} -U ${{inputs.server-username}}%${{inputs.server-password}} -c 'prompt; recurse; mkdir "${{steps.build-dest-path.outputs.TARGET_PATH}}"; put -f "${{inputs.target-filename}}.7z" "${{steps.build-dest-path.outputs.TARGET_PATH}}/${{inputs.target-filename}}.7z"'
     - name: Cleanup artifact
       shell: bash
       id: cleanup-artifact
