@@ -59,7 +59,7 @@ void TRAP::SceneGraphPanel::DrawEntityNode(Entity entity)
 	auto& tag = entity.GetComponent<TagComponent>().Tag;
 
 	const ImGuiTreeNodeFlags flags = ((m_selectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-	const bool opened = ImGui::TreeNodeEx(reinterpret_cast<void*>(NumericCast<u64>(static_cast<u32>(entity))), flags, "%s", tag.c_str());
+	const bool opened = ImGui::TreeNodeEx(reinterpret_cast<void*>(static_cast<u64>(entity.GetUID())), flags, "%s", tag.c_str());
 	if(ImGui::IsItemClicked())
 		m_selectionContext = entity;
 
