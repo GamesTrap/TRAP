@@ -137,7 +137,9 @@ TRAP::Application::~Application()
 
 	FileSystem::Shutdown();
 
+#ifdef TRAP_PLATFORM_LINUX
 	DBus::UnloadSymbols();
+#endif /*TRAP_PLATFORM_LINUX*/
 
 	s_Instance = nullptr;
 }
