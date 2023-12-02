@@ -2076,7 +2076,7 @@ namespace TRAP
             return !lhs.HasValue() && static_cast<bool>(lhs.Error() == rhs.Error());
         }
 
-        [[nodiscard]] friend constexpr void swap(Expected& lhs, Expected& rhs) noexcept(noexcept(lhs.Swap(rhs)))
+        friend constexpr void swap(Expected& lhs, Expected& rhs) noexcept(noexcept(lhs.Swap(rhs)))
         requires requires {lhs.Swap(rhs);}
         {
             lhs.Swap(rhs);

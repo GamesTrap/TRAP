@@ -104,7 +104,7 @@ namespace TRAP
 		/// @brief Clears all buffered messages.
 		constexpr void Clear() noexcept;
 
-		inline static constexpr auto WindowVersion =                        "[23w48a1]";
+		inline static constexpr auto WindowVersion =                        "[23w48b1]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -206,6 +206,7 @@ namespace TRAP
 		inline static constexpr auto DiscordGameSDKPrefix =                 "[Discord] ";
 		inline static constexpr auto SteamworksSDKPrefix =                  "[Steam] ";
 		inline static constexpr auto HotReloadingPrefix =                   "[HotReloading] ";
+		inline static constexpr auto UtilsDBusPrefix =                      "[Utils][DBus] ";
 		inline static constexpr auto UtilsStringPrefix =                    "[Utils][String] ";
 		inline static constexpr auto UtilsPrefix =                          "[Utils] ";
 

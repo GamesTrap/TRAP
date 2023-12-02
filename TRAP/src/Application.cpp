@@ -26,6 +26,7 @@
 #include "Utils/Steam/SteamworksSDK.h"
 #include "Utils/Time/TimeStep.h"
 #include "Layers/ImGui/ImGuiLayer.h"
+#include "Utils/DBus/DBus.h"
 
 TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std::optional<u32> appID)
 	: m_gameName(std::move(gameName))
@@ -135,6 +136,8 @@ TRAP::Application::~Application()
 	}
 
 	FileSystem::Shutdown();
+
+	DBus::UnloadSymbols();
 
 	s_Instance = nullptr;
 }

@@ -4700,3 +4700,7 @@ SITREP 11/27/2023|23w48a1
     - Quat, Mat3/4, Vec2/3/4 at() now throws std::out_of_range exception instead of asserting ~<5 mins
     - Quat, Mat3/4, Vec2/3/4 at() is now constexpr ~<5 mins
     - TRAP-Editor SceneGraphPanel Fixed tree using the same unique identifier for all entities ~<5 mins
+
+SITREP 12/02/2023|23w48b1
+    - Changed TRAP Engine version to 23w48b1(0.10.12)
+    - WindowingAPI Splitted DBus code into its own namespace and moved to Utils ~>60 mins

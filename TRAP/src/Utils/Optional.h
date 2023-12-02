@@ -1617,7 +1617,7 @@ namespace TRAP
              typename Ret = std::conditional_t<std::is_same_v<T, INTERNAL::IAmSecret>, std::decay_t<U>, T>>
     inline constexpr Optional<Ret> MakeOptional(U&& v)
     {
-        return Optional<Ret>(std::forward<U>(v));
+        return Optional<Ret>{std::forward<U>(v)};
     }
 
     /// @brief Creates an optional object constructed in-place from args....
@@ -1627,7 +1627,7 @@ namespace TRAP
     template<typename T, typename... Args>
     inline constexpr Optional<T> MakeOptional(Args&&... args)
     {
-        return Optional<T>(std::in_place, std::forward<Args>(args)...);
+        return Optional<T>{std::in_place, std::forward<Args>(args)...};
     }
     /// @brief Creates an optional object constructed in-place from il and args....
     /// @param il Arguments to be passed to the constructor of T.
@@ -1637,7 +1637,7 @@ namespace TRAP
     template<typename T, typename U, typename... Args>
     inline constexpr Optional<T> MakeOptional(std::initializer_list<U> il, Args&&... args)
     {
-        return Optional<T>(std::in_place, il, std::forward<Args>(args)...);
+        return Optional<T>{std::in_place, il, std::forward<Args>(args)...};
     }
 
     /// @brief One deduction guide is provided for TRAP::Optional to account for the

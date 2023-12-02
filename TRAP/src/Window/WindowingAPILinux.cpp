@@ -125,8 +125,6 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
-    InitDBusPOSIX();
-
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         return PlatformInitX11();
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
@@ -152,8 +150,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow& window)
 void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
-
-    TerminateDBusPOSIX();
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformShutdownX11();
@@ -632,61 +628,7 @@ void TRAP::INTERNAL::WindowingAPI::SetProgressIndicator(const ProgressState stat
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-    if((s_Data.DBUS.Handle == nullptr) || (s_Data.DBUS.Connection == nullptr))
-		return;
-
-	//Setup parameters
-	const dbus_bool_t progressVisible = NumericCast<dbus_bool_t>(state != ProgressState::Disabled);
-
-	DBusMessageIter args{};
-
-	DBusMessage* const msg = s_Data.DBUS.MessageNewSignal("/com/trap", "com.canonical.Unity.LauncherEntry", "Update");
-	if(msg == nullptr)
-	{
-		InputError(Error::Platform_Error, "Failed to allocate new D-Bus message");
-		return;
-	}
-
-	s_Data.DBUS.MessageIterInitAppend(msg, &args);
-
-	//Set app_uri paramter
-	const std::string desktopName = fmt::format("application://{}.desktop", TRAP::Application::GetGameName());
-	const char* const desktopNameCStr = desktopName.c_str();
-	s_Data.DBUS.MessageIterAppendBasic(&args, DBUS_TYPE_STRING, &desktopNameCStr); //Desktop file name
-
-	//Set properties parameter
-	DBusMessageIter sub1{}, sub2{}, sub3{};
-	s_Data.DBUS.MessageIterOpenContainer(&args, DBUS_TYPE_ARRAY, "{sv}", &sub1);
-
-	//Set progress visible
-	s_Data.DBUS.MessageIterOpenContainer(&sub1, DBUS_TYPE_DICT_ENTRY, nullptr, &sub2);
-	const std::string progressVisibleStr = "progress-visible";
-	const char* const progressVisibleCStr = progressVisibleStr.c_str();
-	s_Data.DBUS.MessageIterAppendBasic(&sub2, DBUS_TYPE_STRING, &progressVisibleCStr);
-	s_Data.DBUS.MessageIterOpenContainer(&sub2, DBUS_TYPE_VARIANT, "b", &sub3);
-	s_Data.DBUS.MessageIterAppendBasic(&sub3, DBUS_TYPE_BOOLEAN, &progressVisible);
-	s_Data.DBUS.MessageIterCloseContainer(&sub2, &sub3);
-	s_Data.DBUS.MessageIterCloseContainer(&sub1, &sub2);
-
-	//Set progress value
-	s_Data.DBUS.MessageIterOpenContainer(&sub1, DBUS_TYPE_DICT_ENTRY, nullptr, &sub2);
-	const std::string progressValueStr = "progress";
-	const char* const progressValueCStr = progressValueStr.c_str();
-	s_Data.DBUS.MessageIterAppendBasic(&sub2, DBUS_TYPE_STRING, &progressValueCStr);
-	s_Data.DBUS.MessageIterOpenContainer(&sub2, DBUS_TYPE_VARIANT, "d", &sub3);
-	s_Data.DBUS.MessageIterAppendBasic(&sub3, DBUS_TYPE_DOUBLE, &progress);
-	s_Data.DBUS.MessageIterCloseContainer(&sub2, &sub3);
-	s_Data.DBUS.MessageIterCloseContainer(&sub1, &sub2);
-	s_Data.DBUS.MessageIterCloseContainer(&args, &sub1);
-
-	//Finally send the signal
-	u32 serial = 0;
-	if(s_Data.DBUS.ConnectionSend(s_Data.DBUS.Connection, msg, &serial) == 0u)
-		InputError(Error::Platform_Error, "Failed to send D-Bus signal");
-	else
-		s_Data.DBUS.ConnectionFlush(s_Data.DBUS.Connection);
-
-	s_Data.DBUS.MessageUnref(msg);
+    UpdateTaskbarProgressDBusPOSIX(state != ProgressState::Disabled, progress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

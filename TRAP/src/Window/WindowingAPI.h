@@ -100,14 +100,6 @@ namespace TRAP::INTERNAL
 		struct wl_cursor_image;
 		struct wl_cursor;
 
-		struct DBusError;
-		struct DBusMessageIter;
-		struct DBusConnection;
-		struct DBusMessage;
-		enum class DBusBusType;
-		using dbus_bool_t = u32;
-		using dbus_uint32_t = u32;
-
 		struct libdecor;
 		struct libdecor_frame;
 		struct libdecor_state;
@@ -415,22 +407,6 @@ namespace TRAP::INTERNAL
 		using PFN_XrmUniqueQuark = XrmQuark(*)();
 		using PFN_XUnregisterIMInstantiateCallback = i32(*)(Display*, void*, char*, char*, XIDProc, XPointer);
 
-		//DBus
-		using PFN_DBusErrorInit = void(*)(DBusError*);
-		using PFN_DBusErrorIsSet = dbus_bool_t(*)(const DBusError*);
-		using PFN_DBusErrorFree = void(*)(DBusError*);
-		using PFN_DBusConnectionUnref = void(*)(DBusConnection*);
-		using PFN_DBusConnectionSend = dbus_bool_t(*)(DBusConnection*, DBusMessage*, dbus_uint32_t*);
-		using PFN_DBusConnectionFlush = void(*)(DBusConnection*);
-		using PFN_DBusBusRequestName = i32(*)(DBusConnection*, const char*, u32, DBusError*);
-		using PFN_DBusBusGet = DBusConnection*(*)(DBusBusType, DBusError*);
-		using PFN_DBusMessageUnref = void(*)(DBusMessage*);
-		using PFN_DBusMessageNewSignal = DBusMessage*(*)(const char*, const char*, const char*);
-		using PFN_DBusMessageIterInitAppend = void(*)(DBusMessage*, DBusMessageIter*);
-		using PFN_DBusMessageIterAppendBasic = dbus_bool_t(*)(DBusMessageIter*, i32, const void*);
-		using PFN_DBusMessageIterOpenContainer = dbus_bool_t(*)(DBusMessageIter*, i32, const char*, DBusMessageIter*);
-		using PFN_DBusMessageIterCloseContainer = dbus_bool_t(*)(DBusMessageIter*, DBusMessageIter*);
-
 		//--------------//
 		//Linux(Wayland)//
 		//--------------//
@@ -625,13 +601,6 @@ namespace TRAP::INTERNAL
 		//Linux//
 		//-----//
 #ifdef TRAP_PLATFORM_LINUX
-		enum class DBusBusType
-		{
-			DBUS_BUS_SESSION,
-			DBUS_BUS_SYSTEM,
-			DBUS_BUS_STARTER
-		};
-
 		enum class libdecor_error
 		{
 			CompositorIncompatible,
@@ -674,27 +643,6 @@ namespace TRAP::INTERNAL
 		inline static constexpr u32 WM_COPYGLOBALDATA = 0x0049;
 	#endif /*WM_COPYGLOBALDATA*/
 #endif /*TRAP_PLATFORM_WINDOWS*/
-#ifdef TRAP_PLATFORM_LINUX
-		inline static constexpr u32 DBUS_NAME_FLAG_REPLACE_EXISTING = 0x2;
-		inline static constexpr u32 DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER = 1;
-		inline static constexpr i32 DBUS_TYPE_STRING = NumericCast<i32>('s');
-		inline static constexpr i32 DBUS_TYPE_ARRAY = NumericCast<i32>('a');
-		inline static constexpr i32 DBUS_TYPE_DICT_ENTRY = NumericCast<i32>('e');
-		inline static constexpr i32 DBUS_TYPE_VARIANT = NumericCast<i32>('v');
-		inline static constexpr i32 DBUS_TYPE_BOOLEAN = NumericCast<i32>('b');
-		inline static constexpr i32 DBUS_TYPE_DOUBLE = NumericCast<i32>('d');
-		inline static constexpr i32 DBUS_TYPE_INT16 = NumericCast<i32>('n');
-		inline static constexpr i32 DBUS_TYPE_UINT16 = NumericCast<i32>('q');
-		inline static constexpr i32 DBUS_TYPE_INT32 = NumericCast<i32>('i');
-		inline static constexpr i32 DBUS_TYPE_UINT32 = NumericCast<i32>('u');
-		inline static constexpr i32 DBUS_TYPE_INT64 = NumericCast<i32>('x');
-		inline static constexpr i32 DBUS_TYPE_UINT64 = NumericCast<i32>('t');
-		inline static constexpr i32 DBUS_TYPE_STRUCT_OPEN = NumericCast<i32>('(');
-		inline static constexpr i32 DBUS_TYPE_STRUCT_CLOSE = NumericCast<i32>(')');
-		inline static constexpr i32 DBUS_TYPE_BYTE = NumericCast<i32>('y');
-		inline static constexpr i32 DBUS_TYPE_OBJECT_PATH = NumericCast<i32>('o');
-		inline static constexpr i32 DBUS_TYPE_SIGNATURE = NumericCast<i32>('g');
-#endif /*TRAP_PLATFORM_LINUX*/
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Structs------------------------------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -708,29 +656,6 @@ namespace TRAP::INTERNAL
 			HWND hwnd;
 		};
 #elif defined(TRAP_PLATFORM_LINUX)
-		struct DBusError
-		{
-			const char* name;
-			const char* message;
-			u32 dummy1 : 1;
-			u32 dummy2 : 1;
-			u32 dummy3 : 1;
-			u32 dummy4 : 1;
-			u32 dummy5 : 1;
-			void* padding1;
-		};
-
-		struct DBusMessageIter
-		{
-			void* dummy1;
-			void* dummy2;
-			dbus_uint32_t dummy3;
-			i32 dummy4, dummy5, dummy6, dummy7, dummy8, dummy9, dummy10, dummy11;
-			i32 pad1;
-			void* pad2;
-			void* pad3;
-		};
-
 		struct libdecor_interface
 		{
 			void (*error)(libdecor*, libdecor_error, const char*);
@@ -1436,34 +1361,6 @@ namespace TRAP::INTERNAL
 					PFN_libdecor_state_free StateFree;
 				} LibDecor;
 			} Wayland{};
-
-			struct dbus
-			{
-				void* Handle = nullptr;
-
-				PFN_DBusErrorInit ErrorInit{}; //dbus_error_init
-				PFN_DBusErrorIsSet ErrorIsSet{}; //dbus_error_is_set
-				PFN_DBusErrorFree ErrorFree{}; //dbus_error_free
-				PFN_DBusConnectionUnref ConnectionUnref{}; //dbus_connection_unref
-				PFN_DBusConnectionSend ConnectionSend{}; //dbus_connection_send
-				PFN_DBusConnectionFlush ConnectionFlush{}; //dbus_connection_flush
-				PFN_DBusBusRequestName BusRequestName{}; //dbus_bus_request_name
-				PFN_DBusBusGet BusGet{}; //dbus_bus_get
-				PFN_DBusMessageUnref MessageUnref{}; //dbus_message_unref
-				PFN_DBusMessageNewSignal MessageNewSignal{}; //dbus_message_new_signal
-				PFN_DBusMessageIterInitAppend MessageIterInitAppend{}; //dbus_message_iter_init_append
-				PFN_DBusMessageIterAppendBasic MessageIterAppendBasic{}; //dbus_message_iter_append_basic
-				PFN_DBusMessageIterOpenContainer MessageIterOpenContainer{}; //dbus_message_iter_open_container
-				PFN_DBusMessageIterCloseContainer MessageIterCloseContainer{}; //dbus_message_iter_close_container
-
-				DBusConnection* Connection = nullptr;
-				DBusError Error{};
-
-				std::string DesktopFilePath{};
-				std::string FullExecutableName{};
-				std::string LegalExecutableName{};
-				std::string SignalName{};
-			} DBUS;
 #endif
 		};
 	public:
@@ -4153,20 +4050,7 @@ namespace TRAP::INTERNAL
 		//Linux(X11/Wayland)//
 		//------------------//
 #elif defined(TRAP_PLATFORM_LINUX)
-		static void InitDBusPOSIX();
-		static void CacheSignalNameDBusPOSIX();
-		static void CacheFullExecutableNameDBusPOSIX();
-		static void CacheLegalExecutableNameDBusPOSIX();
-		static void CacheDesktopFilePathDBusPOSIX();
-		static void TerminateDBusPOSIX();
-		static void UpdateTaskbarProgressDBusPOSIX(dbus_bool_t progressVisible, f64 progressValue);
-
-		static dbus_bool_t NewMessageSignalDBusPOSIX(std::string_view objectPath, std::string_view interfaceName, std::string_view signalName, DBusMessage** outMessage);
-		static dbus_bool_t OpenContainerDBusPOSIX(DBusMessageIter& iterator, i32 DBusType, std::string_view signature, DBusMessageIter& subIterator);
-		static dbus_bool_t CloseContainerDBusPOSIX(DBusMessageIter& iterator, DBusMessageIter& subIterator);
-		static dbus_bool_t AppendDataDBusPOSIX(DBusMessageIter& iterator, i32 DBusType, const void* data);
-		static dbus_bool_t AppendDictDataDBusPOSIX(DBusMessageIter& iterator, i32 keyType, const void* keyData, i32 valueType, const void* valueData);
-		static dbus_bool_t SendMessageDBusPOSIX(DBusMessage& message);
+		static void UpdateTaskbarProgressDBusPOSIX(bool progressVisible, f64 progressValue);
 
 		/// @brief Calculates the refresh rate, in Hz, from the specified RandR mode info.
 		/// @param mi RandR mode info.
