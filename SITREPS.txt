@@ -4704,3 +4704,7 @@ SITREP 11/27/2023|23w48a1
 SITREP 12/02/2023|23w48b1
     - Changed TRAP Engine version to 23w48b1(0.10.12)
     - WindowingAPI Splitted DBus code into its own namespace and moved to Utils ~>60 mins
+
+SITREP 12/03/2023|23w48b2
+    - Changed TRAP Engine version to 23w48b2(0.10.13)
+    - Premake Removed unnecessary calls to GenerateWayland() and DiscordGameSDK Compatibility ~<5 mins

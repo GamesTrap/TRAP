@@ -45,6 +45,11 @@ function m.IncludeDiscordGameSDK()
     }
     externalincludedirs "%{IncludeDir.DISCORDGAMESDK}"
 
+    if m.AlreadyExecutedDiscordCompat == nil or m.AlreadyExecutedDiscordCompat == false then
+        dofileopt(path.join(_MAIN_SCRIPT_DIR, "Dependencies/DiscordGameSDK/Compatibility"))
+        m.AlreadyExecutedDiscordCompat = true;
+    end
+
     return true
 end
 

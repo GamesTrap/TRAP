@@ -68,8 +68,11 @@ function IncludeTRAPShared()
 	}
 
     filter "system:linux"
-        local wayland = require "generatewayland"
-        wayland.GenerateWayland()
+        if m.AlreadyExecutedWaylandGenerator == nil or m.AlreadyExecutedWaylandGenerator == false then
+            local wayland = require "generatewayland"
+            wayland.GenerateWayland()
+            m.AlreadyExecutedWaylandGenerator = true
+        end
         externalincludedirs "%{IncludeDir.WAYLAND}"
 
     filter {}
@@ -87,9 +90,8 @@ function m.IncludeTRAP()
 	}
 
     -- Discord Game SDK stuff
-	if(thirdparty.IncludeDiscordGameSDK()) then
-		dofileopt(path.join(_MAIN_SCRIPT_DIR, "Dependencies/DiscordGameSDK/Compatibility"))
-	end
+	thirdparty.IncludeDiscordGameSDK()
+
 	-- NVIDIA Reflex SDK stuff
 	thirdparty.IncludeNVIDIAReflexSDK()
 
