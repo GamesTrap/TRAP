@@ -29,7 +29,7 @@ project "ConvertToSPIRV"
 			"pthread"
 		}
 
-	filter { "action:gmake*", "toolset:gcc" }
+	filter { "toolset:gcc" }
 		buildoptions
 		{
 			"-Wpedantic", "-Wconversion", "-Wshadow"

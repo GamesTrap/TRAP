@@ -103,7 +103,7 @@ bool IconTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 		break;
 
 	case TRAP::Input::Key::Space:
-		s_cursorIconColor = (s_cursorIconColor + 1) % IconColors.size();
+		s_cursorIconColor = (s_cursorIconColor + 1) % NumericCast<u32>(IconColors.size());
 		SetIcon(*TRAP::Application::GetWindow(), s_cursorIconColor);
 		break;
 

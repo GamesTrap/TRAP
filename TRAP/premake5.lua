@@ -66,7 +66,7 @@ project "TRAP"
 
 	firstparty.IncludeTRAP()
 
-	filter { "action:gmake*", "toolset:gcc" }
+	filter { "toolset:gcc" }
 		buildoptions
 		{
 			"-Wpedantic", "-Wconversion", "-Wshadow"
@@ -101,7 +101,7 @@ project "TRAP-UnitTests"
 
 	firstparty.IncludeTRAPUnitTests()
 
-	filter { "system:linux", "configurations:Debug", "action:gmake*", "toolset:gcc" }
+	filter { "system:linux", "configurations:Debug", "toolset:gcc" }
 		buildoptions
 		{
 			"--coverage"
@@ -112,13 +112,13 @@ project "TRAP-UnitTests"
 		}
 
 
-	filter { "action:gmake*", "toolset:gcc" }
+	filter { "toolset:gcc" }
 		buildoptions
 		{
 			"-Wpedantic", "-Wconversion", "-Wshadow"
 		}
 
-	filter { "system:linux", "configurations:Debug", "action:gmake*", "toolset:gcc" }
+	filter { "system:linux", "configurations:Debug", "toolset:gcc" }
 		buildoptions
 		{
 			"-fdeclone-ctor-dtor"
@@ -148,7 +148,7 @@ project "TRAP-Headless"
 
 	firstparty.IncludeTRAPHeadless()
 
-	filter { "action:gmake*", "toolset:gcc" }
+	filter { "toolset:gcc" }
 		buildoptions
 		{
 			"-Wpedantic", "-Wconversion", "-Wshadow"

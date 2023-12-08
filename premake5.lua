@@ -107,8 +107,17 @@ workspace "TRAP"
 		}
 		linkoptions
 		{
-			"-fsanitize=address",
+			"-fsanitize=address"
+		}
+	filter { "language:C or C++", "configurations:ASAN", "toolset:gcc"}
+		linkoptions
+		{
 			"-static-libasan"
+		}
+	filter { "language:C or C++", "configurations:ASAN", "toolset:clang"}
+		linkoptions
+		{
+			"-static-libsan"
 		}
 
 	filter {"language:C or C++", "configurations:UBSAN"}
@@ -128,8 +137,17 @@ workspace "TRAP"
 		}
 		linkoptions
 		{
-			"-fsanitize=undefined",
+			"-fsanitize=undefined"
+		}
+	filter { "language:C or C++", "configurations:UBSAN", "toolset:gcc"}
+		linkoptions
+		{
 			"-static-libubsan"
+		}
+	filter { "language:C or C++", "configurations:UBSAN", "toolset:clang"}
+		linkoptions
+		{
+			"-static-libsan"
 		}
 
 	filter {"language:C or C++", "configurations:LSAN"}
@@ -166,8 +184,17 @@ workspace "TRAP"
 		}
 		linkoptions
 		{
-			"-fsanitize=thread",
+			"-fsanitize=thread"
+		}
+	filter { "language:C or C++", "configurations:TSAN", "toolset:gcc"}
+		linkoptions
+		{
 			"-static-libtsan"
+		}
+	filter { "language:C or C++", "configurations:TSAN", "toolset:clang"}
+		linkoptions
+		{
+			"-static-libsan"
 		}
 
 	filter { "language:C or C++", "toolset:gcc or clang"}
@@ -180,6 +207,11 @@ workspace "TRAP"
 		if moldInstalled then
 			linkoptions "-fuse-ld=mold"
 		end
+
+	filter { "toolset:gcc"}
+		buildoptions "-fdiagnostics-color=always"
+	filter { "toolset:clang"}
+		buildoptions "-fcolor-diagnostics"
 
 --Include directories relative to root folder(solution folder)
 IncludeDir = {}

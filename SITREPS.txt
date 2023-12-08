@@ -4708,3 +4708,7 @@ SITREP 12/02/2023|23w48b1
 SITREP 12/03/2023|23w48b2
     - Changed TRAP Engine version to 23w48b2(0.10.13)
     - Premake Removed unnecessary calls to GenerateWayland() and DiscordGameSDK Compatibility ~<5 mins
+
+SITREP 12/08/2023|23w49a1
+    - Changed TRAP Engine version to 23w49a1(0.10.14)
+    - Made adjustments to Premake scripts ~<10 mins

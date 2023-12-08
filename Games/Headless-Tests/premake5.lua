@@ -16,7 +16,7 @@ project "Headless-Tests"
 	firstparty.IncludeTRAPHeadless()
 	firstparty.LinkTRAPHeadless()
 
-	filter { "action:gmake*", "toolset:gcc" }
+	filter { "toolset:gcc" }
 		buildoptions
 		{
 			"-Wpedantic", "-Wconversion", "-Wshadow"

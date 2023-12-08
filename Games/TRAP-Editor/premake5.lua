@@ -16,7 +16,7 @@ project "TRAP-Editor"
 	firstparty.IncludeTRAP()
 	firstparty.LinkTRAP()
 
-	filter { "action:gmake*", "toolset:gcc" }
+	filter { "toolset:gcc" }
 		buildoptions
 		{
 			"-Wpedantic", "-Wconversion", "-Wshadow"

@@ -23,13 +23,13 @@ project "UnitTests"
 		"%{wks.location}",
 	}
 
-	filter { "action:gmake*", "toolset:gcc" }
+	filter { "toolset:gcc" }
 		buildoptions
 		{
 			"-Wpedantic", "-Wconversion", "-Wshadow"
 		}
 
-	filter { "system:linux", "configurations:Debug", "action:gmake*", "toolset:gcc" }
+	filter { "system:linux", "configurations:Debug", "toolset:gcc" }
 		buildoptions
 		{
 			"--coverage",

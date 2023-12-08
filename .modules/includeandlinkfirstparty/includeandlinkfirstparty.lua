@@ -35,7 +35,11 @@ function LinkTRAPShared()
         {
             -- Needed for Networking
             "ws2_32",
-            "wsock32"
+            "wsock32",
+            "ole32",
+            "shell32",
+            "gdi32",
+            "comdlg32"
         }
 
     filter {}
