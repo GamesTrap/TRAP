@@ -4712,3 +4712,5 @@ SITREP 12/03/2023|23w48b2
 SITREP 12/08/2023|23w49a1
     - Changed TRAP Engine version to 23w49a1(0.10.14)
     - Made adjustments to Premake scripts ~<10 mins
+    - Updated Premake-VSCodeGen ~<5 mins
+    - Added Premake-Ninja as submodule ~<5 mins

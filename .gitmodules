@@ -44,3 +44,6 @@
 [submodule "Dependencies/GCEM"]
 	path = Dependencies/GCEM
 	url = https://github.com/GamesTrap/gcem
+[submodule ".modules/ninja"]
+	path = .modules/ninja
+	url = https://github.com/GamesTrap/premake-ninja.git
