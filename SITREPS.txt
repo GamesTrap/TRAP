@@ -4715,3 +4715,4 @@ SITREP 12/08/2023|23w49a1
     - Updated Premake-VSCodeGen ~<5 mins
     - Added Premake-Ninja as submodule ~<5 mins
     - Added Ninja build file generation ~<5 mins
+    - Build-CI Switched to ninja for GCC and Clang builds ~<5 mins

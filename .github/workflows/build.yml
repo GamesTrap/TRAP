@@ -76,7 +76,7 @@ jobs:
     - name: Update package list
       run: sudo apt update
     - name: Install dependencies
-      run: sudo apt install -y cmake jq g++-13 mold xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols python3 pip
+      run: sudo apt install -y cmake jq g++-13 mold xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols python3 pip ninja
     - name: Make python3 available as python
       run: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
     - name: Make pip3 available as pip
@@ -84,16 +84,16 @@ jobs:
     - name: Make scripts and premake executable
       run: |
        chmod +x libs/premake5/linux/premake5
-       chmod +x GeneratorScripts/GenerateProjectMakeGCC.sh
-    - name: Generate Make files
+       chmod +x GeneratorScripts/GenerateProjectNinjaGCC.sh
+    - name: Generate Ninja files
       run: |
        cd GeneratorScripts/
-       ./GenerateProjectMakeGCC.sh
+       ./GenerateProjectNinjaGCC.sh
        cd ..
     - name: Setup problem matchers
       uses: ./.github/composite/problem-matchers
     - name: Compile code
-      run: config=release make all -j$(nproc)
+      run: ninja Release -j$(nproc)
     - name: Finalize data for artifact
       run: |
         cp -r Games/Headless-Tests/Assets bin/Release-linux-x86_64/Games/Headless-Tests/
@@ -196,7 +196,7 @@ jobs:
     - name: Update package list
       run: sudo apt update
     - name: Install dependencies
-      run: sudo apt install -y cmake jq clang-17 llvm-17 mold xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols python3 pip
+      run: sudo apt install -y cmake jq clang-17 llvm-17 mold xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols python3 pip ninja
     - name: Make python3 available as python
       run: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
     - name: Make pip3 available as pip
@@ -206,16 +206,16 @@ jobs:
     - name: Make scripts and premake executable
       run: |
         chmod +x libs/premake5/linux/premake5
-        chmod +x GeneratorScripts/GenerateProjectMakeClang.sh
-    - name: Generate Make files
+        chmod +x GeneratorScripts/GenerateProjectNinaClang.sh
+    - name: Generate Ninja files
       run: |
         cd GeneratorScripts/
-        ./GenerateProjectMakeClang.sh
+        ./GenerateProjectNinjaClang.sh
         cd ..
     - name: Setup problem matchers
       uses: ./.github/composite/problem-matchers
     - name: Compile code
-      run: config=release make all -j$(nproc)
+      run: ninja Release -j$(nproc)
     - name: Finalize data for artifact
       run: |
         cp -r Games/Headless-Tests/Assets bin/Release-linux-x86_64/Games/Headless-Tests/
