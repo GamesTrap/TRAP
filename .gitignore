@@ -207,3 +207,6 @@ Dependencies/Wayland/**.h
 .penv/**
 Coverage/
 docs/
+**.ninja
+**.ninja_log
+**.ninja_deps

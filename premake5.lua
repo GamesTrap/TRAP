@@ -1,5 +1,6 @@
 require "ecc"
 require "vscode"
+require "ninja"
 
 workspace "TRAP"
 	startproject "Sandbox"
