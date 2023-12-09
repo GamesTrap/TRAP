@@ -1097,7 +1097,9 @@ TEST_CASE("TRAP::Optional", "[utils][optional]")
 
     SECTION("BadOptionalAccess")
     {
+        using namespace std::string_view_literals;
+
         const TRAP::BadOptionalAccess boa{};
-        REQUIRE(boa.what() == "Optional has no value");
+        REQUIRE("Optional has no value"sv == boa.what());
     }
 }

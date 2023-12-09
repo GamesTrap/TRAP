@@ -465,7 +465,7 @@ namespace TRAP
 
     /// @brief Defines a type of object to be thrown by TRAP::Optional::Value() when accessing
     ///        an optional object that does not contain a value.
-    class BadOptionalAccess : public std::exception
+    class BadOptionalAccess final : public std::exception
     {
     public:
         /// @brief Constructs a new BadOptionalAccess object with an implementation-defined
@@ -474,7 +474,13 @@ namespace TRAP
         ///        Default constructor.
         BadOptionalAccess() noexcept = default;
         /// @brief Destroys the exception object.
-         ~BadOptionalAccess() override = default;
+        ~BadOptionalAccess() override = default;
+
+        BadOptionalAccess(const BadOptionalAccess& other) noexcept = default;
+        BadOptionalAccess& operator=(const BadOptionalAccess& other) noexcept = default;
+
+        BadOptionalAccess(BadOptionalAccess&& other) noexcept = delete;
+        BadOptionalAccess& operator=(BadOptionalAccess&& other) noexcept = delete;
 
         /// @brief Returns the explanatory string.
         /// @return Pointer to a null-terminated string with explanatory information.
