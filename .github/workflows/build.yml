@@ -97,7 +97,7 @@ jobs:
     - name: Setup problem matchers
       uses: ./.github/composite/problem-matchers
     - name: Compile code
-      run: ninja Release -j$(nproc)
+      run: ninja Release -j $(nproc)
     - name: Finalize data for artifact
       run: |
         cp -r Games/Headless-Tests/Assets bin/Release-linux-x86_64/Games/Headless-Tests/
@@ -223,7 +223,7 @@ jobs:
     - name: Setup problem matchers
       uses: ./.github/composite/problem-matchers
     - name: Compile code
-      run: ninja Release -j$(nproc)
+      run: ninja Release -j $(nproc)
     - name: Finalize data for artifact
       run: |
         cp -r Games/Headless-Tests/Assets bin/Release-linux-x86_64/Games/Headless-Tests/
@@ -318,21 +318,21 @@ jobs:
         git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
         git pull origin main
         cd ../..
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.3.1
+    - name: Setup developer console
+      uses: ilammy/msvc-dev-cmd@v1
       with:
-        msbuild-architecture: x64
+        arch: x64
     - name: Generate Visual Studio 2022 Project files
       run: |
         cd GeneratorScripts
-        .\GenerateProjectVS2022.bat
+        .\GenerateProjectNinjaMSVC.bat
         cd ..
     - name: Setup problem matchers
       uses: ./.github/composite/problem-matchers
     - name: Compile code
       run: |
         $maxCPUCount = if($env:CONTAINER_MAX_CPUS) {$env:CONTAINER_MAX_CPUS} Else {$env:NUMBER_OF_PROCESSORS}
-        msbuild /m:$maxCPUCount TRAP.sln /property:Configuration=Release
+        ninja Release -j $maxCPUCount
     - name: Finalize data for artifact
       run: |
         Xcopy Games\Headless-Tests\Assets bin\Release-windows-x86_64\Games\Headless-Tests\Assets /I /H /E /C

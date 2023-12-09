@@ -4721,3 +4721,5 @@ SITREP 12/09/2023|23w49a2
     - Changed TRAP Engine version to 23w49a2(0.10.15)
     - Build-CI Fixed Windows using wrong amount of CPU cores for compiling ~<5 mins
     - Build-CI Enabled second Windows runner again ~<5 mins
+    - GitHub Actions Windows Runner Added ninja ~<5 mins
+    - Build-CI Windows switched from msbuild to ninja ~<5 mins
