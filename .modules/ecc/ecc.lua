@@ -25,6 +25,16 @@ newaction {
 	end
 }
 
+function m.filterBuildOptions(buildOptions)
+	if buildOptions then
+		for key, value in pairs(buildOptions) do
+			if value == "-fdeclone-ctor-dtor" then
+				buildOptions[key] = nil
+			end
+		end
+	end
+end
+
 function m.getCommonFlags(prj, cfg)
 	-- Some tools that consumes compile_commands.json have problems with relative include paths
 	local relative = project.getrelative
@@ -44,7 +54,8 @@ function m.getCommonFlags(prj, cfg)
 	elseif (project.isc(prj)) then
 		flags = table.join(flags, toolset.getcflags(cfg))
 	end
-	flags = table.join(flags, cfg.buildoptions)
+	flags = table.join(flags, m.filterBuildOptions(cfg.buildoptions))
+
 	project.getrelative = relative
 	return flags
 end
