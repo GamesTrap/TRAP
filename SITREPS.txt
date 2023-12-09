@@ -4716,3 +4716,8 @@ SITREP 12/08/2023|23w49a1
     - Added Premake-Ninja as submodule ~<5 mins
     - Added Ninja build file generation ~<5 mins
     - Build-CI Switched to ninja for GCC and Clang builds ~<5 mins
+
+SITREP 12/09/2023|23w49a2
+    - Changed TRAP Engine version to 23w49a2(0.10.15)
+    - Build-CI Fixed Windows using wrong amount of CPU cores for compiling ~<5 mins
+    - Build-CI Enabled second Windows runner again ~<5 mins

@@ -330,7 +330,9 @@ jobs:
     - name: Setup problem matchers
       uses: ./.github/composite/problem-matchers
     - name: Compile code
-      run: msbuild /m TRAP.sln /property:Configuration=Release
+      run: |
+        $maxCPUCount = if($env:CONTAINER_MAX_CPUS) {$env:CONTAINER_MAX_CPUS} Else {$env:NUMBER_OF_PROCESSORS}
+        msbuild /m:$maxCPUCount TRAP.sln /property:Configuration=Release
     - name: Finalize data for artifact
       run: |
         Xcopy Games\Headless-Tests\Assets bin\Release-windows-x86_64\Games\Headless-Tests\Assets /I /H /E /C
