@@ -81,6 +81,10 @@ jobs:
       run: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
     - name: Make pip3 available as pip
       run: sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10
+    - name: Make g++-13 available as g++
+      run: sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 10
+    - name: Make gcc-13 available as gcc
+      run: sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 10
     - name: Make scripts and premake executable
       run: |
        chmod +x libs/premake5/linux/premake5
@@ -203,10 +207,12 @@ jobs:
       run: sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10
     - name: Make llvm-ar-17 available as llvm-ar
       run: sudo update-alternatives --install /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-17 10
+    - name: Make clang-17 available as clang
+      run: sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-17 10
     - name: Make scripts and premake executable
       run: |
         chmod +x libs/premake5/linux/premake5
-        chmod +x GeneratorScripts/GenerateProjectNinaClang.sh
+        chmod +x GeneratorScripts/GenerateProjectNinjaClang.sh
     - name: Generate Ninja files
       run: |
         cd GeneratorScripts/
