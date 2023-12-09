@@ -76,7 +76,7 @@ jobs:
     - name: Update package list
       run: sudo apt update
     - name: Install dependencies
-      run: sudo apt install -y cmake jq g++-13 mold xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols python3 pip ninja
+      run: sudo apt install -y cmake jq g++-13 mold xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols python3 pip ninja-build
     - name: Make python3 available as python
       run: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
     - name: Make pip3 available as pip
@@ -196,7 +196,7 @@ jobs:
     - name: Update package list
       run: sudo apt update
     - name: Install dependencies
-      run: sudo apt install -y cmake jq clang-17 llvm-17 mold xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols python3 pip ninja
+      run: sudo apt install -y cmake jq clang-17 llvm-17 mold xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols python3 pip ninja-build
     - name: Make python3 available as python
       run: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
     - name: Make pip3 available as pip
