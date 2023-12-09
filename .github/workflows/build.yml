@@ -209,6 +209,8 @@ jobs:
       run: sudo update-alternatives --install /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-17 10
     - name: Make clang-17 available as clang
       run: sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-17 10
+    - name: Make clang++-17 available as clang++
+      run: sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-17 10
     - name: Make scripts and premake executable
       run: |
         chmod +x libs/premake5/linux/premake5
