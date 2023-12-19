@@ -55,7 +55,7 @@ TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std:
 	FileSystem::Init();
 
 	//Set main log file path (uses current folder as fallback)
-	TRAP::TRAPLog.SetFilePath(FileSystem::GetGameLogFolderPath().value_or("") / "trap.log");
+	TRAP::TRAPLog.SetFilePath(FileSystem::GetGameLogFolderPath().ValueOr("") / "trap.log");
 
 	if(appID)
 		TRAP::Utils::Steam::InitializeClient(*appID);
@@ -827,7 +827,7 @@ std::filesystem::path TRAP::Application::GetTRAPConfigPath()
 #ifdef TRAP_HEADLESS_MODE
 	return "engine.cfg";
 #else
-	return TRAP::FileSystem::GetGameDocumentsFolderPath().value_or("") / "engine.cfg";
+	return TRAP::FileSystem::GetGameDocumentsFolderPath().ValueOr("") / "engine.cfg";
 #endif
 }
 

@@ -29,11 +29,11 @@
 #define TRAP_FILESYSTEM_H
 
 #include <cstdint>
-#include <optional>
 #include <vector>
 #include <filesystem>
 
 #include "Core/Types.h"
+#include "Utils/Optional.h"
 
 namespace TRAP::FileSystem
 {
@@ -58,13 +58,13 @@ namespace TRAP::FileSystem
 	/// @param path File path.
 	/// @return File content as std::vector<u8> on success, empty std::optional otherwise.
 	/// @note This will read the whole file into memory, only use this for small files.
-	[[nodiscard]] std::optional<std::vector<u8>> ReadFile(const std::filesystem::path& path);
+	[[nodiscard]] TRAP::Optional<std::vector<u8>> ReadFile(const std::filesystem::path& path);
 	/// @brief Read the given text file.
 	/// @param path File path.
 	/// @return File content as std::string on success, empty std::optional otherwise.
 	/// @note CRLF line endings are automatically converted to LF (i.e. '\n').
 	/// @note This will read the whole file into memory, only use this for small files.
-	[[nodiscard]] std::optional<std::string> ReadTextFile(const std::filesystem::path& path);
+	[[nodiscard]] TRAP::Optional<std::string> ReadTextFile(const std::filesystem::path& path);
 
 	/// @brief Write the given data as binary to the given file path.
 	/// @param path File path.
@@ -124,48 +124,48 @@ namespace TRAP::FileSystem
 	/// @param path Path to a file or folder.
 	/// @param recursive Recursively count file sizes. This only has an effect if path leads to a folder.
 	/// @return File or folder size in bytes. Empty optional if an error has occurred.
-	[[nodiscard]] std::optional<uintmax_t> GetSize(const std::filesystem::path& path, bool recursive = true);
+	[[nodiscard]] TRAP::Optional<uintmax_t> GetSize(const std::filesystem::path& path, bool recursive = true);
 	/// @brief Get the last write time of a file or folder.
 	/// @param path Path to a file or folder.
 	/// @return Last write time of the file or folder. Empty optional if an error has occurred.
-	[[nodiscard]] std::optional<std::filesystem::file_time_type> GetLastWriteTime(const std::filesystem::path& path);
+	[[nodiscard]] TRAP::Optional<std::filesystem::file_time_type> GetLastWriteTime(const std::filesystem::path& path);
 
 	/// @brief Get only the filename without its folders from a file path.
 	/// @param path File path.
 	/// @return String only containing the filename without its folders on success, empty optional otherwise.
-	[[nodiscard]] std::optional<std::string> GetFileNameWithEnding(const std::filesystem::path& path);
+	[[nodiscard]] TRAP::Optional<std::string> GetFileNameWithEnding(const std::filesystem::path& path);
 	/// @brief Get only the filename without its folders and ending/suffix from a file path.
 	/// @param path File path.
 	/// @return String only containing the filename without its folders and file ending on success, empty optional otherwise.
-	[[nodiscard]] std::optional<std::string> GetFileNameWithoutEnding(const std::filesystem::path& path);
+	[[nodiscard]] TRAP::Optional<std::string> GetFileNameWithoutEnding(const std::filesystem::path& path);
 	/// @brief Get only the file ending without its name from a file path.
 	/// @param path File path.
 	/// @return String only containing the file ending without its file name on success, empty optional otherwise.
-	[[nodiscard]] std::optional<std::string> GetFileEnding(const std::filesystem::path& path);
+	[[nodiscard]] TRAP::Optional<std::string> GetFileEnding(const std::filesystem::path& path);
 
 	/// @brief Get only the folder without the filename and its ending.
 	/// @param filePath File path.
 	/// @return Folder path from file path on success, empty optional otherwise.
-	[[nodiscard]] std::optional<std::filesystem::path> GetFolderPath(const std::filesystem::path& filePath);
+	[[nodiscard]] TRAP::Optional<std::filesystem::path> GetFolderPath(const std::filesystem::path& filePath);
 
 	/// @brief Get the path to the temp folder of the engine.
 	/// @return Path to the temp folder on success, empty optional otherwise.
-	[[nodiscard]] std::optional<std::filesystem::path> GetTempFolderPath();
+	[[nodiscard]] TRAP::Optional<std::filesystem::path> GetTempFolderPath();
 	/// @brief Get the path to the temp folder of the game.
 	/// @return Path to the temp folder on success, empty optional otherwise.
-	[[nodiscard]] std::optional<std::filesystem::path> GetGameTempFolderPath();
+	[[nodiscard]] TRAP::Optional<std::filesystem::path> GetGameTempFolderPath();
 	/// @brief Get the path to the current working folder.
 	/// @return Path to the current working folder on success, empty optional otherwise.
-	[[nodiscard]] std::optional<std::filesystem::path> GetCurrentFolderPath();
+	[[nodiscard]] TRAP::Optional<std::filesystem::path> GetCurrentFolderPath();
 	/// @brief Get the path to the users documents folder.
 	/// @return Path to the users documents folder on success, empty optional otherwise.
-	[[nodiscard]] std::optional<std::filesystem::path> GetDocumentsFolderPath();
+	[[nodiscard]] TRAP::Optional<std::filesystem::path> GetDocumentsFolderPath();
 	/// @brief Get the path to the users documents folder for the game.
 	/// @return Path to the users documents folder for the game on success, empty optional otherwise.
-	[[nodiscard]] std::optional<std::filesystem::path> GetGameDocumentsFolderPath();
+	[[nodiscard]] TRAP::Optional<std::filesystem::path> GetGameDocumentsFolderPath();
 	/// @brief Get the path to the log folder for the game.
 	/// @return Path to the log folder for the game on success, empty optional otherwise.
-	[[nodiscard]] std::optional<std::filesystem::path> GetGameLogFolderPath();
+	[[nodiscard]] TRAP::Optional<std::filesystem::path> GetGameLogFolderPath();
 
 	/// @brief Checks whether the paths p1 and p2 resolve to the same file system file/folder.
 	/// @param p1 File/folder path.
@@ -197,11 +197,11 @@ namespace TRAP::FileSystem
 	/// @brief Converts a path to an absolute path.
 	/// @param p Path to convert.
 	/// @return Absolute path on success, empty optional otherwise.
-	[[nodiscard]] std::optional<std::filesystem::path> ToAbsolutePath(const std::filesystem::path& p);
+	[[nodiscard]] TRAP::Optional<std::filesystem::path> ToAbsolutePath(const std::filesystem::path& p);
 	/// @brief Converts a path to a relative path.
 	/// @param p Path to convert.
 	/// @return Relative path on success, empty optional otherwise.
-	[[nodiscard]] std::optional<std::filesystem::path> ToRelativePath(const std::filesystem::path& p);
+	[[nodiscard]] TRAP::Optional<std::filesystem::path> ToRelativePath(const std::filesystem::path& p);
 
 	/// @brief Change the current folder to the given path.
 	/// @param p Folder path to change to.

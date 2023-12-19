@@ -4723,3 +4723,7 @@ SITREP 12/09/2023|23w49a2
     - Build-CI Enabled second Windows runner again ~<5 mins
     - GitHub Actions Windows Runner Added ninja ~<5 mins
     - Build-CI Windows switched from msbuild to ninja ~<5 mins
+
+SITREP 12/20/2023|23w51a1
+    - Changed TRAP Engine version to 23w50a1(0.10.16)
+    - Cleaned up TRAP::FileSystem ~<30 mins
