@@ -4725,5 +4725,9 @@ SITREP 12/09/2023|23w49a2
     - Build-CI Windows switched from msbuild to ninja ~<5 mins
 
 SITREP 12/20/2023|23w51a1
-    - Changed TRAP Engine version to 23w50a1(0.10.16)
+    - Changed TRAP Engine version to 23w51a1(0.10.16)
     - Cleaned up TRAP::FileSystem ~<30 mins
+
+SITREP 12/21/2023|23w51a2
+    - Changed TRAP Engine version to 23w51a2(0.10.17)
+    - PipelineCache Fixed unstable hash values ~<5 mins

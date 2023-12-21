@@ -1,6 +1,8 @@
 #ifndef TRAP_PIPELINEDESCHASH_H
 #define TRAP_PIPELINEDESCHASH_H
 
+#include "Graphics/API/Objects/RenderTarget.h"
+#include "Graphics/Shaders/Shader.h"
 #include "RendererAPI.h"
 
 namespace std
@@ -16,7 +18,7 @@ namespace std
             (
                 res,
                 p.Type,
-                p.PipelineExtensions,
+                //p.PipelineExtensions,
                 p.PipelineExtensionCount
             );
 
@@ -27,8 +29,7 @@ namespace std
 				TRAP::Utils::HashCombine
                 (
                     res,
-                    c.ShaderProgram,
-                    c.RootSignature
+                    c.ShaderProgram->GetName()
                 );
 			}
 
@@ -39,8 +40,7 @@ namespace std
 				TRAP::Utils::HashCombine
                 (
                     res,
-					g.ShaderProgram,
-					g.RootSignature,
+					g.ShaderProgram->GetName(),
 					g.RenderTargetCount,
 					g.SampleCount,
 					g.SampleQuality,
@@ -48,9 +48,19 @@ namespace std
 					g.PrimitiveTopology,
                     g.ShadingRate,
                     std::get<0>(g.ShadingRateCombiners),
-                    std::get<1>(g.ShadingRateCombiners),
-                    g.ShadingRateTexture
+                    std::get<1>(g.ShadingRateCombiners)
                 );
+
+                if(g.ShadingRateTexture)
+                {
+                    TRAP::Utils::HashCombine
+                    (
+                        res,
+                        g.ShadingRateTexture->GetImageFormat(),
+                        g.ShadingRateTexture->GetWidth(),
+                        g.ShadingRateTexture->GetHeight()
+                    );
+                }
 
 				if (g.VertexLayout)
 				{
