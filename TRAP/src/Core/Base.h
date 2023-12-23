@@ -129,7 +129,7 @@ enum class ProfileSystems : u32
 //-------------------------------------------------------------------------------------------------------------------//
 
 /// @brief TRAP version number created with TRAP_MAKE_VERSION
-inline constexpr TRAP::SemanticVersion<0, 10, 17> TRAP_VERSION{};
+inline constexpr TRAP::SemanticVersion<0, 10, 18> TRAP_VERSION{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 

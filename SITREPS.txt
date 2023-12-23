@@ -4731,3 +4731,7 @@ SITREP 12/20/2023|23w51a1
 SITREP 12/21/2023|23w51a2
     - Changed TRAP Engine version to 23w51a2(0.10.17)
     - PipelineCache Fixed unstable hash values ~<5 mins
+
+SITREP 12/23/2023|23w51b1
+    - Changed TRAP Engine version to 23w51b1(0.10.18)
+    - Backported C++26 std::breakpoint(), std::breakpoint_if_debugging() and std::is_debugger_present() ~<15 mins

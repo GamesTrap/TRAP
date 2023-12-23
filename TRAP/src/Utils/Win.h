@@ -83,6 +83,7 @@
 #include <ShlObj_core.h>
 #include <Shobjidl.h>
 #include <initguid.h>
+#include <debugapi.h>
 //XInput
 #include <Xinput.h>
 //DirectInput

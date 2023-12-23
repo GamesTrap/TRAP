@@ -2,6 +2,7 @@
 #define TRAP_TRAPASSERT_H
 
 #include "Core/PlatformDetection.h"
+#include "Core/Backports.h"
 #include "Log/Log.h"
 #include <source_location>
 
@@ -10,35 +11,6 @@
 #endif /*TRAP_DEBUG || TRAP_RELWITHDEBINFO*/
 
 //-------------------------------------------------------------------------------------------------------------------//
-
-#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
-	#if defined(TRAP_PLATFORM_WINDOWS)
-		/// @brief Sets a cross platform debug break.
-		/// @note Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
-		inline void TRAP_DEBUG_BREAK()
-		{
-			__debugbreak();
-		}
-	#elif defined(TRAP_PLATFORM_LINUX)
-		#include <csignal>
-		/// @brief Sets a cross platform debug break.
-		/// @note Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
-		inline void TRAP_DEBUG_BREAK()
-		{
-			[[maybe_unused]] const auto _ = raise(SIGTRAP);
-		}
-	#else
-		/// @brief Sets a cross platform debug break.
-		/// @note Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
-		inline constexpr void TRAP_DEBUG_BREAK() noexcept
-		{}
-	#endif
-#else
-		/// @brief Sets a cross platform debug break.
-		/// @note Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
-		inline constexpr void TRAP_DEBUG_BREAK() noexcept
-		{}
-#endif /*TRAP_DEBUG || TRAP_RELWITHDEBINFO*/
 
 #define TRAP_EXPAND_MACRO(x) x
 #define TRAP_STRINGIFY_MACRO(x) #x
@@ -62,7 +34,7 @@ void TRAP_ASSERT_IMPL_LOG(const std::string_view expressionStr, const std::strin
 
 #define TRAP_ASSERT_IMPL(check, ...) { if(!(check)) { constexpr std::source_location loc = std::source_location::current(); \
                                                       TRAP_ASSERT_IMPL_LOG(TRAP_STRINGIFY_MACRO(check), loc.file_name(), loc.function_name(), loc.line(), loc.column(), __VA_ARGS__); \
-													  TRAP_DEBUG_BREAK(); } }
+													  std::breakpoint_if_debugging(); } }
 
 //Currently accepts at least the condition and one additional parameter (the message) being optional
 #define TRAP_ASSERT(...) TRAP_EXPAND_MACRO(TRAP_ASSERT_IMPL(__VA_ARGS__, ""))

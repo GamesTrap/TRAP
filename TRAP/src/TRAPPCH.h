@@ -42,6 +42,7 @@
 #include <shared_mutex>
 #include <bit>
 #include <source_location>
+#include <csignal>
 
 #include "Core/Backports.h"
 #include "Core/Types.h"
