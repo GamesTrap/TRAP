@@ -807,14 +807,38 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Optional<std::filesystem::path> TRAP::FileSystem::ToRelativePath(const std::filesystem::path& p)
+[[nodiscard]] TRAP::Optional<std::filesystem::path> TRAP::FileSystem::ToCanonicalAbsolutePath(const std::filesystem::path& p)
+{
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
+    TRAP_ASSERT(!p.empty(), "FileSystem::ToCanonicalAbsolutePath(): Path is empty!");
+
+    std::error_code ec{};
+    std::filesystem::path res = std::filesystem::canonical(p, ec);
+
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Error while converting path to canonical absolute: ", p, " (", ec.message(), ")!");
+        return TRAP::NullOpt;
+    }
+
+    if(res.empty())
+        return TRAP::NullOpt;
+
+    return res;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Optional<std::filesystem::path> TRAP::FileSystem::ToRelativePath(const std::filesystem::path& p,
+                                                                                     const std::filesystem::path& base)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     TRAP_ASSERT(!p.empty(), "FileSystem::ToRelativePath(): Path is empty!");
 
     std::error_code ec{};
-    std::filesystem::path res = std::filesystem::proximate(p, ec);
+    std::filesystem::path res = std::filesystem::proximate(p, base, ec);
 
     if(ec)
     {
@@ -830,11 +854,11 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::SetCurrentFolderPath(const std::filesystem::path &p)
+bool TRAP::FileSystem::SetCurrentWorkingFolderPath(const std::filesystem::path &p)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    TRAP_ASSERT(!p.empty(), "FileSystem::SetCurrentFolderPath(): Path is empty!");
+    TRAP_ASSERT(!p.empty(), "FileSystem::SetCurrentWorkingFolderPath(): Path is empty!");
 
     std::error_code ec{};
     std::filesystem::current_path(p, ec);
@@ -846,6 +870,24 @@ bool TRAP::FileSystem::SetCurrentFolderPath(const std::filesystem::path &p)
     }
 
     return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Optional<std::filesystem::path> TRAP::FileSystem::GetCurrentWorkingFolderPath()
+{
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
+    std::error_code ec{};
+    auto currPath = std::filesystem::current_path(ec);
+
+    if(ec || currPath.empty())
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Error while retrieving current path (", ec.message(), ")!");
+        return TRAP::NullOpt;
+    }
+
+    return currPath;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

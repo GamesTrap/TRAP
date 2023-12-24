@@ -198,15 +198,26 @@ namespace TRAP::FileSystem
 	/// @param p Path to convert.
 	/// @return Absolute path on success, empty optional otherwise.
 	[[nodiscard]] TRAP::Optional<std::filesystem::path> ToAbsolutePath(const std::filesystem::path& p);
+	/// @brief Converts a path to a canonical absolute path, i.e. an absolute path that has no dot, dot-dot
+	///        elements or symbolic links in its generic format representation.
+	/// @param p Existing path to convert.
+	/// @return Canonical absolute path that resolves to the same file as ToAbsolutePath(p) on success, empty optional otherwise.
+	[[nodiscard]] TRAP::Optional<std::filesystem::path> ToCanonicalAbsolutePath(const std::filesystem::path& p);
 	/// @brief Converts a path to a relative path.
 	/// @param p Path to convert.
+	/// @param base Base path, against which p will be made relative.
 	/// @return Relative path on success, empty optional otherwise.
-	[[nodiscard]] TRAP::Optional<std::filesystem::path> ToRelativePath(const std::filesystem::path& p);
+	[[nodiscard]] TRAP::Optional<std::filesystem::path> ToRelativePath(const std::filesystem::path& p,
+	                                                                   const std::filesystem::path& base = std::filesystem::current_path());
 
 	/// @brief Change the current folder to the given path.
 	/// @param p Folder path to change to.
 	/// @return True on success, false otherwise.
-	bool SetCurrentFolderPath(const std::filesystem::path& p);
+	bool SetCurrentWorkingFolderPath(const std::filesystem::path& p);
+	/// @brief Change the current working folder to the given path.
+	/// @param p Path to change the current working folder to.
+	/// @return Current working folder on success, empty optional otherwise.
+	[[nodiscard]] TRAP::Optional<std::filesystem::path> GetCurrentWorkingFolderPath();
 
 	/// @brief Opens the file browser at the given path.
 	///        If p leads to a file, the file browser will select/hightlight the file.
