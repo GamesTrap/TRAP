@@ -4743,3 +4743,4 @@ SITREP 12/24/2023|23w51b2
 SITREP 12/25/2023|23w52a1
     - Changed TRAP Engine version to 23w52a1(0.10.20)
     - Update-Dependencies Added Premake-Ninja ~<5 mins
+    - ImGuiVulkanBackend CreateFontsTexture() Changed device wait idle to queue wait idle ~<5 mins

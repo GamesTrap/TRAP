@@ -1580,7 +1580,7 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
     bd->FontCommandBuffer->End();
     v.Queue->Submit({.Cmds{bd->FontCommandBuffer}});
 
-    v.Device->WaitIdle();
+    v.Queue->WaitQueueIdle();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
