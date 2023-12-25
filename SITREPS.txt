@@ -4739,3 +4739,7 @@ SITREP 12/23/2023|23w51b1
 SITREP 12/24/2023|23w51b2
     - Changed TRAP Engine version to 23w51b2(0.10.19)
     - FileSystem Added ToCanonicalAbsolutePath() and GetCurrentWorkingFolderPath() ~<10 mins
+
+SITREP 12/25/2023|23w52a1
+    - Changed TRAP Engine version to 23w52a1(0.10.20)
+    - Update-Dependencies Added Premake-Ninja ~<5 mins

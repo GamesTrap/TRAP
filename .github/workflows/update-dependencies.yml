@@ -163,6 +163,16 @@ jobs:
           pr-title: "Premake-VSCodeGen"
           pr-branch-name: "premake-vscodegen-update"
           pr-token: ${{steps.generate-token.outputs.token}}
+      - name: Update Premake-Ninja
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
+        with:
+          dependency-path: ".modules/ninja"
+          update-method: "latest-commit"
+          branch: "main"
+          pr-title: "Premake-Ninja"
+          pr-branch-name: "premake-ninja-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
 
       - name: Update GLSLang
         if: ${{ always() }}
