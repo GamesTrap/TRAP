@@ -532,7 +532,7 @@ void TRAP::FileSystem::FileWatcher::Watch(const std::stop_token& stopToken)
 
             FileStatus status = FileStatus::Created;
             const std::filesystem::path filePath = watchDescriptors[event->wd] / std::filesystem::path(event->name);
-            const bool isDir = std::filesystem::is_directory(filePath);
+            const bool isDir = FileSystem::IsFolder(filePath);
             std::optional<std::filesystem::path> oldFileName = std::nullopt;
 
             if((event->mask & IN_CREATE) != 0u)

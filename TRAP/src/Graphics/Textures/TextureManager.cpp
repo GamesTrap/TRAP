@@ -273,7 +273,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Reload(const 
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	if(!std::filesystem::exists(nameOrPath))
+	if(!TRAP::FileSystem::Exists(nameOrPath))
 	{
 		//Name
 		if(Exists(nameOrPath))

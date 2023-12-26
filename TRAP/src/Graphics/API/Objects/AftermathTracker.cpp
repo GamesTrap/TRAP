@@ -35,7 +35,7 @@ void OnGPUCrashDump([[maybe_unused]] const void* gpuCrashDump,
 #ifndef TRAP_HEADLESS_MODE
     const auto targetFolder = TRAP::FileSystem::GetGameDocumentsFolderPath();
 #else
-    const auto targetFolder = TRAP::FileSystem::GetCurrentFolderPath();
+    const auto targetFolder = TRAP::FileSystem::GetCurrentWorkingFolderPath();
 #endif
     if(!targetFolder)
         return;

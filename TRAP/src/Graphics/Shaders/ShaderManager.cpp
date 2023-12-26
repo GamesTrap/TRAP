@@ -159,7 +159,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(const st
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	if(!std::filesystem::exists(nameOrPath))
+	if(!TRAP::FileSystem::Exists(nameOrPath))
 	{
 		//Name
 		if(Exists(nameOrPath))

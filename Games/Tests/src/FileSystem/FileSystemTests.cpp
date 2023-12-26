@@ -40,7 +40,7 @@ bool FileSystemTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 
 	case TRAP::Input::Key::O:
 	{
-		const auto currentFolder = TRAP::FileSystem::GetCurrentFolderPath();
+		const auto currentFolder = TRAP::FileSystem::GetCurrentWorkingFolderPath();
 		if(currentFolder)
 			TRAP::FileSystem::OpenInFileBrowser(*currentFolder);
 		break;

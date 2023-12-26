@@ -53,7 +53,7 @@ void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path) cons
 	{
 		TRAP::Graphics::RendererAPI::PipelineCacheDesc cacheDesc{};
 		cacheDesc.Flags = desc.Flags;
-		if(!std::filesystem::exists(desc.Path))
+		if(!TRAP::FileSystem::Exists(desc.Path))
 			return TRAP::Graphics::PipelineCache::Create(cacheDesc); //Empty cache
 
 		const auto data = TRAP::FileSystem::ReadFile(desc.Path);

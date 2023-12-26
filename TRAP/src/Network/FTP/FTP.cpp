@@ -297,7 +297,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::filesystem:
 
 			//If the download was unsuccessful, delete the partial file
 			if (!response.IsOK())
-				std::filesystem::remove(filePath);
+				TRAP::FileSystem::Delete(filePath);
 		}
 	}
 

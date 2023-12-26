@@ -141,6 +141,8 @@ namespace TRAP::FileSystem
 	/// @brief Get only the file ending without its name from a file path.
 	/// @param path File path.
 	/// @return String only containing the file ending without its file name on success, empty optional otherwise.
+	/// @note The file extension as returned by this function includes a period to make it possible to distinguish
+	///       the file that ends with a period (function return ".") from a file with no extension (function returns "").
 	[[nodiscard]] TRAP::Optional<std::string> GetFileEnding(const std::filesystem::path& path);
 
 	/// @brief Get only the folder without the filename and its ending.
@@ -150,13 +152,10 @@ namespace TRAP::FileSystem
 
 	/// @brief Get the path to the temp folder of the engine.
 	/// @return Path to the temp folder on success, empty optional otherwise.
-	[[nodiscard]] TRAP::Optional<std::filesystem::path> GetTempFolderPath();
+	[[nodiscard]] TRAP::Optional<std::filesystem::path> GetEngineTempFolderPath();
 	/// @brief Get the path to the temp folder of the game.
 	/// @return Path to the temp folder on success, empty optional otherwise.
 	[[nodiscard]] TRAP::Optional<std::filesystem::path> GetGameTempFolderPath();
-	/// @brief Get the path to the current working folder.
-	/// @return Path to the current working folder on success, empty optional otherwise.
-	[[nodiscard]] TRAP::Optional<std::filesystem::path> GetCurrentFolderPath();
 	/// @brief Get the path to the users documents folder.
 	/// @return Path to the users documents folder on success, empty optional otherwise.
 	[[nodiscard]] TRAP::Optional<std::filesystem::path> GetDocumentsFolderPath();
@@ -205,10 +204,14 @@ namespace TRAP::FileSystem
 	[[nodiscard]] TRAP::Optional<std::filesystem::path> ToCanonicalAbsolutePath(const std::filesystem::path& p);
 	/// @brief Converts a path to a relative path.
 	/// @param p Path to convert.
+	/// @return Relative path on success, empty optional otherwise.
+	[[nodiscard]] TRAP::Optional<std::filesystem::path> ToRelativePath(const std::filesystem::path& p);
+	/// @brief Converts a path to a relative path.
+	/// @param p Path to convert.
 	/// @param base Base path, against which p will be made relative.
 	/// @return Relative path on success, empty optional otherwise.
 	[[nodiscard]] TRAP::Optional<std::filesystem::path> ToRelativePath(const std::filesystem::path& p,
-	                                                                   const std::filesystem::path& base = std::filesystem::current_path());
+	                                                                   const std::filesystem::path& base);
 
 	/// @brief Change the current folder to the given path.
 	/// @param p Folder path to change to.
