@@ -27,22 +27,25 @@ function m.IncludeDiscordGameSDK()
     end
 
     filter {"system:windows", "kind:ConsoleApp or WindowedApp"}
-        links "%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll.lib"
+        links
+        {
+            "%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll.lib",
+            "DiscordGameSDK"
+        }
         postbuildcommands "{COPYDIR} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll %{cfg.targetdir}"
 
     filter {"system:linux", "kind:ConsoleApp or WindowedApp"}
         libdirs "%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64"
         postbuildcommands "{COPYFILE} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/libdiscord_game_sdk.so %{cfg.targetdir}"
-        links "discord_game_sdk"
+        links
+        {
+            "discord_game_sdk",
+            "DiscordGameSDK"
+        }
 
     filter {}
 
     defines "USE_DISCORD_GAME_SDK"
-    files
-    {
-        "%{IncludeDir.DISCORDGAMESDK}/**.h",
-        "%{IncludeDir.DISCORDGAMESDK}/**.cpp"
-    }
     externalincludedirs "%{IncludeDir.DISCORDGAMESDK}"
 
     if m.AlreadyExecutedDiscordCompat == nil or m.AlreadyExecutedDiscordCompat == false then

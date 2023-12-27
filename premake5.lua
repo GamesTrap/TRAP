@@ -258,6 +258,9 @@ group "Dependencies"
 	include "Dependencies/SPIRV-Cross.lua"
 	include "Dependencies/GLSLang.lua"
 	include "Dependencies/Catch2.lua"
+if os.isfile(path.join(_MAIN_SCRIPT_DIR, "Dependencies/DiscordGameSDK/cpp/discord.h")) then
+	include "Dependencies/DiscordGameSDK.lua"
+end
 
 group "Games"
 	include "Games/Sandbox"

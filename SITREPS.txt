@@ -4753,3 +4753,4 @@ SITREP 12/27/2023|23w52a3
     - Changed TRAP Engine version to 23w52a3(0.10.22)
     - Added Unittests for TRAP::FileSystem ~<45 mins
     - HeadlessTests Removed old FileSystemTests ~<5 mins
+    - DiscordGameSDK is now compiled as static lib ~<10 mins

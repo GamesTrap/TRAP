@@ -151,13 +151,6 @@ function m.IncludeTRAPUnitTests()
 	}
     defines "TRAP_UNITTESTS"
 
-    -- Discord Game SDK stuff
-	if(thirdparty.IncludeDiscordGameSDK()) then
-		dofileopt(path.join(_MAIN_SCRIPT_DIR .. "Dependencies/DiscordGameSDK/Compatibility"))
-	end
-	-- NVIDIA Reflex SDK stuff
-	thirdparty.IncludeNVIDIAReflexSDK()
-
     filter {}
 end
 function m.LinkTRAPUnitTests()
