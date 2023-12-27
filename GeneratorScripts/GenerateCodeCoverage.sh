@@ -4,7 +4,8 @@ if [ -d "../bin-int/Debug-linux-x86_64/UnitTests" ] && [ -d "../bin-int/Debug-li
     lcov --directory ../bin-int/Debug-linux-x86_64/UnitTests --directory ../bin-int/Debug-linux-x86_64/TRAP-UnitTests --zerocounters
 fi
 
-make -C ../ config=debug UnitTests -j$(nproc)
+ninja -C ../ UnitTests_Debug
+# make -C ../ config=debug UnitTests -j$(nproc)
 
 if [ -d "../Coverage" ]; then
     rm -Rf ../Coverage
@@ -14,9 +15,12 @@ mkdir -p ../Coverage
 
 lcov --capture --initial --directory ../ --output-file=../Coverage/coverage_baseline.info --exclude /usr --exclude Dependencies --parallel --branch-coverage
 
+currPath = $(pwd)
+
+cd "../UnitTests"
 #Execute UnitTest project (Generates gcov report)
 ../bin/Debug-linux-x86_64/UnitTests/./UnitTests
-
+cd "$currPath"
 
 #Run lcov
 lcov --capture --directory ../ --output-file=../Coverage/coverage.info --exclude /usr --exclude Dependencies --parallel --branch-coverage

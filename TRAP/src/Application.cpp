@@ -28,7 +28,18 @@
 #include "Layers/ImGui/ImGuiLayer.h"
 #include "Utils/DBus/DBus.h"
 
+#ifdef TRAP_UNITTESTS
+
 TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std::optional<u32> appID)
+	: m_gameName(std::move(gameName))
+{
+	TRAP_ASSERT(!s_Instance, "Application(): Application already exists!");
+	s_Instance = this;
+}
+
+#else
+
+TRAP::Application::Application(std::string gameName, const std::optional<u32> appID)
 	: m_gameName(std::move(gameName))
 {
 	ZoneScoped;
@@ -92,7 +103,17 @@ TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std:
 #endif /*TRAP_HEADLESS_MODE*/
 }
 
+#endif
+
 //-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRAP_UNITTESTS
+
+TRAP::Application::~Application()
+{
+}
+
+#else
 
 TRAP::Application::~Application()
 {
@@ -143,6 +164,8 @@ TRAP::Application::~Application()
 
 	s_Instance = nullptr;
 }
+
+#endif
 
 //-------------------------------------------------------------------------------------------------------------------//
 

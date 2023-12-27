@@ -33,7 +33,9 @@ TRAP::Log::~Log()
 {
 	ZoneScoped;
 
+#ifndef TRAP_UNITTESTS
 	Save();
+#endif /*TRAP_UNITTESTS*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -99,6 +101,13 @@ void TRAP::Log::Save() const
 
 	std::string dateTimeStamp = TRAP::Utils::String::GetDateTimeStamp(std::chrono::system_clock::now());
 	//Make the date-time-stamp usable as file-name
-	std::replace(dateTimeStamp.begin(), dateTimeStamp.end(), ':', '-');
+	std::ranges::transform(dateTimeStamp, dateTimeStamp.begin(), [](const char c)
+	{
+		if(c == ':')
+			return '-';
+		if(c == ' ')
+			return '_';
+		return c;
+	});
 	return dateTimeStamp;
 }

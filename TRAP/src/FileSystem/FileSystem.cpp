@@ -63,9 +63,12 @@ void TRAP::FileSystem::Shutdown()
 
     TRAP_ASSERT(!path.empty(), "FileSystem::ReadFile(): Path is empty!");
 
-    const auto fileSize = GetSize(path);
+    const auto fileSize = GetFileSizeInternal(path);
     if(!fileSize)
         return TRAP::NullOpt;
+
+    if(*fileSize == 0)
+        return std::vector<u8>{};
 
     std::ifstream file(path, std::ios::binary);
     if(!file.is_open() || !file.good())
@@ -94,9 +97,11 @@ void TRAP::FileSystem::Shutdown()
 
     TRAP_ASSERT(!path.empty(), "FileSystem::ReadTextFile(): Path is empty!");
 
-    const auto fileSize = GetSize(path);
+    const auto fileSize = GetFileSizeInternal(path);
     if(!fileSize)
         return TRAP::NullOpt;
+    if(*fileSize == 0)
+        return "";
 
     std::ifstream file(path, std::ios::binary);
     if(!file.is_open() || !file.good())
@@ -211,7 +216,7 @@ bool TRAP::FileSystem::Delete(const std::filesystem::path& path)
         return false;
     }
 
-    return true;
+    return res > 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -658,6 +663,9 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
 
     TRAP_ASSERT(!p.empty(), "FileSystem::ToAbsolutePath(): Path is empty!");
 
+    if(p.empty())
+        return TRAP::NullOpt;
+
     std::error_code ec{};
     std::filesystem::path res = std::filesystem::absolute(p, ec);
 
@@ -681,6 +689,9 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
 
     TRAP_ASSERT(!p.empty(), "FileSystem::ToCanonicalAbsolutePath(): Path is empty!");
 
+    if(p.empty())
+        return TRAP::NullOpt;
+
     std::error_code ec{};
     std::filesystem::path res = std::filesystem::canonical(p, ec);
 
@@ -703,6 +714,9 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     TRAP_ASSERT(!p.empty(), "FileSystem::ToRelativePath(): Path is empty!");
+
+    if(p.empty())
+        return TRAP::NullOpt;
 
     std::error_code ec{};
     std::filesystem::path res = std::filesystem::proximate(p, ec);
@@ -728,6 +742,9 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
 
     TRAP_ASSERT(!p.empty(), "FileSystem::ToRelativePath(): Path is empty!");
     TRAP_ASSERT(!base.empty(), "FileSystem::ToRelativePath(): Base is empty!");
+
+    if(p.empty() || base.empty())
+        return TRAP::NullOpt;
 
     std::error_code ec{};
     std::filesystem::path res = std::filesystem::proximate(p, base, ec);
@@ -790,10 +807,17 @@ bool TRAP::FileSystem::OpenInFileBrowser(const std::filesystem::path& p)
 
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    if(IsFile(p))
-        return OpenFileInFileBrowserInternal(p);
-    if(IsFolder(p))
-        return OpenFolderInFileBrowserInternal(p);
+    const auto absPath = TRAP::FileSystem::ToAbsolutePath(p);
+    if(!absPath)
+    {
+        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: ", p, " (failed to convert path to absolute format)!");
+        return false;
+    }
+
+    if(IsFile(*absPath))
+        return OpenFileInFileBrowserInternal(*absPath);
+    if(IsFolder(*absPath))
+        return OpenFolderInFileBrowserInternal(*absPath);
 
     TP_ERROR(Log::FileSystemPrefix, "Couldn't open file/folder in file browser: ", p, " (path doesn't lead to a file/folder)!");
     return false;
@@ -948,18 +972,12 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
         TRAP_ASSERT(!p.empty(), "FileSystem::OpenFolderInFileBrowserInternal(): Path is empty!");
-
-        auto absPath = TRAP::FileSystem::ToAbsolutePath(p);
-        if(!absPath)
-        {
-            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: ", p, " (failed to convert path to absolute format)!");
-            return false;
-        }
+        TRAP_ASSERT(TRAP::FileSystem::IsAbsolute(p), "FileSystem::OpenFolderInFileBrowserInternal(): Path is not absolute!");
 
 #ifdef TRAP_PLATFORM_WINDOWS
-        return OpenFolderInFileBrowserWindows(*absPath);
+        return OpenFolderInFileBrowserWindows(p);
 #elif defined(TRAP_PLATFORM_LINUX)
-        return OpenFolderInFileBrowserLinux(*absPath);
+        return OpenFolderInFileBrowserLinux(p);
 #else
         assert(false, "OpenFolderInFileBrowserInternal() not implemented!");
         return false;
@@ -977,18 +995,12 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
         TRAP_ASSERT(!p.empty(), "OpenFileInFileBrowser(): Path is empty!");
-
-        auto absPath = TRAP::FileSystem::ToAbsolutePath(p);
-        if(!absPath)
-        {
-            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: ", p, " (failed to convert path to absolute format)!");
-            return false;
-        }
+        TRAP_ASSERT(TRAP::FileSystem::IsAbsolute(p), "FileSystem::OpenFileInFileBrowserInternal(): Path is not absolute!");
 
     #ifdef TRAP_PLATFORM_WINDOWS
-        return OpenFileInFileBrowserWindows(*absPath);
+        return OpenFileInFileBrowserWindows(p);
     #elif defined(TRAP_PLATFORM_LINUX)
-        return OpenFileInFileBrowserLinux(*absPath);
+        return OpenFileInFileBrowserLinux(p);
     #else
         assert(false, "OpenFileInFileBrowser() not implemented!");
         return false;
@@ -1078,12 +1090,6 @@ namespace
 
         documentsDir = "$HOME/Documents";
 
-        //Get XDG Config folder
-        TRAP::Optional<std::filesystem::path> configFolder = GetXDGConfigFolderPath();
-        if(!configFolder)
-            return TRAP::NullOpt;
-        *configFolder /= "user-dirs.dirs";
-
         //Get Documents folder
         const auto userDirsDocumentsFolderPath = GetDocumentsFolderPathFromUserDirs();
         if(!userDirsDocumentsFolderPath)
@@ -1099,7 +1105,7 @@ namespace
                 TP_ERROR(TRAP::Log::FileSystemPrefix, "Failed to get documents folder path (failed to retrieve home directory path)!");
                 return TRAP::NullOpt;
             }
-            documentsDir.string().replace(homeVar, HomeVarName.size(), *homeFolder);
+            documentsDir = documentsDir.string().replace(homeVar, HomeVarName.size(), *homeFolder);
         }
 
         return documentsDir;
@@ -1112,6 +1118,7 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
         TRAP_ASSERT(!p.empty(), "FileSystem::OpenExternallyLinux(): Path is empty!");
+        TRAP_ASSERT(TRAP::FileSystem::IsAbsolute(p), "FileSystem::OpenExternallyLinux(): Path is not absolute!");
 
         const std::string cmd = fmt::format("xdg-open {}", p.native());
         FILE* const xdg = popen(cmd.c_str(), "r");
@@ -1137,6 +1144,7 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
         TRAP_ASSERT(!p.empty(), "FileSystem::OpenFolderInFileBrowserLinux(): Path is empty!");
+        TRAP_ASSERT(TRAP::FileSystem::IsAbsolute(p), "FileSystem::OpenFolderInFileBrowserLinux(): Path is not absolute!");
 
         const std::string cmd = fmt::format("xdg-open {}", p.string());
         FILE* const xdg = popen(cmd.c_str(), "r");
@@ -1162,6 +1170,7 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
         TRAP_ASSERT(!p.empty(), "FileSystem::OpenFileInFileBrowserLinux(): Path is empty!");
+        TRAP_ASSERT(TRAP::FileSystem::IsAbsolute(p), "FileSystem::OpenFileInFileBrowserLinux(): Path is not absolute!");
 
         const std::string cmd = fmt::format("xdg-open {}", p.parent_path().string());
         FILE* const xdg = popen(cmd.c_str(), "r");
@@ -1267,6 +1276,7 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
         TRAP_ASSERT(!p.empty(), "FileSystem::OpenExternallyWindows(): Path is empty!");
+        TRAP_ASSERT(TRAP::FileSystem::IsAbsolute(p), "FileSystem::OpenExternallyWindows(): Path is not absolute!");
 
         TRAP::Utils::Windows::COMInitializer comInitializer{};
         if(comInitializer.IsInitialized())
@@ -1298,6 +1308,7 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
         TRAP_ASSERT(!p.empty(), "FileSystem::OpenFolderInFileBrowserWindows(): Path is empty!");
+        TRAP_ASSERT(TRAP::FileSystem::IsAbsolute(p), "FileSystem::OpenFolderInFileBrowserWindows(): Path is not absolute!");
 
         TRAP::Utils::Windows::COMInitializer comInitializer{};
         if(comInitializer.IsInitialized())
@@ -1329,6 +1340,7 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
         TRAP_ASSERT(!p.empty(), "FileSystem::OpenFileInFileBrowserWindows(): Path is empty!");
+        TRAP_ASSERT(TRAP::FileSystem::IsAbsolute(p), "FileSystem::OpenFileInFileBrowserWindows(): Path is not absolute!");
 
         const std::wstring openPath = p.wstring();
 

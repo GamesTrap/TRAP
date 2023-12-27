@@ -4748,3 +4748,7 @@ SITREP 12/25/2023|23w52a1
 SITREP 12/26/2023|23w52a2
     - Changed TRAP Engine version to 23w52a2(0.10.21)
     - Cleaned up TRAP::FileSystem ~>45 mins
+
+SITREP 12/27/2023|23w52a3
+    - Changed TRAP Engine version to 23w52a3(0.10.22)
+    - Added Unittests for TRAP::FileSystem ~<45 mins
