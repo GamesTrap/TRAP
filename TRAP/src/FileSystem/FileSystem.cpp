@@ -63,6 +63,9 @@ void TRAP::FileSystem::Shutdown()
 
     TRAP_ASSERT(!path.empty(), "FileSystem::ReadFile(): Path is empty!");
 
+    if(!IsFile(path))
+        return TRAP::NullOpt;
+
     const auto fileSize = GetFileSizeInternal(path);
     if(!fileSize)
         return TRAP::NullOpt;
@@ -96,6 +99,9 @@ void TRAP::FileSystem::Shutdown()
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     TRAP_ASSERT(!path.empty(), "FileSystem::ReadTextFile(): Path is empty!");
+
+    if(!IsFile(path))
+        return TRAP::NullOpt;
 
     const auto fileSize = GetFileSizeInternal(path);
     if(!fileSize)

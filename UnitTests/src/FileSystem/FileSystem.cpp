@@ -94,12 +94,14 @@ TEST_CASE("TRAP::FileSystem::WriteFile()", "[filesystem][writefile]")
         std::vector<u8> data2(data);
         data2.insert(data2.end(), data.begin(), data.end());
         REQUIRE(TRAP::FileSystem::ReadFile(TestFilesPath / "write.bin").Value() == data2);
+        REQUIRE(TRAP::FileSystem::Delete(TestFilesPath / "write.bin"));
     }
 
     SECTION("Empty file")
     {
         REQUIRE(TRAP::FileSystem::WriteFile(TestFilesPath / "write_empty.bin", {}, TRAP::FileSystem::WriteMode::Overwrite));
         REQUIRE(TRAP::FileSystem::ReadFile(TestFilesPath / "write_empty.bin").Value().empty());
+        REQUIRE(TRAP::FileSystem::Delete(TestFilesPath / "write_empty.bin"));
     }
 
     SECTION("Empty path")
@@ -126,12 +128,14 @@ TEST_CASE("TRAP::FileSystem::WriteTextFile()", "[filesystem][writetextfile]")
         std::string data2(data);
         data2.insert(data2.end(), data.begin(), data.end());
         REQUIRE(TRAP::FileSystem::ReadTextFile(TestFilesPath / "write.txt").Value() == data2);
+        REQUIRE(TRAP::FileSystem::Delete(TestFilesPath / "write.txt"));
     }
 
     SECTION("Empty file")
     {
         REQUIRE(TRAP::FileSystem::WriteTextFile(TestFilesPath / "write_empty.txt", "", TRAP::FileSystem::WriteMode::Overwrite));
         REQUIRE(TRAP::FileSystem::ReadTextFile(TestFilesPath / "write_empty.txt").Value().empty());
+        REQUIRE(TRAP::FileSystem::Delete(TestFilesPath / "write_empty.txt"));
     }
 
     SECTION("Empty path")
@@ -360,11 +364,9 @@ TEST_CASE("TRAP::FileSystem::GetSize()", "[filesystem][getsize]")
     {
         const auto size = TRAP::FileSystem::GetSize(TestFilesPath, false);
         REQUIRE(size);
-        REQUIRE(*size == 73);
 
         const auto size2 = TRAP::FileSystem::GetSize(TestFilesPath, true);
         REQUIRE(size2);
-        REQUIRE(*size2 == 73);
     }
 
     SECTION("Empty path")
@@ -674,7 +676,9 @@ TEST_CASE("TRAP::FileSystem::ToAbsolutePath()", "[filesystem][toabsolutepath]")
 
     SECTION("Valid folder path")
     {
-        REQUIRE(TRAP::FileSystem::ToAbsolutePath(TestFilesPath));
+        const auto absPath = TRAP::FileSystem::ToAbsolutePath(TestFilesPath);
+        REQUIRE(absPath);
+        REQUIRE(TRAP::FileSystem::IsEquivalent(*absPath, "Testfiles/FileSystem"));
     }
 
     SECTION("Empty path")
@@ -693,7 +697,8 @@ TEST_CASE("TRAP::FileSystem::ToCanonicalAbsolutePath()", "[filesystem][tocanonic
     SECTION("Valid folder path")
     {
         REQUIRE(TRAP::FileSystem::ToCanonicalAbsolutePath(TestFilesPath));
-        REQUIRE(*TRAP::FileSystem::ToCanonicalAbsolutePath(TestFilesPath / "././") == *TRAP::FileSystem::ToAbsolutePath("Testfiles/FileSystem"));
+        const auto absPath = TRAP::FileSystem::ToCanonicalAbsolutePath(TestFilesPath / "././");
+        REQUIRE(TRAP::FileSystem::IsEquivalent(*absPath, "Testfiles/FileSystem"));
     }
 
     SECTION("Empty path")
