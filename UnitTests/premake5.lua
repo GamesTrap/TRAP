@@ -23,6 +23,8 @@ project "UnitTests"
 		"%{wks.location}",
 	}
 
+	postbuildcommands ("{COPYDIR} " .. path.join(_MAIN_SCRIPT_DIR, "UnitTests/Testfiles") .. " %{cfg.targetdir}")
+
 	filter { "toolset:gcc" }
 		buildoptions
 		{
