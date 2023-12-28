@@ -15,10 +15,10 @@
 #include "Graphics/Buffers/UniformBuffer.h"
 #include "Graphics/Buffers/StorageBuffer.h"
 
-TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesystem::path filepath,
+TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::filesystem::path& filepath,
 												const RendererAPI::BinaryShaderDesc& desc,
                                                 const std::vector<Macro>* const userMacros, const bool valid)
-	: Shader(name, valid, desc.Stages, userMacros, filepath)
+	: Shader(std::move(name), valid, desc.Stages, userMacros, filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -34,7 +34,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesyste
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const RendererAPI::BinaryShaderDesc& desc,
                                                 const std::vector<Macro>* const userMacros, const bool valid)
-	: Shader(name, valid, desc.Stages, userMacros)
+	: Shader(std::move(name), valid, desc.Stages, userMacros)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -48,10 +48,10 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesystem::path filepath,
+TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::filesystem::path& filepath,
                                                 const std::vector<Macro>* const userMacros,
 												const RendererAPI::ShaderStage stages)
-	: Shader(name, false, stages, userMacros, filepath)
+	: Shader(std::move(name), false, stages, userMacros, filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

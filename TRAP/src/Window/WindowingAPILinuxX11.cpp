@@ -394,7 +394,7 @@ void TRAP::INTERNAL::WindowingAPI::GetSystemContentScale(f32& xScale, f32& yScal
 	const char* const rms = s_Data.X11.XLIB.ResourceManagerString(s_Data.X11.display);
 	if(rms != nullptr)
 	{
-		const XrmDatabase db = s_Data.X11.XRM.GetStringDatabase(rms);
+		XrmDatabase db = s_Data.X11.XRM.GetStringDatabase(rms);
 		if(db != nullptr)
 		{
 			XrmValue value;
@@ -758,22 +758,22 @@ void TRAP::INTERNAL::WindowingAPI::DetectEWMH()
 	if(supportedAtoms == nullptr)
 		return;
 
-	const std::vector<Atom> supportedAtomsVec(supportedAtoms, supportedAtoms + atomCount);
+	const std::span<const Atom> supportedAtomsSpan(supportedAtoms, atomCount);
 
 	//See which of the atoms we support that are supported by the WM
 
-	s_Data.X11.NET_WM_STATE                   = GetAtomIfSupported(supportedAtomsVec, "_NET_WM_STATE").value_or(0);
-    s_Data.X11.NET_WM_STATE_ABOVE             = GetAtomIfSupported(supportedAtomsVec, "_NET_WM_STATE_ABOVE").value_or(0);
-    s_Data.X11.NET_WM_STATE_FULLSCREEN        = GetAtomIfSupported(supportedAtomsVec, "_NET_WM_STATE_FULLSCREEN").value_or(0);
-    s_Data.X11.NET_WM_STATE_MAXIMIZED_VERT    = GetAtomIfSupported(supportedAtomsVec, "_NET_WM_STATE_MAXIMIZED_VERT").value_or(0);
-    s_Data.X11.NET_WM_STATE_MAXIMIZED_HORZ    = GetAtomIfSupported(supportedAtomsVec, "_NET_WM_STATE_MAXIMIZED_HORZ").value_or(0);
-    s_Data.X11.NET_WM_STATE_DEMANDS_ATTENTION = GetAtomIfSupported(supportedAtomsVec, "_NET_WM_STATE_DEMANDS_ATTENTION").value_or(0);
-    s_Data.X11.NET_WM_FULLSCREEN_MONITORS     = GetAtomIfSupported(supportedAtomsVec, "_NET_WM_FULLSCREEN_MONITORS").value_or(0);
-    s_Data.X11.NET_WM_WINDOW_TYPE             = GetAtomIfSupported(supportedAtomsVec, "_NET_WM_WINDOW_TYPE").value_or(0);
-    s_Data.X11.NET_WM_WINDOW_TYPE_NORMAL      = GetAtomIfSupported(supportedAtomsVec, "_NET_WM_WINDOW_TYPE_NORMAL").value_or(0);
-    s_Data.X11.NET_WORKAREA                   = GetAtomIfSupported(supportedAtomsVec, "_NET_WORKAREA").value_or(0);
-    s_Data.X11.NET_CURRENT_DESKTOP            = GetAtomIfSupported(supportedAtomsVec, "_NET_CURRENT_DESKTOP").value_or(0);
-    s_Data.X11.NET_ACTIVE_WINDOW              = GetAtomIfSupported(supportedAtomsVec, "_NET_ACTIVE_WINDOW").value_or(0);
+	s_Data.X11.NET_WM_STATE                   = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE").value_or(0);
+    s_Data.X11.NET_WM_STATE_ABOVE             = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE_ABOVE").value_or(0);
+    s_Data.X11.NET_WM_STATE_FULLSCREEN        = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE_FULLSCREEN").value_or(0);
+    s_Data.X11.NET_WM_STATE_MAXIMIZED_VERT    = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE_MAXIMIZED_VERT").value_or(0);
+    s_Data.X11.NET_WM_STATE_MAXIMIZED_HORZ    = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE_MAXIMIZED_HORZ").value_or(0);
+    s_Data.X11.NET_WM_STATE_DEMANDS_ATTENTION = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE_DEMANDS_ATTENTION").value_or(0);
+    s_Data.X11.NET_WM_FULLSCREEN_MONITORS     = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_FULLSCREEN_MONITORS").value_or(0);
+    s_Data.X11.NET_WM_WINDOW_TYPE             = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_WINDOW_TYPE").value_or(0);
+    s_Data.X11.NET_WM_WINDOW_TYPE_NORMAL      = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_WINDOW_TYPE_NORMAL").value_or(0);
+    s_Data.X11.NET_WORKAREA                   = GetAtomIfSupported(supportedAtomsSpan, "_NET_WORKAREA").value_or(0);
+    s_Data.X11.NET_CURRENT_DESKTOP            = GetAtomIfSupported(supportedAtomsSpan, "_NET_CURRENT_DESKTOP").value_or(0);
+    s_Data.X11.NET_ACTIVE_WINDOW              = GetAtomIfSupported(supportedAtomsSpan, "_NET_ACTIVE_WINDOW").value_or(0);
 
 	if(supportedAtoms != nullptr)
 		s_Data.X11.XLIB.Free(supportedAtoms);
@@ -825,7 +825,7 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseErrorHandlerX11()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Return the atom ID only if it is listed in the specified array
-[[nodiscard]] std::optional<Atom> TRAP::INTERNAL::WindowingAPI::GetAtomIfSupported(const std::vector<Atom>& supportedAtoms,
+[[nodiscard]] std::optional<Atom> TRAP::INTERNAL::WindowingAPI::GetAtomIfSupported(const std::span<const Atom> supportedAtoms,
                                                                                    const std::string_view atomName)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
@@ -1563,7 +1563,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 					{
 						if(target == XA_STRING)
 						{
-							selectionString = ConvertLatin1ToUTF8(string.c_str());
+							selectionString = ConvertLatin1ToUTF8(string);
 							string.clear();
 						}
 						else
@@ -2524,20 +2524,20 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIconX11(InternalWindow& wind
 
 		std::vector<u64> icon{};
 		icon.resize(longCount);
-		u64* target = icon.data();
+		auto targetIt = icon.begin();
 		const std::vector<u8> imgData(static_cast<const u8*>(image->GetPixelData()),
 		                                   static_cast<const u8*>(image->GetPixelData()) +
 									       image->GetPixelDataSize());
 
-		*target++ = image->GetWidth();
-		*target++ = image->GetHeight();
+		*targetIt++ = image->GetWidth();
+		*targetIt++ = image->GetHeight();
 
 		for(u64 j = 0; j < NumericCast<u64>(image->GetWidth()) * NumericCast<u64>(image->GetHeight()); j++)
 		{
-			*target++ = (static_cast<u64>(imgData[j * 4 + 0]) << 16u) |
-						(static_cast<u64>(imgData[j * 4 + 1]) <<  8u) |
-						(static_cast<u64>(imgData[j * 4 + 2]) <<  0u) |
-						(static_cast<u64>(imgData[j * 4 + 3]) << 24u);
+			*targetIt++ = (static_cast<u64>(imgData[j * 4 + 0]) << 16u) |
+						  (static_cast<u64>(imgData[j * 4 + 1]) <<  8u) |
+						  (static_cast<u64>(imgData[j * 4 + 2]) <<  0u) |
+						  (static_cast<u64>(imgData[j * 4 + 3]) << 24u);
 		}
 
 		//NOTE: XChangeProperty expects 32-bit values like the image data above to be
@@ -2714,7 +2714,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthroughX11(Internal
 
 	if (enabled)
 	{
-		const Region region = s_Data.X11.XLIB.CreateRegion();
+		Region region = s_Data.X11.XLIB.CreateRegion();
 		s_Data.X11.XShape.CombineRegion(s_Data.X11.display, window.X11.Handle, ShapeInput, 0, 0, region, ShapeSet);
 		s_Data.X11.XLIB.DestroyRegion(region);
 	}
@@ -4355,7 +4355,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 	{
 		//Use XKB to determine physical key locations independently of the current keyboard layout
 
-		const XkbDescPtr desc = s_Data.X11.XKB.GetMap(s_Data.X11.display, 0, XkbUseCoreKbd);
+		XkbDescPtr desc = s_Data.X11.XKB.GetMap(s_Data.X11.display, 0, XkbUseCoreKbd);
 		s_Data.X11.XKB.GetNames(s_Data.X11.display, XkbKeyNamesMask | XkbKeyAliasesMask, desc);
 
 		scanCodeMin = desc->min_key_code;
@@ -4981,7 +4981,7 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseCursor()
 	XkbStateRec state{};
 	s_Data.X11.XKB.GetState(s_Data.X11.display, XkbUseCoreKbd, &state);
 
-	const XkbDescPtr desc = s_Data.X11.XKB.AllocKeyboard();
+	XkbDescPtr desc = s_Data.X11.XKB.AllocKeyboard();
 	if (s_Data.X11.XKB.GetNames(s_Data.X11.display, XkbGroupNamesMask, desc) != 0) //0 = Success
 	{
 		s_Data.X11.XKB.FreeKeyboard(desc, 0, 1);

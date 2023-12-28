@@ -133,7 +133,7 @@ void TRAP::FileSystem::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::WriteFile(const std::filesystem::path& path, const std::vector<u8>& buffer, const WriteMode mode)
+bool TRAP::FileSystem::WriteFile(const std::filesystem::path& path, const std::span<const u8> buffer, const WriteMode mode)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 

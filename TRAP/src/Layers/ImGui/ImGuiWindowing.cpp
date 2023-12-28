@@ -628,6 +628,23 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	void MapButton(ImGuiIO& io, const ImGuiKey key, const TRAP::Input::ControllerButton button)
+	{
+		io.AddKeyEvent(key, TRAP::Input::IsControllerButtonPressed(TRAP::Input::Controller::One, button));
+	}
+
+	void MapDPad(ImGuiIO& io, const ImGuiKey key, const TRAP::Input::ControllerDPad dpad)
+	{
+		io.AddKeyEvent(key, static_cast<bool>(TRAP::Input::GetControllerDPad(TRAP::Input::Controller::One, 0) & dpad));
+	}
+
+	void MapAnalog(ImGuiIO& io, const ImGuiKey key, const TRAP::Input::ControllerAxis axis, const f32 v0, const f32 v1)
+	{
+		f32 v = TRAP::Input::GetControllerAxis(TRAP::Input::Controller::One, axis);
+		v = (v - v0) / (v1 - v0);
+		io.AddKeyAnalogEvent(key, v > 0.10f, TRAP::Math::Clamp(v, 0.0f, 1.0f));
+	}
+
 	/// @brief Update the ImGui gamepad data.
 	void UpdateGamepads()
 	{
@@ -641,39 +658,31 @@ namespace
 		if(!TRAP::Input::IsControllerConnected(TRAP::Input::Controller::One))
 			return;
 
-		#define MAP_BUTTON(KEY_NO, BUTTON_NO, _UNUSED) { io.AddKeyEvent(KEY_NO, TRAP::Input::IsControllerButtonPressed(TRAP::Input::Controller::One, BUTTON_NO)); }
-		#define MAP_DPAD(KEY_NO, DPAD_NO, _UNUSED) { io.AddKeyEvent(KEY_NO, static_cast<bool>(TRAP::Input::GetControllerDPad(TRAP::Input::Controller::One, 0) & (DPAD_NO))); }
-		#define MAP_ANALOG(KEY_NO, AXIS_NO, _UNUSED, V0, V1) { f32 v = TRAP::Input::GetControllerAxis(TRAP::Input::Controller::One, AXIS_NO); v = (v - (V0)) / ((V1) - (V0)); io.AddKeyAnalogEvent(KEY_NO, v > 0.10f, TRAP::Math::Clamp(v, 0.0f, 1.0f)); }
-
 		io.BackendFlags |= ImGuiBackendFlags_HasGamepad;
-		MAP_BUTTON(ImGuiKey_GamepadStart, TRAP::Input::ControllerButton::Start, 7);
-		MAP_BUTTON(ImGuiKey_GamepadBack, TRAP::Input::ControllerButton::Back, 6);
-		MAP_BUTTON(ImGuiKey_GamepadFaceDown, TRAP::Input::ControllerButton::A, 0); //XBox A, PS Cross
-		MAP_BUTTON(ImGuiKey_GamepadFaceRight, TRAP::Input::ControllerButton::B, 1); //XBox B, PS Circle
-		MAP_BUTTON(ImGuiKey_GamepadFaceLeft, TRAP::Input::ControllerButton::X, 2); //XBox X, PS Square
-		MAP_BUTTON(ImGuiKey_GamepadFaceUp, TRAP::Input::ControllerButton::Y, 3); //XBox Y, PS Triangle
-		MAP_DPAD(ImGuiKey_GamepadDpadLeft, TRAP::Input::ControllerDPad::Left, 13);
-		MAP_DPAD(ImGuiKey_GamepadDpadRight, TRAP::Input::ControllerDPad::Right, 11);
-		MAP_DPAD(ImGuiKey_GamepadDpadUp, TRAP::Input::ControllerDPad::Up, 10);
-		MAP_DPAD(ImGuiKey_GamepadDpadDown, TRAP::Input::ControllerDPad::Down, 12);
-		MAP_BUTTON(ImGuiKey_GamepadL1, TRAP::Input::ControllerButton::Left_Bumper, 4);
-		MAP_BUTTON(ImGuiKey_GamepadR1, TRAP::Input::ControllerButton::Right_Bumper, 5);
-		MAP_ANALOG(ImGuiKey_GamepadL2, TRAP::Input::ControllerAxis::Left_Trigger, 4, -0.75f, +1.0f);
-		MAP_ANALOG(ImGuiKey_GamepadR2, TRAP::Input::ControllerAxis::Right_Trigger, 5, -0.75f, +1.0f);
-		MAP_BUTTON(ImGuiKey_GamepadL3, TRAP::Input::ControllerButton::Left_Thumb, 8);
-		MAP_BUTTON(ImGuiKey_GamepadR3, TRAP::Input::ControllerButton::Right_Thumb, 9);
-		MAP_ANALOG(ImGuiKey_GamepadLStickLeft, TRAP::Input::ControllerAxis::Left_X, 0, -0.25f, -1.0f);
-		MAP_ANALOG(ImGuiKey_GamepadLStickRight, TRAP::Input::ControllerAxis::Left_X, 0, +0.25f, +1.0f);
-		MAP_ANALOG(ImGuiKey_GamepadLStickUp, TRAP::Input::ControllerAxis::Left_Y, 1, -0.25f, -1.0f);
-		MAP_ANALOG(ImGuiKey_GamepadLStickDown, TRAP::Input::ControllerAxis::Left_Y, 1, +0.25f, +1.0f);
-		MAP_ANALOG(ImGuiKey_GamepadRStickLeft, TRAP::Input::ControllerAxis::Right_X, 2, -0.25f, -1.0f);
-		MAP_ANALOG(ImGuiKey_GamepadRStickRight, TRAP::Input::ControllerAxis::Right_X, 2, +0.25f, +1.0f);
-		MAP_ANALOG(ImGuiKey_GamepadRStickUp, TRAP::Input::ControllerAxis::Right_Y, 3, -0.25f, -1.0f);
-		MAP_ANALOG(ImGuiKey_GamepadRStickDown, TRAP::Input::ControllerAxis::Right_Y, 3, +0.25f, +1.0f);
-
-		#undef MAP_BUTTON
-		#undef MAP_DPAD
-		#undef MAP_ANALOG
+		MapButton(io, ImGuiKey_GamepadStart, TRAP::Input::ControllerButton::Start);
+		MapButton(io, ImGuiKey_GamepadBack, TRAP::Input::ControllerButton::Back);
+		MapButton(io, ImGuiKey_GamepadFaceDown, TRAP::Input::ControllerButton::A); //XBox A, PS Cross
+		MapButton(io, ImGuiKey_GamepadFaceRight, TRAP::Input::ControllerButton::B); //XBox B, PS Circle
+		MapButton(io, ImGuiKey_GamepadFaceLeft, TRAP::Input::ControllerButton::X); //XBox X, PS Square
+		MapButton(io, ImGuiKey_GamepadFaceUp, TRAP::Input::ControllerButton::Y); //XBox Y, PS Triangle
+		MapDPad(io, ImGuiKey_GamepadDpadLeft, TRAP::Input::ControllerDPad::Left);
+		MapDPad(io, ImGuiKey_GamepadDpadRight, TRAP::Input::ControllerDPad::Right);
+		MapDPad(io, ImGuiKey_GamepadDpadUp, TRAP::Input::ControllerDPad::Up);
+		MapDPad(io, ImGuiKey_GamepadDpadDown, TRAP::Input::ControllerDPad::Down);
+		MapButton(io, ImGuiKey_GamepadL1, TRAP::Input::ControllerButton::Left_Bumper);
+		MapButton(io, ImGuiKey_GamepadR1, TRAP::Input::ControllerButton::Right_Bumper);
+		MapAnalog(io, ImGuiKey_GamepadL2, TRAP::Input::ControllerAxis::Left_Trigger, -0.75f, +1.0f);
+		MapAnalog(io, ImGuiKey_GamepadR2, TRAP::Input::ControllerAxis::Right_Trigger, -0.75f, +1.0f);
+		MapButton(io, ImGuiKey_GamepadL3, TRAP::Input::ControllerButton::Left_Thumb);
+		MapButton(io, ImGuiKey_GamepadR3, TRAP::Input::ControllerButton::Right_Thumb);
+		MapAnalog(io, ImGuiKey_GamepadLStickLeft, TRAP::Input::ControllerAxis::Left_X, -0.25f, -1.0f);
+		MapAnalog(io, ImGuiKey_GamepadLStickRight, TRAP::Input::ControllerAxis::Left_X, +0.25f, +1.0f);
+		MapAnalog(io, ImGuiKey_GamepadLStickUp, TRAP::Input::ControllerAxis::Left_Y, -0.25f, -1.0f);
+		MapAnalog(io, ImGuiKey_GamepadLStickDown, TRAP::Input::ControllerAxis::Left_Y, +0.25f, +1.0f);
+		MapAnalog(io, ImGuiKey_GamepadRStickLeft, TRAP::Input::ControllerAxis::Right_X, -0.25f, -1.0f);
+		MapAnalog(io, ImGuiKey_GamepadRStickRight, TRAP::Input::ControllerAxis::Right_X, +0.25f, +1.0f);
+		MapAnalog(io, ImGuiKey_GamepadRStickUp, TRAP::Input::ControllerAxis::Right_Y, -0.25f, -1.0f);
+		MapAnalog(io, ImGuiKey_GamepadRStickDown, TRAP::Input::ControllerAxis::Right_Y, +0.25f, +1.0f);
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//

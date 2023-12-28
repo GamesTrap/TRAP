@@ -185,7 +185,7 @@ void TRAP::INTERNAL::QOIImage::DecodeImage(std::ifstream& file, const usize& fil
             else
             {
                 if((tag & QOI_MASK_2) == QOI_OP_INDEX)
-                    prevPixel = prevPixels[tag & 0x3F];
+                    prevPixel = prevPixels[tag & 0x3Fu];
                 else if((tag & QOI_MASK_2) == QOI_OP_DIFF)
                 {
                     prevPixel.Red   += NumericCast<u8>((((tag & 0x30u) >> 4u) & 0x03u) - 2);

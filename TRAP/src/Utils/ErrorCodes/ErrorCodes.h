@@ -41,7 +41,7 @@ namespace TRAP::Utils
     /// @brief Display the error message from the given error code.
     /// Afterwards the engine will be closed.
     /// @param error Error code.
-    void DisplayError(ErrorCode error);
+    [[noreturn]] void DisplayError(ErrorCode error);
 }
 
 #endif /*TRAP_ERRORCODES_H*/

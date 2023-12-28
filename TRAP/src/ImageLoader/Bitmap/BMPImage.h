@@ -111,8 +111,6 @@ namespace TRAP::INTERNAL
 [[nodiscard]] constexpr bool TRAP::INTERNAL::BMPImage::ValidateBitFields(std::array<BitField, 4>& bitFields,
 	                                                                     std::array<u32, 4>& masks) const noexcept
 {
-	BitField* const bf = bitFields.data();
-
 	u32 totalMask = 0;
 	BitField totalField{};
 
@@ -124,11 +122,11 @@ namespace TRAP::INTERNAL
 
 		totalMask |= masks[i];
 
-		if (!ParseBitfield(bf[i], masks[i]))
+		if (!ParseBitfield(bitFields[i], masks[i]))
 			return false;
 
 		//Make sure it fits in bit size
-		if (bf[i].Start + bf[i].Span > m_bitsPerPixel)
+		if (bitFields[i].Start + bitFields[i].Span > m_bitsPerPixel)
 			return false;
 	}
 

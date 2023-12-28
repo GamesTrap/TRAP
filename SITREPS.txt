@@ -4754,3 +4754,7 @@ SITREP 12/27/2023|23w52a3
     - Added Unittests for TRAP::FileSystem ~<45 mins
     - HeadlessTests Removed old FileSystemTests ~<5 mins
     - DiscordGameSDK is now compiled as static lib ~<10 mins
+
+SITREP 12/28/2023|23w52b1
+    - Changed TRAP Engine version to 23w52b1(0.10.23)
+    - Resolved various clang-tidy warnings ~<30 mins

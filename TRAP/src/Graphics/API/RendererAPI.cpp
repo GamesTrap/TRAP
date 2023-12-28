@@ -133,7 +133,6 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 #ifndef TRAP_HEADLESS_MODE
 	s_RenderAPI = RenderAPI::NONE;
 	Utils::DisplayError(Utils::ErrorCode::RenderAPINoSupportedFound);
-	return RenderAPI::NONE;
 #else
 	TP_WARN(Log::RendererPrefix, "Disabling RendererAPI, no compatible RenderAPI was found!");
 	return RenderAPI::NONE;

@@ -112,7 +112,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 		return true;
 
 	Utils::DisplayError(Utils::ErrorCode::WindowsVersionOlderThanWindows10);
-	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

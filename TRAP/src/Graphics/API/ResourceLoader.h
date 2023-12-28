@@ -146,7 +146,7 @@ namespace TRAP::Graphics::API
 		/// Used to async load and update queued resources.
 		/// @param stopToken Token to use for stop request of the thread.
 		/// @param loader Pointer to the ResourceLoader instance.
-		static void StreamerThreadFunc(std::stop_token stopToken, ResourceLoader* loader);
+		static void StreamerThreadFunc(const std::stop_token& stopToken, ResourceLoader* loader);
 		/// @brief Retrieve the row alignment for textures used by the GPU.
 		/// @return Row alignment used by the GPU.
 		[[nodiscard]] static u32 UtilGetTextureRowAlignment() noexcept;

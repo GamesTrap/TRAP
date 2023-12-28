@@ -4145,7 +4145,7 @@ namespace TRAP::INTERNAL
 		/// @param supportedAtoms List of supported atoms.
 		/// @param atomName Atom to check.
 		/// @return Atom on success, empty optional otherwise.
-		[[nodiscard]] static std::optional<Atom> GetAtomIfSupported(const std::vector<Atom>& supportedAtoms, std::string_view atomName);
+		[[nodiscard]] static std::optional<Atom> GetAtomIfSupported(const std::span<const Atom> supportedAtoms, std::string_view atomName);
 		/// @brief Create a blank cursor for hidden and disabled cursor modes.
 		/// @return Newly created Cursor on success, empty optional otherwise.
 		[[nodiscard]] static std::optional<Cursor> CreateHiddenCursor();

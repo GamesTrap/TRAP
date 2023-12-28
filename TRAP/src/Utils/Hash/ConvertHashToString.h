@@ -29,7 +29,7 @@ namespace TRAP::Utils::Hash
 		for(usize i = 0; i < hash.size(); ++i)
 		{
 			result[i * 2] = hexDigits[hash[i] >> 4u];
-			result[i * 2 + 1] = hexDigits[hash[i] & 0xF];
+			result[i * 2 + 1] = hexDigits[hash[i] & 0xFu];
 		}
 
 		return result;

@@ -1186,7 +1186,6 @@ namespace TRAP::Graphics
 		[[nodiscard]] static f32 GetGPUComputeFrameTime();
 #endif /*TRAP_HEADLESS_MODE*/
 
-	//protected:
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Retrieve internal rendering data.
 		/// @return Windows internal rendering data.
@@ -1199,7 +1198,6 @@ namespace TRAP::Graphics
 		[[nodiscard]] static PerViewportData& GetViewportData();
 #endif /*TRAP_HEADLESS_MODE*/
 
-	public:
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Initialize the internal rendering data of the given window.
 		/// @param window Window to initialize the internal rendering data for.

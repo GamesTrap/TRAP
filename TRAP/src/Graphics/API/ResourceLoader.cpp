@@ -28,7 +28,7 @@ TRAP::Graphics::RendererAPI::ResourceLoaderDesc TRAP::Graphics::API::ResourceLoa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(const std::stop_token stopToken, ResourceLoader* const loader)
+void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(const std::stop_token& stopToken, ResourceLoader* const loader)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

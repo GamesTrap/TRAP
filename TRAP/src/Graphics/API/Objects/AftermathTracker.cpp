@@ -48,11 +48,9 @@ void OnGPUCrashDump([[maybe_unused]] const void* gpuCrashDump,
     std::lock_guard lock(AftermathMutex);
     LockMark(AftermathMutex);
 
-    const std::vector<u8> buffer(static_cast<const u8*>(gpuCrashDump),
-                                      static_cast<const u8*>(gpuCrashDump) + gpuCrashDumpSize);
     if(!TRAP::FileSystem::Exists(folderPath))
         TRAP::FileSystem::CreateFolder(folderPath);
-    TRAP::FileSystem::WriteFile(filePath, buffer);
+    TRAP::FileSystem::WriteFile(filePath, {static_cast<const u8*>(gpuCrashDump), gpuCrashDumpSize});
 #endif /*ENABLE_NSIGHT_AFTERMATH*/
 }
 

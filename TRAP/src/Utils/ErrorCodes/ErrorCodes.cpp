@@ -54,7 +54,7 @@ static constexpr TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 24
 #pragma warning(disable: 4702)
 #endif /*_MSC_VER*/
 
-void TRAP::Utils::DisplayError(const ErrorCode error)
+[[noreturn]] void TRAP::Utils::DisplayError(const ErrorCode error)
 {
     const auto errorData = s_errorMap.at(error);
     if(!errorData.has_value())

@@ -33,6 +33,7 @@ Modified by Jan "GamesTrap" Schuerkamp
 #include <vector>
 
 #include "Maths/Math.h"
+#include "Utils/NumericCasts.h"
 
 namespace TRAP::Utils::Decompress
 {
@@ -216,11 +217,10 @@ namespace TRAP::Utils::Decompress
 			[[nodiscard]] constexpr bool GenerateFixedDistanceTree();
 
 			/// @brief Given the code lengths(as stored in the PNG file), generate the tree as defined by Deflate.
-			/// @param bitLength Code length in bits.
-			/// @param numCodes Amount of codes.
+			/// @param bitLength Code lengths in bits.
 			/// @param maxBitLength Maximum bits that a code in the tree can have.
 			/// @return True on success, false otherwise.
-			[[nodiscard]] constexpr bool MakeFromLengths(const u32* bitLength, usize numCodes, u32 maxBitLength);
+			[[nodiscard]] constexpr bool MakeFromLengths(std::span<const u32> bitLengths, u32 maxBitLength);
 
 			/// @brief Second step for the ...MakeFromLengths and ...MakeFromFrequencies functions.
 			/// numCodes, lengths and maxBitLength must already be filled in correctly.
@@ -492,7 +492,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const u
 		for (i = HCLEN; i != NumCodeLengthCodes; ++i)
 			bitLengthCL[CLCLOrder[i]] = 0;
 
-		error = !treeCL.MakeFromLengths(bitLengthCL.data(), NumCodeLengthCodes, 7);
+		error = !treeCL.MakeFromLengths(bitLengthCL, 7);
 		if(error)
 			break;
 
@@ -612,10 +612,10 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const u
 		}
 
 		//Now we have finally got HLIT and HDIST, so generate the code trees, and the function is done
-		error = !treeLL.MakeFromLengths(bitLengthLL.data(), NumDeflateCodeSymbols, 15);
+		error = !treeLL.MakeFromLengths(bitLengthLL, 15);
 		if (error)
 			break;
-		error = !treeD.MakeFromLengths(bitLengthD.data(), NumDistanceSymbols, 15);
+		error = !treeD.MakeFromLengths(bitLengthD, 15);
 
 		break; //End of error-while
 	}
@@ -666,7 +666,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const u
 
 	//256 literals, the end code, some length codes, and 2 unused codes
 
-	return MakeFromLengths(bitLength.data(), NumDeflateCodeSymbols, 15);
+	return MakeFromLengths(bitLength, 15);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -681,21 +681,21 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const u
 	for (u32 i = 0; i != NumDistanceSymbols; ++i)
 		bitLength[i] = 5;
 
-	return MakeFromLengths(bitLength.data(), NumDistanceSymbols, 15);
+	return MakeFromLengths(bitLength, 15);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Given the code lengths(as stored in the PNG file), generate the tree as defined by Deflate.
 //MaxBitLength is the maximum bits that a code in the tree can have.
-[[nodiscard]] constexpr  bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths(const u32* const bitLength,
-                                                                                              const usize numCodes,
-																	                          const u32 maxBitLength)
+[[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths(const std::span<const u32> bitLengths,
+																	                         const u32 maxBitLength)
 {
-	Lengths.resize(numCodes);
-	for (u32 i = 0; i != numCodes; ++i)
-		Lengths[i] = bitLength[i];
-	NumCodes = static_cast<u32>(numCodes); //Number of symbols
+	Lengths.resize(bitLengths.size());
+	for (u32 i = 0; i != bitLengths.size(); ++i)
+		Lengths[i] = bitLengths[i];
+
+	NumCodes = NumericCast<u32>(bitLengths.size()); //Number of symbols
 	MaxBitLength = maxBitLength;
 
 	return MakeFromLengths2();

@@ -31,6 +31,7 @@
 #include <cstdint>
 #include <vector>
 #include <filesystem>
+#include <span>
 
 #include "Core/Types.h"
 #include "Utils/Optional.h"
@@ -71,7 +72,7 @@ namespace TRAP::FileSystem
 	/// @param buffer Data to be written.
 	/// @param mode Write mode to use. Default: WriteMode::Overwrite.
 	/// @return True if file has been written successfully, false otherwise.
-	bool WriteFile(const std::filesystem::path& path, const std::vector<u8>& buffer,
+	bool WriteFile(const std::filesystem::path& path, std::span<const u8> buffer,
 					WriteMode mode = WriteMode::Overwrite);
 	/// @brief Write the given text to the given file path.
 	/// @param path File path.

@@ -19,7 +19,7 @@ namespace TRAP::Graphics::API
 		/// @param desc Binary shader description.
 		/// @param userMacros Optional user defined macros. Default: nullptr.
 		/// @param valid Whether the shader is valid or not. Default: true.
-		VulkanShader(std::string name, std::filesystem::path filepath, const RendererAPI::BinaryShaderDesc& desc,
+		VulkanShader(std::string name, const std::filesystem::path& filepath, const RendererAPI::BinaryShaderDesc& desc,
 		             const std::vector<Macro>* userMacros = nullptr, bool valid = true);
 		/// @brief Constructor.
 		/// @param name Name for the shader.
@@ -34,7 +34,7 @@ namespace TRAP::Graphics::API
 		/// @param userMacros Optional user defined macros. Default: nullptr.
 		/// @param stages Optional Stages of the shader. Default: None.
 		/// @note Used for invalid shaders, this doesn't create a usable shader.
-		VulkanShader(std::string name, std::filesystem::path filepath,
+		VulkanShader(std::string name, const std::filesystem::path& filepath,
 		             const std::vector<Macro>* userMacros = nullptr,
 					 RendererAPI::ShaderStage stages = RendererAPI::ShaderStage::None);
 		/// @brief Destructor.
@@ -153,7 +153,7 @@ namespace TRAP::Graphics::API
 		/// @param offset Offset of the UBO.
 		/// @param window Window to use the shader for.
 		/// @remark @headless This function is not available in headless mode.
-		void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer* const uniformBuffer,
+		void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer* uniformBuffer,
 		            u64 size, u64 offset, const Window* window) const override;
 #else
 		/// @brief Use uniform buffer object with this shader.
@@ -163,7 +163,7 @@ namespace TRAP::Graphics::API
 		/// @param size Size of the UBO.
 		/// @param offset Offset of the UBO.
 		/// @remark This function is only available in headless mode.
-		void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer* const uniformBuffer,
+		void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer* uniformBuffer,
 		            u64 size, u64 offset) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 

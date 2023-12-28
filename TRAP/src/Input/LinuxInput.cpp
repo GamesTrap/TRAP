@@ -547,7 +547,7 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, u32 code, i
 
 		const u32 dpad = (code - ABS_HAT0X) / 2u;
 		const u32 axis = (code - ABS_HAT0X) % 2u;
-		i32* const state = con->LinuxCon.DPads[dpad].data();
+		std::array<i32, 4>& state = con->LinuxCon.DPads[dpad];
 
 		//NOTE: Looking at several input drivers, it seems all DPad events use
 		//-1 for left / up, 0 for centered and 1 for right / down

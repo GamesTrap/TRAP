@@ -204,7 +204,7 @@ void TRAP::FileSystem::FileWatcher::StopCallback() const
 #elif defined(TRAP_PLATFORM_LINUX)
     const u64 value = 1;
     isize toSend = sizeof(value);
-    do
+    while (toSend > 0)
     {
         const isize res = write(m_killEvent, &value, sizeof(value));
         if(res < 0)
@@ -213,7 +213,7 @@ void TRAP::FileSystem::FileWatcher::StopCallback() const
             return;
         }
         toSend -= res;
-    } while (toSend > 0);
+    }
 #endif
 }
 

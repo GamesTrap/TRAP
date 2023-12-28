@@ -1171,14 +1171,14 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion([[maybe_unused]] void* co
     {
         if(window->Wayland.FractionalScaling == nullptr)
         {
-            window->Wayland.CursorPosX *= NumericCast<f64>(window->Width) / NumericCast<f64>(window->Monitor->NativeMode->Width);
-            window->Wayland.CursorPosY *= NumericCast<f64>(window->Height) / NumericCast<f64>(window->Monitor->NativeMode->Height);
+            window->Wayland.CursorPosX *= NumericCast<f64>(window->Width) / NumericCast<f64>(window->Monitor->NativeMode.value().Width);
+            window->Wayland.CursorPosY *= NumericCast<f64>(window->Height) / NumericCast<f64>(window->Monitor->NativeMode.value().Height);
         }
         else
         {
             const f64 contentScale = NumericCast<f64>(window->Wayland.ContentScale);
             const TRAP::Math::Vec2d scaledBackBuffer = TRAP::Math::Vec2d(NumericCast<f64>(window->Width), NumericCast<f64>(window->Height)) * contentScale;
-            const TRAP::Math::Vec2d outputSize = TRAP::Math::Vec2d(NumericCast<f64>(window->Monitor->NativeMode->Width), NumericCast<f64>(window->Monitor->NativeMode->Height));
+            const TRAP::Math::Vec2d outputSize = TRAP::Math::Vec2d(NumericCast<f64>(window->Monitor->NativeMode.value().Width), NumericCast<f64>(window->Monitor->NativeMode.value().Height));
             const TRAP::Math::Vec2d pointerScale = scaledBackBuffer / outputSize;
 
             window->Wayland.CursorPosX *= pointerScale.x();
@@ -1991,8 +1991,8 @@ void TRAP::INTERNAL::WindowingAPI::ResizeWindowWayland(InternalWindow& window)
         wl_surface_set_buffer_scale(window.Wayland.Surface, 1);
         if(window.Wayland.Fullscreen && window.Wayland.EmulatedVideoModeActive)
         {
-            const auto nativeScaled = TRAP::Math::Round(TRAP::Math::Vec2(NumericCast<f32>(window.Monitor->NativeMode->Width),
-                                                                         NumericCast<f32>(window.Monitor->NativeMode->Height)) / scale);
+            const auto nativeScaled = TRAP::Math::Round(TRAP::Math::Vec2(NumericCast<f32>(window.Monitor->NativeMode.value().Width),
+                                                                         NumericCast<f32>(window.Monitor->NativeMode.value().Height)) / scale);
             SetDrawSurfaceViewportWayland(window, scaledWidth, scaledHeight, NumericCast<i32>(nativeScaled.x()), NumericCast<i32>(nativeScaled.y()));
         }
         else
@@ -2171,7 +2171,7 @@ std::optional<i32> TRAP::INTERNAL::WindowingAPI::CreateAnonymousFileWayland(cons
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-    constinit static const char temp[] = "/trap-shared-XXXXXX";
+    static constexpr std::string_view temp = "/trap-shared-XXXXXX";
     i32 fd = 0;
     i32 ret = 0;
 
@@ -2942,7 +2942,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindo
     if(window.Monitor != nullptr)
     {
         ReleaseMonitorWayland(window);
-        window.Monitor->CurrentMode = *window.Monitor->NativeMode;
+        window.Monitor->CurrentMode = window.Monitor->NativeMode.value();
     }
 
     window.Monitor = monitor;
@@ -3720,7 +3720,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeWayland(InternalWindow& 
     if(window.Monitor != nullptr)
     {
         //Video mode settings is not available on Wayland
-        if(window.Wayland.Fullscreen && (width != window.Monitor->NativeMode->Width || height != window.Monitor->NativeMode->Height))
+        if(window.Wayland.Fullscreen && (width != window.Monitor->NativeMode.value().Width || height != window.Monitor->NativeMode.value().Height))
             window.Wayland.EmulatedVideoModeActive = true;
 
         //Still have to handle (fractional) scaling though

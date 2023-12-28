@@ -21,79 +21,82 @@
 	#pragma warning(pop)
 #endif /*_MSC_VER*/
 
-[[nodiscard]] static constexpr b2BodyType TRAPRigidbody2DTypeToBox2DBody(const TRAP::Rigidbody2DComponent::BodyType bodyType)
+namespace
 {
-	switch(bodyType)
+	[[nodiscard]] constexpr b2BodyType TRAPRigidbody2DTypeToBox2DBody(const TRAP::Rigidbody2DComponent::BodyType bodyType)
 	{
-	case TRAP::Rigidbody2DComponent::BodyType::Static:
-		return b2_staticBody;
-
-	case TRAP::Rigidbody2DComponent::BodyType::Dynamic:
-		return b2_dynamicBody;
-
-	case TRAP::Rigidbody2DComponent::BodyType::Kinematic:
-		return b2_kinematicBody;
-
-	default:
-		TRAP_ASSERT(false, "TRAPRigidbody2DTypeToBox2DBody(): Unknown body type!");
-		return b2_staticBody;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template<typename... Component>
-static void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<entt::entity, entt::entity>& enttMap)
-{
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
-
-	([&]()
-	{
-		const auto view = src.view<Component>();
-		for(const auto srcEntity : view)
+		switch(bodyType)
 		{
-			const entt::entity dstEntity = enttMap.at(srcEntity);
+		case TRAP::Rigidbody2DComponent::BodyType::Static:
+			return b2_staticBody;
 
-			auto& srcComponent = src.get<Component>(srcEntity);
-			dst.emplace_or_replace<Component>(dstEntity, srcComponent);
+		case TRAP::Rigidbody2DComponent::BodyType::Dynamic:
+			return b2_dynamicBody;
+
+		case TRAP::Rigidbody2DComponent::BodyType::Kinematic:
+			return b2_kinematicBody;
+
+		default:
+			TRAP_ASSERT(false, "TRAPRigidbody2DTypeToBox2DBody(): Unknown body type!");
+			return b2_staticBody;
 		}
-	}(), ...);
-}
+	}
 
-//-------------------------------------------------------------------------------------------------------------------//
+	//-------------------------------------------------------------------------------------------------------------------//
 
-template<typename... Component>
-static void CopyComponent([[maybe_unused]] TRAP::ComponentGroup<Component...> components, entt::registry& dst,
-                          entt::registry& src, const std::unordered_map<entt::entity, entt::entity>& enttMap)
-{
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	CopyComponent<Component...>(dst, src, enttMap);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template<typename... Component>
-static void CopyComponentIfExists(TRAP::Entity dst, TRAP::Entity src)
-{
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
-
-	([&]()
+	template<typename... Component>
+	void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<entt::entity, entt::entity>& enttMap)
 	{
-		if(src.HasComponent<Component>())
-			dst.AddOrReplaceComponent<Component>(src.GetComponent<Component>());
-	}(), ...);
-}
+		ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
-//-------------------------------------------------------------------------------------------------------------------//
+		([&]()
+		{
+			const auto view = src.view<Component>();
+			for(const auto srcEntity : view)
+			{
+				const entt::entity dstEntity = enttMap.at(srcEntity);
 
-template<typename... Component>
-static void CopyComponentIfExists([[maybe_unused]] TRAP::ComponentGroup<Component...> components, TRAP::Entity dst,
-                                  TRAP::Entity src)
-{
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+				auto& srcComponent = src.get<Component>(srcEntity);
+				dst.emplace_or_replace<Component>(dstEntity, srcComponent);
+			}
+		}(), ...);
+	}
 
-	CopyComponentIfExists<Component...>(dst, src);
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename... Component>
+	void CopyComponent([[maybe_unused]] TRAP::ComponentGroup<Component...> components, entt::registry& dst,
+					   entt::registry& src, const std::unordered_map<entt::entity, entt::entity>& enttMap)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+		CopyComponent<Component...>(dst, src, enttMap);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename... Component>
+	void CopyComponentIfExists(TRAP::Entity dst, TRAP::Entity src)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
+		([&]()
+		{
+			if(src.HasComponent<Component>())
+				dst.AddOrReplaceComponent<Component>(src.GetComponent<Component>());
+		}(), ...);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename... Component>
+	void CopyComponentIfExists([[maybe_unused]] TRAP::ComponentGroup<Component...> components, TRAP::Entity dst,
+							   TRAP::Entity src)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+		CopyComponentIfExists<Component...>(dst, src);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
