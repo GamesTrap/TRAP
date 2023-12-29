@@ -1559,6 +1559,19 @@ void TRAP::INTERNAL::WindowingAPI::LibDecorHandleError([[maybe_unused]] libdecor
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::INTERNAL::WindowingAPI::LibDecorReadyCallback([[maybe_unused]] void* const userData,
+                                                         [[maybe_unused]] wl_callback* const callback,
+                                                         [[maybe_unused]] const u32 time)
+{
+    s_Data.Wayland.LibDecor.Ready = true;
+
+    TRAP_ASSERT(s_Data.Wayland.LibDecor.Callback == callback);
+    wl_callback_destroy(s_Data.Wayland.LibDecor.Callback);
+    s_Data.Wayland.LibDecor.Callback = nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesWayland()
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
@@ -2480,6 +2493,10 @@ bool TRAP::INTERNAL::WindowingAPI::CreateLibDecorFrame(InternalWindow& window)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
+    //Allow libdecor to finish initialization of itself and its plugin
+    while(!s_Data.Wayland.LibDecor.Ready)
+        PlatformWaitEventsWayland(0.0);
+
     window.Wayland.LibDecor.Frame = s_Data.Wayland.LibDecor.Decorate(s_Data.Wayland.LibDecor.Context,
                                                                      window.Wayland.Surface,
                                                                      &LibDecorFrameInterface, &window);
@@ -2489,6 +2506,10 @@ bool TRAP::INTERNAL::WindowingAPI::CreateLibDecorFrame(InternalWindow& window)
         InputError(Error::Platform_Error, "[Wayland] Failed to create libdecor frame");
         return false;
     }
+
+    libdecor_state* const frameState = s_Data.Wayland.LibDecor.StateNew(window.Width, window.Height);
+    s_Data.Wayland.LibDecor.FrameCommit(window.Wayland.LibDecor.Frame, frameState, nullptr);
+    s_Data.Wayland.LibDecor.StateFree(frameState);
 
     if(!window.Wayland.AppID.empty())
         s_Data.Wayland.LibDecor.FrameSetAppID(window.Wayland.LibDecor.Frame, window.Wayland.AppID.c_str());
@@ -2507,12 +2528,6 @@ bool TRAP::INTERNAL::WindowingAPI::CreateLibDecorFrame(InternalWindow& window)
 
     if(window.Monitor != nullptr)
     {
-        //HACK: Allow libdecor to finish initialization of itself and its plugin so it will create the
-        //      xdg_toplevel for the frame.
-        //      This needs to exist when setting the frame to fullscreen.
-        while(s_Data.Wayland.LibDecor.FrameGetXDGTopLevel(window.Wayland.LibDecor.Frame) == nullptr)
-            PlatformWaitEventsWayland(0.0f);
-
         s_Data.Wayland.LibDecor.FrameSetFullscreen(window.Wayland.LibDecor.Frame, window.Monitor->Wayland.Output);
         SetIdleInhibitorWayland(window, true);
     }
@@ -2820,7 +2835,10 @@ void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(f64* const timeout)
     while(!event)
     {
         while(s_Data.Wayland.WaylandClient.DisplayPrepareRead(s_Data.Wayland.DisplayWL) != 0)
-            s_Data.Wayland.WaylandClient.DisplayDispatchPending(s_Data.Wayland.DisplayWL);
+        {
+            if(s_Data.Wayland.WaylandClient.DisplayDispatchPending(s_Data.Wayland.DisplayWL) > 0)
+                return;
+        }
 
         //If an error other than EAGAIN happens, we have likely been disconnected
         //from the Wayland session; try to handle that the best we can.
@@ -2881,13 +2899,15 @@ void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(f64* const timeout)
                 if(s_Data.Wayland.PointerFocus != nullptr)
                 {
                     IncrementCursorImageWayland(*s_Data.Wayland.PointerFocus);
-                    event = true;
                 }
             }
         }
 
         if((std::get<3>(fds).revents & POLLIN) != 0)
-            s_Data.Wayland.LibDecor.Dispatch(s_Data.Wayland.LibDecor.Context, 0);
+        {
+            if(s_Data.Wayland.LibDecor.Dispatch(s_Data.Wayland.LibDecor.Context, 0) > 0)
+                event = true;
+        }
     }
 }
 
@@ -3202,9 +3222,15 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInitWayland()
     {
         s_Data.Wayland.LibDecor.Context = s_Data.Wayland.LibDecor.New(s_Data.Wayland.DisplayWL, &LibDecorInterface);
 
-        //Allow libdecor to receive its globals before proceeding
         if(s_Data.Wayland.LibDecor.Context != nullptr)
-            s_Data.Wayland.LibDecor.Dispatch(s_Data.Wayland.LibDecor.Context, 1);
+        {
+            //Perform an initial dispatch and finish to get the init started
+            s_Data.Wayland.LibDecor.Dispatch(s_Data.Wayland.LibDecor.Context, 0);
+
+            //Create sync point to "know" when libdecor is ready for use
+            s_Data.Wayland.LibDecor.Callback = wl_display_sync(s_Data.Wayland.DisplayWL);
+            wl_callback_add_listener(s_Data.Wayland.LibDecor.Callback, &LibDecorReadyListener, nullptr);
+        }
     }
 
 #ifdef WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION
@@ -3293,6 +3319,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdownWayland()
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
+    if(s_Data.Wayland.LibDecor.Callback != nullptr)
+        wl_callback_destroy(s_Data.Wayland.LibDecor.Callback);
     if(s_Data.Wayland.LibDecor.Context != nullptr)
         s_Data.Wayland.LibDecor.Unref(s_Data.Wayland.LibDecor.Context);
     if(s_Data.Wayland.LibDecor.Handle != nullptr)

@@ -422,6 +422,13 @@ bool TRAP::Input::PollController(const Controller controller, const PollMode mod
 		if (xis.Gamepad.wButtons & TRAP_XINPUT_GAMEPAD_DPAD_LEFT)
 			dpad |= std::to_underlying(ControllerDPad::Left);
 
+		//Treat invalid combinations as neither being pressed while preserving
+		//what data can be preserved
+		if ((dpad & std::to_underlying(ControllerDPad::Right)) && (dpad & std::to_underlying(ControllerDPad::Left)))
+			dpad &= ~(std::to_underlying(ControllerDPad::Right | ControllerDPad::Left));
+		if ((dpad & std::to_underlying(ControllerDPad::Up)) && (dpad & std::to_underlying(ControllerDPad::Down)))
+			dpad &= ~(std::to_underlying(ControllerDPad::Up | ControllerDPad::Down));
+
 		InternalInputControllerDPad(con, 0, NumericCast<u8>(dpad));
 	}
 

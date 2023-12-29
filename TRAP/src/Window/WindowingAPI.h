@@ -1334,6 +1334,8 @@ namespace TRAP::INTERNAL
 				{
 					void* Handle;
 					libdecor* Context;
+					wl_callback* Callback;
+					bool Ready;
 					PFN_libdecor_new New;
 					PFN_libdecor_unref Unref;
 					PFN_libdecor_get_fd GetFD;
@@ -2180,7 +2182,7 @@ namespace TRAP::INTERNAL
 		/// the character callback instead.
 		///
 		/// When a window loses input focus, it will generate synthetic key release events for
-		/// all pressed keys. You can tell these events from user-generated events by the fact
+		/// all pressed named keys. You can tell these events from user-generated events by the fact
 		/// that the synthetic ones are generated after the focus loss event has been processed,
 		/// i.e. after the window focus callback has been called.
 		///
@@ -2444,7 +2446,7 @@ namespace TRAP::INTERNAL
 		/// If the key is Input::Key::Unknown, the scancode is used to identify the key,
 		/// otherwise the scancode is ignored. If you specify a non-printable key, or
 		/// Input::Key::Unknown and a scancode that maps to a non-printable key, this
-		/// function return nullptr but does not emit an error.
+		/// function return nullopt but does not emit an error.
 		///
 		/// This behaviour allows you to always pass in the arguments in the key callback
 		/// without modification.
@@ -4308,6 +4310,12 @@ namespace TRAP::INTERNAL
 			nullptr,
 			nullptr,
 			nullptr
+		};
+
+		static void LibDecorReadyCallback(void* userData, wl_callback* callback, u32 time);
+		inline static constexpr wl_callback_listener LibDecorReadyListener =
+		{
+			LibDecorReadyCallback
 		};
 
 		/// @brief Callback function for Wayland to check if the client is still alive.

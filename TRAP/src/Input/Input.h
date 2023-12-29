@@ -919,6 +919,20 @@ namespace TRAP
 //Notifies shared code of the new value of a controller DPad
 constexpr void TRAP::Input::InternalInputControllerDPad(ControllerInternal* const con, const i32 dpad, const u8 value)
 {
+	TRAP_ASSERT(con != nullptr, "Input::InternalInputControllerDPad(): Controller is nullptr!");
+	TRAP_ASSERT(dpad >= 0, "Input::InternalInputControllerDPad(): Invalid DPad!");
+	TRAP_ASSERT(dpad < NumericCast<i32>(con->DPads.size()), "Input::InternalInputControllerDPad(): Invalid DPad!");
+
+	//Valid dpad values only use the least significant nibble
+	TRAP_ASSERT((value & 0xF0u) == 0, "Input::InternalInputControllerDPad(): Invalid DPad value provided!");
+	//Valid dpad values do not have both bits of an axis set
+	TRAP_ASSERT((value & std::to_underlying(ControllerDPad::Left)) == 0 ||
+	            (value & std::to_underlying(ControllerDPad::Right)) == 0,
+				"Input::InternalInputControllerDPad(): Invalid DPad value provided!");
+	TRAP_ASSERT((value & std::to_underlying(ControllerDPad::Up)) == 0 ||
+	            (value & std::to_underlying(ControllerDPad::Down)) == 0,
+				"Input::InternalInputControllerDPad(): Invalid DPad value provided!");
+
 	const u32 base = NumericCast<u32>(con->ButtonCount) + NumericCast<u32>(dpad) * 4u;
 
 	con->Buttons[base + 0u] = ((value & BIT(0u)) != 0u); //Up

@@ -4762,3 +4762,4 @@ SITREP 12/28/2023|23w52b1
 SITREP 12/29/2023|23w52b2
     - Changed TRAP Engine version to 23w52b2(0.10.24)
     - Systems to profile can now be set at runtime ~<45 mins
+    - WindowingAPI Fixed some bugs ~<10 mins

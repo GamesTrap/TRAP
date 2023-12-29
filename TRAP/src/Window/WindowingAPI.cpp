@@ -1638,6 +1638,9 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWind
 
 	if (key != Input::Key::Unknown)
 	{
+		if(key < Input::Key::Space || key > Input::Key::Menu)
+			return std::nullopt;
+
 		if (key != Input::Key::KP_Equal &&
 			(key < Input::Key::KP_0 || key > Input::Key::KP_Add) &&
 			(key < Input::Key::Apostrophe || key > Input::Key::World_2))
