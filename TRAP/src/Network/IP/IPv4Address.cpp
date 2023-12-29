@@ -44,7 +44,7 @@ constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Broadcast(255, 
 TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 	: m_address(0), m_valid(false)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	Resolve(address);
 }
@@ -53,7 +53,7 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 
 [[nodiscard]] std::string TRAP::Network::IPv4Address::ToString() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	in_addr address{};
 	address.s_addr = m_address;
@@ -68,7 +68,7 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 
 [[nodiscard]] TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//The method here is to connect a UDP socket to anyone (here to localhost),
 	//and get the local socket address with the getsockname function.
@@ -117,7 +117,7 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 
 [[nodiscard]] TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetPublicAddress(const Utils::TimeStep timeout)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//The trick here is more complicated, because the only way
 	//to get our public IPv4 address is to get it from a distant computer.
@@ -139,7 +139,7 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 
 void TRAP::Network::IPv4Address::Resolve(const std::string_view address)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	m_address = 0;
 	m_valid = false;
@@ -189,7 +189,7 @@ void TRAP::Network::IPv4Address::Resolve(const std::string_view address)
 
 std::istream& TRAP::Network::operator>>(std::istream& stream, TRAP::Network::IPv4Address& address)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	std::string str;
 	stream >> str;

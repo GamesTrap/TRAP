@@ -14,7 +14,7 @@
 
 TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI::RootSignatureDesc& desc)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_device, "VulkanRootSignature(): Vulkan Device is nullptr");
 
@@ -453,7 +453,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRootSignaturePrefix, "Destroying RootSignature");
@@ -473,7 +473,8 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 
 [[nodiscard]] TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const std::string_view resName)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	const auto it = std::ranges::find_if(m_descriptorNameToIndexMap, [resName](const auto& pair){return pair.first == resName;});
 	if (it != m_descriptorNameToIndexMap.end())
@@ -486,7 +487,8 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 
 [[nodiscard]] const TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const std::string_view resName) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	const auto it = std::ranges::find_if(m_descriptorNameToIndexMap, [resName](const auto& pair){return pair.first == resName;});
 	if (it != m_descriptorNameToIndexMap.end())

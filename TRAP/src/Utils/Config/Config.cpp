@@ -6,7 +6,7 @@
 
 bool TRAP::Utils::Config::LoadFromFile(const std::filesystem::path& file)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	m_data.clear();
 
@@ -41,7 +41,7 @@ bool TRAP::Utils::Config::LoadFromFile(const std::filesystem::path& file)
 
 bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	if(!m_hasChanged)
 		return true;
@@ -122,7 +122,7 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 
 void TRAP::Utils::Config::Print() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	for (const auto& [key, value] : m_data)
 		TP_TRACE(Log::ConfigPrefix, key, " = ", value);

@@ -294,7 +294,7 @@ void TRAP::Application::RunWork(const Utils::TimeStep& deltaTime, f32& tickTimer
 
 void TRAP::Application::OnEvent(Events::Event& event)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	Events::EventDispatcher dispatcher(event);
 #ifndef TRAP_HEADLESS_MODE
@@ -334,7 +334,7 @@ void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 
 [[nodiscard]] const TRAP::Utils::Config& TRAP::Application::GetConfig()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::GetConfig(): Application is nullptr!");
 
@@ -345,7 +345,7 @@ void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 
 [[nodiscard]] TRAP::LayerStack& TRAP::Application::GetLayerStack()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::GetLayerStack(): Application is nullptr!");
 
@@ -357,7 +357,7 @@ void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 #ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] TRAP::ImGuiLayer& TRAP::Application::GetImGuiLayer()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::GetImGuiLayer(): Application is nullptr!");
 	TRAP_ASSERT(s_Instance->m_ImGuiLayer != nullptr, "Application::GetImGuiLayer(): ImGuiLayer is nullptr!");
@@ -373,7 +373,7 @@ static constexpr u32 MaxLimitedFPS = 500u;
 
 void TRAP::Application::SetFPSLimit(const u32 targetFPS)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::SetFPSLimit(): Application is nullptr!");
 
@@ -392,7 +392,7 @@ void TRAP::Application::SetFPSLimit(const u32 targetFPS)
 
 [[nodiscard]] u32 TRAP::Application::GetFPSLimit()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::GetFPSLimit(): Application is nullptr!");
 
@@ -405,7 +405,7 @@ static constexpr u32 MinUnfocusedFPS = 10u;
 
 void TRAP::Application::SetUnfocusedFPSLimit(const u32 targetFPS)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::SetFPSLimit(): Application is nullptr!");
 
@@ -416,7 +416,7 @@ void TRAP::Application::SetUnfocusedFPSLimit(const u32 targetFPS)
 
 [[nodiscard]] u32 TRAP::Application::GetUnfocusedFPSLimit()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::GetFPSLimit(): Application is nullptr!");
 
@@ -427,7 +427,7 @@ void TRAP::Application::SetUnfocusedFPSLimit(const u32 targetFPS)
 
 [[nodiscard]] f32 TRAP::Application::GetCPUFrameTime()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::GetCPUFrameTime(): Application is nullptr!");
 
@@ -438,7 +438,7 @@ void TRAP::Application::SetUnfocusedFPSLimit(const u32 targetFPS)
 
 [[nodiscard]] f32 TRAP::Application::GetTimeScale()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::GetTimeScale(): Application is nullptr!");
 
@@ -449,7 +449,7 @@ void TRAP::Application::SetUnfocusedFPSLimit(const u32 targetFPS)
 
 [[nodiscard]] u32 TRAP::Application::GetTickRate()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::GetTickRate(): Application is nullptr!");
 
@@ -460,7 +460,7 @@ void TRAP::Application::SetUnfocusedFPSLimit(const u32 targetFPS)
 
 void TRAP::Application::SetTickRate(const u32 tickRate)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::SetTickRate(): Application is nullptr!");
 
@@ -471,7 +471,7 @@ void TRAP::Application::SetTickRate(const u32 tickRate)
 
 void TRAP::Application::SetTimeScale(const f32 timeScale)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::SetTimeScale(): Application is nullptr!");
 	TRAP_ASSERT(timeScale >= 0.0f, "Application::SetTimeScale(): timeScale is negative!");
@@ -484,7 +484,7 @@ void TRAP::Application::SetTimeScale(const f32 timeScale)
 
 void TRAP::Application::SetNewRenderAPI(const Graphics::RenderAPI renderAPI)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::SetNewRenderAPI(): Application is nullptr!");
 
@@ -495,7 +495,7 @@ void TRAP::Application::SetNewRenderAPI(const Graphics::RenderAPI renderAPI)
 
 void TRAP::Application::Shutdown()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::Shutdown(): Application is nullptr!");
 
@@ -507,7 +507,7 @@ void TRAP::Application::Shutdown()
 #ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] TRAP::Window* TRAP::Application::GetWindow()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::GetWindow(): Application is nullptr!");
 	TRAP_ASSERT(s_Instance->m_window, "Application::GetWindow(): Window is nullptr!");
@@ -520,7 +520,7 @@ void TRAP::Application::Shutdown()
 
 [[nodiscard]] TRAP::Utils::TimeStep TRAP::Application::GetTime()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::GetTime(): Application is nullptr!");
 
@@ -531,7 +531,7 @@ void TRAP::Application::Shutdown()
 
 [[nodiscard]] TRAP::ThreadPool& TRAP::Application::GetThreadPool()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::GetThreadPool(): Application is nullptr!");
 
@@ -543,7 +543,7 @@ void TRAP::Application::Shutdown()
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Application::SetClipboardString(const std::string& string)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	INTERNAL::WindowingAPI::SetClipboardString(string);
 }
@@ -554,7 +554,7 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 #ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] std::string TRAP::Application::GetClipboardString()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return INTERNAL::WindowingAPI::GetClipboardString();
 }
@@ -564,7 +564,7 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 
 [[nodiscard]] std::thread::id TRAP::Application::GetMainThreadID()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::GetMainThreadID(): Application is nullptr!");
 
@@ -575,7 +575,7 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 
 [[nodiscard]] std::string TRAP::Application::GetGameName()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::GetGameName(): Application is nullptr!");
 
@@ -587,7 +587,7 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 [[nodiscard]] u64 TRAP::Application::GetGlobalCounter()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::GetGlobalCounter(): Application is nullptr!");
 
@@ -599,7 +599,7 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 
 [[nodiscard]] std::optional<std::reference_wrapper<TRAP::FileSystem::FileWatcher>> TRAP::Application::GetHotReloadingFileWatcher()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::GetHotReloadingFileWatcher(): Application is nullptr!");
 
@@ -613,7 +613,7 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 
 [[nodiscard]] bool TRAP::Application::IsHotReloadingEnabled()
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::IsHotReloadingEnabled(): Application is nullptr!");
 
@@ -624,7 +624,7 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 
 void TRAP::Application::SetHotReloading(const bool enable)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(s_Instance, "Application::SetHotReloading(): Application is nullptr!");
 
@@ -642,7 +642,7 @@ void TRAP::Application::SetHotReloading(const bool enable)
 #ifndef TRAP_HEADLESS_MODE
 bool TRAP::Application::OnWindowClose(const Events::WindowCloseEvent& event) noexcept
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	if(event.GetWindow() == *m_window)
 		m_running = false;
@@ -656,7 +656,7 @@ bool TRAP::Application::OnWindowClose(const Events::WindowCloseEvent& event) noe
 #ifndef TRAP_HEADLESS_MODE
 bool TRAP::Application::OnFrameBufferResize(const Events::FrameBufferResizeEvent& event)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	Graphics::RendererAPI::ResizeSwapChain(&event.GetWindow());
 
@@ -669,7 +669,7 @@ bool TRAP::Application::OnFrameBufferResize(const Events::FrameBufferResizeEvent
 #ifndef TRAP_HEADLESS_MODE
 bool TRAP::Application::OnKeyPress([[maybe_unused]] const Events::KeyPressEvent& event)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	if ((event.GetKey() == Input::Key::Enter || event.GetKey() == Input::Key::KP_Enter) &&
 	    Input::IsKeyPressed(Input::Key::Left_ALT, &event.GetWindow()))

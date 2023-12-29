@@ -80,6 +80,27 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+/// @brief TRAP version number created with TRAP_MAKE_VERSION
+inline constexpr TRAP::SemanticVersion<0, 10, 24> TRAP_VERSION{};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef MAKE_ENUM_FLAG
+#define MAKE_ENUM_FLAG(ENUM_TYPE) \
+	[[nodiscard]] inline constexpr ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
+	{ \
+		return static_cast<ENUM_TYPE>(std::to_underlying(a) | std::to_underlying(b)); \
+	} \
+	[[nodiscard]] inline constexpr ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
+	{ \
+		return static_cast<ENUM_TYPE>(std::to_underlying(a) & std::to_underlying(b)); \
+	} \
+	inline constexpr ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a | b); }\
+	inline constexpr ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a & b); }
+#endif /*MAKE_ENUM_FLAG*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshadow"
@@ -89,6 +110,8 @@
 
 enum class ProfileSystems : u32
 {
+	None = 0,
+
 	Events = BIT(0u),
 	FileSystem = BIT(1u),
 	Graphics = BIT(2u),
@@ -110,42 +133,30 @@ enum class ProfileSystems : u32
 	             Network | Scene | ThreadPool | Utils | Window | WindowingAPI | Verbose
 };
 
-[[nodiscard]] inline constexpr bool operator&(const ProfileSystems lhs, const ProfileSystems rhs) noexcept
+namespace INTERNAL
 {
-	return static_cast<bool>(std::to_underlying(lhs) & std::to_underlying(rhs));
+	inline static ProfileSystems TRAPProfileSystems = ProfileSystems::All;
 }
 
-/// @brief Change this function to specify which systems should be profiled.
+/// @brief Retrieve the TRAP systems to be profiled.
 /// @return Systems to profile.
-[[nodiscard]] inline consteval ProfileSystems TRAP_PROFILE_SYSTEMS() noexcept
+[[nodiscard]] inline ProfileSystems GetTRAPProfileSystems() noexcept
 {
-	return ProfileSystems::All;
+	return INTERNAL::TRAPProfileSystems;
 }
+
+/// @brief Set the TRAP systems to profile.
+/// @param systems Systems to profile.
+inline constexpr void SetTRAPProfileSystems(const ProfileSystems systems) noexcept
+{
+	INTERNAL::TRAPProfileSystems = systems;
+}
+
+MAKE_ENUM_FLAG(ProfileSystems);
 
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic pop
 #endif /*__GNUC__ && !__clang__*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-/// @brief TRAP version number created with TRAP_MAKE_VERSION
-inline constexpr TRAP::SemanticVersion<0, 10, 23> TRAP_VERSION{};
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#ifndef MAKE_ENUM_FLAG
-#define MAKE_ENUM_FLAG(ENUM_TYPE) \
-	[[nodiscard]] inline constexpr ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
-	{ \
-		return static_cast<ENUM_TYPE>(std::to_underlying(a) | std::to_underlying(b)); \
-	} \
-	[[nodiscard]] inline constexpr ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
-	{ \
-		return static_cast<ENUM_TYPE>(std::to_underlying(a) & std::to_underlying(b)); \
-	} \
-	inline constexpr ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a | b); }\
-	inline constexpr ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a & b); }
-#endif /*MAKE_ENUM_FLAG*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

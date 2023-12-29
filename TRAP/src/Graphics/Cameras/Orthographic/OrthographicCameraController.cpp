@@ -8,7 +8,7 @@
 
 void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeStep& deltaTime)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	if (m_useController)
 	{
@@ -117,7 +117,8 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 
 void TRAP::Graphics::OrthographicCameraController::OnEvent(Events::Event& e)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	Events::EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<Events::MouseScrollEvent>(std::bind_front(&OrthographicCameraController::OnMouseScroll, this));

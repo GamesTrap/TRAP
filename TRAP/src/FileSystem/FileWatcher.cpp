@@ -8,7 +8,7 @@
 TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const bool recursive)
     : m_recursive(recursive), m_name(std::move(name))
 {
-	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
     TRAP_ASSERT(!m_name.empty(), "FileWatcher(): Name can not be empty!");
 
@@ -25,7 +25,8 @@ TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const bool recursiv
 
 void TRAP::FileSystem::FileWatcher::SetEventCallback(const EventCallbackFn& callback) noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Blue, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None &&
+                                            (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     m_callback = callback;
 }
@@ -34,7 +35,8 @@ void TRAP::FileSystem::FileWatcher::SetEventCallback(const EventCallbackFn& call
 
 [[nodiscard]] TRAP::FileSystem::FileWatcher::EventCallbackFn TRAP::FileSystem::FileWatcher::GetEventCallback() const noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Blue, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None &&
+                                            (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     return m_callback;
 }
@@ -44,7 +46,7 @@ void TRAP::FileSystem::FileWatcher::SetEventCallback(const EventCallbackFn& call
 void TRAP::FileSystem::FileWatcher::AddFolder(const std::filesystem::path& path)
 {
     //TODO Make this work without stopping the watcher thread
-	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
     TRAP_ASSERT(!path.empty(), "FileWatcher::AddFolder(): Path can not be empty!");
 
@@ -73,7 +75,7 @@ void TRAP::FileSystem::FileWatcher::AddFolder(const std::filesystem::path& path)
 void TRAP::FileSystem::FileWatcher::AddFolders(const std::vector<std::filesystem::path>& paths)
 {
     //TODO Make this work without stopping the watcher thread
-	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
     TRAP_ASSERT(!paths.empty(), "FileWatcher::AddFolders(): Paths can not be empty!");
 
@@ -105,7 +107,7 @@ void TRAP::FileSystem::FileWatcher::AddFolders(const std::vector<std::filesystem
 void TRAP::FileSystem::FileWatcher::RemoveFolder(const std::filesystem::path& path)
 {
     //TODO Make this work without stopping the watcher thread
-	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
     TRAP_ASSERT(!path.empty(), "FileWatcher::RemoveFolder(): Path can not be empty!");
 
@@ -134,7 +136,7 @@ void TRAP::FileSystem::FileWatcher::RemoveFolder(const std::filesystem::path& pa
 void TRAP::FileSystem::FileWatcher::RemoveFolders(const std::vector<std::filesystem::path>& paths)
 {
     //TODO Make this work without stopping the watcher thread
-	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
     TRAP_ASSERT(!paths.empty(), "FileWatcher::RemoveFolders(): Paths can not be empty!");
 
@@ -163,7 +165,7 @@ void TRAP::FileSystem::FileWatcher::RemoveFolders(const std::vector<std::filesys
 
 void TRAP::FileSystem::FileWatcher::Init()
 {
-	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
     if(m_paths.empty())
         return;
@@ -184,7 +186,7 @@ void TRAP::FileSystem::FileWatcher::Init()
 
 void TRAP::FileSystem::FileWatcher::Shutdown()
 {
-	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
     m_thread.request_stop();
     if (m_thread.joinable())
@@ -222,7 +224,7 @@ void TRAP::FileSystem::FileWatcher::StopCallback() const
 #ifdef TRAP_PLATFORM_WINDOWS
 void TRAP::FileSystem::FileWatcher::Watch(const std::stop_token& stopToken)
 {
-	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
 #ifdef TRACY_ENABLE
 	//Set Thread name for profiler
@@ -377,7 +379,7 @@ void TRAP::FileSystem::FileWatcher::Watch(const std::stop_token& stopToken)
 #elif defined(TRAP_PLATFORM_LINUX)
 void TRAP::FileSystem::FileWatcher::Watch(const std::stop_token& stopToken)
 {
-	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
 #ifdef TRACY_ENABLE
 	//Set Thread name for profiler

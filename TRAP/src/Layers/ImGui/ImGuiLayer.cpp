@@ -119,7 +119,7 @@ namespace
 
 void TRAP::ImGuiLayer::OnAttach()
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	//Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -252,7 +252,7 @@ void TRAP::ImGuiLayer::OnAttach()
 
 void TRAP::ImGuiLayer::OnDetach()
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
@@ -275,7 +275,8 @@ void TRAP::ImGuiLayer::OnDetach()
 
 void TRAP::ImGuiLayer::OnEvent(Events::Event& event)
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None &&
+	                                         (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	if (m_blockEvents)
 	{
@@ -289,7 +290,7 @@ void TRAP::ImGuiLayer::OnEvent(Events::Event& event)
 
 void TRAP::ImGuiLayer::Begin()
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
@@ -334,7 +335,7 @@ void TRAP::ImGuiLayer::Begin()
 
 void TRAP::ImGuiLayer::End()
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	ImGuiIO& io = ImGui::GetIO();
 	io.DisplaySize = ImVec2(NumericCast<f32>(Application::GetWindow()->GetFrameBufferSize().x()),
@@ -370,7 +371,7 @@ void TRAP::ImGuiLayer::End()
 
 void TRAP::ImGuiLayer::SetDarkThemeColors()
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	auto& colors = ImGui::GetStyle().Colors;
 	colors[ImGuiCol_WindowBg] = ImVec4(0.1f, 0.105f, 0.11f, 1.0f);
@@ -407,7 +408,7 @@ void TRAP::ImGuiLayer::SetDarkThemeColors()
 
 void TRAP::ImGuiLayer::SetImGuizmoStyle()
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	ImGuizmo::Style& style = ImGuizmo::GetStyle();
 
@@ -435,7 +436,7 @@ void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const TRAP::R
                   const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col,
 				  const ImVec4& border_col)
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	TRAP_ASSERT(sampler != nullptr, "ImGui::Image(): Sampler is nullptr!");
 	TRAP_ASSERT(image != nullptr, "ImGui::Image(): Image is nullptr!");
@@ -456,7 +457,7 @@ void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const TRAP::R
 void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const ImVec2& size, const ImVec2& uv0,
                   const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col)
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	TRAP_ASSERT(image != nullptr, "ImGui::Image(): Image is nullptr!");
 	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "ImGui::Image(): Image is not a Texture2D!");
@@ -475,7 +476,7 @@ void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const ImVec2&
 bool ImGui::ImageButton(const TRAP::Ref<TRAP::Graphics::Texture>& image, const ImVec2& size,
                         const ImVec2& uv0, const ImVec2& uv1, const ImVec4& bg_col, const ImVec4& tint_col)
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	TRAP_ASSERT(image != nullptr, "ImGui::ImageButton(): Image is nullptr!");
 	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "ImGui::ImageButton(): Image is not a Texture2D!");
@@ -542,7 +543,7 @@ bool ImGui::InputTextWithHint(const std::string_view label, const std::string_vi
 ImFont* ImGui::AddFontFromFileTTF(const std::string_view filename, const f32 sizePixels,
 							      const ImFontConfig* const fontCfgTemplate, const ImWchar* const glyphRanges)
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	//Add font like normally
 	ImFont* const font = ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.data(), sizePixels, fontCfgTemplate, glyphRanges);
@@ -558,7 +559,7 @@ ImFont* ImGui::AddFontFromFileTTF(const std::string_view filename, const f32 siz
 ImFont* ImGui::AddFontFromMemoryTTF(const std::span<const u8> fontData, const f32 sizePixels,
 								    const ImFontConfig* const fontCfg, const ImWchar* const glyphRanges)
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	//Add font like normally
 	ImFont* const font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(const_cast<u8*>(fontData.data()),
@@ -575,7 +576,8 @@ ImFont* ImGui::AddFontFromMemoryTTF(const std::span<const u8> fontData, const f3
 
 [[nodiscard]] bool ImGui::IsInputEnabled()
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None &&
+	                                         (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	const auto& io = ImGui::GetIO();
 	return (io.ConfigFlags & ImGuiConfigFlags_NoMouse) == 0 &&
@@ -586,7 +588,8 @@ ImFont* ImGui::AddFontFromMemoryTTF(const std::span<const u8> fontData, const f3
 
 void ImGui::SetInputEnabled(const bool enable)
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None &&
+	                                         (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	auto& io = ImGui::GetIO();
 

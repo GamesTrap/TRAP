@@ -120,7 +120,7 @@ requires std::same_as<T, u16> || std::same_as<T, u32>
                                                                                                 const u64 size,
                                                                                                 const UpdateFrequency updateFrequency)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	RendererAPI::IndexType indexType = {};
 	if(indices)
@@ -163,7 +163,7 @@ requires std::same_as<T, u16> || std::same_as<T, u32>
 void TRAP::Graphics::IndexBuffer::SetDataInternal(const std::span<const T, Size> indices,
                                                   const u64 offset)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	TRAP_ASSERT(!indices.empty(), "IndexBuffer::SetDataInternal(): Indices is empty!");
 	TRAP_ASSERT(indices.size_bytes() + offset <= m_indexBuffer->GetSize(), "IndexBuffer::SetDataInternal(): Out of bounds!");

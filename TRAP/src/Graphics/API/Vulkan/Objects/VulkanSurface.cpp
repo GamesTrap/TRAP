@@ -14,7 +14,7 @@ TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> inst
                                                   const TRAP::Window* const window)
 	: m_instance(std::move(instance))
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_instance, "VulkanSurface(): Vulkan Instance is nullptr");
 	TRAP_ASSERT(device, "VulkanSurface(): Vulkan Device is nullptr");
@@ -51,7 +51,7 @@ TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> inst
 
 TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSurfacePrefix, "Destroying Surface");

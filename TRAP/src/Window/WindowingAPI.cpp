@@ -43,7 +43,7 @@ TRAP::INTERNAL::WindowingAPI::Data TRAP::INTERNAL::WindowingAPI::s_Data{};
 
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::Init()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::Init(): must only be called from main thread");
@@ -69,7 +69,7 @@ TRAP::INTERNAL::WindowingAPI::Data TRAP::INTERNAL::WindowingAPI::s_Data{};
 
 void TRAP::INTERNAL::WindowingAPI::Shutdown()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::Shutdown(): must only be called from main thread");
@@ -108,7 +108,7 @@ void TRAP::INTERNAL::WindowingAPI::Shutdown()
 
 void TRAP::INTERNAL::WindowingAPI::DestroyWindow(InternalWindow* window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::DestroyWindow(): must only be called from main thread");
@@ -139,7 +139,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyWindow(InternalWindow* window)
 
 void TRAP::INTERNAL::WindowingAPI::DefaultWindowHints()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::DefaultWindowHints(): must only be called from main thread");
@@ -164,7 +164,8 @@ void TRAP::INTERNAL::WindowingAPI::DefaultWindowHints()
 
 void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::WindowHint(): must only be called from main thread");
@@ -221,7 +222,8 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 
 [[nodiscard]] std::string TRAP::INTERNAL::WindowingAPI::GetMonitorName(const InternalMonitor& monitor)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetMonitorName(): must only be called from main thread");
@@ -239,7 +241,8 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 
 [[nodiscard]] TRAP::INTERNAL::WindowingAPI::InternalMonitor* TRAP::INTERNAL::WindowingAPI::GetPrimaryMonitor()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetPrimaryMonitor(): must only be called from main thread");
@@ -260,7 +263,7 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 
 [[nodiscard]] std::vector<TRAP::INTERNAL::WindowingAPI::InternalMonitor*> TRAP::INTERNAL::WindowingAPI::GetMonitors()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetMonitors(): must only be called from main thread");
@@ -286,7 +289,7 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 
 [[nodiscard]] std::optional<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::GetVideoMode(InternalMonitor& monitor)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetVideoMode(): must only be called from main thread");
@@ -311,7 +314,7 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 
 [[nodiscard]] std::optional<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::GetNativeVideoMode(InternalMonitor& monitor)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetNativeVideoMode(): must only be called from main thread");
@@ -329,7 +332,7 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 
 [[nodiscard]] std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::GetVideoModes(InternalMonitor& monitor)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetVideoModes(): must only be called from main thread");
@@ -353,7 +356,7 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 	                                                                                                   std::string title,
 	                                                                                                   InternalMonitor* const monitor)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::CreateWindow(): must only be called from main thread");
@@ -422,7 +425,8 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 
 void TRAP::INTERNAL::WindowingAPI::SetWindowShouldClose(InternalWindow& window, const bool value)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowShouldClose(): must only be called from main thread");
@@ -440,7 +444,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowShouldClose(InternalWindow& window, 
 
 void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(InternalWindow& window, const std::string& title)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowTitle(): must only be called from main thread");
@@ -459,7 +463,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(InternalWindow& window, const 
 void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScale(const InternalMonitor& monitor, f32& xScale,
                                                           f32& yScale)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetMonitorContentScale(): must only be called from main thread");
@@ -481,7 +485,7 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScale(const InternalMonitor&
 //Center the cursor in the content area of the specified window
 void TRAP::INTERNAL::WindowingAPI::CenterCursorInContentArea(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	i32 width = 0, height = 0;
 
@@ -493,7 +497,8 @@ void TRAP::INTERNAL::WindowingAPI::CenterCursorInContentArea(InternalWindow& win
 
 void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::string_view str)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	std::string description = "[WindowingAPI]";
 
@@ -526,7 +531,7 @@ void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::strin
 
 void TRAP::INTERNAL::WindowingAPI::DestroyCursor(InternalCursor* cursor)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::DestroyCursor(): must only be called from main thread");
@@ -564,7 +569,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(InternalCursor* cursor)
 	                                                                                                   const u32 xHotspot,
 	                                                                                                   const u32 yHotspot)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::CreateCursor(): must only be called from main thread");
@@ -637,7 +642,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(InternalCursor* cursor)
 
 [[nodiscard]] TRAP::INTERNAL::WindowingAPI::InternalCursor* TRAP::INTERNAL::WindowingAPI::CreateStandardCursor(const CursorType& type)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::CreateStandardCursor(): must only be called from main thread");
@@ -665,7 +670,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(InternalCursor* cursor)
 
 void TRAP::INTERNAL::WindowingAPI::SetCursor(InternalWindow& window, InternalCursor* const cursor)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetCursor(): must only be called from main thread");
@@ -685,7 +690,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursor(InternalWindow& window, InternalCur
 
 void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow& window, const Image* const image)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowIcon(): must only be called from main thread");
@@ -741,7 +746,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow& window, const I
 
 void TRAP::INTERNAL::WindowingAPI::SetWindowPos(const InternalWindow& window, const i32 xPos, const i32 yPos)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowPos(): must only be called from main thread");
@@ -763,7 +768,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowPos(const InternalWindow& window, co
 //Retrieves the position of the content area of the specified window.
 void TRAP::INTERNAL::WindowingAPI::GetWindowPos(const InternalWindow& window, i32& xPos, i32& yPos)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetWindowPos(): must only be called from main thread");
@@ -785,7 +790,7 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowPos(const InternalWindow& window, i3
 //Sets the size of the content area of the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowSize(InternalWindow& window, const i32 width, const i32 height)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowSize(): must only be called from main thread");
@@ -809,7 +814,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSize(InternalWindow& window, const i
 //Retrieves the size of the content area of the specified window.
 void TRAP::INTERNAL::WindowingAPI::GetWindowSize(const InternalWindow& window, i32& width, i32& height)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetWindowSize(): must only be called from main thread");
@@ -831,7 +836,7 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowSize(const InternalWindow& window, i
 //Retrieves the size of the framebuffer of the specified window.
 void TRAP::INTERNAL::WindowingAPI::GetFrameBufferSize(const InternalWindow& window, i32& width, i32& height)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetFrameBufferSize(): must only be called from main thread");
@@ -853,7 +858,7 @@ void TRAP::INTERNAL::WindowingAPI::GetFrameBufferSize(const InternalWindow& wind
 //Sets the opacity of the whole window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const InternalWindow& window, const f32 opacity)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowOpacity(): must only be called from main thread");
@@ -878,7 +883,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const InternalWindow& window
 //Returns the opacity of the whole window.
 [[nodiscard]] std::optional<f32> TRAP::INTERNAL::WindowingAPI::GetWindowOpacity(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetWindowOpacity(): must only be called from main thread");
@@ -897,7 +902,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const InternalWindow& window
 //Retrieves the content scale for the specified window.
 void TRAP::INTERNAL::WindowingAPI::GetWindowContentScale(const InternalWindow& window, f32& xScale, f32& yScale)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetWindowContentScale(): must only be called from main thread");
@@ -919,7 +924,7 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowContentScale(const InternalWindow& w
 //Sets an attribute for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow& window, const Hint hint, const bool value)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowHint(): must only be called from main thread");
@@ -980,7 +985,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow& window, const H
 //Returns an attribute of the specified window.
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::GetWindowHint(const InternalWindow& window, const Hint hint)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetWindowHint(): must only be called from main thread");
@@ -1039,7 +1044,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(InternalWindow& window,
                                                     const i32 height,
                                                     const f64 refreshRate)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowMonitor(): must only be called from main thread");
@@ -1076,7 +1081,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(InternalWindow& window,
 //Sets the mode, monitor and placement of a window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowMonitorBorderless(InternalWindow& window, InternalMonitor& monitor)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowMonitorBorderless(): must only be called from main thread");
@@ -1092,7 +1097,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitorBorderless(InternalWindow& wi
 //Sets the user pointer of the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowUserPointer(InternalWindow& window, void* const ptr)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	if(!s_Data.Initialized)
 	{
@@ -1108,7 +1114,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowUserPointer(InternalWindow& window, 
 //Returns the user pointer of the specified window.
 [[nodiscard]] void* TRAP::INTERNAL::WindowingAPI::GetWindowUserPointer(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	if(!s_Data.Initialized)
 	{
@@ -1123,7 +1130,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowUserPointer(InternalWindow& window, 
 
 void TRAP::INTERNAL::WindowingAPI::SetMonitorCallback(const MonitorFunc callback)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetMonitorCallback(): must only be called from main thread");
@@ -1142,7 +1150,8 @@ void TRAP::INTERNAL::WindowingAPI::SetMonitorCallback(const MonitorFunc callback
 //Sets the position callback for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowPosCallback(InternalWindow& window, const WindowPositionFunc callback)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowPosCallback(): must only be called from main thread");
@@ -1161,7 +1170,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowPosCallback(InternalWindow& window, 
 //Sets the size callback for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowSizeCallback(InternalWindow& window, const WindowSizeFunc callback)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowSizeCallback(): must only be called from main thread");
@@ -1181,7 +1191,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeCallback(InternalWindow& window,
 void TRAP::INTERNAL::WindowingAPI::SetWindowMinimizeCallback(InternalWindow& window,
                                                              const WindowMinimizeFunc callback)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowMinimizeCallback(): must only be called from main thread");
@@ -1201,7 +1212,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMinimizeCallback(InternalWindow& win
 void TRAP::INTERNAL::WindowingAPI::SetWindowMaximizeCallback(InternalWindow& window,
                                                              const WindowMaximizeFunc callback)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowMaximizeCallback(): must only be called from main thread");
@@ -1220,7 +1232,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMaximizeCallback(InternalWindow& win
 //Sets the close callback for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowCloseCallback(InternalWindow& window, const WindowCloseFunc callback)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowCloseCallback(): must only be called from main thread");
@@ -1239,7 +1252,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowCloseCallback(InternalWindow& window
 //Sets the focus callback for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowFocusCallback(InternalWindow& window, const WindowFocusFunc callback)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowFocusCallback(): must only be called from main thread");
@@ -1259,7 +1273,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowFocusCallback(InternalWindow& window
 void TRAP::INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(InternalWindow& window,
                                                               const FrameBufferSizeFunc callback)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetFrameBufferSizeCallback(): must only be called from main thread");
@@ -1279,7 +1294,8 @@ void TRAP::INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(InternalWindow& wi
 void TRAP::INTERNAL::WindowingAPI::SetContentScaleCallback(InternalWindow& window,
                                                            const WindowContentScaleFunc callback)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	if(!s_Data.Initialized)
 	{
@@ -1295,7 +1311,8 @@ void TRAP::INTERNAL::WindowingAPI::SetContentScaleCallback(InternalWindow& windo
 //Sets the key callback.
 void TRAP::INTERNAL::WindowingAPI::SetKeyCallback(InternalWindow& window, const KeyFunc callback)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetKeyCallback(): must only be called from main thread");
@@ -1314,7 +1331,8 @@ void TRAP::INTERNAL::WindowingAPI::SetKeyCallback(InternalWindow& window, const 
 //Sets the Unicode character callback.
 void TRAP::INTERNAL::WindowingAPI::SetCharCallback(InternalWindow& window, const CharFunc callback)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetCharCallback(): must only be called from main thread");
@@ -1333,7 +1351,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCharCallback(InternalWindow& window, const
 //Sets the mouse button callback.
 void TRAP::INTERNAL::WindowingAPI::SetMouseButtonCallback(InternalWindow& window, const MouseButtonFunc callback)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetMouseButtonCallback(): must only be called from main thread");
@@ -1352,7 +1371,8 @@ void TRAP::INTERNAL::WindowingAPI::SetMouseButtonCallback(InternalWindow& window
 //Sets the cursor position callback.
 void TRAP::INTERNAL::WindowingAPI::SetCursorPosCallback(InternalWindow& window, const CursorPositionFunc callback)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetCursorPosCallback(): must only be called from main thread");
@@ -1371,7 +1391,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorPosCallback(InternalWindow& window, 
 //Sets the cursor enter callback.
 void TRAP::INTERNAL::WindowingAPI::SetCursorEnterCallback(InternalWindow& window, const CursorEnterFunc callback)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetCursorEnterCallback(): must only be called from main thread");
@@ -1390,7 +1411,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorEnterCallback(InternalWindow& window
 //Sets the scroll callback.
 void TRAP::INTERNAL::WindowingAPI::SetScrollCallback(InternalWindow& window, const ScrollFunc callback)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetScrollCallback(): must only be called from main thread");
@@ -1409,7 +1431,8 @@ void TRAP::INTERNAL::WindowingAPI::SetScrollCallback(InternalWindow& window, con
 //Sets the path drop callback.
 void TRAP::INTERNAL::WindowingAPI::SetDropCallback(InternalWindow& window, const DropFunc callback)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetDropCallback(): must only be called from main thread");
@@ -1427,7 +1450,8 @@ void TRAP::INTERNAL::WindowingAPI::SetDropCallback(InternalWindow& window, const
 
 [[nodiscard]] TRAP::INTERNAL::WindowingAPI::MonitorFunc TRAP::INTERNAL::WindowingAPI::GetMonitorCallback()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return s_Data.Callbacks.Monitor;
 }
@@ -1437,7 +1461,7 @@ void TRAP::INTERNAL::WindowingAPI::SetDropCallback(InternalWindow& window, const
 //Processes all pending events.
 void TRAP::INTERNAL::WindowingAPI::PollEvents()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::PollEvents(): must only be called from main thread");
@@ -1455,7 +1479,7 @@ void TRAP::INTERNAL::WindowingAPI::PollEvents()
 
 void TRAP::INTERNAL::WindowingAPI::WaitEvents(const f64 timeout)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if(!s_Data.Initialized)
 	{
@@ -1479,7 +1503,7 @@ void TRAP::INTERNAL::WindowingAPI::WaitEvents(const f64 timeout)
 
 void TRAP::INTERNAL::WindowingAPI::PostEmptyEvent()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if(!s_Data.Initialized)
 	{
@@ -1495,7 +1519,7 @@ void TRAP::INTERNAL::WindowingAPI::PostEmptyEvent()
 //Sets the cursor mode for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetCursorMode(InternalWindow& window, const CursorMode mode)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetCursorMode(): must only be called from main thread");
@@ -1514,7 +1538,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorMode(InternalWindow& window, const C
 //Retrieves the cursor mode for the specified window.
 [[nodiscard]] TRAP::INTERNAL::WindowingAPI::CursorMode TRAP::INTERNAL::WindowingAPI::GetCursorMode(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetCursorMode(): must only be called from main thread");
@@ -1527,7 +1552,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorMode(InternalWindow& window, const C
 //Returns whether raw mouse motion is supported.
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::RawMouseMotionSupported()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::RawMouseMotionSupported(): must only be called from main thread");
@@ -1545,7 +1570,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorMode(InternalWindow& window, const C
 
 void TRAP::INTERNAL::WindowingAPI::SetRawMouseMotionMode(InternalWindow& window, const bool enabled)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetRawMouseMotionMode(): must only be called from main thread");
@@ -1568,7 +1593,8 @@ void TRAP::INTERNAL::WindowingAPI::SetRawMouseMotionMode(InternalWindow& window,
 //Retrvieves the raw mouse motion mode for the specified window.
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::GetRawMouseMotionMode(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetRawMouseMotionMode(): must only be called from main thread");
@@ -1582,7 +1608,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWind
                                                               const ProgressState state,
 											                  f64 progress)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowProgressIndicator(): must only be called from main thread");
@@ -1599,7 +1625,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWind
 //Returns the layout-specific name of the specified printable key.
 [[nodiscard]] std::optional<std::string> TRAP::INTERNAL::WindowingAPI::GetKeyName(const Input::Key key, i32 scanCode)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetKeyName(): must only be called from main thread");
@@ -1628,7 +1654,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWind
 //Returns the last reported state of a keyboard key for the specified window.
 [[nodiscard]] TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow& window, const Input::Key key)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetKey(): must only be called from main thread");
@@ -1653,7 +1680,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWind
 //Returns the last reported state of a mouse button for the specified window.
 [[nodiscard]] TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetMouseButton(const InternalWindow& window, const Input::MouseButton button)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetMouseButton(): must only be called from main thread");
@@ -1672,7 +1700,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWind
 //Sets the position of the cursor, relative to the content area of the window
 void TRAP::INTERNAL::WindowingAPI::SetCursorPos(InternalWindow& window, const f64 xPos, const f64 yPos)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetCursorPos(): must only be called from main thread");
@@ -1709,7 +1737,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorPos(InternalWindow& window, const f6
 //Retrieves the position of the cursor relative to the content area of the window.
 void TRAP::INTERNAL::WindowingAPI::GetCursorPos(const InternalWindow& window, f64& xPos, f64& yPos)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetCursorPos(): must only be called from main thread");
@@ -1737,7 +1765,7 @@ void TRAP::INTERNAL::WindowingAPI::GetCursorPos(const InternalWindow& window, f6
 //Returns the position of the monitor's viewport on the virtual screen.
 void TRAP::INTERNAL::WindowingAPI::GetMonitorPos(const InternalMonitor& monitor, i32& xPos, i32& yPos)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetMonitorPos(): must only be called from main thread");
@@ -1759,7 +1787,7 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorPos(const InternalMonitor& monitor,
 void TRAP::INTERNAL::WindowingAPI::GetMonitorWorkArea(const InternalMonitor& monitor, i32& xPos, i32& yPos,
                                                       i32& width, i32& height)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetMonitorWorkArea(): must only be called from main thread");
@@ -1783,7 +1811,7 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorWorkArea(const InternalMonitor& mon
 //Makes the specified window visible.
 void TRAP::INTERNAL::WindowingAPI::ShowWindow(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::ShowWindow(): must only be called from main thread");
@@ -1808,7 +1836,7 @@ void TRAP::INTERNAL::WindowingAPI::ShowWindow(InternalWindow& window)
 //Brings the specified window to front and sets input focus.
 void TRAP::INTERNAL::WindowingAPI::FocusWindow(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::FocusWindow(): must only be called from main thread");
@@ -1827,7 +1855,7 @@ void TRAP::INTERNAL::WindowingAPI::FocusWindow(const InternalWindow& window)
 //Maximizes the specified window.
 void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::MaximizeWindow(): must only be called from main thread");
@@ -1849,7 +1877,7 @@ void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(InternalWindow& window)
 //Minimizes the specified window.
 void TRAP::INTERNAL::WindowingAPI::MinimizeWindow(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::MinimizeWindow(): must only be called from main thread");
@@ -1868,7 +1896,7 @@ void TRAP::INTERNAL::WindowingAPI::MinimizeWindow(const InternalWindow& window)
 //Requests user attention to the specified window.
 void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::RequestWindowAttention(): must only be called from main thread");
@@ -1887,7 +1915,7 @@ void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(InternalWindow& window
 //Hides the specified window.
 void TRAP::INTERNAL::WindowingAPI::HideWindow(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::HideWindow(): must only be called from main thread");
@@ -1908,7 +1936,7 @@ void TRAP::INTERNAL::WindowingAPI::HideWindow(InternalWindow& window)
 
 void TRAP::INTERNAL::WindowingAPI::RestoreWindow(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::RestoreWindow(): must only be called from main thread");
@@ -1930,7 +1958,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeLimits(InternalWindow& window,
                                                        const i32 maxWidth,
                                                        const i32 maxHeight)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowSizeLimits(): must only be called from main thread");
@@ -1970,7 +1998,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeLimits(InternalWindow& window,
 void TRAP::INTERNAL::WindowingAPI::SetWindowAspectRatio(InternalWindow& window, const i32 numerator,
                                                         const i32 denominator)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowAspectRatio(): must only be called from main thread");
@@ -2000,7 +2028,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowAspectRatio(InternalWindow& window, 
 //Sets the clipboard to the specified string.
 void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetClipboardString(): must only be called from main thread");
@@ -2018,7 +2046,7 @@ void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 //Returns the contents of the clipboard as a string.
 [[nodiscard]] std::string TRAP::INTERNAL::WindowingAPI::GetClipboardString()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetClipboardString(): must only be called from main thread");
@@ -2036,7 +2064,7 @@ void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 //Returns whether the Vulkan loader and an ICD have been found.
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::VulkanSupported()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	// if(!s_Data.Initialized)
 	// {
@@ -2052,7 +2080,7 @@ void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 //Returns the Vulkan instance extensions required by TRAP.
 [[nodiscard]] std::array<std::string, 2> TRAP::INTERNAL::WindowingAPI::GetRequiredInstanceExtensions()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	// if(!s_Data.Initialized)
 	// {
@@ -2077,7 +2105,7 @@ void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
                                                                          const VkAllocationCallbacks* const allocator,
                                                                          VkSurfaceKHR& surface)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(instance, "WindowingAPI::CreateWindowSurface(): Instance is nullptr!");
 
@@ -2105,7 +2133,8 @@ void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 //The position is specified in content area relative screen coordinates
 void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow& window, const f64 xPos, const f64 yPos)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(xPos > -std::numeric_limits<f32>::max(), "WindowingAPI::InputCursorPos(): xPos is NaN!");
 	TRAP_ASSERT(xPos <  std::numeric_limits<f32>::max(), "WindowingAPI::InputCursorPos(): xPos is NaN!");
@@ -2130,7 +2159,8 @@ void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow& window, Input::Key k
                                             [[maybe_unused]] const i32 scancode,
                                             Input::KeyState state)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(key != Input::Key::Unknown, "WindowingAPI::InputKey(): Key is unknown!");
 	TRAP_ASSERT(state == Input::KeyState::Pressed || state == Input::KeyState::Released, "WindowingAPI::InputKey(): KeyState is invalid!");
@@ -2161,7 +2191,8 @@ void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow& window, Input::Key k
 void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow& window, const Input::MouseButton button,
                                                    const Input::KeyState state)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(state == Input::KeyState::Pressed || state == Input::KeyState::Released, "WindowingAPI::InputMouseClick(): KeyState is invalid!");
 
@@ -2180,7 +2211,8 @@ void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow& window, const
 void TRAP::INTERNAL::WindowingAPI::InputScroll(const InternalWindow& window, const f64 xOffset,
                                                const f64 yOffset)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(xOffset > -std::numeric_limits<f32>::max(), "WindowingAPI::InputScroll(): xOffset is NaN!");
 	TRAP_ASSERT(xOffset <  std::numeric_limits<f32>::max(), "WindowingAPI::InputScroll(): xOffset is NaN!");
@@ -2198,7 +2230,8 @@ void TRAP::INTERNAL::WindowingAPI::InputScroll(const InternalWindow& window, con
 void TRAP::INTERNAL::WindowingAPI::InputFrameBufferSize(const InternalWindow& window, const i32 width,
                                                         const i32 height)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(width >= 0, "WindowingAPI::InputFrameBufferSize(): Width is invalid!");
 	TRAP_ASSERT(height >= 0, "WindowingAPI::InputFrameBufferSize(): Height is invalid!");
@@ -2214,7 +2247,8 @@ void TRAP::INTERNAL::WindowingAPI::InputFrameBufferSize(const InternalWindow& wi
 void TRAP::INTERNAL::WindowingAPI::InputWindowSize(const InternalWindow& window, const i32 width,
                                                    const i32 height)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(width >= 0, "WindowingAPI::InputWindowSize(): Width is invalid!");
 	TRAP_ASSERT(height >= 0, "WindowingAPI::InputWindowSize(): Height is invalid!");
@@ -2228,7 +2262,8 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowSize(const InternalWindow& window,
 //Notifies shared code that a window has lost or received input focus
 void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow& window, const bool focused)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	if (window.Callbacks.Focus != nullptr)
 		window.Callbacks.Focus(window, focused);
@@ -2257,7 +2292,8 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow& window, cons
 //Notifies shared code that a the keyboard layout has changed
 void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	if(!TRAP::Input::GetEventCallback())
 		return;
@@ -2278,7 +2314,7 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 //Retrieves the available modes for the specified monitor
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::RefreshVideoModes(InternalMonitor& monitor)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if (!monitor.Modes.empty())
 		return true;
@@ -2298,7 +2334,7 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::InitVulkan(const u32 mode)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	u32 count = 0;
 
@@ -2366,7 +2402,7 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 [[nodiscard]] std::optional<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::ChooseVideoMode(InternalMonitor& monitor,
                                                                                                                            const InternalVideoMode& desired)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	u32 leastSizeDiff = std::numeric_limits<u32>::max();
 	f64 rateDiff = 0.0, leastRateDiff = std::numeric_limits<f64>::max();
@@ -2417,7 +2453,7 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, const bool connected,
                                                 const u32 placement)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(monitor != nullptr, "WindowingAPI::InputMonitor(): Monitor is nullptr!");
 
@@ -2457,7 +2493,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, 
 void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const u32 monitorIndex,
                                                           [[maybe_unused]] const u32 placement)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	const Scope<InternalMonitor>& monitor = s_Data.Monitors[monitorIndex];
 
@@ -2472,7 +2508,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const u32 monitorIndex
 
 void TRAP::INTERNAL::WindowingAPI::HideWindowFromTaskbar(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	PlatformHideWindowFromTaskbar(window);
 }
@@ -2481,7 +2517,7 @@ void TRAP::INTERNAL::WindowingAPI::HideWindowFromTaskbar(InternalWindow& window)
 
 void TRAP::INTERNAL::WindowingAPI::SetDragAndDrop(InternalWindow& window, const bool value)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	PlatformSetDragAndDrop(window, value);
 }
@@ -2493,7 +2529,7 @@ void TRAP::INTERNAL::WindowingAPI::SetDragAndDrop(InternalWindow& window, const 
 void TRAP::INTERNAL::WindowingAPI::InputWindowContentScale(const InternalWindow& window, const f32 xScale,
                                                            const f32 yScale)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(xScale > 0.0f, "WindowingAPI::InputWindowContentScale(): XScale is 0.0f!");
 	TRAP_ASSERT(xScale < std::numeric_limits<f32>::max(), "WindowingAPI::InputWindowContentScale(): XScale is too big!");

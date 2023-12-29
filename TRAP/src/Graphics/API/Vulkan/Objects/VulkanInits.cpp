@@ -89,7 +89,7 @@
 	                                                                                          VkInstance instance,
 	                                                                                          const VmaVulkanFunctions& vulkanFunctions)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(device != VK_NULL_HANDLE, "VulkanInits::VMAAllocatorCreateInfo(): Device can't be VK_NULL_HANDLE!");
 	TRAP_ASSERT(physicalDevice != VK_NULL_HANDLE, "VulkanInits::VMAAllocatorCreateInfo(): PhysicalDevice can't be VK_NULL_HANDLE!");
@@ -204,7 +204,7 @@
 [[nodiscard]] VkFragmentShadingRateAttachmentInfoKHR TRAP::Graphics::API::VulkanInits::FragmentShadingRateAttachmentInfo(VkAttachmentReference2KHR& shadingRateAttachment,
 	                                                                                                                     VkExtent2D texelSize)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(shadingRateAttachment.attachment != VK_ATTACHMENT_UNUSED, "VulkanInits::FragmentShadingRateAttachmentInfo(): ShadingRateAttachment can't be VK_ATTACHMENT_UNUSED!");
 	TRAP_ASSERT(shadingRateAttachment.layout == VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR || shadingRateAttachment.layout == VK_IMAGE_LAYOUT_GENERAL, "VulkanInits::FragmentShadingRateAttachmentInfo(): ShadingRateAttachment Layout must be VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR or VK_IMAGE_LAYOUT_GENERAL!");

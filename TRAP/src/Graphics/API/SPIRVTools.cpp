@@ -10,7 +10,7 @@ void ReflectBoundResources(spirv_cross::Compiler& compiler,
 	                       usize& currentResource,
 	                       const TRAP::Graphics::API::SPIRVTools::ResourceType SPIRVtype)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	for(const auto& input : allResources)
 	{
@@ -102,14 +102,16 @@ void ReflectBoundResources(spirv_cross::Compiler& compiler,
 TRAP::Graphics::API::SPIRVTools::CrossCompiler::CrossCompiler(const u32* const SPIRVBinary, const usize binarySize)
 	: m_compiler(spirv_cross::Compiler(SPIRVBinary, binarySize))
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectEntryPoint()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	const auto entryPoints = m_compiler.get_entry_points_and_stages();
 
@@ -121,7 +123,7 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectEntryPoint()
 
 void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderResources()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	//1. Get all shader resources
 	spirv_cross::ShaderResources allResources;
@@ -252,7 +254,7 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderResources()
 
 void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderVariables()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	if (m_shaderResources.empty())
 		return; //Error code here
@@ -315,7 +317,7 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderVariables()
 
 [[nodiscard]] std::array<u32, 3> TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectComputeShaderWorkGroupSize() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	const spirv_cross::SPIREntryPoint& entryPoint = m_compiler.get_entry_point(m_entryPoint, m_compiler.get_execution_model());
 
@@ -326,7 +328,7 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderVariables()
 
 [[nodiscard]] u32 TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectTessellationControlShaderControlPoint() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	u32 controlPoints = m_compiler.get_entry_point(m_entryPoint, m_compiler.get_execution_model()).output_vertices;
 

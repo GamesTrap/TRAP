@@ -13,7 +13,7 @@
 
 TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineDesc& desc)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_device, "VulkanPipeline(): Vulkan Device is nullptr!");
 
@@ -56,7 +56,7 @@ TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineD
 
 TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelinePrefix, "Destroying Pipeline");
@@ -69,7 +69,7 @@ TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 
 void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI::PipelineDesc& desc)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	const auto& computeDesc = std::get<RendererAPI::ComputePipelineDesc>(desc.Pipeline);
 	VkPipelineCache psoCache = desc.Cache ?
@@ -110,7 +110,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI:
 
 void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI::PipelineDesc& desc)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	const auto& graphicsDesc = std::get<RendererAPI::GraphicsPipelineDesc>(desc.Pipeline);
 	 VkPipelineCache psoCache = desc.Cache ?
@@ -379,7 +379,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 
 void TRAP::Graphics::API::VulkanPipeline::SetPipelineName(const std::string_view name) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	if(!VulkanRenderer::s_debugMarkerSupport)
 		return;

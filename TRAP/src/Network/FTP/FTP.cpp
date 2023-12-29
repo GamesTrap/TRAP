@@ -64,7 +64,7 @@ namespace TRAP::Network
 TRAP::Network::FTP::DirectoryResponse::DirectoryResponse(const Response& response)
 	: Response(response)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	if(!IsOK())
 		return;
@@ -79,7 +79,8 @@ TRAP::Network::FTP::DirectoryResponse::DirectoryResponse(const Response& respons
 
 [[nodiscard]] const std::filesystem::path& TRAP::Network::FTP::DirectoryResponse::GetDirectory() const noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None &&
+	                                         (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return m_directory;
 }
@@ -88,7 +89,7 @@ TRAP::Network::FTP::DirectoryResponse::DirectoryResponse(const Response& respons
 
 TRAP::Network::FTP::~FTP()
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	const auto response = Disconnect();
 }
@@ -98,7 +99,7 @@ TRAP::Network::FTP::~FTP()
 TRAP::Network::FTP::Response TRAP::Network::FTP::Connect(const IPv4Address& server, const u16 port,
                                                          const Utils::TimeStep timeout)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Connect to the server
 	if (m_commandSocket.Connect(server, port, timeout) != Socket::Status::Done)
@@ -112,7 +113,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Connect(const IPv4Address& serv
 
 TRAP::Network::FTP::Response TRAP::Network::FTP::Login()
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	return Login("anonymous", "user@trappedgames.de");
 }
@@ -121,7 +122,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Login()
 
 TRAP::Network::FTP::Response TRAP::Network::FTP::Login(const std::string& name, const std::string& password)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	Response response = SendCommand("USER", name);
 	if (response.IsOK())
@@ -134,7 +135,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Login(const std::string& name, 
 
 TRAP::Network::FTP::Response TRAP::Network::FTP::Disconnect()
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Send the exit command
 	Response response = SendCommand("QUIT");
@@ -148,7 +149,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Disconnect()
 
 TRAP::Network::FTP::Response TRAP::Network::FTP::KeepAlive()
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	return SendCommand("NOOP");
 }
@@ -157,7 +158,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::KeepAlive()
 
 [[nodiscard]] TRAP::Network::FTP::DirectoryResponse TRAP::Network::FTP::GetWorkingDirectory()
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	return DirectoryResponse(SendCommand("PWD"));
 }
@@ -166,7 +167,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::KeepAlive()
 
 [[nodiscard]] TRAP::Network::FTP::ListingResponse TRAP::Network::FTP::GetDirectoryListing(const std::filesystem::path& directory)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Open a data channel on default port (20) using ASCII transfer mode
 	std::ostringstream directoryData;
@@ -193,7 +194,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::KeepAlive()
 
 TRAP::Network::FTP::Response TRAP::Network::FTP::ChangeDirectory(const std::filesystem::path& directory)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	return SendCommand("CWD", directory.string());
 }
@@ -202,7 +203,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::ChangeDirectory(const std::file
 
 TRAP::Network::FTP::Response TRAP::Network::FTP::ParentDirectory()
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	return SendCommand("CDUP");
 }
@@ -211,7 +212,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::ParentDirectory()
 
 TRAP::Network::FTP::Response TRAP::Network::FTP::CreateDirectory(const std::filesystem::path& name)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	return SendCommand("MKD", name.string());
 }
@@ -220,7 +221,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::CreateDirectory(const std::file
 
 TRAP::Network::FTP::Response TRAP::Network::FTP::DeleteDirectory(const std::filesystem::path& name)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	return SendCommand("RMD", name.string());
 }
@@ -230,7 +231,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::DeleteDirectory(const std::file
 TRAP::Network::FTP::Response TRAP::Network::FTP::RenameFile(const std::filesystem::path& file,
    															const std::filesystem::path& newName)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	Response response = SendCommand("RNFR", file.string());
 	if (response.IsOK())
@@ -243,7 +244,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::RenameFile(const std::filesyste
 
 TRAP::Network::FTP::Response TRAP::Network::FTP::DeleteFile(const std::filesystem::path& name)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	return SendCommand("DELE", name.string());
 }
@@ -254,7 +255,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::filesystem:
                                                           const std::filesystem::path& path,
 														  const TransferMode mode)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Open a data channel using the given transfer mode
 	DataChannel data(*this);
@@ -310,7 +311,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::filesystem::p
                                                         const std::filesystem::path& remotePath,
 														const TransferMode mode, const bool append)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	if(!FileSystem::Exists(localFile))
 		return Response(Response::Status::InvalidFile);
@@ -356,7 +357,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::filesystem::p
 TRAP::Network::FTP::Response TRAP::Network::FTP::SendCommand(const std::string& command,
                                                              const std::string& parameter)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Build the command string
 	std::string commandStr;
@@ -377,7 +378,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::SendCommand(const std::string& 
 
 [[nodiscard]] TRAP::Network::FTP::Response TRAP::Network::FTP::GetResponse()
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//We'll use a variable to keep track of the last valid code.
 	//It is useful in case of multi-lines responses, because the end of such a response
@@ -511,14 +512,14 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::SendCommand(const std::string& 
 TRAP::Network::FTP::DataChannel::DataChannel(FTP& owner) noexcept
 	: m_ftp(owner)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::FTP::Response TRAP::Network::FTP::DataChannel::Open(const TransferMode mode)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Open a data connection in active mode (we connect to the server)
 	Response response = m_ftp.SendCommand("PASV");
@@ -590,7 +591,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::DataChannel::Open(const Transfe
 
 void TRAP::Network::FTP::DataChannel::Receive(std::ostream& stream)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Receive data
 	std::array<char, 1024> buffer{};
@@ -614,7 +615,7 @@ void TRAP::Network::FTP::DataChannel::Receive(std::ostream& stream)
 
 void TRAP::Network::FTP::DataChannel::Send(std::istream& stream)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Send data
 	std::array<char, 1024> buffer{};

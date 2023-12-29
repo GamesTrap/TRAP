@@ -3,7 +3,7 @@
 
 [[nodiscard]] void* TRAP::Utils::DynamicLoading::LoadLibrary(const std::string_view path)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	HMODULE handle = LoadLibraryA(path.data());
@@ -42,7 +42,7 @@
 
 void TRAP::Utils::DynamicLoading::FreeLibrary(void* const module)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	if(!FreeLibrary(static_cast<HMODULE>(module)))

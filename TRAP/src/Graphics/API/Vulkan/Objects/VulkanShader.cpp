@@ -20,7 +20,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::fil
                                                 const std::vector<Macro>* const userMacros, const bool valid)
 	: Shader(std::move(name), valid, desc.Stages, userMacros, filepath)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_device, "VulkanShader(): Vulkan Device is nullptr");
 
@@ -36,7 +36,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
                                                 const std::vector<Macro>* const userMacros, const bool valid)
 	: Shader(std::move(name), valid, desc.Stages, userMacros)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_device, "VulkanShader(): Vulkan Device is nullptr");
 
@@ -53,7 +53,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::fil
 												const RendererAPI::ShaderStage stages)
 	: Shader(std::move(name), false, stages, userMacros, filepath)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_device, "VulkanShader(): Vulkan Device is nullptr");
 
@@ -64,7 +64,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::fil
 
 TRAP::Graphics::API::VulkanShader::~VulkanShader()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	Shutdown();
 }
@@ -73,7 +73,8 @@ TRAP::Graphics::API::VulkanShader::~VulkanShader()
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graphics::API::VulkanShader::GetReflection() const noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return m_reflection;
 }
@@ -86,7 +87,7 @@ void TRAP::Graphics::API::VulkanShader::Use(const Window* const window)
 void TRAP::Graphics::API::VulkanShader::Use()
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanShader::Use(): Window is nullptr");
@@ -158,7 +159,7 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const u32 set, const u32 bind
                                                    Ref<TRAP::Graphics::Texture> const texture) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(texture, "VulkanShader::UseTexture(): Texture is nullptr!");
 #ifndef TRAP_HEADLESS_MODE
@@ -211,7 +212,7 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const u32 set, const u32 bin
 													const std::vector<Ref<TRAP::Graphics::Texture>>& textures) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(!textures.empty(), "VulkanShader::UseTextures(): Textures are empty!");
 #ifndef TRAP_HEADLESS_MODE
@@ -265,7 +266,7 @@ void TRAP::Graphics::API::VulkanShader::UseSampler(const u32 set, const u32 bind
 	                                               TRAP::Graphics::Sampler* const sampler) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(sampler, "VulkanShader::UseSampler(): Sampler is nullptr!");
 #ifndef TRAP_HEADLESS_MODE
@@ -311,7 +312,7 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const u32 set, const u32 bin
 	                                                const std::vector<TRAP::Graphics::Sampler*>& samplers) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(!samplers.empty(), "VulkanShader::UseSamplers(): Samplers are empty!");
 #ifndef TRAP_HEADLESS_MODE
@@ -355,7 +356,7 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const u32 set, const u32 binding,
                                                const TRAP::Graphics::UniformBuffer* const uniformBuffer,
 											   const u64 size, const u64 offset, const Window* const window) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(uniformBuffer, "VulkanShader::UseUBO(): UniformBuffer is nullptr!");
 	TRAP_ASSERT(window, "VulkanShader::UseUBO(): Window is nullptr");
@@ -373,7 +374,7 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const u32 set, const u32 binding,
                                                const TRAP::Graphics::UniformBuffer* const uniformBuffer,
 											   const u64 size, const u64 offset) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(uniformBuffer, "VulkanShader::UseUBO(): UniformBuffer is nullptr!");
 
@@ -394,7 +395,7 @@ void TRAP::Graphics::API::VulkanShader::UseSSBO(const u32 set, const u32 binding
                                                 const TRAP::Graphics::StorageBuffer* const storageBuffer,
 											    const u64 size, const Window* const window) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(storageBuffer, "VulkanShader::UseSSBO(): StorageBuffer is nullptr!");
 	TRAP_ASSERT(window, "VulkanShader::UseSSBO(): Window is nullptr");
@@ -412,7 +413,7 @@ void TRAP::Graphics::API::VulkanShader::UseSSBO(const u32 set, const u32 binding
                                                 const TRAP::Graphics::StorageBuffer* const storageBuffer,
 											    const u64 size) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(storageBuffer, "VulkanShader::UseSSBO(): StorageBuffer is nullptr!");
 
@@ -430,7 +431,7 @@ void TRAP::Graphics::API::VulkanShader::UseSSBO(const u32 set, const u32 binding
 
 void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc& desc)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanShaderPrefix, "Creating Shader: \"", m_name, "\"");
@@ -595,7 +596,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 
 void TRAP::Graphics::API::VulkanShader::Shutdown()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanShaderPrefix, "Destroying Shader: \"", m_name, "\"");
@@ -639,7 +640,7 @@ void TRAP::Graphics::API::VulkanShader::Shutdown()
 
 void TRAP::Graphics::API::VulkanShader::SetShaderStageName(const std::string_view name, VkShaderModule stage) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	if(!m_valid)
 		return;
@@ -665,7 +666,7 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(const u32 set, const u32 bindi
 												  TRAP::Graphics::Buffer* const buffer, u64 size, u64 offset) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	//OPTIMIZE Use index into root signature instead of name
 	std::string name = RetrieveDescriptorName(set, binding,
@@ -725,7 +726,7 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(const u32 set, const u32 bindi
 																	                bool* const outUAV,
 																	                const u64 size) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	for(const auto& resource : m_reflection->ShaderResources)
 	{

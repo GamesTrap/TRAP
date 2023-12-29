@@ -3,7 +3,7 @@
 
 TRAP::Utils::Timer::Timer() noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	Reset();
 }
@@ -12,7 +12,7 @@ TRAP::Utils::Timer::Timer() noexcept
 
 void TRAP::Utils::Timer::Reset() noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	m_start = std::chrono::high_resolution_clock::now();
 }
@@ -21,7 +21,7 @@ void TRAP::Utils::Timer::Reset() noexcept
 
 [[nodiscard]] f32 TRAP::Utils::Timer::Elapsed() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	return std::chrono::duration_cast<std::chrono::duration<f32, std::milli>>
 		(
@@ -33,7 +33,7 @@ void TRAP::Utils::Timer::Reset() noexcept
 
 [[nodiscard]] f32 TRAP::Utils::Timer::ElapsedMilliseconds() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	return std::chrono::duration_cast<std::chrono::duration<f32, std::milli>>
 		(

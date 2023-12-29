@@ -11,7 +11,7 @@
 TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::CommandPoolDesc& desc)
 	: CommandPool(desc.Queue)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_device, "VulkanCommandPool(): Vulkan Device is nullptr");
 
@@ -36,7 +36,7 @@ TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::Com
 
 TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	m_commandBuffers.clear();
 
@@ -51,7 +51,7 @@ TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 
 [[nodiscard]] TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::VulkanCommandPool::AllocateCommandBuffer(const bool secondary)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	return m_commandBuffers.emplace_back(TRAP::MakeScope<VulkanCommandBuffer>(m_device, m_queue, m_vkCommandPool, secondary)).get();
 }
@@ -60,7 +60,7 @@ TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 
 void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(const CommandBuffer* const cmdBuffer)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(cmdBuffer, "VulkanCommandPool::FreeCommandBuffer(): CommandBuffer is nullptr");
 
@@ -78,7 +78,7 @@ void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(const CommandBuff
 
 void TRAP::Graphics::API::VulkanCommandPool::Reset() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	VkCall(vkResetCommandPool(m_device->GetVkDevice(), m_vkCommandPool, 0));
 }

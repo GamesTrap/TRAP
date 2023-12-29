@@ -7,7 +7,7 @@
 TRAP::Graphics::CommandPool::CommandPool(TRAP::Ref<TRAP::Graphics::Queue> queue)
 	: m_queue(std::move(queue))
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_queue != nullptr, "CommandPool::CommandPool(): m_queue is nullptr!");
 
@@ -20,7 +20,7 @@ TRAP::Graphics::CommandPool::CommandPool(TRAP::Ref<TRAP::Graphics::Queue> queue)
 
 TRAP::Graphics::CommandPool::~CommandPool()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandPoolPrefix, "Destroying CommandPool");
@@ -31,7 +31,8 @@ TRAP::Graphics::CommandPool::~CommandPool()
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::CommandPool> TRAP::Graphics::CommandPool::Create(const RendererAPI::CommandPoolDesc& desc)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	switch(RendererAPI::GetRenderAPI())
 	{

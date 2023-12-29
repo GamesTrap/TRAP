@@ -10,7 +10,7 @@
 
 [[nodiscard]] u16 TRAP::Network::TCPListenerIPv6::GetLocalPort() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return 0; //We failed to retrieve the port
@@ -35,7 +35,7 @@
 
 [[nodiscard]] TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Listen(const u16 port, const IPv6Address& address)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Close the socket if it is already bound
 	Close();
@@ -71,7 +71,7 @@
 
 void TRAP::Network::TCPListenerIPv6::Close()
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Simply close the socket
 	Socket::Close();
@@ -81,7 +81,7 @@ void TRAP::Network::TCPListenerIPv6::Close()
 
 [[nodiscard]] TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Accept(TCPSocketIPv6& socket) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Make sure that we're listening
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())

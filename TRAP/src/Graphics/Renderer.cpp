@@ -21,7 +21,7 @@ TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::Renderer::s_modelStor
 
 void TRAP::Graphics::Renderer::Init()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	s_maxDrawCalls = NumericCast<u32>(RendererAPI::GPUSettings.MaxStorageBufferRange /
 	                                       StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
@@ -39,7 +39,7 @@ void TRAP::Graphics::Renderer::Init()
 
 void TRAP::Graphics::Renderer::Shutdown()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	Renderer2D::Shutdown();
 
@@ -54,7 +54,7 @@ void TRAP::Graphics::Renderer::Shutdown()
 
 void TRAP::Graphics::Renderer::BeginScene(const OrthographicCamera& camera)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	s_currentDrawCalls = 0;
 
@@ -68,7 +68,7 @@ void TRAP::Graphics::Renderer::BeginScene(const OrthographicCamera& camera)
 
 void TRAP::Graphics::Renderer::BeginScene(const Camera& camera, const Math::Mat4& transform)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	s_currentDrawCalls = 0;
 
@@ -82,7 +82,7 @@ void TRAP::Graphics::Renderer::BeginScene(const Camera& camera, const Math::Mat4
 
 void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuffer* const vertexBuffer, const Math::Mat4& transform)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	TRAP_ASSERT(vertexBuffer, "Renderer::Submit(): VertexBuffer is nullptr!");
 
@@ -110,7 +110,7 @@ void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuf
 void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuffer* const vertexBuffer, const IndexBuffer* const indexBuffer,
 									  const Math::Mat4& transform)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	TRAP_ASSERT(vertexBuffer, "Renderer::Submit(): VertexBuffer is nullptr!");
 	TRAP_ASSERT(indexBuffer, "Renderer::Submit(): IndexBuffer is nullptr!");

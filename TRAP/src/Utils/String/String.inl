@@ -4,7 +4,7 @@
 template<typename T>
 [[nodiscard]] T TRAP::Utils::String::ConvertToType(const std::string& input)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	if constexpr(std::signed_integral<T> && !std::same_as<T, char> && !std::same_as<T, bool>) //Integers
 	{

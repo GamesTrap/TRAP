@@ -67,7 +67,7 @@ std::unordered_map<u64,
 
 TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TP_DEBUG(Log::RendererVulkanPrefix, "Destroying Renderer");
 
@@ -107,7 +107,7 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 
 void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData* const p)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(p, "VulkanRenderer::StartGraphicRecording(): PerViewportData is nullptr!");
 
@@ -205,7 +205,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 
 void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerViewportData* const p)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	if(!p->Recording)
 		return;
@@ -261,7 +261,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerViewportData* c
 
 void TRAP::Graphics::API::VulkanRenderer::StartComputeRecording(PerViewportData* const p)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(p, "VulkanRenderer::StartComputeRecording(): PerViewportData is nullptr!");
 
@@ -294,7 +294,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartComputeRecording(PerViewportData*
 
 void TRAP::Graphics::API::VulkanRenderer::EndComputeRecording(PerViewportData* const p)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	if(!p->RecordingCompute)
 		return;
@@ -320,7 +320,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndComputeRecording(PerViewportData* c
 
 void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData* const p)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 
@@ -391,7 +391,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData* const p)
 
 void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view gameName)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	m_instance = TRAP::MakeRef<VulkanInstance>(gameName, SetupInstanceLayers(), SetupInstanceExtensions());
 #ifdef ENABLE_GRAPHICS_DEBUG
@@ -473,7 +473,7 @@ void TRAP::Graphics::API::VulkanRenderer::Flush(const Window* const window) cons
 void TRAP::Graphics::API::VulkanRenderer::Flush() const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::Flush(): Window is nullptr!");
@@ -524,7 +524,7 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<u32, 3> workGroupE
 void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<u32, 3> workGroupElements) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::Dispatch(): Window is nullptr!");
@@ -561,7 +561,7 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<u32, 3> workGroupE
 void TRAP::Graphics::API::VulkanRenderer::SetVSync([[maybe_unused]] const bool vsync,
                                                    [[maybe_unused]] const Window* const window) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(window, "VulkanRenderer::SetVSync(): Window is nullptr!");
 
@@ -574,7 +574,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetVSync([[maybe_unused]] const bool v
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit([[maybe_unused]] const u32 limit)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
 	if(!GPUSettings.ReflexSupported)
@@ -606,7 +606,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetRenderScale(f32 scale, const Window
 void TRAP::Graphics::API::VulkanRenderer::SetRenderScale(f32 scale) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::GetRenderScale(): Window is nullptr!");
@@ -630,7 +630,7 @@ f32 TRAP::Graphics::API::VulkanRenderer::GetRenderScale(const Window* const wind
 f32 TRAP::Graphics::API::VulkanRenderer::GetRenderScale() const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::GetRenderScale(): Window is nullptr!");
@@ -649,7 +649,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const RendererAPI::Color
 void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const RendererAPI::Color& color) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetClearColor(): Window is nullptr!");
@@ -668,7 +668,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearDepth(const f32 depth, const W
 void TRAP::Graphics::API::VulkanRenderer::SetClearDepth(const f32 depth) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetClearDepth(): Window is nullptr!");
@@ -687,7 +687,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearStencil(const u32 stencil, con
 void TRAP::Graphics::API::VulkanRenderer::SetClearStencil(const u32 stencil) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetClearStencil(): Window is nullptr!");
@@ -703,7 +703,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearStencil(const u32 stencil) con
 #ifdef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetResolution(const u32 width, const u32 height) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(width > 0 && height > 0, "VulkanRenderer::SetResolution(): Invalid render target resolution!");
 
@@ -718,7 +718,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetResolution(const u32 width, const u
 #ifdef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::GetResolution(u32& width, u32& height) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	width = s_perViewportData->NewWidth;
 	height = s_perViewportData->NewHeight;
@@ -733,7 +733,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthTesting(const bool enabled, co
 void TRAP::Graphics::API::VulkanRenderer::SetDepthTesting(const bool enabled) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetDepthTesting(): Window is nullptr!");
@@ -758,7 +758,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthWriting(const bool enabled, co
 void TRAP::Graphics::API::VulkanRenderer::SetDepthWriting(const bool enabled) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetDepthWriting(): Window is nullptr!");
@@ -783,7 +783,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthFunction(const CompareMode fun
 void TRAP::Graphics::API::VulkanRenderer::SetDepthFunction(const CompareMode function) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetDepthFunction(): Window is nullptr!");
@@ -808,7 +808,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthFail(const StencilOp front, co
 void TRAP::Graphics::API::VulkanRenderer::SetDepthFail(const StencilOp front, const StencilOp back) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetDepthFail(): Window is nullptr!");
@@ -836,7 +836,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthBias(const i32 depthBias, cons
 void TRAP::Graphics::API::VulkanRenderer::SetDepthBias(const i32 depthBias) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetDepthBias(): Window is nullptr!");
@@ -861,7 +861,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthBiasSlopeFactor(const f32 fact
 void TRAP::Graphics::API::VulkanRenderer::SetDepthBiasSlopeFactor(const f32 factor) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetDepthBiasSlopeFactor(): Window is nullptr!");
@@ -886,7 +886,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilTesting(const bool enabled, 
 void TRAP::Graphics::API::VulkanRenderer::SetStencilTesting(const bool enabled) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetStencilTesting(): Window is nullptr!");
@@ -912,7 +912,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilFail(const StencilOp front, 
 void TRAP::Graphics::API::VulkanRenderer::SetStencilFail(const StencilOp front, const StencilOp back) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetStencilFail(): Window is nullptr!");
@@ -940,7 +940,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilPass(const StencilOp front, 
 void TRAP::Graphics::API::VulkanRenderer::SetStencilPass(const StencilOp front, const StencilOp back) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetStencilPass(): Window is nullptr!");
@@ -969,7 +969,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilFunction(const CompareMode f
 void TRAP::Graphics::API::VulkanRenderer::SetStencilFunction(const CompareMode front, const CompareMode back) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetStencilFunction(): Window is nullptr!");
@@ -997,7 +997,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilMask(const u8 read, const u8
 void TRAP::Graphics::API::VulkanRenderer::SetStencilMask(const u8 read, const u8 write) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetStencilMask(): Window is nullptr!");
@@ -1025,7 +1025,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const CullMode mode, const
 void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const CullMode mode) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetCullMode(): Window is nullptr!");
@@ -1050,7 +1050,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetFillMode(const FillMode mode, const
 void TRAP::Graphics::API::VulkanRenderer::SetFillMode(const FillMode mode) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetFillMode(): Window is nullptr!");
@@ -1076,7 +1076,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetPrimitiveTopology(const PrimitiveTo
 void TRAP::Graphics::API::VulkanRenderer::SetPrimitiveTopology(const PrimitiveTopology topology) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetPrimitiveTopology(): Window is nullptr!");
@@ -1097,7 +1097,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetFrontFace(const FrontFace face, con
 void TRAP::Graphics::API::VulkanRenderer::SetFrontFace(const FrontFace face) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetFrontFace(): Window is nullptr!");
@@ -1119,7 +1119,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendMode(const BlendMode modeRGB, 
 void TRAP::Graphics::API::VulkanRenderer::SetBlendMode(const BlendMode modeRGB, const BlendMode modeAlpha) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetBlendMode(): Window is nullptr!");
@@ -1149,7 +1149,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendConstant(const BlendConstant s
                                                            const BlendConstant destinationAlpha) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetBlendConstant(): Window is nullptr!");
@@ -1179,7 +1179,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadi
 							        					 ShadingRateCombiner finalRate) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(RendererAPI::GPUSettings.ShadingRateCaps != RendererAPI::ShadingRateCaps::NotSupported,
 	            "VulkanRenderer::SetShadingRate(): Shading rate is not supported by this device!");
@@ -1243,7 +1243,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(TRAP::Ref<TRAP::Graphic
 void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(TRAP::Ref<TRAP::Graphics::RenderTarget> texture) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(RendererAPI::GPUSettings.ShadingRateCaps != RendererAPI::ShadingRateCaps::NotSupported,
 	            "VulkanRenderer::SetShadingRate(): Shading rate is not supported by this device!");
@@ -1289,7 +1289,7 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType,
 void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::Clear(): Window is nullptr!");
@@ -1347,7 +1347,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetViewport(const u32 x, const u32 y, 
                                                       const f32 maxDepth) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetViewport(): Window is nullptr!");
@@ -1377,7 +1377,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetScissor(const u32 x, const u32 y, c
                                                      const u32 height) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetScissor(): Window is nullptr!");
@@ -1399,7 +1399,7 @@ void TRAP::Graphics::API::VulkanRenderer::Draw(const u32 vertexCount, const u32 
 void TRAP::Graphics::API::VulkanRenderer::Draw(const u32 vertexCount, const u32 firstVertex) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::Draw(): Window is nullptr!");
@@ -1422,7 +1422,7 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const u32 indexCount, cons
                                                       const i32 firstVertex) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::DrawIndexed(): Window is nullptr!");
@@ -1446,7 +1446,7 @@ void TRAP::Graphics::API::VulkanRenderer::DrawInstanced(const u32 vertexCount, c
                                                         const u32 firstVertex, const u32 firstInstance) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::DrawInstanced(): Window is nullptr!");
@@ -1472,7 +1472,7 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(const u32 indexCo
 						                                       const i32 firstVertex) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::DrawIndexedInstanced(): Window is nullptr!");
@@ -1494,7 +1494,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, const Windo
 void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::BindShader(): Window is nullptr!");
@@ -1636,7 +1636,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffe
 		}
 	};
 
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::BindVertexBuffer(): Window is nullptr!");
@@ -1672,7 +1672,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindIndexBuffer(const TRAP::Ref<Buffer
                                                           const IndexType indexType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::BindIndexBuffer(): Window is nullptr!");
@@ -1695,7 +1695,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet,
 															const QueueType queueType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::BindDescriptorSet(): Invalid QueueType provided!");
 
@@ -1725,7 +1725,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const std::string_vi
 															const QueueType queueType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::BindPushConstants(): Invalid QueueType provided!");
 
@@ -1770,7 +1770,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const u32 par
 																   const QueueType queueType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::BindPushConstantsByIndex(): Invalid QueueType provided!");
 
@@ -1820,7 +1820,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graph
 														   const u32 depthMipSlice) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::BindRenderTarget(): Window is nullptr!");
@@ -1876,7 +1876,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 														    const u32 depthMipSlice) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::BindRenderTargets(): Window is nullptr!");
@@ -1921,7 +1921,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarrier(const RendererAP
 															    const QueueType queueType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::ResourceBufferBarrier(): Invalid QueueType provided!");
 
@@ -1949,7 +1949,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarriers(const std::vect
 																 const QueueType queueType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::ResourceBufferBarriers(): Invalid QueueType provided!");
 
@@ -1977,7 +1977,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarrier(const RendererA
 																 const QueueType queueType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::ResourceTextureBarrier(): Invalid QueueType provided!");
 
@@ -2005,7 +2005,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarriers(const std::vec
 																  const QueueType queueType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::ResourceTextureBarriers(): Invalid QueueType provided!");
 
@@ -2032,7 +2032,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarrier(const Rend
 void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::ResourceRenderTargetBarrier(): Window is nullptr!");
@@ -2054,7 +2054,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarriers(const std
 void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::ResourceRenderTargetBarriers(): Window is nullptr!");
@@ -2073,7 +2073,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarriers(const std
 void TRAP::Graphics::API::VulkanRenderer::ReflexSleep() const
 {
 #ifdef NVIDIA_REFLEX_AVAILABLE
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	if(!GPUSettings.ReflexSupported)
 		return;
@@ -2096,7 +2096,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u3
                                                        [[maybe_unused]] const u32 marker) const
 {
 #ifdef NVIDIA_REFLEX_AVAILABLE
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	PCLSTATS_MARKER(marker, frame);
 
@@ -2122,7 +2122,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u3
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 [[nodiscard]] NVLL_VK_LATENCY_RESULT_PARAMS TRAP::Graphics::API::VulkanRenderer::ReflexGetLatency() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	NVLL_VK_LATENCY_RESULT_PARAMS params{};
 
@@ -2137,7 +2137,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u3
 #ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] bool TRAP::Graphics::API::VulkanRenderer::GetVSync(const Window* const window) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(window, "VulkanRenderer::GetVSync(): Window is nullptr!");
 
@@ -2149,7 +2149,8 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u3
 
 [[nodiscard]] TRAP::Utils::UUID TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUUUID() const noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return m_device->GetPhysicalDevice()->GetPhysicalDeviceUUID();
 }
@@ -2158,7 +2159,8 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u3
 
 [[nodiscard]] std::string TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUName() const noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties().deviceName;
 }
@@ -2167,7 +2169,8 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u3
 
 [[nodiscard]] TRAP::Graphics::RendererAPI::GPUVendor TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUVendor() const noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return m_device->GetPhysicalDevice()->GetVendor();
 }
@@ -2176,7 +2179,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u3
 
 [[nodiscard]] std::vector<std::pair<std::string, TRAP::Utils::UUID>> TRAP::Graphics::API::VulkanRenderer::GetAllGPUs() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	if(!s_usableGPUs.empty())
 		return s_usableGPUs;
@@ -2199,7 +2202,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u3
 void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<RenderTarget>& renderTarget,
 														  const ResourceState currResState, void* const outPixelData)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	CommandPoolDesc cmdPoolDesc{};
 	cmdPoolDesc.Queue = s_graphicQueue;
@@ -2282,7 +2285,7 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 [[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot() const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::CaptureScreenshot(): Window is nullptr!");
@@ -2395,7 +2398,7 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(const TRAP::Ref<Render
                                                           const TRAP::Ref<RenderTarget> destination,
 														  CommandBuffer* const cmd) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(source, "VulkanRenderer::MSAAResolvePass(): source is nullptr!");
 	TRAP_ASSERT(destination, "VulkanRenderer::MSAAResolvePass(): destination is nullptr!");
@@ -2433,7 +2436,7 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(const TRAP::Ref<Render
 
 void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewportData* const viewportData) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(viewportData, "VulkanRenderer::UpdateInternalRenderTargets(): viewportData is nullptr!");
 
@@ -2504,7 +2507,7 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
                                                           TRAP::Ref<RenderTarget> destination) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::RenderScalePass(): Window is nullptr!");
@@ -2634,7 +2637,7 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
 void TRAP::Graphics::API::VulkanRenderer::SetLatencyMode([[maybe_unused]] const LatencyMode mode,
                                                          [[maybe_unused]] const Window* const window)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(window, "VulkanRenderer::SetLatencyMode(): Window is nullptr!");
 
@@ -2657,7 +2660,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetLatencyMode([[maybe_unused]] const 
 #ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] TRAP::Graphics::RendererAPI::LatencyMode TRAP::Graphics::API::VulkanRenderer::GetLatencyMode([[maybe_unused]] const Window* const window) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(window, "VulkanRenderer::GetLatencyMode(): Window is nullptr!");
 
@@ -2695,7 +2698,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(Window* const wind
 void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, const u32 height) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	if (s_perViewportDataMap.contains(window)) //Window is already in map
@@ -2914,7 +2917,7 @@ void TRAP::Graphics::API::VulkanRenderer::RemovePerViewportData(const Window* co
 void TRAP::Graphics::API::VulkanRenderer::RemovePerViewportData() const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	s_perViewportDataMap.erase(window);
@@ -2927,7 +2930,7 @@ void TRAP::Graphics::API::VulkanRenderer::RemovePerViewportData() const
 
 void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	m_device->WaitIdle();
 }
@@ -2936,7 +2939,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 
 [[nodiscard]] std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupInstanceLayers()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	std::vector<std::string> layers{};
 
@@ -2959,7 +2962,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 
 [[nodiscard]] std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupInstanceExtensions()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	std::vector<std::string> extensions{};
 
@@ -3024,7 +3027,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 
 [[nodiscard]] std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensions(VulkanPhysicalDevice* const physicalDevice)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	std::vector<std::string> extensions{};
 
@@ -3187,7 +3190,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 
 void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPrefix, "Creating DefaultResources");
@@ -3367,7 +3370,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 
 void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	if(!s_NullDescriptors)
 		return;
@@ -3403,7 +3406,7 @@ void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::Graphics::Texture>& texture,
                                                                 const RendererAPI::ResourceState startState)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	std::lock_guard lock(s_NullDescriptors->InitialTransitionMutex);
 	auto& mutex = s_NullDescriptors->InitialTransitionMutex;
@@ -3425,7 +3428,7 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 
 [[nodiscard]] TRAP::Graphics::API::VulkanRenderer::RenderPassMap& TRAP::Graphics::API::VulkanRenderer::GetRenderPassMap()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	//Only need a lock when creating a new RenderPass Map for this thread
 	std::lock_guard lock(s_renderPassMutex);
@@ -3444,7 +3447,7 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 
 [[nodiscard]] TRAP::Graphics::API::VulkanRenderer::FrameBufferMap& TRAP::Graphics::API::VulkanRenderer::GetFrameBufferMap()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	//Only need a lock when creating a new FrameBuffer Map for this thread
 	std::lock_guard lock(s_renderPassMutex);
@@ -3463,7 +3466,8 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::API::VulkanInstance> TRAP::Graphics::API::VulkanRenderer::GetInstance() const noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return m_instance;
 }
@@ -3472,7 +3476,8 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::API::VulkanDevice> TRAP::Graphics::API::VulkanRenderer::GetDevice() const noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return m_device;
 }
@@ -3481,7 +3486,8 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::API::VulkanMemoryAllocator> TRAP::Graphics::API::VulkanRenderer::GetVMA() const noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return m_vma;
 }
@@ -3490,7 +3496,7 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 
 [[nodiscard]] const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::GetPipeline(PipelineDesc& desc)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	const usize hash = std::hash<PipelineDesc>{}(desc);
 	const auto pipelineIt = s_pipelines.find(hash);
@@ -3528,7 +3534,7 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 
 void TRAP::Graphics::API::VulkanRenderer::BeginGPUFrameProfile(const QueueType type, const PerViewportData* const p)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	const CommandBuffer* cmd = nullptr;
 	if(type == QueueType::Graphics)
@@ -3550,7 +3556,7 @@ void TRAP::Graphics::API::VulkanRenderer::BeginGPUFrameProfile(const QueueType t
 
 void TRAP::Graphics::API::VulkanRenderer::EndGPUFrameProfile(const QueueType type, const PerViewportData* const p)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	const CommandBuffer* cmd = nullptr;
 	if(type == QueueType::Graphics)
@@ -3578,7 +3584,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGPUFrameProfile(const QueueType typ
 
 [[nodiscard]] f32 TRAP::Graphics::API::VulkanRenderer::ResolveGPUFrameProfile(const QueueType type, const PerViewportData* const p)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	f32 time = 0.0f;
 

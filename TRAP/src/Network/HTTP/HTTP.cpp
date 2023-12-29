@@ -34,7 +34,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 TRAP::Network::HTTP::Request::Request(std::string uri, const Method method, std::string body)
 	: m_method(method), m_majorVersion(1), m_minorVersion(0), m_body(std::move(body))
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	SetURI(std::move(uri));
 }
@@ -43,7 +43,8 @@ TRAP::Network::HTTP::Request::Request(std::string uri, const Method method, std:
 
 void TRAP::Network::HTTP::Request::SetField(const std::string& field, const std::string& value)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None &&
+	                                         (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	m_fields[Utils::String::ToLower(field)] = value;
 }
@@ -52,7 +53,7 @@ void TRAP::Network::HTTP::Request::SetField(const std::string& field, const std:
 
 [[nodiscard]] std::string TRAP::Network::HTTP::Request::Prepare() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	std::string out = fmt::format("{} {} HTTP/{}.{}\r\n", m_method, m_uri, m_majorVersion, m_minorVersion);
 	for (const auto& [fieldKey, fieldValue] : m_fields)
@@ -66,7 +67,8 @@ void TRAP::Network::HTTP::Request::SetField(const std::string& field, const std:
 
 [[nodiscard]] bool TRAP::Network::HTTP::Request::HasField(const std::string& field) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None &&
+	                                         (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return m_fields.contains(Utils::String::ToLower(field));
 }
@@ -78,14 +80,14 @@ TRAP::Network::HTTP::Response::Response() noexcept
 	  m_majorVersion(0),
 	  m_minorVersion(0)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] std::string TRAP::Network::HTTP::Response::GetField(const std::string& field) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	const FieldTable::const_iterator it = m_fields.find(Utils::String::ToLower(field));
 	if (it != m_fields.end())
@@ -98,7 +100,7 @@ TRAP::Network::HTTP::Response::Response() noexcept
 
 void TRAP::Network::HTTP::Response::Parse(const std::string& data)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	std::istringstream in(data);
 
@@ -176,7 +178,7 @@ void TRAP::Network::HTTP::Response::Parse(const std::string& data)
 
 void TRAP::Network::HTTP::Response::ParseFields(std::istream& in)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	std::string line;
 	while(std::getline(in, line) && (line.size() > 2))
@@ -203,7 +205,7 @@ void TRAP::Network::HTTP::Response::ParseFields(std::istream& in)
 TRAP::Network::HTTP::HTTP() noexcept
 	: m_host(), m_hostIPv6(), m_port(0)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -211,7 +213,7 @@ TRAP::Network::HTTP::HTTP() noexcept
 TRAP::Network::HTTP::HTTP(const std::string& host, const u16 port)
 	: m_host(), m_hostIPv6(), m_port(0)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	SetHost(host, port);
 }
@@ -220,7 +222,7 @@ TRAP::Network::HTTP::HTTP(const std::string& host, const u16 port)
 
 void TRAP::Network::HTTP::SetHost(const std::string& host, const u16 port)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Check the protocol
 	if(Utils::String::ToLower(host.substr(0, 7)) == "http://")
@@ -256,7 +258,7 @@ void TRAP::Network::HTTP::SetHost(const std::string& host, const u16 port)
 
 TRAP::Network::HTTP::Response TRAP::Network::HTTP::SendRequest(const Request& request, Utils::TimeStep timeout)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//First make sure that the request is valid
 	//Add missing mandatory fields

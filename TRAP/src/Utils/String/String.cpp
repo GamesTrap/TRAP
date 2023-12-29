@@ -5,7 +5,7 @@
 
 [[nodiscard]] std::string TRAP::Utils::String::GetTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint) noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	const std::time_t time = std::chrono::system_clock::to_time_t(timePoint);
 
@@ -27,7 +27,7 @@
 
 [[nodiscard]] std::string TRAP::Utils::String::GetDateTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& dateTimePoint) noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	const std::time_t time = std::chrono::system_clock::to_time_t(dateTimePoint);
 
@@ -50,7 +50,7 @@
 #ifdef TRAP_PLATFORM_LINUX
 [[nodiscard]] std::string TRAP::Utils::String::GetStrError()
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
     std::string error(1024, '\0');
     #if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
@@ -68,7 +68,7 @@
 #elif defined(TRAP_PLATFORM_WINDOWS)
 [[nodiscard]] std::string TRAP::Utils::String::GetStrError()
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	DWORD error = GetLastError();
 	if(!error)
@@ -103,7 +103,7 @@
 #ifdef TRAP_PLATFORM_WINDOWS
 [[nodiscard]] std::string TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(const std::wstring_view wStr)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	std::string result{};
 
@@ -130,7 +130,7 @@
 #ifdef TRAP_PLATFORM_WINDOWS
 [[nodiscard]] std::wstring TRAP::Utils::String::CreateWideStringFromUTF8StringWin32(const std::string_view str)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	std::wstring result{};
 

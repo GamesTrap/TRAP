@@ -8,7 +8,7 @@
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const u64 size,
 																				               const UpdateFrequency updateFrequency)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	return Init(nullptr, size, updateFrequency);
 }
@@ -19,7 +19,7 @@
 																				               const u64 size,
 																				               const UpdateFrequency updateFrequency)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	return Init(data, size, updateFrequency);
 }
@@ -28,7 +28,8 @@
 
 [[nodiscard]] u64 TRAP::Graphics::UniformBuffer::GetSize() const noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return m_uniformBuffers[0]->GetSize();
 }
@@ -37,7 +38,7 @@
 
 void TRAP::Graphics::UniformBuffer::SetData(const void* const data, const u64 size, const u64 offset)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	TRAP_ASSERT(data, "UniformBuffer::SetData(): Data is nullptr!");
 	TRAP_ASSERT(size + offset <= m_uniformBuffers[0]->GetSize(), "UniformBuffer::SetData(): Out of bounds!");
@@ -58,7 +59,7 @@ void TRAP::Graphics::UniformBuffer::SetData(const void* const data, const u64 si
 
 [[nodiscard]] bool TRAP::Graphics::UniformBuffer::IsLoaded() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	for(usize i = 0; i < m_uniformBuffers.size(); ++i)
 	{
@@ -73,7 +74,7 @@ void TRAP::Graphics::UniformBuffer::SetData(const void* const data, const u64 si
 
 void TRAP::Graphics::UniformBuffer::AwaitLoading() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	for(usize i = 0; i < m_uniformBuffers.size(); ++i)
 		RendererAPI::GetResourceLoader()->WaitForToken(&m_tokens[i]);
@@ -83,7 +84,8 @@ void TRAP::Graphics::UniformBuffer::AwaitLoading() const
 
 [[nodiscard]] u64 TRAP::Graphics::UniformBuffer::CalculateAlignedSize(const u64 byteSize) noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	const u64 minUBOAlignment = RendererAPI::GPUSettings.UniformBufferAlignment;
 	u64 alignedSize = byteSize;
@@ -99,7 +101,7 @@ void TRAP::Graphics::UniformBuffer::AwaitLoading() const
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Init(const void* const data, const u64 size,
 																			                 const UpdateFrequency updateFrequency)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer(updateFrequency));
 

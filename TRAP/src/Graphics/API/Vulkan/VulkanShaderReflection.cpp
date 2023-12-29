@@ -67,7 +67,7 @@ constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 [[nodiscard]] TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkCreateShaderReflection(const std::vector<u32>& shaderCode,
                                                                                                                     const RendererAPI::ShaderStage shaderStage)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	SPIRVTools::CrossCompiler cc(shaderCode.data(), shaderCode.size());
 

@@ -85,7 +85,7 @@ namespace TRAP::Utils
 template<typename T>
 [[nodiscard]] std::optional<T> TRAP::Utils::Config::Get(const std::string_view key) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	const auto it = std::ranges::find_if(m_data,
 		[key](const std::pair<std::string, std::string>& element)
@@ -106,7 +106,7 @@ template<typename T>
 template<typename T>
 [[nodiscard]] std::optional<std::vector<T>> TRAP::Utils::Config::GetVector(const std::string_view key) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	const auto it = std::ranges::find_if(m_data,
 		[key](const std::pair<std::string, std::string>& element)
@@ -135,7 +135,7 @@ template<typename T>
 template<typename T>
 void TRAP::Utils::Config::Set(const std::string& key, const T value)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	//Replaces the value if the key is found
 	m_hasChanged = true;
@@ -158,7 +158,7 @@ void TRAP::Utils::Config::Set(const std::string& key, const T value)
 template<typename T>
 void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& value)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	//Transform the vector into a string that separates the elements with a comma
 	std::string valueAsString;

@@ -27,7 +27,7 @@ void OnGPUCrashDump([[maybe_unused]] const void* gpuCrashDump,
                     [[maybe_unused]] void* userData)
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
     TRAP_ASSERT(gpuCrashDump, "OnGPUCrashDump(): gpuCrashDump is nullptr!");
     TRAP_ASSERT(gpuCrashDumpSize, "OnGPUCrashDump(): gpuCrashDumpSize is 0!");
@@ -59,7 +59,7 @@ void OnGPUCrashDump([[maybe_unused]] const void* gpuCrashDump,
 bool LoadFunctions()
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 #ifdef TRAP_PLATFORM_WINDOWS
     AftermathHandle = TRAP::Utils::DynamicLoading::LoadLibrary("GFSDK_Aftermath_Lib.x64.dll");
@@ -94,7 +94,7 @@ bool LoadFunctions()
 void UnloadFunctions()
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
     if(AftermathHandle != nullptr)
         TRAP::Utils::DynamicLoading::FreeLibrary(AftermathHandle);
@@ -112,7 +112,7 @@ void UnloadFunctions()
 
 [[maybe_unused]] bool TRAP::Graphics::AftermathTracker::Initialize()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
     if(AftermathInitialized)
         return true;
@@ -144,7 +144,7 @@ void UnloadFunctions()
 
 void TRAP::Graphics::AftermathTracker::Shutdown()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
     if(!AftermathInitialized)
         return;
@@ -166,7 +166,7 @@ void TRAP::Graphics::AftermathTracker::Shutdown()
 
 [[nodiscard]] GFSDK_Aftermath_Result TRAP::Graphics::AftermathTracker::GetGPUCrashDumpStatus(GFSDK_Aftermath_CrashDump_Status& outStatus)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
     if(!AftermathInitialized)
         return GFSDK_Aftermath_Result_FAIL_NotInitialized;

@@ -7,7 +7,7 @@
 TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 	: Image(std::move(filepath))
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	m_isHDR = true;
 	m_bitsPerPixel = 96;
@@ -106,7 +106,8 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 
 [[nodiscard]] f32 TRAP::INTERNAL::RadianceImage::ConvertComponent(const i8 exponent, const i32 value)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                         (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	const f32 v = NumericCast<f32>(value) / 256.0f;
 	const f32 d = Math::Pow(2.0f, NumericCast<f32>(exponent));
@@ -170,7 +171,7 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 [[nodiscard]] bool TRAP::INTERNAL::RadianceImage::OldDecrunch(std::vector<RGBE>& scanline, u32 scanlineIndex,
                                                               u32 length, std::ifstream& file)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	u32 rshift = 0u;
 
@@ -209,7 +210,7 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 void TRAP::INTERNAL::RadianceImage::WorkOnRGBE(std::vector<RGBE>& scanline, std::vector<f32>& data,
                                                u64 dataIndex)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	u32 length = m_width;
 	u32 scanlineIndex = 0;
@@ -229,7 +230,7 @@ void TRAP::INTERNAL::RadianceImage::WorkOnRGBE(std::vector<RGBE>& scanline, std:
 
 [[nodiscard]] bool TRAP::INTERNAL::RadianceImage::ContainsMagicNumber(std::ifstream& file)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	//Magic Numbers: "#?RGBE" or "#?RADIANCE"
 	//Some software uses #? and then its own name... so we have to just check for #?
@@ -244,7 +245,7 @@ void TRAP::INTERNAL::RadianceImage::WorkOnRGBE(std::vector<RGBE>& scanline, std:
 
 [[nodiscard]] bool TRAP::INTERNAL::RadianceImage::ContainsSupportedFormat(std::ifstream& file)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	//We only support the "32-bit_rle_rgbe" format
 
@@ -263,7 +264,7 @@ void TRAP::INTERNAL::RadianceImage::WorkOnRGBE(std::vector<RGBE>& scanline, std:
 
 void TRAP::INTERNAL::RadianceImage::SkipUnusedLines(std::ifstream& file)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	if(file.eof())
 		return;
@@ -283,7 +284,7 @@ void TRAP::INTERNAL::RadianceImage::SkipUnusedLines(std::ifstream& file)
 																									   bool& outNeedRotateClockwise,
 																									   bool& outNeedRotateCounterClockwise)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	outNeedXFlip = false;
 	outNeedYFlip = false;

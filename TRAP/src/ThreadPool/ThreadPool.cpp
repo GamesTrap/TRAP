@@ -4,7 +4,7 @@
 TRAP::ThreadPool::ThreadPool(const u32 threads)
 	: m_queues(threads), m_maxThreadsCount(threads)
 {
-	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::ThreadPool) != ProfileSystems::None);
 
 	if (m_maxThreadsCount == 0)
 	{
@@ -43,7 +43,7 @@ TRAP::ThreadPool::ThreadPool(const u32 threads)
 
 TRAP::ThreadPool::~ThreadPool()
 {
-	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::ThreadPool) != ProfileSystems::None);
 
 	for (Queue& queue : m_queues)
 		queue.Done();

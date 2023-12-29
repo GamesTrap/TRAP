@@ -5,7 +5,7 @@
 
 void TRAP::LayerStack::Shutdown()
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	for(auto& layer : m_layers)
 	{
@@ -20,7 +20,7 @@ void TRAP::LayerStack::Shutdown()
 
 void TRAP::LayerStack::PushLayer(std::unique_ptr<Layer> layer)
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	TP_DEBUG(Log::LayerStackPrefix, "Pushing layer: ", layer->GetName());
 	layer->OnAttach();
@@ -32,7 +32,7 @@ void TRAP::LayerStack::PushLayer(std::unique_ptr<Layer> layer)
 
 void TRAP::LayerStack::PushOverlay(std::unique_ptr<Layer> overlay)
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	TP_DEBUG(Log::LayerStackPrefix, "Pushing overlay: ", overlay->GetName());
 	overlay->OnAttach();
@@ -43,7 +43,7 @@ void TRAP::LayerStack::PushOverlay(std::unique_ptr<Layer> overlay)
 
 void TRAP::LayerStack::PopLayer(Layer* const layer)
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	TRAP_ASSERT(layer, "LayerStack::PopLayer(): Layer is nullptr!");
 
@@ -62,7 +62,7 @@ void TRAP::LayerStack::PopLayer(Layer* const layer)
 
 void TRAP::LayerStack::PopOverlay(Layer* const overlay)
 {
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	TRAP_ASSERT(overlay, "LayerStack::PopOverlay(): Overlay is nullptr!");
 

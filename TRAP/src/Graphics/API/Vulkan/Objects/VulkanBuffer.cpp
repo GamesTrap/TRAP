@@ -10,7 +10,7 @@
 TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& desc)
 	: TRAP::Graphics::Buffer(desc.Size, desc.Descriptors, desc.MemoryUsage)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_device, "VulkanBuffer(): Vulkan Device is nullptr");
 	TRAP_ASSERT(m_VMA, "VulkanBuffer(): VMA is nullptr");
@@ -112,7 +112,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 
 TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanBufferPrefix, "Destroying Buffer");
@@ -132,7 +132,7 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 
 [[nodiscard]] VkDeviceMemory TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemory() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	VmaAllocationInfo allocInfo{};
 	vmaGetAllocationInfo(m_VMA->GetVMAAllocator(), m_allocation, &allocInfo);
@@ -144,7 +144,7 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 
 [[nodiscard]] u64 TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemoryOffset() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	VmaAllocationInfo allocInfo{};
 	vmaGetAllocationInfo(m_VMA->GetVMAAllocator(), m_allocation, &allocInfo);
@@ -156,7 +156,7 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 
 void TRAP::Graphics::API::VulkanBuffer::MapBuffer(const RendererAPI::ReadRange* const range)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan)  != ProfileSystems::None);
 
 	TRAP_ASSERT(m_memoryUsage != RendererAPI::ResourceMemoryUsage::GPUOnly,
 	            "VulkanBuffer::MapBuffer(): Trying to map non-CPU accessible resource");
@@ -172,7 +172,7 @@ void TRAP::Graphics::API::VulkanBuffer::MapBuffer(const RendererAPI::ReadRange* 
 
 void TRAP::Graphics::API::VulkanBuffer::UnMapBuffer()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_memoryUsage != RendererAPI::ResourceMemoryUsage::GPUOnly,
 	            "VulkanBuffer::UnMapBuffer(): Trying to unmap non-CPU accessible resource");
@@ -186,7 +186,7 @@ void TRAP::Graphics::API::VulkanBuffer::UnMapBuffer()
 
 void TRAP::Graphics::API::VulkanBuffer::SetBufferName(const std::string_view name) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(!name.empty(), "VulkanBuffer::SetBufferName(): Name is empty!");
 

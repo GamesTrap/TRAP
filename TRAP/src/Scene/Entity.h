@@ -52,7 +52,7 @@ namespace TRAP
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)
 		{
-			ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 			if(HasComponent<T>())
 			{
@@ -70,7 +70,7 @@ namespace TRAP
 		template<typename T, typename... Args>
 		T& AddOrReplaceComponent(Args&&... args)
 		{
-			ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 			T& component = m_scene->m_registry.emplace_or_replace<T>(m_entityHandle, std::forward<Args>(args)...);
 			return component;
@@ -83,7 +83,7 @@ namespace TRAP
 		template<typename T>
 		[[nodiscard]] T& GetComponent() const
 		{
-			ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 			TRAP_ASSERT(HasComponent<T>(), "Entity::GetComponent(): Entity does not have component!");
 
@@ -96,7 +96,7 @@ namespace TRAP
 		template<typename T>
 		[[nodiscard]] bool HasComponent() const
 		{
-			ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 			return m_scene->m_registry.all_of<T>(m_entityHandle);
 		}
@@ -106,7 +106,7 @@ namespace TRAP
 		template<typename T>
 		void RemoveComponent()
 		{
-			ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 			if(!HasComponent<T>())
 			{

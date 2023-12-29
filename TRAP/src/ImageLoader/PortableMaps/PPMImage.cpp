@@ -8,7 +8,7 @@
 TRAP::INTERNAL::PPMImage::PPMImage(std::filesystem::path filepath)
 	: Image(std::move(filepath))
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	m_colorFormat = ColorFormat::RGB;
 
@@ -107,7 +107,7 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::filesystem::path filepath)
 
 void TRAP::INTERNAL::PPMImage::Save(const Image* const img, const std::filesystem::path& filepath)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	//NOTE Only supports 24/32BPP RGB(A) Input
 

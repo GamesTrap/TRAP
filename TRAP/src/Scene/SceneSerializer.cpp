@@ -21,7 +21,8 @@ namespace YAML
 	{
 		[[nodiscard]] static Node encode(const TRAP::Math::Vec2& rhs)
 		{
-			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None &&
+			                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 			Node node;
 			node.push_back(rhs.x());
@@ -32,7 +33,8 @@ namespace YAML
 
 		[[nodiscard]] static bool decode(const Node& node, TRAP::Math::Vec2& rhs)
 		{
-			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None &&
+			                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 			if (!node.IsSequence() || node.size() != 2)
 				return false;
@@ -48,7 +50,8 @@ namespace YAML
 	{
 		[[nodiscard]] static Node encode(const TRAP::Math::Vec3& rhs)
 		{
-			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None &&
+			                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 			Node node;
 			node.push_back(rhs.x());
@@ -60,7 +63,8 @@ namespace YAML
 
 		[[nodiscard]] static bool decode(const Node& node, TRAP::Math::Vec3& rhs)
 		{
-			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None &&
+			                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 			if (!node.IsSequence() || node.size() != 3)
 				return false;
@@ -77,7 +81,8 @@ namespace YAML
 	{
 		[[nodiscard]] static Node encode(const TRAP::Math::Vec4& rhs)
 		{
-			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None &&
+			                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 			Node node;
 			node.push_back(rhs.x());
@@ -90,7 +95,8 @@ namespace YAML
 
 		[[nodiscard]] static bool decode(const Node& node, TRAP::Math::Vec4& rhs)
 		{
-			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None &&
+			                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 			if (!node.IsSequence() || node.size() != 4)
 				return false;
@@ -108,7 +114,8 @@ namespace TRAP
 {
 	YAML::Emitter& operator<<(YAML::Emitter& out, const Math::Vec2& v)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+		ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None &&
+		                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 		out << YAML::Flow;
 		out << YAML::BeginSeq << v.x() << v.y() << YAML::EndSeq;
@@ -117,7 +124,8 @@ namespace TRAP
 
 	YAML::Emitter& operator<<(YAML::Emitter& out, const Math::Vec3& v)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+		ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None &&
+		                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 		out << YAML::Flow;
 		out << YAML::BeginSeq << v.x() << v.y() << v.z() << YAML::EndSeq;
@@ -126,7 +134,8 @@ namespace TRAP
 
 	YAML::Emitter& operator<<(YAML::Emitter& out, const Math::Vec4& v)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+		ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None &&
+		                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 		out << YAML::Flow;
 		out << YAML::BeginSeq << v.x() << v.y() << v.z() << v.w() << YAML::EndSeq;
@@ -135,7 +144,7 @@ namespace TRAP
 
 	void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+		ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 		TRAP_ASSERT(entity.HasComponent<UIDComponent>(), "SerializeEntity(): Entity has no UIDComponent!");
 
@@ -267,14 +276,14 @@ namespace TRAP
 TRAP::SceneSerializer::SceneSerializer(Ref<Scene> scene) noexcept
 	: m_scene(std::move(scene))
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::SceneSerializer::Serialize(const std::filesystem::path& filepath)
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	YAML::Emitter out;
 	out << YAML::BeginMap;
@@ -301,7 +310,8 @@ void TRAP::SceneSerializer::Serialize(const std::filesystem::path& filepath)
 
 void TRAP::SceneSerializer::SerializeRuntime([[maybe_unused]] const std::filesystem::path& filepath)
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(false, "SceneSerializer::SerializeRuntime(): Not implemented yet!");
 }
@@ -310,7 +320,7 @@ void TRAP::SceneSerializer::SerializeRuntime([[maybe_unused]] const std::filesys
 
 bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	if (!FileSystem::Exists(filepath))
 	{
@@ -440,7 +450,8 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 
 bool TRAP::SceneSerializer::DeserializeRuntime([[maybe_unused]] const std::filesystem::path& filepath)
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(false, "SceneSerializer::DeserializeRuntime(): Not implemented yet!");
 	return false;

@@ -5,7 +5,7 @@
 
 [[nodiscard]] std::array<u8, 4> TRAP::Utils::Hash::Adler32(const void* const data, u64 length)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	const u8* dataPtr = static_cast<const u8*>(data);
 
@@ -39,7 +39,8 @@
 
 [[nodiscard]] std::array<u8, 4> TRAP::Utils::Hash::Adler32(const std::string_view str)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+	                                          (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return Adler32(str.data(), str.length());
 }

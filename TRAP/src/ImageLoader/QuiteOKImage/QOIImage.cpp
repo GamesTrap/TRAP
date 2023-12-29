@@ -23,7 +23,7 @@ constexpr std::array<u8, 8> EndMarker{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01};
 TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
     : Image(std::move(filepath))
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	TP_DEBUG(Log::ImageQOIPrefix, "Loading image: ", m_filepath);
 
@@ -155,7 +155,7 @@ constexpr u8 QOI_MASK_2   = 0xC0;
 
 void TRAP::INTERNAL::QOIImage::DecodeImage(std::ifstream& file, const usize& fileSize)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
     Pixel prevPixel{0, 0, 0, 255};
     std::array<Pixel, 64> prevPixels{};

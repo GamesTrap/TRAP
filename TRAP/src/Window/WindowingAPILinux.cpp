@@ -626,7 +626,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotion(const InternalWindo
 
 void TRAP::INTERNAL::WindowingAPI::SetProgressIndicator(const ProgressState state, const f64 progress)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
     UpdateTaskbarProgressDBusPOSIX(state != ProgressState::Disabled, progress);
 }
@@ -636,7 +636,7 @@ void TRAP::INTERNAL::WindowingAPI::SetProgressIndicator(const ProgressState stat
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowProgressIndicator([[maybe_unused]] const InternalWindow& window,
                                                                       const ProgressState state, const f64 progress)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
     SetProgressIndicator(state, progress);
 }
@@ -844,7 +844,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow& window
 //Splits and translates a text/uri-list into separate file paths
 [[nodiscard]] std::vector<std::string> TRAP::INTERNAL::WindowingAPI::ParseUriList(const std::string_view text)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
     if(text.empty())
         return {};

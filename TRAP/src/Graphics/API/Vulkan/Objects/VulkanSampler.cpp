@@ -10,7 +10,7 @@
 TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc& desc)
 	: Sampler(desc)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_device, "VulkanSampler(): Vulkan Device is nullptr");
 
@@ -21,7 +21,7 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 
 TRAP::Graphics::API::VulkanSampler::~VulkanSampler()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	Shutdown();
 }
@@ -30,7 +30,8 @@ TRAP::Graphics::API::VulkanSampler::~VulkanSampler()
 
 void TRAP::Graphics::API::VulkanSampler::UpdateAnisotropy(const f32 anisotropy)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	m_samplerDesc.OverrideAnisotropyLevel = anisotropy;
 

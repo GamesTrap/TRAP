@@ -7,7 +7,7 @@
 
 TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI::PipelineCacheDesc& desc)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_device, "VulkanPipelineCache(): Vulkan Device is nullptr");
 
@@ -25,7 +25,7 @@ TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI:
 
 TRAP::Graphics::API::VulkanPipelineCache::~VulkanPipelineCache()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelineCachePrefix, "Destroying PipelineCache");
@@ -38,7 +38,7 @@ TRAP::Graphics::API::VulkanPipelineCache::~VulkanPipelineCache()
 
 void TRAP::Graphics::API::VulkanPipelineCache::GetPipelineCacheData(usize* const size, void* const data) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	if(m_cache != nullptr)
 		VkCall(vkGetPipelineCacheData(m_device->GetVkDevice(), m_cache, size, data));

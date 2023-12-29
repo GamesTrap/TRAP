@@ -49,7 +49,7 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const u
                                          const ColorFormat format, std::vector<T> pixelData)
 	: Image(std::move(filepath), width, height, format)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	if (m_colorFormat == ColorFormat::NONE)
 	{

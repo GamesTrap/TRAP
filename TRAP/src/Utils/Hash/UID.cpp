@@ -6,5 +6,5 @@
 TRAP::Utils::UID::UID()
     : m_uid(TRAP::Utils::RandomThreadLocal::Get())
 {
-    ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+    ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 }

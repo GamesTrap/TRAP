@@ -291,7 +291,8 @@ namespace TRAP::Graphics::API
 		/// @param prev Previous hash value.
 		static usize HashAlg(const auto* mem, usize size, const usize prev = 2166136261U)
 		{
-			ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+			ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+			                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 			TRAP_ASSERT(mem, "VulkanCommandBuffer::HashAlg(): mem is nullptr!");
 			TRAP_ASSERT(size, "VulkanCommandBuffer::HashAlg(): size is 0!");

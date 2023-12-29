@@ -6,7 +6,7 @@
                                                          const std::vector<std::pair<std::string, std::string>>& filterPatterns,
                                                          const bool allFiles)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
     return MD::SaveFile(title, defaultPathAndFile, filterPatterns, allFiles);
 }
@@ -19,7 +19,7 @@
                                                                       const bool allowMultipleSelects,
                                                                       const bool allFiles)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
     return MD::OpenFile(title, defaultPathAndFile, filterPatterns, allowMultipleSelects, allFiles);
 }
@@ -31,7 +31,7 @@
                                                                const std::vector<std::pair<std::string, std::string>>& filterPatterns,
                                                                const bool allFiles)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
     return MD::OpenSingleFile(title, defaultPathAndFile, filterPatterns, allFiles);
 }
@@ -43,7 +43,7 @@
                                                                                const std::vector<std::pair<std::string, std::string>>& filterPatterns,
                                                                                const bool allFiles)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
     return MD::OpenMultipleFiles(title, defaultPathAndFile, filterPatterns, allFiles);
 }
@@ -52,7 +52,7 @@
 
 [[nodiscard]] std::string TRAP::Utils::Dialogs::SelectFolder(const std::string& title, const std::string& defaultPath)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
     return MD::SelectFolder(title, defaultPath);
 }
@@ -63,7 +63,7 @@
                                                                                const std::string& message,
     const Style style, const Buttons buttons)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
     return MD::ShowMsgBox(title, message, style, buttons);
 }
@@ -74,7 +74,7 @@
                                                                                const std::string& message,
     const Style style)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
     return MD::ShowMsgBox(title, message, style);
 }
@@ -85,7 +85,7 @@
                                                                                const std::string& message,
     const Buttons buttons)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
     return MD::ShowMsgBox(title, message, buttons);
 }
@@ -95,7 +95,7 @@
 [[nodiscard]] TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::string& title,
                                                                                const std::string& message)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
     return MD::ShowMsgBox(title, message);
 }

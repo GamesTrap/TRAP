@@ -398,7 +398,8 @@ namespace
 
     [[nodiscard]] ImGui_ImplVulkan_Data* GetBackendData()
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None &&
+                                                 (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
         const ImGuiContext* context = ImGui::GetCurrentContext();
         const ImGuiIO& io = ImGui::GetIO();
@@ -412,7 +413,8 @@ namespace
 
     void CheckVkResult(const VkResult err)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None &&
+                                                 (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
         const ImGui_ImplVulkan_Data* const bd = GetBackendData();
         if (bd == nullptr)
@@ -430,7 +432,7 @@ namespace
                           const ImGui_ImplVulkanH_FrameRenderBuffers& rb, const i32 fb_width,
                           const i32 fb_height)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         const ImGui_ImplVulkan_Data* const bd = GetBackendData();
 
@@ -465,7 +467,7 @@ namespace
     void CreateShaderModules(const TRAP::Graphics::API::VulkanDevice& device,
                              const VkAllocationCallbacks* const allocator)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         // Create the shader modules
         ImGui_ImplVulkan_Data* const bd = GetBackendData();
@@ -504,7 +506,7 @@ namespace
                         const TRAP::Graphics::API::VulkanPipelineCache* const pipelineCache,
                         VkRenderPass renderPass, const VkSampleCountFlagBits MSAASamples, VkPipeline& pipeline)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         const ImGui_ImplVulkan_Data* const bd = GetBackendData();
         CreateShaderModules(device, allocator);
@@ -637,7 +639,7 @@ namespace
 
     void CreateDeviceObjects()
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         ImGui_ImplVulkan_Data* const bd = GetBackendData();
         const InitInfo& v = bd->VulkanInitInfo;
@@ -710,7 +712,7 @@ namespace
 
     void DestroyDeviceObjects()
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         ImGui_ImplVulkan_Data* const bd = GetBackendData();
         const InitInfo& v = bd->VulkanInitInfo;
@@ -746,7 +748,7 @@ namespace
                                                          VkSurfaceKHR surface, const std::span<const VkFormat> request_formats,
                                                          const VkColorSpaceKHR request_color_space)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         TRAP_ASSERT(!request_formats.empty(), "ImGuiVulkanBackend::SelectSurfaceFormat(): request_formats is empty!");
 
@@ -796,7 +798,7 @@ namespace
                                                      VkSurfaceKHR surface,
                                                      const std::span<const VkPresentModeKHR> request_modes)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         TRAP_ASSERT(!request_modes.empty(), "ImGuiVulkanBackend::SelectPresentMode(): request_modes is empty!");
 
@@ -824,7 +826,7 @@ namespace
     void CreateWindowCommandBuffers(ImGui_ImplVulkanH_Window& wd,
                                     const TRAP::Ref<TRAP::Graphics::API::VulkanQueue>& queue)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         // Create Command Buffers
         for (u32 i = 0; i < wd.ImageCount; i++)
@@ -850,7 +852,8 @@ namespace
 
     [[nodiscard]] std::optional<i32> GetMinImageCountFromPresentMode(const VkPresentModeKHR present_mode)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None &&
+                                                 (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
         if (present_mode == VK_PRESENT_MODE_MAILBOX_KHR)
             return 3;
@@ -870,7 +873,7 @@ namespace
                                const VkAllocationCallbacks* const allocator, const i32 w, const i32 h,
                                u32 min_image_count)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         VkResult err = VK_SUCCESS;
         VkSwapchainKHR old_swapchain = wd.Swapchain;
@@ -1013,7 +1016,7 @@ namespace
                               const VkAllocationCallbacks* const allocator, const i32 w, const i32 h,
                               const u32 min_image_count)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         TRAP_ASSERT(queue != nullptr, "ImGuiVulkanBackend::CreateOrResizeWindow(): queue is nullptr!");
 
@@ -1027,7 +1030,7 @@ namespace
                        const TRAP::Graphics::API::VulkanDevice& device, ImGui_ImplVulkanH_Window& wnd,
                        const VkAllocationCallbacks* const allocator)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         device.WaitIdle(); // FIXME: We could wait on the Queue if we had the queue in wd-> (otherwise VulkanH functions can't use globals)
         //vkQueueWaitIdle(bd.Queue);
@@ -1049,7 +1052,7 @@ namespace
     void DestroyFrame(const TRAP::Graphics::API::VulkanDevice& device, ImGui_ImplVulkanH_Frame& fd,
                       const VkAllocationCallbacks* const allocator)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         fd.Fence.reset();
         fd.CommandPool.reset();
@@ -1064,7 +1067,7 @@ namespace
 
     void CreateNewDescriptorPool()
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         ImGui_ImplVulkan_Data* const bd = GetBackendData();
         InitInfo& v = bd->VulkanInitInfo;
@@ -1083,7 +1086,7 @@ namespace
 
     void DestroyAllViewportsRenderBuffers()
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         const ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
         for(ImGuiViewport* viewport : platform_io.Viewports)
@@ -1104,7 +1107,7 @@ namespace
 
     void CreateWindow(ImGuiViewport* const viewport)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         TRAP_ASSERT(viewport != nullptr, "ImGuiVulkanBackend::CreateWindow(): viewport is nullptr!");
 
@@ -1157,7 +1160,7 @@ namespace
 
     void DestroyWindow(ImGuiViewport* const viewport)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         TRAP_ASSERT(viewport != nullptr, "ImGuiVulkanBackend::DestroyWindow(): viewport is nullptr!");
         if(viewport == nullptr)
@@ -1180,7 +1183,7 @@ namespace
 
     void SetWindowSize(ImGuiViewport* const viewport, const ImVec2 size)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         TRAP_ASSERT(viewport != nullptr, "ImGuiVulkanBackend::SetWindowSize(): viewport is nullptr!");
         if(viewport == nullptr)
@@ -1199,7 +1202,7 @@ namespace
 
     void RenderWindow(ImGuiViewport* const viewport, [[maybe_unused]] void* const render_arg)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         TRAP_ASSERT(viewport != nullptr, "ImGuiVulkanBackend::RenderWindow(): viewport is nullptr!");
         if(viewport == nullptr)
@@ -1372,7 +1375,7 @@ namespace
 
     void SwapBuffers(ImGuiViewport* const viewport, [[maybe_unused]] void* const render_arg)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         TRAP_ASSERT(viewport != nullptr, "ImGuiVulkanBackend::SwapBuffers(): viewport is nullptr!");
         if(viewport == nullptr)
@@ -1409,7 +1412,8 @@ namespace
 
     void InitPlatformInterface()
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None &&
+                                                 (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
         ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
         if ((ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable) != 0)
@@ -1425,7 +1429,7 @@ namespace
 
     void ShutdownPlatformInterface()
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         ImGui::DestroyPlatformWindows();
     }
@@ -1437,7 +1441,7 @@ namespace
 
 void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
 {
-    ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+    ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
     const ImGuiIO& io = ImGui::GetIO();
     ImGui_ImplVulkan_Data* const bd = GetBackendData();
@@ -1587,7 +1591,7 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
 
 void ImGui::INTERNAL::Vulkan::DestroyFontsTexture()
 {
-    ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+    ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
     ImGuiIO& io = ImGui::GetIO();
     ImGui_ImplVulkan_Data* const bd = GetBackendData();
@@ -1609,7 +1613,7 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
                                              const TRAP::Graphics::API::VulkanCommandBuffer& command_buffer,
                                              VkPipeline pipeline)
 {
-    ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+    ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
     // Avoid rendering when minimized, scale coordinates for retina displays (screen coordinates != framebuffer coordinates)
     const i32 fb_width = NumericCast<i32>(draw_data.DisplaySize.x * draw_data.FramebufferScale.x);
@@ -1793,7 +1797,7 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
 
 void ImGui::INTERNAL::Vulkan::Init(const InitInfo& info, VkRenderPass render_pass)
 {
-    ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+    ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
     ImGuiIO& io = ImGui::GetIO();
     TRAP_ASSERT(io.BackendRendererUserData == nullptr, "ImGuiVulkanBackend::Init(): Renderer backend is already initialized!");
@@ -1837,7 +1841,7 @@ void ImGui::INTERNAL::Vulkan::Init(const InitInfo& info, VkRenderPass render_pas
 
 void ImGui::INTERNAL::Vulkan::Shutdown()
 {
-    ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+    ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
     ImGui_ImplVulkan_Data* const bd = GetBackendData();
 
@@ -1876,7 +1880,8 @@ void ImGui::INTERNAL::Vulkan::Shutdown()
 
 void ImGui::INTERNAL::Vulkan::NewFrame()
 {
-    ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+    ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None &&
+                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     [[maybe_unused]] const ImGui_ImplVulkan_Data* const bd = GetBackendData();
     TRAP_ASSERT(bd != nullptr, "ImGuiVulkanBackend::NewFrame(): Renderer backend hasn't been initialized!");
@@ -1891,7 +1896,7 @@ void ImGui::INTERNAL::Vulkan::NewFrame()
                                                               const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& image,
                                                               const VkImageLayout image_layout)
 {
-    ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+    ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
     TRAP_ASSERT(sampler != nullptr, "ImGuiVulkanBackend::AddTexture(): sampler is nullptr!");
     TRAP_ASSERT(image != nullptr, "ImGuiVulkanBackend::AddTexture(): image is nullptr!");
@@ -1950,7 +1955,7 @@ void ImGui::INTERNAL::Vulkan::RemoveTexture(const TRAP::Ref<TRAP::Graphics::API:
                                                                      VkImageView image_view,
                                                                      const VkImageLayout image_layout)
 {
-    ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+    ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
     const ImGui_ImplVulkan_Data* const bd = GetBackendData();
     const InitInfo& v = bd->VulkanInitInfo;
@@ -1986,7 +1991,7 @@ void ImGui::INTERNAL::Vulkan::RemoveTexture(const TRAP::Ref<TRAP::Graphics::API:
 
 void ImGui::INTERNAL::Vulkan::ClearCache() noexcept
 {
-    ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+    ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
     s_VulkanTextureCache.clear();
 }
@@ -1995,7 +2000,7 @@ void ImGui::INTERNAL::Vulkan::ClearCache() noexcept
 
 void ImGui::INTERNAL::Vulkan::SetMSAASamples(const VkSampleCountFlagBits sampleCount)
 {
-    ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+    ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(TRAP::Application::GetWindow());
     ImGui_ImplVulkan_Data* const bd = GetBackendData();

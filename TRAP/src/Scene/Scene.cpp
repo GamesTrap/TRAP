@@ -47,7 +47,7 @@ namespace
 	template<typename... Component>
 	void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<entt::entity, entt::entity>& enttMap)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+		ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 		([&]()
 		{
@@ -68,7 +68,8 @@ namespace
 	void CopyComponent([[maybe_unused]] TRAP::ComponentGroup<Component...> components, entt::registry& dst,
 					   entt::registry& src, const std::unordered_map<entt::entity, entt::entity>& enttMap)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+		ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None &&
+		                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 		CopyComponent<Component...>(dst, src, enttMap);
 	}
@@ -78,7 +79,7 @@ namespace
 	template<typename... Component>
 	void CopyComponentIfExists(TRAP::Entity dst, TRAP::Entity src)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+		ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 		([&]()
 		{
@@ -93,7 +94,8 @@ namespace
 	void CopyComponentIfExists([[maybe_unused]] TRAP::ComponentGroup<Component...> components, TRAP::Entity dst,
 							   TRAP::Entity src)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+		ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None &&
+		                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 		CopyComponentIfExists<Component...>(dst, src);
 	}
@@ -103,7 +105,7 @@ namespace
 
 [[nodiscard]] TRAP::Ref<TRAP::Scene> TRAP::Scene::Copy(const Ref<Scene>& other)
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	TRAP::Ref<Scene> newScene = TRAP::MakeRef<Scene>();
 
@@ -134,7 +136,7 @@ namespace
 
 TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	Entity entity = { m_registry.create(), this };
 	entity.AddComponent<UIDComponent>();
@@ -148,7 +150,7 @@ TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 
 void TRAP::Scene::DestroyEntity(const Entity entity)
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	m_registry.destroy(entity);
 }
@@ -157,7 +159,7 @@ void TRAP::Scene::DestroyEntity(const Entity entity)
 
 void TRAP::Scene::OnRuntimeStart()
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	m_physicsWorld = TRAP::MakeScope<b2World>(b2Vec2{0.0f, -9.8f});
 
@@ -216,7 +218,7 @@ void TRAP::Scene::OnRuntimeStart()
 
 void TRAP::Scene::OnRuntimeStop()
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	auto view = m_registry.view<Rigidbody2DComponent>();
 	for(auto e : view)
@@ -260,7 +262,7 @@ void TRAP::Scene::OnRuntimeStop()
 
 void TRAP::Scene::OnTickRuntime(const Utils::TimeStep& deltaTime)
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	//Physics
 	const i32 velocityIterations = 6;
@@ -287,7 +289,7 @@ void TRAP::Scene::OnTickRuntime(const Utils::TimeStep& deltaTime)
 
 void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	//Update scripts
 	{
@@ -358,7 +360,7 @@ void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Scene::OnUpdateEditor([[maybe_unused]] const Utils::TimeStep deltaTime, Graphics::EditorCamera& camera)
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	Graphics::Renderer2D::BeginScene(camera);
 
@@ -389,7 +391,7 @@ void TRAP::Scene::OnUpdateEditor([[maybe_unused]] const Utils::TimeStep deltaTim
 
 void TRAP::Scene::OnTick(const TRAP::Utils::TimeStep& deltaTime)
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	//Update scripts
 	{
@@ -413,7 +415,7 @@ void TRAP::Scene::OnTick(const TRAP::Utils::TimeStep& deltaTime)
 
 void TRAP::Scene::OnViewportResize(const u32 width, const u32 height)
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	m_viewportWidth = width;
 	m_viewportHeight = height;
@@ -432,7 +434,7 @@ void TRAP::Scene::OnViewportResize(const u32 width, const u32 height)
 
 void TRAP::Scene::DuplicateEntity(Entity entity)
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	Entity newEntity = CreateEntity(entity.GetName());
 	CopyComponentIfExists(AllComponents{}, newEntity, entity);
@@ -442,7 +444,7 @@ void TRAP::Scene::DuplicateEntity(Entity entity)
 
 [[nodiscard]] TRAP::Entity TRAP::Scene::GetPrimaryCameraEntity()
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	auto view = m_registry.view<CameraComponent>();
 	for(auto entity : view)

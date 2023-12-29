@@ -10,7 +10,7 @@
 
 TRAP::Graphics::API::VulkanFence::VulkanFence(const bool signalled)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_device, "VulkanFence()(): Vulkan Device is nullptr");
 
@@ -29,7 +29,7 @@ TRAP::Graphics::API::VulkanFence::VulkanFence(const bool signalled)
 
 TRAP::Graphics::API::VulkanFence::~VulkanFence()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanFencePrefix, "Destroying Fence");
@@ -42,7 +42,7 @@ TRAP::Graphics::API::VulkanFence::~VulkanFence()
 
 [[nodiscard]] TRAP::Graphics::RendererAPI::FenceStatus TRAP::Graphics::API::VulkanFence::GetStatus()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	if(!m_submitted)
 		return RendererAPI::FenceStatus::NotSubmitted;
@@ -61,7 +61,7 @@ TRAP::Graphics::API::VulkanFence::~VulkanFence()
 
 void TRAP::Graphics::API::VulkanFence::Wait()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	if(m_submitted)
 	{

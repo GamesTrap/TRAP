@@ -157,7 +157,7 @@ static constexpr std::array<u64, 80> SHA512_K =
 
 void Transform(const void* const mp, const u64 numBlks, std::array<u32, 8>& hash)
 {
-    ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+    ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	for(u64 blk = 0; blk < numBlks; blk++)
 	{
@@ -213,7 +213,7 @@ void Transform(const void* const mp, const u64 numBlks, std::array<u32, 8>& hash
 
 void Transform(const void* const mp, const u64 numBlks, std::array<u64, 8>& hash)
 {
-    ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+    ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	for(u64 blk = 0; blk < numBlks; blk++)
 	{
@@ -268,7 +268,7 @@ void Transform(const void* const mp, const u64 numBlks, std::array<u64, 8>& hash
 
 [[nodiscard]] std::array<u8, 32> TRAP::Utils::Hash::SHA2_256(const void* const data, u64 length)
 {
-    ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+    ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	std::array<u32, 8> hash =
 	{
@@ -324,7 +324,8 @@ void Transform(const void* const mp, const u64 numBlks, std::array<u64, 8>& hash
 
 [[nodiscard]] std::array<u8, 32> TRAP::Utils::Hash::SHA2_256(const std::string_view str)
 {
-    ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+    ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+	                                          (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return SHA2_256(str.data(), str.length());
 }
@@ -333,7 +334,7 @@ void Transform(const void* const mp, const u64 numBlks, std::array<u64, 8>& hash
 
 [[nodiscard]] std::array<u8, 64> TRAP::Utils::Hash::SHA2_512(const void* const data, u64 length)
 {
-    ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+    ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	usize pos = 0;
 	u64 total = 0;
@@ -389,7 +390,8 @@ void Transform(const void* const mp, const u64 numBlks, std::array<u64, 8>& hash
 
 [[nodiscard]] std::array<u8, 64> TRAP::Utils::Hash::SHA2_512(const std::string_view str)
 {
-    ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+    ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+	                                          (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return SHA2_512(str.data(), str.length());
 }

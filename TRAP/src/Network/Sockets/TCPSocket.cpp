@@ -54,7 +54,7 @@ namespace
 
 [[nodiscard]] u16 TRAP::Network::TCPSocket::GetLocalPort() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return 0; //We failed to retrieve the port
@@ -80,7 +80,7 @@ namespace
 
 [[nodiscard]] TRAP::Network::IPv4Address TRAP::Network::TCPSocket::GetRemoteAddress() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return IPv4Address::None; //We failed to retrieve the address
@@ -105,7 +105,7 @@ namespace
 
 [[nodiscard]] u16 TRAP::Network::TCPSocket::GetRemotePort() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return 0; //We failed to retrieve the port
@@ -131,7 +131,7 @@ namespace
 TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Address& remoteAddress,
                                                                 const u16 remotePort, Utils::TimeStep timeout)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Disconnect the socket if it is already connected
 	Disconnect();
@@ -216,7 +216,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Addres
 
 void TRAP::Network::TCPSocket::Disconnect()
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Close the socket
 	Close();
@@ -229,7 +229,7 @@ void TRAP::Network::TCPSocket::Disconnect()
 
 TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* const data, const usize size) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	if (!IsBlocking())
 		TP_WARN(Log::NetworkTCPSocketPrefix, "Partial sends might not be handled properly.");
@@ -244,7 +244,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* const d
 TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* const data, const usize size,
                                                              usize& sent) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Check the parameters
 	if((data == nullptr) || (size == 0))
@@ -280,7 +280,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* const d
 TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* const data, const usize size,
                                                                 usize& received) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//First clear the variables to fill
 	received = 0;
@@ -312,7 +312,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* const data
 
 TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//TCP is a stream protocol, it doesn't preserve messages boundaries.
 	//This means that we have to send the packet size first, so that the
@@ -358,7 +358,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet) con
 
 TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//First clear the variables to fill
 	packet.Clear();

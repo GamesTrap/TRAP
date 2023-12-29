@@ -433,7 +433,7 @@ template<typename T>
 requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 [[nodiscard]] std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::Texture::SplitImageFromCross(const TRAP::Image* const image)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	const bool isHorizontal = image->GetWidth() > image->GetHeight();
 

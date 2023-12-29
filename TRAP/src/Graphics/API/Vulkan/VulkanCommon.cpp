@@ -130,7 +130,8 @@
 void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] const u64 handle,
 										  [[maybe_unused]] const VkObjectType type, [[maybe_unused]] const std::string_view name)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if (VulkanRenderer::s_debugUtilsExtension)
@@ -161,7 +162,8 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 [[nodiscard]] VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const VkAccessFlags accessFlags,
                                                                                       const RendererAPI::QueueType queueType) noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	VkPipelineStageFlags flags = 0;
 
@@ -391,7 +393,7 @@ void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
                                                                 VkMemoryRequirements& memReq,
                                                                 std::vector<u64>& planesOffsets)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	memReq = {};
 

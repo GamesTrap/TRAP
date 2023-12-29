@@ -54,7 +54,7 @@ namespace TRAP::Network
 TRAP::Network::SocketSelector::SocketSelector()
 	: m_impl(TRAP::MakeScope<SocketSelectorImpl>())
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	Clear();
 }
@@ -64,7 +64,7 @@ TRAP::Network::SocketSelector::SocketSelector()
 TRAP::Network::SocketSelector::SocketSelector(const SocketSelector& copy)
 	: m_impl(TRAP::MakeScope<SocketSelectorImpl>(*copy.m_impl))
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -72,14 +72,14 @@ TRAP::Network::SocketSelector::SocketSelector(const SocketSelector& copy)
 TRAP::Network::SocketSelector::SocketSelector(SocketSelector&& other) noexcept
 	: m_impl(std::move(other.m_impl))
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(SocketSelector&& other) noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	m_impl = std::move(other.m_impl);
 	return *this;
@@ -89,7 +89,7 @@ TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(SocketSe
 
 void TRAP::Network::SocketSelector::Add(Socket& socket)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	const SocketHandle handle = socket.GetHandle();
 	if(handle != INTERNAL::Network::SocketImpl::InvalidSocket())
@@ -126,7 +126,7 @@ void TRAP::Network::SocketSelector::Add(Socket& socket)
 
 void TRAP::Network::SocketSelector::Remove(Socket& socket) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	const SocketHandle handle = socket.GetHandle();
 	if(handle != INTERNAL::Network::SocketImpl::InvalidSocket())
@@ -150,7 +150,7 @@ void TRAP::Network::SocketSelector::Remove(Socket& socket) const
 
 void TRAP::Network::SocketSelector::Clear() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	FD_ZERO(&m_impl->AllSockets);
 	FD_ZERO(&m_impl->SocketsReady);
@@ -163,7 +163,7 @@ void TRAP::Network::SocketSelector::Clear() const
 
 bool TRAP::Network::SocketSelector::Wait(const Utils::TimeStep timeout) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Setup the timeout
 	timeval time{};
@@ -185,7 +185,7 @@ bool TRAP::Network::SocketSelector::Wait(const Utils::TimeStep timeout) const
 
 [[nodiscard]] bool TRAP::Network::SocketSelector::IsReady(Socket& socket) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	const SocketHandle handle = socket.GetHandle();
 	if(handle != INTERNAL::Network::SocketImpl::InvalidSocket())
@@ -205,7 +205,7 @@ bool TRAP::Network::SocketSelector::Wait(const Utils::TimeStep timeout) const
 
 TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(const SocketSelector& right)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	SocketSelector temp(right);
 

@@ -43,7 +43,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 //Load necessary libraries (DLLs)
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::LoadLibraries()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if(!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
 	                       reinterpret_cast<const WCHAR*>(&s_Data), reinterpret_cast<HMODULE*>(&s_Data.Instance)))
@@ -119,7 +119,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 //Unload used libraries (DLLs)
 void TRAP::INTERNAL::WindowingAPI::FreeLibraries()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if (s_Data.User32.Instance)
 	{
@@ -151,7 +151,7 @@ void TRAP::INTERNAL::WindowingAPI::FreeLibraries()
 //Reports the specified error, appending information about the last Win32 error
 void TRAP::INTERNAL::WindowingAPI::InputErrorWin32(const Error error, const std::string& description)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	std::wstring buffer(1024, L'\0');
 	std::string message(1024, '\0');
@@ -172,7 +172,7 @@ void TRAP::INTERNAL::WindowingAPI::InputErrorWin32(const Error error, const std:
 //Updates key names according to the current keyboard layout
 void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	std::array<BYTE, 256> state{};
 
@@ -227,7 +227,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT uMsg, const WPARAM wParam,
                                                           const LPARAM lParam)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	if(PCLSTATS_IS_PING_MSG_ID(uMsg))
@@ -1028,7 +1028,7 @@ std::optional<std::string> TRAP::INTERNAL::WindowingAPI::GetAccurateMonitorName(
 BOOL CALLBACK TRAP::INTERNAL::WindowingAPI::MonitorCallback(HMONITOR handle, [[maybe_unused]] HDC dc,
 	                                                        [[maybe_unused]] RECT* rect, const LPARAM data)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(data, "WindowingAPI::MonitorCallback(): data is nullptr!");
 
@@ -1057,7 +1057,7 @@ BOOL CALLBACK TRAP::INTERNAL::WindowingAPI::MonitorCallback(HMONITOR handle, [[m
 [[nodiscard]] TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalMonitor> TRAP::INTERNAL::WindowingAPI::CreateMonitor(const DISPLAY_DEVICEW& adapter,
                                                                                                                      const DISPLAY_DEVICEW* const display)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	std::string name;
 
@@ -1106,7 +1106,7 @@ BOOL CALLBACK TRAP::INTERNAL::WindowingAPI::MonitorCallback(HMONITOR handle, [[m
 //Poll for changes in the set of connected monitors
 void TRAP::INTERNAL::WindowingAPI::PollMonitorsWin32()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	u32 i;
 	std::vector<bool> disconnected(s_Data.Monitors.size(), true);
@@ -1222,7 +1222,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsWin32()
 //Make the specified window and its video mode active on its monitor
 void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if (!window.Monitor)
 		return;
@@ -1249,7 +1249,7 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(InternalWindow& window)
 //Make the specified window active on its monitor
 void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if (!window.Monitor)
 		return;
@@ -1275,7 +1275,7 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow& wind
 //Remove the window and restore the original video mode
 void TRAP::INTERNAL::WindowingAPI::ReleaseMonitor(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if (!window.Monitor || window.Monitor->Window != &window)
 		return;
@@ -1302,7 +1302,7 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseMonitor(const InternalWindow& window)
 
 void TRAP::INTERNAL::WindowingAPI::FitToMonitor(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	MONITORINFO mi{};
 	mi.cbSize = sizeof(mi);
@@ -1317,7 +1317,7 @@ void TRAP::INTERNAL::WindowingAPI::FitToMonitor(const InternalWindow& window)
 //Change the current video mode
 void TRAP::INTERNAL::WindowingAPI::SetVideoModeWin32(InternalMonitor& monitor, const InternalVideoMode& desired)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	DEVMODEW dm;
 
@@ -1367,7 +1367,7 @@ void TRAP::INTERNAL::WindowingAPI::SetVideoModeWin32(InternalMonitor& monitor, c
 
 void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScaleWin32(HMONITOR handle, f32& xScale, f32& yScale)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	UINT xDPI = 0, yDPI = 0;
 
@@ -1417,7 +1417,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateTheme(HWND hWnd)
 //Creates the TRAP window
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow& window, const WindowConfig& WNDConfig)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	i32 frameX, frameY, frameWidth, frameHeight;
 	DWORD style = GetWindowStyle(window);
@@ -1561,7 +1561,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateTheme(HWND hWnd)
 
 void TRAP::INTERNAL::WindowingAPI::MaximizeWindowManually(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	RECT rect;
 	DWORD style;
@@ -1611,7 +1611,8 @@ void TRAP::INTERNAL::WindowingAPI::MaximizeWindowManually(const InternalWindow& 
 
 [[nodiscard]] HINSTANCE TRAP::INTERNAL::WindowingAPI::GetWin32HInstance()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return s_Data.Instance;
 }
@@ -1620,7 +1621,7 @@ void TRAP::INTERNAL::WindowingAPI::MaximizeWindowManually(const InternalWindow& 
 
 LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::HelperWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	switch(uMsg)
 	{
@@ -1689,7 +1690,7 @@ void CALLBACK TRAP::INTERNAL::WindowingAPI::MessageFiberProc([[maybe_unused]] LP
 
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::CreateHelperWindow()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	WNDCLASSEXW wc{};
 	wc.cbSize = sizeof(wc);
@@ -1742,7 +1743,7 @@ void CALLBACK TRAP::INTERNAL::WindowingAPI::MessageFiberProc([[maybe_unused]] LP
 //Returns whether the cursor is in the content area of the specified window
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::CursorInContentArea(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	RECT area{};
 	POINT pos{};
@@ -1766,7 +1767,7 @@ void CALLBACK TRAP::INTERNAL::WindowingAPI::MessageFiberProc([[maybe_unused]] LP
 [[nodiscard]] HICON TRAP::INTERNAL::WindowingAPI::CreateIcon(const Image& image, const u32 xHot,
 	                                                         const u32 yHot, const bool icon)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	BITMAPV5HEADER bi;
 	ZeroMemory(&bi, sizeof(bi));
@@ -1868,7 +1869,7 @@ void TRAP::INTERNAL::WindowingAPI::ApplyAspectRatio(const InternalWindow& window
 //Sets the cursor clip rect to the window content area
 void TRAP::INTERNAL::WindowingAPI::CaptureCursor(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	RECT clipRect;
 	GetClientRect(window.Handle, &clipRect);
@@ -1883,7 +1884,7 @@ void TRAP::INTERNAL::WindowingAPI::CaptureCursor(InternalWindow& window)
 //Disabled clip cursor
 void TRAP::INTERNAL::WindowingAPI::ReleaseCursor()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	ClipCursor(nullptr);
 	s_Data.CapturedCursorWindow = nullptr;
@@ -1894,7 +1895,7 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseCursor()
 //Enables WM_INPUT messages for the mouse for the specified window
 void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	const RAWINPUTDEVICE rid = { 0x01, 0x02, 0, window.Handle };
 
@@ -1907,7 +1908,7 @@ void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion(const InternalWindow& wi
 //Disables WM_INPUT messages for the mouse
 void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion([[maybe_unused]] const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	const RAWINPUTDEVICE rid = { 0x01, 0x02, RIDEV_REMOVE, nullptr };
 
@@ -1920,7 +1921,7 @@ void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion([[maybe_unused]] const 
 //Update native window styles to match attributes
 void TRAP::INTERNAL::WindowingAPI::UpdateWindowStyles(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	RECT rect;
 	DWORD style = static_cast<DWORD>(GetWindowLongPtrW(window.Handle, GWL_STYLE));
@@ -1946,7 +1947,8 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowStyles(const InternalWindow& wind
 
 [[nodiscard]] HWND TRAP::INTERNAL::WindowingAPI::GetWin32Window(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	if(!s_Data.Initialized)
 	{
@@ -1961,7 +1963,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowStyles(const InternalWindow& wind
 
 [[nodiscard]] std::optional<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoMode(const InternalMonitor& monitor)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	DEVMODEW dm;
 	ZeroMemory(&dm, sizeof(dm));
@@ -2017,7 +2019,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowStyles(const InternalWindow& wind
 void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSize(const InternalWindow& window, i32& width,
                                                          i32& height)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	RECT area{};
 	GetClientRect(window.Handle, &area);
@@ -2031,7 +2033,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSize(const InternalWindow& w
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPos(const InternalWindow& window, const i32 xPos,
                                                         const i32 yPos)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	RECT rect = { xPos, yPos, xPos, yPos };
 
@@ -2053,7 +2055,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow& wind
 	                                                        const i32 width, const i32 height,
 	                                                        [[maybe_unused]] const f64 refreshRate)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if (window.Monitor == monitor)
 	{
@@ -2150,7 +2152,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow& wind
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWindow& window, InternalMonitor& monitor)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if(window.Monitor != nullptr)
 		ReleaseMonitor(window);
@@ -2181,7 +2183,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 
 [[nodiscard]] std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModes(const InternalMonitor& monitor)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	u32 modeIndex = 0;
 	std::vector<InternalVideoMode> result{};
@@ -2319,7 +2321,7 @@ void TRAP::INTERNAL::WindowingAPI::SetAccessibilityShortcutKeys(const bool allow
 
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if (!LoadLibraries())
 		return false;
@@ -2371,7 +2373,7 @@ void TRAP::INTERNAL::WindowingAPI::SetAccessibilityShortcutKeys(const bool allow
 
 void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if (window.Monitor)
 		ReleaseMonitor(window);
@@ -2403,7 +2405,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow& window)
 
 void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	//Restore accessibility key states
 	SetAccessibilityShortcutKeys(true);
@@ -2434,7 +2436,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScale(const InternalMonitor& monitor,
 	                                                              f32& xScale, f32& yScale)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	GetMonitorContentScaleWin32(monitor.Handle, xScale, yScale);
 }
@@ -2444,7 +2446,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScale(const Internal
 void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPos(const InternalMonitor& monitor, i32& xPos,
                                                          i32& yPos)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	DEVMODEW dm;
 	ZeroMemory(&dm, sizeof(dm));
@@ -2461,7 +2463,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPos(const InternalMonitor& 
 
 void TRAP::INTERNAL::WindowingAPI::PlatformShowWindow(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	::ShowWindow(window.Handle, SW_SHOWNA);
 }
@@ -2470,7 +2472,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShowWindow(InternalWindow& window)
 
 void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindow(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	BringWindowToTop(window.Handle);
 	SetForegroundWindow(window.Handle);
@@ -2482,7 +2484,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindow(const InternalWindow& win
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow& window,
                                                                       WindowConfig& WNDConfig)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if (!CreateNativeWindow(window, WNDConfig))
 		return false;
@@ -2514,7 +2516,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindow(const InternalWindow& win
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(InternalWindow& window, const std::string& title)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	const std::wstring wideTitle = TRAP::Utils::String::CreateWideStringFromUTF8StringWin32(title);
 	if (wideTitle.empty())
@@ -2530,7 +2532,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(InternalWindow& window
                                                                       const u32 xHotspot,
 																	  const u32 yHotspot)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	cursor.Handle = CreateIcon(image, xHotspot, yHotspot, false);
 	if (!cursor.Handle)
@@ -2543,7 +2545,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(InternalWindow& window
 
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursor(InternalCursor& cursor, const CursorType& type)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	u32 id = OCR_NORMAL;
 
@@ -2608,7 +2610,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(InternalWindow& window
 
 void TRAP::INTERNAL::WindowingAPI::PlatformDestroyCursor(InternalCursor& cursor)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if (cursor.Handle)
 		DestroyIcon(cursor.Handle);
@@ -2619,7 +2621,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyCursor(InternalCursor& cursor)
 void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(InternalWindow& window,
 	                                                 [[maybe_unused]] InternalCursor* const cursor)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if (CursorInContentArea(window))
 		UpdateCursorImage(window);
@@ -2629,7 +2631,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(InternalWindow& window,
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorMode(InternalWindow& window, const CursorMode mode)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if (PlatformWindowFocused(window))
 	{
@@ -2669,7 +2671,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorMode(InternalWindow& window,
 void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPos(InternalWindow& window,
 	                                                    const f64 xPos, const f64 yPos)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	POINT pos = { NumericCast<i32>(xPos), NumericCast<i32>(yPos) };
 
@@ -2686,7 +2688,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPos(InternalWindow& window,
 void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPos(const InternalWindow& window,
 	                                                    f64& xPos, f64& yPos)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	POINT pos;
 
@@ -2703,7 +2705,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPos(const InternalWindow& wi
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow& window, const Image* const image)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	HICON bigIcon, smallIcon;
 
@@ -2739,7 +2741,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow& window,
 void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPos(const InternalWindow& window,
 	                                                    i32& xPos, i32& yPos)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	POINT pos = { 0, 0 };
 	ClientToScreen(window.Handle, &pos);
@@ -2753,7 +2755,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPos(const InternalWindow& wi
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSize(InternalWindow& window, const i32 width,
                                                          const i32 height)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if (window.Monitor)
 	{
@@ -2785,7 +2787,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSize(InternalWindow& window,
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizable(InternalWindow& window,
 	                                                          [[maybe_unused]] const bool enabled)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	UpdateWindowStyles(window);
 }
@@ -2795,7 +2797,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizable(InternalWindow& wi
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecorated(InternalWindow& window,
 	                                                          [[maybe_unused]] const bool enabled)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	UpdateWindowStyles(window);
 }
@@ -2804,7 +2806,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecorated(InternalWindow& wi
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const InternalWindow& window, const bool enabled)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	const HWND after = enabled ? HWND_TOPMOST : HWND_NOTOPMOST;
 	::SetWindowPos(window.Handle, after, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
@@ -2814,7 +2816,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const InternalWindo
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacity(const InternalWindow& window, const f32 opacity)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	LONG exStyle = GetWindowLongW(window.Handle, GWL_EXSTYLE);
 	if (opacity < 1.0f || (exStyle & WS_EX_TRANSPARENT))
@@ -2837,7 +2839,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacity(const InternalWindow
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthrough(InternalWindow& window, const bool enabled)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	COLORREF key = 0;
 	BYTE alpha = 0;
@@ -2871,7 +2873,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthrough(InternalWin
 
 [[nodiscard]] std::optional<f32> TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacity(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	BYTE alpha;
 	DWORD flags;
@@ -2891,7 +2893,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthrough(InternalWin
 void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSize(const InternalWindow& window, i32& width,
                                                               i32& height)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	PlatformGetWindowSize(window, width, height);
 }
@@ -2901,7 +2903,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSize(const InternalWind
 void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScale(const InternalWindow& window, f32& xScale,
                                                                  f32& yScale)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	const HANDLE handle = MonitorFromWindow(window.Handle, MONITOR_DEFAULTTONEAREST);
 	GetMonitorContentScaleWin32(static_cast<HMONITOR>(handle), xScale, yScale);
@@ -2912,7 +2914,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScale(const InternalW
 void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkArea(const InternalMonitor& monitor, i32& xPos,
                                                               i32& yPos, i32& width, i32& height)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	MONITORINFO mi{};
 	mi.cbSize = sizeof(MONITORINFO);
@@ -2928,7 +2930,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkArea(const InternalMoni
 
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::PlatformWindowVisible(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	return IsWindowVisible(window.Handle);
 }
@@ -2937,7 +2939,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkArea(const InternalMoni
 
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMaximized(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	return IsZoomed(window.Handle);
 }
@@ -2946,7 +2948,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkArea(const InternalMoni
 
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMinimized(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	return IsIconic(window.Handle);
 }
@@ -2955,7 +2957,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkArea(const InternalMoni
 
 void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	SwitchToFiber(s_Data.MessageFiber);
 
@@ -3013,7 +3015,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 
 void TRAP::INTERNAL::WindowingAPI::PlatformWaitEvents(const f64 timeout)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if(timeout == 0.0)
 		WaitMessage();
@@ -3027,7 +3029,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformWaitEvents(const f64 timeout)
 
 void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEvent()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	PostMessageW(s_Data.HelperWindowHandle, WM_NULL, 0, 0);
 }
@@ -3036,7 +3038,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEvent()
 
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::PlatformWindowFocused(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	return window.Handle == GetForegroundWindow();
 }
@@ -3045,7 +3047,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEvent()
 
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::PlatformWindowHovered(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	return CursorInContentArea(window);
 }
@@ -3054,7 +3056,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEvent()
 
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::PlatformRawMouseMotionSupported()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return true;
 }
@@ -3063,7 +3066,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEvent()
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotion(const InternalWindow& window, const bool enabled)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if (s_Data.DisabledCursorWindow != &window)
 		return;
@@ -3079,7 +3082,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotion(const InternalWindo
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowProgressIndicator(const InternalWindow& window,
 	                                                                  const ProgressState state, const f64 progress)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if(!window.TaskbarList)
 		return;
@@ -3127,7 +3130,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowProgressIndicator(const Inte
 
 [[nodiscard]] i32 TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCode(const Input::Key key)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return s_Data.ScanCodes[std::to_underlying(key)];
 }
@@ -3136,7 +3140,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowProgressIndicator(const Inte
 
 [[nodiscard]] std::optional<std::string> TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeName(const i32 scanCode)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return s_Data.KeyNames[std::to_underlying(s_Data.KeyCodes[scanCode])];
 }
@@ -3145,7 +3150,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowProgressIndicator(const Inte
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string& string)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	const i32 characterCount = MultiByteToWideChar(CP_UTF8, 0, string.data(), -1, nullptr, 0);
 	if (!characterCount)
@@ -3185,7 +3190,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string&
 
 [[nodiscard]] std::string TRAP::INTERNAL::WindowingAPI::PlatformGetClipboardString()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if (!OpenClipboard(s_Data.HelperWindowHandle))
 	{
@@ -3221,7 +3226,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string&
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensions(std::array<std::string, 2>& extensions)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
+	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	if (!s_Data.VK.KHR_Surface || !s_Data.VK.KHR_Win32_Surface)
 		return;
@@ -3237,7 +3243,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensions(std::ar
                                                                                  const VkAllocationCallbacks* allocator,
 																                 VkSurfaceKHR& surface)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	TRAP_ASSERT(instance != VK_NULL_HANDLE, "WindowingAPI::PlatformCreateWindowSurface(): instance is VK_NULL_HANDLE!");
 
@@ -3272,7 +3278,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensions(std::ar
 
 void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindow(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if(IsWindowVisible(window.Handle))
 		::ShowWindow(window.Handle, SW_MAXIMIZE);
@@ -3284,7 +3290,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindow(InternalWindow& window
 
 void TRAP::INTERNAL::WindowingAPI::PlatformMinimizeWindow(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	::ShowWindow(window.Handle, SW_MINIMIZE);
 }
@@ -3293,7 +3299,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformMinimizeWindow(const InternalWindow& 
 
 void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttention(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	FlashWindow(window.Handle, TRUE);
 }
@@ -3302,7 +3308,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttention(InternalWindow
 
 void TRAP::INTERNAL::WindowingAPI::PlatformHideWindow(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	::ShowWindow(window.Handle, SW_HIDE);
 }
@@ -3311,7 +3317,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindow(InternalWindow& window)
 
 void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindow(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	::ShowWindow(window.Handle, SW_RESTORE);
 }
@@ -3322,7 +3328,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow& w
                                                                const i32 minHeight, const i32 maxWidth,
                                                                const i32 maxHeight)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if ((minWidth == -1 || minHeight == -1) &&
 		(maxWidth == -1 || maxHeight == -1))
@@ -3338,7 +3344,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow& w
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatio(InternalWindow& window,
 	                                                            const i32 numerator, const i32 denominator)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if(numerator == -1 || denominator == -1)
 		return;
@@ -3354,7 +3360,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatio(InternalWindow& 
 //Updates the cursor image according to its cursor mode
 void TRAP::INTERNAL::WindowingAPI::UpdateCursorImage(const InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if (window.cursorMode == CursorMode::Normal || window.cursorMode == CursorMode::Captured)
 	{
@@ -3372,7 +3378,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateCursorImage(const InternalWindow& windo
 //Exit disabled cursor mode for the specified window
 void TRAP::INTERNAL::WindowingAPI::EnableCursor(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if (window.RawMouseMotion)
 		DisableRawMouseMotion(window);
@@ -3388,7 +3394,7 @@ void TRAP::INTERNAL::WindowingAPI::EnableCursor(InternalWindow& window)
 //Apply disabled cursor mode to a focused window
 void TRAP::INTERNAL::WindowingAPI::DisableCursor(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	s_Data.DisabledCursorWindow = &window;
 	PlatformGetCursorPos(window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
@@ -3405,7 +3411,7 @@ void TRAP::INTERNAL::WindowingAPI::DisableCursor(InternalWindow& window)
 //Create key code translation tables
 void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesWin32()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	std::ranges::fill(s_Data.KeyCodes, Input::Key::Unknown);
 	std::ranges::fill(s_Data.ScanCodes, std::numeric_limits<i16>::max());
@@ -3543,7 +3549,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesWin32()
 
 void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbar(InternalWindow& window)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	LONG exStyle = static_cast<LONG>(::GetWindowLongPtrW(window.Handle, GWL_EXSTYLE));
 	exStyle &= ~WS_EX_APPWINDOW;
@@ -3555,7 +3561,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbar(InternalWindow&
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow& window, const bool value)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	DragAcceptFiles(window.Handle, value);
 }

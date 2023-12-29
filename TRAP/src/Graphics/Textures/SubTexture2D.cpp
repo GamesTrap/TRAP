@@ -9,7 +9,7 @@
                                                                                                      const TRAP::Math::Vec2& cellSize,
                                                                                                      const TRAP::Math::Vec2& spriteSize)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
     TRAP_ASSERT(texture != nullptr, "SubTexture2D::CreateFromCoords(): Texture is nullptr!");
     TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "SubTexture2D::CreateFromCoords(): Texture is not a 2D texture!");
@@ -36,7 +36,7 @@
                                                                                                      const TRAP::Math::Vec2& pixelSize,
                                                                                                      const TRAP::Math::Vec2& spriteSize)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
     TRAP_ASSERT(texture != nullptr, "SubTexture2D::CreateFromPixels(): Texture is nullptr!");
     TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "SubTexture2D::CreateFromPixels(): Texture is not a 2D texture!");
@@ -62,14 +62,16 @@ TRAP::Graphics::SubTexture2D::SubTexture2D(std::string name, Ref<TRAP::Graphics:
     : m_texture(std::move(texture)), m_texCoords({{min.x(), max.y()}, max, {max.x(), min.y()}, min}),
       m_name(std::move(name))
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+                                           (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::SubTexture2D::GetTexture() const noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+                                           (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     return m_texture;
 }

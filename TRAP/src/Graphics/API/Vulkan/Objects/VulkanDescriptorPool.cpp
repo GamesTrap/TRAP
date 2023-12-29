@@ -12,7 +12,7 @@
 TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const u32 numDescriptorSets)
 	: DescriptorPool(numDescriptorSets), m_descriptorPoolSizes(DescriptorTypeRangeSize)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_device, "VulkanDescriptorPool(): Vulkan Device is nullptr");
 
@@ -40,7 +40,7 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const u32 numDes
 
 TRAP::Graphics::API::VulkanDescriptorPool::~VulkanDescriptorPool()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDescriptorPoolPrefix, "Destroying DescriptorPool");
@@ -54,7 +54,7 @@ TRAP::Graphics::API::VulkanDescriptorPool::~VulkanDescriptorPool()
 
 void TRAP::Graphics::API::VulkanDescriptorPool::Reset()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	VkCall(vkResetDescriptorPool(m_device->GetVkDevice(), m_currentPool, 0));
 	m_usedDescriptorSetCount = 0;
@@ -64,7 +64,7 @@ void TRAP::Graphics::API::VulkanDescriptorPool::Reset()
 
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::DescriptorSet> TRAP::Graphics::API::VulkanDescriptorPool::RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(desc.RootSignature, "VulkanDescriptorPool::RetrieveDescriptorSet(): RootSignature is nullptr");
 
@@ -114,7 +114,7 @@ void TRAP::Graphics::API::VulkanDescriptorPool::Reset()
 
 [[nodiscard]] VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveVkDescriptorSet(VkDescriptorSetLayout layout)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	//Need a lock since vkAllocateDescriptorSets needs to be externally synchronized
 	//This is fine since this will only happen during Init time

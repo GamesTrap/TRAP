@@ -18,7 +18,7 @@ namespace TRAP::Utils
         /// @return Seed sequence.
         std::seed_seq& operator()() noexcept
         {
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return SeedSeq;
         }
@@ -96,7 +96,7 @@ namespace TRAP::Utils
         /// @param z How many times to advance.
         static void Discard(const u64 z)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             EngineInstance().discard(z);
         }
@@ -104,7 +104,7 @@ namespace TRAP::Utils
         /// @brief Reseed by seeder.
         static void Reseed()
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             const Seeder seeder;
             Seed(seeder());
@@ -115,7 +115,7 @@ namespace TRAP::Utils
         static void Seed(const typename engine::result_type value =
             engine::default_seed)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             EngineInstance().seed(value);
         }
@@ -126,7 +126,7 @@ namespace TRAP::Utils
         template<typename SSeq>
         static void Seed(SSeq& seq)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             EngineInstance().seed(seq);
         }
@@ -135,7 +135,7 @@ namespace TRAP::Utils
         /// @return Random number.
         [[nodiscard]] static typename engine::result_type Get()
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return EngineInstance()();
         }
@@ -147,7 +147,7 @@ namespace TRAP::Utils
         /// @return True, if other and internal engine are equal.
         [[nodiscard]] static bool IsEqual(const engine& other)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return EngineInstance() == other;
         }
@@ -159,7 +159,7 @@ namespace TRAP::Utils
         template<typename CharT, typename Traits>
         static void Serialize(std::basic_ostream<CharT, Traits>& ost)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             ost << EngineInstance();
         }
@@ -172,7 +172,7 @@ namespace TRAP::Utils
         template<typename CharT, typename Traits>
         static void Deserialize(std::basic_istream<CharT, Traits>& ist)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             ist >> EngineInstance();
         }
@@ -185,7 +185,7 @@ namespace TRAP::Utils
         requires INTERNAL::IsUniformInt<T>
         [[nodiscard]] static T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             if (from < to) //Allow range from higher to lower
                 return IntegerDist<T>{ from, to }(EngineInstance());
@@ -201,7 +201,7 @@ namespace TRAP::Utils
         requires INTERNAL::IsUniformReal<T>
         [[nodiscard]] static T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             if (from < to) //Allow range from higher to lower
                 return RealDist<T>{ from, to }(EngineInstance());
@@ -217,7 +217,7 @@ namespace TRAP::Utils
         requires INTERNAL::IsByte<T>
         [[nodiscard]] static T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             //Choose between i16 and u16 for byte conversion
             using short_t = typename std::conditional<std::is_signed<T>::value,
@@ -239,7 +239,7 @@ namespace TRAP::Utils
                   INTERNAL::IsSupportedNumber<B> && std::is_signed_v<A> != std::is_unsigned_v<B>)
         [[nodiscard]] static C Get(A from = std::numeric_limits<A>::min(), B to = std::numeric_limits<B>::max())
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return Get(static_cast<C>(from), static_cast<C>(to));
         }
@@ -252,7 +252,7 @@ namespace TRAP::Utils
         requires INTERNAL::IsSupportedCharacter<T>
         [[nodiscard]] static T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             if (from < to) //Allow range from higher to lower
                 return static_cast<T>(IntegerDist<i64>{ static_cast<i64>(from),
@@ -269,7 +269,7 @@ namespace TRAP::Utils
         requires std::same_as<T, bool>
         [[nodiscard]] static bool Get(const f64 probability = 0.5)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             TRAP_ASSERT(0 <= probability && 1 >= probability, "BasicRandomStatic::Get(): Out of range!"); //Out of [0; 1] range
             return BoolDist{ probability }(EngineInstance());
@@ -283,7 +283,7 @@ namespace TRAP::Utils
         template<typename T>
         [[nodiscard]] static T Get(std::initializer_list<T> init_list)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             TRAP_ASSERT(0u != init_list.size(), "BasicRandomStatic::Get(): Empty initializer_list!"); //Empty initializer_list
             return *Get(init_list.begin(), init_list.end());
@@ -297,7 +297,7 @@ namespace TRAP::Utils
         requires INTERNAL::IsIterator<InputIt>::value
         [[nodiscard]] static InputIt Get(InputIt first, InputIt last)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             const auto size = std::distance(first, last);
             if (0 == size)
@@ -313,7 +313,7 @@ namespace TRAP::Utils
         requires requires (Container& container) {INTERNAL::IsIterator<decltype(std::begin(container))>::value; }
         [[nodiscard]] static decltype(Container::iterator) Get(Container& container)
         {
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return Get(std::begin(container), std::end(container));
         }
@@ -324,7 +324,7 @@ namespace TRAP::Utils
         template<typename T, usize N>
         [[nodiscard]] static T* Get(T(&array)[N])
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return std::addressof(array[Get<usize>(0, N - 1)]);
         }
@@ -336,7 +336,7 @@ namespace TRAP::Utils
         template<typename Dist, typename... Args>
         [[nodiscard]] static typename Dist::result_type Get(Args&&... args)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return Dist{ std::forward<Args>(args)... }(EngineInstance());
         }
@@ -347,7 +347,7 @@ namespace TRAP::Utils
         template<typename Dist>
         [[nodiscard]] static typename Dist::result_type Get(Dist& dist)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return dist(EngineInstance());
         }
@@ -359,7 +359,7 @@ namespace TRAP::Utils
         template<typename RandomIt>
         static void Shuffle(RandomIt first, RandomIt last)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             std::shuffle(first, last, EngineInstance());
         }
@@ -370,7 +370,7 @@ namespace TRAP::Utils
         template<typename Container>
         static void Shuffle(Container& container)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             Shuffle(std::begin(container), std::end(container));
         }
@@ -379,7 +379,7 @@ namespace TRAP::Utils
         /// @return Internal engine.
         [[nodiscard]] static engine GetEngine()
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return EngineInstance();
         }
@@ -388,7 +388,7 @@ namespace TRAP::Utils
         /// @return Internal engine.
         [[nodiscard]] static engine& Engine()
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return EngineInstance();
         }
@@ -398,7 +398,7 @@ namespace TRAP::Utils
         /// @return Static engine instance.
         [[nodiscard]] static engine& EngineInstance()
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             static engine Engine{ Seeder{ }() };
             return Engine;
@@ -468,7 +468,7 @@ namespace TRAP::Utils
         /// @param z How many times to advance.
         static void Discard(const u64 z)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             EngineInstance().discard(z);
         }
@@ -476,7 +476,7 @@ namespace TRAP::Utils
         /// @brief Reseed by seeder.
         static void Reseed()
         {
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             const Seeder seeder;
             Seed(seeder());
@@ -486,7 +486,7 @@ namespace TRAP::Utils
         /// @param value Seed value to use in the initialization of the internal state.
         static void Seed(const typename engine::result_type value = engine::default_seed)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             EngineInstance().seed(value);
         }
@@ -496,7 +496,7 @@ namespace TRAP::Utils
         template<typename SSeq>
         static void Seed(SSeq& seq)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             EngineInstance().seed(seq);
         }
@@ -505,7 +505,7 @@ namespace TRAP::Utils
         /// @return Random number.
         [[nodiscard]] static typename engine::result_type Get()
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return EngineInstance()();
         }
@@ -517,7 +517,7 @@ namespace TRAP::Utils
         /// @return True if other and internal engine are equal, false otherwise
         [[nodiscard]] static bool IsEqual(const engine& other)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return EngineInstance() == other;
         }
@@ -529,7 +529,7 @@ namespace TRAP::Utils
         template<typename CharT, typename Traits>
         static void Serialize(std::basic_ostream<CharT, Traits>& ost)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             ost << EngineInstance();
         }
@@ -542,7 +542,7 @@ namespace TRAP::Utils
         template<typename CharT, typename Traits>
         static void Deserialize(std::basic_istream<CharT, Traits>& ist)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             ist >> EngineInstance();
         }
@@ -555,7 +555,7 @@ namespace TRAP::Utils
         requires INTERNAL::IsUniformInt<T>
         [[nodiscard]] static T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             if (from < to) //Allow range from higher to lower
                 return IntegerDist<T>{ from, to }(EngineInstance());
@@ -571,7 +571,7 @@ namespace TRAP::Utils
         requires INTERNAL::IsUniformReal<T>
         [[nodiscard]] static T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             if (from < to) //Allow range from higher to lower
                 return RealDist<T>{ from, to }(EngineInstance());
@@ -587,7 +587,7 @@ namespace TRAP::Utils
         requires INTERNAL::IsByte<T>
         [[nodiscard]] static T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             //Choose between i16 and u16 for byte conversion
             using short_t = typename std::conditional<std::is_signed<T>::value,
@@ -609,7 +609,7 @@ namespace TRAP::Utils
                   INTERNAL::IsSupportedNumber<B> && std::is_signed_v<A> != std::is_unsigned_v<B>)
         [[nodiscard]] static C Get(A from = std::numeric_limits<A>::min(), B to = std::numeric_limits<B>::max())
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return Get(static_cast<C>(from), static_cast<C>(to));
         }
@@ -622,7 +622,7 @@ namespace TRAP::Utils
         requires INTERNAL::IsSupportedCharacter<T>
         [[nodiscard]] static T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             if (from < to) //Allow range from higher to lower
                 return static_cast<T>(IntegerDist<i64>{ static_cast<i64>(from),
@@ -639,7 +639,7 @@ namespace TRAP::Utils
         requires std::same_as<T, bool>
         [[nodiscard]] static bool Get(const f64 probability = 0.5)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             TRAP_ASSERT(0 <= probability && 1 >= probability, "BasicRandomThreadLocal::Get(): Out of range!"); //Out of [0; 1] range
             return BoolDist{ probability }(EngineInstance());
@@ -651,7 +651,7 @@ namespace TRAP::Utils
         template<typename T>
         [[nodiscard]] static T Get(std::initializer_list<T> init_list)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             TRAP_ASSERT(0u != init_list.size(), "BasicRandomThreadLocal::Get(): Empty initializer_list!"); //Empty initializer_list
             return *Get(init_list.begin(), init_list.end());
@@ -665,7 +665,7 @@ namespace TRAP::Utils
         requires INTERNAL::IsIterator<InputIt>::value
         [[nodiscard]] static InputIt Get(InputIt first, InputIt last)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             const auto size = std::distance(first, last);
             if (0 == size)
@@ -681,7 +681,7 @@ namespace TRAP::Utils
         requires requires (Container& container) {INTERNAL::IsIterator<decltype(std::begin(container))>::value;}
         [[nodiscard]] static Container::iterator Get(Container& container)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return Get(std::begin(container), std::end(container));
         }
@@ -692,7 +692,7 @@ namespace TRAP::Utils
         template<typename T, usize N>
         [[nodiscard]] static T* Get(T(&array)[N])
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return std::addressof(array[Get<usize>(0, N - 1)]);
         }
@@ -704,7 +704,7 @@ namespace TRAP::Utils
         template<typename Dist, typename... Args>
         [[nodiscard]] static typename Dist::result_type Get(Args&&... args)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return Dist{ std::forward<Args>(args)... }(EngineInstance());
         }
@@ -716,7 +716,7 @@ namespace TRAP::Utils
         template<typename Dist>
         [[nodiscard]] static typename Dist::result_type Get(Dist& dist)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return dist(EngineInstance());
         }
@@ -728,7 +728,7 @@ namespace TRAP::Utils
         template<typename RandomIt>
         static void Shuffle(RandomIt first, RandomIt last)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             std::shuffle(first, last, EngineInstance());
         }
@@ -740,7 +740,7 @@ namespace TRAP::Utils
         template<typename Container>
         static void Shuffle(Container& container)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             Shuffle(std::begin(container), std::end(container));
         }
@@ -749,7 +749,7 @@ namespace TRAP::Utils
         /// @return Internal engine.
         [[nodiscard]] static engine GetEngine()
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return EngineInstance();
         }
@@ -758,7 +758,7 @@ namespace TRAP::Utils
         /// @return Internal engine.
         [[nodiscard]] static engine& Engine()
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return EngineInstance();
         }
@@ -767,7 +767,7 @@ namespace TRAP::Utils
         /// @return Thread local engine reference.
         [[nodiscard]] static engine& EngineInstance()
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             thread_local engine Engine{ Seeder{ }() };
             return Engine;
@@ -824,7 +824,7 @@ namespace TRAP::Utils
         /// @param z How many times to advance.
         void Discard(const u64 z)
         {
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             m_engine.discard(z);
         }
@@ -832,7 +832,7 @@ namespace TRAP::Utils
         /// @brief Reseed by seeder.
         void Reseed()
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             const Seeder seeder;
             Seed(seeder());
@@ -842,7 +842,7 @@ namespace TRAP::Utils
         /// @param value Seed value to use in the initialization of the internal state
         void Seed(const typename engine::result_type value = engine::default_seed)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             m_engine.seed(value);
         }
@@ -852,7 +852,7 @@ namespace TRAP::Utils
         template<typename SSeq>
         void Seed(SSeq& seq)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             m_engine.seed(seq);
         }
@@ -861,7 +861,7 @@ namespace TRAP::Utils
         /// @return Random number.
         [[nodiscard]] typename engine::result_type Get()
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return m_engine();
         }
@@ -873,7 +873,7 @@ namespace TRAP::Utils
         /// @return True if other and internal engine are equal, false otherwise.
         [[nodiscard]] bool IsEqual(const engine& other) noexcept
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return m_engine == other;
         }
@@ -885,7 +885,7 @@ namespace TRAP::Utils
         template<typename CharT, typename Traits>
         void Serialize(std::basic_ostream<CharT, Traits>& ost)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             ost << m_engine;
         }
@@ -898,7 +898,7 @@ namespace TRAP::Utils
         template<typename CharT, typename Traits>
         void Deserialize(std::basic_istream<CharT, Traits>& ist)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             ist >> m_engine;
         }
@@ -911,7 +911,7 @@ namespace TRAP::Utils
         requires INTERNAL::IsUniformInt<T>
         [[nodiscard]] T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             if (from < to) //Allow range from higher to lower
                 return IntegerDist<T>{ from, to }(m_engine);
@@ -927,7 +927,7 @@ namespace TRAP::Utils
         requires INTERNAL::IsUniformReal<T>
         [[nodiscard]] T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             if (from < to) //Allow range from higher to lower
                 return RealDist<T>{ from, to }(m_engine);
@@ -943,7 +943,7 @@ namespace TRAP::Utils
         requires INTERNAL::IsByte<T>
         [[nodiscard]] T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             //Choose between i16 and u16 for byte conversion
             using short_t = typename std::conditional<std::is_signed<T>::value,
@@ -965,7 +965,7 @@ namespace TRAP::Utils
                   INTERNAL::IsSupportedNumber<B> && std::is_signed_v<A> != std::is_unsigned_v<B>)
         [[nodiscard]] C Get(A from = std::numeric_limits<A>::min(), B to = std::numeric_limits<B>::max())
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return Get(static_cast<C>(from), static_cast<C>(to));
         }
@@ -978,7 +978,7 @@ namespace TRAP::Utils
         requires INTERNAL::IsSupportedCharacter<T>
         [[nodiscard]] T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             //Allow range from higher to lower
             if (from < to)
@@ -996,7 +996,7 @@ namespace TRAP::Utils
         requires std::same_as<T, bool>
         [[nodiscard]] bool Get(const f64 probability = 0.5)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             TRAP_ASSERT(0 <= probability && 1 >= probability, "BasicRandomLocal::Get(): Out of range!"); //Out of [0; 1] range
             return BoolDist{ probability }(m_engine);
@@ -1008,7 +1008,7 @@ namespace TRAP::Utils
         template<typename T>
         [[nodiscard]] T Get(std::initializer_list<T> init_list)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             TRAP_ASSERT(0u != init_list.size(), "BasicRandomLocal::Get(): Empty initializer_list!"); //Empty initializer_list
             return *Get(init_list.begin(), init_list.end());
@@ -1022,7 +1022,7 @@ namespace TRAP::Utils
         requires INTERNAL::IsIterator<InputIt>::value
         [[nodiscard]] InputIt Get(InputIt first, InputIt last)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             const auto size = std::distance(first, last);
             if (0 == size)
@@ -1039,7 +1039,7 @@ namespace TRAP::Utils
         requires requires (Container& container) {INTERNAL::IsIterator<decltype(std::begin(container))>::value;}
         [[nodiscard]] Container::iterator Get(Container& container)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return Get(std::begin(container), std::end(container));
         }
@@ -1050,7 +1050,7 @@ namespace TRAP::Utils
         template<typename T, usize N>
         [[nodiscard]] T* Get(T(&array)[N])
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return std::addressof(array[Get<usize>(0, N - 1)]);
         }
@@ -1062,7 +1062,7 @@ namespace TRAP::Utils
         template<typename Dist, typename... Args>
         [[nodiscard]] typename Dist::result_type Get(Args&&... args)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return Dist{ std::forward<Args>(args)... }(m_engine);
         }
@@ -1074,7 +1074,7 @@ namespace TRAP::Utils
         template<typename Dist>
         [[nodiscard]] typename Dist::result_type Get(Dist& dist)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return dist(m_engine);
         }
@@ -1086,7 +1086,7 @@ namespace TRAP::Utils
         template<typename RandomIt>
         void Shuffle(RandomIt first, RandomIt last)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             std::shuffle(first, last, m_engine);
         }
@@ -1098,7 +1098,7 @@ namespace TRAP::Utils
         template<typename Container>
         void Shuffle(Container& container)
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             Shuffle(std::begin(container), std::end(container));
         }
@@ -1107,7 +1107,7 @@ namespace TRAP::Utils
         /// @return Internal engine.
         [[nodiscard]] engine GetEngine() const noexcept
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return m_engine;
         }
@@ -1116,7 +1116,7 @@ namespace TRAP::Utils
         /// @return Internal engine-
         [[nodiscard]] engine& Engine() noexcept
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             return m_engine;
         }
@@ -1126,7 +1126,7 @@ namespace TRAP::Utils
         /// @return Seeded engine.
         [[nodiscard]] static engine MakeSeededEngine()
     	{
-	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             //Make seeder instance for seed return by reference like std::seed_seq
             return engine{ Seeder{ }() };

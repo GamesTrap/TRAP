@@ -9,7 +9,8 @@ std::unordered_map<TRAP::Graphics::RendererAPI::SamplerDesc, TRAP::Ref<TRAP::Gra
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(RendererAPI::SamplerDesc desc)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	if(desc.EnableAnisotropy && desc.OverrideAnisotropyLevel > RendererAPI::GPUSettings.MaxAnisotropy)
 	{
@@ -87,7 +88,8 @@ TRAP::Graphics::Sampler::Sampler(const RendererAPI::SamplerDesc& desc)
 
 void TRAP::Graphics::Sampler::ClearCache() noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	s_cachedSamplers.clear();
 }
@@ -96,7 +98,7 @@ void TRAP::Graphics::Sampler::ClearCache() noexcept
 
 void TRAP::Graphics::Sampler::UpdateSamplers()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	const f32 usedSamples = NumericCast<f32>(std::to_underlying(RenderCommand::GetAnisotropyLevel()));
 

@@ -16,7 +16,7 @@
 
 TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc& desc)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_device, "VulkanSwapChain(): Vulkan Device is nullptr!");
 	TRAP_ASSERT(desc.ImageCount >= RendererAPI::ImageCount, "VulkanSwapChain(): ImageCount is too low!");
@@ -33,7 +33,7 @@ TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc
 
 TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSwapChainPrefix, "Destroying SwapChain");
@@ -49,7 +49,7 @@ TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainDesc& desc,
                                                          VkSwapchainKHR oldSwapChain)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	//////////////////
 	//Create Surface//
@@ -312,7 +312,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 
 void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain(const bool allowSwapChainReuse)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	m_device->WaitIdle();
 
@@ -342,7 +342,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ReInitSwapChain()
 [[nodiscard]] std::optional<u32> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
                                                                                              const TRAP::Ref<Fence>& fence) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_swapChain != VK_NULL_HANDLE, "VulkanSwapChain::AcquireNextImage(): Vulkan SwapChain is nullptr!");
 	TRAP_ASSERT(signalSemaphore || fence, "VulkanSwapChain::AcquireNextImage(): Semaphore and Fence are nullptr!");
@@ -392,7 +392,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ReInitSwapChain()
 
 void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	m_desc.EnableVSync = !m_desc.EnableVSync;
 
@@ -405,7 +405,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 
 void TRAP::Graphics::API::VulkanSwapChain::UpdateFramebufferSize()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	const auto fbSize = m_desc.Window->GetFrameBufferSize();
 

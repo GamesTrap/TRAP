@@ -214,7 +214,7 @@ namespace TRAP::Graphics
 
 TRAP::Graphics::Renderer2DData::Renderer2DData()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	CameraUniformBuffer = UniformBuffer::Create(&UniformCamera,
 	                                            sizeof(Renderer2DData::UniformCamera),
@@ -231,7 +231,7 @@ std::vector<TRAP::Graphics::Renderer2DData> TRAP::Graphics::Renderer2D::s_data{}
 
 void TRAP::Graphics::Renderer2DData::QuadData::Init()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	Shader = Shader::CreateFromSource("Renderer2D_Quad", std::string(Embed::Renderer2DQuadShader));
 
@@ -268,7 +268,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::Init()
 
 void TRAP::Graphics::Renderer2DData::QuadData::InitBuffers()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	//Create and fill quad index and vertex buffers
 	for(auto& buffers : DataBuffers)
@@ -295,7 +295,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::InitBuffers()
 
 void TRAP::Graphics::Renderer2DData::QuadData::Shutdown() noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	Renderer2DData::QuadData::IndexBuffer.reset();
 	Renderer2DData::QuadData::Shader.reset();
@@ -307,7 +307,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::Shutdown() noexcept
 
 void TRAP::Graphics::Renderer2DData::QuadData::Reset()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
@@ -329,7 +329,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::Reset()
 
 void TRAP::Graphics::Renderer2DData::QuadData::ExtendBuffers()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	DataBufferIndex++;
 
@@ -357,7 +357,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::ExtendBuffers()
 
 u32 TRAP::Graphics::Renderer2DData::QuadData::DrawBuffers(UniformBuffer* camera)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	TRAP_ASSERT(camera, "Renderer2DData::QuadData::DrawBuffers(): Invalid UniformBuffer!");
 
@@ -409,7 +409,8 @@ u32 TRAP::Graphics::Renderer2DData::QuadData::DrawBuffers(UniformBuffer* camera)
 
 [[nodiscard]] u32 TRAP::Graphics::Renderer2DData::QuadData::GetTextureIndex(const Ref<Texture>& texture)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	TRAP_ASSERT(texture, "Renderer2DData::QuadData::GetTextureIndex(): Texture is nullptr!");
 	TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Renderer2DData::QuadData::GetTextureIndex(): Texture is not a Texture2D!");
@@ -437,7 +438,7 @@ u32 TRAP::Graphics::Renderer2DData::QuadData::DrawBuffers(UniformBuffer* camera)
 
 void TRAP::Graphics::Renderer2DData::CircleData::Init()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	Shader = Shader::CreateFromSource("Renderer2D_Circle", std::string(Embed::Renderer2DCircleShader));
 
@@ -465,7 +466,7 @@ void TRAP::Graphics::Renderer2DData::CircleData::Init()
 
 void TRAP::Graphics::Renderer2DData::CircleData::InitBuffers()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	//Create and fill circle index and vertex buffers
 	for(auto& buffers : DataBuffers)
@@ -489,7 +490,7 @@ void TRAP::Graphics::Renderer2DData::CircleData::InitBuffers()
 
 void TRAP::Graphics::Renderer2DData::CircleData::Shutdown() noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	Renderer2DData::CircleData::IndexBuffer.reset();
 	Renderer2DData::CircleData::Shader.reset();
@@ -499,7 +500,7 @@ void TRAP::Graphics::Renderer2DData::CircleData::Shutdown() noexcept
 
 void TRAP::Graphics::Renderer2DData::CircleData::Reset()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
@@ -515,7 +516,7 @@ void TRAP::Graphics::Renderer2DData::CircleData::Reset()
 
 void TRAP::Graphics::Renderer2DData::CircleData::ExtendBuffers()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	DataBufferIndex++;
 
@@ -541,7 +542,7 @@ void TRAP::Graphics::Renderer2DData::CircleData::ExtendBuffers()
 
 u32 TRAP::Graphics::Renderer2DData::CircleData::DrawBuffers(UniformBuffer* camera)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	TRAP_ASSERT(camera, "Renderer2DData::CircleData::DrawBuffers(): Invalid UniformBuffer!");
 
@@ -593,7 +594,7 @@ u32 TRAP::Graphics::Renderer2DData::CircleData::DrawBuffers(UniformBuffer* camer
 
 void TRAP::Graphics::Renderer2DData::LineData::Init()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	Shader = Shader::CreateFromSource("Renderer2D_Line", std::string(Embed::Renderer2DLineShader));
 }
@@ -602,7 +603,7 @@ void TRAP::Graphics::Renderer2DData::LineData::Init()
 
 void TRAP::Graphics::Renderer2DData::LineData::InitBuffers()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	//Create and fill line vertex buffer
 	for(auto& buffers : DataBuffers)
@@ -626,7 +627,7 @@ void TRAP::Graphics::Renderer2DData::LineData::InitBuffers()
 
 void TRAP::Graphics::Renderer2DData::LineData::Shutdown() noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	Renderer2DData::LineData::Shader.reset();
 }
@@ -635,7 +636,7 @@ void TRAP::Graphics::Renderer2DData::LineData::Shutdown() noexcept
 
 void TRAP::Graphics::Renderer2DData::LineData::Reset()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
@@ -651,7 +652,7 @@ void TRAP::Graphics::Renderer2DData::LineData::Reset()
 
 void TRAP::Graphics::Renderer2DData::LineData::ExtendBuffers()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	DataBufferIndex++;
 
@@ -677,7 +678,7 @@ void TRAP::Graphics::Renderer2DData::LineData::ExtendBuffers()
 
 u32 TRAP::Graphics::Renderer2DData::LineData::DrawBuffers(UniformBuffer* camera)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	TRAP_ASSERT(camera, "Renderer2DData::LineData::DrawBuffers(): Invalid UniformBuffer!");
 
@@ -731,7 +732,7 @@ u32 TRAP::Graphics::Renderer2DData::LineData::DrawBuffers(UniformBuffer* camera)
 
 void TRAP::Graphics::Renderer2D::Init()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::Renderer2DPrefix, "Initializing");
@@ -748,7 +749,7 @@ void TRAP::Graphics::Renderer2D::Init()
 
 void TRAP::Graphics::Renderer2D::Shutdown()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::Renderer2DPrefix, "Shutting down");
@@ -765,7 +766,7 @@ void TRAP::Graphics::Renderer2D::Shutdown()
 
 void TRAP::Graphics::Renderer2D::Reset() noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	s_dataIndex = 0;
 }
@@ -774,7 +775,7 @@ void TRAP::Graphics::Renderer2D::Reset() noexcept
 
 void TRAP::Graphics::Renderer2D::BeginScene(const Camera& camera, const Math::Mat4& transform)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	//Create new Renderer2DData if needed
 	if(s_dataIndex >= s_data.size())
@@ -799,7 +800,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const Camera& camera, const Math::Ma
 
 void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	//Create new Renderer2DData if needed
 	if(s_dataIndex >= s_data.size())
@@ -825,7 +826,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::Renderer2D::BeginScene(const EditorCamera& camera)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	//Create new Renderer2DData if needed
 	if(s_dataIndex >= s_data.size())
@@ -851,7 +852,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const EditorCamera& camera)
 
 void TRAP::Graphics::Renderer2D::EndScene()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	auto& currData = s_data[s_dataIndex];
 
@@ -866,7 +867,7 @@ void TRAP::Graphics::Renderer2D::EndScene()
 
 void TRAP::Graphics::Renderer2D::SetCustomSampler(const TRAP::Ref<TRAP::Graphics::Sampler>& sampler)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	TRAP_ASSERT(sampler, "Renderer2D::SetCustomSampler(): Sampler is nullptr!");
 	if(!sampler)
@@ -879,7 +880,7 @@ void TRAP::Graphics::Renderer2D::SetCustomSampler(const TRAP::Ref<TRAP::Graphics
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math::Vec4& color)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	DrawQuad(transform, color, Renderer2DData::QuadData::WhiteTexture);
 }
@@ -888,7 +889,8 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Ref<Texture>& texture)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	if(texture->GetType() != TextureType::Texture2D)
 		return;
@@ -901,7 +903,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Ref<
 void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math::Vec4& color,
                                           const Ref<Texture>& texture)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	if(texture->GetType() != TextureType::Texture2D)
 		return;
@@ -920,7 +922,8 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const TRAP::Ref<SubTexture2D>& texture)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	if(!texture || texture->GetTexture()->GetType() != TextureType::Texture2D)
 		return;
@@ -933,7 +936,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const TRAP
 void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math::Vec4& color,
                                           const TRAP::Ref<SubTexture2D>& texture)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	if(!texture || texture->GetTexture()->GetType() != TextureType::Texture2D)
 		return;
@@ -954,7 +957,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
                                           const Ref<Texture>& texture, const std::array<Math::Vec2, 4>* const texCoords,
 										  const i32 entityID)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	static constexpr u64 quadVertexCount = 4;
 	static constexpr std::array<Math::Vec2, 4> textureCoords = { {{0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}} };
@@ -1003,7 +1006,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 void TRAP::Graphics::Renderer2D::DrawCircle(const Math::Mat4& transform, const Math::Vec4& color,
                                             const f32 thickness, const f32 fade, const i32 entityID)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	static constexpr u64 circleVertexCount = 4;
 
@@ -1045,7 +1048,8 @@ void TRAP::Graphics::Renderer2D::DrawCircle(const Math::Mat4& transform, const M
 void TRAP::Graphics::Renderer2D::DrawSprite(const TRAP::Math::Mat4& transform,
                                             const TRAP::SpriteRendererComponent& sprite, const i32 entityID)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	DrawQuad(transform, sprite.Color, nullptr, nullptr, entityID);
 }
@@ -1055,7 +1059,7 @@ void TRAP::Graphics::Renderer2D::DrawSprite(const TRAP::Math::Mat4& transform,
 void TRAP::Graphics::Renderer2D::DrawLine(const TRAP::Math::Vec3& p0, const TRAP::Math::Vec3& p1,
                                           const TRAP::Math::Vec4& color, const i32 entityID)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	auto& currData = s_data[s_dataIndex];
 
@@ -1094,7 +1098,7 @@ void TRAP::Graphics::Renderer2D::DrawLine(const TRAP::Math::Vec3& p0, const TRAP
 void TRAP::Graphics::Renderer2D::DrawRect(const TRAP::Math::Vec3& position, const TRAP::Math::Vec2& size,
                                           const TRAP::Math::Vec4& color, const i32 entityID)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	const TRAP::Math::Vec3 p0 = position + TRAP::Math::Vec3(-size.x() / 2.0f, -size.y() / 2.0f, 0.0f);
 	const TRAP::Math::Vec3 p1 = position + TRAP::Math::Vec3( size.x() / 2.0f, -size.y() / 2.0f, 0.0f);
@@ -1112,7 +1116,7 @@ void TRAP::Graphics::Renderer2D::DrawRect(const TRAP::Math::Vec3& position, cons
 void TRAP::Graphics::Renderer2D::DrawRect(const TRAP::Math::Mat4& transform, const TRAP::Math::Vec4& color,
                                           const i32 entityID)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	std::array<TRAP::Math::Vec3, 4> lineVertices{};
 	for(usize i = 0; i < lineVertices.size(); ++i)
@@ -1128,7 +1132,8 @@ void TRAP::Graphics::Renderer2D::DrawRect(const TRAP::Math::Mat4& transform, con
 
 [[nodiscard]] TRAP::Graphics::Renderer2D::Statistics TRAP::Graphics::Renderer2D::GetStats() noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return Renderer2DData::Stats;
 }
@@ -1137,7 +1142,8 @@ void TRAP::Graphics::Renderer2D::DrawRect(const TRAP::Math::Mat4& transform, con
 
 void TRAP::Graphics::Renderer2D::ResetStats() noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	Renderer2DData::Stats = {};
 }

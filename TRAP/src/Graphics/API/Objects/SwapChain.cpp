@@ -11,7 +11,8 @@
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::SwapChain> TRAP::Graphics::SwapChain::Create(RendererAPI::SwapChainDesc& desc)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	switch(RendererAPI::GetRenderAPI())
 	{
@@ -54,7 +55,7 @@ TRAP::Graphics::SwapChain::~SwapChain()
 [[nodiscard]] TRAP::Graphics::API::ImageFormat TRAP::Graphics::GetRecommendedSwapchainFormat(const bool HDR,
                                                                                              const bool SRGB) noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	switch(RendererAPI::GetRenderAPI())
 	{

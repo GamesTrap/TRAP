@@ -39,7 +39,7 @@ namespace TRAP::Utils::DynamicLoading
 template<typename T>
 [[nodiscard]] inline T TRAP::Utils::DynamicLoading::GetLibrarySymbol([[maybe_unused]] void* module, [[maybe_unused]] const std::string_view name)
 {
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 #ifdef TRAP_PLATFORM_WINDOWS
     FARPROC proc = ::GetProcAddress(static_cast<HMODULE>(module), name.data());

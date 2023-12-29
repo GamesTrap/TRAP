@@ -14,7 +14,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	: m_physicalDevice(std::move(physicalDevice)),
       m_deviceExtensions(std::move(deviceExtensions))
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_physicalDevice, "VulkanDevice(): Vulkan PhysicalDevice is nullptr");
 
@@ -216,7 +216,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 
 TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Destroying Device");
@@ -239,7 +239,8 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 
 [[nodiscard]] TRAP::Graphics::API::VulkanPhysicalDevice* TRAP::Graphics::API::VulkanDevice::GetPhysicalDevice() const noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return m_physicalDevice.get();
 }
@@ -248,7 +249,7 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 
 void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndices()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	FindQueueFamilyIndex(RendererAPI::QueueType::Graphics, m_graphicsQueueFamilyIndex, m_graphicsQueueIndex);
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -271,7 +272,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndices()
 
 void TRAP::Graphics::API::VulkanDevice::WaitIdle() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	VkCall(vkDeviceWaitIdle(m_device));
 }
@@ -281,7 +282,7 @@ void TRAP::Graphics::API::VulkanDevice::WaitIdle() const
 void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::QueueType queueType,
                                                              u8& queueFamilyIndex, u8& queueIndex)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	u32 qfi = std::numeric_limits<u32>::max();
 	u32 qi = std::numeric_limits<u32>::max();
@@ -359,7 +360,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
                                                              VkQueueFamilyProperties& queueFamilyProperties,
 															 u8& queueFamilyIndex, u8& queueIndex)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	u32 qfi = std::numeric_limits<u32>::max();
 	u32 qi = std::numeric_limits<u32>::max();
@@ -436,7 +437,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 
 void TRAP::Graphics::API::VulkanDevice::SetDeviceName(const std::string_view name) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	if(!VulkanRenderer::s_debugMarkerSupport)
 		return;
@@ -452,7 +453,7 @@ void TRAP::Graphics::API::VulkanDevice::SetDeviceName(const std::string_view nam
 
 void TRAP::Graphics::API::VulkanDevice::LoadShadingRateCaps(const VkPhysicalDeviceFragmentShadingRateFeaturesKHR& shadingRateFeatures) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	if(!VulkanRenderer::s_shadingRate)
 		return;

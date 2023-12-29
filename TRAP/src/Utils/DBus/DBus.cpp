@@ -25,7 +25,8 @@ namespace
 
     [[nodiscard]] TRAP::Expected<std::string, std::string> GetExecutableName()
     {
-	    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                      (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
         std::error_code ec{};
         std::string exeName = std::filesystem::read_symlink("/proc/self/exe", ec).string();
@@ -45,7 +46,8 @@ namespace
     //The executable name is stripped of any illegal characters according to the DBus specification
     [[nodiscard]] TRAP::Expected<std::string, std::string> GetLegalExecutableName()
     {
-	    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                      (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
         const auto exeName = GetExecutableName();
 
@@ -66,7 +68,8 @@ namespace
 
     [[nodiscard]] TRAP::Expected<std::string, std::string> RetrieveApplicationURI()
     {
-	    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                      (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
         const auto exeName = GetExecutableName();
 
@@ -80,7 +83,8 @@ namespace
 
     void Disconnect()
     {
-        ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+        ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                      (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
         if(TRAP::DBus::IsConnected())
         {
@@ -99,7 +103,8 @@ namespace
 
     bool Connect()
     {
-        ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+        ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                      (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
         if((!TRAP::DBus::IsConnected() && (TRAP::DBus::SymbolsLoaded() || TRAP::DBus::LoadSymbols())))
         {
@@ -135,7 +140,8 @@ namespace
 
 bool TRAP::DBus::LoadSymbols()
 {
-    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libdbus-1.so.3");
     if(Handle == nullptr)
@@ -205,7 +211,8 @@ bool TRAP::DBus::LoadSymbols()
 
 void TRAP::DBus::UnloadSymbols()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     if(!SymbolsLoaded())
         return;
@@ -239,7 +246,8 @@ void TRAP::DBus::UnloadSymbols()
 
 [[nodiscard]] bool TRAP::DBus::SymbolsLoaded() noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     return Handle != nullptr;
 }
@@ -248,7 +256,8 @@ void TRAP::DBus::UnloadSymbols()
 
 [[nodiscard]] bool TRAP::DBus::IsErrorSet()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     return ErrorIsSet(&s_error) != 0u;
 }
@@ -257,7 +266,8 @@ void TRAP::DBus::UnloadSymbols()
 
 [[nodiscard]] TRAP::Optional<const TRAP::DBus::DBusError&> TRAP::DBus::GetError()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     if (IsErrorSet())
         return s_error;
@@ -269,7 +279,8 @@ void TRAP::DBus::UnloadSymbols()
 
 [[nodiscard]] bool TRAP::DBus::IsConnected() noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     return s_connection != nullptr;
 }
@@ -278,7 +289,8 @@ void TRAP::DBus::UnloadSymbols()
 
 [[nodiscard]] TRAP::Optional<const TRAP::DBus::DBusConnection&> TRAP::DBus::GetConnection()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     if(IsConnected())
         return *s_connection;
@@ -290,7 +302,8 @@ void TRAP::DBus::UnloadSymbols()
 
 [[nodiscard]] std::string_view TRAP::DBus::GetApplicationURI()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     return ApplicationURI;
 }
@@ -299,7 +312,8 @@ void TRAP::DBus::UnloadSymbols()
 
 bool TRAP::DBus::SendMessage(const Message& msg, const bool flush)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     u32 serial{};
     if(ConnectionSend(s_connection, msg.DBusMsg, &serial) == 0u)
@@ -318,7 +332,8 @@ bool TRAP::DBus::SendMessage(const Message& msg, const bool flush)
 
 bool TRAP::DBus::MessageIterator::AppendData(const Type type, const void* const data)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     TRAP_ASSERT(data, "TRAP::DBus::MessageIterator::AppendData(): data is nullptr!");
 
@@ -369,7 +384,8 @@ bool TRAP::DBus::MessageIterator::AppendDictData(const TRAP::DBus::Type keyType,
 [[nodiscard]] TRAP::Optional<TRAP::DBus::MessageIteratorContainer> TRAP::DBus::MessageIterator::OpenContainer(const Type type,
                                                                                                               const std::string_view signature)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     TRAP_ASSERT(!(signature.empty() && type != Type::DictEntry), "TRAP::DBus::MessageIterator::OpenContainer(): signature is empty!");
 
@@ -399,7 +415,8 @@ bool TRAP::DBus::MessageIterator::AppendDictData(const TRAP::DBus::Type keyType,
 
 TRAP::DBus::Message::Message(const std::string_view objectPath, const std::string_view interfaceName)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     TRAP_ASSERT(!objectPath.empty(), "TRAP::DBus::Message::Message(): objectPath is empty!");
     TRAP_ASSERT(!interfaceName.empty(), "TRAP::DBus::Message::Message(): interfaceName is empty!");
@@ -425,7 +442,8 @@ TRAP::DBus::Message::Message(const std::string_view objectPath, const std::strin
 
 TRAP::DBus::Message::~Message()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     if(DBusMsg != nullptr)
         MessageUnref(DBusMsg);
@@ -435,7 +453,8 @@ TRAP::DBus::Message::~Message()
 
 [[nodiscard]] TRAP::Optional<TRAP::DBus::MessageIterator> TRAP::DBus::Message::GetMessageIterator() const
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     if(!IsValid())
         return TRAP::NullOpt;
@@ -451,7 +470,8 @@ TRAP::DBus::Message::~Message()
 
 TRAP::DBus::MessageIteratorContainer::~MessageIteratorContainer()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     if(DBusMsgSubIter != DBusMessageIter{})
         MessageIterCloseContainer(&DBusMsgMainIter.get(), &DBusMsgSubIter);
@@ -461,7 +481,8 @@ TRAP::DBus::MessageIteratorContainer::~MessageIteratorContainer()
 
 bool TRAP::DBus::MessageIteratorContainer::AppendData(const Type type, const void* const data)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     TRAP_ASSERT(data, "TRAP::DBus::MessageIteratorContainer::AppendData(): data is nullptr!");
 
@@ -513,7 +534,8 @@ bool TRAP::DBus::MessageIteratorContainer::AppendDictData(const TRAP::DBus::Type
 [[nodiscard]] TRAP::Optional<TRAP::DBus::MessageIteratorContainer> TRAP::DBus::MessageIteratorContainer::OpenContainer(const Type type,
                                                                                                                        const std::string_view signature)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     TRAP_ASSERT(!(signature.empty() && type != Type::DictEntry), "TRAP::DBus::MessageIteratorContainer::OpenContainer(): signature is empty!");
 

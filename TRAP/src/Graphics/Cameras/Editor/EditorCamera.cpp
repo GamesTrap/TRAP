@@ -11,7 +11,7 @@
 
 void TRAP::Graphics::EditorCamera::OnUpdate(const Utils::TimeStep& deltaTime)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
     const TRAP::Math::Vec2 mouse = TRAP::Input::GetMousePosition();
     const TRAP::Math::Vec2 delta = (mouse - m_initialMousePosition) * 0.002f;
@@ -95,7 +95,8 @@ void TRAP::Graphics::EditorCamera::OnUpdate(const Utils::TimeStep& deltaTime)
 
 void TRAP::Graphics::EditorCamera::OnEvent(Events::Event& event)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+                                           (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     Events::EventDispatcher dispatcher(event);
     dispatcher.Dispatch<Events::MouseScrollEvent>(std::bind_front(&EditorCamera::OnMouseScroll, this));
@@ -105,7 +106,7 @@ void TRAP::Graphics::EditorCamera::OnEvent(Events::Event& event)
 
 [[nodiscard]] f32 TRAP::Graphics::EditorCamera::GetCameraSpeed() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
     f32 speed = m_normalSpeed;
     if(Input::IsKeyPressed(Input::Key::Left_Control) ||
@@ -126,7 +127,7 @@ void TRAP::Graphics::EditorCamera::OnEvent(Events::Event& event)
 
 bool TRAP::Graphics::EditorCamera::OnMouseScroll(const Events::MouseScrollEvent& event)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
     if(Input::IsMouseButtonPressed(Input::MouseButton::Right))
     {
@@ -146,7 +147,7 @@ bool TRAP::Graphics::EditorCamera::OnMouseScroll(const Events::MouseScrollEvent&
 
 void TRAP::Graphics::EditorCamera::MouseZoom(const f32 delta)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
     m_distance -= delta * ZoomSpeed();
 
@@ -164,7 +165,7 @@ void TRAP::Graphics::EditorCamera::MouseZoom(const f32 delta)
 
 [[nodiscard]] f32 TRAP::Graphics::EditorCamera::ZoomSpeed() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
     const f32 distance = TRAP::Math::Max(m_distance * 0.3f, 0.0f);
     f32 speed = TRAP::Math::Min(distance * distance, 50.0f); //Max speed = 50.0f
@@ -186,7 +187,7 @@ void TRAP::Graphics::EditorCamera::MouseZoom(const f32 delta)
 
 void TRAP::Graphics::EditorCamera::DisableMouse()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
     ImGui::SetInputEnabled(false);
     if(TRAP::Application::GetWindow()->GetCursorMode() != TRAP::Window::CursorMode::Disabled)
@@ -197,7 +198,7 @@ void TRAP::Graphics::EditorCamera::DisableMouse()
 
 void TRAP::Graphics::EditorCamera::EnableMouse()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
     if(TRAP::Application::GetWindow()->GetCursorMode() != TRAP::Window::CursorMode::Normal)
         TRAP::Application::GetWindow()->SetCursorMode(TRAP::Window::CursorMode::Normal);

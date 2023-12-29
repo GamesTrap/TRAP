@@ -38,7 +38,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 [[nodiscard]] u16 TRAP::Network::TCPListener::GetLocalPort() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return 0; //We failed to retrieve the port
@@ -63,7 +63,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 [[nodiscard]] TRAP::Network::Socket::Status TRAP::Network::TCPListener::Listen(const u16 port, const IPv4Address& address)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Close the socket if it is already bound
 	Close();
@@ -100,7 +100,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 void TRAP::Network::TCPListener::Close()
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Simply close the socket
 	Socket::Close();
@@ -110,7 +110,7 @@ void TRAP::Network::TCPListener::Close()
 
 [[nodiscard]] TRAP::Network::Socket::Status TRAP::Network::TCPListener::Accept(TCPSocket& socket) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Make sure that we're listening
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())

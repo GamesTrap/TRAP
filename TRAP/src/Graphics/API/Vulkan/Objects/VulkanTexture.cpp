@@ -11,7 +11,7 @@
 
 TRAP::Graphics::API::VulkanTexture::VulkanTexture()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	PreInit();
 }
@@ -21,7 +21,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture()
 TRAP::Graphics::API::VulkanTexture::VulkanTexture(std::string name, std::array<std::filesystem::path, 6> filepaths)
 	: Texture(std::move(name), std::move(filepaths))
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	PreInit();
 }
@@ -32,7 +32,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(std::string name, std::filesys
 												  const TextureType type, const TextureCubeFormat cubeFormat)
 	: Texture(std::move(name), std::move(filepath), type, cubeFormat)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	PreInit();
 }
@@ -42,7 +42,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(std::string name, std::filesys
 TRAP::Graphics::API::VulkanTexture::VulkanTexture(const TextureType type)
 	: Texture(type)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	PreInit();
 }
@@ -51,7 +51,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(const TextureType type)
 
 TRAP::Graphics::API::VulkanTexture::~VulkanTexture()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	Shutdown();
 }
@@ -60,7 +60,7 @@ TRAP::Graphics::API::VulkanTexture::~VulkanTexture()
 
 void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &desc)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(desc.Width && desc.Height && (desc.Depth || desc.ArraySize), "VulkanTexture::Init(): Invalid resolution");
 	TRAP_ASSERT(!(desc.SampleCount > RendererAPI::SampleCount::One && desc.MipLevels > 1), "VulkanTexture::Init(): Multi-Sampled texture cannot have mip maps");
@@ -394,7 +394,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 
 void TRAP::Graphics::API::VulkanTexture::SetTextureName(const std::string_view name) const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(!name.empty(), "VulkanTexture::SetTextureName(): Name is empty!");
 
@@ -412,7 +412,7 @@ void TRAP::Graphics::API::VulkanTexture::SetTextureName(const std::string_view n
 
 void TRAP::Graphics::API::VulkanTexture::Shutdown()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanTexturePrefix, "Destroying Texture");
@@ -456,7 +456,7 @@ void TRAP::Graphics::API::VulkanTexture::Shutdown()
 
 void TRAP::Graphics::API::VulkanTexture::PreInit()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	const auto *vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer *>(TRAP::Graphics::RendererAPI::GetRenderer());
 

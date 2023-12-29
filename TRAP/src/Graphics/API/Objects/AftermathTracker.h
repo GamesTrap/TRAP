@@ -39,7 +39,8 @@ namespace TRAP::Graphics::AftermathTracker
 constexpr void TRAP::Graphics::AftermathTracker::SetAftermathMarker([[maybe_unused]] const std::string_view name) noexcept
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+                                           (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 #endif /*ENABLE_NSIGHT_AFTERMATH*/
 
     //TODO Implement?!
@@ -50,7 +51,8 @@ constexpr void TRAP::Graphics::AftermathTracker::SetAftermathMarker([[maybe_unus
 #ifdef ENABLE_NSIGHT_AFTERMATH
 constexpr void TRAP::Graphics::AftermathTracker::AftermathCall(const GFSDK_Aftermath_Result res)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+                                           (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     if(res == GFSDK_Aftermath_Result_Success)
         return;

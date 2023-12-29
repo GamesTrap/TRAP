@@ -2813,8 +2813,6 @@ template<typename genType>
 requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::Modf(const genType x, genType& i)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return std::modf(x, &i);
 }
 
@@ -2822,8 +2820,6 @@ template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Modf(Vec<L, T> x, Vec<L, T>& i)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	for (u32 j = 0u; j < L; j++)
 		x[j] = std::modf(x[j], &i[j]);
 
@@ -3213,8 +3209,6 @@ template<typename genType>
 requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::FMA(const genType a, const genType b, const genType c)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return std::fma(a, b, c);
 }
 
@@ -3224,8 +3218,6 @@ template<typename genType>
 requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::FrExp(const genType x, i32& exp)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return std::frexp(x, &exp);
 }
 
@@ -3233,8 +3225,6 @@ template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::FrExp(Vec<L, T> v, Vec<L, i32>& exp)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	for (u32 i = 0u; i < L; ++i)
 		v[i] = std::frexp(v[i], &exp[i]);
 
@@ -3247,8 +3237,6 @@ template<typename genType>
 requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::LdExp(const genType& x, const i32& exp)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return std::ldexp(x, exp);
 }
 
@@ -3256,8 +3244,6 @@ template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::LdExp(Vec<L, T> v, const Vec<L, i32>& exp)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	for (u32 i = 0u; i < L; ++i)
 		v[i] = std::ldexp(v[i], exp[i]);
 
@@ -3498,8 +3484,6 @@ template<typename genType>
 requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::Exp2(const genType x)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return std::exp2(x);
 }
 
@@ -3507,8 +3491,6 @@ template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Exp2(Vec<L, T> x)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	for(T& n : x)
 		n = std::exp2(n);
 

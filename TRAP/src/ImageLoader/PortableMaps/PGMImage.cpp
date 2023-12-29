@@ -8,7 +8,7 @@
 TRAP::INTERNAL::PGMImage::PGMImage(std::filesystem::path filepath)
 	: Image(std::move(filepath))
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	m_colorFormat = ColorFormat::GrayScale;
 

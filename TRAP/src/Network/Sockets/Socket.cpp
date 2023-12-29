@@ -33,7 +33,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 TRAP::Network::Socket::~Socket()
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Close the socket before it gets destructed
 	Close();
@@ -43,7 +43,7 @@ TRAP::Network::Socket::~Socket()
 
 void TRAP::Network::Socket::SetBlocking(const bool blocking)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Apply if the socket is already created
 	if (m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())
@@ -56,7 +56,7 @@ void TRAP::Network::Socket::SetBlocking(const bool blocking)
 
 void TRAP::Network::Socket::CreateIPv4()
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Don't create the socket if it already exists
 	if(m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())
@@ -77,7 +77,7 @@ void TRAP::Network::Socket::CreateIPv4()
 
 void TRAP::Network::Socket::CreateIPv6()
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Don't create the socket if it already exists
 	if (m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())
@@ -98,7 +98,7 @@ void TRAP::Network::Socket::CreateIPv6()
 
 void TRAP::Network::Socket::Create(const SocketHandle handle)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Don't create the socket if it already exists
 	if(m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())
@@ -135,7 +135,7 @@ void TRAP::Network::Socket::Create(const SocketHandle handle)
 
 void TRAP::Network::Socket::Close()
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Close the socket
 	if(m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())

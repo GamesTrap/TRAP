@@ -122,7 +122,7 @@ constexpr TRAP::Graphics::StorageBuffer::StorageBuffer(const RendererAPI::Descri
 #ifndef TRAP_HEADLESS_MODE
 inline void TRAP::Graphics::StorageBuffer::GetData(const auto* const data, const u64 size, const u64 offset, const Window* const window)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize(), "StorageBuffer::GetData(): Out of bounds!");
 	TRAP_ASSERT(window, "StorageBuffer::GetData(): Window is nullptr");
@@ -140,7 +140,7 @@ inline void TRAP::Graphics::StorageBuffer::GetData(const auto* const data, const
 #else
 inline void TRAP::Graphics::StorageBuffer::GetData(const auto* const data, const u64 size, const u64 offset)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize(), "StorageBuffer::GetData(): Out of bounds!");
 

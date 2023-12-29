@@ -100,7 +100,7 @@ template <typename Q>
 requires std::copy_constructible<Q>
 void TRAP::BlockingQueue<T>::Push(const T& item)
 {
-	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::ThreadPool) != ProfileSystems::None);
 
 	{
 		std::unique_lock lock(m_mutex);
@@ -118,7 +118,7 @@ template <typename Q>
 requires std::move_constructible<Q>
 void TRAP::BlockingQueue<T>::Push(T&& item)
 {
-	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::ThreadPool) != ProfileSystems::None);
 
 	{
 		std::unique_lock lock(m_mutex);
@@ -136,7 +136,7 @@ template <typename Q>
 requires std::copy_constructible<Q>
 bool TRAP::BlockingQueue<T>::TryPush(const T& item)
 {
-	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::ThreadPool) != ProfileSystems::None);
 
 	{
 		const std::unique_lock lock(m_mutex, std::try_to_lock);
@@ -158,7 +158,7 @@ template <typename Q>
 requires std::move_constructible<Q>
 bool TRAP::BlockingQueue<T>::TryPush(T&& item)
 {
-	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::ThreadPool) != ProfileSystems::None);
 
 	{
 		const std::unique_lock lock(m_mutex, std::try_to_lock);
@@ -180,7 +180,7 @@ template <typename Q>
 requires (std::is_copy_assignable_v<Q> && !std::is_move_assignable_v<Q>)
 bool TRAP::BlockingQueue<T>::Pop(T& item)
 {
-	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::ThreadPool) != ProfileSystems::None);
 
 	std::unique_lock lock(m_mutex);
 	LockMark(m_mutex);
@@ -203,7 +203,7 @@ template <typename Q>
 requires std::is_move_assignable_v<Q>
 bool TRAP::BlockingQueue<T>::Pop(T& item)
 {
-	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::ThreadPool) != ProfileSystems::None);
 
 	std::unique_lock lock(m_mutex);
 	LockMark(m_mutex);
@@ -226,7 +226,7 @@ template <typename Q>
 requires (std::is_copy_assignable_v<Q> && !std::is_move_assignable_v<Q>)
 bool TRAP::BlockingQueue<T>::TryPop(T& item)
 {
-	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::ThreadPool) != ProfileSystems::None);
 
 	const std::unique_lock lock(m_mutex, std::try_to_lock);
 	LockMark(m_mutex);
@@ -245,7 +245,7 @@ template <typename Q>
 requires std::is_move_assignable_v<Q>
 bool TRAP::BlockingQueue<T>::TryPop(T& item)
 {
-	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::ThreadPool) != ProfileSystems::None);
 
 	const std::unique_lock lock(m_mutex, std::try_to_lock);
 	LockMark(m_mutex);
@@ -263,7 +263,7 @@ bool TRAP::BlockingQueue<T>::TryPop(T& item)
 template <typename T>
 void TRAP::BlockingQueue<T>::Done() noexcept
 {
-	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::ThreadPool) != ProfileSystems::None);
 
 	{
 		std::unique_lock lock(m_mutex);
@@ -279,7 +279,7 @@ void TRAP::BlockingQueue<T>::Done() noexcept
 template <typename T>
 [[nodiscard]] bool TRAP::BlockingQueue<T>::Empty() const noexcept
 {
-	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::ThreadPool) != ProfileSystems::None);
 
 	std::scoped_lock lock(m_mutex);
 	LockMark(m_mutex);
@@ -291,7 +291,7 @@ template <typename T>
 template <typename T>
 [[nodiscard]] u32 TRAP::BlockingQueue<T>::Size() const noexcept
 {
-	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::ThreadPool) != ProfileSystems::None);
 
 	std::scoped_lock lock(m_mutex);
 	LockMark(m_mutex);

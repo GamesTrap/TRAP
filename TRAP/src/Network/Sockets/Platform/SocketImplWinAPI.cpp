@@ -38,7 +38,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 [[nodiscard]] sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(u32 address, u16 port)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	sockaddr_in addr{};
 
@@ -60,7 +60,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 [[nodiscard]] sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<u8, 16>& address,
                                                                               u16 port)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	sockaddr_in6 addr{};
 	std::ranges::copy(address, addr.sin6_addr.u.Byte);
@@ -78,7 +78,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 void TRAP::INTERNAL::Network::SocketImpl::Close(const TRAP::Network::SocketHandle sock)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	closesocket(sock);
 }
@@ -87,7 +87,7 @@ void TRAP::INTERNAL::Network::SocketImpl::Close(const TRAP::Network::SocketHandl
 
 void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::SocketHandle sock, const bool block)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	u_long blocking = block ? 0 : 1;
 	ioctlsocket(sock, FIONBIO, &blocking);
@@ -97,7 +97,8 @@ void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::Socke
 
 [[nodiscard]] TRAP::Network::Socket::Status TRAP::INTERNAL::Network::SocketImpl::GetErrorStatus()
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None &&
+	                                         (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	switch(WSAGetLastError())
 	{
@@ -134,7 +135,7 @@ struct SocketInitializer
 {
 	SocketInitializer()
 	{
-		ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+		ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 		WSADATA init;
 		WSAStartup(MAKEWORD(2, 2), &init);
@@ -142,7 +143,7 @@ struct SocketInitializer
 
 	~SocketInitializer()
 	{
-		ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+		ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 		WSACleanup();
 	}

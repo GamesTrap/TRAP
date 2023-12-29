@@ -7,7 +7,7 @@
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const u64 size,
 																				               const UpdateFrequency updateFrequency)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	return Init(nullptr, size, updateFrequency);
 }
@@ -17,7 +17,7 @@
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const void* const data, const u64 size,
 																				               const UpdateFrequency updateFrequency)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	return Init(data, size, updateFrequency);
 }
@@ -26,7 +26,8 @@
 
 [[nodiscard]] u64 TRAP::Graphics::StorageBuffer::GetSize() const noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return m_storageBuffers[0]->GetSize();
 }
@@ -35,7 +36,7 @@
 
 void TRAP::Graphics::StorageBuffer::SetData(const void* const data, const u64 size, const u64 offset)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	TRAP_ASSERT(data, "StorageBuffer::SetData(): Data is nullptr!");
 	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize(), "StorageBuffer::SetData(): Out of bounds!");
@@ -56,7 +57,7 @@ void TRAP::Graphics::StorageBuffer::SetData(const void* const data, const u64 si
 
 [[nodiscard]] bool TRAP::Graphics::StorageBuffer::IsLoaded() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	for(usize i = 0; i < m_storageBuffers.size(); ++i)
 	{
@@ -71,7 +72,7 @@ void TRAP::Graphics::StorageBuffer::SetData(const void* const data, const u64 si
 
 void TRAP::Graphics::StorageBuffer::AwaitLoading() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	for(usize i = 0; i < m_storageBuffers.size(); ++i)
 		RendererAPI::GetResourceLoader()->WaitForToken(&m_tokens[i]);
@@ -81,7 +82,8 @@ void TRAP::Graphics::StorageBuffer::AwaitLoading() const
 
 [[nodiscard]] u64 TRAP::Graphics::StorageBuffer::CalculateAlignedSize(const u64 byteSize) noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	const u64 minSSBOAlignment = RendererAPI::GPUSettings.StorageBufferAlignment;
 	u64 alignedSize = byteSize;
@@ -97,7 +99,7 @@ void TRAP::Graphics::StorageBuffer::AwaitLoading() const
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Init(const void* const data, const u64 size,
 																			                 const UpdateFrequency updateFrequency)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	TRAP::Scope<StorageBuffer> buffer = TRAP::Scope<StorageBuffer>(new StorageBuffer(updateFrequency));
 

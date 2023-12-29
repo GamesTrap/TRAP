@@ -19,7 +19,8 @@
 
 [[nodiscard]] const std::filesystem::path& TRAP::Image::GetFilePath() const noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                         (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return m_filepath;
 }
@@ -30,7 +31,7 @@
 
 [[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::filesystem::path& filepath)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	if(!IsSupportedImageFile(filepath))
 	{
@@ -85,7 +86,7 @@
 
 [[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(u32 width, u32 height, ColorFormat format, const std::vector<u8>& pixelData)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	return MakeScope<INTERNAL::CustomImage>("", width, height, format, pixelData);
 }
@@ -94,7 +95,7 @@
 
 [[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(u32 width, u32 height, ColorFormat format, const std::vector<u16>& pixelData)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	return MakeScope<INTERNAL::CustomImage>("", width, height, format, pixelData);
 }
@@ -103,7 +104,7 @@
 
 [[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(u32 width, u32 height, ColorFormat format, const std::vector<f32>& pixelData)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	return MakeScope<INTERNAL::CustomImage>("", width, height, format, pixelData);
 }
@@ -112,7 +113,7 @@
 
 [[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::LoadFallback()
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	return MakeScope<INTERNAL::CustomImage>("", 32, 32, ColorFormat::RGBA, std::vector<u8>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 }
@@ -135,7 +136,7 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 
 [[nodiscard]] bool TRAP::Image::IsSupportedImageFile(const std::filesystem::path& filepath)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	const auto fileEnding = FileSystem::GetFileEnding(filepath);
 	if(!fileEnding)
@@ -153,7 +154,7 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 
 [[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::FlipX(const Image* const img)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	if(img == nullptr)
 		return nullptr;
@@ -190,7 +191,7 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 
 [[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::FlipY(const Image* const img)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	if (img == nullptr)
 		return nullptr;
@@ -226,7 +227,7 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 
 [[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::Rotate90Clockwise(const Image* const img)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	if (img == nullptr)
 		return nullptr;
@@ -265,7 +266,7 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 
 [[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::Rotate90CounterClockwise(const Image* const img)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	if (img == nullptr)
 		return nullptr;
@@ -304,7 +305,7 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 
 [[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::ConvertRGBToRGBA(const Image* const img)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	if(img == nullptr)
 		return nullptr;

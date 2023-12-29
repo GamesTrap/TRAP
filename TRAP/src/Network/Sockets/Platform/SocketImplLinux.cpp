@@ -38,7 +38,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 [[nodiscard]] sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(u32 address, u16 port)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	sockaddr_in addr{};
 
@@ -60,7 +60,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 [[nodiscard]] sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<u8, 16>& address,
                                                                               u16 port)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	sockaddr_in6 addr{};
 	std::ranges::copy(address, addr.sin6_addr.s6_addr);
@@ -78,7 +78,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 void TRAP::INTERNAL::Network::SocketImpl::Close(TRAP::Network::SocketHandle sock)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	if(::close(sock) < 0)
 	{
@@ -91,7 +91,7 @@ void TRAP::INTERNAL::Network::SocketImpl::Close(TRAP::Network::SocketHandle sock
 
 void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::SocketHandle sock, const bool block)
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	const i32 status = fcntl(sock, F_GETFL);
 	if(status < 0)
@@ -123,7 +123,8 @@ void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::Socke
 
 [[nodiscard]] TRAP::Network::Socket::Status TRAP::INTERNAL::Network::SocketImpl::GetErrorStatus() noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None &&
+	                                         (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	//The followings are sometimes equal to EWOULDBLOCK,
 	//so we have to make a special case for them in order

@@ -558,7 +558,7 @@ static constexpr std::array<std::array<u32, 256>, 16> CRC32Lookup =
 
 [[nodiscard]] std::array<u8, 4> TRAP::Utils::Hash::CRC32(const void* const data, u64 length)
 {
-    ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+    ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 	u32 crc = std::numeric_limits<u32>::max(); //Same as previousCRC32 ^ 0xFFFFFFFF
 	const u32* current = static_cast<const u32*>(data);
@@ -641,7 +641,8 @@ static constexpr std::array<std::array<u32, 256>, 16> CRC32Lookup =
 
 [[nodiscard]] std::array<u8, 4> TRAP::Utils::Hash::CRC32(const std::string_view str)
 {
-    ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+    ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
+	                                          (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return CRC32(str.data(), str.length());
 }
