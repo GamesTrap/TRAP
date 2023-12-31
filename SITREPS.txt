@@ -4763,3 +4763,7 @@ SITREP 12/29/2023|23w52b2
     - Changed TRAP Engine version to 23w52b2(0.10.24)
     - Systems to profile can now be set at runtime ~<45 mins
     - WindowingAPI Fixed some bugs ~<10 mins
+
+SITREP 12/31/2023|23w52b3
+    - Changed TRAP Engine version to 23w52b3(0.10.25)
+    - Base reordered branches for operator new() ~<5 mins
