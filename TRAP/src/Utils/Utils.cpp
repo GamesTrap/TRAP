@@ -498,3 +498,14 @@ void TRAP::Utils::RegisterSIGINTCallback()
 	}
 }
 #endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRACY_ENABLE
+	/// @brief Set the name of the current thread.
+	/// @param name Name to set
+void TRAP::Utils::SetThreadName(const std::string_view name)
+{
+	tracy::SetThreadName(name.data());
+}
+#endif /*TRACY_ENABLE*/

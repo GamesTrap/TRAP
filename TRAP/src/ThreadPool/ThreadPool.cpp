@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "ThreadPool.h"
 
+#include "Utils/Utils.h"
+
 TRAP::ThreadPool::ThreadPool(const u32 threads)
 	: m_queues(threads), m_maxThreadsCount(threads)
 {
@@ -14,10 +16,8 @@ TRAP::ThreadPool::ThreadPool(const u32 threads)
 
 	auto worker = [&](const u32 i)
 	{
-#ifdef TRACY_ENABLE
 		//Set Thread name for profiler
-	    tracy::SetThreadName(fmt::format("Worker {}", i).c_str());
-#endif /*TRACY_ENABLE*/
+		Utils::SetThreadName(fmt::format("Worker {}", i));
 
 		while (true)
 		{

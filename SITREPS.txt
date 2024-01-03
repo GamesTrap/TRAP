@@ -4772,3 +4772,4 @@ SITREP 01/03/2023|24w01a1
     - Changed TRAP Engine version to 24w01a1(0.10.26)
     - Added UniqueResource and ScopeFail utility classes ~<60 mins
     - Backported (as free standing functions) C++23 container range insert, append and assign functions (p1206r7) ~<20 mins
+    - Utils Added SetThreadName() which sets the thread name for profiling with tracy ~<10 mins
