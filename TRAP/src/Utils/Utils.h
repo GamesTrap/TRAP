@@ -142,6 +142,21 @@ namespace TRAP::Utils
 	/// @remark This function is only available in headless mode.
 	void RegisterSIGINTCallback();
 #endif /*TRAP_HEADLESS_MODE*/
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRACY_ENABLE
+	/// @brief Set the name of the current thread.
+	/// @param name Name to set
+	/// @note Only used when compiling with profiling configuration, no-op otherwise.
+    void SetThreadName(const std::string_view name);
+#else
+	/// @brief Set the name of the current thread.
+	/// @param name Name to set
+	/// @note Only used when compiling with profiling configuration, no-op otherwise.
+    constexpr void SetThreadName([[maybe_unused]] const std::string_view name)
+    {}
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

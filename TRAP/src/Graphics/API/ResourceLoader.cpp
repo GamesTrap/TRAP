@@ -34,10 +34,8 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(const std::stop_tok
 
 	TRAP_ASSERT(loader, "ResourceLoader::StreamerThreadFunc(): ResourceLoader is nullptr!");
 
-#ifdef TRACY_ENABLE
 	//Set Thread name for profiler
-	tracy::SetThreadName("ResourceLoader");
-#endif /*TRACY_ENABLE*/
+	Utils::SetThreadName("ResourceLoader");
 
 	SyncToken maxToken{};
 

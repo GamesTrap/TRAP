@@ -48,10 +48,8 @@ TRAP::Application::Application(std::string gameName, const std::optional<u32> ap
 	TRAP::Utils::RegisterSIGINTCallback();
 #endif /*TRAP_HEADLESS_MODE*/
 
-#ifdef TRACY_ENABLE
 	//Set Main Thread name for profiler
-	tracy::SetThreadName("Main Thread");
-#endif /*TRACY_ENABLE*/
+	Utils::SetThreadName("Main Thread");
 
 	Utils::CheckSingleProcess();
 	[[maybe_unused]] const auto _ = Utils::GetLinuxWindowManager(); //On Linux if no known window manager is found this will exit the engine
