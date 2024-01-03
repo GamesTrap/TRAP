@@ -197,7 +197,7 @@ namespace std
 
 #endif /*__cpp_lib_debugging*/
 
-#if __cpp_lib_containers_ranges < 202202L
+#if !defined(__cpp_lib_containers_ranges) || __cpp_lib_containers_ranges < 202202L
 
 template<typename Range, typename T>
 concept ContainerCompatibleRange = std::ranges::input_range<Range> && std::convertible_to<std::ranges::range_reference_t<Range>, T>;
