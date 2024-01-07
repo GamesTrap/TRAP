@@ -43,6 +43,7 @@
 #include <bit>
 #include <source_location>
 #include <csignal>
+#include <ranges>
 
 #include "Core/Backports.h"
 #include "Core/Types.h"

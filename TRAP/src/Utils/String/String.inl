@@ -202,19 +202,19 @@ template<typename T>
 		return Graphics::RendererAPI::LatencyMode::Disabled;
 	}
 #endif /*TRAP_HEADLESS_MODE*/
-	else if constexpr(std::same_as<T, TRAP::FileSystem::FileStatus>) //FileStatus
+	else if constexpr(std::same_as<T, TRAP::FileSystem::FileSystemStatus>) //FileSystemStatus
 	{
 		if(Utils::String::CompareAnyCase("Created", input))
-			return FileSystem::FileStatus::Created;
+			return FileSystem::FileSystemStatus::Created;
 		if(Utils::String::CompareAnyCase("Renamed", input))
-			return FileSystem::FileStatus::Renamed;
+			return FileSystem::FileSystemStatus::Renamed;
 		if(Utils::String::CompareAnyCase("Modified", input))
-			return FileSystem::FileStatus::Modified;
+			return FileSystem::FileSystemStatus::Modified;
 		if(Utils::String::CompareAnyCase("Erased", input))
-			return FileSystem::FileStatus::Erased;
+			return FileSystem::FileSystemStatus::Erased;
 
-		TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::FileSystem::FileStatus!");
-		throw std::invalid_argument("Exception while converting string to TRAP::FileSystem::FileStatus!");
+		TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::FileSystem::FileSystemStatus!");
+		throw std::invalid_argument("Exception while converting string to TRAP::FileSystem::FileSystemStatus!");
 	}
 #ifndef TRAP_HEADLESS_MODE
 	else if constexpr(std::same_as<T, TRAP::Input::MouseButton>) //MouseButton

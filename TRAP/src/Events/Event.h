@@ -32,15 +32,15 @@ namespace TRAP::Events
 	/// @brief Categories for events.
 	enum class EventCategory : u32
 	{
-		None        = 0,
-		Window      = BIT(0u),
-		Input       = BIT(1u),
-		Keyboard    = BIT(2u),
-		Mouse       = BIT(3u),
-		Controller  = BIT(4u),
-		MouseButton = BIT(5u),
-		HotReload   = BIT(6u),
-		FileChange  = BIT(7u)
+		None             = 0,
+		Window           = BIT(0u),
+		Input            = BIT(1u),
+		Keyboard         = BIT(2u),
+		Mouse            = BIT(3u),
+		Controller       = BIT(4u),
+		MouseButton      = BIT(5u),
+		HotReload        = BIT(6u),
+		FileSystemChange = BIT(7u)
 	};
 
 	/// @brief Event base class.

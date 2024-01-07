@@ -1,12 +1,11 @@
 #include "TRAPPCH.h"
 #include "FileEvent.h"
 
-#include "FileSystem/FileWatcher.h"
 #include "Utils/String/String.h"
 
-TRAP::Events::FileChangeEvent::FileChangeEvent(TRAP::FileSystem::FileStatus status, std::filesystem::path path,
-                                               const std::optional<std::filesystem::path>& oldName) noexcept
-    : m_status(status), m_path(std::move(path)), m_oldName(oldName)
+TRAP::Events::FileSystemChangeEvent::FileSystemChangeEvent(TRAP::FileSystem::FileSystemStatus status, std::filesystem::path path,
+                                               const TRAP::Optional<std::filesystem::path>& oldPath) noexcept
+    : m_status(status), m_path(std::move(path)), m_oldPath(oldPath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (GetTRAPProfileSystems() & ProfileSystems::Events) != ProfileSystems::None &&
 	                                          (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -14,7 +13,7 @@ TRAP::Events::FileChangeEvent::FileChangeEvent(TRAP::FileSystem::FileStatus stat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::filesystem::path TRAP::Events::FileChangeEvent::GetPath() const noexcept
+[[nodiscard]] std::filesystem::path TRAP::Events::FileSystemChangeEvent::GetPath() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (GetTRAPProfileSystems() & ProfileSystems::Events) != ProfileSystems::None &&
 	                                          (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -24,18 +23,18 @@ TRAP::Events::FileChangeEvent::FileChangeEvent(TRAP::FileSystem::FileStatus stat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::optional<std::filesystem::path> TRAP::Events::FileChangeEvent::GetOldName() const noexcept
+[[nodiscard]] TRAP::Optional<std::filesystem::path> TRAP::Events::FileSystemChangeEvent::GetOldPath() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (GetTRAPProfileSystems() & ProfileSystems::Events) != ProfileSystems::None &&
 	                                          (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-    return m_oldName;
+    return m_oldPath;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::string TRAP::Events::FileChangeEvent::ToString() const
+[[nodiscard]] std::string TRAP::Events::FileSystemChangeEvent::ToString() const
 {
-	return fmt::format("FileChangeEvent: Path: {} Status: {}{}", m_path, m_status,
-							(!m_oldName ? "" : " OldName: " + m_oldName->string()));
+	return fmt::format("FileSystemChangeEvent: Path: {} Status: {}{}", m_path, m_status,
+	                   (!m_oldPath ? "" : " OldPath: " + m_oldPath->string()));
 }

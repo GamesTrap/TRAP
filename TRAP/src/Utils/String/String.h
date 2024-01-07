@@ -4,7 +4,7 @@
 #include "Core/Types.h"
 #include "Window/Window.h"
 #include "Graphics/API/RendererAPI.h"
-#include "FileSystem/FileWatcher.h"
+#include "FileSystem/FileSystemWatcher.h"
 #include "Scene/Components.h"
 #include "Utils/NumericCasts.h"
 
