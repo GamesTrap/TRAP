@@ -296,7 +296,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Reload(const 
 		{
 			if (texture->GetType() == TextureType::Texture2D)
 			{
-				if (FileSystem::IsEquivalent(nameOrPath, texture->GetFilePath()))
+				if (!texture->GetFilePath().empty() && FileSystem::IsEquivalent(nameOrPath, texture->GetFilePath()))
 				{
 					if(texture->Reload())
 						TP_INFO(Log::TextureManagerPrefix, "Reloaded: \"", nameOrPath, "\"");

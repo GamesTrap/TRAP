@@ -4774,3 +4774,10 @@ SITREP 01/03/2023|24w01a1
     - Backported (as free standing functions) C++23 container range insert, append and assign functions (p1206r7) ~<20 mins
     - Utils Added SetThreadName() which sets the thread name for profiling with tracy ~<10 mins
     - Utils Added code documentation for ScopeFail and UniqueResource ~<30 mins
+
+SITREP 01/07/2023|24w01b1
+    - Changed TRAP Engine version to 24w01b1(0.10.27)
+    - Renamed FileChangeEvent to FileSystemChangeEvent ~<5 mins
+    - Renamed FileWatcher to FileSystemWatcher ~<5 mins
+    - Refactored FileSystemWatcher ~>180 mins
+    - Made FileSystemWatcher threadsafe ~<30 mins

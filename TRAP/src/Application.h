@@ -29,12 +29,12 @@ namespace TRAP
 		class WindowCloseEvent;
 		class FrameBufferResizeEvent;
 #endif /*TRAP_HEADLESS_MODE*/
-		class FileChangeEvent;
+		class FileSystemChangeEvent;
 	}
 
 	namespace FileSystem
 	{
-		class FileWatcher;
+		class FileSystemWatcher;
 	}
 
 	namespace Utils
@@ -165,9 +165,9 @@ namespace TRAP
 		[[nodiscard]] static u64 GetGlobalCounter();
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
-		/// @brief Get the hot reloading file watcher.
-		/// @return Reference to TRAP::FileSystem::FileWatcher if file watcher is running, empty optional otherwise.
-		[[nodiscard]] static std::optional<std::reference_wrapper<TRAP::FileSystem::FileWatcher>> GetHotReloadingFileWatcher();
+		/// @brief Get the hot reloading filesystem watcher.
+		/// @return Reference to TRAP::FileSystem::FileSystemWatcher if filesystem watcher is running, empty optional otherwise.
+		[[nodiscard]] static std::optional<std::reference_wrapper<TRAP::FileSystem::FileSystemWatcher>> GetHotReloadingFileSystemWatcher();
 		/// @brief Get whether hot reloading is enabled or not.
 		/// @return True if hot reloading is enabled, false otherwise.
 		[[nodiscard]] static bool IsHotReloadingEnabled();
@@ -208,10 +208,10 @@ namespace TRAP
 		static bool OnKeyPress(const Events::KeyPressEvent& event);
 #endif /*TRAP_HEADLESS_MODE*/
 
-		/// @brief Handles file change events for the application. Used by HotReloading.
-		/// @param event File change event that occurred.
+		/// @brief Handles filesystem change events for the application. Used by HotReloading.
+		/// @param event Filesystem change event that occurred.
 		/// @return True if event was handled, false otherwise.
-		bool OnFileChangeEvent(const Events::FileChangeEvent& event);
+		bool OnFileSystemChangeEvent(const Events::FileSystemChangeEvent& event);
 
 		/// @brief Tries to reload every modified shader/texture that was set by the hot reloading file watcher.
 		void UpdateHotReloading();
@@ -336,7 +336,7 @@ namespace TRAP
 		std::vector<std::filesystem::path> m_hotReloadingShaderPaths{};
 		std::vector<std::filesystem::path> m_hotReloadingTexturePaths{};
 		TracyLockable(std::mutex, m_hotReloadingMutex);
-		std::unique_ptr<FileSystem::FileWatcher> m_hotReloadingFileWatcher = nullptr;
+		std::unique_ptr<FileSystem::FileSystemWatcher> m_hotReloadingFileSystemWatcher = nullptr;
 
 		//Layers
 		LayerStack m_layerStack{};

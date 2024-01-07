@@ -178,7 +178,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(const st
 	{
 		for (const auto& [name, shader] : Shaders)
 		{
-			if (FileSystem::IsEquivalent(nameOrPath, shader->GetFilePath()))
+			if (!shader->GetFilePath().empty() && FileSystem::IsEquivalent(nameOrPath, shader->GetFilePath()))
 			{
 				if(shader->Reload())
 					TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", nameOrPath, "\"");

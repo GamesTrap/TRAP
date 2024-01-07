@@ -28,9 +28,9 @@
 		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::move(filepaths));
 
 		//Hot Reloading
-		const auto hotReloadingFileWatcher = TRAP::Application::GetHotReloadingFileWatcher();
+		const auto hotReloadingFileSystemWatcher = TRAP::Application::GetHotReloadingFileSystemWatcher();
 
-		if(hotReloadingFileWatcher)
+		if(hotReloadingFileSystemWatcher)
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
@@ -40,7 +40,7 @@
 					if(!folderPath)
 						continue;
 
-					hotReloadingFileWatcher->get().AddFolder(*folderPath);
+					hotReloadingFileSystemWatcher->get().AddFolder(*folderPath);
 				}
 			}
 		}
@@ -99,9 +99,9 @@
 		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::move(filepath), type, cubeFormat);
 
 		//Hot Reloading
-		const auto hotReloadingFileWatcher = TRAP::Application::GetHotReloadingFileWatcher();
+		const auto hotReloadingFileSystemWatcher = TRAP::Application::GetHotReloadingFileSystemWatcher();
 
-		if(hotReloadingFileWatcher)
+		if(hotReloadingFileSystemWatcher)
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
@@ -111,7 +111,7 @@
 					if(!folderPath)
 						continue;
 
-					hotReloadingFileWatcher->get().AddFolder(*folderPath);
+					hotReloadingFileSystemWatcher->get().AddFolder(*folderPath);
 				}
 
 			}
@@ -172,9 +172,9 @@
 		texture = TRAP::MakeRef<API::VulkanTexture>(*name, std::move(filepath), type, cubeFormat);
 
 		//Hot Reloading
-		const auto hotReloadingFileWatcher = TRAP::Application::GetHotReloadingFileWatcher();
+		const auto hotReloadingFileSystemWatcher = TRAP::Application::GetHotReloadingFileSystemWatcher();
 
-		if(hotReloadingFileWatcher)
+		if(hotReloadingFileSystemWatcher)
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
@@ -184,7 +184,7 @@
 					if(!folderPath)
 						continue;
 
-					hotReloadingFileWatcher->get().AddFolder(*folderPath);
+					hotReloadingFileSystemWatcher->get().AddFolder(*folderPath);
 				}
 			}
 		}
@@ -247,9 +247,9 @@
 		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::move(filePaths));
 
 		//Hot Reloading
-		const auto hotReloadingFileWatcher = TRAP::Application::GetHotReloadingFileWatcher();
+		const auto hotReloadingFileSystemWatcher = TRAP::Application::GetHotReloadingFileSystemWatcher();
 
-		if(hotReloadingFileWatcher)
+		if(hotReloadingFileSystemWatcher)
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
@@ -259,7 +259,7 @@
 					if(!folderPath)
 						continue;
 
-					hotReloadingFileWatcher->get().AddFolder(*folderPath);
+					hotReloadingFileSystemWatcher->get().AddFolder(*folderPath);
 				}
 			}
 		}
@@ -320,9 +320,9 @@
 		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), img->GetFilePath(), type, cubeFormat);
 
 		//Hot Reloading
-		const auto hotReloadingFileWatcher = TRAP::Application::GetHotReloadingFileWatcher();
+		const auto hotReloadingFileSystemWatcher = TRAP::Application::GetHotReloadingFileSystemWatcher();
 
-		if(hotReloadingFileWatcher)
+		if(hotReloadingFileSystemWatcher)
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
@@ -332,7 +332,7 @@
 					if(!folderPath)
 						continue;
 
-					hotReloadingFileWatcher->get().AddFolder(*folderPath);
+					hotReloadingFileSystemWatcher->get().AddFolder(*folderPath);
 				}
 			}
 		}

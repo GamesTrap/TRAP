@@ -3,7 +3,7 @@
 
 #include "Core/Base.h"
 #include "FileSystem/FileSystem.h"
-#include "FileSystem/FileWatcher.h"
+#include "FileSystem/FileSystemWatcher.h"
 #include "Embed.h"
 #include "Graphics/RenderCommand.h"
 #include "Graphics/API/RendererAPI.h"
@@ -300,7 +300,7 @@ void TRAP::Application::OnEvent(Events::Event& event)
 	dispatcher.Dispatch<Events::WindowCloseEvent>(std::bind_front(&Application::OnWindowClose, this));
 	dispatcher.Dispatch<Events::KeyPressEvent>(OnKeyPress);
 #endif /*TRAP_HEADLESS_MODE*/
-	dispatcher.Dispatch<Events::FileChangeEvent>(std::bind_front(&Application::OnFileChangeEvent, this));
+	dispatcher.Dispatch<Events::FileSystemChangeEvent>(std::bind_front(&Application::OnFileSystemChangeEvent, this));
 
 	for (auto& it : std::ranges::reverse_view(m_layerStack))
 	{
@@ -595,14 +595,14 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::optional<std::reference_wrapper<TRAP::FileSystem::FileWatcher>> TRAP::Application::GetHotReloadingFileWatcher()
+[[nodiscard]] std::optional<std::reference_wrapper<TRAP::FileSystem::FileSystemWatcher>> TRAP::Application::GetHotReloadingFileSystemWatcher()
 {
 	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	TRAP_ASSERT(s_Instance, "Application::GetHotReloadingFileWatcher(): Application is nullptr!");
+	TRAP_ASSERT(s_Instance, "Application::GetHotReloadingFileSystemWatcher(): Application is nullptr!");
 
-	if(s_Instance->m_hotReloadingFileWatcher)
-		return *s_Instance->m_hotReloadingFileWatcher;
+	if(s_Instance->m_hotReloadingFileSystemWatcher)
+		return *s_Instance->m_hotReloadingFileSystemWatcher;
 
 	return std::nullopt;
 }
@@ -615,7 +615,7 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 
 	TRAP_ASSERT(s_Instance, "Application::IsHotReloadingEnabled(): Application is nullptr!");
 
-	return s_Instance->m_hotReloadingFileWatcher != nullptr;
+	return s_Instance->m_hotReloadingFileSystemWatcher != nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -626,13 +626,13 @@ void TRAP::Application::SetHotReloading(const bool enable)
 
 	TRAP_ASSERT(s_Instance, "Application::SetHotReloading(): Application is nullptr!");
 
-	if(enable && !s_Instance->m_hotReloadingFileWatcher)
+	if(enable && !s_Instance->m_hotReloadingFileSystemWatcher)
 	{
-		s_Instance->m_hotReloadingFileWatcher = std::make_unique<FileSystem::FileWatcher>("HotReloading", false);
-		s_Instance->m_hotReloadingFileWatcher->SetEventCallback([](Events::Event& event) {s_Instance->OnEvent(event); });
+		s_Instance->m_hotReloadingFileSystemWatcher = std::make_unique<FileSystem::FileSystemWatcher>(false, "HotReloading");
+		s_Instance->m_hotReloadingFileSystemWatcher->SetEventCallback([](Events::Event& event) {s_Instance->OnEvent(event); });
 	}
-	else if(!enable && s_Instance->m_hotReloadingFileWatcher)
-		s_Instance->m_hotReloadingFileWatcher.reset();
+	else if(!enable && s_Instance->m_hotReloadingFileSystemWatcher)
+		s_Instance->m_hotReloadingFileSystemWatcher.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -796,11 +796,11 @@ void TRAP::Application::UnfocusedLimitFPS(const u32 fpsLimit, Utils::Timer& limi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
+bool TRAP::Application::OnFileSystemChangeEvent(const Events::FileSystemChangeEvent& event)
 {
 	ZoneScoped;
 
-	if(event.GetStatus() != FileSystem::FileStatus::Modified && event.GetStatus() != FileSystem::FileStatus::Created)
+	if(event.GetStatus() != FileSystem::FileSystemStatus::Modified && event.GetStatus() != FileSystem::FileSystemStatus::Created)
 		return false; //Only handle modified and created files
 
 	const auto fileEnding = FileSystem::GetFileEnding(event.GetPath());

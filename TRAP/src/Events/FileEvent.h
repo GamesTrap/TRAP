@@ -1,49 +1,48 @@
 #ifndef TRAP_FILEEVENT_H
 #define TRAP_FILEEVENT_H
 
-#include <optional>
-
 #include "Event.h"
-#include "FileSystem/FileWatcher.h"
+#include "FileSystem/FileSystemWatcher.h"
+#include "Utils/Optional.h"
 
 namespace TRAP::FileSystem
 {
-	enum class FileStatus;
+	enum class FileSystemStatus;
 }
 
 namespace TRAP::Events
 {
-	/// @brief File change event.
-	class FileChangeEvent final : public Event
+	/// @brief Filesystem change event.
+	class FileSystemChangeEvent final : public Event
 	{
 	public:
 		/// @brief Constructor.
 		/// @param status Status of the provided file or folder.
 		/// @param path Path to a file or folder.
-		/// @param oldName Optional: Old name of the file or folder. Only set if status is FileStatus::Renamed.
-		FileChangeEvent(TRAP::FileSystem::FileStatus status, std::filesystem::path path,
-                        const std::optional<std::filesystem::path>& oldName = std::nullopt) noexcept;
+		/// @param oldName Optional: Old path of the file or folder. Only set if status is FileSystemStatus::Renamed.
+		FileSystemChangeEvent(TRAP::FileSystem::FileSystemStatus status, std::filesystem::path path,
+                              const TRAP::Optional<std::filesystem::path>& oldPath = TRAP::NullOpt) noexcept;
 		/// @brief Destructor.
-		~FileChangeEvent() override = default;
+		~FileSystemChangeEvent() override = default;
 		/// @brief Copy constructor.
-		consteval FileChangeEvent(const FileChangeEvent&) noexcept = delete;
+		consteval FileSystemChangeEvent(const FileSystemChangeEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		consteval FileChangeEvent& operator=(const FileChangeEvent&) noexcept = delete;
+		consteval FileSystemChangeEvent& operator=(const FileSystemChangeEvent&) noexcept = delete;
 		/// @brief Move constructor.
-		FileChangeEvent(FileChangeEvent&&) noexcept = default;
+		FileSystemChangeEvent(FileSystemChangeEvent&&) noexcept = default;
 		/// @brief Move assignment operator.
-		FileChangeEvent& operator=(FileChangeEvent&&) noexcept = default;
+		FileSystemChangeEvent& operator=(FileSystemChangeEvent&&) noexcept = default;
 
-		/// @brief Get the status of the file.
-		/// @return The status of the file.
-        [[nodiscard]] constexpr TRAP::FileSystem::FileStatus GetStatus() const noexcept;
-		/// @brief Get the path of the file.
-		/// @return The path of the file.
+		/// @brief Get the status of the file or folder.
+		/// @return The status of the file or folder.
+        [[nodiscard]] constexpr TRAP::FileSystem::FileSystemStatus GetStatus() const noexcept;
+		/// @brief Get the path of the file or folder.
+		/// @return The path of the file or folder.
         [[nodiscard]] std::filesystem::path GetPath() const noexcept;
-		/// @brief Get the old name of the file.
-		/// @return The old name of the file.
-		/// @note Only set when FileStatus is FileStatus::Renamed.
-        [[nodiscard]] std::optional<std::filesystem::path> GetOldName() const noexcept;
+		/// @brief Get the old path of the file or folder.
+		/// @return The old path of the file or folder if any, empty optional otherwise.
+		/// @note Only set when FileSystemStatus is FileSystemStatus::Renamed.
+        [[nodiscard]] TRAP::Optional<std::filesystem::path> GetOldPath() const noexcept;
 
 		/// @brief Retrieve the EventType of the event.
 		/// @return EventType.
@@ -62,45 +61,45 @@ namespace TRAP::Events
 		[[nodiscard]] std::string ToString() const override;
 
 	private:
-        TRAP::FileSystem::FileStatus m_status;
+        TRAP::FileSystem::FileSystemStatus m_status;
         std::filesystem::path m_path;
-        std::optional<std::filesystem::path> m_oldName;
+        TRAP::Optional<std::filesystem::path> m_oldPath;
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::FileSystem::FileStatus TRAP::Events::FileChangeEvent::GetStatus() const noexcept
+[[nodiscard]] constexpr TRAP::FileSystem::FileSystemStatus TRAP::Events::FileSystemChangeEvent::GetStatus() const noexcept
 {
 	return m_status;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::FileSystemChangeEvent::GetStaticType() noexcept
 {
 	return EventType::FileChange;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetEventType() const noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::FileSystemChangeEvent::GetEventType() const noexcept
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::FileChangeEvent::GetName() const
+[[nodiscard]] constexpr std::string TRAP::Events::FileSystemChangeEvent::GetName() const
 {
-	return "FileChange";
+	return "FileSystemChange";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Events::EventCategory TRAP::Events::FileChangeEvent::GetCategoryFlags() const noexcept
+[[nodiscard]] constexpr TRAP::Events::EventCategory TRAP::Events::FileSystemChangeEvent::GetCategoryFlags() const noexcept
 {
-	return EventCategory::FileChange;
+	return EventCategory::FileSystemChange;
 }
 
 #endif /*TRAP_FILEEVENT_H*/

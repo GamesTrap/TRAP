@@ -46,7 +46,7 @@
 
 //----FILE-SYSTEM--------
 #include "../src/FileSystem/FileSystem.h"
-#include "../src/FileSystem/FileWatcher.h"
+#include "../src/FileSystem/FileSystemWatcher.h"
 //-----------------------
 
 //----UTILS--------------
