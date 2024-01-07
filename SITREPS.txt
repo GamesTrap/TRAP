@@ -4781,3 +4781,4 @@ SITREP 01/07/2023|24w01b1
     - Renamed FileWatcher to FileSystemWatcher ~<5 mins
     - Refactored FileSystemWatcher ~>180 mins
     - Made FileSystemWatcher threadsafe ~<30 mins
+    - UnitTests FileSystem disabled logging except for critical messages ~<5 mins
