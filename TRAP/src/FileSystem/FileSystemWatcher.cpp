@@ -38,49 +38,100 @@ void TRAP::FileSystem::FileSystemWatcher::SetEventCallback(const EventCallbackFn
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FileSystem::FileSystemWatcher::AddFolder(const std::filesystem::path& path)
+namespace
+{
+    [[nodiscard]] bool IsSubPath(const std::filesystem::path& destination, const std::filesystem::path& base)
+    {
+        const std::string rel = std::filesystem::relative(destination, base).string();
+        return rel.size() == 1 || (rel.size() > 1 && rel[0] != '.' && rel[1] != '.');
+    }
+
+    void EraseSubDirs(std::vector<std::filesystem::path>& paths)
+    {
+        std::erase_if(paths, [&paths](const std::filesystem::path& path)
+        {
+            return std::ranges::any_of(paths, [&path](const std::filesystem::path& other)
+            {
+                return (path != other) && IsSubPath(path, other);
+            });
+        });
+    }
+}
+
+std::future<void> TRAP::FileSystem::FileSystemWatcher::AddFolder(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
     TRAP_ASSERT(!path.empty(), "FileWatcher::AddFolder(): Path can not be empty!");
 
+    std::promise<void> promise{};
+    std::future<void> fut = promise.get_future();
+
     if(path.empty())
     {
         TP_ERROR(Log::FileWatcherPrefix, "AddFolder(): Path can not be empty!");
-        return;
+        promise.set_value();
+        return fut;
+    }
+
+    if(!TRAP::FileSystem::IsFolder(path))
+    {
+        TP_ERROR(Log::FileWatcherPrefix, "AddFolder(): Path does not lead to a folder!");
+        promise.set_value();
+        return fut;
     }
 
     //Always use absolute paths
     const auto absPath = FileSystem::ToAbsolutePath(path);
     if(!absPath)
-        return;
+    {
+        promise.set_value();
+        return fut;
+    }
 
     //Only add if not already in list
     if(!std::ranges::contains(m_paths, *absPath))
     {
         m_paths.push_back(*absPath);
+        if(m_recursive)
+            EraseSubDirs(m_paths);
+
         Shutdown();
-        Init();
+        Init(std::move(promise));
     }
+
+    return fut;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FileSystem::FileSystemWatcher::AddFolders(std::vector<std::filesystem::path> paths)
+std::future<void> TRAP::FileSystem::FileSystemWatcher::AddFolders(std::vector<std::filesystem::path> paths)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
     TRAP_ASSERT(!paths.empty(), "FileWatcher::AddFolders(): Paths can not be empty!");
 
+    std::promise<void> promise{};
+
+    std::future<void> fut = promise.get_future();
+
     if(paths.empty())
-        return;
+    {
+        promise.set_value();
+        return fut;
+    }
 
     ContainerAppendRange(m_paths, paths |
+                                  std::views::filter(FileSystem::IsFolder) |
                                   std::views::transform(FileSystem::ToAbsolutePath) |
                                   std::views::filter([this](const auto& p){return p.HasValue() && !std::ranges::contains(m_paths, *p);}) |
                                   std::views::transform([](const auto& p){return *p;}));
+    if(m_recursive)
+        EraseSubDirs(m_paths);
     Shutdown();
-    Init();
+    Init(std::move(promise));
+
+    return fut;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -181,7 +232,7 @@ namespace
 #endif
 }
 
-void TRAP::FileSystem::FileSystemWatcher::Init()
+void TRAP::FileSystem::FileSystemWatcher::Init(TRAP::Optional<std::promise<void>> optPromise)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
@@ -194,15 +245,21 @@ void TRAP::FileSystem::FileSystemWatcher::Init()
     m_paths.erase(last, m_paths.end());
 
     if(m_paths.empty())
+    {
+        if(optPromise)
+            optPromise->set_value();
         return;
+    }
 
     if(!CreateKillEvent(m_killEvent))
     {
+        if(optPromise)
+            optPromise->set_value();
         TP_ERROR(Log::FileWatcherLinuxPrefix, "Aborting start of FileWatcher!");
         return;
     }
 
-    m_thread = std::jthread(std::bind_front(&TRAP::FileSystem::FileSystemWatcher::Watch, this), m_paths);
+    m_thread = std::jthread(std::bind_front(&TRAP::FileSystem::FileSystemWatcher::Watch, this), m_paths, std::move(optPromise));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -503,7 +560,8 @@ namespace
     }
 }
 
-void TRAP::FileSystem::FileSystemWatcher::Watch(const std::stop_token& stopToken, const std::vector<std::filesystem::path> pathsToWatch)
+void TRAP::FileSystem::FileSystemWatcher::Watch(const std::stop_token& stopToken, const std::vector<std::filesystem::path> pathsToWatch,
+                                                TRAP::Optional<std::promise<void>> optPromise)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
@@ -512,6 +570,10 @@ void TRAP::FileSystem::FileSystemWatcher::Watch(const std::stop_token& stopToken
 
     //Thread init
     std::vector<std::pair<DirectoryHandle, std::filesystem::path>> dirHandles = CreateDirectoryHandles(pathsToWatch);
+
+    if(optPromise)
+        optPromise->set_value();
+
     if(dirHandles.empty())
         return;
 
@@ -557,7 +619,6 @@ namespace
 {
     using FileDescriptor = TRAP::UniqueResource<i32, void(*)(i32)>;
     constexpr i32 InvalidFileDescriptor = -1;
-    constexpr i32 InvalidWatchDescriptor = -1;
 
     void FileDescriptorDeleter(const i32 fd)
     {
@@ -594,21 +655,8 @@ namespace
         return fileDescriptors;
     }
 
-    struct WatchDescriptorDeleter
-    {
-        void operator()(const i32 watchDescriptor) const
-        {
-            if(inotify_rm_watch(InotifyFD, watchDescriptor) < 0)
-                TP_ERROR(TRAP::Log::FileWatcherLinuxPrefix, "Failed to remove watch descriptor of path: ", *Path, " (", TRAP::Utils::String::GetStrError(), ")");
-        }
-
-        i32 InotifyFD = InvalidFileDescriptor;
-        TRAP::Optional<const std::filesystem::path&> Path;
-    };
-    using WatchDescriptor = TRAP::UniqueResource<i32, WatchDescriptorDeleter>;
-
     void CreateInotifyWatch(const std::filesystem::path& pathToWatch, const FileDescriptor& inotifyFD,
-                            std::unordered_map<i32, std::pair<std::filesystem::path, WatchDescriptor>>& watchDescriptors,
+                            std::unordered_map<i32, std::filesystem::path>& watchDescriptors,
                             const bool recursive)
     {
 	    ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
@@ -629,7 +677,7 @@ namespace
             }
         }
 
-        const i32 watchDesc = inotify_add_watch(inotifyFD.Get(), pathToWatch.string().c_str(), IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
+        const i32 watchDesc = inotify_add_watch(inotifyFD.Get(), pathToWatch.string().c_str(), IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
 
         if(watchDesc < 0)
         {
@@ -637,14 +685,12 @@ namespace
             return;
         }
 
-        auto& [entryPath, entryWatchDescriptor] = watchDescriptors[watchDesc];
-        entryPath = pathToWatch;
-        entryWatchDescriptor = TRAP::MakeUniqueResourceChecked(watchDesc, InvalidWatchDescriptor, WatchDescriptorDeleter{inotifyFD.Get(), entryPath});
+        watchDescriptors[watchDesc] = pathToWatch;
     }
 
     void CreateInotifyWatches(const std::span<const std::filesystem::path> pathsToWatch,
                               const FileDescriptor& inotifyFD,
-                              std::unordered_map<i32, std::pair<std::filesystem::path, WatchDescriptor>>& watchDescriptors,
+                              std::unordered_map<i32, std::filesystem::path>& watchDescriptors,
                               const bool recursive)
     {
 	    ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
@@ -767,7 +813,7 @@ namespace
     }
 
     void ProcessInotifyEvents(const isize readBytes, const std::vector<char>& eventDataBuffer,
-                              std::unordered_map<i32, std::pair<std::filesystem::path, WatchDescriptor>>& watchDescriptors,
+                              std::unordered_map<i32, std::filesystem::path>& watchDescriptors,
                               const FileDescriptor& inotifyFD, const bool recursive,
                               std::vector<TRAP::Events::FileSystemChangeEvent>& events)
     {
@@ -786,14 +832,8 @@ namespace
                 continue;
             }
 
-            const std::filesystem::path filePath = watchDescriptors.at(event->wd).first / std::filesystem::path(event->name, event->name + event->len);
+            const std::filesystem::path filePath = watchDescriptors.at(event->wd) / std::filesystem::path(event->name, event->name + event->len);
             TRAP_ASSERT(!filePath.empty());
-
-            if((event->mask & IN_DELETE_SELF) != 0u && TRAP::FileSystem::IsFolder(filePath))
-            {
-                //Tracked folder got deleted so we should remove the watch descriptor.
-                watchDescriptors.erase(event->wd);
-            }
 
             if((event->mask & IN_DELETE) != 0u)
                 events.emplace_back(TRAP::FileSystem::FileSystemStatus::Erased, filePath);
@@ -833,7 +873,8 @@ namespace
     }
 }
 
-void TRAP::FileSystem::FileSystemWatcher::Watch(const std::stop_token& stopToken, const std::vector<std::filesystem::path> pathsToWatch)
+void TRAP::FileSystem::FileSystemWatcher::Watch(const std::stop_token& stopToken, const std::vector<std::filesystem::path> pathsToWatch,
+                                                TRAP::Optional<std::promise<void>> optPromise)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
@@ -843,13 +884,20 @@ void TRAP::FileSystem::FileSystemWatcher::Watch(const std::stop_token& stopToken
 
     auto fileDescriptors = CreateFileDescriptors(m_killEvent.Get());
     if(!fileDescriptors)
+    {
+        if(optPromise)
+            optPromise->set_value();
         return;
+    }
     const FileDescriptor inotifyFD = TRAP::MakeUniqueResourceChecked(std::get<0>(*fileDescriptors).fd, InvalidFileDescriptor, FileDescriptorDeleter);
 
     //Key = (raw) watch descriptor; Value = Watched path + RAII wrapper for the watch descriptor key
-    std::unordered_map<i32, std::pair<std::filesystem::path, WatchDescriptor>> watchDescriptors;
+    std::unordered_map<i32, std::filesystem::path> watchDescriptors;
 
     CreateInotifyWatches(pathsToWatch, inotifyFD, watchDescriptors, m_recursive);
+
+    if(optPromise)
+        optPromise->set_value();
 
     std::vector<char> buf{}; //Can't be a inotify_event array because it includes a flexible array member.
 

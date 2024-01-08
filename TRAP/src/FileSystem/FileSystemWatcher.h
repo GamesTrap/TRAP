@@ -3,6 +3,7 @@
 
 #include <filesystem>
 #include <functional>
+#include <future>
 #include <thread>
 #include <atomic>
 #include <shared_mutex>
@@ -20,6 +21,7 @@
 
 #include "TRAP_Assert.h"
 
+#include "Utils/Optional.h"
 #include "Utils/UniqueResource.h"
 
 namespace TRAP::Events
@@ -81,12 +83,14 @@ namespace TRAP::FileSystem
 
         /// @brief Adds a new folder path to the tracked paths.
         /// @param path Folder path to track.
+        /// @return Future which can be used to wait for the changes to take effect.
         /// @threadsafe
-        void AddFolder(const std::filesystem::path& path);
+        std::future<void> AddFolder(const std::filesystem::path& path);
         /// @brief Adds new folder paths to the tracked paths.
         /// @param paths Folder paths to track.
+        /// @return Future which can be used to wait for the changes to take effect.
         /// @threadsafe
-        void AddFolders(std::vector<std::filesystem::path> paths);
+        std::future<void> AddFolders(std::vector<std::filesystem::path> paths);
 
         /// @brief Removes a folder path from the tracked paths.
         /// @param path Folder path to untrack.
@@ -106,14 +110,17 @@ namespace TRAP::FileSystem
 
     private:
         /// @brief Initialize FileWatcher.
-        void Init();
+        /// @param optPromise Optional promise to set after watcher thread initialization has finished
+        void Init(TRAP::Optional<std::promise<void>> optPromise = TRAP::NullOpt);
         /// @brief Shutdown FileWatcher.
         void Shutdown();
 
         /// @brief Watch over files.
         /// @param stopToken Token to use for stop request.
         /// @param pathsToWatch Folders to watch.
-        void Watch(const std::stop_token& stopToken, std::vector<std::filesystem::path> pathsToWatch);
+        /// @param optPromise Optional promise to signal after watcher thread initialization has finished
+        void Watch(const std::stop_token& stopToken, std::vector<std::filesystem::path> pathsToWatch,
+                   TRAP::Optional<std::promise<void>> optPromise);
 
         /// @brief Callback to stop the running file watcher thread.
         void StopCallback() const;
