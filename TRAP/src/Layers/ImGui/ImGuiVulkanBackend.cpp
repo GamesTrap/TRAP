@@ -74,6 +74,9 @@ Modified by Jan "GamesTrap" Schuerkamp
 // CHANGELOG
 // (minor and older changes stripped away, please see git history for details)
 //  2023-XX-XX: Platform: Added support for multiple windows via the ImGuiPlatformIO interface.
+//  2024-01-03: Vulkan: Added MinAllocationSize field in ImGui_ImplVulkan_InitInfo to workaround zealous "best practice" validation layer. (#7189, #4238)
+//  2024-01-03: Vulkan: Stopped creating command pools with VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT as we don't reset them.
+//  2023-11-29: Vulkan: Fixed mismatching allocator passed to vkCreateCommandPool() vs vkDestroyCommandPool(). (#7075)
 //  2023-11-10: *BREAKING CHANGE*: Removed parameter from ImGui_ImplVulkan_CreateFontsTexture(): backend now creates its own command-buffer to upload fonts.
 //              *BREAKING CHANGE*: Removed DestroyFontUploadObjects() which is now unecessary as we create and destroy those objects in the backend.
 //              CreateFontsTexture() is automatically called by NewFrame() the first time.
@@ -122,7 +125,7 @@ namespace
     // SHADERS
     //-----------------------------------------------------------------------------
 
-    // glsl_shader.vert, compiled with:
+    // backends/vulkan/glsl_shader.vert, compiled with:
     // # glslangValidator -V -x -o glsl_shader.vert.u32 glsl_shader.vert
     /*
     #version 450 core
@@ -188,7 +191,7 @@ namespace
 
     //-------------------------------------------------------------------------------------------------------------------//
 
-    // glsl_shader.frag, compiled with:
+    // backends/vulkan/glsl_shader.frag, compiled with:
     // # glslangValidator -V -x -o glsl_shader.frag.u32 glsl_shader.frag
     /*
     #version 450 core
@@ -1460,7 +1463,7 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
         const TRAP::Graphics::RendererAPI::CommandPoolDesc cmdPoolDesc
         {
             .Queue = v.Queue,
-            .CreateFlags = TRAP::Graphics::RendererAPI::CommandPoolCreateFlags::ResetCommandBuffer
+            .CreateFlags = TRAP::Graphics::RendererAPI::CommandPoolCreateFlags::Transient
         };
         bd->FontCommandPool = TRAP::MakeRef<TRAP::Graphics::API::VulkanCommandPool>(cmdPoolDesc);
     }
