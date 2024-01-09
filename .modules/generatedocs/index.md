@@ -61,6 +61,7 @@ They are provided in the TRAP™ repository.
 - [PlatformFolders](https://github.com/sago007/PlatformFolders) partially integrated as part of TRAP::FileSystem
 - [Premake](https://github.com/premake/premake-core) as build system
 - [Premake-VSCodeGen](https://github.com/GamesTrap/Premake-VSCodeGen)
+- [Premake-Ninja](https://github.com/GamesTrap/premake-ninja)
 - [Quite OK Image Format](https://github.com/phoboslab/qoi)
 - [SDL_GameControllerDB from gabomdq](https://github.com/gabomdq/SDL_GameControllerDB)
 - [SFML](https://github.com/SFML/SFML) partially used as part of TRAP::Network

@@ -3,7 +3,7 @@
 # TRAP™ Engine End User License Agreement
 
 %Copyright © 2019 - 2022 TrappedGames UG (haftungsbeschränkt). All rights reserved.
-Copyright © 2019 - 2023 Jan "GamesTrap" Schürkamp. All rights reserved.
+Copyright © 2019 - 2024 Jan "GamesTrap" Schürkamp. All rights reserved.
 
 To see the EULA change log [click here](eula-change-log.md)
 

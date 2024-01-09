@@ -19,7 +19,7 @@ from io import open
 # -- Project information -----------------------------------------------------
 
 project = 'TRAP'
-copyright = '2019-2023 Jan "GamesTrap" Schürkamp. All Rights Reserved.'
+copyright = '2019-2024 Jan "GamesTrap" Schürkamp. All Rights Reserved.'
 author = 'Jan "GamesTrap" Schuerkamp'
 
 # The full version, including alpha/beta/rc tags
@@ -85,7 +85,7 @@ html_favicon = 'Branding/TRAPWhiteLogo64x64.ico'
 # }
 html_copy_source = False
 html_show_sourcelink = False
-html_use_opensearch = 'https://gamestrap.github.io/TRAP/'
+html_use_opensearch = 'https://gamestrap.github.io/TRAP-Docs/'
 html_show_sphinx = False
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -110,7 +110,7 @@ html_theme_options = {
 }
 
 #SphinxExt-OpenGraph
-ogp_site_url = 'https://gamestrap.github.io/TRAP/'
+ogp_site_url = 'https://gamestrap.github.io/TRAP-Docs/'
 ogp_site_name = 'TRAP Documentation'
 ogp_image = '_static/TRAPWhiteLogo.png'
 
