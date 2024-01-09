@@ -30,4 +30,4 @@ lcov -a ../Coverage/coverage_baseline.info -a ../Coverage/coverage.info --output
 
 #Generate HTML page
 prefix=${PWD%/*}
-genhtml --output-directory=../Coverage --demangle-cpp --num-spaces 4 ../Coverage/coverage_total.info --prefix $prefix --parallel --title "TRAP test coverage" --header-title "TRAP test coverage" --footer "© 2023 TrappedGames. All Rights Reserved." -branch-coverage
+genhtml --output-directory=../Coverage --demangle-cpp --num-spaces 4 ../Coverage/coverage_total.info --prefix $prefix --parallel --title "TRAP test coverage" --header-title "TRAP test coverage" --footer "© 2023-2024 TrappedGames. All Rights Reserved." -branch-coverage

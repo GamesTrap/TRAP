@@ -47,10 +47,10 @@ TRAP™ uses [Premake 5](https://premake.github.io/) as a build generation tool.
 By default it is shipped with the TRAP™ repository.
 
 :::{tab} Windows
-   You can generate project files for Visual Studio 2022, Visual Studio 2019, Codelite and make.
+   You can generate project files for Visual Studio 2022, Visual Studio Code, Codelite, Make and Ninja.
 :::
 :::{tab} Linux
-   You can generate project files for Codelite and make.
+   You can generate project files for Visual Studio Code, Codelite, Make and Ninja.
 :::
 Just run the appropriate generator script inside the `GeneratorScripts` folder.
 
