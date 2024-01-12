@@ -5,7 +5,7 @@
 
 namespace TRAP::Graphics::API::ShaderReflection
 {
-	inline constexpr u32 MaxShaderStageCount = 5;
+	constexpr u32 MaxShaderStageCount = 5;
 
 	enum class TextureDimension : u32
 	{

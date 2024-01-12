@@ -461,7 +461,7 @@ namespace TRAP
 
     /// @brief TRAP::NullOpt is a constant of type TRAP::nullopt_t that is used to indicate optional
     ///        type with uninitialized state.
-    inline constexpr nullopt_t NullOpt{nullopt_t::DoNotUse{}, nullopt_t::DoNotUse{}};
+    constexpr nullopt_t NullOpt{nullopt_t::DoNotUse{}, nullopt_t::DoNotUse{}};
 
     /// @brief Defines a type of object to be thrown by TRAP::Optional::Value() when accessing
     ///        an optional object that does not contain a value.
@@ -1493,113 +1493,113 @@ namespace TRAP
 
     /// Compares two optional objects
     template<typename T, typename U>
-    inline constexpr OptionalEq_t<T, U> operator==(const Optional<T>& lhs, const Optional<U>& rhs)
+    constexpr OptionalEq_t<T, U> operator==(const Optional<T>& lhs, const Optional<U>& rhs)
     {
         return static_cast<bool>(lhs) == static_cast<bool>(rhs) && (!lhs || *lhs == *rhs);
     }
     template<typename T, typename U>
-    inline constexpr OptionalNe_t<T, U> operator!=(const Optional<T>& lhs, const Optional<U>& rhs)
+    constexpr OptionalNe_t<T, U> operator!=(const Optional<T>& lhs, const Optional<U>& rhs)
     {
         return static_cast<bool>(lhs) != static_cast<bool>(rhs) || (static_cast<bool>(lhs) && *lhs != *rhs);
     }
     template<typename T, typename U>
-    inline constexpr OptionalLt_t<T, U> operator<(const Optional<T>& lhs, const Optional<U>& rhs)
+    constexpr OptionalLt_t<T, U> operator<(const Optional<T>& lhs, const Optional<U>& rhs)
     {
         return static_cast<bool>(rhs) && (!lhs || *lhs < *rhs);
     }
     template<typename T, typename U>
-    inline constexpr OptionalGt_t<T, U> operator>(const Optional<T>& lhs, const Optional<U>& rhs)
+    constexpr OptionalGt_t<T, U> operator>(const Optional<T>& lhs, const Optional<U>& rhs)
     {
         return static_cast<bool>(lhs) && (!rhs || *lhs > *rhs);
     }
     template<typename T, typename U>
-    inline constexpr OptionalLe_t<T, U> operator<=(const Optional<T>& lhs, const Optional<U>& rhs)
+    constexpr OptionalLe_t<T, U> operator<=(const Optional<T>& lhs, const Optional<U>& rhs)
     {
         return !lhs || (static_cast<bool>(rhs) && *lhs <= *rhs);
     }
     template<typename T, typename U>
-    inline constexpr OptionalGe_t<T, U> operator>=(const Optional<T>& lhs, const Optional<U>& rhs)
+    constexpr OptionalGe_t<T, U> operator>=(const Optional<T>& lhs, const Optional<U>& rhs)
     {
         return !lhs || (static_cast<bool>(lhs) && *lhs >= *rhs);
     }
 
     template<typename T, std::three_way_comparable_with<T> U>
-    inline constexpr std::compare_three_way_result_t<T, U> operator<=>(const Optional<T>& lhs, const Optional<U>& rhs)
+    constexpr std::compare_three_way_result_t<T, U> operator<=>(const Optional<T>& lhs, const Optional<U>& rhs)
     {
         return lhs && rhs ? *lhs <=> *rhs : bool(lhs) <=> bool(rhs);
     }
 
     /// Compares an optional to a `nullopt`
     template<typename T>
-    inline constexpr bool operator==(const Optional<T>& lhs, [[maybe_unused]] nullopt_t _) noexcept
+    constexpr bool operator==(const Optional<T>& lhs, [[maybe_unused]] nullopt_t _) noexcept
     {
         return !lhs;
     }
 
     template<typename T>
-    inline constexpr std::strong_ordering operator<=>(const Optional<T>& lhs, [[maybe_unused]] nullopt_t _) noexcept
+    constexpr std::strong_ordering operator<=>(const Optional<T>& lhs, [[maybe_unused]] nullopt_t _) noexcept
     {
         return bool(lhs) <=> false;
     }
 
     /// Compares the optional with a value.
     template<typename T, typename U>
-    inline constexpr OptionalEq_t<T, U> operator==(const Optional<T>& lhs, const U& rhs)
+    constexpr OptionalEq_t<T, U> operator==(const Optional<T>& lhs, const U& rhs)
     {
         return lhs && *lhs == rhs;
     }
     template<typename T, typename U>
-    inline constexpr OptionalEq_t<U, T> operator==(const U& lhs, const Optional<T>& rhs)
+    constexpr OptionalEq_t<U, T> operator==(const U& lhs, const Optional<T>& rhs)
     {
         return rhs && lhs == *rhs;
     }
     template<typename T, typename U>
-    inline constexpr OptionalNe_t<T, U> operator!=(const Optional<T>& lhs, const U& rhs)
+    constexpr OptionalNe_t<T, U> operator!=(const Optional<T>& lhs, const U& rhs)
     {
         return !lhs || *lhs != rhs;
     }
     template<typename T, typename U>
-    inline constexpr OptionalNe_t<U, T> operator!=(const U& lhs, const Optional<T>& rhs)
+    constexpr OptionalNe_t<U, T> operator!=(const U& lhs, const Optional<T>& rhs)
     {
         return !rhs || lhs != *rhs;
     }
     template<typename T, typename U>
-    inline constexpr OptionalLt_t<T, U> operator<(const Optional<T>& lhs, const U& rhs)
+    constexpr OptionalLt_t<T, U> operator<(const Optional<T>& lhs, const U& rhs)
     {
         return !lhs || *lhs < rhs;
     }
     template<typename T, typename U>
-    inline constexpr OptionalLt_t<U, T> operator<(const U& lhs, const Optional<T>& rhs)
+    constexpr OptionalLt_t<U, T> operator<(const U& lhs, const Optional<T>& rhs)
     {
         return rhs && lhs < *rhs;
     }
     template<typename T, typename U>
-    inline constexpr OptionalLe_t<T, U> operator<=(const Optional<T>& lhs, const U& rhs)
+    constexpr OptionalLe_t<T, U> operator<=(const Optional<T>& lhs, const U& rhs)
     {
         return !lhs || *lhs <= rhs;
     }
     template<typename T, typename U>
-    inline constexpr OptionalLe_t<U, T> operator<=(const U& lhs, const Optional<T>& rhs)
+    constexpr OptionalLe_t<U, T> operator<=(const U& lhs, const Optional<T>& rhs)
     {
         return rhs && lhs <= *rhs;
     }
     template<typename T, typename U>
-    inline constexpr OptionalGt_t<T, U> operator>(const Optional<T>& lhs, const U& rhs)
+    constexpr OptionalGt_t<T, U> operator>(const Optional<T>& lhs, const U& rhs)
     {
         return lhs && *lhs > rhs;
     }
     template<typename T, typename U>
-    inline constexpr OptionalGt_t<U, T> operator>(const U& lhs, const Optional<T>& rhs)
+    constexpr OptionalGt_t<U, T> operator>(const U& lhs, const Optional<T>& rhs)
     {
         return !rhs || lhs > *rhs;
     }
     template<typename T, typename U>
-    inline constexpr OptionalGe_t<T, U> operator>=(const Optional<T>& lhs, const U& rhs)
+    constexpr OptionalGe_t<T, U> operator>=(const Optional<T>& lhs, const U& rhs)
     {
         return lhs && *lhs >= rhs;
     }
     template<typename T, typename U>
-    inline constexpr OptionalGe_t<U, T> operator>=(const U& lhs, const Optional<T>& rhs)
+    constexpr OptionalGe_t<U, T> operator>=(const U& lhs, const Optional<T>& rhs)
     {
         return !rhs || lhs >= *rhs;
     }
@@ -1621,7 +1621,7 @@ namespace TRAP
     /// @return The constructed optional object.
     template<typename T = INTERNAL::IAmSecret, typename U,
              typename Ret = std::conditional_t<std::is_same_v<T, INTERNAL::IAmSecret>, std::decay_t<U>, T>>
-    inline constexpr Optional<Ret> MakeOptional(U&& v)
+    constexpr Optional<Ret> MakeOptional(U&& v)
     {
         return Optional<Ret>{std::forward<U>(v)};
     }
@@ -1631,7 +1631,7 @@ namespace TRAP
     /// @return The constructed optional object.
     /// @note T need not be movable due to guaranteed copy elision.
     template<typename T, typename... Args>
-    inline constexpr Optional<T> MakeOptional(Args&&... args)
+    constexpr Optional<T> MakeOptional(Args&&... args)
     {
         return Optional<T>{std::in_place, std::forward<Args>(args)...};
     }
@@ -1641,7 +1641,7 @@ namespace TRAP
     /// @return The constructed optional object.
     /// @note T need not be movable due to guaranteed copy elision.
     template<typename T, typename U, typename... Args>
-    inline constexpr Optional<T> MakeOptional(std::initializer_list<U> il, Args&&... args)
+    constexpr Optional<T> MakeOptional(std::initializer_list<U> il, Args&&... args)
     {
         return Optional<T>{std::in_place, il, std::forward<Args>(args)...};
     }

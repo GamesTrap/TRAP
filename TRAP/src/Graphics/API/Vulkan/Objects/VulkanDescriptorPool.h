@@ -14,7 +14,7 @@ namespace TRAP::Graphics::API
 	class VulkanDescriptorPool final : public DescriptorPool
 	{
 	private:
-		inline static constexpr u32 DESCRIPTOR_TYPE_RANGE_SIZE = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT + 2;
+		static constexpr u32 DESCRIPTOR_TYPE_RANGE_SIZE = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT + 2;
 
 	public:
 		/// @brief Constructor.

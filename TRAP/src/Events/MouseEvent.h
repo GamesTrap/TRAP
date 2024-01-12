@@ -62,7 +62,8 @@ namespace TRAP::Events
 		[[nodiscard]] std::string ToString() const override;
 
 	private:
-		f32 m_mouseX, m_mouseY;
+		f32 m_mouseX;
+		f32 m_mouseY;
 		std::reference_wrapper<TRAP::Window> m_window;
 	};
 
@@ -118,7 +119,8 @@ namespace TRAP::Events
 		[[nodiscard]] std::string ToString() const override;
 
 	private:
-		f32 m_xOffset, m_yOffset;
+		f32 m_xOffset;
+		f32 m_yOffset;
 		std::reference_wrapper<TRAP::Window> m_window;
 	};
 
@@ -152,6 +154,7 @@ namespace TRAP::Events
 		/// @brief Move assignment operator.
 		constexpr MouseButtonEvent& operator=(MouseButtonEvent&&) noexcept = default;
 
+	private:
 		Input::MouseButton m_button;
 	};
 
@@ -461,7 +464,8 @@ constexpr TRAP::Events::MouseButtonEvent::MouseButtonEvent(const Input::MouseBut
 
 [[nodiscard]] constexpr TRAP::Events::EventCategory TRAP::Events::MouseButtonEvent::GetCategoryFlags() const noexcept
 {
-	return EventCategory::Mouse | EventCategory::Input | EventCategory::MouseButton;
+	using enum TRAP::Events::EventCategory;
+	return Mouse | Input | MouseButton;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -39,14 +39,14 @@
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline constexpr std::string_view GLSLPrefix = "[GLSL] ";
-inline constexpr std::string_view SPIRVPrefix = "[SPIRV] ";
+constexpr std::string_view GLSLPrefix = "[GLSL] ";
+constexpr std::string_view SPIRVPrefix = "[SPIRV] ";
 
 using Macro = std::pair<std::string, std::string>;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline constexpr std::array<std::pair<std::string_view, std::string_view>, 2> DefaultShaderMacros
+constexpr std::array<std::pair<std::string_view, std::string_view>, 2> DefaultShaderMacros
 {
 	{
 		{"UpdateFreqStatic", "set = 0"},
@@ -60,11 +60,11 @@ inline constinit static bool s_glslangInitialized = false;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline constexpr std::string_view MagicNumber = "TRAP_SPV";
-inline constexpr u32 VersionNumber = 1u;
-inline constexpr i32 GLSLVersion = 460;
-inline constexpr std::string_view ShaderFileEnding = "tp-spv";
-inline constexpr u32 SPIRVMagicNumber = 0x07230203u;
+constexpr std::string_view MagicNumber = "TRAP_SPV";
+constexpr u32 VersionNumber = 1u;
+constexpr i32 GLSLVersion = 460;
+constexpr std::string_view ShaderFileEnding = "tp-spv";
+constexpr u32 SPIRVMagicNumber = 0x07230203u;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -88,11 +88,11 @@ enum class ShaderStage : u32
 	SHADER_STAGE_COUNT = 7
 };
 
-[[nodiscard]] static inline constexpr ShaderStage operator|(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(std::to_underlying(a) |
+[[nodiscard]] static constexpr ShaderStage operator|(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(std::to_underlying(a) |
 																		                                                             std::to_underlying(b)); }
-[[nodiscard]] static inline constexpr ShaderStage operator&(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(std::to_underlying(a) &
+[[nodiscard]] static constexpr ShaderStage operator&(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(std::to_underlying(a) &
 																		                                                             std::to_underlying(b)); }
-static inline constexpr ShaderStage operator|=(ShaderStage& a, ShaderStage b) noexcept { return a = (a | b); }
+static constexpr ShaderStage operator|=(ShaderStage& a, ShaderStage b) noexcept { return a = (a | b); }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -169,7 +169,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline constexpr bool FindEntryPoint(const std::string& shaderStr)
+[[nodiscard]] constexpr bool FindEntryPoint(const std::string& shaderStr)
 {
 	return Contains(ToLower(shaderStr), "main");
 }
@@ -458,7 +458,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline constexpr bool CheckShaderMagicNumber(const std::span<const u8> shaderData)
+[[nodiscard]] constexpr bool CheckShaderMagicNumber(const std::span<const u8> shaderData)
 {
 	return (shaderData.size() >= MagicNumber.size() &&
 	        std::string_view(reinterpret_cast<const char*>(shaderData.data()), MagicNumber.size()) == MagicNumber);

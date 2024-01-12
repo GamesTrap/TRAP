@@ -46,7 +46,7 @@ TRAP::Events::MouseButtonPressEvent::MouseButtonPressEvent(const Input::MouseBut
 
 [[nodiscard]] std::string TRAP::Events::MouseButtonPressEvent::ToString() const
 {
-	return fmt::format("MouseButtonPressEvent: {}({}) (\"{}\")", m_button, std::to_underlying(m_button),
+	return fmt::format("MouseButtonPressEvent: {}({}) (\"{}\")", GetMouseButton(), std::to_underlying(GetMouseButton()),
 	                   m_window.get().GetTitle());
 }
 
@@ -63,7 +63,7 @@ TRAP::Events::MouseButtonReleaseEvent::MouseButtonReleaseEvent(const Input::Mous
 
 [[nodiscard]] std::string TRAP::Events::MouseButtonReleaseEvent::ToString() const
 {
-	return fmt::format("MouseButtonReleaseEvent: {}({}) (\"{}\")", m_button, std::to_underlying(m_button),
+	return fmt::format("MouseButtonReleaseEvent: {}({}) (\"{}\")", GetMouseButton(), std::to_underlying(GetMouseButton()),
 	                   m_window.get().GetTitle());
 }
 

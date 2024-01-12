@@ -73,7 +73,7 @@
 /// @brief Shift 1 x times.
 /// @param x Amount to shift.
 /// @return Shifted value.
-[[nodiscard]] inline constexpr std::unsigned_integral auto BIT(const std::unsigned_integral auto x) noexcept
+[[nodiscard]] constexpr std::unsigned_integral auto BIT(const std::unsigned_integral auto x) noexcept
 {
 	return decltype(x)(1) << x;
 }
@@ -81,22 +81,22 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 /// @brief TRAP version number created with TRAP_MAKE_VERSION
-inline constexpr TRAP::SemanticVersion<0, 10, 28> TRAP_VERSION{};
+inline constexpr TRAP::SemanticVersion<0, 10, 29> TRAP_VERSION{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef MAKE_ENUM_FLAG
 #define MAKE_ENUM_FLAG(ENUM_TYPE) \
-	[[nodiscard]] inline constexpr ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
+	[[nodiscard]] constexpr ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
 	{ \
 		return static_cast<ENUM_TYPE>(std::to_underlying(a) | std::to_underlying(b)); \
 	} \
-	[[nodiscard]] inline constexpr ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
+	[[nodiscard]] constexpr ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
 	{ \
 		return static_cast<ENUM_TYPE>(std::to_underlying(a) & std::to_underlying(b)); \
 	} \
-	inline constexpr ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a | b); }\
-	inline constexpr ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a & b); }
+	constexpr ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a | b); }\
+	constexpr ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a & b); }
 #endif /*MAKE_ENUM_FLAG*/
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -133,24 +133,13 @@ enum class ProfileSystems : u32
 	             Network | Scene | ThreadPool | Utils | Window | WindowingAPI | Verbose
 };
 
-namespace INTERNAL
-{
-	inline static ProfileSystems TRAPProfileSystems = ProfileSystems::All;
-}
-
 /// @brief Retrieve the TRAP systems to be profiled.
 /// @return Systems to profile.
-[[nodiscard]] inline ProfileSystems GetTRAPProfileSystems() noexcept
-{
-	return INTERNAL::TRAPProfileSystems;
-}
+[[nodiscard]] ProfileSystems GetTRAPProfileSystems() noexcept;
 
 /// @brief Set the TRAP systems to profile.
 /// @param systems Systems to profile.
-inline constexpr void SetTRAPProfileSystems(const ProfileSystems systems) noexcept
-{
-	INTERNAL::TRAPProfileSystems = systems;
-}
+void SetTRAPProfileSystems(ProfileSystems systems) noexcept;
 
 MAKE_ENUM_FLAG(ProfileSystems);
 
@@ -180,7 +169,7 @@ namespace TRAP
 	using Scope = std::unique_ptr<T>;
 	/// @brief Wrapper for std::make_unique. Related to memory management which is still in planing.
 	template<typename T, typename... Args>
-	inline constexpr Scope<T> MakeScope(Args&&... args)
+	constexpr Scope<T> MakeScope(Args&&... args)
 	{
 		return std::make_unique<T>(std::forward<Args>(args)...);
 	}
@@ -190,7 +179,7 @@ namespace TRAP
 	using Ref = std::shared_ptr<T>;
 	/// @brief Wrapper for std::make_shared. Related to memory management which is still in planing.
 	template<typename T, typename... Args>
-	inline constexpr Ref<T> MakeRef(Args&&... args)
+	constexpr Ref<T> MakeRef(Args&&... args)
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}

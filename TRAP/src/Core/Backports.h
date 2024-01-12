@@ -27,7 +27,7 @@ namespace std
     /// @brief Check whether E is a scoped enumeration type. True if E is a scoped enumeration type, false otherwise.
     /// @tparam T Type to check.
     template<class T>
-    inline constexpr bool is_scoped_enum_v = is_scoped_enum<T>::value;
+    constexpr bool is_scoped_enum_v = is_scoped_enum<T>::value;
 }
 
 #else
@@ -120,7 +120,7 @@ namespace std::ranges
         }
     };
 
-    inline constexpr __contains_fn contains{};
+    constexpr __contains_fn contains{};
 }
 
 #else

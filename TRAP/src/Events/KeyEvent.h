@@ -39,6 +39,7 @@ namespace TRAP::Events
 		/// @brief Move assignment operator.
 		constexpr KeyEvent& operator=(KeyEvent&&) noexcept = default;
 
+	private:
 		Input::Key m_key;
 	};
 

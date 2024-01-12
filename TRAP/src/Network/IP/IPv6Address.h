@@ -129,7 +129,7 @@ namespace TRAP::Network
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline constexpr TRAP::Network::IPv6Address::IPv6Address(const std::array<u8, 16>& addressBytes) noexcept
+constexpr TRAP::Network::IPv6Address::IPv6Address(const std::array<u8, 16>& addressBytes) noexcept
 	: m_address(addressBytes), m_valid(true)
 {
 }

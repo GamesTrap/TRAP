@@ -48,6 +48,6 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 /// @brief ConvertToSPIRV version number created with CONVERTTOSPIRV_MAKE_VERSION
-inline constexpr u32 CONVERTTOSPIRV_VERSION = CONVERTTOSPIRV_MAKE_VERSION(0, 3, 0);
+constexpr u32 CONVERTTOSPIRV_VERSION = CONVERTTOSPIRV_MAKE_VERSION(0, 3, 0);
 
 #endif /*CONVERTTOSPIRV_VERSION_H*/

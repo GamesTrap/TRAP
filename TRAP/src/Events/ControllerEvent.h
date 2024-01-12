@@ -39,6 +39,7 @@ namespace TRAP::Events
 		/// @brief Move assignment operator.
 		constexpr ControllerEvent& operator=(ControllerEvent&&) noexcept = default;
 
+	private:
 		Input::Controller m_controller;
 	};
 

@@ -57,7 +57,8 @@ namespace TRAP::Events
 		[[nodiscard]] std::string ToString() const override;
 
 	private:
-		u32 m_width, m_height;
+		u32 m_width;
+		u32 m_height;
 		std::reference_wrapper<TRAP::Window> m_window;
 	};
 
@@ -289,7 +290,8 @@ namespace TRAP::Events
 		[[nodiscard]] std::string ToString() const override;
 
 	private:
-		i32 m_x, m_y;
+		i32 m_x;
+		i32 m_y;
 		std::reference_wrapper<TRAP::Window> m_window;
 	};
 
@@ -542,7 +544,8 @@ namespace TRAP::Events
 		[[nodiscard]] std::string ToString() const override;
 
 	private:
-		u32 m_width, m_height;
+		u32 m_width;
+		u32 m_height;
 		std::reference_wrapper<TRAP::Window> m_window;
 	};
 }

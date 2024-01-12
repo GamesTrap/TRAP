@@ -10,100 +10,97 @@ namespace
     bool AftermathInitialized = false;
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
-    TracyLockable(std::mutex, AftermathMutex);
     void* AftermathHandle = nullptr;
     PFN_GFSDK_Aftermath_EnableGpuCrashDumps AftermathEnableGPUCrashDumps = nullptr;
     PFN_GFSDK_Aftermath_DisableGpuCrashDumps AftermathDisableGPUCrashDumps = nullptr;
     PFN_GFSDK_Aftermath_GetCrashDumpStatus AftermathGetGPUCrashDumpStatus = nullptr;
 #endif /*ENABLE_NSIGHT_AFTERMATH*/
-}
 
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
+    //-------------------------------------------------------------------------------------------------------------------//
+    //-------------------------------------------------------------------------------------------------------------------//
+    //-------------------------------------------------------------------------------------------------------------------//
 
-void OnGPUCrashDump([[maybe_unused]] const void* gpuCrashDump,
-                    [[maybe_unused]] const u32 gpuCrashDumpSize,
-                    [[maybe_unused]] void* userData)
-{
+    void OnGPUCrashDump([[maybe_unused]] const void* const gpuCrashDump,
+                        [[maybe_unused]] const u32 gpuCrashDumpSize,
+                        [[maybe_unused]] void* const userData)
+    {
 #ifdef ENABLE_NSIGHT_AFTERMATH
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+        ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-    TRAP_ASSERT(gpuCrashDump, "OnGPUCrashDump(): gpuCrashDump is nullptr!");
-    TRAP_ASSERT(gpuCrashDumpSize, "OnGPUCrashDump(): gpuCrashDumpSize is 0!");
+        TRAP_ASSERT(gpuCrashDump, "OnGPUCrashDump(): gpuCrashDump is nullptr!");
+        TRAP_ASSERT(gpuCrashDumpSize, "OnGPUCrashDump(): gpuCrashDumpSize is 0!");
 
 #ifndef TRAP_HEADLESS_MODE
-    const auto targetFolder = TRAP::FileSystem::GetGameDocumentsFolderPath();
+        const auto targetFolder = TRAP::FileSystem::GetGameDocumentsFolderPath();
 #else
-    const auto targetFolder = TRAP::FileSystem::GetCurrentWorkingFolderPath();
+        const auto targetFolder = TRAP::FileSystem::GetCurrentWorkingFolderPath();
 #endif
-    if(!targetFolder)
-        return;
+        if(!targetFolder)
+            return;
 
-    std::string dateTimeStamp = TRAP::Utils::String::GetDateTimeStamp(std::chrono::system_clock::now());
-    std::ranges::replace(dateTimeStamp, ':', '-');
+        std::string dateTimeStamp = TRAP::Utils::String::GetDateTimeStamp(std::chrono::system_clock::now());
+        std::ranges::replace(dateTimeStamp, ':', '-');
 
-    const std::filesystem::path folderPath = *targetFolder / "crash-dumps";
-    const std::filesystem::path filePath = folderPath / fmt::format("crash_{}.nv-gpudmp", dateTimeStamp);
-    std::lock_guard lock(AftermathMutex);
-    LockMark(AftermathMutex);
+        const std::filesystem::path folderPath = *targetFolder / "crash-dumps";
+        const std::filesystem::path filePath = folderPath / fmt::format("crash_{}.nv-gpudmp", dateTimeStamp);
 
-    if(!TRAP::FileSystem::Exists(folderPath))
-        TRAP::FileSystem::CreateFolder(folderPath);
-    TRAP::FileSystem::WriteFile(filePath, {static_cast<const u8*>(gpuCrashDump), gpuCrashDumpSize});
+        if(!TRAP::FileSystem::Exists(folderPath))
+            TRAP::FileSystem::CreateFolder(folderPath);
+        TRAP::FileSystem::WriteFile(filePath, {static_cast<const u8*>(gpuCrashDump), gpuCrashDumpSize});
 #endif /*ENABLE_NSIGHT_AFTERMATH*/
-}
+    }
 
-//-------------------------------------------------------------------------------------------------------------------//
+    //-------------------------------------------------------------------------------------------------------------------//
 
-bool LoadFunctions()
-{
+    bool LoadFunctions()
+    {
 #ifdef ENABLE_NSIGHT_AFTERMATH
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+        ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 #ifdef TRAP_PLATFORM_WINDOWS
-    AftermathHandle = TRAP::Utils::DynamicLoading::LoadLibrary("GFSDK_Aftermath_Lib.x64.dll");
+        AftermathHandle = TRAP::Utils::DynamicLoading::LoadLibrary("GFSDK_Aftermath_Lib.x64.dll");
 #elif defined(TRAP_PLATFORM_LINUX)
-    AftermathHandle = TRAP::Utils::DynamicLoading::LoadLibrary("libGFSDK_Aftermath_Lib.x64.so");
+        AftermathHandle = TRAP::Utils::DynamicLoading::LoadLibrary("libGFSDK_Aftermath_Lib.x64.so");
 #endif
 
-    if(AftermathHandle == nullptr)
-        return false;
+        if(AftermathHandle == nullptr)
+            return false;
 
-    AftermathEnableGPUCrashDumps = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_EnableGpuCrashDumps>
-    (
-        AftermathHandle, "GFSDK_Aftermath_EnableGpuCrashDumps"
-    );
-    AftermathDisableGPUCrashDumps = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_DisableGpuCrashDumps>
-    (
-        AftermathHandle, "GFSDK_Aftermath_DisableGpuCrashDumps"
-    );
-    AftermathGetGPUCrashDumpStatus = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_GetCrashDumpStatus>
-    (
-        AftermathHandle, "GFSDK_Aftermath_GetCrashDumpStatus"
-    );
+        AftermathEnableGPUCrashDumps = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_EnableGpuCrashDumps>
+        (
+            AftermathHandle, "GFSDK_Aftermath_EnableGpuCrashDumps"
+        );
+        AftermathDisableGPUCrashDumps = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_DisableGpuCrashDumps>
+        (
+            AftermathHandle, "GFSDK_Aftermath_DisableGpuCrashDumps"
+        );
+        AftermathGetGPUCrashDumpStatus = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_GetCrashDumpStatus>
+        (
+            AftermathHandle, "GFSDK_Aftermath_GetCrashDumpStatus"
+        );
 
-    return (AftermathEnableGPUCrashDumps != nullptr) && (AftermathDisableGPUCrashDumps != nullptr) && (AftermathGetGPUCrashDumpStatus != nullptr);
+        return (AftermathEnableGPUCrashDumps != nullptr) && (AftermathDisableGPUCrashDumps != nullptr) && (AftermathGetGPUCrashDumpStatus != nullptr);
 #else
-    return false;
+        return false;
 #endif
-}
+    }
 
-//-------------------------------------------------------------------------------------------------------------------//
+    //-------------------------------------------------------------------------------------------------------------------//
 
-void UnloadFunctions()
-{
+    void UnloadFunctions()
+    {
 #ifdef ENABLE_NSIGHT_AFTERMATH
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+        ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-    if(AftermathHandle != nullptr)
-        TRAP::Utils::DynamicLoading::FreeLibrary(AftermathHandle);
+        if(AftermathHandle != nullptr)
+            TRAP::Utils::DynamicLoading::FreeLibrary(AftermathHandle);
 
-    AftermathHandle = nullptr;
-    AftermathEnableGPUCrashDumps = nullptr;
-    AftermathDisableGPUCrashDumps = nullptr;
-    AftermathGetGPUCrashDumpStatus = nullptr;
+        AftermathHandle = nullptr;
+        AftermathEnableGPUCrashDumps = nullptr;
+        AftermathDisableGPUCrashDumps = nullptr;
+        AftermathGetGPUCrashDumpStatus = nullptr;
 #endif /*ENABLE_NSIGHT_AFTERMATH*/
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -158,6 +155,8 @@ void TRAP::Graphics::AftermathTracker::Shutdown()
 
     UnloadFunctions();
 #endif /*ENABLE_NSIGHT_AFTERMATH*/
+
+    AftermathInitialized = false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

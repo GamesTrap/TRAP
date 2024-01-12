@@ -291,8 +291,8 @@ namespace TRAP
 
 		inline constinit static u32 s_windows = 0;
 
-		inline static constexpr i32 MinimumSupportedWindowWidth = 2;
-		inline static constexpr i32 MinimumSupportedWindowHeight = 2;
+		static constexpr i32 MinimumSupportedWindowWidth = 2;
+		static constexpr i32 MinimumSupportedWindowHeight = 2;
 	};
 
 	/// @brief Struct containing all Window properties needed to create a new TRAP::Window.

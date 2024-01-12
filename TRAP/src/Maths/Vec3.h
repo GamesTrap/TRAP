@@ -79,7 +79,7 @@ public:
         //Explicit conversions
         template<typename X, typename Y, typename Z>
         requires std::is_arithmetic_v<X> && std::is_arithmetic_v<Y> && std::is_arithmetic_v<Z>
-        inline constexpr Vec(X x_, Y y_, Z z_) noexcept
+        constexpr Vec(X x_, Y y_, Z z_) noexcept
             : data{ static_cast<T>(x_), static_cast<T>(y_), static_cast<T>(z_) }
         {}
 
@@ -88,26 +88,26 @@ public:
         //Explicit conversions
         template<typename A, typename B>
         requires std::is_arithmetic_v<A> && std::is_arithmetic_v<B>
-        inline constexpr Vec(const Vec<2, A> & xy, B z_) noexcept
+        constexpr Vec(const Vec<2, A> & xy, B z_) noexcept
             : data{ static_cast<T>(xy.x()), static_cast<T>(xy.y()), static_cast<T>(z_) }
         {}
         //Explicit conversions
         template<typename A, typename B>
         requires std::is_arithmetic_v<A> && std::is_arithmetic_v<B>
-        inline constexpr Vec(A x_, const Vec<2, B>& yz) noexcept
+        constexpr Vec(A x_, const Vec<2, B>& yz) noexcept
             : data{ static_cast<T>(x_), static_cast<T>(yz.x()), static_cast<T>(yz.y()) }
         {}
         //Explicit conversions
         template<typename U>
         requires std::is_arithmetic_v<U>
-        inline explicit constexpr Vec(const Vec<4, U> & v) noexcept
+        explicit constexpr Vec(const Vec<4, U> & v) noexcept
             : data{ static_cast<T>(v.x()), static_cast<T>(v.y()), static_cast<T>(v.z()) }
         {}
 
         //Explicit conversions
         template<typename U>
         requires std::is_arithmetic_v<U>
-        inline explicit constexpr Vec(const Vec<3, U>& v) noexcept
+        explicit constexpr Vec(const Vec<3, U>& v) noexcept
             : data{ static_cast<T>(v.x()), static_cast<T>(v.y()), static_cast<T>(v.z()) }
         {}
 
@@ -221,7 +221,7 @@ public:
 
         template<typename U>
         requires std::is_arithmetic_v<U>
-        inline constexpr Vec<3, T>& operator=(const Vec<3, U>& v) noexcept
+        constexpr Vec<3, T>& operator=(const Vec<3, U>& v) noexcept
         {
             this->x() = static_cast<T>(v.x());
             this->y() = static_cast<T>(v.y());
@@ -231,7 +231,7 @@ public:
         }
         template<typename U>
 		requires std::is_arithmetic_v<U>
-        inline constexpr Vec<3, T>& operator+=(U scalar) noexcept
+        constexpr Vec<3, T>& operator+=(U scalar) noexcept
         {
             this->x() += static_cast<T>(scalar);
             this->y() += static_cast<T>(scalar);
@@ -241,7 +241,7 @@ public:
         }
         template<typename U>
         requires std::is_arithmetic_v<U>
-        inline constexpr Vec<3, T>& operator+=(const Vec<3, U>& v) noexcept
+        constexpr Vec<3, T>& operator+=(const Vec<3, U>& v) noexcept
         {
             this->x() += static_cast<T>(v.x());
             this->y() += static_cast<T>(v.y());
@@ -251,7 +251,7 @@ public:
         }
         template<typename U>
 		requires std::is_arithmetic_v<U>
-        inline constexpr Vec<3, T>& operator-=(U scalar) noexcept
+        constexpr Vec<3, T>& operator-=(U scalar) noexcept
         {
             this->x() -= static_cast<T>(scalar);
             this->y() -= static_cast<T>(scalar);
@@ -261,7 +261,7 @@ public:
         }
         template<typename U>
         requires std::is_arithmetic_v<U>
-        inline constexpr Vec<3, T>& operator-=(const Vec<3, U>& v) noexcept
+        constexpr Vec<3, T>& operator-=(const Vec<3, U>& v) noexcept
         {
             this->x() -= static_cast<T>(v.x());
             this->y() -= static_cast<T>(v.y());
@@ -271,7 +271,7 @@ public:
         }
         template<typename U>
 		requires std::is_arithmetic_v<U>
-        inline constexpr Vec<3, T>& operator*=(U scalar) noexcept
+        constexpr Vec<3, T>& operator*=(U scalar) noexcept
         {
             this->x() *= static_cast<T>(scalar);
             this->y() *= static_cast<T>(scalar);
@@ -281,7 +281,7 @@ public:
         }
         template<typename U>
         requires std::is_arithmetic_v<U>
-        inline constexpr Vec<3, T>& operator*=(const Vec<3, U> & v) noexcept
+        constexpr Vec<3, T>& operator*=(const Vec<3, U> & v) noexcept
         {
             this->x() *= static_cast<T>(v.x());
             this->y() *= static_cast<T>(v.y());
@@ -291,7 +291,7 @@ public:
         }
         template<typename U>
 		requires std::is_arithmetic_v<U>
-        inline constexpr Vec<3, T>& operator/=(U scalar) noexcept
+        constexpr Vec<3, T>& operator/=(U scalar) noexcept
         {
             this->x() /= static_cast<T>(scalar);
             this->y() /= static_cast<T>(scalar);
@@ -301,7 +301,7 @@ public:
         }
         template<typename U>
         requires std::is_arithmetic_v<U>
-        inline constexpr Vec<3, T>& operator/=(const Vec<3, U> & v) noexcept
+        constexpr Vec<3, T>& operator/=(const Vec<3, U> & v) noexcept
         {
             this->x() /= static_cast<T>(v.x());
             this->y() /= static_cast<T>(v.y());
@@ -319,7 +319,7 @@ public:
         //Unary bit operators
         template<typename U>
 		requires std::is_arithmetic_v<U>
-        inline constexpr Vec<3, T>& operator%=(U scalar) noexcept
+        constexpr Vec<3, T>& operator%=(U scalar) noexcept
         {
             if constexpr(std::floating_point<T>)
             {
@@ -338,7 +338,7 @@ public:
         }
         template<typename U>
         requires std::is_arithmetic_v<U>
-        inline constexpr Vec<3, T>& operator%=(const Vec<3, U> & v) noexcept
+        constexpr Vec<3, T>& operator%=(const Vec<3, U> & v) noexcept
         {
             if constexpr(std::floating_point<T>)
             {
@@ -357,7 +357,7 @@ public:
         }
         template<typename U>
 		requires std::integral<U>
-        inline constexpr Vec<3, T>& operator&=(U scalar) noexcept
+        constexpr Vec<3, T>& operator&=(U scalar) noexcept
         {
             this->x() &= static_cast<T>(scalar);
             this->y() &= static_cast<T>(scalar);
@@ -367,7 +367,7 @@ public:
         }
         template<typename U>
 		requires std::integral<U>
-        inline constexpr Vec<3, T>& operator&=(const Vec<3, U>& v) noexcept
+        constexpr Vec<3, T>& operator&=(const Vec<3, U>& v) noexcept
         {
             this->x() &= static_cast<T>(v.x());
             this->y() &= static_cast<T>(v.y());
@@ -377,7 +377,7 @@ public:
         }
         template<typename U>
 		requires std::integral<U>
-        inline constexpr Vec<3, T>& operator|=(U scalar) noexcept
+        constexpr Vec<3, T>& operator|=(U scalar) noexcept
         {
             this->x() |= static_cast<T>(scalar);
             this->y() |= static_cast<T>(scalar);
@@ -387,7 +387,7 @@ public:
         }
         template<typename U>
 		requires std::integral<U>
-        inline constexpr Vec<3, T>& operator|=(const Vec<3, U>& v) noexcept
+        constexpr Vec<3, T>& operator|=(const Vec<3, U>& v) noexcept
         {
             this->x() |= static_cast<T>(v.x());
             this->y() |= static_cast<T>(v.y());
@@ -397,7 +397,7 @@ public:
         }
         template<typename U>
 		requires std::integral<U>
-        inline constexpr Vec<3, T>& operator^=(U scalar) noexcept
+        constexpr Vec<3, T>& operator^=(U scalar) noexcept
         {
             this->x() ^= static_cast<T>(scalar);
             this->y() ^= static_cast<T>(scalar);
@@ -407,7 +407,7 @@ public:
         }
         template<typename U>
 		requires std::integral<U>
-        inline constexpr Vec<3, T>& operator^=(const Vec<3, U> & v) noexcept
+        constexpr Vec<3, T>& operator^=(const Vec<3, U> & v) noexcept
         {
             this->x() ^= static_cast<T>(v.x());
             this->y() ^= static_cast<T>(v.y());
@@ -417,7 +417,7 @@ public:
         }
         template<typename U>
 		requires std::integral<U>
-        inline constexpr Vec<3, T>& operator<<=(U scalar) noexcept
+        constexpr Vec<3, T>& operator<<=(U scalar) noexcept
         {
             this->x() <<= static_cast<T>(scalar);
             this->y() <<= static_cast<T>(scalar);
@@ -427,7 +427,7 @@ public:
         }
         template<typename U>
 		requires std::integral<U>
-        inline constexpr Vec<3, T>& operator<<=(const Vec<3, U>& v) noexcept
+        constexpr Vec<3, T>& operator<<=(const Vec<3, U>& v) noexcept
         {
             this->x() <<= static_cast<T>(v.x());
             this->y() <<= static_cast<T>(v.y());
@@ -437,7 +437,7 @@ public:
         }
         template<typename U>
 		requires std::integral<U>
-        inline constexpr Vec<3, T>& operator>>=(U scalar) noexcept
+        constexpr Vec<3, T>& operator>>=(U scalar) noexcept
         {
             this->x() >>= static_cast<T>(scalar);
             this->y() >>= static_cast<T>(scalar);
@@ -447,7 +447,7 @@ public:
         }
         template<typename U>
 		requires std::integral<U>
-        inline constexpr Vec<3, T>& operator>>=(const Vec<3, U> & v) noexcept
+        constexpr Vec<3, T>& operator>>=(const Vec<3, U> & v) noexcept
         {
             this->x() >>= static_cast<T>(v.x());
             this->y() >>= static_cast<T>(v.y());
@@ -458,7 +458,7 @@ public:
 
         [[nodiscard]] consteval auto operator<=>(const Vec<3, T>& rhs) const noexcept = delete;
 
-		inline constexpr void Swap(Vec<3, T>& other) noexcept(std::is_nothrow_move_constructible_v<Vec<3, T>> &&
+		constexpr void Swap(Vec<3, T>& other) noexcept(std::is_nothrow_move_constructible_v<Vec<3, T>> &&
 		                                                      std::is_nothrow_move_assignable_v<Vec<3, T>>)
 		{
 			std::swap(data, other.data);
@@ -1326,7 +1326,7 @@ namespace std
 {
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	inline constexpr void swap(TRAP::Math::Vec<3, T>& lhs, TRAP::Math::Vec<3, T>& rhs) noexcept(std::is_nothrow_move_constructible_v<TRAP::Math::Vec<3, T>> &&
+	constexpr void swap(TRAP::Math::Vec<3, T>& lhs, TRAP::Math::Vec<3, T>& rhs) noexcept(std::is_nothrow_move_constructible_v<TRAP::Math::Vec<3, T>> &&
 																                                std::is_nothrow_move_assignable_v<TRAP::Math::Vec<3, T>>)
 	{
 		lhs.Swap(rhs);

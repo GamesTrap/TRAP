@@ -1,6 +1,27 @@
 #include "TRAPPCH.h"
 #include "Base.h"
 
+namespace
+{
+    std::atomic TRAPProfileSystems = ProfileSystems::All;
+}
+
+/// @brief Retrieve the TRAP systems to be profiled.
+/// @return Systems to profile.
+[[nodiscard]] ProfileSystems GetTRAPProfileSystems() noexcept
+{
+	return TRAPProfileSystems;
+}
+
+/// @brief Set the TRAP systems to profile.
+/// @param systems Systems to profile.
+void SetTRAPProfileSystems(const ProfileSystems systems) noexcept
+{
+	TRAPProfileSystems = systems;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 #ifdef TRACY_ENABLE
 [[nodiscard]] void* operator new(const usize count)
 {

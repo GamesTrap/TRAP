@@ -89,12 +89,12 @@ namespace TRAP::INTERNAL
 
 		std::vector<f32> m_data;
 
-		inline static constexpr u32 MinEncodingLength = 8; //Minimum scanline length for encoding
-		inline static constexpr u32 MaxEncodingLength = 0x7FFF; //Maximum scanline length for encoding
-		inline static constexpr u32 R = 0;
-		inline static constexpr u32 G = 1;
-		inline static constexpr u32 B = 2;
-		inline static constexpr u32 E = 3;
+		static constexpr u32 MinEncodingLength = 8; //Minimum scanline length for encoding
+		static constexpr u32 MaxEncodingLength = 0x7FFF; //Maximum scanline length for encoding
+		static constexpr u32 R = 0;
+		static constexpr u32 G = 1;
+		static constexpr u32 B = 2;
+		static constexpr u32 E = 3;
 	};
 }
 

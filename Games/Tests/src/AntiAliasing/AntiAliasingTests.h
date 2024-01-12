@@ -35,7 +35,7 @@ private:
 		TRAP::Graphics::SampleCount Samples;
 	};
 
-	inline static constexpr std::array<SampleData, 4> Samples
+	static constexpr std::array<SampleData, 4> Samples
 	{
 		{
 			{ "x2", TRAP::Graphics::SampleCount::Two },

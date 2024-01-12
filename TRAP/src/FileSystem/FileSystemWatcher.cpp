@@ -241,8 +241,8 @@ void TRAP::FileSystem::FileSystemWatcher::Init(TRAP::Optional<std::promise<void>
 
     //Remove all duplicate paths
     std::ranges::sort(m_paths);
-    const auto last = std::unique(m_paths.begin(), m_paths.end(), FileSystem::IsEquivalent);
-    m_paths.erase(last, m_paths.end());
+    const auto last = std::ranges::unique(m_paths, FileSystem::IsEquivalent);
+    m_paths.erase(last.begin(), m_paths.end());
 
     if(m_paths.empty())
     {
@@ -331,12 +331,12 @@ namespace
     {
 	    ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
-        const auto last = std::unique(events.begin(), events.end(), [](const auto& lhs, const auto& rhs)
+        const auto last = std::ranges::unique(events, [](const auto& lhs, const auto& rhs)
         {
             return lhs.GetStatus() == rhs.GetStatus() && lhs.GetPath() == rhs.GetPath() && lhs.GetOldPath() == rhs.GetOldPath();
         });
 
-        events.erase(last, events.end());
+        events.erase(last.begin(), events.end());
     }
 
     void DispatchEvents(std::vector<TRAP::Events::FileSystemChangeEvent>& events,
@@ -737,8 +737,7 @@ namespace
             return false;
 
         u64 value = 0;
-        const ssize_t len = read(killEventFD.fd, &value, sizeof(value));
-        if(len < 0)
+        if(const ssize_t len = read(killEventFD.fd, &value, sizeof(value)); len < 0)
         {
             TP_ERROR(TRAP::Log::FileWatcherLinuxPrefix, "Failed to read kill event (", TRAP::Utils::String::GetStrError(), ")");
             return true; //Treat this as kill was triggered
@@ -783,15 +782,17 @@ namespace
     {
 	    ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
+        using enum TRAP::FileSystem::FileSystemStatus;
+
         if(from.empty() || to.empty())
             return;
 
         if(to.parent_path() == from.parent_path())
-            events.emplace_back(TRAP::FileSystem::FileSystemStatus::Renamed, to, from);
+            events.emplace_back(Renamed, to, from);
         else
         {
-            events.emplace_back(TRAP::FileSystem::FileSystemStatus::Erased, from);
-            events.emplace_back(TRAP::FileSystem::FileSystemStatus::Created, to);
+            events.emplace_back(Erased, from);
+            events.emplace_back(Created, to);
         }
     }
 
@@ -832,7 +833,8 @@ namespace
                 continue;
             }
 
-            const std::filesystem::path filePath = watchDescriptors.at(event->wd) / std::filesystem::path(event->name, event->name + event->len);
+            const std::string_view fileName(event->name, event->len);
+            const std::filesystem::path filePath = watchDescriptors.at(event->wd) / std::filesystem::path(fileName);
             TRAP_ASSERT(!filePath.empty());
 
             if((event->mask & IN_DELETE) != 0u)

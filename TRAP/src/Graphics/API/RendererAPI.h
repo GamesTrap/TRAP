@@ -1545,7 +1545,7 @@ namespace TRAP::Graphics
 		};
 
 		/// @brief The maximum amount of descriptor sets that can be used.
-		inline static constexpr u32 MaxDescriptorSets = 4;
+		static constexpr u32 MaxDescriptorSets = 4;
 
 		/// @brief Enum describing the different types of filtering used by samplers.
 		enum class FilterType
@@ -2808,7 +2808,7 @@ namespace TRAP::Graphics
 #endif /*TRAP_HEADLESS_MODE*/
 		} GPUSettings{};
 
-		inline static constexpr u32 ImageCount = 3; //Triple Buffered
+		static constexpr u32 ImageCount = 3; //Triple Buffered
 
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Retrieve the image index currently used for rendering from the given window.

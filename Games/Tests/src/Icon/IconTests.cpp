@@ -3,7 +3,7 @@
 namespace
 {
 	//Simple TRAP Logo
-	inline constexpr std::array<std::array<char, 17>, 16> IconStrings
+	constexpr std::array<std::array<char, 17>, 16> IconStrings
 	{
 		{
 			{"................"},
@@ -27,7 +27,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	inline constexpr std::array<std::array<u8, 4>, 5> IconColors
+	constexpr std::array<std::array<u8, 4>, 5> IconColors
 	{
 		{
 			{  0,   0,   0, 255}, //Black
