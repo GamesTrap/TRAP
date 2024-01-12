@@ -277,7 +277,7 @@ namespace TRAP::Graphics::API
     /// @brief Retrieve whether the given image format has only a depth channel.
     /// @param fmt Image format.
     /// @return True if the format has only depth, false otherwise.
-    [[nodiscard]] inline constexpr bool ImageFormatIsDepthOnly(const ImageFormat fmt) noexcept
+    [[nodiscard]] constexpr bool ImageFormatIsDepthOnly(const ImageFormat fmt) noexcept
     {
         switch (fmt)
         {
@@ -297,7 +297,7 @@ namespace TRAP::Graphics::API
     /// @brief Retrieve whether the given image format has depth and stencil channels.
     /// @param fmt Image format.
     /// @return True if the format has depth and stencil, false otherwise.
-    [[nodiscard]] inline constexpr bool ImageFormatIsDepthAndStencil(const ImageFormat fmt) noexcept
+    [[nodiscard]] constexpr bool ImageFormatIsDepthAndStencil(const ImageFormat fmt) noexcept
     {
         switch (fmt)
         {
@@ -317,7 +317,7 @@ namespace TRAP::Graphics::API
     /// @brief Retrieve whether the given image format has only a stencil channel.
     /// @param fmt Image format.
     /// @return True if the format has only stencil, false otherwise.
-    [[nodiscard]] inline constexpr bool ImageFormatIsStencilOnly(const ImageFormat fmt) noexcept
+    [[nodiscard]] constexpr bool ImageFormatIsStencilOnly(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -331,14 +331,14 @@ namespace TRAP::Graphics::API
     /// @brief Retrieve whether the given image format has a stencil channel.
     /// @param fmt Image format.
     /// @return True if the format has stencil, false otherwise.
-    [[nodiscard]] inline constexpr bool ImageFormatHasStencil(const ImageFormat fmt) noexcept
+    [[nodiscard]] constexpr bool ImageFormatHasStencil(const ImageFormat fmt) noexcept
     {
         return ImageFormatIsStencilOnly(fmt) || ImageFormatIsDepthAndStencil(fmt);
     }
     /// @brief Retrieve the bit size of a single block from the given image format.
     /// @param fmt Image format.
     /// @return Bit size of a single block.
-    [[nodiscard]] inline constexpr u32 ImageFormatBitSizeOfBlock(const ImageFormat fmt) noexcept
+    [[nodiscard]] constexpr u32 ImageFormatBitSizeOfBlock(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -515,7 +515,7 @@ namespace TRAP::Graphics::API
     /// @brief Retrieve how many pixels are in the x dimension of a block of the given image format.
     /// @param fmt Image format.
     /// @return Pixel count.
-    [[nodiscard]] inline constexpr u32 ImageFormatWidthOfBlock(const ImageFormat fmt) noexcept
+    [[nodiscard]] constexpr u32 ImageFormatWidthOfBlock(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -592,7 +592,7 @@ namespace TRAP::Graphics::API
     /// @brief Retrieve how many pixels are in the y dimension of a block of the given image format.
     /// @param fmt Image format.
     /// @return Pixel count.
-    [[nodiscard]] inline constexpr u32 ImageFormatHeightOfBlock(const ImageFormat fmt) noexcept
+    [[nodiscard]] constexpr u32 ImageFormatHeightOfBlock(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -665,7 +665,7 @@ namespace TRAP::Graphics::API
     /// @brief Retrieve wheter the given image format is planar.
     /// @param fmt Image format.
     /// @return True if planar, false otherwise.
-    [[nodiscard]] inline constexpr bool ImageFormatIsPlanar(const ImageFormat fmt) noexcept
+    [[nodiscard]] constexpr bool ImageFormatIsPlanar(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -698,7 +698,7 @@ namespace TRAP::Graphics::API
     /// @brief Retrieve the number of planes are strored by the given image format.
     /// @param fmt Image format.
     /// @return Number of planes.
-    [[nodiscard]] inline constexpr u32 ImageFormatNumOfPlanes(const ImageFormat fmt) noexcept
+    [[nodiscard]] constexpr u32 ImageFormatNumOfPlanes(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -733,7 +733,7 @@ namespace TRAP::Graphics::API
     /// @brief Retrieve whether the given image format has only a single plane.
     /// @param fmt Image format.
     /// @return True if single plane, false otherwise.
-    [[nodiscard]] inline constexpr bool ImageFormatIsSinglePlane(const ImageFormat fmt) noexcept
+    [[nodiscard]] constexpr bool ImageFormatIsSinglePlane(const ImageFormat fmt) noexcept
     {
         return !ImageFormatIsPlanar(fmt) || ImageFormatNumOfPlanes(fmt) < 2;
     }
@@ -742,7 +742,7 @@ namespace TRAP::Graphics::API
     /// @param plane Plane index.
     /// @param width Width of the image (plane 0).
     /// @return Width of the plane.
-    [[nodiscard]] inline constexpr u32 ImageFormatPlaneWidth(const ImageFormat fmt, const u32 plane,
+    [[nodiscard]] constexpr u32 ImageFormatPlaneWidth(const ImageFormat fmt, const u32 plane,
                                                                   const u32 width) noexcept
     {
         if (plane == 0)
@@ -776,7 +776,7 @@ namespace TRAP::Graphics::API
     /// @param plane Plane index.
     /// @param height Height of the image (plane 0).
     /// @return Height of the plane.
-    [[nodiscard]] inline constexpr u32 ImageFormatPlaneHeight(const ImageFormat fmt, const u32 plane,
+    [[nodiscard]] constexpr u32 ImageFormatPlaneHeight(const ImageFormat fmt, const u32 plane,
                                                                    const u32 height) noexcept
     {
         if (plane == 0)
@@ -802,7 +802,7 @@ namespace TRAP::Graphics::API
     /// @param fmt Image format.
     /// @param plane Plane index.
     /// @return Plane size of a single block.
-    [[nodiscard]] inline constexpr u32 ImageFormatPlaneSizeOfBlock(const ImageFormat fmt, const u32 plane) noexcept
+    [[nodiscard]] constexpr u32 ImageFormatPlaneSizeOfBlock(const ImageFormat fmt, const u32 plane) noexcept
     {
         switch(fmt)
         {
@@ -841,7 +841,7 @@ namespace TRAP::Graphics::API
     /// @brief Retrieve whether the image format is a compresed format.
     /// @param fmt Image format.
     /// @return True if the image format is a compressed format.
-    [[nodiscard]] inline constexpr bool ImageFormatIsCompressed(const ImageFormat fmt) noexcept
+    [[nodiscard]] constexpr bool ImageFormatIsCompressed(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -914,7 +914,7 @@ namespace TRAP::Graphics::API
     /// @brief Retrieve the number of channels in the image format.
     /// @param fmt Image format.
     /// @return Number of channels.
-    [[nodiscard]] inline constexpr u32 ImageFormatChannelCount(const ImageFormat fmt) noexcept
+    [[nodiscard]] constexpr u32 ImageFormatChannelCount(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -1020,7 +1020,7 @@ namespace TRAP::Graphics::API
     /// @brief Retrieve whether the given image format stores data as floating point.
     /// @param fmt Image format.
     /// @return True if the format stores floating point data.
-    [[nodiscard]] inline constexpr bool ImageFormatIsFloat(const ImageFormat fmt) noexcept
+    [[nodiscard]] constexpr bool ImageFormatIsFloat(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -1052,7 +1052,7 @@ namespace TRAP::Graphics::API
     /// @brief Retrieve whether the given image format stores data as u16.
     /// @param fmt Image format.
     /// @return True if the format stores u16 data.
-    [[nodiscard]] inline constexpr bool ImageFormatIsU16(const ImageFormat fmt) noexcept
+    [[nodiscard]] constexpr bool ImageFormatIsU16(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -1080,7 +1080,7 @@ namespace TRAP::Graphics::API
         }
     }
 
-    [[nodiscard]] inline constexpr bool ImageFormatIsNormalized(const ImageFormat fmt) noexcept
+    [[nodiscard]] constexpr bool ImageFormatIsNormalized(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -1218,7 +1218,7 @@ namespace TRAP::Graphics::API
         }
     }
 
-    [[nodiscard]] inline constexpr bool ImageFormatIsSigned(const ImageFormat fmt) noexcept
+    [[nodiscard]] constexpr bool ImageFormatIsSigned(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {

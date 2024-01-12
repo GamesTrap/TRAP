@@ -14,8 +14,8 @@ TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, TRAP::Window& w
 
 [[nodiscard]] std::string TRAP::Events::KeyPressEvent::ToString() const
 {
-	const std::string name = TRAP::Input::GetKeyName(m_key);
-	return fmt::format("KeyPressEvent: {}({}) (\"{}\")", name, std::to_underlying(m_key), m_window.get().GetTitle());
+	const std::string name = TRAP::Input::GetKeyName(GetKey());
+	return fmt::format("KeyPressEvent: {}({}) (\"{}\")", name, std::to_underlying(GetKey()), m_window.get().GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -31,8 +31,8 @@ TRAP::Events::KeyRepeatEvent::KeyRepeatEvent(const Input::Key key, TRAP::Window&
 
 [[nodiscard]] std::string TRAP::Events::KeyRepeatEvent::ToString() const
 {
-	const std::string name = TRAP::Input::GetKeyName(m_key);
-	return fmt::format("KeyRepeatEvent: {}({}) (\"{}\")", name, std::to_underlying(m_key), m_window.get().GetTitle());
+	const std::string name = TRAP::Input::GetKeyName(GetKey());
+	return fmt::format("KeyRepeatEvent: {}({}) (\"{}\")", name, std::to_underlying(GetKey()), m_window.get().GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -48,8 +48,8 @@ TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, TRAP::Windo
 
 [[nodiscard]] std::string TRAP::Events::KeyReleaseEvent::ToString() const
 {
-	const std::string name = TRAP::Input::GetKeyName(m_key);
-	return fmt::format("KeyReleaseEvent: {}({}) (\"{}\")", name, std::to_underlying(m_key), m_window.get().GetTitle());
+	const std::string name = TRAP::Input::GetKeyName(GetKey());
+	return fmt::format("KeyReleaseEvent: {}({}) (\"{}\")", name, std::to_underlying(GetKey()), m_window.get().GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

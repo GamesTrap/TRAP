@@ -152,7 +152,7 @@ namespace TRAP::FileSystem
 template<>
 struct fmt::formatter<TRAP::FileSystem::FileSystemStatus>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }
@@ -162,16 +162,18 @@ struct fmt::formatter<TRAP::FileSystem::FileSystemStatus>
         std::string enumStr{};
         switch(status)
         {
-        case TRAP::FileSystem::FileSystemStatus::Created:
+        using enum TRAP::FileSystem::FileSystemStatus;
+
+        case Created:
             enumStr = "Created";
             break;
-        case TRAP::FileSystem::FileSystemStatus::Renamed:
+        case Renamed:
             enumStr = "Renamed";
             break;
-        case TRAP::FileSystem::FileSystemStatus::Modified:
+        case Modified:
             enumStr = "Modified";
             break;
-        case TRAP::FileSystem::FileSystemStatus::Erased:
+        case Erased:
             enumStr = "Erased";
             break;
 

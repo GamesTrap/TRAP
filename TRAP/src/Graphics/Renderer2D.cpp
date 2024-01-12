@@ -64,7 +64,7 @@ namespace TRAP::Graphics
 			inline static Ref<Sampler> TextureSampler = nullptr;
 			inline static Ref<Texture> WhiteTexture = nullptr;
 
-			inline static constexpr std::array<Math::Vec4, 4> VertexPositions
+			static constexpr std::array<Math::Vec4, 4> VertexPositions
 			{
 				{
 					{ -0.5f, -0.5f, 0.0f, 1.0f },

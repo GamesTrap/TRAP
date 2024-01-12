@@ -13,7 +13,7 @@
 
 #include "Types.h"
 
-[[nodiscard]] inline constexpr std::unsigned_integral auto BIT(const std::unsigned_integral auto x) noexcept
+[[nodiscard]] constexpr std::unsigned_integral auto BIT(const std::unsigned_integral auto x) noexcept
 {
 	return decltype(x)(1) << x;
 }
@@ -104,7 +104,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline constexpr std::vector<std::string> SplitString(const std::string& string, const std::string& delimiters)
+[[nodiscard]] constexpr std::vector<std::string> SplitString(const std::string& string, const std::string& delimiters)
 {
 	usize start = 0;
 	usize end = string.find_first_of(delimiters);
@@ -130,14 +130,14 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline constexpr std::vector<std::string> GetLines(const std::string& string)
+[[nodiscard]] constexpr std::vector<std::string> GetLines(const std::string& string)
 {
 	return SplitString(string, "\n");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline constexpr std::string GetSuffix(const std::string& name)
+[[nodiscard]] constexpr std::string GetSuffix(const std::string& name)
 {
 	const usize pos = name.rfind('.');
 
@@ -146,14 +146,14 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline constexpr char ToLower(const char c)
+[[nodiscard]] constexpr char ToLower(const char c)
 {
 	return (c >= 'A' && c <= 'Z') ? static_cast<char>(c - 'A' + 'a') : c;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline constexpr std::string ToLower(std::string string)
+[[nodiscard]] constexpr std::string ToLower(std::string string)
 {
     for(char& c : string)
         c = static_cast<char>(ToLower(c));
@@ -176,7 +176,7 @@ namespace std
     {};
 
     template<class T>
-    inline constexpr bool is_scoped_enum_v = is_scoped_enum<T>::value;
+    constexpr bool is_scoped_enum_v = is_scoped_enum<T>::value;
 }
 
 #endif
@@ -222,7 +222,7 @@ namespace std
 
 template<typename T>
 requires (std::unsigned_integral<T> && !std::same_as<T, u8>)
-[[nodiscard]] inline constexpr T ConvertByte(const u8* const source)
+[[nodiscard]] constexpr T ConvertByte(const u8* const source)
 {
     if constexpr (sizeof(T) == 2)
     {

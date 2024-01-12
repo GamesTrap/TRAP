@@ -38,6 +38,7 @@ namespace TRAP::Events
 		/// @brief Move assignment operator.
 		MonitorEvent& operator=(MonitorEvent&&) noexcept = default;
 
+	private:
 		Monitor m_monitor;
 	};
 

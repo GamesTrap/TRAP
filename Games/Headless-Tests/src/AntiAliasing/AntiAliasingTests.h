@@ -12,7 +12,7 @@ public:
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 
 private:
-	inline static constexpr TRAP::Graphics::OrthographicCamera s_camera{-(2560.0f / 1440.0f), 2560.0f / 1440.0f, -1.0f, 1.0f, -1.0f, 1.0f};
+	static constexpr TRAP::Graphics::OrthographicCamera s_camera{-(2560.0f / 1440.0f), 2560.0f / 1440.0f, -1.0f, 1.0f, -1.0f, 1.0f};
 };
 
 //-------------------------------------------------------------------------------------------------------------------//

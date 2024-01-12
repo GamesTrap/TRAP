@@ -160,7 +160,7 @@ namespace TRAP
 		/// @return Converted image.
 		[[nodiscard]] static Scope<Image> ConvertRGBToRGBA(const Image* img);
 
-		inline static constexpr std::array<std::string_view, 15> SupportedImageFormatSuffixes
+		static constexpr std::array<std::string_view, 15> SupportedImageFormatSuffixes
 		{
 			".pgm", ".ppm", ".pnm", ".pam", ".pfm",
 			".tga", ".icb", ".vda", ".vst",

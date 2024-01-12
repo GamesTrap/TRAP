@@ -34,14 +34,14 @@ freely, subject to the following restrictions:
 namespace TRAP::Embed
 {
 #ifdef TRAP_BUILD_WIN32_MAPPINGS
-	inline constexpr usize ControllerMappingsSize = @TRAP_WIN32_MAPPINGS_SIZE@;
+	constexpr usize ControllerMappingsSize = @TRAP_WIN32_MAPPINGS_SIZE@;
 #endif /*TRAP_BUILD_WIN32_MAPPINGS*/
 
 #ifdef TRAP_BUILD_LINUX_MAPPINGS
-	inline constexpr usize ControllerMappingsSize = @TRAP_LINUX_MAPPINGS_SIZE@;
+	constexpr usize ControllerMappingsSize = @TRAP_LINUX_MAPPINGS_SIZE@;
 #endif /*TRAP_BUILD_LINUX_MAPPINGS*/
 
-	inline constexpr std::array<std::string_view, ControllerMappingsSize> ControllerMappings =
+	constexpr std::array<std::string_view, ControllerMappingsSize> ControllerMappings =
 	{
 #ifdef TRAP_BUILD_WIN32_MAPPINGS
 @TRAP_WIN32_MAPPINGS@

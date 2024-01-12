@@ -60,7 +60,7 @@ namespace TRAP
 		u32 m_maxThreadsCount;
 		std::atomic<u32> m_index = 0;
 
-		inline static constexpr u32 K = 3;
+		static constexpr u32 K = 3;
 	};
 }
 

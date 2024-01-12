@@ -95,7 +95,7 @@ namespace TRAP
 template<u32 major, u32 minor, u32 patch>
 struct fmt::formatter<TRAP::SemanticVersion<major, minor, patch>>
 {
-    constexpr auto parse(fmt::format_parse_context& ctx)
+    constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }

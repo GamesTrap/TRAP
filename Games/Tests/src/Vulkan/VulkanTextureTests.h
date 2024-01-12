@@ -27,7 +27,7 @@ private:
     bool m_updateTexture = false;
     u32 m_currentTexture = 0;
 
-    inline static constexpr std::array<f32, 5ull * 4> QuadVerticesIndexed
+    static constexpr std::array<f32, 5ull * 4> QuadVerticesIndexed
 	{
 		//XYZ UV
 		-0.5f, -0.5f, 0.0f,    0.0f, 1.0f,
@@ -35,7 +35,7 @@ private:
 		 0.5f,  0.5f, 0.0f,    1.0f, 0.0f,
 		-0.5f,  0.5f, 0.0f,    0.0f, 0.0f
 	};
-    inline static constexpr std::array<u16, 6> QuadIndices
+    static constexpr std::array<u16, 6> QuadIndices
 	{
 		0, 1, 2, 2, 3, 0
 	};

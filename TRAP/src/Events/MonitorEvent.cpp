@@ -17,7 +17,8 @@
 
 [[nodiscard]] std::string TRAP::Events::MonitorConnectEvent::ToString() const
 {
-	return fmt::format("MonitorConnectEvent: {} ({})", m_monitor.GetName(), m_monitor.GetID());
+	Monitor mon = GetMonitor();
+	return fmt::format("MonitorConnectEvent: {} ({})", mon.GetName(), mon.GetID());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -26,7 +27,8 @@
 
 [[nodiscard]] std::string TRAP::Events::MonitorDisconnectEvent::ToString() const
 {
-	return fmt::format("MonitorDisconnectEvent: {} ({})", m_monitor.GetName(), m_monitor.GetID());
+	Monitor mon = GetMonitor();
+	return fmt::format("MonitorDisconnectEvent: {} ({})", mon.GetName(), mon.GetID());
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

@@ -33,7 +33,7 @@ constexpr ControllerTests::ControllerTests()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline constexpr std::string ControllerTests::GetDPadDirection(const TRAP::Input::ControllerDPad& dpad)
+constexpr std::string ControllerTests::GetDPadDirection(const TRAP::Input::ControllerDPad& dpad)
 {
 	switch (dpad)
 	{

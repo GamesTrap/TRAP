@@ -9,7 +9,7 @@ namespace TRAP::Utils::Memory
 	/// @brief Converts primitive data types from big->little or little->big endian depending on
 	/// given parameters endianness.
 	/// @param t Primitive data type.
-	inline constexpr void SwapBytes(std::integral auto& t)
+	constexpr void SwapBytes(std::integral auto& t)
 	{
 		t = std::byteswap(t);
 	}
@@ -22,7 +22,7 @@ namespace TRAP::Utils::Memory
 	/// @param end End of the container.
 	template<typename Iter>
 	requires std::integral<typename std::iterator_traits<Iter>::value_type>
-	inline constexpr void SwapBytes(Iter begin, Iter end)
+	constexpr void SwapBytes(Iter begin, Iter end)
 	{
 		for(; begin != end; ++begin)
 			SwapBytes(*begin);
@@ -35,7 +35,7 @@ namespace TRAP::Utils::Memory
 	/// @note Byte order depends on the given input bytes.
 	template<typename T>
 	requires (std::unsigned_integral<T> && !std::same_as<T, u8>)
-	[[nodiscard]] inline constexpr T ConvertByte(const u8* const source)
+	[[nodiscard]] constexpr T ConvertByte(const u8* const source)
 	{
 		if constexpr (sizeof(T) == 2)
 		{
@@ -71,7 +71,7 @@ namespace TRAP::Utils::Memory
 	/// @note The output container must be big enough to hold the converted data.
 	template<typename InputIt, typename OutputIt>
 	requires std::same_as<typename std::iterator_traits<InputIt>::value_type, u8>
-	inline static void ConvertBytes(InputIt begin, InputIt end, OutputIt output)
+	static void ConvertBytes(InputIt begin, InputIt end, OutputIt output)
 	{
 		using output_type = typename std::iterator_traits<OutputIt>::value_type;
 
@@ -93,7 +93,7 @@ namespace TRAP::Utils::Memory
 	/// @tparam Byte Byte to retrieve.
 	/// @return Requested byte from the given integral.
 	template<u8 Byte>
-	[[nodiscard]] inline constexpr u8 GetByteFromInteger(const std::integral auto value)
+	[[nodiscard]] constexpr u8 GetByteFromInteger(const std::integral auto value)
 	requires (Byte < sizeof(decltype(value)))
 	{
 		return NumericCast<u8>((value >> (Byte * 8u)) & 0xFFu);

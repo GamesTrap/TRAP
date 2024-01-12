@@ -39,7 +39,7 @@ namespace TRAP
 		constexpr TagComponent() noexcept = default;
 		/// @brief Constructor.
 		/// @param tag Tag to use.
-		inline constexpr explicit TagComponent(std::string tag) noexcept
+		constexpr explicit TagComponent(std::string tag) noexcept
 			: Tag(std::move(tag))
 		{}
 	};

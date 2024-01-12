@@ -129,21 +129,21 @@ constexpr TRAP::Monitor::VideoMode::VideoMode(const u32 width, const u32 height,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline constexpr std::string TRAP::Monitor::GetName() const noexcept
+[[nodiscard]] constexpr std::string TRAP::Monitor::GetName() const noexcept
 {
 	return m_handle->Name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline constexpr bool TRAP::Monitor::IsInUse() const noexcept
+[[nodiscard]] constexpr bool TRAP::Monitor::IsInUse() const noexcept
 {
 	return m_handle->Window != nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline constexpr void* TRAP::Monitor::GetInternalMonitor() const noexcept
+[[nodiscard]] constexpr void* TRAP::Monitor::GetInternalMonitor() const noexcept
 {
 	return m_handle;
 }

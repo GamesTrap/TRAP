@@ -322,10 +322,13 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline constexpr std::array<std::string_view, 11> UnusedChunks
+namespace
 {
-	"cHRM", "gAMA", "iCCP", "hIST", "pHYs", "sPLT", "tIME", "iTXt", "tEXt", "zTXt", "eXIf"
-};
+	constexpr std::array<std::string_view, 11> UnusedChunks
+	{
+		"cHRM", "gAMA", "iCCP", "hIST", "pHYs", "sPLT", "tIME", "iTXt", "tEXt", "zTXt", "eXIf"
+	};
+}
 [[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data,
                                                           AlreadyLoaded& alreadyLoaded)
 {

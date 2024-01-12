@@ -915,9 +915,7 @@ namespace
 
         for(const auto& entry : dirIt)
         {
-            bool regFile = entry.is_regular_file(ec);
-
-            if(ec || !regFile)
+            if(const bool regFile = entry.is_regular_file(ec); ec || !regFile)
                 continue;
 
             uintmax_t fileSize = entry.file_size(ec);
@@ -1210,8 +1208,7 @@ namespace
 
         //Non root user way
         const uid_t uid = getuid();
-        const char* const homeEnv = getenv("HOME");
-        if(uid != 0 && (homeEnv != nullptr))
+        if(const char* const homeEnv = getenv("HOME"); uid != 0 && (homeEnv != nullptr))
         {
             //We only acknowledge HOME if not root.
             homeDir = homeEnv;

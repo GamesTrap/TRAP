@@ -4788,3 +4788,7 @@ SITREP 01/08/2023|24w02a1
     - FileSystemWatcher Added future return type to AddFolder() and AddFolders() ~<10 mins
     - FileSystemWatcher better filtering of subdirs when recursive checking is enabled ~<10 mins
     - UnitTests Added FileSystemWatcher tests ~<60 mins
+
+SITREP 01/12/2023|24w02a2
+    - Changed TRAP Engine version to 24w02a2(0.10.29)
+    - Various minor code tweaks ~<45 mins

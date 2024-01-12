@@ -234,10 +234,10 @@ namespace TRAP::Graphics
 		[[nodiscard]] static Ref<Shader> CreateFromSource(const std::string& name, const std::string& glslSource,
 		                                                  const std::vector<Macro>* userMacros = nullptr);
 
-		inline static constexpr std::array<std::string_view, 3> SupportedShaderFormatSuffixes{".shader", ".glsl", ".tp-spv"};
-		inline static constexpr u32 SPIRVMagicNumber = 0x07230203u;
-		inline static constexpr std::string_view ShaderMagicNumber = "TRAP_SPV";
-		inline static constexpr usize ShaderHeaderOffset = ShaderMagicNumber.size() + sizeof(u32) +
+		static constexpr std::array<std::string_view, 3> SupportedShaderFormatSuffixes{".shader", ".glsl", ".tp-spv"};
+		static constexpr u32 SPIRVMagicNumber = 0x07230203u;
+		static constexpr std::string_view ShaderMagicNumber = "TRAP_SPV";
+		static constexpr usize ShaderHeaderOffset = ShaderMagicNumber.size() + sizeof(u32) +
 		                                                         sizeof(u8) + sizeof(usize) + sizeof(u8);
 
 	protected:
