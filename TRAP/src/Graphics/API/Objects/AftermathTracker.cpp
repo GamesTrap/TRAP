@@ -20,11 +20,11 @@ namespace
     //-------------------------------------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef ENABLE_NSIGHT_AFTERMATH
     void OnGPUCrashDump([[maybe_unused]] const void* const gpuCrashDump,
                         [[maybe_unused]] const u32 gpuCrashDumpSize,
                         [[maybe_unused]] void* const userData)
     {
-#ifdef ENABLE_NSIGHT_AFTERMATH
         ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
         TRAP_ASSERT(gpuCrashDump, "OnGPUCrashDump(): gpuCrashDump is nullptr!");
@@ -47,14 +47,14 @@ namespace
         if(!TRAP::FileSystem::Exists(folderPath))
             TRAP::FileSystem::CreateFolder(folderPath);
         TRAP::FileSystem::WriteFile(filePath, {static_cast<const u8*>(gpuCrashDump), gpuCrashDumpSize});
-#endif /*ENABLE_NSIGHT_AFTERMATH*/
     }
+#endif /*ENABLE_NSIGHT_AFTERMATH*/
 
     //-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef ENABLE_NSIGHT_AFTERMATH
     bool LoadFunctions()
     {
-#ifdef ENABLE_NSIGHT_AFTERMATH
         ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -80,16 +80,14 @@ namespace
         );
 
         return (AftermathEnableGPUCrashDumps != nullptr) && (AftermathDisableGPUCrashDumps != nullptr) && (AftermathGetGPUCrashDumpStatus != nullptr);
-#else
-        return false;
-#endif
     }
+#endif
 
     //-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef ENABLE_NSIGHT_AFTERMATH
     void UnloadFunctions()
     {
-#ifdef ENABLE_NSIGHT_AFTERMATH
         ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
         if(AftermathHandle != nullptr)
@@ -99,8 +97,8 @@ namespace
         AftermathEnableGPUCrashDumps = nullptr;
         AftermathDisableGPUCrashDumps = nullptr;
         AftermathGetGPUCrashDumpStatus = nullptr;
-#endif /*ENABLE_NSIGHT_AFTERMATH*/
     }
+#endif /*ENABLE_NSIGHT_AFTERMATH*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
