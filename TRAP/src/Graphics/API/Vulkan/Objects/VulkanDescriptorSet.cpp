@@ -52,7 +52,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const u32 index,
 	if(!(descriptor))                                                                         \
 	{                                                                                         \
 	    constexpr std::source_location descLoc = std::source_location::current();             \
-		const std::string msg = fmt::format("{} : {}", descLoc.function_name(), __VA_ARGS__); \
+		const std::string msg = fmt::format("{}: {}", __VA_ARGS__, descLoc);                  \
 		TP_ERROR(Log::RendererVulkanDescriptorSetPrefix, msg);                                \
 		TRAP_ASSERT(false, msg);                                                              \
 		continue;                                                                             \
