@@ -18,22 +18,21 @@
 #ifdef TRAP_ENABLE_ASSERTS
 
 template<typename... Args>
-void TRAP_ASSERT_IMPL_LOG(const std::string_view expressionStr, const std::string_view filename,
-                          const std::string_view function, const std::uint_least32_t line,
-						  const std::uint_least32_t column, [[maybe_unused]] const Args&... args)
+void TRAP_ASSERT_IMPL_LOG(const std::string_view expressionStr, const std::source_location& sourceLoc,
+                          [[maybe_unused]] const Args&... args)
 {
 	if constexpr(sizeof...(Args) > 1)
 	{
-		TP_CRITICAL("Assertion '", expressionStr, "' failed: \"", args..., "\" in ", filename, " @ ", function, ':', line, ':', column);
+		TP_CRITICAL(" Assertion '", expressionStr, "' failed: \"", args..., "\" in ", sourceLoc);
 	}
 	else
 	{
-		TP_CRITICAL("Assertion '", expressionStr, "' failed in ", filename, " @ ", function, ':', line, ':', column);
+		TP_CRITICAL(" Assertion '", expressionStr, "' failed in ", sourceLoc);
 	}
 }
 
 #define TRAP_ASSERT_IMPL(check, ...) { if(!(check)) { constexpr std::source_location loc = std::source_location::current(); \
-                                                      TRAP_ASSERT_IMPL_LOG(TRAP_STRINGIFY_MACRO(check), loc.file_name(), loc.function_name(), loc.line(), loc.column(), __VA_ARGS__); \
+                                                      TRAP_ASSERT_IMPL_LOG(TRAP_STRINGIFY_MACRO(check), loc, __VA_ARGS__); \
 													  std::breakpoint_if_debugging(); } }
 
 //Currently accepts at least the condition and one additional parameter (the message) being optional

@@ -41,26 +41,18 @@ namespace TRAP::Graphics::API
 	/// @brief Check the if given VkResult contains an error.
 	/// If the given VkResult contains an error, the function will log information about the error.
 	/// @param result VkResult to check.
-	/// @param function Name of the function that called the error checker.
-	/// @param file Name of the file where the function is in that called the error checker.
-	/// @param line Line number of the error check call.
-	/// @param column Column number of the error check call.
+	/// @param sourceLoc Source location of the function that called the error checker.
 	/// @return True for non error codes, otherwise false.
-	constexpr bool ErrorCheck(VkResult result, std::string_view function, std::string_view file,
-	                          std::uint_least32_t line, std::uint_least32_t column);
+	constexpr bool ErrorCheck(VkResult result, const std::source_location& sourceLoc);
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	/// @brief Check the if given NvLL_VK_Status contains an error.
 	/// If the given NvLL_VK_Status contains an error, the function will log information about the error.
 	/// @param result NvLL_VK_Status to check.
-	/// @param function Name of the function that called the error checker.
-	/// @param file Name of the file where the function is in that called the error checker.
-	/// @param line Line number of the error check call.
-	/// @param column Column number of the error check call.
+	/// @param sourceLoc Source location of the function that called the error checker.
 	/// @return True for non error codes, otherwise false.
 	/// @remark @headless This function is not available in headless mode.
 	/// @remark This function is only available when NVIDIA Reflex SDK is provided.
-	constexpr bool ReflexErrorCheck(NvLL_VK_Status result, std::string_view function, std::string_view file,
-	                                std::uint_least32_t line, std::uint_least32_t column);
+	constexpr bool ReflexErrorCheck(NvLL_VK_Status result, const std::source_location& sourceLoc);
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 	/// @brief Convert the RendererAPI::QueueType to VkQueueFlags.
 	/// @param queueType QueueType to convert.
@@ -307,10 +299,10 @@ namespace TRAP::Graphics::API
 #ifdef TRAP_DEBUG
  	/// @brief Utility to check VkResult for errors and log them.
  	#define VkCall(x) { constexpr std::source_location loc = std::source_location::current(); \
- 	                    ::TRAP::Graphics::API::ErrorCheck(x, loc.function_name(), loc.file_name(), loc.line(), loc.column()); }
+ 	                    ::TRAP::Graphics::API::ErrorCheck(x, loc); }
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	#define VkReflexCall(x) { constexpr std::source_location loc = std::source_location::current(); \
- 	                          ::TRAP::Graphics::API::ReflexErrorCheck(x, loc.function_name(), loc.file_name(), loc.line(), loc.column()); }
+ 	                          ::TRAP::Graphics::API::ReflexErrorCheck(x, loc); }
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 #else
 	/// @brief Utility to check VkResult for errors and log them.
@@ -393,15 +385,13 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std::string_view function,
-                                               const std::string_view file, const std::uint_least32_t line,
-											   const std::uint_least32_t column)
+constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std::source_location& sourceLoc)
 {
 	if(result >= 0)
 		return true;
 
-	TP_ERROR(Log::RendererVulkanPrefix, INTERNAL::VkResultToString.at(result).value_or("Unknown error"),
-	         ": ", function, " @[", file, ':', line, ':', column, ']');
+	TP_ERROR(Log::RendererVulkanPrefix, INTERNAL::VkResultToString.at(result).value_or("Unknown error"), ": ",
+	         sourceLoc);
 
 	return false;
 }
@@ -409,15 +399,13 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 //-------------------------------------------------------------------------------------------------------------------//
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result, const std::string_view function,
-                                                     const std::string_view file, const std::uint_least32_t line,
-													 const std::uint_least32_t column)
+constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result, const std::source_location& sourceLoc)
 {
 	if(result == NVLL_VK_OK)
 		return true;
 
 	TP_ERROR(Log::RendererVulkanReflexPrefix, INTERNAL::NvLLVKStatusToString.at(result).value_or("Unknown error"),
-	         ": ", function, " @[", file, ':', line, ':', column, ']');
+	         ": ", sourceLoc);
 
 	return false;
 }
