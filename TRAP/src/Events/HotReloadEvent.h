@@ -2,8 +2,6 @@
 #define TRAP_HOTRELOADEVENT_H
 
 #include "Event.h"
-#include "Graphics/Shaders/Shader.h"
-#include "Graphics/Textures/Texture.h"
 
 namespace TRAP::Graphics
 {

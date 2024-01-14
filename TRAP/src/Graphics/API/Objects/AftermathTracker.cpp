@@ -44,8 +44,7 @@ namespace
         const std::filesystem::path folderPath = *targetFolder / "crash-dumps";
         const std::filesystem::path filePath = folderPath / fmt::format("crash_{}.nv-gpudmp", dateTimeStamp);
 
-        if(!TRAP::FileSystem::Exists(folderPath))
-            TRAP::FileSystem::CreateFolder(folderPath);
+        TRAP::FileSystem::CreateFolder(folderPath);
         TRAP::FileSystem::WriteFile(filePath, {static_cast<const u8*>(gpuCrashDump), gpuCrashDumpSize});
     }
 #endif /*ENABLE_NSIGHT_AFTERMATH*/

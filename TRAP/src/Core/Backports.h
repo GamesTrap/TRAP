@@ -38,6 +38,10 @@ namespace std
 
 #endif /*__cpp_lib_is_scoped_enum*/
 
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
 #ifndef __cpp_lib_to_underlying
 
 namespace std
@@ -61,6 +65,10 @@ namespace std
 #endif /*__cplusplus >= 202302L*/
 
 #endif /*__cpp_lib_to_underlying*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef __cpp_lib_byteswap
 
@@ -86,6 +94,10 @@ namespace std
 
 #endif /*__cpp_lib_byteswap*/
 
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
 #ifndef __cpp_lib_ranges_contains
 
 namespace std::ranges
@@ -105,6 +117,8 @@ namespace std::ranges
         {
             return std::ranges::find(std::move(first), last, value, std::move(proj)) != last;
         }
+
+        //-------------------------------------------------------------------------------------------------------------------//
 
         /// @brief Search-based algorithm that checks whether or not a given range contains a value with
         ///        iterator-sentinel pairs.
@@ -131,20 +145,17 @@ namespace std::ranges
 
 #endif /*__cpp_lib_ranges_contains*/
 
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
 #ifndef __cpp_lib_unreachable
 
 namespace std
 {
     /// @brief Invokes undefined behaviour. An implementation may use this to optimize impossible code branches away
     ///        (typically, in optimized builds) or to trap them to prevent further execution (typically, in debug builds).
-    [[noreturn]] inline void unreachable()
-    {
-    #ifdef __GNUC__
-        __builtin_unreachable();
-    #elif defined(_MSC_VER)
-        __assume(false);
-    #endif
-    }
+    [[noreturn]] void unreachable();
 }
 
 #else
@@ -154,6 +165,10 @@ namespace std
 #endif /*__cplusplus >= 202302L*/
 
 #endif /*__cpp_lib_unreachable*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef __cpp_lib_debugging
 
@@ -167,6 +182,8 @@ namespace std
     ///       debugging, etc.
     [[nodiscard]] bool is_debugger_present() noexcept;
 
+    //-------------------------------------------------------------------------------------------------------------------//
+
     /// @brief Unconditional breakpoint: attempts to temporarily halt the execution
     ///        of the program and transfer control to the debugger whether or not it's
     ///        not possible to determine if the debugger is present. Formally, the behaviour
@@ -178,6 +195,8 @@ namespace std
     ///       breaking on user input to inspect context in interactive programs without needing
     ///       to switch to the debugger application, etc.
     void breakpoint() noexcept;
+
+    //-------------------------------------------------------------------------------------------------------------------//
 
     /// @brief Conditional breakpoint: attempts to temporarily halt
     ///        the execution of the program and transfer control to the
@@ -197,10 +216,16 @@ namespace std
 
 #endif /*__cpp_lib_debugging*/
 
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
 #if !defined(__cpp_lib_containers_ranges) || __cpp_lib_containers_ranges < 202202L
 
 template<typename Range, typename T>
 concept ContainerCompatibleRange = std::ranges::input_range<Range> && std::convertible_to<std::ranges::range_reference_t<Range>, T>;
+
+//-------------------------------------------------------------------------------------------------------------------//
 
 namespace INTERNAL
 {
@@ -212,8 +237,12 @@ namespace INTERNAL
         } -> std::same_as<typename Container::iterator>;
     };
 
+    //-------------------------------------------------------------------------------------------------------------------//
+
     template<typename Container>
     concept ContainerHasEndIterator = requires(Container c) {c.end();};
+
+    //-------------------------------------------------------------------------------------------------------------------//
 
     template<typename Container>
     concept ContainerHasAssignMemberFunction = requires(Container c)
@@ -224,6 +253,8 @@ namespace INTERNAL
     };
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+
 template<typename Container, ContainerCompatibleRange<typename Container::value_type> Range>
 requires INTERNAL::ContainerHasInsertMemberFunction<Container>
 constexpr typename Container::iterator ContainerInsertRange(Container& container, typename Container::const_iterator position, Range&& range)
@@ -231,12 +262,16 @@ constexpr typename Container::iterator ContainerInsertRange(Container& container
     return container.insert(position, std::ranges::begin(range), std::ranges::end(range));
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+
 template<typename Container, ContainerCompatibleRange<typename Container::value_type> Range>
 requires INTERNAL::ContainerHasEndIterator<Container>
 constexpr void ContainerAppendRange(Container& container, Range&& range)
 {
     ContainerInsertRange(container, container.end(), std::forward<Range>(range));
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
 
 template<typename Container, ContainerCompatibleRange<typename Container::value_type> Range>
 requires INTERNAL::ContainerHasAssignMemberFunction<Container>

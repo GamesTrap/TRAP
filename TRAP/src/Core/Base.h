@@ -132,6 +132,7 @@ enum class ProfileSystems : u32
 	AllVerbose = Events | FileSystem | Graphics | Vulkan | ImageLoader | Input | Layers |
 	             Network | Scene | ThreadPool | Utils | Window | WindowingAPI | Verbose
 };
+MAKE_ENUM_FLAG(ProfileSystems);
 
 /// @brief Retrieve the TRAP systems to be profiled.
 /// @return Systems to profile.
@@ -140,8 +141,6 @@ enum class ProfileSystems : u32
 /// @brief Set the TRAP systems to profile.
 /// @param systems Systems to profile.
 void SetTRAPProfileSystems(ProfileSystems systems) noexcept;
-
-MAKE_ENUM_FLAG(ProfileSystems);
 
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic pop
