@@ -98,11 +98,11 @@ namespace
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
+#ifdef ENABLE_GRAPHICS_DEBUG
     if(AftermathHandle.Get() != nullptr)
         return true;
 
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererAftermathTrackerPrefix, "Creating AftermathTracker");
+    TP_DEBUG(Log::RendererAftermathTrackerPrefix, "Creating AftermathTracker");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
@@ -131,11 +131,11 @@ void TRAP::Graphics::AftermathTracker::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
+#ifdef ENABLE_GRAPHICS_DEBUG
     if(AftermathHandle.Get() == nullptr)
         return;
 
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererAftermathTrackerPrefix, "Destroying AftermathTracker");
+    TP_DEBUG(Log::RendererAftermathTrackerPrefix, "Destroying AftermathTracker");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
