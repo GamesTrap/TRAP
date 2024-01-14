@@ -27,12 +27,9 @@ namespace TRAP::Graphics::API
 		/// @brief Move assignment operator.
 		VulkanPipelineCache& operator=(VulkanPipelineCache&&) noexcept = default;
 
-		/// @brief Retrieve the cached pipeline data.
-		///
-		/// To retrieve the size of cached data call this function with data = nullptr.
-		/// @param size Output: Size of the data.
-		/// @param data Output: Pointer to store the data.
-		void GetPipelineCacheData(usize* size, void* data) const override;
+		/// @brief Retrieve the cached pipeline data in bytes.
+		/// @return Pipeline cache data as bytes.
+		[[nodiscard]] std::vector<u8> GetPipelineCacheData() const override;
 
 		/// @brief Retrieve the Vulkan pipeline cache handle.
 		/// @return Vulkan pipeline cache handle

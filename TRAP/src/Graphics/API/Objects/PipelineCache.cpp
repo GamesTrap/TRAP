@@ -8,14 +8,9 @@ void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path) cons
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	std::vector<u8> data{};
-	usize dataSize = 0;
-
-	GetPipelineCacheData(&dataSize, nullptr);
-	if (dataSize == 0)
+	const std::vector<u8> data = GetPipelineCacheData();
+	if(data.empty())
 		return;
-	data.resize(dataSize);
-	GetPipelineCacheData(&dataSize, data.data());
 
 	if (!TRAP::FileSystem::WriteFile(path, data))
 		TP_ERROR(Log::RendererPipelineCachePrefix, "Saving of PipelineCache to path: ", path, " failed!");
@@ -52,18 +47,17 @@ void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path) cons
 	{
 	case RenderAPI::Vulkan:
 	{
-		TRAP::Graphics::RendererAPI::PipelineCacheDesc cacheDesc{};
-		cacheDesc.Flags = desc.Flags;
+		TRAP::Graphics::RendererAPI::PipelineCacheDesc cacheDesc{.Data = {}, .Flags = desc.Flags};
 		if(!TRAP::FileSystem::Exists(desc.Path))
 			return TRAP::Graphics::PipelineCache::Create(cacheDesc); //Empty cache
 
-		const auto data = TRAP::FileSystem::ReadFile(desc.Path);
-		if(!data)
-			return TRAP::Graphics::PipelineCache::Create(cacheDesc); //Empty cache
+		if(const auto data = TRAP::FileSystem::ReadFile(desc.Path))
+		{
+			cacheDesc.Data = *data;
+			return TRAP::Graphics::PipelineCache::Create(cacheDesc); //Cache with data
+		}
 
-		cacheDesc.Data = *data;
-
-		return TRAP::Graphics::PipelineCache::Create(cacheDesc); //Cache with data
+		return TRAP::Graphics::PipelineCache::Create(cacheDesc); //Empty cache
 	}
 
 	case RenderAPI::NONE:

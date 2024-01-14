@@ -29,11 +29,9 @@ namespace TRAP::Graphics
 		/// @brief Move assignment operator.
 		PipelineCache& operator=(PipelineCache&&) noexcept = default;
 
-		/// @brief Retrieve the cached pipeline data.
-		///        To retrieve the size of cached data call this function with data = nullptr.
-		/// @param size Output: Size of the data.
-		/// @param data Output: Pointer to store the data.
-		virtual void GetPipelineCacheData(usize* size, void* data) const = 0;
+		/// @brief Retrieve the cached pipeline data in bytes.
+		/// @return Pipeline cache data as bytes.
+		[[nodiscard]] virtual std::vector<u8> GetPipelineCacheData() const = 0;
 
 		/// @brief Save a pipeline to disk.
 		/// @param path Path to save the pipeline to.
