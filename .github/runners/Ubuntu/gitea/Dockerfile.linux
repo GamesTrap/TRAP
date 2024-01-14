@@ -1,0 +1,25 @@
+FROM trappedgames/actions-runner-linux-base:latest
+LABEL maintainer="gamestrap@trappedgames.de"
+
+ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
+RUN mkdir -p /opt/hostedtoolcache
+
+ARG GT_RUNNER_VERSION="0.2.6"
+
+ARG TARGETPLATFORM
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+WORKDIR /actions-runner
+COPY install_actions.sh /actions-runner
+
+RUN chmod +x /actions-runner/install_actions.sh \
+  && /actions-runner/install_actions.sh ${GT_RUNNER_VERSION} ${TARGETPLATFORM} \
+  && rm /actions-runner/install_actions.sh \
+  && chown runner /_work /actions-runner /opt/hostedtoolcache
+
+COPY entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["./act_runner", "daemon"]
