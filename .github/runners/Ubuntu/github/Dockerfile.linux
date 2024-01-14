@@ -1,4 +1,4 @@
-FROM trappedgames/github-actions-runner-linux-base:latest
+FROM trappedgames/actions-runner-linux-base:latest
 LABEL maintainer="gamestrap@trappedgames.de"
 
 ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache

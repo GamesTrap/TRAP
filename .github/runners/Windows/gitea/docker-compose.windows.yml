@@ -1,0 +1,18 @@
+version: '3'
+services:
+  worker:
+    restart: unless-stopped
+    image: trappedgames/gitea-actions-runner-windows:latest
+    environment:
+      GT_HOST: <GITEA_HOST_URL>
+      GT_TOKEN: <RUNNER_REGISTRATION_TOKEN>
+      RUNNER_NAME: windows-v4-cpu
+      RUNNER_LABELS: windows,x64,server,2022,cpu
+      CONTAINER_MAX_CPUS: 4
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 8GB
+        reservations:
+          cpus: "4"

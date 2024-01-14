@@ -1,0 +1,17 @@
+# escape=`
+
+FROM trappedgames/actions-runner-windows-base:latest
+LABEL maintainer="gamestrap@trappedgames.de"
+
+ARG GH_RUNNER_VERSION="2.311.0"
+
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';"]
+
+#Set working directory
+WORKDIR /actions-runner
+
+ADD install_gha.ps1 start.ps1 cleanup_runners.ps1 ./
+
+RUN .\install_gha.ps1
+
+ENTRYPOINT ["powershell", "./start.ps1"]

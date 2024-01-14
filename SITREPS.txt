@@ -4797,3 +4797,7 @@ SITREP 01/12/2023|24w02a2
 SITREP 01/13/2023|24w02a3
     - Changed TRAP Engine version to 24w02a3(0.10.30)
     - Make use of the new fmt std::source_location support ~<5 mins
+
+SITREP 01/14/2023|24w02a3
+    - Changed TRAP Engine version to 24w02b1(0.10.31)
+    - Added docker files for Gitea Actions Runners ~<30 mins
