@@ -7,13 +7,20 @@
 
 namespace
 {
-    bool AftermathInitialized = false;
-
 #ifdef ENABLE_NSIGHT_AFTERMATH
-    void* AftermathHandle = nullptr;
     PFN_GFSDK_Aftermath_EnableGpuCrashDumps AftermathEnableGPUCrashDumps = nullptr;
     PFN_GFSDK_Aftermath_DisableGpuCrashDumps AftermathDisableGPUCrashDumps = nullptr;
     PFN_GFSDK_Aftermath_GetCrashDumpStatus AftermathGetGPUCrashDumpStatus = nullptr;
+
+    void AftermathHandleDeleter(void* aftermathHandle)
+    {
+        TRAP::Utils::DynamicLoading::FreeLibrary(aftermathHandle);
+
+        AftermathEnableGPUCrashDumps = nullptr;
+        AftermathDisableGPUCrashDumps = nullptr;
+        AftermathGetGPUCrashDumpStatus = nullptr;
+    }
+    TRAP::UniqueResource<void*, decltype(&AftermathHandleDeleter)> AftermathHandle{};
 #endif /*ENABLE_NSIGHT_AFTERMATH*/
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -57,47 +64,30 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 #ifdef TRAP_PLATFORM_WINDOWS
-        AftermathHandle = TRAP::Utils::DynamicLoading::LoadLibrary("GFSDK_Aftermath_Lib.x64.dll");
+        AftermathHandle = TRAP::MakeUniqueResourceChecked(TRAP::Utils::DynamicLoading::LoadLibrary("GFSDK_Aftermath_Lib.x64.dll"), nullptr, &AftermathHandleDeleter);
 #elif defined(TRAP_PLATFORM_LINUX)
-        AftermathHandle = TRAP::Utils::DynamicLoading::LoadLibrary("libGFSDK_Aftermath_Lib.x64.so");
+        AftermathHandle = TRAP::MakeUniqueResourceChecked(TRAP::Utils::DynamicLoading::LoadLibrary("libGFSDK_Aftermath_Lib.x64.so"), nullptr, &AftermathHandleDeleter);
 #endif
 
-        if(AftermathHandle == nullptr)
+        if(AftermathHandle.Get() == nullptr)
             return false;
 
         AftermathEnableGPUCrashDumps = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_EnableGpuCrashDumps>
         (
-            AftermathHandle, "GFSDK_Aftermath_EnableGpuCrashDumps"
+            AftermathHandle.Get(), "GFSDK_Aftermath_EnableGpuCrashDumps"
         );
         AftermathDisableGPUCrashDumps = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_DisableGpuCrashDumps>
         (
-            AftermathHandle, "GFSDK_Aftermath_DisableGpuCrashDumps"
+            AftermathHandle.Get(), "GFSDK_Aftermath_DisableGpuCrashDumps"
         );
         AftermathGetGPUCrashDumpStatus = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_GetCrashDumpStatus>
         (
-            AftermathHandle, "GFSDK_Aftermath_GetCrashDumpStatus"
+            AftermathHandle.Get(), "GFSDK_Aftermath_GetCrashDumpStatus"
         );
 
         return (AftermathEnableGPUCrashDumps != nullptr) && (AftermathDisableGPUCrashDumps != nullptr) && (AftermathGetGPUCrashDumpStatus != nullptr);
     }
 #endif
-
-    //-------------------------------------------------------------------------------------------------------------------//
-
-#ifdef ENABLE_NSIGHT_AFTERMATH
-    void UnloadFunctions()
-    {
-        ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-        if(AftermathHandle != nullptr)
-            TRAP::Utils::DynamicLoading::FreeLibrary(AftermathHandle);
-
-        AftermathHandle = nullptr;
-        AftermathEnableGPUCrashDumps = nullptr;
-        AftermathDisableGPUCrashDumps = nullptr;
-        AftermathGetGPUCrashDumpStatus = nullptr;
-    }
-#endif /*ENABLE_NSIGHT_AFTERMATH*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -108,7 +98,7 @@ namespace
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-    if(AftermathInitialized)
+    if(AftermathHandle.Get() != nullptr)
         return true;
 
 #ifdef ENABLE_GRAPHICS_DEBUG
@@ -117,12 +107,13 @@ namespace
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
     if(!LoadFunctions())
+    {
+        AftermathHandle.Reset();
         return false;
+    }
 
     if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
     {
-        AftermathInitialized = true;
-
         AftermathCall(AftermathEnableGPUCrashDumps(GFSDK_Aftermath_Version_API,
                                                    GFSDK_Aftermath_GpuCrashDumpWatchedApiFlags_Vulkan,
                                                    GFSDK_Aftermath_GpuCrashDumpFeatureFlags_Default,
@@ -131,7 +122,7 @@ namespace
 
 #endif /*ENABLE_NSIGHT_AFTERMATH*/
 
-    return AftermathInitialized;
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -140,7 +131,7 @@ void TRAP::Graphics::AftermathTracker::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-    if(!AftermathInitialized)
+    if(AftermathHandle.Get() == nullptr)
         return;
 
 #ifdef ENABLE_GRAPHICS_DEBUG
@@ -150,10 +141,8 @@ void TRAP::Graphics::AftermathTracker::Shutdown()
 #ifdef ENABLE_NSIGHT_AFTERMATH
     AftermathCall(AftermathDisableGPUCrashDumps());
 
-    UnloadFunctions();
+    AftermathHandle.Reset();
 #endif /*ENABLE_NSIGHT_AFTERMATH*/
-
-    AftermathInitialized = false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -164,7 +153,7 @@ void TRAP::Graphics::AftermathTracker::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-    if(!AftermathInitialized)
+    if(AftermathHandle.Get() == nullptr)
         return GFSDK_Aftermath_Result_FAIL_NotInitialized;
 
     return AftermathGetGPUCrashDumpStatus(&outStatus);

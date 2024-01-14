@@ -4802,3 +4802,5 @@ SITREP 01/14/2023|24w02a3
     - Changed TRAP Engine version to 24w02b1(0.10.31)
     - Added docker files for Gitea Actions Runners ~<30 mins
     - Added nodejs to Action Runner docker images ~<5 mins
+    - Various minor code tweaks ~<30 mins
+    - AftermathTracker now uses UniqueResource ~<10 mins
