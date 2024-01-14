@@ -195,7 +195,8 @@ MAKE_ENUM_FLAG(TRAP::Events::EventCategory)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-struct fmt::formatter<T, std::enable_if_t<std::is_base_of_v<TRAP::Events::Event, T>, char>> : fmt::formatter<std::string>
+requires std::is_base_of_v<TRAP::Events::Event, T>
+struct fmt::formatter<T> : fmt::formatter<std::string>
 {
     fmt::format_context::iterator format(const TRAP::Events::Event& event, fmt::format_context& ctx) const
     {
