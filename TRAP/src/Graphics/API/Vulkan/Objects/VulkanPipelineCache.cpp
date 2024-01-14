@@ -36,10 +36,21 @@ TRAP::Graphics::API::VulkanPipelineCache::~VulkanPipelineCache()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanPipelineCache::GetPipelineCacheData(usize* const size, void* const data) const
+[[nodiscard]] std::vector<u8> TRAP::Graphics::API::VulkanPipelineCache::GetPipelineCacheData() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	if(m_cache != nullptr)
-		VkCall(vkGetPipelineCacheData(m_device->GetVkDevice(), m_cache, size, data));
+	if(m_cache == nullptr)
+		return {};
+
+	usize dataSize = 0;
+	VkCall(vkGetPipelineCacheData(m_device->GetVkDevice(), m_cache, &dataSize, nullptr));
+
+	if(dataSize == 0)
+		return {};
+
+	std::vector<u8> data(dataSize);
+	VkCall(vkGetPipelineCacheData(m_device->GetVkDevice(), m_cache, &dataSize, data.data()));
+
+	return data;
 }
