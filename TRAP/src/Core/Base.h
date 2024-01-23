@@ -2,7 +2,6 @@
 #define TRAP_CORE_H
 
 #include <memory>
-#include <type_traits>
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
@@ -95,8 +94,14 @@ inline constexpr TRAP::SemanticVersion<0, 10, 33> TRAP_VERSION{};
 	{ \
 		return static_cast<ENUM_TYPE>(std::to_underlying(a) & std::to_underlying(b)); \
 	} \
-	constexpr ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a | b); }\
-	constexpr ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a & b); }
+	constexpr ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept \
+	{ \
+	    return a = (a | b); \
+	} \
+	constexpr ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept \
+	{ \
+	    return a = (a & b); \
+	}
 #endif /*MAKE_ENUM_FLAG*/
 
 //-------------------------------------------------------------------------------------------------------------------//
