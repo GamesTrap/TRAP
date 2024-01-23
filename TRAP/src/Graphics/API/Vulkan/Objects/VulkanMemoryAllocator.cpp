@@ -52,8 +52,10 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
 	vulkanFunctions.vkCmdCopyBuffer = vkCmdCopyBuffer;
 
 	//Dedicated Allocation
+#if VMA_DEDICATED_ALLOCATION || VMA_VULKAN_VERSION >= 1001000
 	vulkanFunctions.vkGetBufferMemoryRequirements2KHR = vkGetBufferMemoryRequirements2;
 	vulkanFunctions.vkGetImageMemoryRequirements2KHR = vkGetImageMemoryRequirements2;
+#endif /*VMA_DEDICATED_ALLOCATION || VMA_VULKAN_VERSION >= 1001000*/
 
 	//Bind Memory 2
 #if VMA_BIND_MEMORY2 || VMA_VULKAN_VERSION >= 1001000
@@ -67,13 +69,13 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
 		vulkanFunctions.vkGetPhysicalDeviceMemoryProperties2KHR = vkGetPhysicalDeviceMemoryProperties2KHR;
 #endif /*VMA_MEMORY_BUDGET || VMA_VULKAN_VERSION >= 1001000*/
 
-#if VMA_VULKAN_VERSION >= 1003000
+#if VMA_KHR_MAINTENANCE4 || VMA_VULKAN_VERSION >= 1003000
 	if(VulkanRenderer::s_maintenance4Extension)
 	{
 		vulkanFunctions.vkGetDeviceBufferMemoryRequirements = vkGetDeviceBufferMemoryRequirementsKHR;
 		vulkanFunctions.vkGetDeviceImageMemoryRequirements = vkGetDeviceImageMemoryRequirementsKHR;
 	}
-#endif /*VMA_VULKAN_VERSION >= 1003000*/
+#endif /*VMA_KHR_MAINTENANCE4 || VMA_VULKAN_VERSION >= 1003000*/
 
 	const VmaAllocatorCreateInfo info = VulkanInits::VMAAllocatorCreateInfo(device->GetVkDevice(),
 		                                                                    device->GetPhysicalDevice()->GetVkPhysicalDevice(),
