@@ -96,6 +96,19 @@ void TRAP::Graphics::Sampler::ClearCache() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+namespace
+{
+	[[nodiscard]] bool DoesSamplerNeedUpdate(const f32 requestedSamples,
+	                                         const std::pair<const TRAP::Graphics::RendererAPI::SamplerDesc,
+	                                                         TRAP::Ref<TRAP::Graphics::Sampler>>& samplerEntry)
+	{
+		const auto& [desc, sampler] = samplerEntry;
+
+		return desc.EnableAnisotropy && sampler->UsesEngineAnisotropyLevel() &&
+		       sampler->GetAnisotropyLevel() != requestedSamples;
+	}
+}
+
 void TRAP::Graphics::Sampler::UpdateSamplers()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -103,14 +116,8 @@ void TRAP::Graphics::Sampler::UpdateSamplers()
 	const f32 usedSamples = NumericCast<f32>(std::to_underlying(RenderCommand::GetAnisotropyLevel()));
 
 	std::vector<Ref<Sampler>> samplersToUpdate{};
-	for(const auto& [desc, sampler] : s_cachedSamplers)
-	{
-		//Ignore Samplers that dont use anisotropic filtering, or already use the engine anisotropy level
-		if(!desc.EnableAnisotropy || !sampler->UsesEngineAnisotropyLevel() || sampler->GetAnisotropyLevel() == usedSamples)
-			continue;
-
+	for(const auto& [desc, sampler] : s_cachedSamplers | std::views::filter(std::bind_front(DoesSamplerNeedUpdate, usedSamples)))
 		samplersToUpdate.emplace_back(sampler);
-	}
 
 	if(samplersToUpdate.empty()) //Early exit
 		return;

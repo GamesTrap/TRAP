@@ -2,7 +2,6 @@
 
 #include <optional>
 #include <string_view>
-#include <string>
 
 #include <fmt/core.h>
 
@@ -32,12 +31,12 @@ namespace TRAP
         }
 
         /// @brief Copy constructor.
-        consteval SemanticVersion(const SemanticVersion&) = delete;
+        consteval SemanticVersion(const SemanticVersion&) noexcept = delete;
         /// @brief Move constructor.
         consteval SemanticVersion(SemanticVersion&&) noexcept = default;
 
         /// @brief Copy assignment operator.
-        consteval SemanticVersion& operator=(const SemanticVersion&) = delete;
+        consteval SemanticVersion& operator=(const SemanticVersion&) noexcept = delete;
         /// @brief Move assignment operator.
         consteval SemanticVersion& operator=(SemanticVersion&&) noexcept = default;
 

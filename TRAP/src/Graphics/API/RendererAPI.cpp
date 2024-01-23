@@ -751,7 +751,7 @@ TRAP::Graphics::RendererAPI::PerViewportData::~PerViewportData()
 
 #ifndef TRAP_HEADLESS_MODE
 	SwapChain.reset();
-	ImageAcquiredSemaphore.reset();
+	ImageAcquiredSemaphores = {};
 #else
 	RenderTargets = {};
 #endif
