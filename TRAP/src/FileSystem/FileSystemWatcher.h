@@ -5,7 +5,6 @@
 #include <functional>
 #include <future>
 #include <thread>
-#include <atomic>
 #include <shared_mutex>
 
 #include <fmt/core.h>
