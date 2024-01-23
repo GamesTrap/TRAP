@@ -114,15 +114,21 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 	if(p->Recording)
 		return;
 
+	const TRAP::Ref<Fence> renderCompleteFence = p->RenderCompleteFences[p->ImageIndex];
+
+	//Stall if CPU is running "Swap Chain Buffer Count" frames ahead of GPU
+	if (renderCompleteFence->GetStatus() == FenceStatus::Incomplete)
+		renderCompleteFence->Wait();
+
 	//Start Recording
 #ifndef TRAP_HEADLESS_MODE
-	std::optional<u32> acquiredImage = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphore, nullptr);
+	std::optional<u32> acquiredImage = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphores[p->ImageIndex], nullptr);
 
 	if(!acquiredImage)
 	{
 		p->SwapChain->UpdateFramebufferSize();
 
-		acquiredImage = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphore, nullptr);
+		acquiredImage = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphores[p->ImageIndex], nullptr);
 	}
 
 	//Try again, if it also fails with the updated swapchain, quit engine
@@ -133,12 +139,6 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 #else
 	p->CurrentSwapChainImageIndex = (p->CurrentSwapChainImageIndex + 1) % RendererAPI::ImageCount;
 #endif
-
-	const TRAP::Ref<Fence> renderCompleteFence = p->RenderCompleteFences[p->ImageIndex];
-
-	//Stall if CPU is running "Swap Chain Buffer Count" frames ahead of GPU
-	if (renderCompleteFence->GetStatus() == FenceStatus::Incomplete)
-		renderCompleteFence->Wait();
 
 	TRAP::Ref<RenderTarget> bindRenderTarget{};
 	if(p->RenderScale != 1.0f || p->CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
@@ -245,7 +245,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerViewportData* c
 	submitDesc.Cmds = { p->GraphicCommandBuffers[p->ImageIndex] };
 #ifndef TRAP_HEADLESS_MODE
 	submitDesc.SignalSemaphores = { p->RenderCompleteSemaphores[p->ImageIndex] };
-	submitDesc.WaitSemaphores = { p->ImageAcquiredSemaphore, p->ComputeCompleteSemaphores[p->ImageIndex] };
+	submitDesc.WaitSemaphores = { p->ImageAcquiredSemaphores[p->ImageIndex], p->ComputeCompleteSemaphores[p->ImageIndex] };
 #else
 	submitDesc.WaitSemaphores = { p->ComputeCompleteSemaphores[p->ImageIndex] };
 #endif
@@ -2766,12 +2766,14 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 		loadDesc.Desc = bufferDesc;
 		GetResourceLoader()->AddResource(loadDesc, nullptr);
 		p->ComputeTimestampReadbackBuffers[i] = loadDesc.Buffer;
+
+#ifndef TRAP_HEADLESS_MODE
+		//Image Acquire Semaphore
+		p->ImageAcquiredSemaphores[i] = Semaphore::Create();
+#endif /*TRAP_HEADLESS_MODE*/
 	}
 
 #ifndef TRAP_HEADLESS_MODE
-	//Image Acquire Semaphore
-	p->ImageAcquiredSemaphore = Semaphore::Create();
-
 	//Create Swapchain
 	p->CurrentVSync = p->NewVSync = VSyncEnabled;
 	SwapChainDesc swapChainDesc{};
