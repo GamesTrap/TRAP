@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Cleanup workspace
         if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.4
+        uses: gamestrap/gha-workspace-cleanup@v1.2.5
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
