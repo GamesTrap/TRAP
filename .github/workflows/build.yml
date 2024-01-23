@@ -22,7 +22,7 @@ jobs:
     steps:
     - name: Cleanup workspace
       if: ${{ always() }}
-      uses: gamestrap/gha-workspace-cleanup@v1.2.4
+      uses: gamestrap/gha-workspace-cleanup@v1.2.5
     - name: Checkout repository and submodules
       uses: actions/checkout@v4
       with:
@@ -146,7 +146,7 @@ jobs:
     steps:
     - name: Cleanup workspace
       if: ${{ always() }}
-      uses: gamestrap/gha-workspace-cleanup@v1.2.4
+      uses: gamestrap/gha-workspace-cleanup@v1.2.5
     - name: Checkout repository and submodules
       uses: actions/checkout@v4
       with:
@@ -269,7 +269,7 @@ jobs:
     steps:
     - name: Cleanup workspace
       if: ${{ always() }}
-      uses: gamestrap/gha-workspace-cleanup@v1.2.4
+      uses: gamestrap/gha-workspace-cleanup@v1.2.5
     - name: Checkout repository and submodules
       uses: actions/checkout@v4
       with:
@@ -384,7 +384,7 @@ jobs:
     steps:
       - name: Cleanup workspace
         if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.4
+        uses: gamestrap/gha-workspace-cleanup@v1.2.5
       - name: Download artifact (TrappedGames)
         env:
           artifact_hostname: ${{secrets.ARTIFACT_HOST}}
@@ -414,7 +414,7 @@ jobs:
     steps:
       - name: Cleanup workspace
         if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.4
+        uses: gamestrap/gha-workspace-cleanup@v1.2.5
       - name: Download artifact (TrappedGames)
         env:
           artifact_hostname: ${{secrets.ARTIFACT_HOST}}

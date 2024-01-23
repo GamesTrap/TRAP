@@ -2,7 +2,6 @@
 #include "CommandPool.h"
 
 #include "Graphics/API/Vulkan/Objects/VulkanCommandPool.h"
-#include "Graphics/API/Objects/CommandBuffer.h"
 
 TRAP::Graphics::CommandPool::CommandPool(TRAP::Ref<TRAP::Graphics::Queue> queue)
 	: m_queue(std::move(queue))

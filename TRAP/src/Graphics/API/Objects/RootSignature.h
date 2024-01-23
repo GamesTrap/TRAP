@@ -1,5 +1,6 @@
 #ifndef TRAP_ROOTSIGNATURE_H
 #define TRAP_ROOTSIGNATURE_H
+
 #include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::Graphics

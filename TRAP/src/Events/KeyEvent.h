@@ -5,7 +5,6 @@
 
 #include "Input/Input.h"
 #include "Event.h"
-#include "Utils/String/String.h"
 
 namespace TRAP::Events
 {

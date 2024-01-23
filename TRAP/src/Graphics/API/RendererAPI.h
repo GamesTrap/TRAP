@@ -2883,7 +2883,7 @@ namespace TRAP::Graphics
 			std::array<CommandBuffer*, ImageCount> GraphicCommandBuffers{};
 			std::array<TRAP::Ref<Fence>, ImageCount> RenderCompleteFences;
 #ifndef TRAP_HEADLESS_MODE
-			TRAP::Ref<Semaphore> ImageAcquiredSemaphore;
+			std::array<TRAP::Ref<Semaphore>, ImageCount> ImageAcquiredSemaphores;
 #endif /*TRAP_HEADLESS_MODE*/
 			std::array<TRAP::Ref<Semaphore>, ImageCount> RenderCompleteSemaphores;
 			std::array<TRAP::Ref<Semaphore>, ImageCount> GraphicsCompleteSemaphores;
