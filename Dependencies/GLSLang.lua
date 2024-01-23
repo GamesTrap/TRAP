@@ -76,14 +76,11 @@ project "GLSLang"
         "GLSLang/glslang/MachineIndependent/*.cpp",
         "GLSLang/glslang/MachineIndependent/preprocessor/*.cpp",
 
-        "GLSLang/OGLCompilersDLL/InitializeDll.cpp",
-
         "GLSLang/glslang/HLSL/*.h",
         "GLSLang/glslang/Include/*.h",
         "GLSLang/glslang/MachineIndependent/*.h",
         "GLSLang/glslang/MachineIndependent/preprocessor/*.h",
 
-        "GLSLang/OGLCompilersDLL/InitializeDll.h",
         "GLSLang/StandAlone/DirStackFileIncluder.h",
         "GLSLang/glslang/OSDependent/osinclude.h",
         "GLSLang/glslang/Public/ShaderLang.h",
