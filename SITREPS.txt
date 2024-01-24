@@ -4768,14 +4768,14 @@ SITREP 12/31/2023|23w52b3
     - Changed TRAP Engine version to 23w52b3(0.10.25)
     - Base reordered branches for operator new() ~<5 mins
 
-SITREP 01/03/2023|24w01a1
+SITREP 01/03/2024|24w01a1
     - Changed TRAP Engine version to 24w01a1(0.10.26)
     - Added UniqueResource and ScopeFail utility classes ~<60 mins
     - Backported (as free standing functions) C++23 container range insert, append and assign functions (p1206r7) ~<20 mins
     - Utils Added SetThreadName() which sets the thread name for profiling with tracy ~<10 mins
     - Utils Added code documentation for ScopeFail and UniqueResource ~<30 mins
 
-SITREP 01/07/2023|24w01b1
+SITREP 01/07/2024|24w01b1
     - Changed TRAP Engine version to 24w01b1(0.10.27)
     - Renamed FileChangeEvent to FileSystemChangeEvent ~<5 mins
     - Renamed FileWatcher to FileSystemWatcher ~<5 mins
@@ -4783,35 +4783,39 @@ SITREP 01/07/2023|24w01b1
     - Made FileSystemWatcher threadsafe ~<30 mins
     - UnitTests FileSystem disabled logging except for critical messages ~<5 mins
 
-SITREP 01/08/2023|24w02a1
+SITREP 01/08/2024|24w02a1
     - Changed TRAP Engine version to 24w02a1(0.10.28)
     - FileSystemWatcher Added future return type to AddFolder() and AddFolders() ~<10 mins
     - FileSystemWatcher better filtering of subdirs when recursive checking is enabled ~<10 mins
     - UnitTests Added FileSystemWatcher tests ~<60 mins
 
-SITREP 01/12/2023|24w02a2
+SITREP 01/12/2024|24w02a2
     - Changed TRAP Engine version to 24w02a2(0.10.29)
     - Various minor code tweaks ~<45 mins
     - Fixed compiler warnings in AftermathTracker ~<5 mins
 
-SITREP 01/13/2023|24w02a3
+SITREP 01/13/2024|24w02a3
     - Changed TRAP Engine version to 24w02a3(0.10.30)
     - Make use of the new fmt std::source_location support ~<5 mins
 
-SITREP 01/14/2023|24w02a3
+SITREP 01/14/2024|24w02a3
     - Changed TRAP Engine version to 24w02b1(0.10.31)
     - Added docker files for Gitea Actions Runners ~<30 mins
     - Added nodejs to Action Runner docker images ~<5 mins
     - Various minor code tweaks ~<30 mins
     - AftermathTracker now uses UniqueResource ~<10 mins
 
-SITREP 01/15/2023|24w03a1
+SITREP 01/15/2024|24w03a1
     - Changed TRAP Engine version to 24w03a1(0.10.32)
     - PipelineCache Changed GetPipelineCacheData() function ~<10 mins
     - Various minor code tweaks ~<15 mins
 
-SITREP 01/23/2023|24w04a1
+SITREP 01/23/2024|24w04a1
     - Changed TRAP Engine version to 24w04a1(0.10.33)
     - VulkanRenderer Fixed vkAcquireNextImageKHR semaphore synchronization error ~<20 mins
     - Various minor code tweaks ~<15 mins
     - CI Updated gha-workspace-cleanup to v1.2.5 ~<5 mins
+
+SITREP 01/24/2024|24w04a2
+    - Changed TRAP Engine version to 24w04a2(0.10.34)
+    - Updated documentation build dependencies ~<10 mins
