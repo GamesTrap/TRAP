@@ -34,11 +34,11 @@ freely, subject to the following restrictions:
 namespace TRAP::Embed
 {
 #ifdef TRAP_BUILD_WIN32_MAPPINGS
-	constexpr usize ControllerMappingsSize = 793;
+	constexpr usize ControllerMappingsSize = 794;
 #endif /*TRAP_BUILD_WIN32_MAPPINGS*/
 
 #ifdef TRAP_BUILD_LINUX_MAPPINGS
-	constexpr usize ControllerMappingsSize = 601;
+	constexpr usize ControllerMappingsSize = 603;
 #endif /*TRAP_BUILD_LINUX_MAPPINGS*/
 
 	constexpr std::array<std::string_view, ControllerMappingsSize> ControllerMappings =
@@ -722,6 +722,7 @@ namespace TRAP::Embed
 		"03000000457500002211000000000000,Szmy Power PC Gamepad,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b0,y:b3,platform:Windows,",
 		"030000004f0400000ab1000000000000,T16000M,a:b0,b:b1,back:b12,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b11,leftshoulder:b4,lefttrigger:b9,leftx:a0,lefty:a1,rightshoulder:b6,righttrigger:b7,start:b10,x:b2,y:b3,platform:Windows,",
 		"030000000d0f00007b00000000000000,TAC GEAR,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a5,start:b9,x:b0,y:b3,platform:Windows,",
+		"03000000e40a00000307000000000000,Taito Egret II Mini Control Panel,a:b4,b:b2,back:b6,guide:b9,leftx:a0,lefty:a1,rightshoulder:b0,righttrigger:b1,start:b7,x:b8,y:b3,platform:Windows,",
 		"03000000e40a00000207000000000000,Taito Egret II Mini Controller,a:b4,b:b2,back:b6,dpdown:+a1,dpleft:-a0,dpright:+a0,dpup:-a1,guide:b9,rightshoulder:b0,righttrigger:b1,start:b7,x:b8,y:b3,platform:Windows,",
 		"03000000d814000001a0000000000000,TE Kitty,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b0,y:b3,platform:Windows,",
 		"03000000fa1900000706000000000000,Team 5,a:b2,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b3,y:b0,platform:Windows,",
@@ -1352,6 +1353,8 @@ namespace TRAP::Embed
 		"03000000457500000401000011010000,SZMY Power DS4 Wired Controller,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:a3,leftx:a0,lefty:a1,misc1:b13,rightshoulder:b5,rightstick:b11,righttrigger:a4,rightx:a2,righty:a5,start:b9,x:b0,y:b3,platform:Linux,",
 		"03000000457500002211000010010000,SZMY Power Gamepad,a:b2,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b3,y:b0,platform:Linux,",
 		"030000008f0e00001431000010010000,SZMY Power PS3,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b0,y:b3,platform:Linux,",
+		"03000000e40a00000307000011010000,Taito Egret II Mini Control Panel,a:b4,b:b2,back:b6,guide:b9,leftx:a0,lefty:a1,rightshoulder:b0,righttrigger:b1,start:b7,x:b8,y:b3,platform:Linux,",
+		"03000000e40a00000207000011010000,Taito Egret II Mini Controller,a:b4,b:b2,back:b6,guide:b9,leftx:a0,lefty:a1,rightshoulder:b0,righttrigger:b1,start:b7,x:b8,y:b3,platform:Linux,",
 		"03000000ba2200000701000001010000,Technology Innovation PS2 Adapter,a:b0,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a5,righty:a2,start:b9,x:b3,y:b2,platform:Linux,",
 		"03000000790000001c18000011010000,TGZ Controller,a:b0,b:b1,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b6,leftstick:b13,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b14,righttrigger:b9,rightx:a2,righty:a3,start:b11,x:b3,y:b4,platform:Linux,",
 		"03000000591c00002400000010010000,THEC64 Joystick,a:b0,b:b1,back:b6,leftshoulder:b4,leftx:a0,lefty:a1,rightshoulder:b5,start:b7,x:b2,y:b3,platform:Linux,",
