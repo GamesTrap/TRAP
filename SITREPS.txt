@@ -4819,3 +4819,7 @@ SITREP 01/23/2024|24w04a1
 SITREP 01/24/2024|24w04a2
     - Changed TRAP Engine version to 24w04a2(0.10.34)
     - Updated documentation build dependencies ~<10 mins
+
+SITREP 01/28/2024|24w04b1
+    - Changed TRAP Engine version to 24w04b1(0.10.35)
+    - Refactored VulkanBuffer ~>30 mins
