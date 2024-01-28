@@ -1536,11 +1536,12 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
     // Upload to Buffer:
     {
         u8* map = nullptr;
-        const TRAP::Graphics::RendererAPI::ReadRange readRange{.Offset = 0, .Range = upload_size};
-        uploadBuffer->MapBuffer(&readRange);
-        map = reinterpret_cast<u8*>(uploadBuffer->GetCPUMappedAddress());
-        std::copy_n(pixels, upload_size, map);
-        uploadBuffer->UnMapBuffer();
+        if(uploadBuffer->MapBuffer({.Offset = 0, .Range = upload_size}))
+        {
+            map = reinterpret_cast<u8*>(uploadBuffer->GetCPUMappedAddress());
+            std::copy_n(pixels, upload_size, map);
+            uploadBuffer->UnMapBuffer();
+        }
     }
 
     // Copy to Image:
@@ -1697,24 +1698,24 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
         }
 
         // Upload vertex/index data into a single contiguous GPU buffer
-        const TRAP::Graphics::RendererAPI::ReadRange vtxReadRange{.Offset = 0, .Range = vertex_size};
-        const TRAP::Graphics::RendererAPI::ReadRange idxReadRange{.Offset = 0, .Range = index_size};
-        rb.VertexBuffer->MapBuffer(&vtxReadRange);
-        rb.IndexBuffer->MapBuffer(&idxReadRange);
-        ImDrawVert* vtx_dst = reinterpret_cast<ImDrawVert*>(rb.VertexBuffer->GetCPUMappedAddress());
-        ImDrawIdx* idx_dst = reinterpret_cast<ImDrawIdx*>(rb.IndexBuffer->GetCPUMappedAddress());
-        for (i32 n = 0; n < draw_data.CmdListsCount; n++)
+        if(rb.VertexBuffer->MapBuffer({.Offset = 0, .Range = vertex_size}) &&
+           rb.IndexBuffer->MapBuffer({.Offset = 0, .Range = index_size}))
         {
-            if(const ImDrawList* const cmd_list = draw_data.CmdLists[n]; cmd_list)
+            ImDrawVert* vtx_dst = reinterpret_cast<ImDrawVert*>(rb.VertexBuffer->GetCPUMappedAddress());
+            ImDrawIdx* idx_dst = reinterpret_cast<ImDrawIdx*>(rb.IndexBuffer->GetCPUMappedAddress());
+            for (i32 n = 0; n < draw_data.CmdListsCount; n++)
             {
-                std::copy_n(cmd_list->VtxBuffer.Data, cmd_list->VtxBuffer.Size, vtx_dst);
-                std::copy_n(cmd_list->IdxBuffer.Data, cmd_list->IdxBuffer.Size, idx_dst);
-                vtx_dst += cmd_list->VtxBuffer.Size;
-                idx_dst += cmd_list->IdxBuffer.Size;
+                if(const ImDrawList* const cmd_list = draw_data.CmdLists[n]; cmd_list)
+                {
+                    std::copy_n(cmd_list->VtxBuffer.Data, cmd_list->VtxBuffer.Size, vtx_dst);
+                    std::copy_n(cmd_list->IdxBuffer.Data, cmd_list->IdxBuffer.Size, idx_dst);
+                    vtx_dst += cmd_list->VtxBuffer.Size;
+                    idx_dst += cmd_list->IdxBuffer.Size;
+                }
             }
+            rb.IndexBuffer->UnMapBuffer();
+            rb.VertexBuffer->UnMapBuffer();
         }
-        rb.IndexBuffer->UnMapBuffer();
-        rb.VertexBuffer->UnMapBuffer();
     }
 
     // Setup desired Vulkan state

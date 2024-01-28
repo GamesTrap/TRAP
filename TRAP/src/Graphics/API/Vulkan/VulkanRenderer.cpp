@@ -3596,8 +3596,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGPUFrameProfile(const QueueType typ
 		buffer = p->GraphicsTimestampReadbackBuffers[p->ImageIndex];
 	else if(type == QueueType::Compute)
 		buffer = p->ComputeTimestampReadbackBuffers[p->ImageIndex];
-	buffer->MapBuffer(&readRange);
-	if(buffer->GetCPUMappedAddress() != nullptr)
+	if(buffer->MapBuffer(readRange))
 	{
 		const u64 startTime = *(static_cast<u64*>(buffer->GetCPUMappedAddress()) + 0);
 		const u64 endTime = *(static_cast<u64*>(buffer->GetCPUMappedAddress()) + 1);

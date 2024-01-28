@@ -366,14 +366,14 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Buffe
 	const RendererAPI::ResourceMemoryUsage memoryUsage = desc.Buffer->GetMemoryUsage();
 	if(memoryUsage != RendererAPI::ResourceMemoryUsage::GPUOnly)
 	{
-		const bool map = buffer->GetCPUMappedAddress() == nullptr;
-		if (map)
-			buffer->MapBuffer(nullptr);
+		bool needsToBeMapped = buffer->GetCPUMappedAddress() == nullptr;
+		if (needsToBeMapped)
+			needsToBeMapped = buffer->MapBuffer();
 
 		desc.Internal.MappedRange = { static_cast<u8*>(buffer->GetCPUMappedAddress()) + desc.DstOffset,
 		                              buffer };
 		desc.MappedData = desc.Internal.MappedRange.Data;
-		desc.Internal.MappedRange.Flags = map ? std::to_underlying(MappedRangeFlag::UnMapBuffer) : 0;
+		desc.Internal.MappedRange.Flags = needsToBeMapped ? std::to_underlying(MappedRangeFlag::UnMapBuffer) : 0;
 	}
 	else
 	{

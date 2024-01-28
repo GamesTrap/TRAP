@@ -683,8 +683,6 @@ void TRAPEditorLayer::MousePicking()
 												  TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource);
 
 		//Read pixel of the CPU visible buffer
-		TRAP::Graphics::RendererAPI::ReadRange range{0, NumericCast<u64>(m_renderTargetDesc.Width) * m_renderTargetDesc.Height * sizeof(i32)};
-		m_mousePickBuffer->MapBuffer(&range);
 
 		//Get our wanted value
 		const i32 id = *(static_cast<i32*>(m_mousePickBuffer->GetCPUMappedAddress()) + (mouseY * m_renderTargetDesc.Width + mouseX));
@@ -701,8 +699,6 @@ void TRAPEditorLayer::MousePicking()
 			}
 		}
 		TP_TRACE("Mouse = {", mouseX, "}, {", mouseY, "}, ID = {", id, "}");
-
-		m_mousePickBuffer->UnMapBuffer();
 	}
 	else if(TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Left))
 		++m_leftMouseBtnRepeatCount;
