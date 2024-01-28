@@ -20,7 +20,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 275
+#define VULKANLOADER_HEADER_VERSION 276
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -600,6 +600,10 @@ struct VkDeviceTable
 	PFN_vkCmdBeginRenderingKHR vkCmdBeginRenderingKHR;
 	PFN_vkCmdEndRenderingKHR vkCmdEndRenderingKHR;
 #endif /* defined(VK_KHR_dynamic_rendering) */
+#if defined(VK_KHR_dynamic_rendering_local_read)
+	PFN_vkCmdSetRenderingAttachmentLocationsKHR vkCmdSetRenderingAttachmentLocationsKHR;
+	PFN_vkCmdSetRenderingInputAttachmentIndicesKHR vkCmdSetRenderingInputAttachmentIndicesKHR;
+#endif /* defined(VK_KHR_dynamic_rendering_local_read) */
 #if defined(VK_KHR_external_fence_fd)
 	PFN_vkGetFenceFdKHR vkGetFenceFdKHR;
 	PFN_vkImportFenceFdKHR vkImportFenceFdKHR;
@@ -632,6 +636,9 @@ struct VkDeviceTable
 	PFN_vkGetImageMemoryRequirements2KHR vkGetImageMemoryRequirements2KHR;
 	PFN_vkGetImageSparseMemoryRequirements2KHR vkGetImageSparseMemoryRequirements2KHR;
 #endif /* defined(VK_KHR_get_memory_requirements2) */
+#if defined(VK_KHR_line_rasterization)
+	PFN_vkCmdSetLineStippleKHR vkCmdSetLineStippleKHR;
+#endif /* defined(VK_KHR_line_rasterization) */
 #if defined(VK_KHR_maintenance1)
 	PFN_vkTrimCommandPoolKHR vkTrimCommandPoolKHR;
 #endif /* defined(VK_KHR_maintenance1) */
@@ -878,26 +885,44 @@ struct VkDeviceTable
 #if (defined(VK_EXT_extended_dynamic_state3)) || (defined(VK_EXT_shader_object))
 	PFN_vkCmdSetAlphaToCoverageEnableEXT vkCmdSetAlphaToCoverageEnableEXT;
 	PFN_vkCmdSetAlphaToOneEnableEXT vkCmdSetAlphaToOneEnableEXT;
-	PFN_vkCmdSetColorBlendAdvancedEXT vkCmdSetColorBlendAdvancedEXT;
 	PFN_vkCmdSetColorBlendEnableEXT vkCmdSetColorBlendEnableEXT;
 	PFN_vkCmdSetColorBlendEquationEXT vkCmdSetColorBlendEquationEXT;
 	PFN_vkCmdSetColorWriteMaskEXT vkCmdSetColorWriteMaskEXT;
-	PFN_vkCmdSetConservativeRasterizationModeEXT vkCmdSetConservativeRasterizationModeEXT;
 	PFN_vkCmdSetDepthClampEnableEXT vkCmdSetDepthClampEnableEXT;
-	PFN_vkCmdSetDepthClipEnableEXT vkCmdSetDepthClipEnableEXT;
-	PFN_vkCmdSetDepthClipNegativeOneToOneEXT vkCmdSetDepthClipNegativeOneToOneEXT;
-	PFN_vkCmdSetExtraPrimitiveOverestimationSizeEXT vkCmdSetExtraPrimitiveOverestimationSizeEXT;
-	PFN_vkCmdSetLineRasterizationModeEXT vkCmdSetLineRasterizationModeEXT;
-	PFN_vkCmdSetLineStippleEnableEXT vkCmdSetLineStippleEnableEXT;
 	PFN_vkCmdSetLogicOpEnableEXT vkCmdSetLogicOpEnableEXT;
 	PFN_vkCmdSetPolygonModeEXT vkCmdSetPolygonModeEXT;
-	PFN_vkCmdSetProvokingVertexModeEXT vkCmdSetProvokingVertexModeEXT;
 	PFN_vkCmdSetRasterizationSamplesEXT vkCmdSetRasterizationSamplesEXT;
-	PFN_vkCmdSetRasterizationStreamEXT vkCmdSetRasterizationStreamEXT;
-	PFN_vkCmdSetSampleLocationsEnableEXT vkCmdSetSampleLocationsEnableEXT;
 	PFN_vkCmdSetSampleMaskEXT vkCmdSetSampleMaskEXT;
-	PFN_vkCmdSetTessellationDomainOriginEXT vkCmdSetTessellationDomainOriginEXT;
 #endif /* (defined(VK_EXT_extended_dynamic_state3)) || (defined(VK_EXT_shader_object)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_maintenance2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object))
+	PFN_vkCmdSetTessellationDomainOriginEXT vkCmdSetTessellationDomainOriginEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_maintenance2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_transform_feedback)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_transform_feedback))
+	PFN_vkCmdSetRasterizationStreamEXT vkCmdSetRasterizationStreamEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_transform_feedback)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_transform_feedback)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_conservative_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_conservative_rasterization))
+	PFN_vkCmdSetConservativeRasterizationModeEXT vkCmdSetConservativeRasterizationModeEXT;
+	PFN_vkCmdSetExtraPrimitiveOverestimationSizeEXT vkCmdSetExtraPrimitiveOverestimationSizeEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_conservative_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_conservative_rasterization)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_enable)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_enable))
+	PFN_vkCmdSetDepthClipEnableEXT vkCmdSetDepthClipEnableEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_enable)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_enable)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_sample_locations)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_sample_locations))
+	PFN_vkCmdSetSampleLocationsEnableEXT vkCmdSetSampleLocationsEnableEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_sample_locations)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_sample_locations)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_blend_operation_advanced)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_blend_operation_advanced))
+	PFN_vkCmdSetColorBlendAdvancedEXT vkCmdSetColorBlendAdvancedEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_blend_operation_advanced)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_blend_operation_advanced)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_provoking_vertex)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_provoking_vertex))
+	PFN_vkCmdSetProvokingVertexModeEXT vkCmdSetProvokingVertexModeEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_provoking_vertex)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_provoking_vertex)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_line_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_line_rasterization))
+	PFN_vkCmdSetLineRasterizationModeEXT vkCmdSetLineRasterizationModeEXT;
+	PFN_vkCmdSetLineStippleEnableEXT vkCmdSetLineStippleEnableEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_line_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_line_rasterization)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_control)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_control))
+	PFN_vkCmdSetDepthClipNegativeOneToOneEXT vkCmdSetDepthClipNegativeOneToOneEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_control)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_control)) */
 #if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_NV_clip_space_w_scaling)) || (defined(VK_EXT_shader_object) && defined(VK_NV_clip_space_w_scaling))
 	PFN_vkCmdSetViewportWScalingEnableNV vkCmdSetViewportWScalingEnableNV;
 #endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_NV_clip_space_w_scaling)) || (defined(VK_EXT_shader_object) && defined(VK_NV_clip_space_w_scaling)) */
@@ -1532,6 +1557,10 @@ extern PFN_vkCmdDrawIndirectCountKHR vkCmdDrawIndirectCountKHR;
 extern PFN_vkCmdBeginRenderingKHR vkCmdBeginRenderingKHR;
 extern PFN_vkCmdEndRenderingKHR vkCmdEndRenderingKHR;
 #endif /* defined(VK_KHR_dynamic_rendering) */
+#if defined(VK_KHR_dynamic_rendering_local_read)
+extern PFN_vkCmdSetRenderingAttachmentLocationsKHR vkCmdSetRenderingAttachmentLocationsKHR;
+extern PFN_vkCmdSetRenderingInputAttachmentIndicesKHR vkCmdSetRenderingInputAttachmentIndicesKHR;
+#endif /* defined(VK_KHR_dynamic_rendering_local_read) */
 #if defined(VK_KHR_external_fence_capabilities)
 extern PFN_vkGetPhysicalDeviceExternalFencePropertiesKHR vkGetPhysicalDeviceExternalFencePropertiesKHR;
 #endif /* defined(VK_KHR_external_fence_capabilities) */
@@ -1593,6 +1622,9 @@ extern PFN_vkGetPhysicalDeviceSparseImageFormatProperties2KHR vkGetPhysicalDevic
 extern PFN_vkGetPhysicalDeviceSurfaceCapabilities2KHR vkGetPhysicalDeviceSurfaceCapabilities2KHR;
 extern PFN_vkGetPhysicalDeviceSurfaceFormats2KHR vkGetPhysicalDeviceSurfaceFormats2KHR;
 #endif /* defined(VK_KHR_get_surface_capabilities2) */
+#if defined(VK_KHR_line_rasterization)
+extern PFN_vkCmdSetLineStippleKHR vkCmdSetLineStippleKHR;
+#endif /* defined(VK_KHR_line_rasterization) */
 #if defined(VK_KHR_maintenance1)
 extern PFN_vkTrimCommandPoolKHR vkTrimCommandPoolKHR;
 #endif /* defined(VK_KHR_maintenance1) */
@@ -1894,26 +1926,44 @@ extern PFN_vkCmdSetRasterizerDiscardEnableEXT vkCmdSetRasterizerDiscardEnableEXT
 #if (defined(VK_EXT_extended_dynamic_state3)) || (defined(VK_EXT_shader_object))
 extern PFN_vkCmdSetAlphaToCoverageEnableEXT vkCmdSetAlphaToCoverageEnableEXT;
 extern PFN_vkCmdSetAlphaToOneEnableEXT vkCmdSetAlphaToOneEnableEXT;
-extern PFN_vkCmdSetColorBlendAdvancedEXT vkCmdSetColorBlendAdvancedEXT;
 extern PFN_vkCmdSetColorBlendEnableEXT vkCmdSetColorBlendEnableEXT;
 extern PFN_vkCmdSetColorBlendEquationEXT vkCmdSetColorBlendEquationEXT;
 extern PFN_vkCmdSetColorWriteMaskEXT vkCmdSetColorWriteMaskEXT;
-extern PFN_vkCmdSetConservativeRasterizationModeEXT vkCmdSetConservativeRasterizationModeEXT;
 extern PFN_vkCmdSetDepthClampEnableEXT vkCmdSetDepthClampEnableEXT;
-extern PFN_vkCmdSetDepthClipEnableEXT vkCmdSetDepthClipEnableEXT;
-extern PFN_vkCmdSetDepthClipNegativeOneToOneEXT vkCmdSetDepthClipNegativeOneToOneEXT;
-extern PFN_vkCmdSetExtraPrimitiveOverestimationSizeEXT vkCmdSetExtraPrimitiveOverestimationSizeEXT;
-extern PFN_vkCmdSetLineRasterizationModeEXT vkCmdSetLineRasterizationModeEXT;
-extern PFN_vkCmdSetLineStippleEnableEXT vkCmdSetLineStippleEnableEXT;
 extern PFN_vkCmdSetLogicOpEnableEXT vkCmdSetLogicOpEnableEXT;
 extern PFN_vkCmdSetPolygonModeEXT vkCmdSetPolygonModeEXT;
-extern PFN_vkCmdSetProvokingVertexModeEXT vkCmdSetProvokingVertexModeEXT;
 extern PFN_vkCmdSetRasterizationSamplesEXT vkCmdSetRasterizationSamplesEXT;
-extern PFN_vkCmdSetRasterizationStreamEXT vkCmdSetRasterizationStreamEXT;
-extern PFN_vkCmdSetSampleLocationsEnableEXT vkCmdSetSampleLocationsEnableEXT;
 extern PFN_vkCmdSetSampleMaskEXT vkCmdSetSampleMaskEXT;
-extern PFN_vkCmdSetTessellationDomainOriginEXT vkCmdSetTessellationDomainOriginEXT;
 #endif /* (defined(VK_EXT_extended_dynamic_state3)) || (defined(VK_EXT_shader_object)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_maintenance2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object))
+extern PFN_vkCmdSetTessellationDomainOriginEXT vkCmdSetTessellationDomainOriginEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_maintenance2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_transform_feedback)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_transform_feedback))
+extern PFN_vkCmdSetRasterizationStreamEXT vkCmdSetRasterizationStreamEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_transform_feedback)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_transform_feedback)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_conservative_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_conservative_rasterization))
+extern PFN_vkCmdSetConservativeRasterizationModeEXT vkCmdSetConservativeRasterizationModeEXT;
+extern PFN_vkCmdSetExtraPrimitiveOverestimationSizeEXT vkCmdSetExtraPrimitiveOverestimationSizeEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_conservative_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_conservative_rasterization)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_enable)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_enable))
+extern PFN_vkCmdSetDepthClipEnableEXT vkCmdSetDepthClipEnableEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_enable)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_enable)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_sample_locations)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_sample_locations))
+extern PFN_vkCmdSetSampleLocationsEnableEXT vkCmdSetSampleLocationsEnableEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_sample_locations)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_sample_locations)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_blend_operation_advanced)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_blend_operation_advanced))
+extern PFN_vkCmdSetColorBlendAdvancedEXT vkCmdSetColorBlendAdvancedEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_blend_operation_advanced)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_blend_operation_advanced)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_provoking_vertex)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_provoking_vertex))
+extern PFN_vkCmdSetProvokingVertexModeEXT vkCmdSetProvokingVertexModeEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_provoking_vertex)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_provoking_vertex)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_line_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_line_rasterization))
+extern PFN_vkCmdSetLineRasterizationModeEXT vkCmdSetLineRasterizationModeEXT;
+extern PFN_vkCmdSetLineStippleEnableEXT vkCmdSetLineStippleEnableEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_line_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_line_rasterization)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_control)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_control))
+extern PFN_vkCmdSetDepthClipNegativeOneToOneEXT vkCmdSetDepthClipNegativeOneToOneEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_control)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_control)) */
 #if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_NV_clip_space_w_scaling)) || (defined(VK_EXT_shader_object) && defined(VK_NV_clip_space_w_scaling))
 extern PFN_vkCmdSetViewportWScalingEnableNV vkCmdSetViewportWScalingEnableNV;
 #endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_NV_clip_space_w_scaling)) || (defined(VK_EXT_shader_object) && defined(VK_NV_clip_space_w_scaling)) */
@@ -2821,6 +2871,10 @@ static void VkGenLoadDevice(void* context, VkGenLoaderFunction load)
 	vkCmdBeginRenderingKHR = reinterpret_cast<PFN_vkCmdBeginRenderingKHR>(load(context, "vkCmdBeginRenderingKHR"));
 	vkCmdEndRenderingKHR = reinterpret_cast<PFN_vkCmdEndRenderingKHR>(load(context, "vkCmdEndRenderingKHR"));
 #endif /* defined(VK_KHR_dynamic_rendering) */
+#if defined(VK_KHR_dynamic_rendering_local_read)
+	vkCmdSetRenderingAttachmentLocationsKHR = reinterpret_cast<PFN_vkCmdSetRenderingAttachmentLocationsKHR>(load(context, "vkCmdSetRenderingAttachmentLocationsKHR"));
+	vkCmdSetRenderingInputAttachmentIndicesKHR = reinterpret_cast<PFN_vkCmdSetRenderingInputAttachmentIndicesKHR>(load(context, "vkCmdSetRenderingInputAttachmentIndicesKHR"));
+#endif /* defined(VK_KHR_dynamic_rendering_local_read) */
 #if defined(VK_KHR_external_fence_fd)
 	vkGetFenceFdKHR = reinterpret_cast<PFN_vkGetFenceFdKHR>(load(context, "vkGetFenceFdKHR"));
 	vkImportFenceFdKHR = reinterpret_cast<PFN_vkImportFenceFdKHR>(load(context, "vkImportFenceFdKHR"));
@@ -2853,6 +2907,9 @@ static void VkGenLoadDevice(void* context, VkGenLoaderFunction load)
 	vkGetImageMemoryRequirements2KHR = reinterpret_cast<PFN_vkGetImageMemoryRequirements2KHR>(load(context, "vkGetImageMemoryRequirements2KHR"));
 	vkGetImageSparseMemoryRequirements2KHR = reinterpret_cast<PFN_vkGetImageSparseMemoryRequirements2KHR>(load(context, "vkGetImageSparseMemoryRequirements2KHR"));
 #endif /* defined(VK_KHR_get_memory_requirements2) */
+#if defined(VK_KHR_line_rasterization)
+	vkCmdSetLineStippleKHR = reinterpret_cast<PFN_vkCmdSetLineStippleKHR>(load(context, "vkCmdSetLineStippleKHR"));
+#endif /* defined(VK_KHR_line_rasterization) */
 #if defined(VK_KHR_maintenance1)
 	vkTrimCommandPoolKHR = reinterpret_cast<PFN_vkTrimCommandPoolKHR>(load(context, "vkTrimCommandPoolKHR"));
 #endif /* defined(VK_KHR_maintenance1) */
@@ -3099,26 +3156,44 @@ static void VkGenLoadDevice(void* context, VkGenLoaderFunction load)
 #if (defined(VK_EXT_extended_dynamic_state3)) || (defined(VK_EXT_shader_object))
 	vkCmdSetAlphaToCoverageEnableEXT = reinterpret_cast<PFN_vkCmdSetAlphaToCoverageEnableEXT>(load(context, "vkCmdSetAlphaToCoverageEnableEXT"));
 	vkCmdSetAlphaToOneEnableEXT = reinterpret_cast<PFN_vkCmdSetAlphaToOneEnableEXT>(load(context, "vkCmdSetAlphaToOneEnableEXT"));
-	vkCmdSetColorBlendAdvancedEXT = reinterpret_cast<PFN_vkCmdSetColorBlendAdvancedEXT>(load(context, "vkCmdSetColorBlendAdvancedEXT"));
 	vkCmdSetColorBlendEnableEXT = reinterpret_cast<PFN_vkCmdSetColorBlendEnableEXT>(load(context, "vkCmdSetColorBlendEnableEXT"));
 	vkCmdSetColorBlendEquationEXT = reinterpret_cast<PFN_vkCmdSetColorBlendEquationEXT>(load(context, "vkCmdSetColorBlendEquationEXT"));
 	vkCmdSetColorWriteMaskEXT = reinterpret_cast<PFN_vkCmdSetColorWriteMaskEXT>(load(context, "vkCmdSetColorWriteMaskEXT"));
-	vkCmdSetConservativeRasterizationModeEXT = reinterpret_cast<PFN_vkCmdSetConservativeRasterizationModeEXT>(load(context, "vkCmdSetConservativeRasterizationModeEXT"));
 	vkCmdSetDepthClampEnableEXT = reinterpret_cast<PFN_vkCmdSetDepthClampEnableEXT>(load(context, "vkCmdSetDepthClampEnableEXT"));
-	vkCmdSetDepthClipEnableEXT = reinterpret_cast<PFN_vkCmdSetDepthClipEnableEXT>(load(context, "vkCmdSetDepthClipEnableEXT"));
-	vkCmdSetDepthClipNegativeOneToOneEXT = reinterpret_cast<PFN_vkCmdSetDepthClipNegativeOneToOneEXT>(load(context, "vkCmdSetDepthClipNegativeOneToOneEXT"));
-	vkCmdSetExtraPrimitiveOverestimationSizeEXT = reinterpret_cast<PFN_vkCmdSetExtraPrimitiveOverestimationSizeEXT>(load(context, "vkCmdSetExtraPrimitiveOverestimationSizeEXT"));
-	vkCmdSetLineRasterizationModeEXT = reinterpret_cast<PFN_vkCmdSetLineRasterizationModeEXT>(load(context, "vkCmdSetLineRasterizationModeEXT"));
-	vkCmdSetLineStippleEnableEXT = reinterpret_cast<PFN_vkCmdSetLineStippleEnableEXT>(load(context, "vkCmdSetLineStippleEnableEXT"));
 	vkCmdSetLogicOpEnableEXT = reinterpret_cast<PFN_vkCmdSetLogicOpEnableEXT>(load(context, "vkCmdSetLogicOpEnableEXT"));
 	vkCmdSetPolygonModeEXT = reinterpret_cast<PFN_vkCmdSetPolygonModeEXT>(load(context, "vkCmdSetPolygonModeEXT"));
-	vkCmdSetProvokingVertexModeEXT = reinterpret_cast<PFN_vkCmdSetProvokingVertexModeEXT>(load(context, "vkCmdSetProvokingVertexModeEXT"));
 	vkCmdSetRasterizationSamplesEXT = reinterpret_cast<PFN_vkCmdSetRasterizationSamplesEXT>(load(context, "vkCmdSetRasterizationSamplesEXT"));
-	vkCmdSetRasterizationStreamEXT = reinterpret_cast<PFN_vkCmdSetRasterizationStreamEXT>(load(context, "vkCmdSetRasterizationStreamEXT"));
-	vkCmdSetSampleLocationsEnableEXT = reinterpret_cast<PFN_vkCmdSetSampleLocationsEnableEXT>(load(context, "vkCmdSetSampleLocationsEnableEXT"));
 	vkCmdSetSampleMaskEXT = reinterpret_cast<PFN_vkCmdSetSampleMaskEXT>(load(context, "vkCmdSetSampleMaskEXT"));
-	vkCmdSetTessellationDomainOriginEXT = reinterpret_cast<PFN_vkCmdSetTessellationDomainOriginEXT>(load(context, "vkCmdSetTessellationDomainOriginEXT"));
 #endif /* (defined(VK_EXT_extended_dynamic_state3)) || (defined(VK_EXT_shader_object)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_maintenance2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object))
+	vkCmdSetTessellationDomainOriginEXT = reinterpret_cast<PFN_vkCmdSetTessellationDomainOriginEXT>(load(context, "vkCmdSetTessellationDomainOriginEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_maintenance2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_transform_feedback)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_transform_feedback))
+	vkCmdSetRasterizationStreamEXT = reinterpret_cast<PFN_vkCmdSetRasterizationStreamEXT>(load(context, "vkCmdSetRasterizationStreamEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_transform_feedback)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_transform_feedback)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_conservative_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_conservative_rasterization))
+	vkCmdSetConservativeRasterizationModeEXT = reinterpret_cast<PFN_vkCmdSetConservativeRasterizationModeEXT>(load(context, "vkCmdSetConservativeRasterizationModeEXT"));
+	vkCmdSetExtraPrimitiveOverestimationSizeEXT = reinterpret_cast<PFN_vkCmdSetExtraPrimitiveOverestimationSizeEXT>(load(context, "vkCmdSetExtraPrimitiveOverestimationSizeEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_conservative_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_conservative_rasterization)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_enable)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_enable))
+	vkCmdSetDepthClipEnableEXT = reinterpret_cast<PFN_vkCmdSetDepthClipEnableEXT>(load(context, "vkCmdSetDepthClipEnableEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_enable)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_enable)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_sample_locations)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_sample_locations))
+	vkCmdSetSampleLocationsEnableEXT = reinterpret_cast<PFN_vkCmdSetSampleLocationsEnableEXT>(load(context, "vkCmdSetSampleLocationsEnableEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_sample_locations)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_sample_locations)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_blend_operation_advanced)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_blend_operation_advanced))
+	vkCmdSetColorBlendAdvancedEXT = reinterpret_cast<PFN_vkCmdSetColorBlendAdvancedEXT>(load(context, "vkCmdSetColorBlendAdvancedEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_blend_operation_advanced)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_blend_operation_advanced)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_provoking_vertex)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_provoking_vertex))
+	vkCmdSetProvokingVertexModeEXT = reinterpret_cast<PFN_vkCmdSetProvokingVertexModeEXT>(load(context, "vkCmdSetProvokingVertexModeEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_provoking_vertex)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_provoking_vertex)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_line_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_line_rasterization))
+	vkCmdSetLineRasterizationModeEXT = reinterpret_cast<PFN_vkCmdSetLineRasterizationModeEXT>(load(context, "vkCmdSetLineRasterizationModeEXT"));
+	vkCmdSetLineStippleEnableEXT = reinterpret_cast<PFN_vkCmdSetLineStippleEnableEXT>(load(context, "vkCmdSetLineStippleEnableEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_line_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_line_rasterization)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_control)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_control))
+	vkCmdSetDepthClipNegativeOneToOneEXT = reinterpret_cast<PFN_vkCmdSetDepthClipNegativeOneToOneEXT>(load(context, "vkCmdSetDepthClipNegativeOneToOneEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_control)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_control)) */
 #if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_NV_clip_space_w_scaling)) || (defined(VK_EXT_shader_object) && defined(VK_NV_clip_space_w_scaling))
 	vkCmdSetViewportWScalingEnableNV = reinterpret_cast<PFN_vkCmdSetViewportWScalingEnableNV>(load(context, "vkCmdSetViewportWScalingEnableNV"));
 #endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_NV_clip_space_w_scaling)) || (defined(VK_EXT_shader_object) && defined(VK_NV_clip_space_w_scaling)) */
@@ -3652,6 +3727,10 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkCmdBeginRenderingKHR = reinterpret_cast<PFN_vkCmdBeginRenderingKHR>(load(device, "vkCmdBeginRenderingKHR"));
 	table.vkCmdEndRenderingKHR = reinterpret_cast<PFN_vkCmdEndRenderingKHR>(load(device, "vkCmdEndRenderingKHR"));
 #endif /* defined(VK_KHR_dynamic_rendering) */
+#if defined(VK_KHR_dynamic_rendering_local_read)
+	table.vkCmdSetRenderingAttachmentLocationsKHR = reinterpret_cast<PFN_vkCmdSetRenderingAttachmentLocationsKHR>(load(device, "vkCmdSetRenderingAttachmentLocationsKHR"));
+	table.vkCmdSetRenderingInputAttachmentIndicesKHR = reinterpret_cast<PFN_vkCmdSetRenderingInputAttachmentIndicesKHR>(load(device, "vkCmdSetRenderingInputAttachmentIndicesKHR"));
+#endif /* defined(VK_KHR_dynamic_rendering_local_read) */
 #if defined(VK_KHR_external_fence_fd)
 	table.vkGetFenceFdKHR = reinterpret_cast<PFN_vkGetFenceFdKHR>(load(device, "vkGetFenceFdKHR"));
 	table.vkImportFenceFdKHR = reinterpret_cast<PFN_vkImportFenceFdKHR>(load(device, "vkImportFenceFdKHR"));
@@ -3684,6 +3763,9 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkGetImageMemoryRequirements2KHR = reinterpret_cast<PFN_vkGetImageMemoryRequirements2KHR>(load(device, "vkGetImageMemoryRequirements2KHR"));
 	table.vkGetImageSparseMemoryRequirements2KHR = reinterpret_cast<PFN_vkGetImageSparseMemoryRequirements2KHR>(load(device, "vkGetImageSparseMemoryRequirements2KHR"));
 #endif /* defined(VK_KHR_get_memory_requirements2) */
+#if defined(VK_KHR_line_rasterization)
+	table.vkCmdSetLineStippleKHR = reinterpret_cast<PFN_vkCmdSetLineStippleKHR>(load(device, "vkCmdSetLineStippleKHR"));
+#endif /* defined(VK_KHR_line_rasterization) */
 #if defined(VK_KHR_maintenance1)
 	table.vkTrimCommandPoolKHR = reinterpret_cast<PFN_vkTrimCommandPoolKHR>(load(device, "vkTrimCommandPoolKHR"));
 #endif /* defined(VK_KHR_maintenance1) */
@@ -3930,26 +4012,44 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 #if (defined(VK_EXT_extended_dynamic_state3)) || (defined(VK_EXT_shader_object))
 	table.vkCmdSetAlphaToCoverageEnableEXT = reinterpret_cast<PFN_vkCmdSetAlphaToCoverageEnableEXT>(load(device, "vkCmdSetAlphaToCoverageEnableEXT"));
 	table.vkCmdSetAlphaToOneEnableEXT = reinterpret_cast<PFN_vkCmdSetAlphaToOneEnableEXT>(load(device, "vkCmdSetAlphaToOneEnableEXT"));
-	table.vkCmdSetColorBlendAdvancedEXT = reinterpret_cast<PFN_vkCmdSetColorBlendAdvancedEXT>(load(device, "vkCmdSetColorBlendAdvancedEXT"));
 	table.vkCmdSetColorBlendEnableEXT = reinterpret_cast<PFN_vkCmdSetColorBlendEnableEXT>(load(device, "vkCmdSetColorBlendEnableEXT"));
 	table.vkCmdSetColorBlendEquationEXT = reinterpret_cast<PFN_vkCmdSetColorBlendEquationEXT>(load(device, "vkCmdSetColorBlendEquationEXT"));
 	table.vkCmdSetColorWriteMaskEXT = reinterpret_cast<PFN_vkCmdSetColorWriteMaskEXT>(load(device, "vkCmdSetColorWriteMaskEXT"));
-	table.vkCmdSetConservativeRasterizationModeEXT = reinterpret_cast<PFN_vkCmdSetConservativeRasterizationModeEXT>(load(device, "vkCmdSetConservativeRasterizationModeEXT"));
 	table.vkCmdSetDepthClampEnableEXT = reinterpret_cast<PFN_vkCmdSetDepthClampEnableEXT>(load(device, "vkCmdSetDepthClampEnableEXT"));
-	table.vkCmdSetDepthClipEnableEXT = reinterpret_cast<PFN_vkCmdSetDepthClipEnableEXT>(load(device, "vkCmdSetDepthClipEnableEXT"));
-	table.vkCmdSetDepthClipNegativeOneToOneEXT = reinterpret_cast<PFN_vkCmdSetDepthClipNegativeOneToOneEXT>(load(device, "vkCmdSetDepthClipNegativeOneToOneEXT"));
-	table.vkCmdSetExtraPrimitiveOverestimationSizeEXT = reinterpret_cast<PFN_vkCmdSetExtraPrimitiveOverestimationSizeEXT>(load(device, "vkCmdSetExtraPrimitiveOverestimationSizeEXT"));
-	table.vkCmdSetLineRasterizationModeEXT = reinterpret_cast<PFN_vkCmdSetLineRasterizationModeEXT>(load(device, "vkCmdSetLineRasterizationModeEXT"));
-	table.vkCmdSetLineStippleEnableEXT = reinterpret_cast<PFN_vkCmdSetLineStippleEnableEXT>(load(device, "vkCmdSetLineStippleEnableEXT"));
 	table.vkCmdSetLogicOpEnableEXT = reinterpret_cast<PFN_vkCmdSetLogicOpEnableEXT>(load(device, "vkCmdSetLogicOpEnableEXT"));
 	table.vkCmdSetPolygonModeEXT = reinterpret_cast<PFN_vkCmdSetPolygonModeEXT>(load(device, "vkCmdSetPolygonModeEXT"));
-	table.vkCmdSetProvokingVertexModeEXT = reinterpret_cast<PFN_vkCmdSetProvokingVertexModeEXT>(load(device, "vkCmdSetProvokingVertexModeEXT"));
 	table.vkCmdSetRasterizationSamplesEXT = reinterpret_cast<PFN_vkCmdSetRasterizationSamplesEXT>(load(device, "vkCmdSetRasterizationSamplesEXT"));
-	table.vkCmdSetRasterizationStreamEXT = reinterpret_cast<PFN_vkCmdSetRasterizationStreamEXT>(load(device, "vkCmdSetRasterizationStreamEXT"));
-	table.vkCmdSetSampleLocationsEnableEXT = reinterpret_cast<PFN_vkCmdSetSampleLocationsEnableEXT>(load(device, "vkCmdSetSampleLocationsEnableEXT"));
 	table.vkCmdSetSampleMaskEXT = reinterpret_cast<PFN_vkCmdSetSampleMaskEXT>(load(device, "vkCmdSetSampleMaskEXT"));
-	table.vkCmdSetTessellationDomainOriginEXT = reinterpret_cast<PFN_vkCmdSetTessellationDomainOriginEXT>(load(device, "vkCmdSetTessellationDomainOriginEXT"));
 #endif /* (defined(VK_EXT_extended_dynamic_state3)) || (defined(VK_EXT_shader_object)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_maintenance2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object))
+	table.vkCmdSetTessellationDomainOriginEXT = reinterpret_cast<PFN_vkCmdSetTessellationDomainOriginEXT>(load(device, "vkCmdSetTessellationDomainOriginEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_maintenance2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_transform_feedback)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_transform_feedback))
+	table.vkCmdSetRasterizationStreamEXT = reinterpret_cast<PFN_vkCmdSetRasterizationStreamEXT>(load(device, "vkCmdSetRasterizationStreamEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_transform_feedback)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_transform_feedback)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_conservative_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_conservative_rasterization))
+	table.vkCmdSetConservativeRasterizationModeEXT = reinterpret_cast<PFN_vkCmdSetConservativeRasterizationModeEXT>(load(device, "vkCmdSetConservativeRasterizationModeEXT"));
+	table.vkCmdSetExtraPrimitiveOverestimationSizeEXT = reinterpret_cast<PFN_vkCmdSetExtraPrimitiveOverestimationSizeEXT>(load(device, "vkCmdSetExtraPrimitiveOverestimationSizeEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_conservative_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_conservative_rasterization)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_enable)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_enable))
+	table.vkCmdSetDepthClipEnableEXT = reinterpret_cast<PFN_vkCmdSetDepthClipEnableEXT>(load(device, "vkCmdSetDepthClipEnableEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_enable)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_enable)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_sample_locations)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_sample_locations))
+	table.vkCmdSetSampleLocationsEnableEXT = reinterpret_cast<PFN_vkCmdSetSampleLocationsEnableEXT>(load(device, "vkCmdSetSampleLocationsEnableEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_sample_locations)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_sample_locations)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_blend_operation_advanced)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_blend_operation_advanced))
+	table.vkCmdSetColorBlendAdvancedEXT = reinterpret_cast<PFN_vkCmdSetColorBlendAdvancedEXT>(load(device, "vkCmdSetColorBlendAdvancedEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_blend_operation_advanced)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_blend_operation_advanced)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_provoking_vertex)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_provoking_vertex))
+	table.vkCmdSetProvokingVertexModeEXT = reinterpret_cast<PFN_vkCmdSetProvokingVertexModeEXT>(load(device, "vkCmdSetProvokingVertexModeEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_provoking_vertex)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_provoking_vertex)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_line_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_line_rasterization))
+	table.vkCmdSetLineRasterizationModeEXT = reinterpret_cast<PFN_vkCmdSetLineRasterizationModeEXT>(load(device, "vkCmdSetLineRasterizationModeEXT"));
+	table.vkCmdSetLineStippleEnableEXT = reinterpret_cast<PFN_vkCmdSetLineStippleEnableEXT>(load(device, "vkCmdSetLineStippleEnableEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_line_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_line_rasterization)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_control)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_control))
+	table.vkCmdSetDepthClipNegativeOneToOneEXT = reinterpret_cast<PFN_vkCmdSetDepthClipNegativeOneToOneEXT>(load(device, "vkCmdSetDepthClipNegativeOneToOneEXT"));
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_control)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_control)) */
 #if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_NV_clip_space_w_scaling)) || (defined(VK_EXT_shader_object) && defined(VK_NV_clip_space_w_scaling))
 	table.vkCmdSetViewportWScalingEnableNV = reinterpret_cast<PFN_vkCmdSetViewportWScalingEnableNV>(load(device, "vkCmdSetViewportWScalingEnableNV"));
 #endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_NV_clip_space_w_scaling)) || (defined(VK_EXT_shader_object) && defined(VK_NV_clip_space_w_scaling)) */
@@ -4592,6 +4692,10 @@ inline PFN_vkCmdDrawIndirectCountKHR vkCmdDrawIndirectCountKHR;
 inline PFN_vkCmdBeginRenderingKHR vkCmdBeginRenderingKHR;
 inline PFN_vkCmdEndRenderingKHR vkCmdEndRenderingKHR;
 #endif /* defined(VK_KHR_dynamic_rendering) */
+#if defined(VK_KHR_dynamic_rendering_local_read)
+inline PFN_vkCmdSetRenderingAttachmentLocationsKHR vkCmdSetRenderingAttachmentLocationsKHR;
+inline PFN_vkCmdSetRenderingInputAttachmentIndicesKHR vkCmdSetRenderingInputAttachmentIndicesKHR;
+#endif /* defined(VK_KHR_dynamic_rendering_local_read) */
 #if defined(VK_KHR_external_fence_capabilities)
 inline PFN_vkGetPhysicalDeviceExternalFencePropertiesKHR vkGetPhysicalDeviceExternalFencePropertiesKHR;
 #endif /* defined(VK_KHR_external_fence_capabilities) */
@@ -4653,6 +4757,9 @@ inline PFN_vkGetPhysicalDeviceSparseImageFormatProperties2KHR vkGetPhysicalDevic
 inline PFN_vkGetPhysicalDeviceSurfaceCapabilities2KHR vkGetPhysicalDeviceSurfaceCapabilities2KHR;
 inline PFN_vkGetPhysicalDeviceSurfaceFormats2KHR vkGetPhysicalDeviceSurfaceFormats2KHR;
 #endif /* defined(VK_KHR_get_surface_capabilities2) */
+#if defined(VK_KHR_line_rasterization)
+inline PFN_vkCmdSetLineStippleKHR vkCmdSetLineStippleKHR;
+#endif /* defined(VK_KHR_line_rasterization) */
 #if defined(VK_KHR_maintenance1)
 inline PFN_vkTrimCommandPoolKHR vkTrimCommandPoolKHR;
 #endif /* defined(VK_KHR_maintenance1) */
@@ -4954,26 +5061,44 @@ inline PFN_vkCmdSetRasterizerDiscardEnableEXT vkCmdSetRasterizerDiscardEnableEXT
 #if (defined(VK_EXT_extended_dynamic_state3)) || (defined(VK_EXT_shader_object))
 inline PFN_vkCmdSetAlphaToCoverageEnableEXT vkCmdSetAlphaToCoverageEnableEXT;
 inline PFN_vkCmdSetAlphaToOneEnableEXT vkCmdSetAlphaToOneEnableEXT;
-inline PFN_vkCmdSetColorBlendAdvancedEXT vkCmdSetColorBlendAdvancedEXT;
 inline PFN_vkCmdSetColorBlendEnableEXT vkCmdSetColorBlendEnableEXT;
 inline PFN_vkCmdSetColorBlendEquationEXT vkCmdSetColorBlendEquationEXT;
 inline PFN_vkCmdSetColorWriteMaskEXT vkCmdSetColorWriteMaskEXT;
-inline PFN_vkCmdSetConservativeRasterizationModeEXT vkCmdSetConservativeRasterizationModeEXT;
 inline PFN_vkCmdSetDepthClampEnableEXT vkCmdSetDepthClampEnableEXT;
-inline PFN_vkCmdSetDepthClipEnableEXT vkCmdSetDepthClipEnableEXT;
-inline PFN_vkCmdSetDepthClipNegativeOneToOneEXT vkCmdSetDepthClipNegativeOneToOneEXT;
-inline PFN_vkCmdSetExtraPrimitiveOverestimationSizeEXT vkCmdSetExtraPrimitiveOverestimationSizeEXT;
-inline PFN_vkCmdSetLineRasterizationModeEXT vkCmdSetLineRasterizationModeEXT;
-inline PFN_vkCmdSetLineStippleEnableEXT vkCmdSetLineStippleEnableEXT;
 inline PFN_vkCmdSetLogicOpEnableEXT vkCmdSetLogicOpEnableEXT;
 inline PFN_vkCmdSetPolygonModeEXT vkCmdSetPolygonModeEXT;
-inline PFN_vkCmdSetProvokingVertexModeEXT vkCmdSetProvokingVertexModeEXT;
 inline PFN_vkCmdSetRasterizationSamplesEXT vkCmdSetRasterizationSamplesEXT;
-inline PFN_vkCmdSetRasterizationStreamEXT vkCmdSetRasterizationStreamEXT;
-inline PFN_vkCmdSetSampleLocationsEnableEXT vkCmdSetSampleLocationsEnableEXT;
 inline PFN_vkCmdSetSampleMaskEXT vkCmdSetSampleMaskEXT;
-inline PFN_vkCmdSetTessellationDomainOriginEXT vkCmdSetTessellationDomainOriginEXT;
 #endif /* (defined(VK_EXT_extended_dynamic_state3)) || (defined(VK_EXT_shader_object)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_maintenance2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object))
+inline PFN_vkCmdSetTessellationDomainOriginEXT vkCmdSetTessellationDomainOriginEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_maintenance2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_transform_feedback)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_transform_feedback))
+inline PFN_vkCmdSetRasterizationStreamEXT vkCmdSetRasterizationStreamEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_transform_feedback)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_transform_feedback)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_conservative_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_conservative_rasterization))
+inline PFN_vkCmdSetConservativeRasterizationModeEXT vkCmdSetConservativeRasterizationModeEXT;
+inline PFN_vkCmdSetExtraPrimitiveOverestimationSizeEXT vkCmdSetExtraPrimitiveOverestimationSizeEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_conservative_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_conservative_rasterization)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_enable)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_enable))
+inline PFN_vkCmdSetDepthClipEnableEXT vkCmdSetDepthClipEnableEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_enable)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_enable)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_sample_locations)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_sample_locations))
+inline PFN_vkCmdSetSampleLocationsEnableEXT vkCmdSetSampleLocationsEnableEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_sample_locations)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_sample_locations)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_blend_operation_advanced)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_blend_operation_advanced))
+inline PFN_vkCmdSetColorBlendAdvancedEXT vkCmdSetColorBlendAdvancedEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_blend_operation_advanced)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_blend_operation_advanced)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_provoking_vertex)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_provoking_vertex))
+inline PFN_vkCmdSetProvokingVertexModeEXT vkCmdSetProvokingVertexModeEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_provoking_vertex)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_provoking_vertex)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_line_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_line_rasterization))
+inline PFN_vkCmdSetLineRasterizationModeEXT vkCmdSetLineRasterizationModeEXT;
+inline PFN_vkCmdSetLineStippleEnableEXT vkCmdSetLineStippleEnableEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_line_rasterization)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_line_rasterization)) */
+#if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_control)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_control))
+inline PFN_vkCmdSetDepthClipNegativeOneToOneEXT vkCmdSetDepthClipNegativeOneToOneEXT;
+#endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_EXT_depth_clip_control)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clip_control)) */
 #if (defined(VK_EXT_extended_dynamic_state3) && defined(VK_NV_clip_space_w_scaling)) || (defined(VK_EXT_shader_object) && defined(VK_NV_clip_space_w_scaling))
 inline PFN_vkCmdSetViewportWScalingEnableNV vkCmdSetViewportWScalingEnableNV;
 #endif /* (defined(VK_EXT_extended_dynamic_state3) && defined(VK_NV_clip_space_w_scaling)) || (defined(VK_EXT_shader_object) && defined(VK_NV_clip_space_w_scaling)) */
