@@ -46,7 +46,6 @@ Modified by Jan "GamesTrap" Schuerkamp
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 #include "Graphics/API/Vulkan/Objects/VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
-#include "Graphics/API/Objects/Fence.h"
 #include "Graphics/Textures/Texture.h"
 
 // dear imgui: Renderer Backend for Vulkan
@@ -835,7 +834,6 @@ namespace
         for (u32 i = 0; i < wd.ImageCount; i++)
         {
             ImGui_ImplVulkanH_Frame& fd = wd.Frames[i];
-            ImGui_ImplVulkanH_FrameSemaphores& fsd = wd.FrameSemaphores[i];
             const TRAP::Graphics::RendererAPI::CommandPoolDesc cmdPoolDesc
             {
                 .Queue = queue,
@@ -846,6 +844,10 @@ namespace
 
             fd.Fence = TRAP::MakeRef<TRAP::Graphics::API::VulkanFence>();
 
+        }
+
+        for(auto& fsd : wd.FrameSemaphores)
+        {
             fsd.ImageAcquiredSemaphore = TRAP::MakeRef<TRAP::Graphics::API::VulkanSemaphore>();
             fsd.RenderCompleteSemaphore = TRAP::MakeRef<TRAP::Graphics::API::VulkanSemaphore>();
         }
@@ -941,7 +943,7 @@ namespace
             TRAP_ASSERT(wd.Frames.empty(), "ImGuiVulkanBackend::CreateWindowSwapChain(): wd.Frames is not empty!");
             TRAP_ASSERT(wd.FrameSemaphores.empty(), "ImGuiVulkanBackend::CreateWindowSwapChain(): wd.FrameSemaphores is not empty!");
             wd.Frames.resize(wd.ImageCount);
-            wd.FrameSemaphores.resize(wd.ImageCount);
+            wd.FrameSemaphores.resize(wd.ImageCount + 1);
             for (u32 i = 0; i < wd.ImageCount; i++)
             {
                 const TRAP::Graphics::RendererAPI::RenderTargetDesc rtDesc
@@ -1408,7 +1410,7 @@ namespace
             CheckVkResult(err);
 
         wd.FrameIndex = (wd.FrameIndex + 1) % wd.ImageCount;         // This is for the next vkWaitForFences()
-        wd.SemaphoreIndex = (wd.SemaphoreIndex + 1) % wd.ImageCount; // Now we can use the next set of semaphores
+        wd.SemaphoreIndex = (wd.SemaphoreIndex + 1u) % NumericCast<u32>(wd.FrameSemaphores.size()); // Now we can use the next set of semaphores
     }
 
     //-------------------------------------------------------------------------------------------------------------------//
