@@ -1978,8 +1978,6 @@ namespace TRAP::Graphics
 			TRAP::Graphics::RendererAPI::QueueType QueueType{};
 			//What state will the buffer get created in
 			ResourceState StartState{};
-			//Index of the first element accessible by the SRV/UAV
-			u64 FirstElement{};
 			//Number of elements in the buffer
 			u64 ElementCount{};
 			//Size of each element (in bytes) in the buffer

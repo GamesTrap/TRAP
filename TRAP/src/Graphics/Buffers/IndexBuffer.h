@@ -145,6 +145,8 @@ requires std::same_as<T, u16> || std::same_as<T, u32>
 	                                                                       RendererAPI::ResourceMemoryUsage::CPUToGPU;
 	desc.Desc.Descriptors = RendererAPI::DescriptorType::IndexBuffer;
 	desc.Desc.Size = size;
+	desc.Desc.StructStride = sizeof(T);
+	desc.Desc.ElementCount = size / desc.Desc.StructStride;
 	desc.Desc.Flags = (updateFrequency != UpdateFrequency::Static) ? RendererAPI::BufferCreationFlags::PersistentMap :
 	                                                                 RendererAPI::BufferCreationFlags::None;
 	desc.Data = indices;

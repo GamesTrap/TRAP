@@ -67,7 +67,8 @@ namespace TRAP::Graphics
 		/// @param size Byte size of the data to upload.
 		/// @param updateFrequency Update frequency for the buffer.
 		/// @return New uniform buffer.
-		[[nodiscard]] static Scope<UniformBuffer> Create(const void* data, u64 size, UpdateFrequency updateFrequency);
+		template<typename T>
+		[[nodiscard]] static Scope<UniformBuffer> Create(const T* data, u64 size, UpdateFrequency updateFrequency);
 
 	private:
 		/// @brief Initialize uniform buffer with given data.
@@ -75,7 +76,8 @@ namespace TRAP::Graphics
 		/// @param size Byte size of the data to upload.
 		/// @param updateFrequency Update frequency for the buffer.
 		/// @return New uniform buffer.
-		[[nodiscard]] static Scope<UniformBuffer> Init(const void* data, u64 size, UpdateFrequency updateFrequency);
+		template<typename T>
+		[[nodiscard]] static Scope<UniformBuffer> Init(const T* data, u64 size, UpdateFrequency updateFrequency);
 
 		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_uniformBuffers;
 
@@ -103,6 +105,48 @@ constexpr TRAP::Graphics::UniformBuffer::UniformBuffer(const RendererAPI::Descri
 [[nodiscard]] constexpr const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::UniformBuffer::GetUBOs() const noexcept
 {
 	return m_uniformBuffers;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const T* const data,
+																				               const u64 size,
+																				               const UpdateFrequency updateFrequency)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+
+	return Init(data, size, updateFrequency);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Init(const T* const data, const u64 size,
+																			                 const UpdateFrequency updateFrequency)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+
+	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer(updateFrequency));
+
+	RendererAPI::BufferLoadDesc desc{};
+	desc.Desc.MemoryUsage = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
+	                                                                     RendererAPI::ResourceMemoryUsage::CPUToGPU;
+	desc.Desc.Flags = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::BufferCreationFlags::None :
+																   RendererAPI::BufferCreationFlags::PersistentMap;
+	desc.Desc.Descriptors = RendererAPI::DescriptorType::UniformBuffer;
+	desc.Desc.Size = size;
+	desc.Desc.StructStride = sizeof(T);
+	desc.Desc.ElementCount = desc.Desc.Size / desc.Desc.StructStride;
+	desc.Data = data;
+
+	for(usize i = 0; i < buffer->m_uniformBuffers.size(); ++i)
+	{
+		RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_tokens[i]);
+		buffer->m_uniformBuffers[i] = desc.Buffer;
+	}
+
+	return buffer;
 }
 
 #endif /*TRAP_UNIFORMBUFFER_H*/

@@ -120,6 +120,8 @@ void TRAP::Graphics::VertexBuffer::AwaitLoading() const
 	                                                                       RendererAPI::ResourceMemoryUsage::CPUToGPU;
 	desc.Desc.Descriptors = RendererAPI::DescriptorType::VertexBuffer;
 	desc.Desc.Size = size;
+	desc.Desc.StructStride = sizeof(f32);
+	desc.Desc.ElementCount = size / desc.Desc.StructStride;
 	desc.Desc.Flags = (updateFrequency != UpdateFrequency::Static) ? RendererAPI::BufferCreationFlags::PersistentMap :
 	                                                                 RendererAPI::BufferCreationFlags::None;
 	desc.Data = vertices;
