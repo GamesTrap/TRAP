@@ -9,17 +9,7 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	return Init(nullptr, size, updateFrequency);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const void* const data, const u64 size,
-																				               const UpdateFrequency updateFrequency)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	return Init(data, size, updateFrequency);
+	return Init((u8*)nullptr, size, updateFrequency);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -92,30 +82,4 @@ void TRAP::Graphics::StorageBuffer::AwaitLoading() const
 		alignedSize = (alignedSize + minSSBOAlignment - 1) & ~(minSSBOAlignment - 1);
 
 	return alignedSize;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Init(const void* const data, const u64 size,
-																			                 const UpdateFrequency updateFrequency)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	TRAP::Scope<StorageBuffer> buffer = TRAP::Scope<StorageBuffer>(new StorageBuffer(updateFrequency));
-
-	RendererAPI::BufferLoadDesc desc{};
-	desc.Desc.MemoryUsage = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
-	                                                                     RendererAPI::ResourceMemoryUsage::CPUToGPU;
-	desc.Desc.Flags = RendererAPI::BufferCreationFlags::PersistentMap;
-	desc.Desc.Descriptors = RendererAPI::DescriptorType::RWBuffer;
-	desc.Desc.Size = size;
-	desc.Data = data;
-
-	for(usize i = 0; i < buffer->m_storageBuffers.size(); ++i)
-	{
-		RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_tokens[i]);
-		buffer->m_storageBuffers[i] = desc.Buffer;
-	}
-
-	return buffer;
 }

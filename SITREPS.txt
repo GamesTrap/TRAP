@@ -4824,3 +4824,8 @@ SITREP 01/28/2024|24w04b1
     - Changed TRAP Engine version to 24w04b1(0.10.35)
     - Refactored VulkanBuffer ~>30 mins
     - Updated ImGuiVulkanBackend ~<10 mins
+
+SITREP 01/29/2024|24w05a1
+    - Changed TRAP Engine version to 24w05a1(0.10.36)
+    - VulkanBuffer Removed unused functions ~<5 mins
+    - IndexBuffer/VertexBuffer/StorageBuffer/UniformBuffer set ElementCount and StructStride values ~<15 mins

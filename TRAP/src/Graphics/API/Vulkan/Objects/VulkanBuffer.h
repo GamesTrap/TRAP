@@ -38,15 +38,9 @@ namespace TRAP::Graphics::API
 		/// @brief Retrieve the uniform texel view.
 		/// @return VkBufferView for uniform texel.
 		[[nodiscard]] constexpr VkBufferView GetUniformTexelView() const noexcept;
-		/// @brief Retrieve the byte offset to the first element in the buffer.
+		/// @brief Retrieve the (aligned) byte offset to the first element in the buffer.
 		/// @return Byte offset to the first element in the buffer.
 		[[nodiscard]] constexpr u64 GetOffset() const noexcept;
-		/// @brief Retrieve the VkDeviceMemory handle.
-		/// @return VkDeviceMemory handle.
-		[[nodiscard]] VkDeviceMemory GetVkDeviceMemory() const;
-		/// @brief Retrieve the VkDeviceMemory offset to the start of the buffer.
-		/// @return VkDeviceMemory offset.
-		[[nodiscard]] u64 GetVkDeviceMemoryOffset() const;
 
 		/// @brief Map a region of the buffer to the CPU.
 		/// @param range Optional range of the buffer to map. Default: Whole buffer.
@@ -72,7 +66,6 @@ namespace TRAP::Graphics::API
 		VkBufferView m_vkUniformTexelView = VK_NULL_HANDLE;
 		//Contains resource allocation info such as parent heap, offset in heap
 		VmaAllocation m_allocation = VK_NULL_HANDLE;
-		u64 m_offset = 0;
 	};
 }
 
@@ -101,7 +94,7 @@ namespace TRAP::Graphics::API
 
 [[nodiscard]] constexpr u64 TRAP::Graphics::API::VulkanBuffer::GetOffset() const noexcept
 {
-	return m_offset;
+	return 0u;
 }
 
 #endif /*TRAP_VULKANBUFFER_H*/

@@ -3299,7 +3299,6 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	bufferDesc.MemoryUsage = ResourceMemoryUsage::GPUOnly;
 	bufferDesc.StartState = ResourceState::Common;
 	bufferDesc.Size = sizeof(u32);
-	bufferDesc.FirstElement = 0;
 	bufferDesc.ElementCount = 1;
 	bufferDesc.StructStride = sizeof(u32);
 	bufferDesc.Format = ImageFormat::R32_UINT;

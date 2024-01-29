@@ -94,22 +94,6 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] constexpr u64 CalculateStartOffset(const TRAP::Graphics::RendererAPI::BufferDesc& desc)
-	{
-		using enum TRAP::Graphics::RendererAPI::DescriptorType;
-
-		if (((desc.Descriptors & UniformBuffer) != Undefined) || ((desc.Descriptors & Buffer) != Undefined) ||
-			((desc.Descriptors & RWBuffer) != Undefined))
-		{
-			if (((desc.Descriptors & Buffer) != Undefined) || ((desc.Descriptors & RWBuffer) != Undefined))
-				return desc.StructStride * desc.FirstElement;
-		}
-
-		return 0;
-	}
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
 	[[nodiscard]] constexpr VkFormatFeatureFlagBits BufferUsageToFormatFeatureFlag(const VkBufferUsageFlagBits bufferUsage)
 	{
 		switch(bufferUsage)
@@ -138,7 +122,7 @@ namespace
 
 		const VkBufferViewCreateInfo viewInfo = TRAP::Graphics::API::VulkanInits::BufferViewCreateInfo(buffer,
 		                                                                                               ImageFormatToVkFormat(desc.Format),
-		                                                                                               desc.FirstElement * desc.StructStride,
+		                                                                                               0,
 		                                                                                               desc.ElementCount * desc.StructStride);
 		const VkFormatProperties formatProps = device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(viewInfo.format);
 		if ((formatProps.bufferFeatures & BufferUsageToFormatFeatureFlag(bufferUsage)) == 0u) //Format doesnt support texel buffer usage
@@ -189,9 +173,6 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 
 	m_CPUMappedAddress = allocInfo.pMappedData;
 
-	//Set descriptor data
-	m_offset = CalculateStartOffset(desc);
-
 	if((info.usage & VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT) != 0u)
 		CreateTexelBufferView(desc, VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT, m_vkBuffer, m_device, m_vkUniformTexelView);
 	else if((info.usage & VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT) != 0u)
@@ -221,30 +202,6 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 
 	if(m_allocation != VK_NULL_HANDLE)
 		vmaDestroyBuffer(m_VMA->GetVMAAllocator(), m_vkBuffer, m_allocation);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkDeviceMemory TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemory() const
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	VmaAllocationInfo allocInfo{};
-	vmaGetAllocationInfo(m_VMA->GetVMAAllocator(), m_allocation, &allocInfo);
-
-	return allocInfo.deviceMemory;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] u64 TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemoryOffset() const
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	VmaAllocationInfo allocInfo{};
-	vmaGetAllocationInfo(m_VMA->GetVMAAllocator(), m_allocation, &allocInfo);
-
-	return allocInfo.offset;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
