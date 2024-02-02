@@ -4829,3 +4829,7 @@ SITREP 01/29/2024|24w05a1
     - Changed TRAP Engine version to 24w05a1(0.10.36)
     - VulkanBuffer Removed unused functions ~<5 mins
     - IndexBuffer/VertexBuffer/StorageBuffer/UniformBuffer set ElementCount and StructStride values ~<15 mins
+
+SITREP 02/02/2024|24w05a2
+    - Changed TRAP Engine version to 24w05a2(0.10.37)
+    - TRAPEditorLayer/VulkanRenderer Added missing ElementCount and StructStride values to Buffers ~<5 mins
