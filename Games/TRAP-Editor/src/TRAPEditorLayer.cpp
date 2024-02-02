@@ -271,6 +271,8 @@ void TRAPEditorLayer::OnAttach()
 	m_mousePickBufferDesc.MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::GPUToCPU;
 	m_mousePickBufferDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination;
 	m_mousePickBufferDesc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::RWBuffer;
+	m_mousePickBufferDesc.StructStride = sizeof(i32);
+	m_mousePickBufferDesc.ElementCount = m_mousePickBufferDesc.Size / m_mousePickBufferDesc.StructStride;
 	m_mousePickBufferDesc.Name = "Viewport ID Buffer";
 	m_mousePickBuffer = TRAP::Graphics::Buffer::Create(m_mousePickBufferDesc);
 
@@ -310,6 +312,8 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 		//Update Mouse Picking Buffer
 		m_mousePickBufferDesc.Size = NumericCast<u64>(m_renderTargetDesc.Width) * m_renderTargetDesc.Height * sizeof(i32);
+		m_mousePickBufferDesc.StructStride = sizeof(i32);
+		m_mousePickBufferDesc.ElementCount = m_mousePickBufferDesc.Size / m_mousePickBufferDesc.StructStride;
 		m_mousePickBuffer = TRAP::Graphics::Buffer::Create(m_mousePickBufferDesc);
 
 		m_editorCamera.SetViewportSize(m_viewportSize.x(), m_viewportSize.y());

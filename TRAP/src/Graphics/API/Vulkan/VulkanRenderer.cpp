@@ -2217,6 +2217,8 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	bufferDesc.Descriptors = DescriptorType::RWBuffer;
 	bufferDesc.MemoryUsage = ResourceMemoryUsage::GPUToCPU;
 	bufferDesc.Size = NumericCast<u64>(renderTarget->GetWidth()) * renderTarget->GetHeight() * formatByteWidth;
+	bufferDesc.StructStride = formatByteWidth;
+	bufferDesc.ElementCount = bufferDesc.Size / bufferDesc.StructStride;
 	bufferDesc.Flags = BufferCreationFlags::PersistentMap | BufferCreationFlags::NoDescriptorViewCreation;
 	bufferDesc.StartState = ResourceState::CopyDestination;
 	bufferDesc.QueueType = QueueType::Graphics;
@@ -2730,6 +2732,8 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 	bufferDesc.MemoryUsage = RendererAPI::ResourceMemoryUsage::GPUToCPU;
 	bufferDesc.Flags = RendererAPI::BufferCreationFlags::OwnMemory;
 	bufferDesc.Size = sizeof(u64) * 1 * 2;
+	bufferDesc.ElementCount = 2;
+	bufferDesc.StructStride = sizeof(u64);
 	bufferDesc.StartState = RendererAPI::ResourceState::CopyDestination;
 
 	//For each buffered image
