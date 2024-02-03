@@ -597,14 +597,14 @@ void TRAP::Graphics::Texture::Update(const void* const data, const u32 sizeInByt
 	TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(updateDesc);
 	if(updateDesc.DstRowStride == updateDesc.SrcRowStride) //Single copy is enough
 		std::copy_n(static_cast<const u8*>(data), updateDesc.RowCount * updateDesc.SrcRowStride,
-		            static_cast<u8*>(updateDesc.MappedData));
+		            updateDesc.MappedData.begin());
 	else //Needs row by row copy
 	{
 		for(usize r = 0; r < updateDesc.RowCount; ++r)
 		{
 			std::copy_n(static_cast<const u8*>(data) + r * updateDesc.SrcRowStride,
 			            updateDesc.SrcRowStride,
-						static_cast<u8*>(updateDesc.MappedData) + r * updateDesc.DstRowStride);
+						updateDesc.MappedData.subspan(r * updateDesc.DstRowStride).begin());
 		}
 	}
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(updateDesc, &m_syncToken);
