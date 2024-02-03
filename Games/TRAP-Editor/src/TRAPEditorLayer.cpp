@@ -689,7 +689,8 @@ void TRAPEditorLayer::MousePicking()
 		//Read pixel of the CPU visible buffer
 
 		//Get our wanted value
-		const i32 id = *(static_cast<i32*>(m_mousePickBuffer->GetCPUMappedAddress()) + (mouseY * m_renderTargetDesc.Width + mouseX));
+		const std::span<i32> mousePickBufferRange = m_mousePickBuffer->GetCPUMappedAddress<i32>();
+		const i32 id = mousePickBufferRange[mouseY * m_renderTargetDesc.Width + mouseX];
 		if(m_activeScene)
 		{
 			const TRAP::Entity entity{static_cast<entt::entity>(id), m_activeScene.get()};

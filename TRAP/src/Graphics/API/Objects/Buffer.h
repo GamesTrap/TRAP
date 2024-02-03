@@ -35,10 +35,11 @@ namespace TRAP::Graphics
 		/// @return Usage of the buffer memory.
 		[[nodiscard]] constexpr RendererAPI::ResourceMemoryUsage GetMemoryUsage() const noexcept;
 
-		/// @brief Retrieve the CPU mapped address of the buffer.
-		/// @return CPU mapped address of the buffer.
+		/// @brief Retrieve the CPU mapped memory range of the buffer.
+		/// @return CPU mapped memory range of the buffer.
 		/// @note MapBuffer must be called before accessing the buffer on the CPU.
-		[[nodiscard]] constexpr void* GetCPUMappedAddress() const noexcept;
+		template<typename T = u8>
+		[[nodiscard]] constexpr std::span<T> GetCPUMappedAddress() const noexcept;
 
 		/// @brief Map a region of the buffer to the CPU.
 		/// @param range Optional range of the buffer to map. Default: Whole buffer.
@@ -55,7 +56,7 @@ namespace TRAP::Graphics
 
 		//CPU address of the mapped buffer (applicable to buffers created in CPU accessible heaps
 		//(CPU, CPUToGPU, GPUToCPU))
-		void* m_CPUMappedAddress = nullptr;
+		std::span<u8> m_CPUMappedAddress{};
 
 		u64 m_size = 0;
 		RendererAPI::DescriptorType m_descriptors = RendererAPI::DescriptorType::Undefined;
@@ -86,9 +87,13 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr void* TRAP::Graphics::Buffer::GetCPUMappedAddress() const noexcept
+template<typename T>
+[[nodiscard]] constexpr std::span<T> TRAP::Graphics::Buffer::GetCPUMappedAddress() const noexcept
 {
-	return m_CPUMappedAddress;
+	TRAP_ASSERT((m_CPUMappedAddress.size() % sizeof(T)) == 0,
+	            "Buffer::GetCPUMappedAddress(): CPU mapped buffer length is not divisible with sizeof(T)!");
+
+	return {reinterpret_cast<T*>(m_CPUMappedAddress.data()), m_CPUMappedAddress.size() / sizeof(T)};
 }
 
 #endif /*TRAP_BUFFER_H*/

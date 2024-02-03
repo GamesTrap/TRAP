@@ -366,12 +366,11 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Buffe
 	const RendererAPI::ResourceMemoryUsage memoryUsage = desc.Buffer->GetMemoryUsage();
 	if(memoryUsage != RendererAPI::ResourceMemoryUsage::GPUOnly)
 	{
-		bool needsToBeMapped = buffer->GetCPUMappedAddress() == nullptr;
+		bool needsToBeMapped = buffer->GetCPUMappedAddress().empty();
 		if (needsToBeMapped)
 			needsToBeMapped = buffer->MapBuffer();
 
-		desc.Internal.MappedRange = { static_cast<u8*>(buffer->GetCPUMappedAddress()) + desc.DstOffset,
-		                              buffer };
+		desc.Internal.MappedRange = { buffer->GetCPUMappedAddress().data() + desc.DstOffset, buffer };
 		desc.MappedData = desc.Internal.MappedRange.Data;
 		desc.Internal.MappedRange.Flags = needsToBeMapped ? std::to_underlying(MappedRangeFlag::UnMapBuffer) : 0;
 	}
@@ -573,8 +572,7 @@ void TRAP::Graphics::API::ResourceLoader::WaitForTokenSubmitted(const SyncToken*
 	desc.Flags = RendererAPI::BufferCreationFlags::PersistentMap;
 	const TRAP::Ref<Buffer> buffer = Buffer::Create(desc);
 
-	return RendererAPI::MappedMemoryRange{static_cast<u8*>(buffer->GetCPUMappedAddress()), buffer,
-	                                      0, memoryRequirement };
+	return RendererAPI::MappedMemoryRange{buffer->GetCPUMappedAddress().data(), buffer, 0, memoryRequirement };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -742,11 +740,11 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(TRAP::Graphics::Te
 	CopyEngine::CopyResourceSet& resSet = m_copyEngine.ResourceSets[m_nextSet];
 	const u64 size = resSet.Buffer->GetSize();
 	const bool memoryAvailable = (offset < size) && (memoryRequirement <= size - offset);
-	if(memoryAvailable && (resSet.Buffer->GetCPUMappedAddress() != nullptr))
+	if(memoryAvailable && !resSet.Buffer->GetCPUMappedAddress().empty())
 	{
 		const TRAP::Ref<Buffer> buffer = resSet.Buffer;
-		TRAP_ASSERT(buffer->GetCPUMappedAddress(), "ResourceLoader::AllocateStagingMemory(): CPU mapped address of buffer is nullptr!");
-		u8* const dstData = static_cast<u8*>(buffer->GetCPUMappedAddress()) + offset;
+		TRAP_ASSERT(!buffer->GetCPUMappedAddress().empty(), "ResourceLoader::AllocateStagingMemory(): CPU mapped memory range of buffer is empty!");
+		u8* const dstData = buffer->GetCPUMappedAddress().data() + offset;
 		m_copyEngine.ResourceSets[m_nextSet].AllocatedSpace = offset + memoryRequirement;
 		return { dstData, buffer, offset, memoryRequirement };
 	}

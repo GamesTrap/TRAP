@@ -1485,7 +1485,7 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
     u8* pixels = nullptr;
     i32 width = 0, height = 0;
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
-    const usize upload_size = NumericCast<usize>(width) * NumericCast<usize>(height) * 4u * sizeof(char);
+    const usize upload_size = NumericCast<usize>(width) * NumericCast<usize>(height) * 4u * sizeof(u8);
 
     // Create the Image:
     bd->FontImage = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>(TRAP::Graphics::TextureType::Texture2D);
@@ -1536,11 +1536,10 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
 
     // Upload to Buffer:
     {
-        u8* map = nullptr;
         if(uploadBuffer->MapBuffer({.Offset = 0, .Range = upload_size}))
         {
-            map = reinterpret_cast<u8*>(uploadBuffer->GetCPUMappedAddress());
-            std::copy_n(pixels, upload_size, map);
+            const std::span<u8> map = uploadBuffer->GetCPUMappedAddress();
+            std::copy_n(pixels, upload_size, map.begin());
             uploadBuffer->UnMapBuffer();
         }
     }
@@ -1700,16 +1699,17 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
         if(rb.VertexBuffer->MapBuffer({.Offset = 0, .Range = vertex_size}) &&
            rb.IndexBuffer->MapBuffer({.Offset = 0, .Range = index_size}))
         {
-            ImDrawVert* vtx_dst = reinterpret_cast<ImDrawVert*>(rb.VertexBuffer->GetCPUMappedAddress());
-            ImDrawIdx* idx_dst = reinterpret_cast<ImDrawIdx*>(rb.IndexBuffer->GetCPUMappedAddress());
+            std::span<ImDrawVert> vtxDst = rb.VertexBuffer->GetCPUMappedAddress<ImDrawVert>();
+            std::span<ImDrawIdx> idxDst = rb.IndexBuffer->GetCPUMappedAddress<ImDrawIdx>();
+
             for (i32 n = 0; n < draw_data.CmdListsCount; n++)
             {
                 if(const ImDrawList* const cmd_list = draw_data.CmdLists[n]; cmd_list)
                 {
-                    std::copy_n(cmd_list->VtxBuffer.Data, cmd_list->VtxBuffer.Size, vtx_dst);
-                    std::copy_n(cmd_list->IdxBuffer.Data, cmd_list->IdxBuffer.Size, idx_dst);
-                    vtx_dst += cmd_list->VtxBuffer.Size;
-                    idx_dst += cmd_list->IdxBuffer.Size;
+                    std::ranges::copy(cmd_list->VtxBuffer, vtxDst.begin());
+                    std::ranges::copy(cmd_list->IdxBuffer, idxDst.begin());
+                    vtxDst = vtxDst.subspan(cmd_list->VtxBuffer.Size);
+                    idxDst = idxDst.subspan(cmd_list->IdxBuffer.Size);
                 }
             }
             rb.IndexBuffer->UnMapBuffer();

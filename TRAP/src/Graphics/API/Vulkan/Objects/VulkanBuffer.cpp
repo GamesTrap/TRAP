@@ -171,7 +171,8 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 	TRAP_ASSERT(m_vkBuffer, "VulkanBuffer(): Failed to create Buffer");
 	TRAP_ASSERT(m_allocation, "VulkanBuffer(): Failed to create Buffer");
 
-	m_CPUMappedAddress = allocInfo.pMappedData;
+	if(allocInfo.pMappedData != nullptr)
+		m_CPUMappedAddress = std::span<u8>(static_cast<u8*>(allocInfo.pMappedData), info.size);
 
 	if((info.usage & VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT) != 0u)
 		CreateTexelBufferView(desc, VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT, m_vkBuffer, m_device, m_vkUniformTexelView);
@@ -212,8 +213,10 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 
 	TRAP_ASSERT(m_memoryUsage != RendererAPI::ResourceMemoryUsage::GPUOnly,
 	            "VulkanBuffer::MapBuffer(): Trying to map non-CPU accessible resource");
+	TRAP_ASSERT((NumericCast<i64>(m_size) - range.Offset) > 0,
+	            "VulkanBuffer::MapBuffer(): range - offset is <= 0");
 
-	if(m_CPUMappedAddress != nullptr)
+	if(!m_CPUMappedAddress.empty())
 	{
 		TP_ERROR(Log::RendererVulkanBufferPrefix, "VulkanBuffer::MapBuffer(): Buffer is already mapped! Missing UnMapBuffer() call?");
 		return false;
@@ -224,9 +227,9 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 	TRAP_ASSERT(res == VK_SUCCESS, "VulkanBuffer::MapBuffer(): Failed to map buffer for CPU access");
 
 	if(res == VK_SUCCESS)
-		m_CPUMappedAddress = static_cast<u8*>(mappedMemory) + range.Offset;
+		m_CPUMappedAddress = std::span<u8>(static_cast<u8*>(mappedMemory) + range.Offset, m_size - range.Offset);
 
-	return m_CPUMappedAddress != nullptr;
+	return !m_CPUMappedAddress.empty();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -239,14 +242,14 @@ void TRAP::Graphics::API::VulkanBuffer::UnMapBuffer()
 	            "VulkanBuffer::UnMapBuffer(): Trying to unmap non-CPU accessible resource");
 
 #ifndef TRAP_RELEASE
-	if(m_CPUMappedAddress == nullptr)
+	if(m_CPUMappedAddress.empty())
 	{
 		TP_WARN(Log::RendererVulkanBufferPrefix, "VulkanBuffer::UnMapBuffer(): Buffer is not mapped, ignoring call");
 		return;
 	}
 #endif /*TRAP_RELEASE*/
 
-	if (m_CPUMappedAddress != nullptr && m_VMA && (m_allocation != nullptr))
+	if (!m_CPUMappedAddress.empty() && m_VMA && (m_allocation != nullptr))
 		vmaUnmapMemory(m_VMA->GetVMAAllocator(), m_allocation);
 	m_CPUMappedAddress = {};
 }
