@@ -273,12 +273,6 @@ namespace TRAP::Graphics::API
 			InvalidRequest
 		};
 
-		enum class MappedRangeFlag : u32
-		{
-			UnMapBuffer = BIT(0u),
-			TempBuffer = BIT(1u)
-		};
-
 		/// @brief Update a buffer with the specified resource set.
 		/// @param activeSet Resource set to use.
 		/// @param bufferUpdateDesc Description of buffer update.

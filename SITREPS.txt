@@ -4838,3 +4838,4 @@ SITREP 02/03/2024|24w05b1
     - Changed TRAP Engine version to 24w05b1(0.10.38)
     - Buffer Changed GetCPUMappedAddress() return type to std::span<T> ~<10 mins
     - Updated calls to Buffer::GetCPUMappedAddress() ~<20 mins
+    - ResourceLoader Moved MappedRangeFlag struct to RendererAPI ~<10 mins

@@ -370,9 +370,10 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Buffe
 		if (needsToBeMapped)
 			needsToBeMapped = buffer->MapBuffer();
 
-		desc.Internal.MappedRange = { buffer->GetCPUMappedAddress().data() + desc.DstOffset, buffer };
+		desc.Internal.MappedRange = { buffer->GetCPUMappedAddress().subspan(desc.DstOffset).data(), buffer };
 		desc.MappedData = desc.Internal.MappedRange.Data;
-		desc.Internal.MappedRange.Flags = needsToBeMapped ? std::to_underlying(MappedRangeFlag::UnMapBuffer) : 0;
+		if(needsToBeMapped)
+			desc.Internal.MappedRange.Flags = RendererAPI::MappedRangeFlags::UnMapBuffer;
 	}
 	else
 	{
@@ -381,7 +382,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Buffe
 		desc.MappedData = range.Data;
 
 		desc.Internal.MappedRange = range;
-		desc.Internal.MappedRange.Flags = std::to_underlying(MappedRangeFlag::TempBuffer);
+		desc.Internal.MappedRange.Flags = RendererAPI::MappedRangeFlags::TempBuffer;
 	}
 }
 
@@ -409,7 +410,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Textu
 
 	//We need to use a staging buffer
 	desc.Internal.MappedRange = AllocateUploadMemory(requiredSize, alignment);
-	desc.Internal.MappedRange.Flags = std::to_underlying(MappedRangeFlag::TempBuffer);
+	desc.Internal.MappedRange.Flags = RendererAPI::MappedRangeFlags::TempBuffer;
 	desc.MappedData = desc.Internal.MappedRange.Data;
 }
 
@@ -419,7 +420,7 @@ void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::BufferU
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	if ((desc.Internal.MappedRange.Flags & std::to_underlying(MappedRangeFlag::UnMapBuffer)) != 0u)
+	if ((desc.Internal.MappedRange.Flags & RendererAPI::MappedRangeFlags::UnMapBuffer) != RendererAPI::MappedRangeFlags::None)
 		desc.Buffer->UnMapBuffer();
 
 	const RendererAPI::ResourceMemoryUsage memoryUsage = desc.Buffer->GetMemoryUsage();
@@ -617,8 +618,10 @@ void TRAP::Graphics::API::ResourceLoader::QueueBufferUpdate(const RendererAPI::B
 		m_requestQueue.emplace_back(desc);
 		UpdateRequest& lastRequest = m_requestQueue.back();
 		lastRequest.WaitIndex = t;
-		lastRequest.UploadBuffer = (desc.Internal.MappedRange.Flags & std::to_underlying(MappedRangeFlag::TempBuffer)) != 0u ?
-									desc.Internal.MappedRange.Buffer : nullptr;
+		if((desc.Internal.MappedRange.Flags & RendererAPI::MappedRangeFlags::TempBuffer) != RendererAPI::MappedRangeFlags::None)
+			lastRequest.UploadBuffer = desc.Internal.MappedRange.Buffer;
+		else
+			lastRequest.UploadBuffer = nullptr;
 	}
 	m_queueCond.notify_one();
 
@@ -669,8 +672,10 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureUpdate(const TextureUpdate
 		m_requestQueue.emplace_back(textureUpdate);
 		UpdateRequest& lastRequest = m_requestQueue.back();
 		lastRequest.WaitIndex = t;
-		lastRequest.UploadBuffer = (textureUpdate.Range.Flags & std::to_underlying(MappedRangeFlag::TempBuffer)) != 0u ?
-								   textureUpdate.Range.Buffer : nullptr;
+		if((textureUpdate.Range.Flags & RendererAPI::MappedRangeFlags::TempBuffer) != RendererAPI::MappedRangeFlags::None)
+			lastRequest.UploadBuffer = textureUpdate.Range.Buffer;
+		else
+			lastRequest.UploadBuffer = nullptr;
 	}
 	m_queueCond.notify_one();
 
