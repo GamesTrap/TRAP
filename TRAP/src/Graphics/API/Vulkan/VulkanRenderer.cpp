@@ -2213,10 +2213,12 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 
 	//Add a staging buffer
 	const u32 formatByteWidth = ImageFormatBitSizeOfBlock(renderTarget->GetImageFormat()) / 8u;
+	const u64 pixelDataSize = NumericCast<u64>(renderTarget->GetWidth()) * renderTarget->GetHeight() * formatByteWidth;
+
 	BufferDesc bufferDesc{};
 	bufferDesc.Descriptors = DescriptorType::RWBuffer;
 	bufferDesc.MemoryUsage = ResourceMemoryUsage::GPUToCPU;
-	bufferDesc.Size = NumericCast<u64>(renderTarget->GetWidth()) * renderTarget->GetHeight() * formatByteWidth;
+	bufferDesc.Size = pixelDataSize;
 	bufferDesc.StructStride = formatByteWidth;
 	bufferDesc.ElementCount = bufferDesc.Size / bufferDesc.StructStride;
 	bufferDesc.Flags = BufferCreationFlags::PersistentMap | BufferCreationFlags::NoDescriptorViewCreation;
@@ -2270,10 +2272,10 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	//Wait for work to finish on the GPU
 	s_graphicQueue->WaitQueueIdle();
 
+	const std::span<u8> gpuPixelData = buffer->GetCPUMappedAddress();
+
 	//Copy to CPU memory.
-	std::copy_n(static_cast<u8*>(buffer->GetCPUMappedAddress()),
-	            NumericCast<usize>(renderTarget->GetWidth()) * renderTarget->GetHeight() * formatByteWidth,
-				static_cast<u8*>(outPixelData));
+	std::ranges::copy(gpuPixelData.subspan(0, pixelDataSize), static_cast<u8*>(outPixelData));
 
 	//Cleanup
 	cmdPool->FreeCommandBuffer(cmd);
@@ -3601,8 +3603,10 @@ void TRAP::Graphics::API::VulkanRenderer::EndGPUFrameProfile(const QueueType typ
 		buffer = p->ComputeTimestampReadbackBuffers[p->ImageIndex];
 	if(buffer->MapBuffer(readRange))
 	{
-		const u64 startTime = *(static_cast<u64*>(buffer->GetCPUMappedAddress()) + 0);
-		const u64 endTime = *(static_cast<u64*>(buffer->GetCPUMappedAddress()) + 1);
+		const std::span<u64> bufferData = buffer->GetCPUMappedAddress<u64>();
+
+		const u64 startTime = bufferData[0];
+		const u64 endTime = bufferData[1];
 
 		if(endTime > startTime)
 		{
