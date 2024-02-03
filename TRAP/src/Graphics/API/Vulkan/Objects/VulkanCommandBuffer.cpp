@@ -669,6 +669,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateBuffer(const TRAP::Ref<Buff
 	TRAP_ASSERT(sBuffer->GetVkBuffer(), "VulkanCommandBuffer::UpdateBuffer(): Source Vulkan Buffer is nullptr!");
 	TRAP_ASSERT(buffer, "VulkanCommandBuffer::UpdateBuffer(): Destination Buffer is nullptr!");
 	TRAP_ASSERT(buf->GetVkBuffer(), "VulkanCommandBuffer::UpdateBuffer(): Destination Vulkan Buffer is nullptr!");
+	TRAP_ASSERT(size != 0, "VulkanCommandBuffer::UpdateBuffer(): Size to copy is 0!");
 	TRAP_ASSERT(srcOffset + size <= srcBuffer->GetSize(), "VulkanCommandBuffer::UpdateBuffer(): Source Buffer out of bounds!");
 	TRAP_ASSERT(dstOffset + size <= buffer->GetSize(), "VulkanCommandBuffer::UpdateBuffer(): Destination Buffer out of bounds!");
 

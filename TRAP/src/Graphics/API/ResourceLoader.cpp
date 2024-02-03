@@ -370,8 +370,8 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Buffe
 		if (needsToBeMapped)
 			needsToBeMapped = buffer->MapBuffer();
 
-		desc.Internal.MappedRange = { buffer->GetCPUMappedAddress().subspan(desc.DstOffset).data(), buffer };
-		desc.MappedData = desc.Internal.MappedRange.Data;
+		desc.Internal.MappedRange = { buffer->GetCPUMappedAddress().subspan(desc.DstOffset), buffer };
+		desc.MappedData = desc.Internal.MappedRange.Data.data(); //TODO
 		if(needsToBeMapped)
 			desc.Internal.MappedRange.Flags = RendererAPI::MappedRangeFlags::UnMapBuffer;
 	}
@@ -379,7 +379,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Buffe
 	{
 		//We need to use a staging buffer.
 		const RendererAPI::MappedMemoryRange range = AllocateUploadMemory(size, 4U);
-		desc.MappedData = range.Data;
+		desc.MappedData = range.Data.data(); //TODO
 
 		desc.Internal.MappedRange = range;
 		desc.Internal.MappedRange.Flags = RendererAPI::MappedRangeFlags::TempBuffer;
@@ -411,7 +411,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Textu
 	//We need to use a staging buffer
 	desc.Internal.MappedRange = AllocateUploadMemory(requiredSize, alignment);
 	desc.Internal.MappedRange.Flags = RendererAPI::MappedRangeFlags::TempBuffer;
-	desc.MappedData = desc.Internal.MappedRange.Data;
+	desc.MappedData = desc.Internal.MappedRange.Data.data(); //TODO
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -573,7 +573,7 @@ void TRAP::Graphics::API::ResourceLoader::WaitForTokenSubmitted(const SyncToken*
 	desc.Flags = RendererAPI::BufferCreationFlags::PersistentMap;
 	const TRAP::Ref<Buffer> buffer = Buffer::Create(desc);
 
-	return RendererAPI::MappedMemoryRange{buffer->GetCPUMappedAddress().data(), buffer, 0, memoryRequirement };
+	return RendererAPI::MappedMemoryRange{buffer->GetCPUMappedAddress(), buffer, 0, memoryRequirement };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -749,7 +749,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(TRAP::Graphics::Te
 	{
 		const TRAP::Ref<Buffer> buffer = resSet.Buffer;
 		TRAP_ASSERT(!buffer->GetCPUMappedAddress().empty(), "ResourceLoader::AllocateStagingMemory(): CPU mapped memory range of buffer is empty!");
-		u8* const dstData = buffer->GetCPUMappedAddress().data() + offset;
+		const std::span<u8> dstData = buffer->GetCPUMappedAddress().subspan(offset);
 		m_copyEngine.ResourceSets[m_nextSet].AllocatedSpace = offset + memoryRequirement;
 		return { dstData, buffer, offset, memoryRequirement };
 	}
@@ -1032,7 +1032,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		                                              AllocateStagingMemory(requiredSize, sliceAlignment);
 	u64 offset = 0;
 
-	if(upload.Data == nullptr)
+	if(upload.Data.empty())
 		return UploadFunctionResult::StagingBufferFull;
 
 	const u32 firstStart = textureUpdateDesc.MipsAfterSlice ? textureUpdateDesc.BaseMipLevel :
@@ -1061,8 +1061,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 			u32 rowBytes = 0;
 			u32 numRows = 0;
 
-			const bool ret = UtilGetSurfaceInfo(w, h, format, nullptr, &rowBytes, &numRows);
-			if(!ret)
+			if(!UtilGetSurfaceInfo(w, h, format, nullptr, &rowBytes, &numRows))
 				return UploadFunctionResult::InvalidRequest;
 
 			const u32 subRowPitch = ((rowBytes + rowAlignment - 1) / rowAlignment) * rowAlignment;
@@ -1070,26 +1069,26 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 			const u32 subNumRows = numRows;
 			const u32 subDepth = d;
 			const u32 subRowSize = rowBytes;
-			u8* const data = upload.Data + offset;
+			const std::span<u8> data = upload.Data.subspan(offset);
 
 			if(!dataAlreadyFilled)
 			{
 				for(u32 z = 0; z < subDepth; ++z)
 				{
 					//Convert to RGBA if necessary
-					const u8* pixelData = nullptr;
+					std::span<const u8> pixelData{};
 					TRAP::Scope<TRAP::Image> RGBAImage = nullptr;
 					if((*images)[layer]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //Convert RGB to RGBA
 					{
 						RGBAImage = TRAP::Image::ConvertRGBToRGBA((*images)[layer]);
-						pixelData = static_cast<const u8*>(RGBAImage->GetPixelData());
+						pixelData = std::span<const u8>(static_cast<const u8*>(RGBAImage->GetPixelData()), RGBAImage->GetPixelDataSize());
 					}
 					else
-						pixelData = static_cast<const u8*>((*images)[layer]->GetPixelData());
+						pixelData = std::span<const u8>(static_cast<const u8*>((*images)[layer]->GetPixelData()), (*images)[layer]->GetPixelDataSize());
 
-					u8* const dstData = data + subSlicePitch * z;
+					const std::span<u8> dstData = data.subspan(NumericCast<usize>(subSlicePitch) * z);
 					for(u64 r = 0; r < subNumRows; ++r)
-						std::copy_n(pixelData + r * subRowSize, subRowSize, dstData + r * subRowPitch);
+						std::copy_n(pixelData.subspan(r * subRowSize).data(), subRowSize, dstData.subspan(r * subRowPitch).data());
 				}
 			}
 

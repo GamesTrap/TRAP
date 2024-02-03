@@ -2645,13 +2645,13 @@ namespace TRAP::Graphics
 		struct MappedMemoryRange
 		{
 			//Pointer to mapped buffer data with offset already applied to
-			u8* Data = nullptr;
+			std::span<u8> Data{};
 			//Mapped buffer
 			TRAP::Ref<TRAP::Graphics::Buffer> Buffer = nullptr;
 			//Offset in the buffer to start at
-			u64 Offset = 0;
+			u64 Offset = 0; //TODO This may be unnecessary
 			//Mapped size
-			u64 Size = 0;
+			u64 Size = 0; //TODO This may be unnecessary
 			MappedRangeFlags Flags = MappedRangeFlags::None;
 		};
 
