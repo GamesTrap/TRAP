@@ -731,49 +731,43 @@ namespace TRAP::Graphics
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Bind push constant buffer data on the given window.
 		/// @param name Name of the push constant block.
-		/// @param constantsData Pointer to the constant buffer data.
-		/// @param constantsLength Length in bytes of the constant buffer data.
+		/// @param constants Constant buffer data.
 		/// @param queueType Queue type on which to perform the bind operation. Default: Graphics.
 		/// @param window Window to bind the push constants for.
 		/// @note There is an optimized function which uses the index into the RootSignature
 		///       instead of the name of the push constant block.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void BindPushConstants(std::string_view name, const void* constantsData,
-							           usize constantsLength, QueueType queueType /*= QueueType::Graphics*/,
+		virtual void BindPushConstants(std::string_view name, std::span<const u8> constants,
+							           QueueType queueType /*= QueueType::Graphics*/,
 									   const Window* window) const = 0;
 #else
 		/// @brief Bind push constant buffer data.
 		/// @param name Name of the push constant block.
-		/// @param constantsData Pointer to the constant buffer data.
-		/// @param constantsLength Length in bytes of the constant buffer data.
+		/// @param constants Constant buffer data.
 		/// @param queueType Queue type on which to perform the bind operation. Default: Graphics.
 		/// @note There is an optimized function which uses the index into the RootSignature
 		///       instead of the name of the push constant block.
 		/// @remark This function is only available in headless mode.
-		virtual void BindPushConstants(std::string_view name, const void* constantsData,
-		                               usize constantsLength,
+		virtual void BindPushConstants(std::string_view name, std::span<const u8> constants,
 		                               QueueType queueType /*= QueueType::Graphics*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Bind push constant buffer data on the given window.
 		/// @param paramIndex Index of the push constant block in the RootSignatures descriptors array.
-		/// @param constantsData Pointer to the constant buffer data.
-		/// @param constantsLength Length in bytes of the constant buffer data.
+		/// @param constants Constant buffer data.
 		/// @param queueType Queue type on which to perform the bind operation. Default: Graphics.
 		/// @param window Window to bind the push constants for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void BindPushConstantsByIndex(u32 paramIndex, const void* constantsData,
-										      usize constantsLength, QueueType queueType /*= QueueType::Graphics*/,
+		virtual void BindPushConstantsByIndex(u32 paramIndex, std::span<const u8> constants,
+										      QueueType queueType /*= QueueType::Graphics*/,
 											  const Window* window) const = 0;
 #else
 		/// @brief Bind push constant buffer data.
 		/// @param paramIndex Index of the push constant block in the RootSignatures descriptors array.
-		/// @param constantsData Pointer to the constant buffer data.
-		/// @param constantsLength Length in bytes of the constant buffer data.
+		/// @param constants Constant buffer data.
 		/// @param queueType Queue type on which to perform the bind operation. Default: Graphics.
 		/// @remark This function is only available in headless mode.
-		virtual void BindPushConstantsByIndex(u32 paramIndex, const void* constantsData,
-		                                      usize constantsLength,
+		virtual void BindPushConstantsByIndex(u32 paramIndex, std::span<const u8> constants,
 											  QueueType queueType /*= QueueType::Graphics*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE

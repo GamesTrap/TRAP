@@ -51,19 +51,17 @@ namespace TRAP::Graphics::API
 		/// @brief Bind push constant buffer data to the command buffer.
 		/// @param rootSignature Root signature containing the push constant block.
 		/// @param name Name of the push constant block.
-		/// @param constants Pointer to the constant buffer data.
-		/// @param constantsLength Length in bytes of the constant buffer data.
+		/// @param constants Constant buffer data.
 		/// @note There is an optimized function which uses the index into the RootSignature
 		///       instead of the name of the push constant block.
 		void BindPushConstants(const TRAP::Ref<RootSignature>& rootSignature, std::string_view name,
-		                       const void* constants, usize constantsLength) const override;
+		                       std::span<const u8> constants) const override;
 		/// @brief Bind push constant buffer data to the command buffer.
 		/// @param rootSignature Root signature containing the push constant block.
 		/// @param paramIndex Index of the push constant block in the RootSignatures descriptors array.
-		/// @param constants Pointer to the constant buffer data.
-		/// @param constantsLength Length in bytes of the constant buffer data.
+		/// @param constants Constant buffer data.
 		void BindPushConstantsByIndex(const TRAP::Ref<RootSignature>& rootSignature, u32 paramIndex,
-		                              const void* constants, usize constantsLength) const override;
+		                              std::span<const u8> constants) const override;
 		/// @brief Bind a descriptor set to the command buffer.
 		/// @param index Index for which descriptor set to bind.
 		/// @param descriptorSet Descriptor set to bind.

@@ -99,7 +99,7 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
 
         //Set push constants
         static constexpr f32 brightness = 1.0f;
-        TRAP::Graphics::RenderCommand::SetPushConstants("BrightnessRootConstant", &brightness, sizeof(brightness),
+        TRAP::Graphics::RenderCommand::SetPushConstants("BrightnessRootConstant", brightness,
                                                         TRAP::Graphics::QueueType::Compute);
 
         //Dispatch work

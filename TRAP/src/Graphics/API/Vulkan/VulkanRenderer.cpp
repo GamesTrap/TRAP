@@ -1716,12 +1716,10 @@ void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet,
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const std::string_view name, const void* constantsData,
-		                                                    const usize constantsLength,
+void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const std::string_view name, const std::span<const u8> constants,
 															const QueueType queueType, const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const std::string_view name, const void* constantsData,
-		                                                    const usize constantsLength,
+void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const std::string_view name, const std::span<const u8> constants,
 															const QueueType queueType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
@@ -1742,7 +1740,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const std::string_vi
 		p->GraphicCommandBuffers[p->ImageIndex]->BindPushConstants
 		(
 			std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).RootSignature,
-			name, constantsData, constantsLength
+			name, constants
 		);
 	}
 	else if(queueType == QueueType::Compute)
@@ -1750,7 +1748,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const std::string_vi
 		p->ComputeCommandBuffers[p->ImageIndex]->BindPushConstants
 		(
 			std::get<ComputePipelineDesc>(p->ComputePipelineDesc.Pipeline).RootSignature,
-			name, constantsData, constantsLength
+			name, constants
 		);
 	}
 }
@@ -1759,14 +1757,12 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const std::string_vi
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const u32 paramIndex,
-                                                                   const void* constantsData,
-		                                                           const usize constantsLength,
+                                                                   const std::span<const u8> constants,
 																   const QueueType queueType,
 																   const Window* const window) const
 #else
 void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const u32 paramIndex,
-                                                                   const void* constantsData,
-		                                                           usize constantsLength,
+                                                                   const std::span<const u8> constants,
 																   const QueueType queueType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
@@ -1787,7 +1783,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const u32 par
 		p->GraphicCommandBuffers[p->ImageIndex]->BindPushConstantsByIndex
 		(
 			std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).RootSignature,
-			paramIndex, constantsData, constantsLength
+			paramIndex, constants
 		);
 	}
 	else if(queueType == QueueType::Compute)
@@ -1795,7 +1791,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const u32 par
 		p->ComputeCommandBuffers[p->ImageIndex]->BindPushConstantsByIndex
 		(
 			std::get<ComputePipelineDesc>(p->ComputePipelineDesc.Pipeline).RootSignature,
-			paramIndex, constantsData, constantsLength
+			paramIndex, constants
 		);
 	}
 }
