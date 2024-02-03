@@ -280,11 +280,11 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 				updateDesc.DstOffset = offset;
 				BeginUpdateResource(updateDesc);
 				if (desc.ForceReset)
-					std::fill_n(static_cast<u8*>(updateDesc.MappedData), chunkSize, u8(0u));
+					std::fill_n(updateDesc.MappedData.data(), chunkSize, u8(0u));
 				else
 				{
 					TRAP_ASSERT(data, "ResourceLoader::AddResource(): Data is nullptr!");
-					std::copy_n(static_cast<const u8*>(data) + offset, chunkSize, static_cast<u8*>(updateDesc.MappedData));
+					std::copy_n(static_cast<const u8*>(data) + offset, chunkSize, updateDesc.MappedData.begin());
 				}
 				EndUpdateResource(updateDesc, token);
 			}
@@ -295,12 +295,12 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 			updateDesc.Buffer = desc.Buffer;
 			BeginUpdateResource(updateDesc);
 			if (desc.ForceReset)
-				std::fill_n(static_cast<u8*>(updateDesc.MappedData), desc.Desc.Size, u8(0u));
+				std::fill_n(updateDesc.MappedData.data(), desc.Desc.Size, u8(0u));
 			else
 			{
 				TRAP_ASSERT(!desc.Desc.Size || desc.Data, "ResourceLoader::AddResource(): Data is nullptr!");
 				if(desc.Data != nullptr)
-					std::copy_n(static_cast<const u8*>(desc.Data), desc.Desc.Size, static_cast<u8*>(updateDesc.MappedData));
+					std::copy_n(static_cast<const u8*>(desc.Data), desc.Desc.Size, updateDesc.MappedData.begin());
 			}
 			EndUpdateResource(updateDesc, token);
 		}
@@ -371,7 +371,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Buffe
 			needsToBeMapped = buffer->MapBuffer();
 
 		desc.Internal.MappedRange = { buffer->GetCPUMappedAddress().subspan(desc.DstOffset), buffer };
-		desc.MappedData = desc.Internal.MappedRange.Data.data(); //TODO
+		desc.MappedData = desc.Internal.MappedRange.Data;
 		if(needsToBeMapped)
 			desc.Internal.MappedRange.Flags = RendererAPI::MappedRangeFlags::UnMapBuffer;
 	}
@@ -379,7 +379,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Buffe
 	{
 		//We need to use a staging buffer.
 		const RendererAPI::MappedMemoryRange range = AllocateUploadMemory(size, 4U);
-		desc.MappedData = range.Data.data(); //TODO
+		desc.MappedData = range.Data;
 
 		desc.Internal.MappedRange = range;
 		desc.Internal.MappedRange.Flags = RendererAPI::MappedRangeFlags::TempBuffer;
@@ -411,7 +411,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Textu
 	//We need to use a staging buffer
 	desc.Internal.MappedRange = AllocateUploadMemory(requiredSize, alignment);
 	desc.Internal.MappedRange.Flags = RendererAPI::MappedRangeFlags::TempBuffer;
-	desc.MappedData = desc.Internal.MappedRange.Data.data(); //TODO
+	desc.MappedData = desc.Internal.MappedRange.Data;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -428,7 +428,7 @@ void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::BufferU
 		QueueBufferUpdate(desc, token);
 
 	//Restore the state to before the BeginUpdateResource call.
-	desc.MappedData = nullptr;
+	desc.MappedData = {};
 	desc.Internal = {};
 }
 
@@ -448,7 +448,7 @@ void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::Texture
 	QueueTextureUpdate(internalDesc, token);
 
 	//Restore the state to before the BeginUpdateResource call.
-	desc.MappedData = nullptr;
+	desc.MappedData = {};
 	desc.Internal = {};
 }
 

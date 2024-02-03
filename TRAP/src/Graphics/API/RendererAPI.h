@@ -2684,7 +2684,7 @@ namespace TRAP::Graphics
 			//        memcpy(dstData + r * update.DstRowStride, srcData + r * update.SrcRowStride, update.SrcRowStride);
 			//}
 			//TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(update, &token);
-			u8* MappedData{};
+			std::span<u8> MappedData{};
 			//Size of each row in destination including padding - Needs to be respected
 			//otherwise texture data will be corrupted if dst row stride is not the same as src row stride
 			u32 DstRowStride{};
@@ -2759,7 +2759,7 @@ namespace TRAP::Graphics
 			u64 Size;
 
 			//To be filled by the caller
-			void* MappedData;
+			std::span<u8> MappedData;
 
 			//Internal
 			struct

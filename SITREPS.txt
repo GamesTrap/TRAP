@@ -4840,3 +4840,4 @@ SITREP 02/03/2024|24w05b1
     - Updated calls to Buffer::GetCPUMappedAddress() ~<20 mins
     - ResourceLoader Moved MappedRangeFlag struct to RendererAPI ~<10 mins
     - RendererAPI Changed MappedMemoryRange::Data to std::span<u8> ~<10 mins
+    - RendererAPI Changed TextureUpdateDesc::MappedData and BufferUpdateDesc::MappedData to std::span<u8> ~<10 mins

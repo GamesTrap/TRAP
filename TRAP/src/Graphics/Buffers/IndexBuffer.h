@@ -174,7 +174,7 @@ void TRAP::Graphics::IndexBuffer::SetDataInternal(const std::span<const T, Size>
 	desc.Buffer = m_indexBuffer;
 	desc.DstOffset = offset;
 	API::ResourceLoader::BeginUpdateResource(desc);
-	std::copy_n(indices.data(), indices.size(), static_cast<T*>(desc.MappedData));
+	std::ranges::copy(indices, reinterpret_cast<T*>(desc.MappedData.data()));
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_token);
 
 	if constexpr(std::same_as<T, u16>)

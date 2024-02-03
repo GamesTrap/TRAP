@@ -84,7 +84,7 @@ void TRAP::Graphics::VertexBuffer::SetData(const std::span<const f32> data, cons
 	desc.Buffer = m_vertexBuffer;
 	desc.DstOffset = offset;
 	API::ResourceLoader::BeginUpdateResource(desc);
-	std::copy_n(data.data(), data.size(), static_cast<f32*>(desc.MappedData));
+	std::ranges::copy(data, reinterpret_cast<f32*>(desc.MappedData.data()));
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_token);
 }
 

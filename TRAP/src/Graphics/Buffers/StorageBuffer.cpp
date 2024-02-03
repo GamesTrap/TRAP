@@ -37,7 +37,7 @@ void TRAP::Graphics::StorageBuffer::SetData(const void* const data, const u64 si
 		desc.Buffer = m_storageBuffers[i];
 		desc.DstOffset = offset;
 		API::ResourceLoader::BeginUpdateResource(desc);
-		std::copy_n(static_cast<const u8*>(data), size, static_cast<u8*>(desc.MappedData));
+		std::copy_n(static_cast<const u8*>(data), size, desc.MappedData.begin());
 		RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_tokens[i]);
 	}
 	AwaitLoading();

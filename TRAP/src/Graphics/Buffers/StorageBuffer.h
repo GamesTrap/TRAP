@@ -136,7 +136,7 @@ inline void TRAP::Graphics::StorageBuffer::GetData(const auto* const data, const
 	desc.Buffer = m_storageBuffers[imageIndex];
 	desc.DstOffset = offset;
 	API::ResourceLoader::BeginUpdateResource(desc);
-	std::copy_n(static_cast<u8*>(desc.MappedData), size, data);
+	std::copy_n(desc.MappedData.data(), size, data);
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_tokens[imageIndex]);
 }
 #else
@@ -153,7 +153,7 @@ inline void TRAP::Graphics::StorageBuffer::GetData(const auto* const data, const
 	desc.Buffer = m_storageBuffers[imageIndex];
 	desc.DstOffset = offset;
 	API::ResourceLoader::BeginUpdateResource(desc);
-	std::copy_n(static_cast<u8*>(desc.MappedData), size, data);
+	std::copy_n(desc.MappedData.data(), size, data);
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_tokens[imageIndex]);
 }
 #endif /*TRAP_HEADLESS_MODE*/
