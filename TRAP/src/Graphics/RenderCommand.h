@@ -640,22 +640,45 @@ namespace TRAP::Graphics
 		/// @brief Set push constant for the given window.
 		/// @param name Name of the push constant.
 		/// @param data Data to set push constant to.
-		/// @param length Length in bytes of the provided data to set push constant to.
 		/// @param queueType Queue type on which to perform the operation. Default: Graphics.
 		/// @param window Window to set push constant for. Default: Main Window.
 		/// @warning: The minimum guaranteed size from the specification is 128 bytes, everything beyond is hardware dependent.
 		/// @remark @headless This function is not available in headless mode.
-		static void SetPushConstants(std::string_view name, const void* data, usize length,
+		static void SetPushConstants(std::string_view name, std::span<const u8> data,
 		                             QueueType queueType = QueueType::Graphics, const Window* window = TRAP::Application::GetWindow());
 #else
 		/// @brief Set push constant.
 		/// @param name Name of the push constant.
 		/// @param data Data to set push constant to.
-		/// @param length Length in bytes of the provided data to set push constant to.
 		/// @param queueType Queue type on which to perform the operation. Default: Graphics.
 		/// @warning: The minimum guaranteed size from the specification is 128 bytes, everything beyond is hardware dependent.
 		/// @remark This function is only available in headless mode.
-		static void SetPushConstants(std::string_view name, const void* data, usize length,
+		static void SetPushConstants(std::string_view name, std::span<const u8> data,
+		                             QueueType queueType = QueueType::Graphics);
+#endif /*TRAP_HEADLESS_MODE*/
+
+#ifndef TRAP_HEADLESS_MODE
+		/// @brief Set push constant for the given window.
+		/// @param name Name of the push constant.
+		/// @param data Data to set push constant to.
+		/// @param queueType Queue type on which to perform the operation. Default: Graphics.
+		/// @param window Window to set push constant for. Default: Main Window.
+		/// @warning: The minimum guaranteed size from the specification is 128 bytes, everything beyond is hardware dependent.
+		/// @remark @headless This function is not available in headless mode.
+		template<typename T>
+		requires (!TRAP::Utils::IsStdSpan<T>::value && !std::is_pointer_v<T>)
+		static void SetPushConstants(std::string_view name, const T& data,
+		                            QueueType queueType = QueueType::Graphics, const Window* window = TRAP::Application::GetWindow());
+#else
+		/// @brief Set push constant.
+		/// @param name Name of the push constant.
+		/// @param data Data to set push constant to.
+		/// @param queueType Queue type on which to perform the operation. Default: Graphics.
+		/// @warning: The minimum guaranteed size from the specification is 128 bytes, everything beyond is hardware dependent.
+		/// @remark This function is only available in headless mode.
+		template<typename T>
+		requires (!TRAP::Utils::IsStdSpan<T>::value && !std::is_pointer_v<T>)
+		static void SetPushConstants(std::string_view name, const T& data,
 		                             QueueType queueType = QueueType::Graphics);
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -920,5 +943,27 @@ namespace TRAP::Graphics
 #endif /*TRAP_HEADLESS_MODE*/
 	};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+template<typename T>
+requires (!TRAP::Utils::IsStdSpan<T>::value && !std::is_pointer_v<T>)
+void TRAP::Graphics::RenderCommand::SetPushConstants(const std::string_view name, const T& data,
+                                                     const QueueType queueType, const Window* const window)
+{
+	const auto byteSpan = TRAP::Utils::AsBytes(std::span<const T, 1>(&data, 1));
+	RendererAPI::GetRenderer()->BindPushConstants(name, byteSpan, queueType, window);
+}
+#else
+template<typename T>
+requires (!TRAP::Utils::IsStdSpan<T>::value && !std::is_pointer_v<T>)
+void TRAP::Graphics::RenderCommand::SetPushConstants(const std::string_view name, const T& data,
+                                                     const QueueType queueType)
+{
+	const auto byteSpan = TRAP::Utils::AsBytes(std::span<const T, 1>(&data, 1));
+	RendererAPI::GetRenderer()->BindPushConstants(name, byteSpan, queueType);
+}
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_RENDERCOMMAND_H*/

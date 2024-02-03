@@ -64,14 +64,14 @@ TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDe
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstants(const TRAP::Ref<RootSignature>& rootSignature,
-                                                                 const std::string_view name, const void* constants,
-																 const usize constantsLength) const
+                                                                 const std::string_view name,
+																 const std::span<const u8> constants) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(rootSignature, "VulkanCommandBuffer::BindPushConstants(): RootSignature is nullptr");
 	TRAP_ASSERT(!name.empty(), "VulkanCommandBuffer::BindPushConstants(): Name is empty");
-	TRAP_ASSERT(constants, "VulkanCommandBuffer::BindPushConstants(): Constants are nullptr");
+	TRAP_ASSERT(!constants.empty(), "VulkanCommandBuffer::BindPushConstants(): Constants are empty");
 
 	const Ref<VulkanRootSignature> rSig = std::dynamic_pointer_cast<VulkanRootSignature>(rootSignature);
 
@@ -84,22 +84,22 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstants(const TRAP::Ref
 	}
 
 	TRAP_ASSERT(desc->Type == RendererAPI::DescriptorType::RootConstant, "VulkanCommandBuffer::BindPushConstants(): Descriptor is not a RootConstant!");
-	TRAP_ASSERT(desc->Size == constantsLength, "VulkanCommandBuffer::BindPushConstants(): Size of constants don't match that of Descriptor!");
+	TRAP_ASSERT(desc->Size == constants.size(), "VulkanCommandBuffer::BindPushConstants(): Size of constants don't match that of Descriptor!");
 
-	vkCmdPushConstants(m_vkCommandBuffer, rSig->GetVkPipelineLayout(), desc->VkStages, 0, desc->Size, constants);
+	vkCmdPushConstants(m_vkCommandBuffer, rSig->GetVkPipelineLayout(), desc->VkStages, 0, desc->Size, constants.data());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstantsByIndex(const TRAP::Ref<RootSignature>& rootSignature,
-	                                                                    const u32 paramIndex, const void* constants,
-																		const usize constantsLength) const
+	                                                                    const u32 paramIndex,
+																		const std::span<const u8> constants) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(rootSignature, "VulkanCommandBuffer::BindPushConstantsByIndex(): RootSignature is nullptr");
 	TRAP_ASSERT(paramIndex < rootSignature->GetDescriptorCount(), "VulkanCommandBuffer::BindPushConstantsByIndex(): Index out of bounds!");
-	TRAP_ASSERT(constants, "VulkanCommandBuffer::BindPushConstantsByIndex(): Constants are nullptr");
+	TRAP_ASSERT(!constants.empty(), "VulkanCommandBuffer::BindPushConstantsByIndex(): Constants are empty");
 
 	const RendererAPI::DescriptorInfo* const desc = &rootSignature->GetDescriptors()[paramIndex];
 
@@ -110,11 +110,11 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstantsByIndex(const TR
 	}
 
 	TRAP_ASSERT(desc->Type == RendererAPI::DescriptorType::RootConstant, "VulkanCommandBuffer::BindPushConstantsByIndex(): Descriptor is not a RootConstant!");
-	TRAP_ASSERT(desc->Size == constantsLength, "VulkanCommandBuffer::BindPushConstantsByIndex(): Size of constants don't match that of Descriptor!");
+	TRAP_ASSERT(desc->Size == constants.size(), "VulkanCommandBuffer::BindPushConstantsByIndex(): Size of constants don't match that of Descriptor!");
 
 	vkCmdPushConstants(m_vkCommandBuffer,
 					   std::dynamic_pointer_cast<VulkanRootSignature>(rootSignature)->GetVkPipelineLayout(),
-					   desc->VkStages, 0, desc->Size, constants);
+					   desc->VkStages, 0, desc->Size, constants.data());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

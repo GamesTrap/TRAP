@@ -1,5 +1,6 @@
 #include "ComputeTests.h"
 
+#include <span>
 #include <ImageLoader/PortableMaps/PPMImage.h>
 
 void ComputeTests::OnAttach()
@@ -91,7 +92,7 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
         shader->Use();
 
         static constexpr f32 brightness = 1.0f;
-        TRAP::Graphics::RenderCommand::SetPushConstants("BrightnessRootConstant", &brightness, sizeof(brightness),
+        TRAP::Graphics::RenderCommand::SetPushConstants("BrightnessRootConstant", brightness,
                                                         TRAP::Graphics::QueueType::Compute);
 
         //Dispatch compute work (local thread group sizes are retrieved through automatic reflection)

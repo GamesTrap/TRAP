@@ -55,6 +55,32 @@ namespace TRAP::Utils
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// @brief Obtains a view to the object representation of the elements of the span s.
+	///        If Extent is std::dynamic_extent, the extent of the returned span S is also std::dynamic_extent;
+	///        otherwise it is sizeof(T) * Extent.
+	/// @return Span as bytes.
+	template<typename T, usize Extent>
+	[[nodiscard]] constexpr auto AsBytes(std::span<T, Extent> s) noexcept;
+
+	/// @brief Obtains a view to the object representation of the elements of the span s.
+	///        If Extent is std::dynamic_extent, the extent of the returned span S is also std::dynamic_extent;
+	///        otherwise it is sizeof(T) * Extent.
+	/// @return Span as writable bytes.
+	template<typename T, usize Extent>
+	requires (!std::is_const_v<T>)
+	[[nodiscard]] constexpr auto AsWritableBytes(std::span<T, Extent> s) noexcept;
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	struct IsStdSpan : std::false_type
+	{};
+
+	template<typename T, usize Extent>
+	struct IsStdSpan<std::span<T, Extent>> : std::true_type{};
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
 	/// @brief CPUInfo is a struct which contains information about the CPU of the system which is used by TRAP.
 	struct CPUInfo
 	{
@@ -165,6 +191,37 @@ namespace TRAP::Utils
 {
 	//Check if machine is using little-endian or big-endian
 	return static_cast<Endian>(std::endian::native == std::endian::little);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T, usize Extent>
+[[nodiscard]] constexpr auto TRAP::Utils::AsBytes(const std::span<T, Extent> s) noexcept
+{
+	if constexpr(Extent != std::dynamic_extent)
+	{
+		return std::span<const u8, Extent * sizeof(T)>{reinterpret_cast<const u8*>(s.data()), s.size_bytes()};
+	}
+	else
+	{
+		return std::span<const u8>{reinterpret_cast<const u8*>(s.data()), s.size_bytes()};
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T, usize Extent>
+requires (!std::is_const_v<T>)
+[[nodiscard]] constexpr auto TRAP::Utils::AsWritableBytes(const std::span<T, Extent> s) noexcept
+{
+	if constexpr(Extent != std::dynamic_extent)
+	{
+		return std::span<u8, Extent * sizeof(T)>{reinterpret_cast<u8*>(s.data()), s.size_bytes()};
+	}
+	else
+	{
+		return std::span<u8>{reinterpret_cast<u8*>(s.data()), s.size_bytes()};
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
