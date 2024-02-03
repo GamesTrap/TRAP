@@ -2634,6 +2634,13 @@ namespace TRAP::Graphics
 		/// @brief Map resolving a name to its descriptor index in a root signature.
 		using DescriptorIndexMap = std::unordered_map<std::string, u32>;
 
+		enum class MappedRangeFlags : u32
+		{
+			None = 0,
+			UnMapBuffer = BIT(0u),
+			TempBuffer = BIT(1u)
+		};
+
 		/// @brief Struct holding data about a mapped memory range.
 		struct MappedMemoryRange
 		{
@@ -2645,7 +2652,7 @@ namespace TRAP::Graphics
 			u64 Offset = 0;
 			//Mapped size
 			u64 Size = 0;
-			u32 Flags = 0;
+			MappedRangeFlags Flags = MappedRangeFlags::None;
 		};
 
 		/// @brief Description for a texture update.
@@ -2969,6 +2976,7 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCombiner)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearBufferType)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::LatencyMode)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::CommandPoolCreateFlags)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::MappedRangeFlags)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
