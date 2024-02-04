@@ -113,7 +113,7 @@ namespace
 
 	void CreateTexelBufferView(const TRAP::Graphics::RendererAPI::BufferDesc& desc,
 	                           const VkBufferUsageFlagBits bufferUsage,
-	                           VkBuffer& buffer, const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device,
+	                           VkBuffer& buffer, const TRAP::Graphics::API::VulkanDevice& device,
 							   VkBufferView& outBufferView)
 	{
 		TRAP_ASSERT((bufferUsage & VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT) != 0u ||
@@ -124,7 +124,7 @@ namespace
 		                                                                                               ImageFormatToVkFormat(desc.Format),
 		                                                                                               0,
 		                                                                                               desc.ElementCount * desc.StructStride);
-		const VkFormatProperties formatProps = device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(viewInfo.format);
+		const VkFormatProperties formatProps = device.GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(viewInfo.format);
 		if ((formatProps.bufferFeatures & BufferUsageToFormatFeatureFlag(bufferUsage)) == 0u) //Format doesnt support texel buffer usage
 		{
 			if((bufferUsage & VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT) != 0u)
@@ -141,7 +141,7 @@ namespace
 			}
 		}
 
-		VkCall(vkCreateBufferView(device->GetVkDevice(), &viewInfo, nullptr, &outBufferView));
+		VkCall(vkCreateBufferView(device.GetVkDevice(), &viewInfo, nullptr, &outBufferView));
 	}
 }
 
@@ -175,9 +175,9 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 		m_CPUMappedAddress = std::span<u8>(static_cast<u8*>(allocInfo.pMappedData), info.size);
 
 	if((info.usage & VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT) != 0u)
-		CreateTexelBufferView(desc, VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT, m_vkBuffer, m_device, m_vkUniformTexelView);
+		CreateTexelBufferView(desc, VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT, m_vkBuffer, *m_device, m_vkUniformTexelView);
 	else if((info.usage & VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT) != 0u)
-		CreateTexelBufferView(desc, VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT, m_vkBuffer, m_device, m_vkStorageTexelView);
+		CreateTexelBufferView(desc, VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT, m_vkBuffer, *m_device, m_vkStorageTexelView);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if (!desc.Name.empty())

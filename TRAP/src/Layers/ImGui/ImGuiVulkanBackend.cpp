@@ -446,9 +446,10 @@ namespace
         // Bind Vertex And Index Buffer:
         if (draw_data.TotalVtxCount > 0)
         {
-            command_buffer.BindVertexBuffer({rb.VertexBuffer}, {sizeof(TRAP::Math::Vec2) + sizeof(TRAP::Math::Vec2) + sizeof(TRAP::Math::Vec4)}, {0});
+
+            command_buffer.BindVertexBuffer({*rb.VertexBuffer}, {sizeof(TRAP::Math::Vec2) + sizeof(TRAP::Math::Vec2) + sizeof(TRAP::Math::Vec4)}, {0});
             const auto indexType = sizeof(ImDrawIdx) == 2 ? TRAP::Graphics::RendererAPI::IndexType::UInt16 : TRAP::Graphics::RendererAPI::IndexType::UInt32;
-            command_buffer.BindIndexBuffer(rb.IndexBuffer, indexType, 0);
+            command_buffer.BindIndexBuffer(*rb.IndexBuffer, indexType, 0);
         }
 
         // Setup viewport:
@@ -1574,7 +1575,7 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
             .RowPitch = NumericCast<u32>(width) * bd->FontImage->GetBytesPerPixel(),
             .SlicePitch = 0
         };
-        bd->FontCommandBuffer->UpdateSubresource(bd->FontImage.get(), dynamic_pointer_cast<TRAP::Graphics::Buffer>(uploadBuffer), subresourceDesc);
+        bd->FontCommandBuffer->UpdateSubresource(*bd->FontImage, *uploadBuffer, subresourceDesc);
 
         fontImageBarriers[0].CurrentState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination;
         fontImageBarriers[0].NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;

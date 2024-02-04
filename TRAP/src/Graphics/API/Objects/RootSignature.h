@@ -28,9 +28,6 @@ namespace TRAP::Graphics
 		/// @brief Retrieve the pipeline type used by the shaders of the root signature.
 		/// @return Pipeline type.
 		[[nodiscard]] constexpr RendererAPI::PipelineType GetPipelineType() const noexcept;
-		/// @brief Retrieve the amount of descriptors contained in the root signature.
-		/// @return Amount of descriptors.
-		[[nodiscard]] constexpr u64 GetDescriptorCount() const noexcept;
 		/// @brief Retrieve the list of descriptors contained in the root signature.
 		/// @return List of descriptors.
 		[[nodiscard]] constexpr const std::vector<RendererAPI::DescriptorInfo>& GetDescriptors() const noexcept;
@@ -56,13 +53,6 @@ namespace TRAP::Graphics
 [[nodiscard]] constexpr TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::RootSignature::GetPipelineType() const noexcept
 {
 	return m_pipelineType;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr u64 TRAP::Graphics::RootSignature::GetDescriptorCount() const noexcept
-{
-	return m_descriptors.size();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

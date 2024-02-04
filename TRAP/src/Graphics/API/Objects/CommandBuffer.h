@@ -39,13 +39,13 @@ namespace TRAP::Graphics
 		/// @param constants Constant buffer data.
 		/// @note There is an optimized function which uses the index into the RootSignature
 		///       instead of the name of the push constant block.
-		virtual void BindPushConstants(const TRAP::Ref<RootSignature>& rootSignature, std::string_view name,
+		virtual void BindPushConstants(const RootSignature& rootSignature, std::string_view name,
 		                               std::span<const u8> constants) const = 0;
 		/// @brief Bind push constant buffer data to the command buffer.
 		/// @param rootSignature Root signature containing the push constant block.
 		/// @param paramIndex Index of the push constant block in the RootSignatures descriptors array.
 		/// @param constants Constant buffer data.
-		virtual void BindPushConstantsByIndex(const TRAP::Ref<RootSignature>& rootSignature, u32 paramIndex,
+		virtual void BindPushConstantsByIndex(const RootSignature& rootSignature, u32 paramIndex,
 		                                      std::span<const u8> constants) const = 0;
 		/// @brief Bind a descriptor set to the command buffer.
 		/// @param index Index for which descriptor set to bind.
@@ -55,18 +55,18 @@ namespace TRAP::Graphics
 		/// @param buffer Index buffer to bind.
 		/// @param indexType Data type used by the index buffer.
 		/// @param offset Starting offset in bytes to use for index buffer.
-		virtual void BindIndexBuffer(const TRAP::Ref<Buffer>& buffer, RendererAPI::IndexType indexType,
+		virtual void BindIndexBuffer(const Buffer& buffer, RendererAPI::IndexType indexType,
 		                             u64 offset) const = 0;
 		/// @brief Bind vertex buffer(s) to the command buffer.
 		/// @param buffers Vertex buffer(s) to bind.
 		/// @param strides Stride in bytes of each vertex buffer.
 		/// @param offsets Starting offsets in bytes to use for each vertex buffer.
-		virtual void BindVertexBuffer(const std::vector<TRAP::Ref<Buffer>>& buffers,
+		virtual void BindVertexBuffer(const std::vector<std::reference_wrapper<Buffer>>& buffers,
 		                              const std::vector<u32>& strides,
 									  const std::vector<u64>& offsets) const = 0;
 		/// @brief Bind a pipeline to the command buffer.
 		/// @param pipeline Pipeline to bind.
-		virtual void BindPipeline(const TRAP::Ref<Pipeline>& pipeline) const = 0;
+		virtual void BindPipeline(const Pipeline& pipeline) const = 0;
 		/// @brief Bind render target(s) to the command buffer.
 		/// @param renderTargets Render target(s) to bind.
 		/// @param depthStencil Optional depth stencil target to bind.
@@ -154,9 +154,9 @@ namespace TRAP::Graphics
 		/// @param bufferOffset Byte offset into indirect buffer to start reading from.
 		/// @param counterBuffer Buffer containing the draw count.
 		/// @param counterBufferOffset Byte offset into counter buffer to start reading from.
-		virtual void ExecuteIndirect(const TRAP::Ref<CommandSignature>& cmdSignature, u32 maxCommandCount,
-			                         const TRAP::Ref<Buffer>& indirectBuffer, u64 bufferOffset,
-			                         const TRAP::Ref<Buffer>& counterBuffer, u64 counterBufferOffset) const = 0;
+		virtual void ExecuteIndirect(const CommandSignature& cmdSignature, u32 maxCommandCount,
+			                         const Buffer& indirectBuffer, u64 bufferOffset,
+			                         const Buffer* counterBuffer, u64 counterBufferOffset) const = 0;
 
 		/// @brief Dispatch compute work.
 		/// @param groupCountX Number of local work groups to dispatch in the X dimension.
@@ -170,42 +170,41 @@ namespace TRAP::Graphics
 		/// @param srcBuffer Source buffer to read data from.
 		/// @param srcOffset Offset in the source buffer to start reading from.
 		/// @param size Size of the data to copy.
-		virtual void UpdateBuffer(const TRAP::Ref<Buffer>& buffer, u64 dstOffset,
-		                          const TRAP::Ref<Buffer>& srcBuffer, u64 srcOffset, u64 size) const = 0;
+		virtual void UpdateBuffer(const Buffer& buffer, u64 dstOffset,
+		                          const Buffer& srcBuffer, u64 srcOffset, u64 size) const = 0;
 		/// @brief Update a texture partially with new data.
 		/// @param texture Texture to update.
 		/// @param srcBuffer Source buffer to read data from.
 		/// @param subresourceDesc Subresource description.
-		virtual void UpdateSubresource(const Texture* texture,
-		                               const TRAP::Ref<Buffer>& srcBuffer,
+		virtual void UpdateSubresource(const Texture& texture, const Buffer& srcBuffer,
 									   const RendererAPI::SubresourceDataDesc& subresourceDesc) const = 0;
 		/// @brief Copy a texture partially into a buffer.
 		/// @param dstBuffer Destination to copy data into.
 		/// @param texture Source texture to copy from.
 		/// @param subresourceDesc Subresource description.
-		virtual void CopySubresource(const Buffer* dstBuffer, const Texture* texture,
+		virtual void CopySubresource(const Buffer& dstBuffer, const Texture& texture,
 		                             const RendererAPI::SubresourceDataDesc& subresourceDesc) const = 0;
 
 		/// @brief Reset a query pool.
 		/// @param queryPool Query pool to reset.
 		/// @param startQuery Initial query index to reset.
 		/// @param queryCount Number of queries to reset.
-		virtual void ResetQueryPool(const TRAP::Ref<QueryPool>& queryPool, u32 startQuery,
+		virtual void ResetQueryPool(const QueryPool& queryPool, u32 startQuery,
 		                            u32 queryCount) const = 0;
 		/// @brief Begin a new query.
 		/// @param queryPool Query pool to begin a new query in.
 		/// @param desc Query desc.
-		virtual void BeginQuery(const TRAP::Ref<QueryPool>& queryPool, const RendererAPI::QueryDesc& desc) const = 0;
+		virtual void BeginQuery(const QueryPool& queryPool, const RendererAPI::QueryDesc& desc) const = 0;
 		/// @brief End a query.
 		/// @param queryPool Query pool to begin a new query in.
 		/// @param desc Query desc.
-		virtual void EndQuery(const TRAP::Ref<QueryPool>& queryPool, const RendererAPI::QueryDesc& desc) const = 0;
+		virtual void EndQuery(const QueryPool& queryPool, const RendererAPI::QueryDesc& desc) const = 0;
 		/// @brief Retrieve the results of a query.
 		/// @param queryPool Query pool containing the query results.
 		/// @param readBackBuffer Buffer to write results to.
 		/// @param startQuery Initial query index.
 		/// @param queryCount Number of queries to read.
-		virtual void ResolveQuery(const TRAP::Ref<QueryPool>& queryPool, const TRAP::Ref<Buffer>& readBackBuffer,
+		virtual void ResolveQuery(const QueryPool& queryPool, const Buffer& readBackBuffer,
 		                          u32 startQuery, u32 queryCount) const = 0;
 
 		/// @brief Add resource barriers (memory dependency) to the command buffer.

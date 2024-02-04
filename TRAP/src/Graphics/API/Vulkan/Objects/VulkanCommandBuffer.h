@@ -23,7 +23,7 @@ namespace TRAP::Graphics::API
 		/// @param queue Queue to use for resource barriers.
 		/// @param commandPool Command pool to retrieve command buffer from.
 		/// @param secondary Is this a secondary command buffer?
-		VulkanCommandBuffer(TRAP::Ref<VulkanDevice> device, TRAP::Ref<Queue> queue, VkCommandPool& commandPool,
+		VulkanCommandBuffer(TRAP::Ref<VulkanDevice> device, TRAP::Ref<Queue> queue, VkCommandPool commandPool,
 		                    bool secondary);
 
 		/// @brief Destructor.
@@ -54,13 +54,13 @@ namespace TRAP::Graphics::API
 		/// @param constants Constant buffer data.
 		/// @note There is an optimized function which uses the index into the RootSignature
 		///       instead of the name of the push constant block.
-		void BindPushConstants(const TRAP::Ref<RootSignature>& rootSignature, std::string_view name,
+		void BindPushConstants(const RootSignature& rootSignature, std::string_view name,
 		                       std::span<const u8> constants) const override;
 		/// @brief Bind push constant buffer data to the command buffer.
 		/// @param rootSignature Root signature containing the push constant block.
 		/// @param paramIndex Index of the push constant block in the RootSignatures descriptors array.
 		/// @param constants Constant buffer data.
-		void BindPushConstantsByIndex(const TRAP::Ref<RootSignature>& rootSignature, u32 paramIndex,
+		void BindPushConstantsByIndex(const RootSignature& rootSignature, u32 paramIndex,
 		                              std::span<const u8> constants) const override;
 		/// @brief Bind a descriptor set to the command buffer.
 		/// @param index Index for which descriptor set to bind.
@@ -70,17 +70,18 @@ namespace TRAP::Graphics::API
 		/// @param buffer Index buffer to bind.
 		/// @param indexType Data type used by the index buffer.
 		/// @param offset Starting offset in bytes to use for index buffer.
-		void BindIndexBuffer(const TRAP::Ref<Buffer>& buffer, RendererAPI::IndexType indexType,
+		void BindIndexBuffer(const Buffer& buffer, RendererAPI::IndexType indexType,
 		                     u64 offset) const override;
 		/// @brief Bind vertex buffer(s) to the command buffer.
 		/// @param buffers Vertex buffer(s) to bind.
 		/// @param strides Stride in bytes of each vertex buffer.
 		/// @param offsets Starting offsets in bytes to use for each vertex buffer.
-		void BindVertexBuffer(const std::vector<TRAP::Ref<Buffer>>& buffers, const std::vector<u32>& strides,
+		void BindVertexBuffer(const std::vector<std::reference_wrapper<Buffer>>& buffers,
+		                      const std::vector<u32>& strides,
 		                      const std::vector<u64>& offsets) const override;
 		/// @brief Bind a pipeline to the command buffer.
 		/// @param pipeline Pipeline to bind.
-		void BindPipeline(const TRAP::Ref<Pipeline>& pipeline) const override;
+		void BindPipeline(const Pipeline& pipeline) const override;
 		/// @brief Bind render target(s) to the command buffer.
 		/// @param renderTargets Render target(s) to bind.
 		/// @param depthStencil Optional depth stencil target to bind.
@@ -168,9 +169,9 @@ namespace TRAP::Graphics::API
 		/// @param bufferOffset Byte offset into indirect buffer to start reading from.
 		/// @param counterBuffer Buffer containing the draw count.
 		/// @param counterBufferOffset Byte offset into counter buffer to start reading from.
-		void ExecuteIndirect(const TRAP::Ref<CommandSignature>& cmdSignature, u32 maxCommandCount,
-		                     const TRAP::Ref<Buffer>& indirectBuffer, u64 bufferOffset,
-		                     const TRAP::Ref<Buffer>& counterBuffer, u64 counterBufferOffset) const override;
+		void ExecuteIndirect(const CommandSignature& cmdSignature, u32 maxCommandCount,
+		                     const Buffer& indirectBuffer, u64 bufferOffset,
+		                     const Buffer* counterBuffer, u64 counterBufferOffset) const override;
 
 		/// @brief Dispatch compute work.
 		/// @param groupCountX Number of local work groups to dispatch in the X dimension.
@@ -184,41 +185,41 @@ namespace TRAP::Graphics::API
 		/// @param srcBuffer Source buffer to read data from.
 		/// @param srcOffset Offset in the source buffer to start reading from.
 		/// @param size Size of the data to copy.
-		void UpdateBuffer(const TRAP::Ref<Buffer>& buffer, u64 dstOffset, const TRAP::Ref<Buffer>& srcBuffer,
+		void UpdateBuffer(const Buffer& buffer, u64 dstOffset, const Buffer& srcBuffer,
 		                  u64 srcOffset, u64 size) const override;
 		/// @brief Update a texture partially with new data.
 		/// @param texture Texture to update.
 		/// @param srcBuffer Source buffer to read data from.
 		/// @param subresourceDesc Subresource description.
-		void UpdateSubresource(const TRAP::Graphics::Texture* texture, const TRAP::Ref<Buffer>& srcBuffer,
+		void UpdateSubresource(const TRAP::Graphics::Texture& texture, const Buffer& srcBuffer,
 		                       const RendererAPI::SubresourceDataDesc& subresourceDesc) const override;
 		/// @brief Copy a texture partially into a buffer.
 		/// @param dstBuffer Destination to copy data into.
 		/// @param texture Source texture to copy from.
 		/// @param subresourceDesc Subresource description.
-		void CopySubresource(const Buffer* dstBuffer, const Texture* texture,
+		void CopySubresource(const Buffer& dstBuffer, const Texture& texture,
 		                     const RendererAPI::SubresourceDataDesc& subresourceDesc) const override;
 
 		/// @brief Reset a query pool.
 		/// @param queryPool Query pool to reset.
 		/// @param startQuery Initial query index to reset.
 		/// @param queryCount Number of queries to reset.
-		void ResetQueryPool(const TRAP::Ref<QueryPool>& queryPool, u32 startQuery,
+		void ResetQueryPool(const QueryPool& queryPool, u32 startQuery,
 		                    u32 queryCount) const override;
 		/// @brief Begin a new query.
 		/// @param queryPool Query pool to begin a new query in.
 		/// @param desc Query desc.
-		void BeginQuery(const TRAP::Ref<QueryPool>& queryPool, const RendererAPI::QueryDesc& desc) const override;
+		void BeginQuery(const QueryPool& queryPool, const RendererAPI::QueryDesc& desc) const override;
 		/// @brief End a query.
 		/// @param queryPool Query pool to begin a new query in.
 		/// @param desc Query desc.
-		void EndQuery(const TRAP::Ref<QueryPool>& queryPool, const RendererAPI::QueryDesc& desc) const override;
+		void EndQuery(const QueryPool& queryPool, const RendererAPI::QueryDesc& desc) const override;
 		/// @brief Retrieve the results of a query.
 		/// @param queryPool Query pool containing the query results.
 		/// @param readBackBuffer Buffer to write results to.
 		/// @param startQuery Initial query index.
 		/// @param queryCount Number of queries to read.
-		void ResolveQuery(const TRAP::Ref<QueryPool>& queryPool, const TRAP::Ref<Buffer>& readBackBuffer,
+		void ResolveQuery(const QueryPool& queryPool, const Buffer& readBackBuffer,
 		                  u32 startQuery, u32 queryCount) const override;
 
 		/// @brief Add resource barriers (memory dependency) to the command buffer.
@@ -275,41 +276,20 @@ namespace TRAP::Graphics::API
 		/// @param srcState Source texture state.
 		/// @param dstImage Destination non-multisample color texture to resolve into.
 		/// @param dstState Destination texture state.
-		void ResolveImage(const Ref<API::VulkanTexture>& srcImage, RendererAPI::ResourceState srcState,
-		                  const Ref<API::VulkanTexture>& dstImage, RendererAPI::ResourceState dstState) const;
+		void ResolveImage(const API::VulkanTexture& srcImage, RendererAPI::ResourceState srcState,
+		                  const API::VulkanTexture& dstImage, RendererAPI::ResourceState dstState) const;
 
 		/// @brief Retrieve the currently active VkRenderPass.
 		/// @return Currently active VkRenderPass.
 		[[nodiscard]] constexpr VkRenderPass GetActiveVkRenderPass() const noexcept;
 
 	private:
-		/// @brief Hash the provided data.
-		/// @param mem Pointer to data to hash.
-		/// @param size Size of data to hash.
-		/// @param prev Previous hash value.
-		static usize HashAlg(const auto* mem, usize size, const usize prev = 2166136261U)
-		{
-			ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
-			                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
-			TRAP_ASSERT(mem, "VulkanCommandBuffer::HashAlg(): mem is nullptr!");
-			TRAP_ASSERT(size, "VulkanCommandBuffer::HashAlg(): size is 0!");
-
-			//Intentionally u32 instead of usize, so the behavior is the same regardless of size.
-			u32 result = static_cast<u32>(prev);
-
-			while (size--)
-				result = static_cast<u32>((result * 16777619) ^ *mem++);
-
-			return NumericCast<usize>(result);
-		}
-
-		TRAP::Ref<API::VulkanDevice> m_device;
+		TRAP::Ref<API::VulkanDevice> m_device = nullptr;
 
 		VkCommandBuffer m_vkCommandBuffer = VK_NULL_HANDLE;
 
-		VkCommandPool& m_vkCommandPool;
-		bool m_secondary;
+		VkCommandPool m_vkCommandPool= VK_NULL_HANDLE;
+		bool m_secondary = false;
 
 		VkRenderPass m_activeRenderPass = VK_NULL_HANDLE;
 		VkPipelineLayout m_boundPipelineLayout = VK_NULL_HANDLE;

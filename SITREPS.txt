@@ -4842,3 +4842,7 @@ SITREP 02/03/2024|24w05b1
     - RendererAPI Changed MappedMemoryRange::Data to std::span<u8> ~<10 mins
     - RendererAPI Changed TextureUpdateDesc::MappedData and BufferUpdateDesc::MappedData to std::span<u8> ~<10 mins
     - CommandBuffer BindPushConstants() & BindPushConstantsByIndex() now use std::span<const u8> ~<20 mins
+
+SITREP 02/04/2024|24w05b2
+    - Changed TRAP Engine version to 24w05b2(0.10.39)
+    - VulkanCommandBuffer Changed arguments of functions ~<30 mins

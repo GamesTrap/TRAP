@@ -196,7 +196,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 														 NumericCast<f32>(height), 0.0f, 1.0f);
 	p->GraphicCommandBuffers[p->ImageIndex]->SetScissor(0, 0, width, height);
 	if(p->CurrentGraphicsPipeline)
-		p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicsPipeline);
+		p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(*(p->CurrentGraphicsPipeline));
 
 	p->Recording = true;
 }
@@ -285,7 +285,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartComputeRecording(PerViewportData*
 	BeginGPUFrameProfile(QueueType::Compute, p);
 
 	if(p->CurrentComputePipeline)
-		p->ComputeCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentComputePipeline);
+		p->ComputeCommandBuffers[p->ImageIndex]->BindPipeline(*(p->CurrentComputePipeline));
 
 	p->RecordingCompute = true;
 }
@@ -1534,7 +1534,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader) const
 		data->CurrentComputeWorkGroupSize.z() = std::get<2>(shader->GetNumThreadsPerGroup());
 
 		data->CurrentComputePipeline = GetPipeline(data->ComputePipelineDesc);
-		data->ComputeCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentComputePipeline);
+		data->ComputeCommandBuffers[data->ImageIndex]->BindPipeline(*(data->CurrentComputePipeline));
 
 		//Bind Descriptors
 		for(u32 i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
@@ -1565,7 +1565,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader) const
 		}
 
 		data->CurrentGraphicsPipeline = GetPipeline(data->GraphicsPipelineDesc);
-		data->GraphicCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentGraphicsPipeline);
+		data->GraphicCommandBuffers[data->ImageIndex]->BindPipeline(*(data->CurrentGraphicsPipeline));
 
 		//Bind Descriptors
 		for(u32 i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
@@ -1646,7 +1646,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffe
 	PerViewportData* const p = s_perViewportData.get();
 #endif /*TRAP_HEADLESS_MODE*/
 
-	p->GraphicCommandBuffers[p->ImageIndex]->BindVertexBuffer({ vBuffer }, { layout.GetStride() }, {});
+	p->GraphicCommandBuffers[p->ImageIndex]->BindVertexBuffer({ *vBuffer }, { layout.GetStride() }, {});
 
 	const TRAP::Ref<VertexLayout> lay = TRAP::MakeRef<VertexLayout>();
 	const std::vector<VertexBufferElement>& elements = layout.GetElements();
@@ -1682,7 +1682,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindIndexBuffer(const TRAP::Ref<Buffer
 	const PerViewportData* const p = s_perViewportData.get();
 #endif /*TRAP_HEADLESS_MODE*/
 
-	p->GraphicCommandBuffers[p->ImageIndex]->BindIndexBuffer(iBuffer, indexType, 0);
+	p->GraphicCommandBuffers[p->ImageIndex]->BindIndexBuffer(*iBuffer, indexType, 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1739,7 +1739,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const std::string_vi
 	{
 		p->GraphicCommandBuffers[p->ImageIndex]->BindPushConstants
 		(
-			std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).RootSignature,
+			*std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).RootSignature,
 			name, constants
 		);
 	}
@@ -1747,7 +1747,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const std::string_vi
 	{
 		p->ComputeCommandBuffers[p->ImageIndex]->BindPushConstants
 		(
-			std::get<ComputePipelineDesc>(p->ComputePipelineDesc.Pipeline).RootSignature,
+			*std::get<ComputePipelineDesc>(p->ComputePipelineDesc.Pipeline).RootSignature,
 			name, constants
 		);
 	}
@@ -1782,7 +1782,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const u32 par
 	{
 		p->GraphicCommandBuffers[p->ImageIndex]->BindPushConstantsByIndex
 		(
-			std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).RootSignature,
+			*std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).RootSignature,
 			paramIndex, constants
 		);
 	}
@@ -1790,7 +1790,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const u32 par
 	{
 		p->ComputeCommandBuffers[p->ImageIndex]->BindPushConstantsByIndex
 		(
-			std::get<ComputePipelineDesc>(p->ComputePipelineDesc.Pipeline).RootSignature,
+			*std::get<ComputePipelineDesc>(p->ComputePipelineDesc.Pipeline).RootSignature,
 			paramIndex, constants
 		);
 	}
@@ -2422,7 +2422,7 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(const TRAP::Ref<Render
 	cmd->ResourceBarrier(nullptr, nullptr, &barrier);
 
 	const VulkanCommandBuffer* const vkCmdBuf = dynamic_cast<VulkanCommandBuffer*>(cmd);
-	vkCmdBuf->ResolveImage(MSAATex, ResourceState::CopySource, dstTex, ResourceState::CopyDestination);
+	vkCmdBuf->ResolveImage(*MSAATex, ResourceState::CopySource, *dstTex, ResourceState::CopyDestination);
 
 	//Transition destination from CopyDestination to RenderTarget
 	barrier = {destination, ResourceState::CopyDestination, ResourceState::RenderTarget};
@@ -3551,8 +3551,8 @@ void TRAP::Graphics::API::VulkanRenderer::BeginGPUFrameProfile(const QueueType t
 	else if(type == QueueType::Compute)
 		pool = p->ComputeTimestampQueryPools[p->ImageIndex];
 
-	cmd->ResetQueryPool(pool, 0, 1 * 2);
-	cmd->BeginQuery(pool, {0});
+	cmd->ResetQueryPool(*pool, 0, 1 * 2);
+	cmd->BeginQuery(*pool, {0});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3579,8 +3579,8 @@ void TRAP::Graphics::API::VulkanRenderer::EndGPUFrameProfile(const QueueType typ
 	else if(type == QueueType::Compute)
 		buffer = p->ComputeTimestampReadbackBuffers[p->ImageIndex];
 
-	cmd->BeginQuery(pool, {1});
-	cmd->ResolveQuery(pool, buffer, 0, 1 * 2);
+	cmd->BeginQuery(*pool, {1});
+	cmd->ResolveQuery(*pool, *buffer, 0, 1 * 2);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

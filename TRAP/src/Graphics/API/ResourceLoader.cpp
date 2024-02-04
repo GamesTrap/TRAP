@@ -988,13 +988,17 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	const TRAP::Ref<Buffer>& buffer = bufferUpdateDesc.Buffer;
+	TRAP_ASSERT(buffer, "ResourceLoader::UpdateBuffer(): Destination buffer is nullptr!");
+
 	TRAP_ASSERT(buffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly ||
 		        buffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUToCPU, "ResourceLoader::UpdateBuffer(): Buffer must have memory usage GPUOnly or GPUToCPU!");
 
 	const CommandBuffer* const cmd = AcquireCmd(activeSet);
 
 	const RendererAPI::MappedMemoryRange range = bufferUpdateDesc.Internal.MappedRange;
-	cmd->UpdateBuffer(buffer, bufferUpdateDesc.DstOffset, range.Buffer, range.Offset, range.Size);
+	TRAP_ASSERT(buffer, "ResourceLoader::UpdateBuffer(): Source buffer is nullptr!");
+
+	cmd->UpdateBuffer(*buffer, bufferUpdateDesc.DstOffset, *range.Buffer, range.Offset, range.Size);
 
 	return UploadFunctionResult::Completed;
 }
@@ -1010,7 +1014,10 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 	//When this call comes from UpdateResource, staging buffer data is already filled
 	//All that is left to do is record and execute the Copy commands
 	const bool dataAlreadyFilled = textureUpdateDesc.Range.Buffer != nullptr;
+
 	TRAP::Graphics::Texture* const texture = textureUpdateDesc.Texture;
+	TRAP_ASSERT(texture, "ResourceLoader::UpdateTexture(): Texture to update is nullptr!");
+
 	const TRAP::Graphics::API::ImageFormat format = texture->GetImageFormat();
 	CommandBuffer* const cmd = AcquireCmd(activeSet);
 
@@ -1030,6 +1037,8 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 
 	const RendererAPI::MappedMemoryRange upload = dataAlreadyFilled ? textureUpdateDesc.Range :
 		                                              AllocateStagingMemory(requiredSize, sliceAlignment);
+	TRAP_ASSERT(upload.Buffer, "ResourceLoader::UpdateTexture(): Source buffer is nullptr!");
+
 	u64 offset = 0;
 
 	if(upload.Data.empty())
@@ -1102,7 +1111,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 				subresourceDesc.SlicePitch = subSlicePitch;
 			}
 
-			cmd->UpdateSubresource(texture, upload.Buffer, subresourceDesc);
+			cmd->UpdateSubresource(*texture, *upload.Buffer, subresourceDesc);
 			offset += NumericCast<u64>(subDepth) * subSlicePitch;
 		}
 	}
@@ -1444,7 +1453,10 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	TRAP::Ref<Texture> texture = textureCopy.Texture;
+	TRAP_ASSERT(textureCopy.Buffer, "ResourceLoader::CopyTexture(): Destination buffer is nullptr!");
+	TRAP_ASSERT(textureCopy.Texture, "ResourceLoader::CopyTexture(): Source texture is nullptr!");
+
+	const TRAP::Ref<Texture>& texture = textureCopy.Texture;
 	const ImageFormat format = texture->GetImageFormat();
 
 	const CommandBuffer* const cmd = AcquireCmd(activeSet);
@@ -1483,7 +1495,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		subresourceDesc.SlicePitch = subSlicePitch;
 	}
 
-	cmd->CopySubresource(textureCopy.Buffer.get(), textureCopy.Texture.get(), subresourceDesc);
+	cmd->CopySubresource(*textureCopy.Buffer, *texture, subresourceDesc);
 
 	return UploadFunctionResult::Completed;
 }
