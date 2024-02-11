@@ -784,7 +784,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		virtual void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
-									  const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
+									  RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
 									  std::vector<u32>* colorArraySlices /*= nullptr*/,
 									  std::vector<u32>* colorMipSlices /*= nullptr*/,
 									  u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/,
@@ -802,7 +802,7 @@ namespace TRAP::Graphics
 		/// @remark This function is only available in headless mode.
 		virtual void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
-									  const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
+									  RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
 									  std::vector<u32>* colorArraySlices /*= nullptr*/,
 									  std::vector<u32>* colorMipSlices /*= nullptr*/,
 									  u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/) const = 0;
@@ -821,7 +821,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		virtual void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                               const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
-									   const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
+									   RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
 									   std::vector<u32>* colorArraySlices /*= nullptr*/,
 									   std::vector<u32>* colorMipSlices /*= nullptr*/,
 									   u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/,
@@ -839,7 +839,7 @@ namespace TRAP::Graphics
 		/// @remark This function is only available in headless mode.
 		virtual void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                               const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
-									   const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
+									   RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
 									   std::vector<u32>* colorArraySlices /*= nullptr*/,
 									   std::vector<u32>* colorMipSlices /*= nullptr*/,
 									   u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/) const = 0;
@@ -2608,17 +2608,17 @@ namespace TRAP::Graphics
 		struct LoadActionsDesc
 		{
 			//Action to perform on the color attachment(s) on load.
-			std::array<LoadActionType, 8> LoadActionsColor{};
+			std::vector<LoadActionType> LoadActionsColor{};
 			//Action to perform on the depth attachment on load.
 			LoadActionType LoadActionDepth{};
 			//Action to perform on the stencil attachment on load.
 			LoadActionType LoadActionStencil{};
 			//Clear color(s)
-			std::array<RendererAPI::Color, 8> ClearColorValues{};
+			std::vector<RendererAPI::Color> ClearColorValues{};
 			//Clear depth/stencil value
 			RendererAPI::DepthStencil ClearDepthStencil{};
 			//Action to perform on the color attachment(s) on store.
-			std::array<StoreActionType, 8> StoreActionsColor{};
+			std::vector<StoreActionType> StoreActionsColor{};
 			//Action to perform on the depth attachment on store.
 			StoreActionType StoreActionDepth{};
 			//Action to perform on the stencil attachment on store.
@@ -2781,6 +2781,7 @@ namespace TRAP::Graphics
 			u32 MaxTessellationControlPoints;
 			SampleCount MaxMSAASampleCount;
 			f32 MaxAnisotropy;
+			u32 MaxColorRenderTargets;
 
 			u32 WaveLaneCount;
 			TRAP::Graphics::RendererAPI::WaveOpsSupportFlags WaveOpsSupportFlags;

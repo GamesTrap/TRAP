@@ -601,7 +601,7 @@ void TRAP::Graphics::RenderCommand::SetPushConstants(const std::string_view name
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                                             const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
-									                 const RendererAPI::LoadActionsDesc* const loadActions,
+									                 RendererAPI::LoadActionsDesc* const loadActions,
 									                 const Window* const window)
 {
 	RendererAPI::GetRenderer()->BindRenderTarget(colorTarget, depthStencil, loadActions, nullptr, nullptr,
@@ -611,7 +611,7 @@ void TRAP::Graphics::RenderCommand::BindRenderTarget(const TRAP::Ref<Graphics::R
 #else
 void TRAP::Graphics::RenderCommand::BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                                             const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
-									                 const RendererAPI::LoadActionsDesc* const loadActions)
+									                 RendererAPI::LoadActionsDesc* const loadActions)
 {
 	RendererAPI::GetRenderer()->BindRenderTarget(colorTarget, depthStencil, loadActions, nullptr, nullptr,
 												 std::numeric_limits<u32>::max(),
@@ -624,7 +624,7 @@ void TRAP::Graphics::RenderCommand::BindRenderTarget(const TRAP::Ref<Graphics::R
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                                             const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
-									                 const RendererAPI::LoadActionsDesc* const loadActions,
+									                 RendererAPI::LoadActionsDesc* const loadActions,
 									                 const Window* const window)
 {
 	RendererAPI::GetRenderer()->BindRenderTargets(colorTargets, depthStencil, loadActions, nullptr, nullptr,
@@ -634,7 +634,7 @@ void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<TRAP::Re
 #else
 void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                                             const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
-									                 const RendererAPI::LoadActionsDesc* const loadActions)
+									                 RendererAPI::LoadActionsDesc* const loadActions)
 {
 	RendererAPI::GetRenderer()->BindRenderTargets(colorTargets, depthStencil, loadActions, nullptr, nullptr,
 												  std::numeric_limits<u32>::max(),

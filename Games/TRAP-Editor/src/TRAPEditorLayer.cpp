@@ -258,10 +258,10 @@ void TRAPEditorLayer::OnAttach()
 	m_renderTargetDesc.Format = TRAP::Graphics::API::ImageFormat::R32_SINT;
 	m_IDRenderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
 
-	std::get<0>(m_renderTargetLoadActions.ClearColorValues) = { 0.1, 0.1, 0.1, 1.0 };
-	std::get<0>(m_renderTargetLoadActions.LoadActionsColor) = TRAP::Graphics::RendererAPI::LoadActionType::Clear;
-	std::get<1>(m_renderTargetLoadActions.ClearColorValues) = {-1.0, 0.0, 0.0, 0.0};
-	std::get<1>(m_renderTargetLoadActions.LoadActionsColor) = TRAP::Graphics::RendererAPI::LoadActionType::Clear;
+	m_renderTargetLoadActions.ClearColorValues.emplace_back(0.1, 0.1, 0.1, 1.0);
+	m_renderTargetLoadActions.LoadActionsColor.emplace_back(TRAP::Graphics::RendererAPI::LoadActionType::Clear);
+	m_renderTargetLoadActions.ClearColorValues.emplace_back(-1.0, 0.0, 0.0, 0.0);
+	m_renderTargetLoadActions.LoadActionsColor.emplace_back(TRAP::Graphics::RendererAPI::LoadActionType::Clear);
 
 	//Setup Mouse Picking Buffer
 	m_mousePickBufferDesc.Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::PersistentMap |

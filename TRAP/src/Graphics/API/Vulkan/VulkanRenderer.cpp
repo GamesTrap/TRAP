@@ -181,8 +181,8 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 #endif /*TRAP_HEADLESS_MODE*/
 
 	LoadActionsDesc loadActions{};
-	std::get<0>(loadActions.LoadActionsColor) = LoadActionType::Clear;
-	std::get<0>(loadActions.ClearColorValues) = p->ClearColor;
+	loadActions.LoadActionsColor.emplace_back(LoadActionType::Clear);
+	loadActions.ClearColorValues.push_back(p->ClearColor);
 	loadActions.ClearDepthStencil = p->ClearDepthStencil;
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({ bindRenderTarget }, nullptr, &loadActions, nullptr, nullptr,
 	                                                           std::numeric_limits<u32>::max(),
@@ -1801,7 +1801,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const u32 par
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                                                   const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
-							                               const RendererAPI::LoadActionsDesc* const loadActions,
+							                               RendererAPI::LoadActionsDesc* const loadActions,
 							                               std::vector<u32>* const colorArraySlices,
 							                               std::vector<u32>* const colorMipSlices,
 							                               const u32 depthArraySlice,
@@ -1809,7 +1809,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graph
 #else
 void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                                                   const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
-							                               const RendererAPI::LoadActionsDesc* const loadActions,
+							                               RendererAPI::LoadActionsDesc* const loadActions,
 							                               std::vector<u32>* const colorArraySlices,
 							                               std::vector<u32>* const colorMipSlices,
 							                               const u32 depthArraySlice,
@@ -1857,7 +1857,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graph
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                                                    const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
-							                                const RendererAPI::LoadActionsDesc* const loadActions,
+							                                RendererAPI::LoadActionsDesc* const loadActions,
 							                                std::vector<u32>* const colorArraySlices,
 							                                std::vector<u32>* const colorMipSlices,
 							                                const u32 depthArraySlice,
@@ -1865,7 +1865,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 #else
 void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                                                    const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
-							                                const RendererAPI::LoadActionsDesc* const loadActions,
+							                                RendererAPI::LoadActionsDesc* const loadActions,
 							                                std::vector<u32>* const colorArraySlices,
 							                                std::vector<u32>* const colorMipSlices,
 							                                const u32 depthArraySlice,

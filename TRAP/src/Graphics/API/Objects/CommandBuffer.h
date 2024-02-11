@@ -79,7 +79,7 @@ namespace TRAP::Graphics
 		/// @note This functions ends the currently running render pass and starts a new one.
 		virtual void BindRenderTargets(const std::vector<TRAP::Ref<RenderTarget>>& renderTargets,
 			                           const TRAP::Ref<RenderTarget>& depthStencil,
-			                           const RendererAPI::LoadActionsDesc* loadActions,
+			                           RendererAPI::LoadActionsDesc* loadActions,
 			                           const std::vector<u32>* colorArraySlices,
 			                           const std::vector<u32>* colorMipSlices,
 			                           u32 depthArraySlice, u32 depthMipSlice,

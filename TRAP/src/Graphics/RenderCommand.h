@@ -691,7 +691,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		static void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                             const TRAP::Ref<Graphics::RenderTarget>& depthStencil = nullptr,
-									 const RendererAPI::LoadActionsDesc* loadActions = nullptr,
+									 RendererAPI::LoadActionsDesc* loadActions = nullptr,
 									 const Window* window = TRAP::Application::GetWindow());
 #else
 		/// @brief Set render target.
@@ -701,7 +701,7 @@ namespace TRAP::Graphics
 		/// @remark This function is only available in headless mode.
 		static void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                             const TRAP::Ref<Graphics::RenderTarget>& depthStencil = nullptr,
-									 const RendererAPI::LoadActionsDesc* loadActions = nullptr);
+									 RendererAPI::LoadActionsDesc* loadActions = nullptr);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Set multiple render targets for the given window.
@@ -712,7 +712,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		static void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
-									  const RendererAPI::LoadActionsDesc* loadActions = nullptr,
+									  RendererAPI::LoadActionsDesc* loadActions = nullptr,
 									  const Window* window = TRAP::Application::GetWindow());
 #else
 		/// @brief Set multiple render targets.
@@ -722,7 +722,7 @@ namespace TRAP::Graphics
 		/// @remark This function is only available in headless mode.
 		static void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
-									  const RendererAPI::LoadActionsDesc* loadActions = nullptr);
+									  RendererAPI::LoadActionsDesc* loadActions = nullptr);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Start a new render pass for the given window.

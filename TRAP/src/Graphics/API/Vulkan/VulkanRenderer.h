@@ -692,7 +692,7 @@ namespace TRAP::Graphics::API
 		/// @remark @headless This function is not available in headless mode.
 		void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                      const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
-							  const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
+							  RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
 							  std::vector<u32>* colorArraySlices /*= nullptr*/,
 							  std::vector<u32>* colorMipSlices /*= nullptr*/,
 							  u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/,
@@ -710,7 +710,7 @@ namespace TRAP::Graphics::API
 		/// @remark This function is only available in headless mode.
 		void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                      const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
-							  const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
+							  RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
 							  std::vector<u32>* colorArraySlices /*= nullptr*/,
 							  std::vector<u32>* colorMipSlices /*= nullptr*/,
 							  u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/) const override;
@@ -729,7 +729,7 @@ namespace TRAP::Graphics::API
 		/// @remark @headless This function is not available in headless mode.
 		void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                       const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
-							   const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
+							   RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
 							   std::vector<u32>* colorArraySlices /*= nullptr*/,
 							   std::vector<u32>* colorMipSlices /*= nullptr*/,
 							   u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/,
@@ -747,7 +747,7 @@ namespace TRAP::Graphics::API
 		/// @remark This function is only available in headless mode.
 		void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                       const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
-							   const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
+							   RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
 							   std::vector<u32>* colorArraySlices /*= nullptr*/,
 							   std::vector<u32>* colorMipSlices /*= nullptr*/,
 							   u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/) const override;

@@ -98,6 +98,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	RendererAPI::GPUSettings.MaxSamplerAllocationCount = m_physicalDeviceProperties.limits.maxSamplerAllocationCount;
 	RendererAPI::GPUSettings.MaxTessellationControlPoints = m_physicalDeviceProperties.limits.maxTessellationPatchSize;
 	RendererAPI::GPUSettings.MaxMSAASampleCount = static_cast<RendererAPI::SampleCount>(TRAP::Math::Min(GetMaxUsableMSAASampleCount(), static_cast<u32>(VK_SAMPLE_COUNT_16_BIT)));
+	RendererAPI::GPUSettings.MaxColorRenderTargets = m_physicalDeviceProperties.limits.maxColorAttachments;
 
 	// maxBoundDescriptorSets not needed because engine is always limited to 4 descriptor sets
 
