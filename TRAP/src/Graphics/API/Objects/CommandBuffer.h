@@ -238,7 +238,8 @@ namespace TRAP::Graphics
 		/// @param color Color to clear the color attachment with.
 		/// @param width Width of the area to clear.
 		/// @param height Height of the area to clear.
-		virtual void Clear(const RendererAPI::Color& color, u32 width, u32 height) const = 0;
+		/// @param colorAttachment Index a bound color attachment which should be cleared by the given color.
+		virtual void Clear(const RendererAPI::Color& color, u32 width, u32 height, u32 colorAttachment = 0) const = 0;
 		/// @brief Clear the currently used depth and stencil attachment.
 		/// @param depth Depth value to clear the depth attachment with.
 		/// @param stencil Stencil value to clear the stencil attachment with.

@@ -4850,3 +4850,7 @@ SITREP 02/04/2024|24w05b2
 SITREP 02/11/2024|24w06a1
     - Changed TRAP Engine version to 24w06a1(0.10.40)
     - VulkanCommandBuffer Refactored various functions ~>60 mins
+
+SITREP 02/13/2024|24w07a1
+    - Changed TRAP Engine version to 24w07a1(0.10.41)
+    - VulkanCommandBuffer Refactored various functions ~<60 mins
