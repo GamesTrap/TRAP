@@ -4854,3 +4854,4 @@ SITREP 02/11/2024|24w06a1
 SITREP 02/13/2024|24w07a1
     - Changed TRAP Engine version to 24w07a1(0.10.41)
     - VulkanCommandBuffer Refactored various functions ~<60 mins
+    - VulkanCommandPool Refactored AllocateCommandBuffer() and FreeCommandBuffer() ~<60 mins

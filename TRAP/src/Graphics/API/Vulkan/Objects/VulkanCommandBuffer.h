@@ -289,7 +289,7 @@ namespace TRAP::Graphics::API
 
 		VkCommandBuffer m_vkCommandBuffer = VK_NULL_HANDLE;
 
-		VkCommandPool m_vkCommandPool= VK_NULL_HANDLE;
+		VkCommandPool m_vkCommandPool = VK_NULL_HANDLE;
 		bool m_secondary = false;
 
 		VkRenderPass m_activeRenderPass = VK_NULL_HANDLE;

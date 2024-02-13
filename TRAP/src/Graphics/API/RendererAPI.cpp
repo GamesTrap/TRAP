@@ -457,10 +457,10 @@ void TRAP::Graphics::RendererAPI::Transition(const Ref<TRAP::Graphics::Texture>&
 	cmdPoolDesc.CreateFlags = CommandPoolCreateFlags::Transient;
 	TRAP::Ref<CommandPool> cmdPool = TRAP::Graphics::CommandPool::Create(cmdPoolDesc);
 
-	CommandBuffer* const cmd = cmdPool->AllocateCommandBuffer(false);
+	CommandBuffer& cmd = cmdPool->GetCommandBuffer(false);
 
 	//Start recording
-	cmd->Begin();
+	cmd.Begin();
 
 	//Transition the texture to the correct state
 	TextureBarrier texBarrier{};
@@ -468,10 +468,10 @@ void TRAP::Graphics::RendererAPI::Transition(const Ref<TRAP::Graphics::Texture>&
 	texBarrier.CurrentState = oldLayout;
 	texBarrier.NewState = newLayout;
 
-	cmd->ResourceBarrier(nullptr, &texBarrier, nullptr);
+	cmd.ResourceBarrier(nullptr, &texBarrier, nullptr);
 
 	//End recording
-	cmd->End();
+	cmd.End();
 
 	//Submit the command buffer
 	QueueSubmitDesc submitDesc{};
@@ -481,9 +481,6 @@ void TRAP::Graphics::RendererAPI::Transition(const Ref<TRAP::Graphics::Texture>&
 
 	//Wait for work to finish on the GPU
 	queue->WaitQueueIdle();
-
-	//Cleanup
-	cmdPool->FreeCommandBuffer(cmd);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -759,8 +756,6 @@ TRAP::Graphics::RendererAPI::PerViewportData::~PerViewportData()
 	RenderCompleteSemaphores = {};
 	RenderCompleteFences = {};
 
-	for(u32 i = 0u; i < ImageCount; ++i)
-		GraphicCommandPools[i]->FreeCommandBuffer(GraphicCommandBuffers[i]);
 	GraphicCommandBuffers = {};
 	GraphicCommandPools = {};
 
@@ -770,8 +765,6 @@ TRAP::Graphics::RendererAPI::PerViewportData::~PerViewportData()
 	ComputeCompleteSemaphores = {};
 	ComputeCompleteFences = {};
 
-	for(u32 i = 0u; i < ImageCount; ++i)
-		ComputeCommandPools[i]->FreeCommandBuffer(ComputeCommandBuffers[i]);
 	ComputeCommandBuffers = {};
 	ComputeCommandPools = {};
 

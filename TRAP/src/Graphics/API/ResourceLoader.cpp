@@ -114,7 +114,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(const std::stop_tok
 				case UpdateRequestType::BufferBarrier:
 				{
 					const RendererAPI::BufferBarrier barrier = std::get<RendererAPI::BufferBarrier>(updateState.Desc);
-					loader->AcquireCmd(loader->m_nextSet)->ResourceBarrier(&barrier, nullptr, nullptr);
+					loader->AcquireCmd(loader->m_nextSet).ResourceBarrier(&barrier, nullptr, nullptr);
 					result = UploadFunctionResult::Completed;
 					break;
 				}
@@ -122,7 +122,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(const std::stop_tok
 				case UpdateRequestType::TextureBarrier:
 				{
 					const RendererAPI::TextureBarrier barrier = std::get<RendererAPI::TextureBarrier>(updateState.Desc);
-					loader->AcquireCmd(loader->m_nextSet)->ResourceBarrier(nullptr, &barrier, nullptr);
+					loader->AcquireCmd(loader->m_nextSet).ResourceBarrier(nullptr, &barrier, nullptr);
 					result = UploadFunctionResult::Completed;
 					break;
 				}
@@ -796,19 +796,23 @@ void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 	static constexpr u64 maxBlockSize = 32;
 	const u64 size = Math::Max(m_desc.BufferSize, maxBlockSize);
 
-	m_copyEngine.ResourceSets.resize(m_desc.BufferCount);
-	for(auto& cpyResSet : m_copyEngine.ResourceSets)
+	m_copyEngine.ResourceSets.reserve(m_desc.BufferCount);
+	for(usize i = 0; i < m_desc.BufferCount; ++i)
 	{
-		cpyResSet.Fence = Fence::Create();
-		RendererAPI::CommandPoolDesc cmdPoolDesc{};
-		cmdPoolDesc.Queue = m_copyEngine.Queue;
-		cpyResSet.CommandPool = CommandPool::Create(cmdPoolDesc);
+		const TRAP::Ref<CommandPool> cmdPool = CommandPool::Create({.Queue = m_copyEngine.Queue});
 
-		cpyResSet.Cmd = cpyResSet.CommandPool->AllocateCommandBuffer(false);
+		const CopyEngine::CopyResourceSet cpyResSet
+		{
+			.Fence = Fence::Create(),
+			.CommandPool = cmdPool,
+			.Cmd = cmdPool->GetCommandBuffer(false),
+			.Buffer = AllocateUploadMemory(size, UtilGetTextureSubresourceAlignment()).Buffer,
+			.AllocatedSpace = 0,
+			.TempBuffers = {},
+			.CopyCompletedSemaphore = Semaphore::Create()
+		};
 
-		cpyResSet.CopyCompletedSemaphore = Semaphore::Create();
-
-		cpyResSet.Buffer = AllocateUploadMemory(size, UtilGetTextureSubresourceAlignment()).Buffer;
+		m_copyEngine.ResourceSets.push_back(cpyResSet);
 	}
 
 	m_copyEngine.BufferSize = size;
@@ -824,9 +828,7 @@ void TRAP::Graphics::API::ResourceLoader::CleanupCopyEngine()
 
 	for(u32 i = 0; i < m_copyEngine.ResourceSets.size(); ++i)
 	{
-		CopyEngine::CopyResourceSet& resourceSet = m_copyEngine.ResourceSets[i];
-
-		resourceSet.CommandPool->FreeCommandBuffer(resourceSet.Cmd);
+		const CopyEngine::CopyResourceSet& resourceSet = m_copyEngine.ResourceSets[i];
 
 		if (!resourceSet.TempBuffers.empty())
 			TP_WARN(Log::RendererBufferPrefix, "A temporary buffer was not cleaned up ", i);
@@ -864,7 +866,7 @@ void TRAP::Graphics::API::ResourceLoader::ResetCopyEngineSet(const usize activeS
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::ResourceLoader::AcquireCmd(const usize activeSet)
+[[nodiscard]] TRAP::Graphics::CommandBuffer& TRAP::Graphics::API::ResourceLoader::AcquireCmd(const usize activeSet)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -872,11 +874,11 @@ void TRAP::Graphics::API::ResourceLoader::ResetCopyEngineSet(const usize activeS
 	if(!m_copyEngine.IsRecording)
 	{
 		resSet.CommandPool->Reset();
-		resSet.Cmd->Begin();
+		resSet.Cmd.get().Begin();
 		m_copyEngine.IsRecording = true;
 	}
 
-	return resSet.Cmd;
+	return resSet.Cmd.get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -889,9 +891,9 @@ void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const usize activeSet)
 		return;
 
 	const CopyEngine::CopyResourceSet& resSet = m_copyEngine.ResourceSets[activeSet];
-	resSet.Cmd->End();
+	resSet.Cmd.get().End();
 	RendererAPI::QueueSubmitDesc submitDesc{};
-	submitDesc.Cmds.push_back(resSet.Cmd);
+	submitDesc.Cmds.emplace_back(resSet.Cmd.get());
 
 	submitDesc.SignalSemaphores.push_back(resSet.CopyCompletedSemaphore);
 	submitDesc.SignalFence = resSet.Fence;
@@ -911,7 +913,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const usize activeSet)
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::Texture* const texture,
-                                                                CommandBuffer* const cmd)
+                                                                CommandBuffer& cmd)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -943,7 +945,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		barrier.CurrentState = RendererAPI::ResourceState::CopyDestination;
 		barrier.NewState = RendererAPI::ResourceState::CopySource;
 
-		cmd->ResourceBarrier(nullptr, &barrier, nullptr);
+		cmd.ResourceBarrier(nullptr, &barrier, nullptr);
 
 		VkImageBlit blit{};
 		blit.srcOffsets[0] = {0, 0, 0};
@@ -960,7 +962,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		blit.dstSubresource.layerCount = 1;
 
 		const auto* const vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture);
-		const auto* const vkCmd = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(cmd);
+		const auto* const vkCmd = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(&cmd);
 
 		vkCmdBlitImage(vkCmd->GetVkCommandBuffer(),
 			           vkTexture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
@@ -971,7 +973,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		barrier.CurrentState = RendererAPI::ResourceState::CopySource;
 		barrier.NewState = RendererAPI::ResourceState::CopyDestination;
 
-		cmd->ResourceBarrier(nullptr, &barrier, nullptr);
+		cmd.ResourceBarrier(nullptr, &barrier, nullptr);
 
 		if(mipWidth > 1)
 			mipWidth /= 2;
@@ -993,12 +995,12 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 	TRAP_ASSERT(buffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly ||
 		        buffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUToCPU, "ResourceLoader::UpdateBuffer(): Buffer must have memory usage GPUOnly or GPUToCPU!");
 
-	const CommandBuffer* const cmd = AcquireCmd(activeSet);
+	const CommandBuffer& cmd = AcquireCmd(activeSet);
 
 	const RendererAPI::MappedMemoryRange range = bufferUpdateDesc.Internal.MappedRange;
 	TRAP_ASSERT(buffer, "ResourceLoader::UpdateBuffer(): Source buffer is nullptr!");
 
-	cmd->UpdateBuffer(*buffer, bufferUpdateDesc.DstOffset, *range.Buffer, range.Offset, range.Size);
+	cmd.UpdateBuffer(*buffer, bufferUpdateDesc.DstOffset, *range.Buffer, range.Offset, range.Size);
 
 	return UploadFunctionResult::Completed;
 }
@@ -1019,7 +1021,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 	TRAP_ASSERT(texture, "ResourceLoader::UpdateTexture(): Texture to update is nullptr!");
 
 	const TRAP::Graphics::API::ImageFormat format = texture->GetImageFormat();
-	CommandBuffer* const cmd = AcquireCmd(activeSet);
+	CommandBuffer& cmd = AcquireCmd(activeSet);
 
 	const u32 sliceAlignment = UtilGetTextureSubresourceAlignment(format);
 	const u32 rowAlignment = UtilGetTextureRowAlignment();
@@ -1032,7 +1034,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 	{
 		const RendererAPI::TextureBarrier barrier{texture, RendererAPI::ResourceState::Undefined,
 		                                    RendererAPI::ResourceState::CopyDestination};
-		cmd->ResourceBarrier(nullptr, &barrier, nullptr);
+		cmd.ResourceBarrier(nullptr, &barrier, nullptr);
 	}
 
 	const RendererAPI::MappedMemoryRange upload = dataAlreadyFilled ? textureUpdateDesc.Range :
@@ -1111,7 +1113,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 				subresourceDesc.SlicePitch = subSlicePitch;
 			}
 
-			cmd->UpdateSubresource(*texture, *upload.Buffer, subresourceDesc);
+			cmd.UpdateSubresource(*texture, *upload.Buffer, subresourceDesc);
 			offset += NumericCast<u64>(subDepth) * subSlicePitch;
 		}
 	}
@@ -1126,7 +1128,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		const RendererAPI::ResourceState finalLayout = UtilDetermineResourceStartState((texture->GetDescriptorTypes() & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined);
 		const RendererAPI::TextureBarrier barrier{texture, RendererAPI::ResourceState::CopyDestination,
 		                                          finalLayout};
-		cmd->ResourceBarrier(nullptr, &barrier, nullptr);
+		cmd.ResourceBarrier(nullptr, &barrier, nullptr);
 	}
 
 	return UploadFunctionResult::Completed;
@@ -1459,7 +1461,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 	const TRAP::Ref<Texture>& texture = textureCopy.Texture;
 	const ImageFormat format = texture->GetImageFormat();
 
-	const CommandBuffer* const cmd = AcquireCmd(activeSet);
+	const CommandBuffer& cmd = AcquireCmd(activeSet);
 
 	if(textureCopy.WaitSemaphore)
 		m_copyEngine.WaitSemaphores.push_back(textureCopy.WaitSemaphore);
@@ -1470,7 +1472,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		barrier.Texture = texture.get();
 		barrier.CurrentState = textureCopy.TextureState;
 		barrier.NewState = RendererAPI::ResourceState::CopySource;
-		cmd->ResourceBarrier(nullptr, &barrier, nullptr);
+		cmd.ResourceBarrier(nullptr, &barrier, nullptr);
 	}
 
 	u32 rowBytes = 0;
@@ -1495,7 +1497,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		subresourceDesc.SlicePitch = subSlicePitch;
 	}
 
-	cmd->CopySubresource(*textureCopy.Buffer, *texture, subresourceDesc);
+	cmd.CopySubresource(*textureCopy.Buffer, *texture, subresourceDesc);
 
 	return UploadFunctionResult::Completed;
 }

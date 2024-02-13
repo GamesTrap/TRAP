@@ -13,7 +13,7 @@ struct ErrorData
     std::string_view LogMessage;
 };
 
-static constexpr TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 24> s_errorMap
+static constexpr TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 25> s_errorMap
 {
     {
         {
@@ -28,6 +28,7 @@ static constexpr TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 24
             {TRAP::Utils::ErrorCode::VulkanSwapchainImageAcquireFailed, {"Vulkan API error", "Vulkan failed to acquire next swapchain image!\nError code: 0x0014", TRAP::Log::RendererVulkanPrefix, "Vulkan failed to acquire next swapchain image! (0x0014)"}},
             {TRAP::Utils::ErrorCode::VulkanDeviceLost, {"Vulkan API error", "Vulkan device was lost!\nError code: 0x0017", TRAP::Log::RendererVulkanPrefix, "Vulkan device lost! (0x0017)"}},
             {TRAP::Utils::ErrorCode::VulkanNoMatchingMemoryTypeFound, {"Vulkan API error", "Vulkan failed to find a matching memory type!\nError code: 0x0018", TRAP::Log::RendererVulkanPrefix, "Vulkan failed to find a matching memory type! (0x0018)"}},
+            {TRAP::Utils::ErrorCode::VulkanFailedToAllocateCommandBuffer, {"Vulkan API error", "Vulkan failed to allocate a command buffer!\nError code: 0x001C", TRAP::Log::RendererVulkanCommandPoolPrefix, "Vulkan failed to allocate a command buffer! (0x001C)"}},
 
             {TRAP::Utils::ErrorCode::ApplicationIsAlreadyRunning, {"TRAP™ is already running", "A TRAP™ application is already running!\nError code: 0x0012", TRAP::Log::ApplicationPrefix, "A TRAP™ application is already running! (0x0012)"}},
             {TRAP::Utils::ErrorCode::ImGuiFailedInitialization, {"ImGui error", "Failed to initialize ImGui!\nError code: 0x0013", TRAP::Log::ImGuiPrefix, "Failed to initialize ImGui! (0x0013)"}},

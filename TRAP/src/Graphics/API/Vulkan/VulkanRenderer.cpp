@@ -242,7 +242,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerViewportData* c
 	p->GraphicCommandBuffers[p->ImageIndex]->End();
 
 	QueueSubmitDesc submitDesc{};
-	submitDesc.Cmds = { p->GraphicCommandBuffers[p->ImageIndex] };
+	submitDesc.Cmds = { *p->GraphicCommandBuffers[p->ImageIndex] };
 #ifndef TRAP_HEADLESS_MODE
 	submitDesc.SignalSemaphores = { p->RenderCompleteSemaphores[p->ImageIndex] };
 	submitDesc.WaitSemaphores = { p->ImageAcquiredSemaphores[p->ImageIndex], p->ComputeCompleteSemaphores[p->ImageIndex] };
@@ -305,7 +305,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndComputeRecording(PerViewportData* c
 	p->ComputeCommandBuffers[p->ImageIndex]->End();
 
 	QueueSubmitDesc submitDesc{};
-	submitDesc.Cmds = { p->ComputeCommandBuffers[p->ImageIndex] };
+	submitDesc.Cmds = { *p->ComputeCommandBuffers[p->ImageIndex] };
 	submitDesc.WaitSemaphores = { p->GraphicsCompleteSemaphores[p->ImageIndex] };
 	submitDesc.SignalSemaphores = { p->ComputeCompleteSemaphores[p->ImageIndex] };
 	submitDesc.SignalFence = {p->ComputeCompleteFences[p->ImageIndex]};
@@ -2205,7 +2205,7 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	cmdPoolDesc.CreateFlags = CommandPoolCreateFlags::Transient;
 	TRAP::Ref<VulkanCommandPool> cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
 
-	CommandBuffer* const cmd = cmdPool->AllocateCommandBuffer(false);
+	CommandBuffer& cmd = cmdPool->GetCommandBuffer(false);
 
 	//Add a staging buffer
 	const u32 formatByteWidth = ImageFormatBitSizeOfBlock(renderTarget->GetImageFormat()) / 8u;
@@ -2223,11 +2223,11 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	TRAP::Ref<Buffer> buffer = Buffer::Create(bufferDesc);
 
 	//Start recording
-	cmd->Begin();
+	cmd.Begin();
 
 	//Transition the render target to the correct state
 	RenderTargetBarrier srcBarrier = {renderTarget, currResState, ResourceState::CopySource};
-	cmd->ResourceBarrier(nullptr, nullptr, &srcBarrier);
+	cmd.ResourceBarrier(nullptr, nullptr, &srcBarrier);
 
 	//TODO Replace with CommandBuffer::CopySubresource()
 	const u32 rowPitch = renderTarget->GetWidth() * formatByteWidth;
@@ -2246,7 +2246,7 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	layers.layerCount = 1;
 	const VkBufferImageCopy copy = API::VulkanInits::ImageCopy(bufferRowLength, width, height, depth, layers);
 
-	const VulkanCommandBuffer* const vkCmd = dynamic_cast<VulkanCommandBuffer*>(cmd);
+	const VulkanCommandBuffer* const vkCmd = dynamic_cast<VulkanCommandBuffer*>(&cmd);
 	const Ref<VulkanTexture> vkTex = std::dynamic_pointer_cast<VulkanTexture>(renderTarget->GetTexture());
 	const Ref<VulkanBuffer> vkBuf = std::dynamic_pointer_cast<VulkanBuffer>(buffer);
 
@@ -2254,10 +2254,10 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 
 	//Transition the render target back to the previous state
 	srcBarrier = {renderTarget, ResourceState::CopySource, currResState};
-	cmd->ResourceBarrier(nullptr, nullptr, &srcBarrier);
+	cmd.ResourceBarrier(nullptr, nullptr, &srcBarrier);
 
 	//End recording
-	cmd->End();
+	cmd.End();
 
 	//Submit the command buffer
 	QueueSubmitDesc submitDesc{};
@@ -2272,9 +2272,6 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 
 	//Copy to CPU memory.
 	std::ranges::copy(gpuPixelData.subspan(0, pixelDataSize), static_cast<u8*>(outPixelData));
-
-	//Cleanup
-	cmdPool->FreeCommandBuffer(cmd);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2741,7 +2738,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 		//Create Graphic Command Pool
 		p->GraphicCommandPools[i] = CommandPool::Create({ s_graphicQueue });
 		//Allocate Graphic Command Buffer
-		p->GraphicCommandBuffers[i] = p->GraphicCommandPools[i]->AllocateCommandBuffer(false);
+		p->GraphicCommandBuffers[i] = &p->GraphicCommandPools[i]->GetCommandBuffer(false);
 
 		//Create Render Fences/Semaphores
 		p->RenderCompleteFences[i] = Fence::Create();
@@ -2757,7 +2754,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 
 		//Compute
 		p->ComputeCommandPools[i] = CommandPool::Create({s_computeQueue });
-		p->ComputeCommandBuffers[i] = p->ComputeCommandPools[i]->AllocateCommandBuffer(false);
+		p->ComputeCommandBuffers[i] = &p->ComputeCommandPools[i]->GetCommandBuffer(false);
 
 		p->ComputeCompleteFences[i] = Fence::Create();
 		p->ComputeCompleteSemaphores[i] = Semaphore::Create();
@@ -3349,13 +3346,13 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	cmdPoolDesc.CreateFlags = CommandPoolCreateFlags::Transient;
 	const TRAP::Ref<VulkanCommandPool> cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
 
-	CommandBuffer* const cmd = cmdPool->AllocateCommandBuffer(false);
+	CommandBuffer& cmd = cmdPool->GetCommandBuffer(false);
 
 	const TRAP::Ref<VulkanFence> fence = TRAP::MakeRef<VulkanFence>();
 
 	s_NullDescriptors->InitialTransitionQueue = graphicsQueue;
 	s_NullDescriptors->InitialTransitionCmdPool = cmdPool;
-	s_NullDescriptors->InitialTransitionCmd = dynamic_cast<VulkanCommandBuffer*>(cmd);
+	s_NullDescriptors->InitialTransitionCmd = dynamic_cast<VulkanCommandBuffer*>(&cmd);
 	s_NullDescriptors->InitialTransitionFence = fence;
 
 	//Transition resources
@@ -3397,7 +3394,6 @@ void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 	s_NullDescriptors->DefaultSampler.reset();
 
 	s_NullDescriptors->InitialTransitionFence.reset();
-	s_NullDescriptors->InitialTransitionCmdPool->FreeCommandBuffer(s_NullDescriptors->InitialTransitionCmd);
 	s_NullDescriptors->InitialTransitionCmdPool.reset();
 	s_NullDescriptors->InitialTransitionQueue.reset();
 
@@ -3421,7 +3417,7 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 	cmd->ResourceBarrier(nullptr, &barrier, nullptr);
 	cmd->End();
 	RendererAPI::QueueSubmitDesc submitDesc{};
-	submitDesc.Cmds = {cmd};
+	submitDesc.Cmds = {*cmd};
 	submitDesc.SignalFence = s_NullDescriptors->InitialTransitionFence;
 	s_NullDescriptors->InitialTransitionQueue->Submit(submitDesc);
 	s_NullDescriptors->InitialTransitionFence->Wait();

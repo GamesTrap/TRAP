@@ -937,7 +937,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Gra
 			.bufferImageHeight = 0,
 			.imageSubresource =
 			{
-				.aspectMask = static_cast<VkImageAspectFlags>(VK_IMAGE_ASPECT_PLANE_0_BIT << i),
+				.aspectMask = static_cast<VkImageAspectFlagBits>(VK_IMAGE_ASPECT_PLANE_0_BIT << i),
 				.mipLevel = subresourceDesc.MipLevel,
 				.baseArrayLayer = subresourceDesc.ArrayLayer,
 				.layerCount = 1
@@ -1013,7 +1013,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::CopySubresource(const Buffer& dst
 	{
 		const VkImageSubresourceLayers layers
 		{
-			.aspectMask = static_cast<VkImageAspectFlags>(VK_IMAGE_ASPECT_PLANE_0_BIT << i),
+			.aspectMask = static_cast<VkImageAspectFlagBits>(VK_IMAGE_ASPECT_PLANE_0_BIT << i),
 			.mipLevel = subresourceDesc.MipLevel,
 			.baseArrayLayer = subresourceDesc.ArrayLayer,
 			.layerCount = 1

@@ -841,7 +841,7 @@ namespace
                 .CreateFlags = TRAP::Graphics::RendererAPI::CommandPoolCreateFlags::Transient
             };
             fd.CommandPool = TRAP::MakeScope<TRAP::Graphics::API::VulkanCommandPool>(cmdPoolDesc);
-            fd.CommandBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(fd.CommandPool->AllocateCommandBuffer(false));
+            fd.CommandBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(&fd.CommandPool->GetCommandBuffer(false));
 
             fd.Fence = TRAP::MakeRef<TRAP::Graphics::API::VulkanFence>();
 
@@ -1474,7 +1474,7 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
     {
         TRAP_ASSERT(bd->FontCommandPool != nullptr, "ImGui::INTERNAL::Vulkan::CreateFontsTexture(): bd->FontCommandPool is nullptr!");
 
-        bd->FontCommandBuffer = bd->FontCommandPool->AllocateCommandBuffer(false);
+        bd->FontCommandBuffer = &bd->FontCommandPool->GetCommandBuffer(false);
     }
 
     //Start command buffer
@@ -1587,7 +1587,7 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
 
     //End command buffer
     bd->FontCommandBuffer->End();
-    v.Queue->Submit({.Cmds{bd->FontCommandBuffer}});
+    v.Queue->Submit({.Cmds{*bd->FontCommandBuffer}});
 
     v.Queue->WaitQueueIdle();
 }

@@ -236,7 +236,7 @@ namespace TRAP::Graphics::API
 		/// @param activeSet Copy engine resource set to acquire command buffer for.
 		/// @return Acquired command buffer.
 		/// @note If not already recording, this functions also starts command buffer recording.
-		[[nodiscard]] CommandBuffer* AcquireCmd(usize activeSet);
+		[[nodiscard]] CommandBuffer& AcquireCmd(usize activeSet);
 		/// @brief Resource loader thread.
 		/// Flush a copy engine resource set.
 		///
@@ -264,7 +264,7 @@ namespace TRAP::Graphics::API
 		/// @param cmd Command buffer to record the commands on.
 		/// @warning This function only works for Vulkan API.
 		///          It may be replaced with an API agnostic function in the future.
-		static void VulkanGenerateMipMaps(TRAP::Graphics::Texture* texture, CommandBuffer* cmd);
+		static void VulkanGenerateMipMaps(TRAP::Graphics::Texture* texture, CommandBuffer& cmd);
 
 		enum class UploadFunctionResult
 		{
@@ -361,8 +361,8 @@ namespace TRAP::Graphics::API
 			struct CopyResourceSet
 			{
 				TRAP::Ref<TRAP::Graphics::Fence> Fence;
-				CommandBuffer* Cmd;
 				TRAP::Ref<TRAP::Graphics::CommandPool> CommandPool;
+				std::reference_wrapper<CommandBuffer> Cmd;
 				TRAP::Ref<TRAP::Graphics::Buffer> Buffer;
 				u64 AllocatedSpace;
 

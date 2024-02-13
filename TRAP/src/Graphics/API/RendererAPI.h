@@ -2164,7 +2164,7 @@ namespace TRAP::Graphics
 		struct QueueSubmitDesc
 		{
 			//Command buffers to submit
-			std::vector<CommandBuffer*> Cmds{};
+			std::vector<std::reference_wrapper<CommandBuffer>> Cmds{};
 			//Fence to signal
 			TRAP::Ref<Fence> SignalFence{};
 			//Semaphores to wait on

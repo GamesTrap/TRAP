@@ -33,15 +33,18 @@ namespace TRAP::Graphics::API
 		/// @return VkCommandPool handle.
 		[[nodiscard]] constexpr VkCommandPool GetVkCommandPool() const noexcept;
 
-		/// @brief Allocate a new command buffer.
+		/// @brief Retrieve a new command buffer.
 		/// @param secondary Should the command buffer be a secondary command buffer.
-		///@return New command buffer.
-		[[nodiscard]] CommandBuffer* AllocateCommandBuffer(bool secondary) override;
-		/// @brief Free a command buffer
-		/// @param cmdBuffer Command buffer to free.
-		void FreeCommandBuffer(const CommandBuffer* cmdBuffer) override;
+		/// @return Newly created command buffer.
+		/// @note The lifetime of the command buffer ends when the command pool gets
+		///       destroyed or when ReleaseCommandBuffer() gets called.
+		[[nodiscard]] CommandBuffer& GetCommandBuffer(bool secondary) override;
+		/// @brief Release a command buffer
+		/// @param cmdBuffer Command buffer to release.
+		void ReleaseCommandBuffer(const CommandBuffer& cmdBuffer) override;
 
 		/// @brief Reset the command pool.
+		///        All allocated command buffers are reset to their initial state (i.e. valid non-recording).
 		void Reset() const override;
 
 	private:

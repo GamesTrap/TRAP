@@ -26,15 +26,18 @@ namespace TRAP::Graphics
 		/// @brief Move assignment operator.
 		CommandPool& operator=(CommandPool&&) noexcept = default;
 
-		/// @brief Allocate a new command buffer.
+		/// @brief Retrieve a new command buffer.
 		/// @param secondary Should the command buffer be a secondary command buffer.
-		///@return New command buffer.
-		[[nodiscard]] virtual CommandBuffer* AllocateCommandBuffer(bool secondary) = 0;
-		/// @brief Free a command buffer
-		/// @param cmdBuffer Command buffer to free.
-		virtual void FreeCommandBuffer(const CommandBuffer* cmdBuffer) = 0;
+		/// @return Newly created command buffer.
+		/// @note The lifetime of the command buffer ends when the command pool gets
+		///       destroyed or when ReleaseCommandBuffer() gets called.
+		[[nodiscard]] virtual CommandBuffer& GetCommandBuffer(bool secondary) = 0;
+		/// @brief Release a command buffer
+		/// @param cmdBuffer Command buffer to release.
+		virtual void ReleaseCommandBuffer(const CommandBuffer& cmdBuffer) = 0;
 
 		/// @brief Reset the command pool.
+		///        All allocated command buffers are reset to their initial state (i.e. valid non-recording).
 		virtual void Reset() const = 0;
 
 	protected:

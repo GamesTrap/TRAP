@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "VulkanCommandPool.h"
 
+#include "Utils/ErrorCodes/ErrorCodes.h"
 #include "VulkanCommandBuffer.h"
 #include "VulkanQueue.h"
 #include "VulkanDevice.h"
@@ -13,6 +14,8 @@ TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::Com
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
+	using enum TRAP::Graphics::RendererAPI::CommandPoolCreateFlags;
+
 	TRAP_ASSERT(m_device, "VulkanCommandPool(): Vulkan Device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -23,9 +26,9 @@ TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::Com
 		(
 			std::dynamic_pointer_cast<VulkanQueue>(m_queue)->GetQueueFamilyIndex()
 		);
-	if ((desc.CreateFlags & RendererAPI::CommandPoolCreateFlags::Transient) != RendererAPI::CommandPoolCreateFlags::None)
+	if ((desc.CreateFlags & Transient) != None)
 		info.flags |= VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
-	if ((desc.CreateFlags & RendererAPI::CommandPoolCreateFlags::ResetCommandBuffer) != RendererAPI::CommandPoolCreateFlags::None)
+	if ((desc.CreateFlags & ResetCommandBuffer) != None)
 		info.flags |= VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
 	VkCall(vkCreateCommandPool(m_device->GetVkDevice(), &info, nullptr, &m_vkCommandPool));
@@ -49,29 +52,27 @@ TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::VulkanCommandPool::AllocateCommandBuffer(const bool secondary)
+[[nodiscard]] TRAP::Graphics::CommandBuffer& TRAP::Graphics::API::VulkanCommandPool::GetCommandBuffer(const bool secondary)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	return m_commandBuffers.emplace_back(TRAP::MakeScope<VulkanCommandBuffer>(m_device, m_queue, m_vkCommandPool, secondary)).get();
+	const auto& cmdBuffer = m_commandBuffers.emplace_back(TRAP::MakeScope<VulkanCommandBuffer>(m_device, m_queue, m_vkCommandPool, secondary));
+	if(!cmdBuffer)
+	{
+		TRAP_ASSERT(false);
+		TRAP::Utils::DisplayError(TRAP::Utils::ErrorCode::VulkanFailedToAllocateCommandBuffer);
+	}
+
+	return *cmdBuffer;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(const CommandBuffer* const cmdBuffer)
+void TRAP::Graphics::API::VulkanCommandPool::ReleaseCommandBuffer(const CommandBuffer& cmdBuffer)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	TRAP_ASSERT(cmdBuffer, "VulkanCommandPool::FreeCommandBuffer(): CommandBuffer is nullptr");
-
-	for(usize i = 0; i < m_commandBuffers.size(); i++)
-	{
-		if(m_commandBuffers[i].get() != cmdBuffer)
-			continue;
-
-		m_commandBuffers[i] = std::move(m_commandBuffers.back());
-		m_commandBuffers.pop_back();
-	}
+	std::erase_if(m_commandBuffers, [&cmdBuffer](const auto& cmd){return cmd.get() == &cmdBuffer;});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
