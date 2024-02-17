@@ -98,14 +98,14 @@ namespace
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef ENABLE_NSIGHT_AFTERMATH
     if(AftermathHandle.Get() != nullptr)
         return true;
 
+#ifdef ENABLE_GRAPHICS_DEBUG
     TP_DEBUG(Log::RendererAftermathTrackerPrefix, "Creating AftermathTracker");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
-#ifdef ENABLE_NSIGHT_AFTERMATH
     if(!LoadFunctions())
     {
         AftermathHandle.Reset();
