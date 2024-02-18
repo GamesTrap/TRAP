@@ -1516,17 +1516,17 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResolveImage(const TRAP::Graphics
 		.srcSubresource =
 		{
 			.aspectMask = srcImage.GetAspectMask(),
-			.mipLevel = 1,
+			.mipLevel = 0,
 			.baseArrayLayer = 0,
-			.layerCount = 0
+			.layerCount = 1
 		},
 		.srcOffset = {},
 		.dstSubresource =
 		{
 			.aspectMask = dstImage.GetAspectMask(),
-			.mipLevel = 1,
+			.mipLevel = 0,
 			.baseArrayLayer = 0,
-			.layerCount = 0
+			.layerCount = 1
 		},
 		.dstOffset = {},
 		.extent =
