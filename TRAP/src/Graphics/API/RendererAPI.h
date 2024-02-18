@@ -2854,6 +2854,7 @@ namespace TRAP::Graphics
 		};
 
 		/// @brief Per window data used for rendering.
+		//TODO This needs a refactoring the struct got way too big!
 		struct PerViewportData
 		{
 			/// @brief Constructor.
@@ -2895,6 +2896,7 @@ namespace TRAP::Graphics
 			bool Recording{};
 			TRAP::Ref<RenderTarget> NewShadingRateTexture;
 			std::array<TRAP::Ref<TRAP::Graphics::RenderTarget>, 3> CachedShadingRateTextures{};
+			TRAP::Ref<RenderTarget> DepthStencilTarget = nullptr;
 
 			f32 NewRenderScale = 1.0f;
 			f32 RenderScale = 1.0f;
@@ -2914,7 +2916,7 @@ namespace TRAP::Graphics
 			RendererAPI::SampleCount CurrentSampleCount = RendererAPI::SampleCount::One;
 
 			RendererAPI::Color ClearColor{0.1, 0.1, 0.1, 1.0};
-			RendererAPI::DepthStencil ClearDepthStencil{0.0, 0};
+			RendererAPI::DepthStencil ClearDepthStencil{0.0f, 0};
 
 #ifndef TRAP_HEADLESS_MODE
 			bool CurrentVSync{};

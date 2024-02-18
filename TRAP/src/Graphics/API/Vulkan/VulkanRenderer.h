@@ -1186,7 +1186,7 @@ namespace TRAP::Graphics::API
 
 		/// @brief Start recording the graphics pipeline.
 		/// @param p Per window data used for recording.
-		static void StartGraphicRecording(PerViewportData* p);
+		void StartGraphicRecording(PerViewportData* p) const;
 		/// @brief Stop recording the graphics pipeline.
 		/// @param p Per window data used for recording.
 		static void EndGraphicRecording(PerViewportData* p);
@@ -1200,7 +1200,7 @@ namespace TRAP::Graphics::API
 
 		/// @brief Present the currently recorded frame.
 		/// @param p Per widow data used for presentation.
-		static void Present(PerViewportData* p);
+		void Present(PerViewportData* p) const;
 
 		/// @brief Start frame time profiling of the GPU.
 		/// @param type Queue type to profile.

@@ -105,7 +105,7 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData* const p)
+void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData* const p) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -176,17 +176,23 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 	BeginGPUFrameProfile(QueueType::Graphics, p);
 
 #ifndef TRAP_HEADLESS_MODE
-	RenderTargetBarrier barrier{p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex], ResourceState::Present, ResourceState::RenderTarget};
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+	RenderTargetBarrier swapChainBarrier{p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex], ResourceState::Present, ResourceState::RenderTarget};
+	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &swapChainBarrier);
 #endif /*TRAP_HEADLESS_MODE*/
 
 	LoadActionsDesc loadActions{};
 	loadActions.LoadActionsColor.emplace_back(LoadActionType::Clear);
+	loadActions.LoadActionDepth = LoadActionType::Clear;
+	loadActions.LoadActionStencil = LoadActionType::Clear;
 	loadActions.ClearColorValues.push_back(p->ClearColor);
 	loadActions.ClearDepthStencil = p->ClearDepthStencil;
-	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({ bindRenderTarget }, nullptr, &loadActions, nullptr, nullptr,
-	                                                           std::numeric_limits<u32>::max(),
-															   std::numeric_limits<u32>::max(), std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture);
+#ifndef TRAP_HEADLESS_MODE
+	BindRenderTargets({bindRenderTarget}, p->DepthStencilTarget, &loadActions, nullptr, nullptr, std::numeric_limits<u32>::max(),
+	                  std::numeric_limits<u32>::max(), p->Window);
+#else
+	BindRenderTargets({bindRenderTarget}, p->DepthStencilTarget, &loadActions, nullptr, nullptr, std::numeric_limits<u32>::max(),
+	                  std::numeric_limits<u32>::max());
+#endif
 
 	//Set Default Dynamic Viewport & Scissor
 	const u32 width = bindRenderTarget->GetWidth();
@@ -318,7 +324,108 @@ void TRAP::Graphics::API::VulkanRenderer::EndComputeRecording(PerViewportData* c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData* const p)
+namespace
+{
+	[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat FindSupportedDepthStencilFormat(const std::span<TRAP::Graphics::API::ImageFormat> depthStencilFormats,
+	                                                                                         const TRAP::Graphics::API::VulkanDevice& device)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+	                                           (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
+		using namespace TRAP::Graphics::API;
+
+		for(const ImageFormat depthStencilFormat : depthStencilFormats)
+		{
+			const VkFormat vkDepthStencilFormat = ImageFormatToVkFormat(depthStencilFormat);
+
+			const auto formatProps = device.GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(vkDepthStencilFormat);
+			if((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) == VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
+				return depthStencilFormat;
+		}
+
+		TRAP_ASSERT(false, "VulkanRenderer::FindSupportedDepthStencilFormat(): Failed to find suitable depth/stencil format!");
+		return ImageFormat::Undefined;
+	}
+
+	[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat PickDepthStencilFormat(const bool depthEnabled,
+	                                                                                const bool stencilEnabled,
+	                                                                                const TRAP::Graphics::API::VulkanDevice& device)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+	                                           (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
+		using namespace TRAP::Graphics::API;
+
+		if(!depthEnabled && !stencilEnabled)
+		{
+			TRAP_ASSERT(false);
+			return ImageFormat::Undefined;
+		}
+
+		std::vector<ImageFormat> depthStencilFormatCandidates{};
+		depthStencilFormatCandidates.reserve(3);
+		if(!stencilEnabled)
+			depthStencilFormatCandidates.emplace_back(ImageFormat::D32_SFLOAT);
+		depthStencilFormatCandidates.emplace_back(ImageFormat::D32_SFLOAT_S8_UINT);
+		depthStencilFormatCandidates.emplace_back(ImageFormat::D24_UNORM_S8_UINT);
+
+		return FindSupportedDepthStencilFormat(depthStencilFormatCandidates, device);
+	}
+
+	void CreateOrUpdateDepthStencilTarget(TRAP::Graphics::RendererAPI::PerViewportData& p,
+	                                      const TRAP::Graphics::API::VulkanDevice& device)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+	                                           (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
+#ifndef TRAP_HEADLESS_MODE
+		const TRAP::Math::Vec2ui newFbSize = p.Window->GetFrameBufferSize();
+#elif defined(TRAP_HEADLESS_MODE)
+		const TRAP::Math::Vec2ui newFbSize = {p.NewWidth, p.NewHeight};
+#endif
+
+		if (newFbSize.x() == 0 || newFbSize.y() == 0) //0x0 is an invalid framebuffer size
+			return;
+
+		const auto& gpd = std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>(p.GraphicsPipelineDesc.Pipeline);
+		const auto& depthState = gpd.DepthState;
+
+		//Nothing to do if depth/stencil testing is disabled
+		if(!depthState->DepthTest && !depthState->StencilTest)
+			return;
+
+		//Nothing changed so no need to update/recreate depth/stencil attachment
+		if(p.DepthStencilTarget != nullptr && p.DepthStencilTarget->GetWidth() == newFbSize.x() &&
+		   p.DepthStencilTarget->GetHeight() == newFbSize.y() &&
+		   p.DepthStencilTarget->GetImageFormat() == gpd.DepthStencilFormat &&
+		   TRAP::Graphics::API::ImageFormatHasStencil(gpd.DepthStencilFormat) == depthState->StencilTest)
+		{
+			return;
+		}
+
+		const TRAP::Graphics::RendererAPI::RenderTargetDesc depthStencilRTDesc
+		{
+			.Flags{},
+			.Width = newFbSize.x(),
+			.Height = newFbSize.y(),
+			.Depth = 1,
+			.ArraySize = 1,
+			.MipLevels = 1,
+			.SampleCount = TRAP::Graphics::RendererAPI::SampleCount::One,
+			.Format = PickDepthStencilFormat(depthState->DepthTest, depthState->StencilTest, device),
+			.StartState = TRAP::Graphics::RendererAPI::ResourceState::DepthRead | TRAP::Graphics::RendererAPI::ResourceState::DepthWrite,
+			.ClearValue = TRAP::Graphics::RendererAPI::DepthStencil{0.0f, 0},
+			.SampleQuality = 0,
+			.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture,
+			.Name = "Swapchain Depth/Stencil attachment",
+			.NativeHandle = nullptr
+		};
+
+		p.DepthStencilTarget = TRAP::Graphics::RenderTarget::Create(depthStencilRTDesc);
+	}
+}
+
+void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData* const p) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -350,6 +457,8 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData* const p)
 		p->ResizeSwapChain = false;
 
 		p->SwapChain->UpdateFramebufferSize();
+		if(p->DepthStencilTarget)
+			CreateOrUpdateDepthStencilTarget(*p, *m_device);
 
 		p->CurrentSwapChainImageIndex = 0;
 		p->ImageIndex = 0;
@@ -382,6 +491,9 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData* const p)
 
 			p->CurrentSwapChainImageIndex = 0;
 			p->ImageIndex = 0;
+
+			if(p->DepthStencilTarget)
+				CreateOrUpdateDepthStencilTarget(*p, *m_device);
 		}
 	}
 #endif
@@ -738,15 +850,23 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthTesting(const bool enabled) co
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetDepthTesting(): Window is nullptr!");
 
+	const auto& p = s_perViewportDataMap.at(window);
+
 	std::get<GraphicsPipelineDesc>
 	(
-		s_perViewportDataMap.at(window)->GraphicsPipelineDesc.Pipeline
+		p->GraphicsPipelineDesc.Pipeline
 	).DepthState->DepthTest = enabled;
+
+	if(enabled && !p->DepthStencilTarget)
+		CreateOrUpdateDepthStencilTarget(*p, *m_device);
 #else
 	std::get<GraphicsPipelineDesc>
 	(
 		s_perViewportData->GraphicsPipelineDesc.Pipeline
 	).DepthState->DepthTest = enabled;
+
+	if(enabled && !s_perViewportData->DepthStencilTarget)
+		CreateOrUpdateDepthStencilTarget(*s_perViewportData, *m_device);
 #endif /*TRAP_HEADLESS_MODE*/
 }
 
@@ -891,15 +1011,24 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilTesting(const bool enabled) 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetStencilTesting(): Window is nullptr!");
 
+	const auto& p = s_perViewportDataMap.at(window);
+
 	std::get<GraphicsPipelineDesc>
 	(
-		s_perViewportDataMap.at(window)->GraphicsPipelineDesc.Pipeline
+		p->GraphicsPipelineDesc.Pipeline
 	).DepthState->StencilTest = enabled;
+
+	if(enabled && !p->DepthStencilTarget)
+		CreateOrUpdateDepthStencilTarget(*p, *m_device);
+
 #else
 	std::get<GraphicsPipelineDesc>
 	(
 		s_perViewportData->GraphicsPipelineDesc.Pipeline
 	).DepthState->StencilTest = enabled;
+
+	if(enabled && !s_perViewportData->DepthStencilTarget)
+		CreateOrUpdateDepthStencilTarget(*s_perViewportData, *m_device);
 #endif /*TRAP_HEADLESS_MODE*/
 }
 
@@ -1826,16 +1955,27 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graph
 	PerViewportData* const p = s_perViewportData.get();
 #endif /*TRAP_HEADLESS_MODE*/
 
-	TRAP::Ref<TRAP::Graphics::RenderTarget> shadingRateTex = nullptr;
+	//We may need to change the graphics pipeline
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
+	bool rebindShader = false;
 
-	//We may needs to change the graphics pipeline if RenderTargetCount or ColorFormats don't match
-	if(colorTarget)
+	const TRAP::Ref<TRAP::Graphics::RenderTarget> shadingRateTex = gpd.ShadingRateTexture;
+
+	if(colorTarget && (gpd.RenderTargetCount != 1 || gpd.ColorFormats.size() != 1 || gpd.ColorFormats[0] != colorTarget->GetImageFormat() ))
 	{
-		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
-		shadingRateTex = gpd.ShadingRateTexture;
-
 		gpd.RenderTargetCount = 1;
 		gpd.ColorFormats = {colorTarget->GetImageFormat()};
+
+		rebindShader = true;
+	}
+	if(depthStencil && gpd.DepthStencilFormat != depthStencil->GetImageFormat())
+	{
+		gpd.DepthStencilFormat = depthStencil->GetImageFormat();
+		rebindShader = true;
+	}
+
+	if(rebindShader && gpd.ShaderProgram != nullptr)
+	{
 #ifndef TRAP_HEADLESS_MODE
 		BindShader(gpd.ShaderProgram, window);
 #else
@@ -1882,18 +2022,37 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 	PerViewportData* const p = s_perViewportData.get();
 #endif /*TRAP_HEADLESS_MODE*/
 
-	TRAP::Ref<TRAP::Graphics::RenderTarget> shadingRateTex = nullptr;
 
-	//We may needs to change the graphics pipeline if RenderTargetCount or ColorFormats don't match
+	//We may need to change the graphics pipeline
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
+	bool rebindShader = false;
+
+	const TRAP::Ref<TRAP::Graphics::RenderTarget> shadingRateTex = gpd.ShadingRateTexture;
+
 	if(!colorTargets.empty())
 	{
-		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
-		shadingRateTex = gpd.ShadingRateTexture;
+		if(gpd.RenderTargetCount != NumericCast<u32>(colorTargets.size()))
+			rebindShader = true;
 
 		gpd.RenderTargetCount = NumericCast<u32>(colorTargets.size());
 		gpd.ColorFormats.resize(colorTargets.size());
 		for(usize i = 0; i < colorTargets.size(); ++i)
+		{
+			if(gpd.ColorFormats[i] != colorTargets[i]->GetImageFormat())
+				rebindShader = true;
+
 			gpd.ColorFormats[i] = colorTargets[i]->GetImageFormat();
+		}
+	}
+
+	if(depthStencil && gpd.DepthStencilFormat != depthStencil->GetImageFormat())
+	{
+		gpd.DepthStencilFormat = depthStencil->GetImageFormat();
+		rebindShader = true;
+	}
+
+	if(rebindShader && gpd.ShaderProgram != nullptr)
+	{
 #ifndef TRAP_HEADLESS_MODE
 		BindShader(gpd.ShaderProgram, window);
 #else
@@ -2850,7 +3009,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 	gpd.DepthState = TRAP::MakeRef<DepthStateDesc>();
 	gpd.DepthState->DepthTest = false;
 	gpd.DepthState->DepthWrite = false;
-	gpd.DepthState->DepthFunc = CompareMode::GreaterOrEqual;
+	gpd.DepthState->DepthFunc = CompareMode::GreaterOrEqual; //Using GreaterOrEqual instead because of reversed Z depth range
 	gpd.DepthState->StencilTest = false;
 	gpd.DepthState->StencilReadMask = 0xFF;
 	gpd.DepthState->StencilWriteMask = 0xFF;
@@ -3323,7 +3482,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	DefaultBlendDesc = UtilToBlendDesc(blendStateDesc, DefaultBlendAttachments);
 
 	DepthStateDesc depthStateDesc{};
-	depthStateDesc.DepthFunc = CompareMode::GreaterOrEqual;
+	depthStateDesc.DepthFunc = CompareMode::GreaterOrEqual; //Using GreaterOrEqual instead because of reversed Z depth range
 	depthStateDesc.DepthTest = false;
 	depthStateDesc.DepthWrite = false;
 	depthStateDesc.StencilBackFunc = CompareMode::Always;

@@ -828,8 +828,6 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 		ret |= VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 	if ((state & RendererAPI::ResourceState::ShaderResource) != RendererAPI::ResourceState::Undefined)
 		ret |= VK_ACCESS_SHADER_READ_BIT;
-	if ((state & RendererAPI::ResourceState::Present) != RendererAPI::ResourceState::Undefined)
-		ret |= VK_ACCESS_MEMORY_READ_BIT;
 
 	//RayTracing
 	if ((state & RendererAPI::ResourceState::RayTracingAccelerationStructure) != RendererAPI::ResourceState::Undefined)

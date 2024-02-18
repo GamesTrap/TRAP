@@ -508,7 +508,7 @@ namespace
 	{
 		const u32 clampedColorRenderTargets = TRAP::Math::Min(NumericCast<u32>(renderTargets.size()), TRAP::Graphics::RendererAPI::GPUSettings.MaxColorRenderTargets);
 
-		std::vector<VkClearValue> clearValues(clampedColorRenderTargets + 1); //Color render targets + depth/stencil render target
+		std::vector<VkClearValue> clearValues(clampedColorRenderTargets);
 
 		if(loadActions == nullptr)
 			return clearValues;
@@ -534,7 +534,7 @@ namespace
 				}
 			};
 
-			clearValues.back() = val;
+			clearValues.push_back(val);
 		}
 
 		return clearValues;

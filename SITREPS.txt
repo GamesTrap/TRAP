@@ -4865,3 +4865,4 @@ SITREP 02/18/2024|24w07b2
     - Math Deprecated all Perspective() functions which are not infinite and not using reverse Z ~<5 mins
     - Math Deprecated all Orthographic() functions which are not using reverse Z ~<5 mins
     - Math Added InfinitePerspectiveReverseZ() function ~<15 mins
+    - VulkanRenderer Implemented support for depth/stencil attachment ~<60 mins
