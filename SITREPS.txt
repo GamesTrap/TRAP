@@ -4866,3 +4866,4 @@ SITREP 02/18/2024|24w07b2
     - Math Deprecated all Orthographic() functions which are not using reverse Z ~<5 mins
     - Math Added InfinitePerspectiveReverseZ() function ~<15 mins
     - VulkanRenderer Implemented support for depth/stencil attachment ~<60 mins
+    - Cube3D Updated Skybox shader for depth testing ~<10 mins

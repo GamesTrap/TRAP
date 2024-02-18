@@ -187,6 +187,7 @@ void Cube3D::OnAttach()
 
     TRAP::Graphics::RenderCommand::SetDepthTesting(true);
     TRAP::Graphics::RenderCommand::SetDepthWriting(true);
+    TRAP::Graphics::RenderCommand::SetDepthFunction(TRAP::Graphics::CompareMode::GreaterOrEqual);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -328,10 +329,8 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	{
         if(m_drawSkyBox)
     	{
-            TRAP::Graphics::RenderCommand::SetDepthFunction(TRAP::Graphics::CompareMode::GreaterOrEqual);
             TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("SkyBox"),
                                              m_skyBoxVertexBuffer.get());
-            TRAP::Graphics::RenderCommand::SetDepthFunction(TRAP::Graphics::CompareMode::Greater);
     	}
 
         if (m_shaderNames[m_currentShader] == "Diffuse Reflection")

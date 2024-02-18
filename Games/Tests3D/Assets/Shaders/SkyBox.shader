@@ -11,7 +11,8 @@ layout(std140, UpdateFreqDynamic, binding = 0) readonly buffer MatrixBuffer
 
 void main()
 {
-	gl_Position = Matrices.sys_ProjectionMatrix * mat4(mat3(Matrices.sys_ViewMatrix)) * vec4(Position, 1.0f);
+	vec4 mvpPos = Matrices.sys_ProjectionMatrix * mat4(mat3(Matrices.sys_ViewMatrix)) * vec4(Position, 1.0f);
+	gl_Position = vec4(mvpPos.xy, 0.0f, mvpPos.w); //Make z = 0.0f so depth testing will always fail (note: 0.0f instead of 1.0f due to reverse Z in projection matrix)
 	TexCoords = Position;
 }
 
