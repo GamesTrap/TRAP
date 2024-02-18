@@ -121,7 +121,7 @@ void TRAP::SceneCamera::RecalculateProjection()
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	if(m_projectionType == ProjectionType::Perspective)
-		m_projection = Math::InfinitePerspective(m_perspectiveFOV, m_aspectRatio, m_perspectiveNear);
+		m_projection = Math::InfinitePerspectiveReverseZ(m_perspectiveFOV, m_aspectRatio, m_perspectiveNear);
 	else //if (m_projectionType == ProjectionType::Orthographic)
 	{
 		const f32 orthographicLeft = -m_orthographicSize * m_aspectRatio * 0.5f;

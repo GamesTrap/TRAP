@@ -220,7 +220,7 @@ namespace TRAP::Graphics
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr TRAP::Graphics::EditorCamera::EditorCamera(const f32 fov, const f32 aspectRatio, f32 nearClip)
-    : Camera(TRAP::Math::InfinitePerspective(TRAP::Math::Radians(fov), aspectRatio, nearClip)),
+    : Camera(TRAP::Math::InfinitePerspectiveReverseZ(TRAP::Math::Radians(fov), aspectRatio, nearClip)),
       m_fov(fov), m_aspectRatio(aspectRatio), m_nearClip(nearClip)
 {
     Init();
@@ -416,7 +416,7 @@ constexpr void TRAP::Graphics::EditorCamera::UpdateView()
 constexpr void TRAP::Graphics::EditorCamera::UpdateProjection()
 {
     m_aspectRatio = m_viewportWidth / m_viewportHeight;
-    m_projection = TRAP::Math::InfinitePerspective(TRAP::Math::Radians(m_fov), m_aspectRatio, m_nearClip);
+    m_projection = TRAP::Math::InfinitePerspectiveReverseZ(TRAP::Math::Radians(m_fov), m_aspectRatio, m_nearClip);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

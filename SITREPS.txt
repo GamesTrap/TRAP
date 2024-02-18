@@ -4859,3 +4859,9 @@ SITREP 02/13/2024|24w07a1
 SITREP 02/17/2024|24w07b1
     - Changed TRAP Engine version to 24w07b1(0.10.42)
     - Fixed compiler error when compiling without Nsight Aftermath ~<5 mins
+
+SITREP 02/18/2024|24w07b2
+    - Changed TRAP Engine version to 24w07b2(0.10.43)
+    - Math Deprecated all Perspective() functions which are not infinite and not using reverse Z ~<5 mins
+    - Math Deprecated all Orthographic() functions which are not using reverse Z ~<5 mins
+    - Math Added InfinitePerspectiveReverseZ() function ~<15 mins

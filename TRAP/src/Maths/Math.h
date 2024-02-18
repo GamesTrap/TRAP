@@ -1501,7 +1501,7 @@ namespace TRAP::Math
 	/// @return Projection matrix.
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] constexpr Mat<4, 4, T> Orthographic(T left, T right, T bottom, T top, T zNear, T zFar) noexcept;
+	[[deprecated("Use TRAP::Math::OrthographicReverseZ() instead")]] [[nodiscard]] constexpr Mat<4, 4, T> Orthographic(T left, T right, T bottom, T top, T zNear, T zFar) noexcept;
 	/// @brief Create a matrix for an orthographic parallel viewing volume.
 	/// @return Projection matrix with a reversed Z axis.
 	template<typename T>
@@ -1514,7 +1514,7 @@ namespace TRAP::Math
 	/// @return Frustum matrix.
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] constexpr Mat<4, 4, T> Frustum(T left, T right, T bottom, T top, T nearVal, T farVal) noexcept;
+	[[deprecated("Use TRAP::Math::FrustumReverseZ() instead")]] [[nodiscard]] constexpr Mat<4, 4, T> Frustum(T left, T right, T bottom, T top, T nearVal, T farVal) noexcept;
 
 	/// @brief Creates a frustum matrix.
 	/// @return Frustum matrix with a reversed Z axis.
@@ -1533,7 +1533,7 @@ namespace TRAP::Math
 	/// @return Perspective-view matrix.
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] constexpr Mat<4, 4, T> Perspective(T fovY, T aspect, T zNear, T zFar);
+	[[deprecated("Use TRAP::Math::InfinitePerspectiveReverseZ() instead")]] [[nodiscard]] constexpr Mat<4, 4, T> Perspective(T fovY, T aspect, T zNear, T zFar);
 
 	/// @brief Creates a matrix for a symmetric perspective-view frustum.
 	/// @param fovY Specifies the field of view angle in the y direction. Expressed in radians.
@@ -1544,7 +1544,7 @@ namespace TRAP::Math
 	/// @return Perspective-view matrix with a reversed Z axis.
 	template <typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] constexpr Mat<4, 4, T> PerspectiveReverseZ(T fovY, T aspect, T zNear, T zFar);
+	[[deprecated("Use TRAP::Math::InfinitePerspectiveReverseZ() instead")]] [[nodiscard]] constexpr Mat<4, 4, T> PerspectiveReverseZ(T fovY, T aspect, T zNear, T zFar);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1557,7 +1557,7 @@ namespace TRAP::Math
 	/// @return Field of view based perspective projection matrix.
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] constexpr Mat<4, 4, T> PerspectiveFoV(T fov, T width, T height, T zNear, T zFar);
+	[[deprecated("Use TRAP::Math::InfinitePerspectiveReverseZ() instead")]] [[nodiscard]] constexpr Mat<4, 4, T> PerspectiveFoV(T fov, T width, T height, T zNear, T zFar);
 
 	/// @brief Builds a perspective projection matrix based on a field of view.
 	/// @param fov Expressed in radians.
@@ -1568,7 +1568,7 @@ namespace TRAP::Math
 	/// @return Field of view based perspective projection matrix with reversed Z axis.
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] constexpr Mat<4, 4, T> PerspectiveFoVReverseZ(T fov, T width, T height, T zNear, T zFar);
+	[[deprecated("Use TRAP::Math::InfinitePerspectiveReverseZ() instead")]] [[nodiscard]] constexpr Mat<4, 4, T> PerspectiveFoVReverseZ(T fov, T width, T height, T zNear, T zFar);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1580,7 +1580,17 @@ namespace TRAP::Math
 	/// @return Symmetric perspective matrix.
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] constexpr Mat<4, 4, T> InfinitePerspective(T fovY, T aspect, T zNear);
+	[[deprecated("Use TRAP::Math::InfinitePerspectiveReverseZ() instead")]] [[nodiscard]] constexpr Mat<4, 4, T> InfinitePerspective(T fovY, T aspect, T zNear);
+
+	/// @brief Creates a matrix for a symmetric perspective-view frustum with far plane at infinite and reversed Z.
+	/// @param fovY Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction.
+	/// The aspect ratio is the ratio of x (width) to y (height).
+	/// @param zNear Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// @return Symmetric perspective matrix.
+	template<typename T>
+	requires std::floating_point<T>
+	[[nodiscard]] constexpr Mat<4, 4, T> InfinitePerspectiveReverseZ(T fovY, T aspect, T zNear);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -3965,7 +3975,17 @@ requires std::floating_point<T>
                                                                                   const T bottom, const T top,
                                                                                   const T zNear, const T zFar) noexcept
 {
-	return Orthographic(left, right, bottom, top, zFar, zNear);
+	//RH_ZO Reversed Z
+	Mat<4, 4, T> result(static_cast<T>(1));
+
+	std::get<0>(std::get<0>(result)) = static_cast<T>(2) / (right - left);
+	std::get<1>(std::get<1>(result)) = static_cast<T>(2) / (top - bottom);
+	std::get<2>(std::get<2>(result)) = -static_cast<T>(1) / (zNear - zFar);
+	std::get<0>(std::get<3>(result)) = -(right + left) / (right - left);
+	std::get<1>(std::get<3>(result)) = -(top + bottom) / (top - bottom);
+	std::get<2>(std::get<3>(result)) = -zFar / (zNear - zFar);
+
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4074,7 +4094,7 @@ requires std::floating_point<T>
 {
 	//RH_ZO
 
-	const T range = Tan(fovY / static_cast<T>(2)) * zNear;
+	const T range = Tan(fovY * static_cast<T>(0.5)) * zNear;
 	const T left = -range * aspect;
 	const T right = range * aspect;
 	const T bottom = -range;
@@ -4087,6 +4107,31 @@ requires std::floating_point<T>
 	std::get<2>(std::get<2>(result)) = -static_cast<T>(1);
 	std::get<3>(std::get<2>(result)) = -static_cast<T>(1);
 	std::get<2>(std::get<3>(result)) = -zNear;
+
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+requires std::floating_point<T>
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::InfinitePerspectiveReverseZ(const T fovY, const T aspect, const T zNear)
+{
+	//RH_ZO Infinite far plane + reversed Z
+
+	const T range = Tan(fovY * static_cast<T>(0.5)) * zNear;
+	const T left = -range * aspect;
+	const T right = range * aspect;
+	const T bottom = -range;
+	const T top = range;
+
+	Mat<4, 4, T> result(static_cast<T>(0));
+
+	std::get<0>(std::get<0>(result)) = (static_cast<T>(2.0) * zNear) / (right - left);
+	std::get<1>(std::get<1>(result)) = (static_cast<T>(2.0) * zNear) / (top - bottom);
+	std::get<2>(std::get<2>(result)) = static_cast<T>(0.0);
+	std::get<3>(std::get<2>(result)) = static_cast<T>(-1.0);
+	std::get<2>(std::get<3>(result)) = zNear;
 
 	return result;
 }
