@@ -2596,19 +2596,27 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 
 	TRAP_ASSERT(viewportData, "VulkanRenderer::UpdateInternalRenderTargets(): viewportData is nullptr!");
 
-	bool rebuild = false;
+	bool rebuildColor = false;
+	bool rebuildDepthStencil = false;
 #ifndef TRAP_HEADLESS_MODE
 	const auto newInternalRes = GetInternalRenderResolution(viewportData->Window);
 #else
 	const auto newInternalRes = GetInternalRenderResolution();
 #endif /*TRAP_HEADLESS_MODE*/
 	if(viewportData->InternalRenderTargets.empty())
-		rebuild = true;
+		rebuildColor = true;
 	else if(viewportData->InternalRenderTargets[0] &&
 	        (viewportData->InternalRenderTargets[0]->GetWidth() != newInternalRes.x() ||
 	         viewportData->InternalRenderTargets[0]->GetHeight() != newInternalRes.y()))
 	{
-		rebuild = true;
+		rebuildColor = true;
+	}
+
+	if(viewportData->DepthStencilTarget != nullptr &&
+	   (viewportData->DepthStencilTarget->GetWidth() != newInternalRes.x() ||
+	    viewportData->DepthStencilTarget->GetHeight() != newInternalRes.y()))
+	{
+		rebuildDepthStencil = true;
 	}
 
 	if (viewportData->CurrentAntiAliasing != s_newAntiAliasing ||
@@ -2622,13 +2630,14 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 		else
 			std::get<GraphicsPipelineDesc>(viewportData->GraphicsPipelineDesc.Pipeline).SampleCount = SampleCount::One;
 
-		rebuild = true;
+		rebuildColor = true;
 	}
 
-	if(rebuild)
-	{
+	if(rebuildColor || rebuildDepthStencil)
 		WaitIdle();
 
+	if(rebuildColor)
+	{
 		viewportData->InternalRenderTargets = {};
 
 		RendererAPI::RenderTargetDesc rTDesc{};
@@ -2649,6 +2658,29 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 		viewportData->InternalRenderTargets.resize(imageCount);
 		for(u32 i = 0; i < imageCount; ++i)
 			viewportData->InternalRenderTargets[i] = RenderTarget::Create(rTDesc);
+	}
+
+	if(rebuildDepthStencil)
+	{
+		const TRAP::Graphics::RendererAPI::RenderTargetDesc depthStencilRTDesc
+		{
+			.Flags{},
+			.Width = newInternalRes.x(),
+			.Height = newInternalRes.y(),
+			.Depth = 1,
+			.ArraySize = 1,
+			.MipLevels = 1,
+			.SampleCount = TRAP::Graphics::RendererAPI::SampleCount::One,
+			.Format = std::get<GraphicsPipelineDesc>(viewportData->GraphicsPipelineDesc.Pipeline).DepthStencilFormat,
+			.StartState = TRAP::Graphics::RendererAPI::ResourceState::DepthRead | TRAP::Graphics::RendererAPI::ResourceState::DepthWrite,
+			.ClearValue = TRAP::Graphics::RendererAPI::DepthStencil{0.0f, 0},
+			.SampleQuality = 0,
+			.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture,
+			.Name = "Swapchain Depth/Stencil attachment",
+			.NativeHandle = nullptr
+		};
+
+		viewportData->DepthStencilTarget = RenderTarget::Create(depthStencilRTDesc);
 	}
 }
 
