@@ -4869,3 +4869,7 @@ SITREP 02/18/2024|24w07b2
     - Cube3D Updated Skybox shader for depth testing ~<10 mins
     - VulkanCommandBuffer Fixed Vulkan errors in ResolveImage() ~<5 mins
     - VulkanRenderer Added RenderScale support for Depth/Stencil RenderTarget ~<10 mins
+
+SITREP 02/20/2024|24w08a1
+    - Changed TRAP Engine version to 24w08a1(0.10.44)
+    - Updated ImGuiLayer & ImGuiVulkanBackend ~<15 mins

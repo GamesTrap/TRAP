@@ -80,6 +80,9 @@ namespace ImGui::INTERNAL::Vulkan
 {
     /// @brief Initialization data, for ImGui_ImplVulkan_Init()
 	/// @remark @headless This struct is not available in headless mode.
+    /// @note - VkDescriptorPool should be created with VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
+    ///         and must contain a pool size large enough to hold an ImGui VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER descriptor.
+    ///       - When using dynamic rendering, set UseDynamicRendering=true and fill PipelineRenderingCreateInfo structure.
     struct InitInfo
     {
         using PFN_CheckVkResultFn = void(*)(VkResult err);
@@ -87,24 +90,28 @@ namespace ImGui::INTERNAL::Vulkan
         TRAP::Ref<TRAP::Graphics::API::VulkanInstance> Instance = nullptr;
         TRAP::Ref<TRAP::Graphics::API::VulkanDevice> Device = nullptr;
         TRAP::Ref<TRAP::Graphics::API::VulkanQueue> Queue = nullptr;
-        TRAP::Ref<TRAP::Graphics::API::VulkanPipelineCache> PipelineCache = nullptr;
         std::vector<VkDescriptorPoolSize> DescriptorPoolSizes{};
-        VkDescriptorPool                  DescriptorPool = VK_NULL_HANDLE;
-        u32                          MinImageCount = 2;                   // >= 2
-        u32                          ImageCount = 2;                      // >= MinImageCount
-        VkSampleCountFlagBits             MSAASamples = VK_SAMPLE_COUNT_1_BIT; // >= VK_SAMPLE_COUNT_1_BIT (0 -> default to VK_SAMPLE_COUNT_1_BIT)
+        VkDescriptorPool DescriptorPool = VK_NULL_HANDLE; //See requirements in note above
+        VkRenderPass RenderPass = VK_NULL_HANDLE; //Ignored if using dynamic rendering
+        u32 MinImageCount = 2;                   // >= 2
+        u32 ImageCount = 2;                      // >= MinImageCount
+        VkSampleCountFlagBits MSAASamples = VK_SAMPLE_COUNT_1_BIT; // 0 defaults to VK_SAMPLE_COUNT_1_BIT
 
-        //Dynamic Rendering (Optional)
-        bool UseDynamicRendering = false; //Need to explicitly enable VK_KHR_dynamic_rendering extension to use this, even for Vulkan 1.3.
-        VkFormat ColorAttachmentFormat = VK_FORMAT_UNDEFINED; //Required for dynamic rendering
+        //(Optional)
+        TRAP::Ref<TRAP::Graphics::API::VulkanPipelineCache> PipelineCache = nullptr;
 
-        //Allocation, Debugging
+        //(Optional) Dynamic Rendering
+        //Need to explicitly enable VK_KHR_dynamic_rendering extension to use this, even for Vulkan 1.3.
+        bool UseDynamicRendering = false;
+        VkPipelineRenderingCreateInfoKHR PipelineRenderingCreateInfo{};
+
+        //(Optional) Allocation, Debugging
         const VkAllocationCallbacks* Allocator = nullptr;
         PFN_CheckVkResultFn CheckVkResultFn = nullptr;
     };
 
     // Called by user code
-                  void        Init(const InitInfo& info, VkRenderPass render_pass);
+                  void        Init(const InitInfo& info);
                   void        Shutdown();
                   void        NewFrame();
                   void        RenderDrawData(const ImDrawData& draw_data, const TRAP::Graphics::API::VulkanCommandBuffer& command_buffer, VkPipeline pipeline = VK_NULL_HANDLE);

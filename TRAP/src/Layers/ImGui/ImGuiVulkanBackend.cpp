@@ -49,72 +49,6 @@ Modified by Jan "GamesTrap" Schuerkamp
 #include "Graphics/Textures/Texture.h"
 
 // dear imgui: Renderer Backend for Vulkan
-// This needs to be used along with a Platform Backend (e.g. GLFW, SDL, Win32, custom..)
-
-// Implemented features:
-//  [X] Renderer: Large meshes support (64k+ vertices) with 16-bit indices.
-//  [x] Renderer: Multi-viewport / platform windows. With issues (flickering when creating a new viewport).
-
-// You can use unmodified imgui_impl_* files in your project. See examples/ folder for examples of using this.
-// Prefer including the entire imgui/ repository into your project (either as a copy or as a submodule), and only build the backends you need.
-// If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.
-// Read online: https://github.com/ocornut/imgui/tree/master/docs
-
-// The aim of imgui_impl_vulkan.h/.cpp is to be usable in your engine without any modification.
-// IF YOU FEEL YOU NEED TO MAKE ANY CHANGE TO THIS CODE, please share them and your feedback at https://github.com/ocornut/imgui/
-
-// Important note to the reader who wish to integrate imgui_impl_vulkan.cpp/.h in their own engine/app.
-// - Common ImGui_ImplVulkan_XXX functions and structures are used to interface with imgui_impl_vulkan.cpp/.h.
-//   You will use those if you want to use this rendering backend in your engine/app.
-// - Helper ImGui_ImplVulkanH_XXX functions and structures are only used by this example (main.cpp) and by
-//   the backend itself (imgui_impl_vulkan.cpp), but should PROBABLY NOT be used by your own engine/app code.
-// Read comments in imgui_impl_vulkan.h.
-
-// CHANGELOG
-// (minor and older changes stripped away, please see git history for details)
-//  2023-XX-XX: Platform: Added support for multiple windows via the ImGuiPlatformIO interface.
-//  2024-01-03: Vulkan: Added MinAllocationSize field in ImGui_ImplVulkan_InitInfo to workaround zealous "best practice" validation layer. (#7189, #4238)
-//  2024-01-03: Vulkan: Stopped creating command pools with VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT as we don't reset them.
-//  2023-11-29: Vulkan: Fixed mismatching allocator passed to vkCreateCommandPool() vs vkDestroyCommandPool(). (#7075)
-//  2023-11-10: *BREAKING CHANGE*: Removed parameter from ImGui_ImplVulkan_CreateFontsTexture(): backend now creates its own command-buffer to upload fonts.
-//              *BREAKING CHANGE*: Removed DestroyFontUploadObjects() which is now unecessary as we create and destroy those objects in the backend.
-//              CreateFontsTexture() is automatically called by NewFrame() the first time.
-//              You can call CreateFontsTexture() again to recreate the font atlas texture.
-//              Added DestroyFontsTexture() but you probably never need to call this.
-//  2023-07-04: Vulkan: Added optional support for VK_KHR_dynamic_rendering. User needs to set init_info->UseDynamicRendering = true and init_info->ColorAttachmentFormat.
-//  2023-01-02: Vulkan: Fixed sampler passed to ImGui_ImplVulkan_AddTexture() not being honored + removed a bunch of duplicate code.
-//  2022-10-11: Using 'nullptr' instead of 'NULL' as per our switch to C++11.
-//  2022-10-04: Vulkan: Added experimental ImGui_ImplVulkan_RemoveTexture() for api symetry. (#914, #5738).
-//  2021-10-15: Vulkan: Call vkCmdSetScissor() at the end of render a full-viewport to reduce likehood of issues with people using VK_DYNAMIC_STATE_SCISSOR in their app without calling vkCmdSetScissor() explicitly every frame.
-//  2021-06-29: Reorganized backend to pull data from a single structure to facilitate usage with multiple-contexts (all g_XXXX access changed to bd->XXXX).
-//  2021-03-22: Vulkan: Fix mapped memory validation error when buffer sizes are not multiple of VkPhysicalDeviceLimits::nonCoherentAtomSize.
-//  2021-02-18: Vulkan: Change blending equation to preserve alpha in output buffer.
-//  2021-01-27: Vulkan: Added support for custom function load and IMGUI_IMPL_VULKAN_NO_PROTOTYPES by using ImGui_ImplVulkan_LoadFunctions().
-//  2020-11-11: Vulkan: Added support for specifying which subpass to reference during VkPipeline creation.
-//  2020-09-07: Vulkan: Added VkPipeline parameter to ImGui_ImplVulkan_RenderDrawData (default to one passed to ImGui_ImplVulkan_Init).
-//  2020-05-04: Vulkan: Fixed crash if initial frame has no vertices.
-//  2020-04-26: Vulkan: Fixed edge case where render callbacks wouldn't be called if the ImDrawData didn't have vertices.
-//  2019-08-01: Vulkan: Added support for specifying multisample count. Set ImGui_ImplVulkan_InitInfo::MSAASamples to one of the VkSampleCountFlagBits values to use, default is non-multisampled as before.
-//  2019-05-29: Vulkan: Added support for large mesh (64K+ vertices), enable ImGuiBackendFlags_RendererHasVtxOffset flag.
-//  2019-04-30: Vulkan: Added support for special ImDrawCallback_ResetRenderState callback to reset render state.
-//  2019-04-04: *BREAKING CHANGE*: Vulkan: Added ImageCount/MinImageCount fields in ImGui_ImplVulkan_InitInfo, required for initialization (was previously a hard #define IMGUI_VK_QUEUED_FRAMES 2). Added ImGui_ImplVulkan_SetMinImageCount().
-//  2019-04-04: Vulkan: Added VkInstance argument to ImGui_ImplVulkanH_CreateWindow() optional helper.
-//  2019-04-04: Vulkan: Avoid passing negative coordinates to vkCmdSetScissor, which debug validation layers do not like.
-//  2019-04-01: Vulkan: Support for 32-bit index buffer (#define ImDrawIdx unsigned int).
-//  2019-02-16: Vulkan: Viewport and clipping rectangles correctly using draw_data->FramebufferScale to allow retina display.
-//  2018-11-30: Misc: Setting up io.BackendRendererName so it can be displayed in the About Window.
-//  2018-08-25: Vulkan: Fixed mishandled VkSurfaceCapabilitiesKHR::maxImageCount=0 case.
-//  2018-06-22: Inverted the parameters to ImGui_ImplVulkan_RenderDrawData() to be consistent with other backends.
-//  2018-06-08: Misc: Extracted imgui_impl_vulkan.cpp/.h away from the old combined GLFW+Vulkan example.
-//  2018-06-08: Vulkan: Use draw_data->DisplayPos and draw_data->DisplaySize to setup projection matrix and clipping rectangle.
-//  2018-03-03: Vulkan: Various refactor, created a couple of ImGui_ImplVulkanH_XXX helper that the example can use and that viewport support will use.
-//  2018-03-01: Vulkan: Renamed ImGui_ImplVulkan_Init_Info to ImGui_ImplVulkan_InitInfo and fields to match more closely Vulkan terminology.
-//  2018-02-16: Misc: Obsoleted the io.RenderDrawListsFn callback, ImGui_ImplVulkan_Render() calls ImGui_ImplVulkan_RenderDrawData() itself.
-//  2018-02-06: Misc: Removed call to ImGui::Shutdown() which is not available from 1.60 WIP, user needs to call CreateContext/DestroyContext themselves.
-//  2017-05-15: Vulkan: Fix scissor offset being negative. Fix new Vulkan validation warnings. Set required depth member for buffer image copy.
-//  2016-11-13: Vulkan: Fix validation layer warnings and errors and redeclare gl_PerVertex.
-//  2016-10-18: Vulkan: Add location decorators & change to use structs as in/out in glsl, update embedded spv (produced with glslangValidator -x). Null the released resources.
-//  2016-08-27: Vulkan: Fix Vulkan example for use when a depth buffer is active.
 
 using namespace ImGui::INTERNAL::Vulkan;
 
@@ -325,7 +259,6 @@ namespace
     struct ImGui_ImplVulkan_Data
     {
         InitInfo                    VulkanInitInfo{};
-        VkRenderPass                RenderPass = VK_NULL_HANDLE;
         VkPipelineCreateFlags       PipelineCreateFlags{};
         VkDescriptorSetLayout       DescriptorSetLayout = VK_NULL_HANDLE;
         VkPipelineLayout            PipelineLayout = VK_NULL_HANDLE;
@@ -615,19 +548,13 @@ namespace
         const VkGraphicsPipelineCreateInfo info = TRAP::Graphics::API::VulkanInits::GraphicsPipelineCreateInfo(2, stage.data(), vertex_info, ia_info, viewport_info, raster_info, ms_info, depth_info, blend_info, dynamic_state, bd->PipelineLayout, renderPass);
 
     #ifdef IMGUI_IMPL_VULKAN_HAY_DYNAMIC_RENDERING
-        const VkPipelineRenderingCreateInfoKHR pipelineRenderingCreateInfo
-        {
-            .sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR,
-            .pNext = nullptr,
-            .viewMask = 0,
-            .colorAttachmentCount = 1,
-            .pColorAttachmentFormats = &bd->VulkanInitInfo.ColorAttachmentFormat,
-            .depthAttachmentFormat = VK_FORMAT_UNDEFINED,
-            .stencilAttachmentFormat = VK_FORMAT_UNDEFINED
-        };
         if(bd->VulkanInitInfo.UseDynamicRendering)
         {
-            info.pNext = &pipelineRenderingCreateInfo;
+            TRAP_ASSERT(bd->VulkanInitInfo.PipelineRenderingCreateInfo.sType == VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR,
+                        "ImGuiVulkanBackend::CreatePipeline(): PipelineRenderingCreateInfo sType must be VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR!");
+            TRAP_ASSERT(bd->VulkanInitInfo.PipelineRenderingCreateInfo.pNext == nullptr,
+                        "ImGuiVulkanBackend::CreatePipeline(): PipelineRenderingCreateInfo pNext must be nullptr!");
+            info.pNext = &bd->VulkanInitInfo.PipelineRenderingCreateInfo;
             info.renderPass = VK_NULL_HANDLE; //Just make sure it's actually nullptr
         }
     #endif
@@ -708,7 +635,7 @@ namespace
             CheckVkResult(err);
         }
 
-        CreatePipeline(*v.Device, v.Allocator, v.PipelineCache.get(), bd->RenderPass, v.MSAASamples, bd->Pipeline);
+        CreatePipeline(*v.Device, v.Allocator, v.PipelineCache.get(), v.RenderPass, v.MSAASamples, bd->Pipeline);
     }
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -1799,7 +1726,7 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui::INTERNAL::Vulkan::Init(const InitInfo& info, VkRenderPass render_pass)
+void ImGui::INTERNAL::Vulkan::Init(const InitInfo& info)
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
@@ -1820,10 +1747,9 @@ void ImGui::INTERNAL::Vulkan::Init(const InitInfo& info, VkRenderPass render_pas
     TRAP_ASSERT(info.MinImageCount >= 2, "ImGuiVulkanBackend::Init(): info.MinImageCount must be at least 2!");
     TRAP_ASSERT(info.ImageCount >= info.MinImageCount, "ImGuiVulkanBackend::Init(): info.ImageCount muste be equivalent to info.MinImageCount or bigger!");
     if(!info.UseDynamicRendering)
-        TRAP_ASSERT(render_pass != VK_NULL_HANDLE, "ImGuiVulkanBackend::Init(): info.RenderPass is VK_NULL_HANDLE!");
+        TRAP_ASSERT(info.RenderPass != VK_NULL_HANDLE, "ImGuiVulkanBackend::Init(): info.RenderPass is VK_NULL_HANDLE!");
 
     bd->VulkanInitInfo = info;
-    bd->RenderPass = render_pass;
 
     CreateDeviceObjects();
 
@@ -2014,7 +1940,7 @@ void ImGui::INTERNAL::Vulkan::SetMSAASamples(const VkSampleCountFlagBits sampleC
         return;
 
     v.MSAASamples = sampleCount;
-    bd->RenderPass = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
+    v.RenderPass = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
 		(
 			viewportData.GraphicCommandBuffers[viewportData.ImageIndex]
 		)->GetActiveVkRenderPass();
@@ -2028,7 +1954,7 @@ void ImGui::INTERNAL::Vulkan::SetMSAASamples(const VkSampleCountFlagBits sampleC
     }
 
     //Create new pipeline
-    CreatePipeline(*v.Device, v.Allocator, v.PipelineCache.get(), bd->RenderPass, v.MSAASamples, bd->Pipeline);
+    CreatePipeline(*v.Device, v.Allocator, v.PipelineCache.get(), v.RenderPass, v.MSAASamples, bd->Pipeline);
 }
 
 #endif /*TRAP_HEADLESS_MODE*/
