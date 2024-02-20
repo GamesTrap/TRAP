@@ -219,30 +219,31 @@ void TRAP::ImGuiLayer::OnAttach()
 			m_imguiPipelineCache
 		);
 
-		const ImGui::INTERNAL::Vulkan::InitInfo initInfo
-		{
-			.Instance = renderer->GetInstance(),
-			.Device = renderer->GetDevice(),
-			.Queue = graphicsQueue,
-			.PipelineCache = pipelineCache,
-			.DescriptorPoolSizes = GlobalDescriptorPoolSizes(),
-			.DescriptorPool = VK_NULL_HANDLE,
-			.MinImageCount = TRAP::Graphics::RendererAPI::ImageCount,
-			.ImageCount = TRAP::Graphics::RendererAPI::ImageCount,
-			.MSAASamples = aaMethod == TRAP::Graphics::AntiAliasing::MSAA ? static_cast<VkSampleCountFlagBits>(aaSamples) : VK_SAMPLE_COUNT_1_BIT,
-			.UseDynamicRendering = false,
-			.ColorAttachmentFormat = VK_FORMAT_UNDEFINED,
-			.Allocator = nullptr,
-			.CheckVkResultFn = [](const VkResult res){VkCall(res);}
-		};
-
 		const auto* cmdBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
 		(
 			viewportData.GraphicCommandBuffers[viewportData.ImageIndex]
 		);
 		TRAP_ASSERT(cmdBuffer != nullptr, "ImGuiLayer::OnAttach(): cmdBuffer is nullptr!");
 
-		ImGui::INTERNAL::Vulkan::Init(initInfo, cmdBuffer->GetActiveVkRenderPass());
+		const ImGui::INTERNAL::Vulkan::InitInfo initInfo
+		{
+			.Instance = renderer->GetInstance(),
+			.Device = renderer->GetDevice(),
+			.Queue = graphicsQueue,
+			.DescriptorPoolSizes = GlobalDescriptorPoolSizes(),
+			.DescriptorPool = VK_NULL_HANDLE,
+			.RenderPass = cmdBuffer->GetActiveVkRenderPass(),
+			.MinImageCount = TRAP::Graphics::RendererAPI::ImageCount,
+			.ImageCount = TRAP::Graphics::RendererAPI::ImageCount,
+			.MSAASamples = aaMethod == TRAP::Graphics::AntiAliasing::MSAA ? static_cast<VkSampleCountFlagBits>(aaSamples) : VK_SAMPLE_COUNT_1_BIT,
+			.PipelineCache = pipelineCache,
+			.UseDynamicRendering = false,
+			.PipelineRenderingCreateInfo = {},
+			.Allocator = nullptr,
+			.CheckVkResultFn = [](const VkResult res){VkCall(res);}
+		};
+
+		ImGui::INTERNAL::Vulkan::Init(initInfo);
 
 		TP_TRACE(Log::ImGuiPrefix, "Finished Vulkan init");
 	}
