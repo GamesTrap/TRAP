@@ -4119,17 +4119,11 @@ requires std::floating_point<T>
 {
 	//RH_ZO Infinite far plane + reversed Z
 
-	const T range = Tan(fovY * static_cast<T>(0.5)) * zNear;
-	const T left = -range * aspect;
-	const T right = range * aspect;
-	const T bottom = -range;
-	const T top = range;
-
+	const T f = static_cast<T>(1.0) / TRAP::Math::Tan(fovY * static_cast<T>(0.5));
 	Mat<4, 4, T> result(static_cast<T>(0));
 
-	std::get<0>(std::get<0>(result)) = (static_cast<T>(2.0) * zNear) / (right - left);
-	std::get<1>(std::get<1>(result)) = (static_cast<T>(2.0) * zNear) / (top - bottom);
-	std::get<2>(std::get<2>(result)) = static_cast<T>(0.0);
+	std::get<0>(std::get<0>(result)) = f / aspect;
+	std::get<1>(std::get<1>(result)) = f;
 	std::get<3>(std::get<2>(result)) = static_cast<T>(-1.0);
 	std::get<2>(std::get<3>(result)) = zNear;
 
@@ -4497,107 +4491,11 @@ template<typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr bool TRAP::Math::Decompose(Mat<4, 4, T> m, Vec<3, T>& outPosition, Vec<3, T>& outRotation, Vec<3, T>& outScale)
 {
-	constexpr auto LocalScale = [](const Vec<3, T>& v, const T desiredLength)
-	{
-		return v * desiredLength / Length(v);
-	};
-	constexpr auto LocalCombine = [](const Vec<3, T>& a, const Vec<3, T>& b, const T ascl, const T bscl)
-	{
-		return (a * ascl) + (b * bscl);
-	};
-
-	//Normalize the matrix
-	if(Equal(std::get<3>(std::get<3>(m)), static_cast<T>(0.0f), Epsilon<T>()))
+	TRAP::Math::tQuat<T> qRot{};
+	if(!TRAP::Math::Decompose(m, outPosition, qRot, outScale))
 		return false;
 
-	for(auto& col : m)
-	{
-		for(T& n : col)
-			n /= std::get<3>(std::get<3>(m));
-	}
-
-	//perspectiveMatrix is used to solve for perspective, but it also provides
-	//an easy way to test for singulariy of the upper 3x3 component.
-	Mat<4, 4, T> perspectiveMatrix(m);
-
-	for(u32 i = 0; i < 3; ++i)
-		std::get<3>(perspectiveMatrix[i]) = static_cast<T>(0.0f);
-	std::get<3>(std::get<3>(perspectiveMatrix)) = static_cast<T>(1.0f);
-
-	if(Equal(Determinant(perspectiveMatrix), static_cast<T>(0.0f), Epsilon<T>()))
-		return false;
-
-	//First, isolate perspective.
-	if(NotEqual(std::get<3>(std::get<0>(m)), static_cast<T>(0.0f), Epsilon<T>()) ||
-	   NotEqual(std::get<3>(std::get<1>(m)), static_cast<T>(0.0f), Epsilon<T>()) ||
-	   NotEqual(std::get<3>(std::get<2>(m)), static_cast<T>(0.0f), Epsilon<T>()))
-	{
-		//Clear the perspective partition
-		std::get<3>(std::get<0>(m)) = std::get<3>(std::get<1>(m)) = std::get<3>(std::get<2>(m)) = static_cast<T>(0.0f);
-		std::get<3>(std::get<3>(m)) = static_cast<T>(1.0f);
-	}
-
-	//Take care of translation
-	outPosition = Vec<3, T>(std::get<3>(m));
-	std::get<3>(m) = Vec<4, T>(0.0f, 0.0f, 0.0f, std::get<3>(m).w());
-
-	std::array<Vec<3, T>, 3> row{};
-
-	//Now get scale and shear.
-	for(u32 i = 0; i < 3; ++i)
-	{
-		for(u32 j = 0; j < 3; ++j)
-			row[i][j] = m[i][j];
-	}
-
-	//Compute X scale factor and normalize first row
-	outScale.x() = Length(std::get<0>(row));
-
-	std::get<0>(row) = LocalScale(std::get<0>(row), static_cast<T>(1.0f));
-
-	//Compute XY shear factor and make 2nd row orthogonal to 1st.
-	const T skewZ = Dot(std::get<0>(row), std::get<1>(row));
-	std::get<1>(row) = LocalCombine(std::get<1>(row), std::get<0>(row), static_cast<T>(1.0f), -skewZ);
-
-	//Now, comute Y scale and normalize 2nd row.
-	outScale.y() = Length(std::get<1>(row));
-	std::get<1>(row) = LocalScale(std::get<1>(row), static_cast<T>(1.0f));
-
-	//Compute XZ and YZ shears, orthogonalize 3rd row.
-	const T skewY = Dot(std::get<0>(row), std::get<2>(row));
-	std::get<2>(row) = LocalCombine(std::get<2>(row), std::get<0>(row), static_cast<T>(1.0f), -skewY);
-	const T skewX = Dot(std::get<1>(row), std::get<2>(row));
-	std::get<2>(row) = LocalCombine(std::get<2>(row), std::get<1>(row), static_cast<T>(1.0f), -skewX);
-
-	//Next, get Z scale and normalize 3rd row.
-	outScale.z() = Length(std::get<2>(row));
-	std::get<2>(row) = LocalScale(std::get<2>(row), static_cast<T>(1.0f));
-
-	//At this point, the matrix (in rows[]) is orthonormal.
-	//Check for a coordinate system flip, If the determinant is -1,
-	//then negate the matrix and the scaling factors.
-	Vec<3, T> pdum3 = Cross(std::get<1>(row), std::get<2>(row));
-	if(Dot(std::get<0>(row), pdum3) < 0)
-	{
-		for(T& n : outScale)
-			n *= static_cast<T>(-1.0f);
-		for(auto& n : row)
-			n *= static_cast<T>(-1.0f);
-	}
-
-	//Now, get the rotations (euler angles) out.
-	outRotation.y() = Degrees(ASin(-std::get<2>(std::get<0>(row))));
-	if(Cos(outRotation.y()) != T(0.0f))
-	{
-		outRotation.x() = Degrees(ATan(std::get<2>(std::get<1>(row)), std::get<2>(std::get<2>(row))));
-		outRotation.z() = Degrees(ATan(std::get<1>(std::get<0>(row)), std::get<0>(std::get<0>(row))));
-	}
-	else
-	{
-		outRotation.x() = Degrees(ATan(-std::get<0>(std::get<2>(row)), std::get<1>(std::get<1>(row))));
-		outRotation.z() = T(0.0f);
-	}
-
+	outRotation = TRAP::Math::EulerAngles(qRot);
 	return true;
 }
 

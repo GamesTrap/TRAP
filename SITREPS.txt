@@ -4873,3 +4873,9 @@ SITREP 02/18/2024|24w07b2
 SITREP 02/20/2024|24w08a1
     - Changed TRAP Engine version to 24w08a1(0.10.44)
     - Updated ImGuiLayer & ImGuiVulkanBackend ~<15 mins
+
+SITREP 02/21/2024|24w08b1
+    - Changed TRAP Engine version to 24w08b1(0.10.45)
+    - ImGuizmo Fixed detection of reversed Z ~<10 mins
+    - Updated ImGuizmo submodule ~<5 mins
+    - Math Fixed Decompose function returning invalid euler angles for rotation ~<15 mins
