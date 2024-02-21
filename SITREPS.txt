@@ -4879,3 +4879,5 @@ SITREP 02/21/2024|24w08b1
     - ImGuizmo Fixed detection of reversed Z ~<10 mins
     - Updated ImGuizmo submodule ~<5 mins
     - Math Fixed Decompose function returning invalid euler angles for rotation ~<15 mins
+    - Math Removed deprecated projection matrix functions ~<5 mins
+    - Updated UnitTests ~<10 mins
