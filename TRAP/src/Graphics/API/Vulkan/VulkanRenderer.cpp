@@ -338,7 +338,7 @@ namespace
 		{
 			const VkFormat vkDepthStencilFormat = ImageFormatToVkFormat(depthStencilFormat);
 
-			const auto formatProps = device.GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(vkDepthStencilFormat);
+			const auto formatProps = device.GetPhysicalDevice().GetVkPhysicalDeviceFormatProperties(vkDepthStencilFormat);
 			if((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) == VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
 				return depthStencilFormat;
 		}
@@ -556,8 +556,8 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 
 	s_ResourceLoader = TRAP::MakeScope<ResourceLoader>();
 
-	const VkPhysicalDeviceProperties& devProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties();
-	const VkPhysicalDeviceDriverProperties& devDriverProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceDriverProperties();
+	const VkPhysicalDeviceProperties& devProps = m_device->GetPhysicalDevice().GetVkPhysicalDeviceProperties();
+	const VkPhysicalDeviceDriverProperties& devDriverProps = m_device->GetPhysicalDevice().GetVkPhysicalDeviceDriverProperties();
 	TP_INFO(Log::RendererVulkanPrefix, "----------------------------------");
 	TP_INFO(Log::RendererVulkanPrefix, "Vulkan Instance Version: ",
 		VK_VERSION_MAJOR(VulkanInstance::GetInstanceVersion().value_or(0)), '.',
@@ -2307,7 +2307,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u3
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	return m_device->GetPhysicalDevice()->GetPhysicalDeviceUUID();
+	return m_device->GetPhysicalDevice().GetPhysicalDeviceUUID();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2317,7 +2317,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u3
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	return m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties().deviceName;
+	return m_device->GetPhysicalDevice().GetVkPhysicalDeviceProperties().deviceName;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2327,7 +2327,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u3
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	return m_device->GetPhysicalDevice()->GetVendor();
+	return m_device->GetPhysicalDevice().GetVendor();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

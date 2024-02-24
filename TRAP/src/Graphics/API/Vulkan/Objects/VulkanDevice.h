@@ -36,7 +36,7 @@ namespace TRAP::Graphics::API
 
 		/// @brief Retrieve the Vulkan physical device.
 		/// @return Vulkan physical device.
-		[[nodiscard]] VulkanPhysicalDevice* GetPhysicalDevice() const noexcept;
+		[[nodiscard]] const VulkanPhysicalDevice& GetPhysicalDevice() const noexcept;
 
 		/// @brief Retrieve a list of all used physical device extensions.
 		/// @return List of physical device extensions.

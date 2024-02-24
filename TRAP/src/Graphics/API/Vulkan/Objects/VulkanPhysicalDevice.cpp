@@ -127,6 +127,8 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	RendererAPI::GPUSettings.GeometryShaderSupported = (m_physicalDeviceFeatures.geometryShader != 0u);
 	RendererAPI::GPUSettings.SampleRateShadingSupported = (m_physicalDeviceFeatures.sampleRateShading != 0u);
 
+	LoadAllPhysicalDeviceExtensions();
+
 	// Surface & Present test
 #ifndef TRAP_HEADLESS_MODE
 	{
@@ -208,61 +210,6 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 	vkGetPhysicalDeviceFormatProperties(m_physicalDevice, format, &formatProps);
 
 	return formatProps;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Graphics::API::VulkanPhysicalDevice::IsExtensionSupported(const std::string_view extension)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	if (m_availablePhysicalDeviceExtensions.empty())
-		LoadAllPhysicalDeviceExtensions();
-
-	const auto result = std::ranges::find_if(m_availablePhysicalDeviceExtensions,
-									         [extension](const VkExtensionProperties& props)
-									         {
-								                 return extension == props.extensionName;
-									         });
-
-	if (result == m_availablePhysicalDeviceExtensions.end())
-	{
-		if (extension == VK_EXT_DEBUG_UTILS_EXTENSION_NAME)
-			TP_WARN(Log::RendererVulkanPhysicalDevicePrefix, "Extension: \"", extension,
-					"\" is not supported(Vulkan SDK installed?)");
-		else
-			TP_WARN(Log::RendererVulkanPhysicalDevicePrefix, "Extension: \"", extension, "\" is not supported");
-
-		return false;
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const std::vector<VkExtensionProperties> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAvailablePhysicalDeviceExtensions()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	if (m_availablePhysicalDeviceExtensions.empty())
-		LoadAllPhysicalDeviceExtensions();
-
-	return m_availablePhysicalDeviceExtensions;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] std::optional<VkExtensionProperties> TRAP::Graphics::API::VulkanPhysicalDevice::GetPhysicalDeviceExtensionProperties(const std::string_view physicalDeviceExtension)
-{
-	const std::vector<VkExtensionProperties>& physicalDeviceExtensions = GetAvailablePhysicalDeviceExtensions();
-	auto res = std::ranges::find_if(physicalDeviceExtensions, [physicalDeviceExtension](const VkExtensionProperties& extensionProps)
-	                                                          {return physicalDeviceExtension == extensionProps.extensionName;});
-
-	if(res == std::ranges::end(physicalDeviceExtensions))
-		return std::nullopt;
-
-	return *res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -144,7 +144,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 			info.flags |= VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT;
 
 
-		const VkFormatProperties formatProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(info.format);
+		const VkFormatProperties formatProps = m_device->GetPhysicalDevice().GetVkPhysicalDeviceFormatProperties(info.format);
 
 		// Multi-Planar formats must have each plane separately bound to memory, rather than having a single memory binding for the whole image
 		if (isPlanarFormat)
@@ -278,7 +278,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 			VkMemoryAllocateInfo memAllocInfo{};
 			memAllocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 			memAllocInfo.allocationSize = memReq.size;
-			const VkPhysicalDeviceMemoryProperties &memProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceMemoryProperties();
+			const VkPhysicalDeviceMemoryProperties &memProps = m_device->GetPhysicalDevice().GetVkPhysicalDeviceMemoryProperties();
 			memAllocInfo.memoryTypeIndex = GetMemoryType(memReq.memoryTypeBits, memProps,
 														 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 			VkCall(vkAllocateMemory(m_device->GetVkDevice(), &memAllocInfo, nullptr, &m_vkDeviceMemory));

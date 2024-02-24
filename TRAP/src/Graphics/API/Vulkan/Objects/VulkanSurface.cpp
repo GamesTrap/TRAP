@@ -29,21 +29,21 @@ TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> inst
 															 nullptr, m_surface));
 	TRAP_ASSERT(m_surface, "VulkanSurface(): Vulkan Surface is nullptr");
 
-	VkCall(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface,
+	VkCall(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device->GetPhysicalDevice().GetVkPhysicalDevice(), m_surface,
 	                                                 &m_surfaceCapabilities));
 
 	u32 surfaceFormatCount = 0;
-	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface,
+	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(device->GetPhysicalDevice().GetVkPhysicalDevice(), m_surface,
 	                                            &surfaceFormatCount, nullptr));
 	m_surfaceFormats.resize(surfaceFormatCount);
-	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface,
+	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(device->GetPhysicalDevice().GetVkPhysicalDevice(), m_surface,
 	                                            &surfaceFormatCount, m_surfaceFormats.data()));
 
 	u32 surfacePresentCount = 0;
-	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface,
+	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(device->GetPhysicalDevice().GetVkPhysicalDevice(), m_surface,
 	                                                 &surfacePresentCount, nullptr));
 	m_surfacePresentModes.resize(surfacePresentCount);
-	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface,
+	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(device->GetPhysicalDevice().GetVkPhysicalDevice(), m_surface,
 	                                                 &surfacePresentCount, m_surfacePresentModes.data()));
 }
 

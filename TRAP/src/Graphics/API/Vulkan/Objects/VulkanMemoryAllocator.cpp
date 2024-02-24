@@ -78,7 +78,7 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
 #endif /*VMA_KHR_MAINTENANCE4 || VMA_VULKAN_VERSION >= 1003000*/
 
 	const VmaAllocatorCreateInfo info = VulkanInits::VMAAllocatorCreateInfo(device->GetVkDevice(),
-		                                                                    device->GetPhysicalDevice()->GetVkPhysicalDevice(),
+		                                                                    device->GetPhysicalDevice().GetVkPhysicalDevice(),
 		                                                                    instance->GetVkInstance(), vulkanFunctions);
 
 	VkCall(vmaCreateAllocator(&info, &m_allocator));

@@ -237,12 +237,12 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::API::VulkanPhysicalDevice* TRAP::Graphics::API::VulkanDevice::GetPhysicalDevice() const noexcept
+[[nodiscard]] const TRAP::Graphics::API::VulkanPhysicalDevice& TRAP::Graphics::API::VulkanDevice::GetPhysicalDevice() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	return m_physicalDevice.get();
+	return *m_physicalDevice;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

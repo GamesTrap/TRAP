@@ -82,7 +82,7 @@ namespace TRAP::Graphics::API
 		u8 m_vkQueueFamilyIndex = std::numeric_limits<u8>::max();
 		u8 m_vkQueueIndex = std::numeric_limits<u8>::max();
 		u32 m_flags = 0;
-		f32 m_timestampPeriod = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties().limits.timestampPeriod;
+		f32 m_timestampPeriod = m_device->GetPhysicalDevice().GetVkPhysicalDeviceProperties().limits.timestampPeriod;
 	};
 }
 

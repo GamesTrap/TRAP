@@ -81,7 +81,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 		if(VK_FORMAT_UNDEFINED != vkDepthStencilFormat)
 		{
 			VkImageFormatProperties props{};
-			const VkResult res = vkGetPhysicalDeviceImageFormatProperties(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(),
+			const VkResult res = vkGetPhysicalDeviceImageFormatProperties(m_device->GetPhysicalDevice().GetVkPhysicalDevice(),
 				                                                          vkDepthStencilFormat,
 																	      VK_IMAGE_TYPE_2D, VK_IMAGE_TILING_OPTIMAL,
 				                                                          VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,

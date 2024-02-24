@@ -88,7 +88,7 @@ void RendererAPIInfo::OnImGuiRender()
         const TRAP::Graphics::API::VulkanRenderer* const vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(TRAP::Graphics::RendererAPI::GetRenderer());
         const TRAP::Graphics::API::VulkanInstance* const vkInstance = vkRenderer->GetInstance().get();
         const TRAP::Graphics::API::VulkanDevice* const vkDev = vkRenderer->GetDevice().get();
-        TRAP::Graphics::API::VulkanPhysicalDevice* const vkPhysicalDev = vkDev->GetPhysicalDevice();
+        const TRAP::Graphics::API::VulkanPhysicalDevice& vkPhysicalDev = vkDev->GetPhysicalDevice();
         const std::vector<std::string> instLayers = vkInstance->GetUsedInstanceLayers();
         const std::vector<std::string> instExts = vkInstance->GetUsedInstanceExtensions();
         const std::vector<std::string> devExts = vkDev->GetUsedPhysicalDeviceExtensions();
@@ -127,7 +127,7 @@ void RendererAPIInfo::OnImGuiRender()
         ImGui::Text("Used Physical Device Extensions:");
         for(const std::string& str : devExts)
         {
-            const auto extensionProps = vkPhysicalDev->GetPhysicalDeviceExtensionProperties(str);
+            const auto extensionProps = vkPhysicalDev.GetPhysicalDeviceExtensionProperties(str);
             if(extensionProps)
             {
                 ImGui::Text("%s Spec: %i.%i.%i.%i", str.c_str(), VK_API_VERSION_MAJOR(extensionProps->specVersion),

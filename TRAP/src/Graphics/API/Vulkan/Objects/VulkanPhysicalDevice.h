@@ -64,15 +64,15 @@ namespace TRAP::Graphics::API
 		/// @brief Check whether an extension is supported by the physical device or not.
 		/// @param extension Extension to check.
 		/// @return True if extension is supported, false otherwise.
-		[[nodiscard]] bool IsExtensionSupported(std::string_view extension);
+		[[nodiscard]] constexpr bool IsExtensionSupported(std::string_view extension) const;
 
 		/// @brief Retrieve a list of all available physical device extensions.
 		/// @return List of physical device extensions.
-		[[nodiscard]] const std::vector<VkExtensionProperties>& GetAvailablePhysicalDeviceExtensions();
+		[[nodiscard]] constexpr const std::vector<VkExtensionProperties>& GetAvailablePhysicalDeviceExtensions() const noexcept;
 		/// @brief Retrieve the properties for the given physical device extension.
 		/// @param physicalDeviceExtension Physical device extension to get properties from.
 		/// @return Physical device extension properties.
-		[[nodiscard]] std::optional<VkExtensionProperties> GetPhysicalDeviceExtensionProperties(std::string_view physicalDeviceExtension);
+		[[nodiscard]] constexpr std::optional<VkExtensionProperties> GetPhysicalDeviceExtensionProperties(std::string_view physicalDeviceExtension) const;
 
 		/// @brief Retrieve the physical device's UUID.
 		/// @return Physical device UUID.
@@ -180,6 +180,51 @@ namespace TRAP::Graphics::API
 [[nodiscard]] constexpr const std::vector<VkQueueFamilyProperties> &TRAP::Graphics::API::VulkanPhysicalDevice::GetQueueFamilyProperties() const noexcept
 {
 	return m_queueFamilyProperties;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Graphics::API::VulkanPhysicalDevice::IsExtensionSupported(const std::string_view extension) const
+{
+	const auto result = std::ranges::find_if(m_availablePhysicalDeviceExtensions,
+									         [extension](const VkExtensionProperties& props)
+									         {
+								                 return extension == props.extensionName;
+									         });
+
+	if (result == m_availablePhysicalDeviceExtensions.end())
+	{
+		if (extension == VK_EXT_DEBUG_UTILS_EXTENSION_NAME)
+			TP_WARN(Log::RendererVulkanPhysicalDevicePrefix, "Extension: \"", extension,
+					"\" is not supported(Vulkan SDK installed?)");
+		else
+			TP_WARN(Log::RendererVulkanPhysicalDevicePrefix, "Extension: \"", extension, "\" is not supported");
+
+		return false;
+	}
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<VkExtensionProperties>& TRAP::Graphics::API::VulkanPhysicalDevice::GetAvailablePhysicalDeviceExtensions() const noexcept
+{
+	return m_availablePhysicalDeviceExtensions;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::optional<VkExtensionProperties> TRAP::Graphics::API::VulkanPhysicalDevice::GetPhysicalDeviceExtensionProperties(const std::string_view physicalDeviceExtension) const
+{
+	const std::vector<VkExtensionProperties>& physicalDeviceExtensions = GetAvailablePhysicalDeviceExtensions();
+	auto res = std::ranges::find_if(physicalDeviceExtensions, [physicalDeviceExtension](const VkExtensionProperties& extensionProps)
+	                                                          {return physicalDeviceExtension == extensionProps.extensionName;});
+
+	if(res == std::ranges::end(physicalDeviceExtensions))
+		return std::nullopt;
+
+	return *res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

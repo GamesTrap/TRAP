@@ -836,7 +836,7 @@ namespace
             info.oldSwapchain = old_swapchain;
 
             VkSurfaceCapabilitiesKHR cap;
-            err = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device.GetPhysicalDevice()->GetVkPhysicalDevice(), wd.Surface, &cap);
+            err = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device.GetPhysicalDevice().GetVkPhysicalDevice(), wd.Surface, &cap);
             CheckVkResult(err);
             if (info.minImageCount < cap.minImageCount)
                 info.minImageCount = cap.minImageCount;
@@ -1056,7 +1056,7 @@ namespace
 
         // Check for WSI support
         VkBool32 res = VK_SUCCESS;
-        CheckVkResult(vkGetPhysicalDeviceSurfaceSupportKHR(v.Device->GetPhysicalDevice()->GetVkPhysicalDevice(), v.Queue->GetQueueFamilyIndex(), wd.Surface, &res));
+        CheckVkResult(vkGetPhysicalDeviceSurfaceSupportKHR(v.Device->GetPhysicalDevice().GetVkPhysicalDevice(), v.Queue->GetQueueFamilyIndex(), wd.Surface, &res));
         if (res != VK_TRUE)
         {
             TRAP_ASSERT(false, "ImGuiVulkanBackend::CreateWindow(): VulkanPhysicalDevice has no WSI support!");
@@ -1074,12 +1074,12 @@ namespace
         static constexpr std::array<VkFormat, 4> requestSurfaceImageFormat{ VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_B8G8R8_UNORM, VK_FORMAT_R8G8B8_UNORM };
 #endif
         static constexpr VkColorSpaceKHR requestSurfaceColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
-        wd.SurfaceFormat = SelectSurfaceFormat(*v.Device->GetPhysicalDevice(), wd.Surface, requestSurfaceImageFormat, requestSurfaceColorSpace);
+        wd.SurfaceFormat = SelectSurfaceFormat(v.Device->GetPhysicalDevice(), wd.Surface, requestSurfaceImageFormat, requestSurfaceColorSpace);
 
         // Select Present Mode
         // FIXME-VULKAN: Even thought mailbox seems to get us maximum framerate with a single window, it halves framerate with a second window etc. (w/ Nvidia and SDK 1.82.1)
         static constexpr std::array<VkPresentModeKHR, 3> present_modes{ VK_PRESENT_MODE_MAILBOX_KHR, VK_PRESENT_MODE_IMMEDIATE_KHR, VK_PRESENT_MODE_FIFO_KHR };
-        wd.PresentMode = SelectPresentMode(*v.Device->GetPhysicalDevice(), wd.Surface, present_modes);
+        wd.PresentMode = SelectPresentMode(v.Device->GetPhysicalDevice(), wd.Surface, present_modes);
 
         // Create SwapChain, RenderPass, Framebuffer, etc.
         wd.ClearEnable = (viewport->Flags & ImGuiViewportFlags_NoRendererClear) == 0;

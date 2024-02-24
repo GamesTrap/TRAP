@@ -166,7 +166,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	};
 	u32 presentQueueFamilyIndex = std::numeric_limits<u32>::max();
 
-	const std::vector<VkQueueFamilyProperties>& queueFamilyProperties = m_device->GetPhysicalDevice()->GetQueueFamilyProperties();
+	const std::vector<VkQueueFamilyProperties>& queueFamilyProperties = m_device->GetPhysicalDevice().GetQueueFamilyProperties();
 
 	//Check if hardware provides dedicated present queue
 	if (!queueFamilyProperties.empty())
@@ -174,7 +174,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 		for (u32 index = 0; index < queueFamilyProperties.size(); ++index)
 		{
 			VkBool32 supportsPresent = VK_FALSE;
-			const VkResult res = vkGetPhysicalDeviceSurfaceSupportKHR(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(),
+			const VkResult res = vkGetPhysicalDeviceSurfaceSupportKHR(m_device->GetPhysicalDevice().GetVkPhysicalDevice(),
 			                                                          index, m_surface->GetVkSurface(),
 																	  &supportsPresent);
 			if ((res == VK_SUCCESS) && (supportsPresent == VK_TRUE) &&
@@ -191,7 +191,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 			for (u32 index = 0; index < queueFamilyProperties.size(); ++index)
 			{
 				VkBool32 supportsPresent = VK_FALSE;
-				const VkResult res = vkGetPhysicalDeviceSurfaceSupportKHR(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(),
+				const VkResult res = vkGetPhysicalDeviceSurfaceSupportKHR(m_device->GetPhysicalDevice().GetVkPhysicalDevice(),
 				                                                          index, m_surface->GetVkSurface(),
 																		  &supportsPresent);
 				if ((res == VK_SUCCESS) && (supportsPresent == VK_TRUE))
