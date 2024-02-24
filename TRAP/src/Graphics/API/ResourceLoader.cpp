@@ -799,7 +799,13 @@ void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 	m_copyEngine.ResourceSets.reserve(m_desc.BufferCount);
 	for(usize i = 0; i < m_desc.BufferCount; ++i)
 	{
-		const TRAP::Ref<CommandPool> cmdPool = CommandPool::Create({.Queue = m_copyEngine.Queue});
+		const RendererAPI::CommandPoolDesc cmdPoolDesc
+		{
+			.Queue = m_copyEngine.Queue,
+			.CreateFlags = {},
+			.Name = fmt::format("ResourceLoader Staging CommandPool (QueueType: \"{}\", Resource set: {})", desc.Type, i)
+		};
+		const TRAP::Ref<CommandPool> cmdPool = CommandPool::Create(cmdPoolDesc);
 
 		const CopyEngine::CopyResourceSet cpyResSet
 		{

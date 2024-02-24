@@ -3,7 +3,8 @@
 
 #include "Graphics/API/Vulkan/Objects/VulkanDescriptorPool.h"
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create(const u32 numDescriptorSets)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create(const u32 numDescriptorSets,
+                                                                                               [[maybe_unused]] const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -13,7 +14,7 @@
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
-		return TRAP::MakeRef<API::VulkanDescriptorPool>(numDescriptorSets);
+		return TRAP::MakeRef<API::VulkanDescriptorPool>(numDescriptorSets, name);
 
 	case RenderAPI::NONE:
 		return nullptr;

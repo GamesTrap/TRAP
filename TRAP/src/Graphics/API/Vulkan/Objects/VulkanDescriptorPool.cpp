@@ -9,7 +9,31 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
-TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const u32 numDescriptorSets)
+namespace
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	void SetDescriptorPoolName(const std::string_view name, VkDescriptorPool descriptorPool, const TRAP::Graphics::API::VulkanDevice& device)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+		TRAP_ASSERT(!name.empty(), "VulkanDescriptorPool::SetDescriptorPoolName(): Name is empty!");
+
+		if(!TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport)
+			return;
+
+	#ifdef ENABLE_DEBUG_UTILS_EXTENSION
+		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(descriptorPool), VK_OBJECT_TYPE_DESCRIPTOR_POOL, name);
+	#else
+		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(descriptorPool), VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_POOL_EXT, name);
+	#endif
+	}
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const u32 numDescriptorSets,
+                                                                [[maybe_unused]] const std::string_view name)
 	: DescriptorPool(numDescriptorSets)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -29,7 +53,12 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const u32 numDes
 	TRAP_ASSERT(m_currentPool, "VulkanDescriptorPool(): Failed to create DescriptorPool");
 
 	if(m_currentPool != VK_NULL_HANDLE)
+	{
 		m_descriptorPools.emplace_back(m_currentPool);
+#ifdef ENABLE_GRAPHICS_DEBUG
+		SetDescriptorPoolName(name, m_currentPool, *m_device);
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

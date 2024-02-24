@@ -548,7 +548,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 
 	m_vma = TRAP::MakeRef<VulkanMemoryAllocator>(m_device, m_instance);
 
-	s_descriptorPool = TRAP::MakeRef<VulkanDescriptorPool>(8192);
+	s_descriptorPool = TRAP::MakeRef<VulkanDescriptorPool>(8192, "VulkanRenderer Global DescriptorPool");
 
 	m_device->FindQueueFamilyIndices();
 
@@ -2934,7 +2934,17 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 	{
 		//Graphics
 		//Create Graphic Command Pool
-		p->GraphicCommandPools[i] = CommandPool::Create({ s_graphicQueue });
+		const CommandPoolDesc cmdPoolDescGraphics
+		{
+			.Queue = s_graphicQueue,
+			.CreateFlags = {},
+#ifndef TRAP_HEADLESS_MODE
+			.Name = fmt::format("PerViewportData CommandPool (Window: \"{}\", QueueType: \"Graphics\", Image: {})", window->GetTitle(), i)
+#else
+			.Name = fmt::format("PerViewportData CommandPool (QueueType: \"Graphics\", Image: {})", i)
+#endif
+		};
+		p->GraphicCommandPools[i] = CommandPool::Create(cmdPoolDescGraphics);
 		//Allocate Graphic Command Buffer
 #ifdef ENABLE_GRAPHICS_DEBUG
 #ifndef TRAP_HEADLESS_MODE
@@ -2959,7 +2969,17 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 		p->GraphicsTimestampReadbackBuffers[i] = loadDesc.Buffer;
 
 		//Compute
-		p->ComputeCommandPools[i] = CommandPool::Create({s_computeQueue });
+		const CommandPoolDesc cmdPoolDescCompute
+		{
+			.Queue = s_computeQueue,
+			.CreateFlags = {},
+#ifndef TRAP_HEADLESS_MODE
+			.Name = fmt::format("PerViewportData CommandPool (Window: \"{}\", QueueType: \"Compute\", Image: {})", window->GetTitle(), i)
+#else
+			.Name = fmt::format("PerViewportData CommandPool (QueueType: \"Compute\", Image: {})", i)
+#endif
+		};
+		p->ComputeCommandPools[i] = CommandPool::Create(cmdPoolDescCompute);
 #ifdef ENABLE_GRAPHICS_DEBUG
 #ifndef TRAP_HEADLESS_MODE
 		p->ComputeCommandBuffers[i] = &p->ComputeCommandPools[i]->GetCommandBuffer(false, fmt::format("PerViewportData CommandBuffer (Window: \"{}\", QueueType: \"Compute\", Image: {})", window->GetTitle(), i));

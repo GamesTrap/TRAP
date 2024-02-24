@@ -9,9 +9,10 @@ namespace TRAP::Graphics
 	{
 	public:
 		/// @brief Create a new descriptor pool.
-		/// @param numDescriptorSets Max amount of descriptors sets to manage by the pool.
+		/// @param numDescriptorSets Max amount of descriptors sets to be managed by the pool.
+		/// @param name Optional: Name for the descriptor pool.
 		/// @return Created descriptor pool.
-		[[nodiscard]] static TRAP::Ref<DescriptorPool> Create(u32 numDescriptorSets);
+		[[nodiscard]] static TRAP::Ref<DescriptorPool> Create(u32 numDescriptorSets, [[maybe_unused]] std::string_view name = "");
 
 		/// @brief Destructor.
 		virtual ~DescriptorPool();
@@ -40,6 +41,7 @@ namespace TRAP::Graphics
 
 	protected:
 		/// @brief Constructor.
+		/// @param numDescriptorSets Max amount of descriptors sets to be managed by the pool.
 		explicit DescriptorPool(u32 numDescriptorSets);
 
 		u32 m_numDescriptorSets = 0;

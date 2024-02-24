@@ -16,7 +16,8 @@ namespace TRAP::Graphics::API
 	public:
 		/// @brief Constructor.
 		/// @param numDescriptorSets Max number of descriptor sets that can be allocated from the pool.
-		explicit VulkanDescriptorPool(u32 numDescriptorSets);
+		/// @param name Optional: Name for the descriptor pool.
+		explicit VulkanDescriptorPool(u32 numDescriptorSets, [[maybe_unused]] std::string_view name = "");
 		/// @brief Destructor.
 		~VulkanDescriptorPool() override;
 

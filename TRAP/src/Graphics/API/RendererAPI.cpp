@@ -453,9 +453,13 @@ void TRAP::Graphics::RendererAPI::Transition(const Ref<TRAP::Graphics::Texture>&
 	else if(queueType == QueueType::Transfer)
 		queue = s_transferQueue;
 
-	CommandPoolDesc cmdPoolDesc{};
-	cmdPoolDesc.Queue = queue;
-	cmdPoolDesc.CreateFlags = CommandPoolCreateFlags::Transient;
+	const CommandPoolDesc cmdPoolDesc
+	{
+		.Queue = queue,
+		.CreateFlags = CommandPoolCreateFlags::Transient,
+		.Name = fmt::format("Transition CommandPool (Transient, Texture: \"{}\", QueueType: \"{}\", Old layout: \"{}\", New layout: \"{}\")",
+		                    texture->GetName(), queueType, oldLayout, newLayout)
+	};
 	TRAP::Ref<CommandPool> cmdPool = TRAP::Graphics::CommandPool::Create(cmdPoolDesc);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
