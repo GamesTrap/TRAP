@@ -4888,3 +4888,4 @@ SITREP 02/24/2024|24w08c1
     - VulkanCommon Added missing VkResult entries to VkResultToString map ~<5 mins
     - ImGuiVulkanBackend Reduced DescriptorSets to 1 ~<5 mins
     - ImGuiVulkanBackend Reduced DescriptorPool size to 1 combined image sampler ~<5 mins
+    - VulkanDescriptorSet Refactored Update() function ~<45 mins

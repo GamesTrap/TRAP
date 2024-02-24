@@ -42,240 +42,466 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+namespace
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	template<typename... Ts>
+	[[nodiscard]] constexpr bool ValidateDescriptor(const bool condition, const Ts&... args)
+	{
+		if(!(condition))
+		{
+			TP_ERROR(TRAP::Log::RendererVulkanDescriptorSetPrefix, args...);
+			TRAP_ASSERT(false, args...);
+
+			return false;
+		}
+
+		return true;
+	}
+#else
+	template<typename... Ts>
+	[[nodiscard]] constexpr bool ValidateDescriptor([[maybe_unused]] const bool condition,
+	                                                [[maybe_unused]] const Ts&... args)
+	{
+		return true;
+	}
+#endif
+
+	[[nodiscard]] constexpr bool UpdateSampler(const TRAP::Graphics::RendererAPI::DescriptorData& descData,
+	                                           const TRAP::Graphics::RendererAPI::DescriptorInfo& descInfo,
+											   const u32 arrayCount,
+											   const std::span<TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData> updateData)
+	{
+		bool needsUpdate = false;
+
+		//Index is invalid when descriptor is a static sampler
+		if(!ValidateDescriptor(descInfo.IndexInParent != std::numeric_limits<u32>::max(),
+		                       "VulkanDescriptorSet::UpdateSampler(): Trying to update a static sampler (\"",
+							   descInfo.Name,
+							   "\"). All static samplers must be set in RootSignature constructor and cannot be updated later!"))
+		{
+			return needsUpdate;
+		}
+
+		const std::span<const TRAP::Graphics::Sampler* const> samplers = std::get<std::vector<TRAP::Graphics::Sampler*>>(descData.Resource);
+		if(!ValidateDescriptor(!samplers.empty(), "VulkanDescriptorSet::UpdateSampler(): Empty sampler(s) (\"", descInfo.Name, "\")!"))
+			return needsUpdate;
+
+		for(u32 arr = 0; arr < arrayCount; ++arr)
+		{
+			if(!ValidateDescriptor(samplers[arr] != nullptr, fmt::format("VulkanDescriptor::UpdateSampler(): Sampler (\"{}\" [{}]) is nullptr!", descInfo.Name, arr)))
+			{
+				return needsUpdate;
+			}
+
+			updateData[NumericCast<usize>(descInfo.HandleIndex) + arr].ImageInfo =
+			{
+				dynamic_cast<const TRAP::Graphics::API::VulkanSampler* const>(samplers[arr])->GetVkSampler(),
+				VK_NULL_HANDLE,
+				VK_IMAGE_LAYOUT_UNDEFINED
+			};
+			needsUpdate |= true;
+		}
+
+		return needsUpdate;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] bool UpdateCombinedImageSampler(const TRAP::Graphics::RendererAPI::DescriptorData& descData,
+	                                              const TRAP::Graphics::RendererAPI::DescriptorInfo& descInfo,
+											      const u32 arrayCount,
+												  const TRAP::Graphics::API::VulkanRootSignature& rootSignature,
+											      const std::span<TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData> updateData)
+	{
+		bool needsUpdate = false;
+
+		const std::span<const TRAP::Ref<TRAP::Graphics::Texture>> textures = std::get<std::vector<TRAP::Ref<TRAP::Graphics::Texture>>>(descData.Resource);
+		if(!ValidateDescriptor(!textures.empty(), "VulkanDescriptorSet::UpdateCombinedImageSampler(): Empty texture(s) (\"", descInfo.Name, "\")"))
+		{
+			return needsUpdate;
+		}
+
+		if(!rootSignature.GetDescriptorNameToIndexMap().contains(descInfo.Name))
+		{
+			const std::string msg = fmt::format("VulkanDescriptorSet::UpdateCombinedImageSampler(): No Static Sampler with name \"{}\" found!", descInfo.Name);
+			TP_ERROR(TRAP::Log::RendererVulkanDescriptorSetPrefix, msg);
+			TRAP_ASSERT(false, msg);
+			return needsUpdate;
+		}
+
+		for(u32 arr = 0; arr < arrayCount; ++arr)
+		{
+			if(!ValidateDescriptor(textures[arr] != nullptr, fmt::format("VulkanDescriptorSet::UpdateCombinedImageSampler(): Texture (\"{}\" [{}]) is nullptr!", descInfo.Name, arr)))
+			{
+				return needsUpdate;
+			}
+
+			updateData[NumericCast<usize>(descInfo.HandleIndex) + arr].ImageInfo =
+			{
+				VK_NULL_HANDLE, //Sampler
+				std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[arr])->GetSRVVkImageView(), //Image View
+				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL //Image Layout
+			};
+
+			needsUpdate |= true;
+		}
+
+		return needsUpdate;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr bool UpdateTexture(const TRAP::Graphics::RendererAPI::DescriptorData& descData,
+	                                           const TRAP::Graphics::RendererAPI::DescriptorInfo& descInfo,
+											   const u32 arrayCount,
+											   const std::span<TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData> updateData)
+	{
+		bool needsUpdate = false;
+
+		const std::span<const TRAP::Ref<TRAP::Graphics::Texture>> textures = std::get<std::vector<TRAP::Ref<TRAP::Graphics::Texture>>>(descData.Resource);
+		if(!ValidateDescriptor(!textures.empty(), "VulkanDescriptorSet::UpdateTexture(): Empty texture(s) (\"", descInfo.Name, "\")"))
+			return needsUpdate;
+
+		if(!std::get<bool>(descData.Offset))
+		{
+			for(u32 arr = 0; arr < arrayCount; ++arr)
+			{
+				if(!ValidateDescriptor(textures[arr] != nullptr, fmt::format("VulkanDescriptorSet::UpdateTexture(): Texture (\"{}\" [{}]) is nullptr!", descInfo.Name, arr)))
+				{
+					return needsUpdate;
+				}
+
+				updateData[NumericCast<usize>(descInfo.HandleIndex) + arr].ImageInfo =
+				{
+					VK_NULL_HANDLE, //Sampler
+					std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[arr])->GetSRVVkImageView(), //Image View
+					VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL //Image Layout
+				};
+
+				needsUpdate |= true;
+			}
+		}
+		else
+		{
+			for(u32 arr = 0; arr < arrayCount; ++arr)
+			{
+				if(!ValidateDescriptor(textures[arr] != nullptr, fmt::format("VulkanDescriptorSet::UpdateTexture(): Texture (\"{}\" [{}]) is nullptr!", descInfo.Name, arr)))
+				{
+					return needsUpdate;
+				}
+
+				updateData[NumericCast<usize>(descInfo.HandleIndex) + arr].ImageInfo =
+				{
+					VK_NULL_HANDLE, //Sampler
+					std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[arr])->GetSRVStencilVkImageView(), //Image View
+					VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL //Image Layout
+				};
+
+				needsUpdate |= true;
+			}
+		}
+
+		return needsUpdate;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr bool UpdateRWTexture(const TRAP::Graphics::RendererAPI::DescriptorData& descData,
+	                                             const TRAP::Graphics::RendererAPI::DescriptorInfo& descInfo,
+											     const u32 arrayCount,
+											     const std::span<TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData> updateData)
+	{
+		bool needsUpdate = false;
+
+		const std::span<const TRAP::Ref<TRAP::Graphics::Texture>> textures = std::get<std::vector<TRAP::Ref<TRAP::Graphics::Texture>>>(descData.Resource);
+		if(!ValidateDescriptor(!textures.empty(), "VulkanDescriptorSet::UpdateRWTexture(): Empty RW texture(s) (\"", descInfo.Name, "\")"))
+		{
+			return needsUpdate;
+		}
+
+		if(std::get<TRAP::Graphics::RendererAPI::DescriptorData::TextureSlice>(descData.Offset).BindMipChain)
+		{
+			if(!ValidateDescriptor(textures[0] != nullptr, "VulkanDescriptorSet::UpdateRWTexture(): RW Texture (\"", descInfo.Name, "\") is nullptr!"))
+				return needsUpdate;
+
+			for (u32 arr = 0; arr < arrayCount; ++arr)
+			{
+				updateData[NumericCast<usize>(descInfo.HandleIndex) + arr].ImageInfo =
+				{
+					VK_NULL_HANDLE, //Sampler
+					std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[0])->GetUAVVkImageViews()[arr], //Image View
+					VK_IMAGE_LAYOUT_GENERAL //Image Layout
+				};
+
+				needsUpdate |= true;
+			}
+		}
+		else
+		{
+			const u32 mipSlice = std::get<TRAP::Graphics::RendererAPI::DescriptorData::TextureSlice>
+				(
+					descData.Offset
+				).UAVMipSlice;
+
+			for(u32 arr = 0; arr < arrayCount; ++arr)
+			{
+				if(!ValidateDescriptor(textures[arr] != nullptr, "VulkanDescriptorSet::UpdateRWTexture(): RW Texture (\"", descInfo.Name, "\") is nullptr!"))
+					return needsUpdate;
+				if(!ValidateDescriptor(mipSlice < textures[arr]->GetMipLevels(), fmt::format("RW Texture (\"{}\" [{}]) Mip Slice ({}) exceeds mip levels ({})",
+									   descInfo.Name, arr, mipSlice, textures[arr]->GetMipLevels())))
+				{
+					return needsUpdate;
+				}
+
+				updateData[NumericCast<usize>(descInfo.HandleIndex) + arr].ImageInfo =
+				{
+					VK_NULL_HANDLE, //Sampler
+					std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[arr])->GetUAVVkImageViews()[mipSlice], //Image View
+					VK_IMAGE_LAYOUT_GENERAL //Image Layout
+				};
+
+				needsUpdate |= true;
+			}
+		}
+
+		return needsUpdate;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr bool UpdateDynamicUniformBuffer(const TRAP::Graphics::RendererAPI::DescriptorData& descData,
+	                                                        const TRAP::Graphics::RendererAPI::DescriptorInfo& descInfo,
+											                const u32 arrayCount,
+															const u32 index,
+															const std::span<TRAP::Graphics::API::VulkanRenderer::SizeOffset> dynamicSizeOffsets,
+											                const std::span<TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData> updateData)
+	{
+		bool needsUpdate = false;
+
+		if(descInfo.VkType != VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC)
+			return false;
+
+		const std::span<const TRAP::Graphics::Buffer* const> buffers = std::get<std::vector<TRAP::Graphics::Buffer*>>(descData.Resource);
+		const TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset& off = std::get<TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset>(descData.Offset);
+		if(!ValidateDescriptor(!buffers.empty(), "VulkanDescriptorSet::UpdateDynamicUniformBuffer(): Empty uniform buffer(s) (\"", descInfo.Name, "\")"))
+			return needsUpdate;
+		if(!ValidateDescriptor(buffers[0] != nullptr, "VulkanDescriptorSet::UpdateDynamicUniformBuffer(): Uniform buffer (\"", descInfo.Name, "\" [0]) is nullptr!"))
+			return needsUpdate;
+		if(!ValidateDescriptor(arrayCount == 1, "VulkanDescriptorSet::UpdateDynamicUniformBuffer(): Dynamic uniform buffer does not support arrays!"))
+			return needsUpdate;
+		if(!ValidateDescriptor(!off.Sizes.empty(), "VulkanDescriptorSet::UpdateDynamicUniformBuffer(): No sizes provided for dynamic uniform buffer (\"", descInfo.Name, "\")!"))
+			return needsUpdate;
+		if(!ValidateDescriptor(off.Sizes[0] > 0, "VulkanDescriptorSet::UpdateDynamicUniformBuffer(): Sizes[0] is 0 for dynamic uniform buffer (\"", descInfo.Name, "\")!"))
+			return needsUpdate;
+		if(!ValidateDescriptor(off.Sizes[0] <= TRAP::Graphics::RendererAPI::GPUSettings.MaxUniformBufferRange,
+		                       fmt::format("VulkanDescriptorSet::UpdateDynamicUniformBuffer(): Sizes[0] ({}) exceeds maximum supported uniform buffer range {} for dynamic uniform buffer (\"{}\")!",
+							   off.Sizes[0], TRAP::Graphics::RendererAPI::GPUSettings.MaxUniformBufferRange, descInfo.Name)))
+		{
+			return needsUpdate;
+		}
+
+		dynamicSizeOffsets[index].Offset = !off.Offsets.empty() ? NumericCast<u32>(off.Offsets[0]) : 0u;
+		const TRAP::Graphics::API::VulkanBuffer* const buf = dynamic_cast<const TRAP::Graphics::API::VulkanBuffer* const>(buffers[0]);
+		updateData[NumericCast<usize>(descInfo.HandleIndex) + 0u].BufferInfo =
+		{
+			buf->GetVkBuffer(),
+			buf->GetOffset(),
+			off.Sizes[0]
+		};
+
+		//If this is a different size we have to update the VkDescriptorBufferInfo::range so a call to
+		//vkUpdateDescriptorSet is necessary
+		if (off.Sizes[0] != dynamicSizeOffsets[index].Size)
+		{
+			dynamicSizeOffsets[index].Size = NumericCast<u32>(off.Sizes[0]);
+			needsUpdate |= true;
+		}
+
+		return needsUpdate;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr bool UpdateBuffer(const TRAP::Graphics::RendererAPI::DescriptorData& descData,
+											  const TRAP::Graphics::RendererAPI::DescriptorInfo& descInfo,
+											  const u32 arrayCount,
+											  const std::span<TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData> updateData)
+	{
+		bool needsUpdate = false;
+
+		const std::span<const TRAP::Graphics::Buffer* const> buffers = std::get<std::vector<TRAP::Graphics::Buffer*>>(descData.Resource);
+		if(!ValidateDescriptor(!buffers.empty(), "VulkanDescriptorSet::UpdateBuffer(): Empty buffer(s) (\"", descInfo.Name, "\")"))
+			return false;
+
+		for (u32 arr = 0; arr < arrayCount; ++arr)
+		{
+			if(!ValidateDescriptor(buffers[arr] != nullptr, fmt::format("VulkanDescriptorSet::UpdateBuffer(): Buffer ({}, [{}]) is nullptr!", descInfo.Name, arr)))
+				return needsUpdate;
+
+			const TRAP::Graphics::API::VulkanBuffer* const buf = dynamic_cast<const TRAP::Graphics::API::VulkanBuffer* const>(buffers[arr]);
+			updateData[NumericCast<usize>(descInfo.HandleIndex) + arr].BufferInfo =
+			{
+				buf->GetVkBuffer(),
+				buf->GetOffset(),
+				VK_WHOLE_SIZE
+			};
+
+			const TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset& off = std::get<TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset>(descData.Offset);
+			if (!off.Offsets.empty())
+			{
+				if(!ValidateDescriptor(!off.Sizes.empty(), "VulkanDescriptorSet::UpdateBuffer(): Buffer offsets provided but no sizes for buffer (\"", descInfo.Name, "\")!"))
+					return needsUpdate;
+				if(!ValidateDescriptor(off.Sizes[arr] > 0, "VulkanDescriptorSet::UpdateBuffer(): Sizes[0] is 0 for buffer (\"", descInfo.Name, "\")!"))
+					return needsUpdate;
+				if(!ValidateDescriptor(off.Sizes[arr] <= TRAP::Graphics::RendererAPI::GPUSettings.MaxStorageBufferRange,
+				                       fmt::format("VulkanDescriptorSet::UpdateBuffer(): Sizes[{}] ({}) exceeds maximum supported storage buffer range {} for buffer (\"{}\")!",
+									   arr, off.Sizes[arr], TRAP::Graphics::RendererAPI::GPUSettings.MaxStorageBufferRange, descInfo.Name)))
+				{
+					return needsUpdate;
+				}
+
+				updateData[NumericCast<usize>(descInfo.HandleIndex) + arr].BufferInfo.offset = off.Offsets[arr];
+				updateData[NumericCast<usize>(descInfo.HandleIndex) + arr].BufferInfo.range = off.Sizes[arr];
+			}
+
+			needsUpdate |= true;
+		}
+
+		return needsUpdate;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr bool UpdateTexelBuffer(const TRAP::Graphics::RendererAPI::DescriptorData& descData,
+											       const TRAP::Graphics::RendererAPI::DescriptorInfo& descInfo,
+											       const u32 arrayCount,
+											       const std::span<TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData> updateData)
+	{
+		bool needsUpdate = false;
+
+		const std::span<const TRAP::Graphics::Buffer* const> buffers = std::get<std::vector<TRAP::Graphics::Buffer*>>(descData.Resource);
+		if(!ValidateDescriptor(!buffers.empty(), "VulkanDescriptorSet::UpdateTexelBuffer(): Empty texel buffer(s) (\"", descInfo.Name, "\")"))
+			return needsUpdate;
+
+		for(u32 arr = 0; arr < arrayCount; ++arr)
+		{
+			if(!ValidateDescriptor(buffers[arr] != nullptr, fmt::format("VulkanDescriptorSet::UpdateTexelBuffer(): Texel buffer (\"{}\" [{}]) is nullptr!", descInfo.Name, arr)))
+				return needsUpdate;
+
+			updateData[NumericCast<usize>(descInfo.HandleIndex) + arr].BufferView = dynamic_cast<const TRAP::Graphics::API::VulkanBuffer* const>
+				(
+					buffers[arr]
+				)->GetUniformTexelView();
+			needsUpdate |= true;
+		}
+
+		return needsUpdate;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr bool UpdateRWTexelBuffer(const TRAP::Graphics::RendererAPI::DescriptorData& descData,
+											         const TRAP::Graphics::RendererAPI::DescriptorInfo& descInfo,
+											         const u32 arrayCount,
+											         const std::span<TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData> updateData)
+	{
+		bool needsUpdate = false;
+
+		const std::span<const TRAP::Graphics::Buffer* const> buffers = std::get<std::vector<TRAP::Graphics::Buffer*>>(descData.Resource);
+		if(!ValidateDescriptor(!buffers.empty(), "VulkanDescriptorSet::UpdateRWTexelBuffer(): Empty RW Texel buffer(s) (\"", descInfo.Name, "\")"))
+			return needsUpdate;
+
+		for (u32 arr = 0; arr < arrayCount; ++arr)
+		{
+			if(!ValidateDescriptor(buffers[arr] != nullptr, fmt::format("VulkanDescriptorSet::UpdateRWTexelBuffer(): RW Texelbuffer (\"{}\" [{}]) is nullptr!", descInfo.Name, arr)))
+			{
+				return needsUpdate;
+			}
+
+			updateData[NumericCast<usize>(descInfo.HandleIndex) + arr].BufferView = dynamic_cast<const TRAP::Graphics::API::VulkanBuffer* const>
+				(
+					buffers[arr]
+				)->GetStorageTexelView();
+			needsUpdate |= true;
+		}
+
+		return needsUpdate;
+	}
+}
+
 void TRAP::Graphics::API::VulkanDescriptorSet::Update(const u32 index,
                                                       const std::vector<RendererAPI::DescriptorData>& params)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
-#define VALIDATE_DESCRIPTOR(descriptor, ...)                                                  \
-	if(!(descriptor))                                                                         \
-	{                                                                                         \
-	    constexpr std::source_location descLoc = std::source_location::current();             \
-		const std::string msg = fmt::format("{}: {}", __VA_ARGS__, descLoc);                  \
-		TP_ERROR(Log::RendererVulkanDescriptorSetPrefix, msg);                                \
-		TRAP_ASSERT(false, msg);                                                              \
-		continue;                                                                             \
-	}
-#else
-#define VALIDATE_DESCRIPTOR(descriptor, ...)
-#endif
-
 	TRAP_ASSERT(index < m_maxSets, "VulkanDescriptorSet::Update(): Index out of range!");
 
-	const TRAP::Ref<VulkanRootSignature>& rootSignature = m_rootSignature;
-	std::vector<VulkanRenderer::DescriptorUpdateData>& updateData = m_updateData[index];
-	bool update = false;
-
-	std::vector<VkWriteDescriptorSet> rayTracingWrites;
-	std::vector<VkWriteDescriptorSetAccelerationStructureKHR> rayTracingWritesKHR;
-	const u32 rayTracingWriteCount = 0; //TODO Use
-
-	if(rootSignature->GetVkRayTracingDescriptorCounts()[m_set] != 0u)
-	{
-		rayTracingWrites.resize(rootSignature->GetVkRayTracingDescriptorCounts()[m_set]);
-		rayTracingWritesKHR.resize(rootSignature->GetVkRayTracingDescriptorCounts()[m_set]);
-	}
+	std::span<VulkanRenderer::DescriptorUpdateData> updateData = m_updateData[index];
+	bool needsUpdate = false;
 
 	for (const auto& param : params)
 	{
 		const u32 paramIndex = param.Index;
 
-		VALIDATE_DESCRIPTOR(!param.Name.empty() || (paramIndex != std::numeric_limits<u32>::max()),
-		                    "DescriptorData has nullptr name and invalid index");
+		if(!ValidateDescriptor(!param.Name.empty() || (paramIndex != std::numeric_limits<u32>::max()), "VulkanDescriptorSet::Update(): DescriptorData name is empty and param index is invalid!"))
+			continue;
 
 		const RendererAPI::DescriptorInfo* const desc = (paramIndex != std::numeric_limits<u32>::max()) ?
-		                                                (&rootSignature->GetDescriptors()[paramIndex]) :
-												        rootSignature->GetDescriptor(param.Name.c_str());
+		                                                (&m_rootSignature->GetDescriptors()[paramIndex]) :
+												        m_rootSignature->GetDescriptor(param.Name);
+
 		if(paramIndex != std::numeric_limits<u32>::max())
 		{
-			VALIDATE_DESCRIPTOR(desc, "Invalid descriptor with param index ", paramIndex);
+			if(!ValidateDescriptor(desc != nullptr, "VulkanDescriptorSet::Update(): Invalid descriptor info with param index ", paramIndex))
+				continue;
 		}
 		else
 		{
-			VALIDATE_DESCRIPTOR(desc, "Invalid descriptor with param name ", param.Name.c_str());
+			if(!ValidateDescriptor(desc != nullptr, "VulkanDescriptorSet::Update(): Invalid descriptor info with param name \"", param.Name, "\""))
+				continue;
 		}
 
 		const RendererAPI::DescriptorType type = desc->Type;
 		const u32 arrayCount = TRAP::Math::Max(1U, param.Count);
 
-		VALIDATE_DESCRIPTOR(desc->Set == m_set, fmt::format("Descriptor {} - Mismatching set index", desc->Name));
+		if(!ValidateDescriptor(desc->Set == m_set, "VulkanDescriptorSet::Update(): Descriptor \"", desc->Name, "\" has mismatching set index!"))
+			continue;
 
 		switch(type)
 		{
 		case RendererAPI::DescriptorType::Sampler:
 		{
-			//Index is invalid when descriptor is a static sampler
-			VALIDATE_DESCRIPTOR(desc->IndexInParent != std::numeric_limits<u32>::max(),
-			                    fmt::format("Trying to update a static sampler ({}). All static samplers must be "
-								            "set in RootSignature constructor and cannot be updated later", desc->Name));
-
-			const std::vector<Sampler*>& samplers = std::get<std::vector<Sampler*>>(param.Resource);
-			VALIDATE_DESCRIPTOR(!samplers.empty(), fmt::format("Empty Sampler ({})", desc->Name));
-
-			for(u32 arr = 0; arr < arrayCount; ++arr)
-			{
-				VALIDATE_DESCRIPTOR(samplers[arr], fmt::format("nullptr Sampler ({} [{}])", desc->Name, arr));
-
-				updateData[NumericCast<usize>(desc->HandleIndex) + arr].ImageInfo =
-				{
-					dynamic_cast<VulkanSampler*>(samplers[arr])->GetVkSampler(),
-					VK_NULL_HANDLE,
-					VK_IMAGE_LAYOUT_UNDEFINED
-				};
-				update = true;
-			}
+			needsUpdate |= UpdateSampler(param, *desc, arrayCount, updateData);
 			break;
 		}
 
 		case RendererAPI::DescriptorType::CombinedImageSampler:
 		{
-			const std::vector<Ref<TRAP::Graphics::Texture>>& textures = std::get<std::vector<Ref<TRAP::Graphics::Texture>>>(param.Resource);
-			VALIDATE_DESCRIPTOR(!textures.empty(), fmt::format("Empty Texture ({})", desc->Name));
-
-			if(!m_rootSignature->GetDescriptorNameToIndexMap().contains(desc->Name))
-			{
-				TP_ERROR(Log::RendererVulkanDescriptorSetPrefix, "No Static Sampler called (", desc->Name, ")");
-				TRAP_ASSERT(false, "VulkanDescriptorSet::Update(): No Static Sampler called (" + desc->Name + ")");
-			}
-
-			for(u32 arr = 0; arr < arrayCount; ++arr)
-			{
-				VALIDATE_DESCRIPTOR(textures[arr], fmt::format("nullptr Texture ({} [{}])", desc->Name, arr));
-
-				updateData[NumericCast<usize>(desc->HandleIndex) + arr].ImageInfo =
-				{
-					nullptr, //Sampler
-					std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[arr])->GetSRVVkImageView(), //Image View
-					VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL //Image Layout
-				};
-
-				update = true;
-			}
+			needsUpdate |= UpdateCombinedImageSampler(param, *desc, arrayCount, *m_rootSignature, updateData);
 			break;
 		}
 
 		case RendererAPI::DescriptorType::Texture:
 		{
-			const std::vector<Ref<TRAP::Graphics::Texture>>& textures = std::get<std::vector<Ref<TRAP::Graphics::Texture>>>(param.Resource);
-			VALIDATE_DESCRIPTOR(!textures.empty(), fmt::format("Empty Texture ({})", desc->Name));
-
-			if(!std::get<bool>(param.Offset))
-			{
-				for(u32 arr = 0; arr < arrayCount; ++arr)
-				{
-					VALIDATE_DESCRIPTOR(textures[arr], fmt::format("nullptr Texture ({} [{}])", desc->Name, arr));
-
-					updateData[NumericCast<usize>(desc->HandleIndex) + arr].ImageInfo =
-					{
-						VK_NULL_HANDLE, //Sampler
-						std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[arr])->GetSRVVkImageView(), //Image View
-						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL //Image Layout
-					};
-
-					update = true;
-				}
-			}
-			else
-			{
-				for(u32 arr = 0; arr < arrayCount; ++arr)
-				{
-					VALIDATE_DESCRIPTOR(textures[arr], fmt::format("nullptr Texture ({} [{}])", desc->Name, arr));
-
-					updateData[NumericCast<usize>(desc->HandleIndex) + arr].ImageInfo =
-					{
-						VK_NULL_HANDLE, //Sampler
-						std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[arr])->GetSRVStencilVkImageView(), //Image View
-						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL //Image Layout
-					};
-
-					update = true;
-				}
-			}
+			needsUpdate |= UpdateTexture(param, *desc, arrayCount, updateData);
 			break;
 		}
 
 		case RendererAPI::DescriptorType::RWTexture:
 		{
-			const std::vector<Ref<TRAP::Graphics::Texture>>& textures = std::get<std::vector<Ref<TRAP::Graphics::Texture>>>(param.Resource);
-			VALIDATE_DESCRIPTOR(!textures.empty(), fmt::format("Empty RW Texture ({})", desc->Name));
-
-			if(std::get<TRAP::Graphics::RendererAPI::DescriptorData::TextureSlice>(param.Offset).BindMipChain)
-			{
-				VALIDATE_DESCRIPTOR(textures[0], fmt::format("nullptr RW Texture ({})", desc->Name));
-
-				for (u32 arr = 0; arr < arrayCount; ++arr)
-				{
-					updateData[NumericCast<usize>(desc->HandleIndex) + arr].ImageInfo =
-					{
-						VK_NULL_HANDLE, //Sampler
-						std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[0])->GetUAVVkImageViews()[arr], //Image View
-						VK_IMAGE_LAYOUT_GENERAL //Image Layout
-					};
-
-					update = true;
-				}
-			}
-			else
-			{
-				const u32 mipSlice = std::get<TRAP::Graphics::RendererAPI::DescriptorData::TextureSlice>
-					(
-						param.Offset
-					).UAVMipSlice;
-
-				for(u32 arr = 0; arr < arrayCount; ++arr)
-				{
-					VALIDATE_DESCRIPTOR(textures[arr], fmt::format("nullptr RW Texture ({} [{}])", desc->Name, arr));
-					VALIDATE_DESCRIPTOR(mipSlice < textures[arr]->GetMipLevels(),
-					                    fmt::format("Descriptor: ({} [{}]) Mip Slice ({}) exceeds mip levels ({})",
-										desc->Name, arr, mipSlice, textures[arr]->GetMipLevels()));
-
-					updateData[NumericCast<usize>(desc->HandleIndex) + arr].ImageInfo =
-					{
-						VK_NULL_HANDLE, //Sampler
-						std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[arr])->GetUAVVkImageViews()[mipSlice], //Image View
-						VK_IMAGE_LAYOUT_GENERAL //Image Layout
-					};
-
-					update = true;
-				}
-			}
+			needsUpdate |= UpdateRWTexture(param, *desc, arrayCount, updateData);
 			break;
 		}
 
 		case RendererAPI::DescriptorType::UniformBuffer:
 		{
 			if(desc->VkType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC)
-			{
-				const std::vector<Buffer*>& buffers = std::get<std::vector<Buffer*>>(param.Resource);
-				const RendererAPI::DescriptorData::BufferOffset& off = std::get<RendererAPI::DescriptorData::BufferOffset>(param.Offset);
-				VALIDATE_DESCRIPTOR(!buffers.empty(), fmt::format("Empty Uniform Buffer ({})", desc->Name));
-				VALIDATE_DESCRIPTOR(buffers[0], fmt::format("nullptr Uniform Buffer ({} [0])", desc->Name));
-				VALIDATE_DESCRIPTOR(arrayCount == 1, fmt::format("Descriptor ({}): VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC does not support arrays", desc->Name));
-				VALIDATE_DESCRIPTOR(!off.Sizes.empty(), fmt::format("Descriptor ({}): Must provide Sizes for VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC", desc->Name));
-				VALIDATE_DESCRIPTOR(off.Sizes[0] > 0, fmt::format("Descriptor ({}) - Sizes[0] is zero", desc->Name));
-				VALIDATE_DESCRIPTOR(off.Sizes[0] <= RendererAPI::GPUSettings.MaxUniformBufferRange,
-					                fmt::format("Descriptor ({}) - Sizes[0] is {} which exceeds max size {}",
-									            desc->Name, off.Sizes[0], RendererAPI::GPUSettings.MaxUniformBufferRange));
-
-				m_dynamicSizeOffsets[index].Offset = !off.Offsets.empty() ? NumericCast<u32>(off.Offsets[0]) : 0u;
-				const VulkanBuffer* const buf = dynamic_cast<VulkanBuffer*>(buffers[0]);
-				updateData[NumericCast<usize>(desc->HandleIndex) + 0u].BufferInfo =
-				{
-					buf->GetVkBuffer(),
-					buf->GetOffset(),
-					off.Sizes[0]
-				};
-
-				//If this is a different size we have to update the VkDescriptorBufferInfo::range so a call to
-				//vkUpdateDescriptorSet is necessary
-				if (off.Sizes[0] != m_dynamicSizeOffsets[index].Size)
-				{
-					m_dynamicSizeOffsets[index].Size = NumericCast<u32>(off.Sizes[0]);
-					update = true;
-				}
-				break;
-			}
+				needsUpdate |= UpdateDynamicUniformBuffer(param, *desc, arrayCount, index, m_dynamicSizeOffsets, updateData);
+			else
+				needsUpdate |= UpdateBuffer(param, *desc, arrayCount, updateData);
+			break;
+		}
 
 		case RendererAPI::DescriptorType::Buffer:
 			[[fallthrough]];
@@ -285,80 +511,19 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const u32 index,
 			[[fallthrough]];
 		case RendererAPI::DescriptorType::RWBufferRaw:
 		{
-			const std::vector<Buffer*>& buffers = std::get<std::vector<Buffer*>>(param.Resource);
-			VALIDATE_DESCRIPTOR(!buffers.empty(), fmt::format("Empty Buffer ({})", desc->Name));
-
-			for (u32 arr = 0; arr < arrayCount; ++arr)
-			{
-				VALIDATE_DESCRIPTOR(buffers[arr], fmt::format("nullptr Buffer ({} [{}])", desc->Name, arr));
-
-				const VulkanBuffer* const buf = dynamic_cast<VulkanBuffer*>(buffers[arr]);
-				updateData[NumericCast<usize>(desc->HandleIndex) + arr].BufferInfo =
-				{
-					buf->GetVkBuffer(),
-					buf->GetOffset(),
-					VK_WHOLE_SIZE
-				};
-
-				const RendererAPI::DescriptorData::BufferOffset& off = std::get<RendererAPI::DescriptorData::BufferOffset>(param.Offset);
-				if (!off.Offsets.empty())
-				{
-					VALIDATE_DESCRIPTOR(!off.Sizes.empty(), fmt::format("Descriptor ({}) - Sizes must be provided with Offsets", desc->Name));
-					VALIDATE_DESCRIPTOR(off.Sizes[arr] > 0, fmt::format("Descriptor ({}) - Sizes[{}] is zero", desc->Name, arr));
-					VALIDATE_DESCRIPTOR(off.Sizes[arr] <= RendererAPI::GPUSettings.MaxStorageBufferRange,
-						                fmt::format("Descriptor ({}) - Sizes[{}] is {} which exceeds max size {}",
-										            desc->Name, arr, off.Sizes[arr], RendererAPI::GPUSettings.MaxStorageBufferRange));
-
-					updateData[NumericCast<usize>(desc->HandleIndex) + arr].BufferInfo.offset = off.Offsets[arr];
-					updateData[NumericCast<usize>(desc->HandleIndex) + arr].BufferInfo.range = off.Sizes[arr];
-				}
-
-				update = true;
-			}
-
-		}
+			needsUpdate |= UpdateBuffer(param, *desc, arrayCount, updateData);
 			break;
 		}
 
 		case RendererAPI::DescriptorType::TexelBuffer:
 		{
-			const std::vector<Buffer*>& buffers = std::get<std::vector<Buffer*>>(param.Resource);
-			VALIDATE_DESCRIPTOR(!buffers.empty(), fmt::format("Empty Texel Buffer ({})", desc->Name));
-
-			for(u32 arr = 0; arr < arrayCount; ++arr)
-			{
-				VALIDATE_DESCRIPTOR(buffers[arr], fmt::format("nullptr Texel Buffer ({} [{}])", desc->Name, arr));
-				updateData[NumericCast<usize>(desc->HandleIndex) + arr].BufferView = dynamic_cast<VulkanBuffer*>
-					(
-						buffers[arr]
-					)->GetUniformTexelView();
-				update = true;
-			}
-
+			needsUpdate |= UpdateTexelBuffer(param, *desc, arrayCount, updateData);
 			break;
 		}
 
 		case RendererAPI::DescriptorType::RWTexelBuffer:
 		{
-			const std::vector<Buffer*>& buffers = std::get<std::vector<Buffer*>>(param.Resource);
-			VALIDATE_DESCRIPTOR(!buffers.empty(), fmt::format("Empty RW Texel Buffer ({})", desc->Name));
-
-			for (u32 arr = 0; arr < arrayCount; ++arr)
-			{
-				VALIDATE_DESCRIPTOR(buffers[arr], fmt::format("nullptr RW Texel Buffer ({} [{}])", desc->Name, arr));
-				updateData[NumericCast<usize>(desc->HandleIndex) + arr].BufferView = dynamic_cast<VulkanBuffer*>
-					(
-						buffers[arr]
-					)->GetStorageTexelView();
-				update = true;
-			}
-
-			break;
-		}
-
-		case RendererAPI::DescriptorType::RayTracing:
-		{
-			//TODO RT
+			needsUpdate |= UpdateRWTexelBuffer(param, *desc, arrayCount, updateData);
 			break;
 		}
 
@@ -368,12 +533,10 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const u32 index,
 	}
 
 	//If this was called to just update a dynamic offset skip the update
-	if (update)
+	if (needsUpdate)
+	{
 		vkUpdateDescriptorSetWithTemplate(m_device->GetVkDevice(), m_vkDescriptorSetHandles[index],
-		                                  rootSignature->GetUpdateTemplates()[m_set],
+		                                  m_rootSignature->GetUpdateTemplates()[m_set],
 										  updateData.data());
-
-	//RayTracing Update Descriptor Set since it does not support update template
-	if (rayTracingWriteCount != 0u)
-		vkUpdateDescriptorSets(m_device->GetVkDevice(), rayTracingWriteCount, rayTracingWrites.data(), 0, nullptr);
+	}
 }
