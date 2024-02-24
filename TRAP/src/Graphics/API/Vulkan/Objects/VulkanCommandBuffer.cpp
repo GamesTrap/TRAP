@@ -20,6 +20,7 @@
 
 namespace
 {
+#ifdef ENABLE_GRAPHICS_DEBUG
 	void SetCommandBufferName(const std::string_view name, VkCommandBuffer cmdBuffer, const TRAP::Graphics::API::VulkanDevice& device)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -35,6 +36,7 @@ namespace
 		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(cmdBuffer), VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_BUFFER_EXT, name);
 	#endif
 	}
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
