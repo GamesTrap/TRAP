@@ -4885,3 +4885,4 @@ SITREP 02/21/2024|24w08b1
 SITREP 02/24/2024|24w08c1
     - Changed TRAP Engine version to 24w08c1(0.10.46)
     - VulkanDebug Added more safety checks ~<5 mins
+    - VulkanCommon Added missing VkResult entries to VkResultToString map ~<5 mins
