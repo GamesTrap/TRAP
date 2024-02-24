@@ -431,7 +431,7 @@ namespace
 }
 
 void TRAP::Graphics::API::VulkanDescriptorSet::Update(const u32 index,
-                                                      const std::vector<RendererAPI::DescriptorData>& params)
+                                                      const std::span<const RendererAPI::DescriptorData> params)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 

@@ -23,7 +23,7 @@ namespace TRAP::Graphics
 		/// @brief Update the descriptor set.
 		/// @param index Index of the set to update.
 		/// @param params Data to update.
-		virtual void Update(u32 index, const std::vector<RendererAPI::DescriptorData>& params) = 0;
+		virtual void Update(u32 index, std::span<const RendererAPI::DescriptorData> params) = 0;
 
 	protected:
 		/// @brief Constructor.

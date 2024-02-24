@@ -61,7 +61,7 @@ namespace TRAP::Graphics::API
 		/// @brief Update the descriptor set.
 		/// @param index Index of the set to update.
 		/// @param params Data to update.
-		void Update(u32 index, const std::vector<RendererAPI::DescriptorData>& params) override;
+		void Update(u32 index, std::span<const RendererAPI::DescriptorData> params) override;
 
 	private:
 		std::vector<VkDescriptorSet> m_vkDescriptorSetHandles;
