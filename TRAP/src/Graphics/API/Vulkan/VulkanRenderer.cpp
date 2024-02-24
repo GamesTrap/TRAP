@@ -2364,7 +2364,11 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	cmdPoolDesc.CreateFlags = CommandPoolCreateFlags::Transient;
 	TRAP::Ref<VulkanCommandPool> cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
 
+#ifdef ENABLE_GRAPHICS_DEBUG
+	CommandBuffer& cmd = cmdPool->GetCommandBuffer(false, "MapRenderTarget CommandBuffer"); //TODO Add RenderTarget name
+#else
 	CommandBuffer& cmd = cmdPool->GetCommandBuffer(false);
+#endif
 
 	//Add a staging buffer
 	const u32 formatByteWidth = ImageFormatBitSizeOfBlock(renderTarget->GetImageFormat()) / 8u;
@@ -2929,7 +2933,15 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 		//Create Graphic Command Pool
 		p->GraphicCommandPools[i] = CommandPool::Create({ s_graphicQueue });
 		//Allocate Graphic Command Buffer
+#ifdef ENABLE_GRAPHICS_DEBUG
+#ifndef TRAP_HEADLESS_MODE
+		p->GraphicCommandBuffers[i] = &p->GraphicCommandPools[i]->GetCommandBuffer(false, fmt::format("PerViewportData CommandBuffer (Window: \"{}\", QueueType: \"Graphics\", Image: {})", window->GetTitle(), i));
+#else
+		p->GraphicCommandBuffers[i] = &p->GraphicCommandPools[i]->GetCommandBuffer(false, fmt::format("PerViewportData CommandBuffer (QueueType: \"Graphics\", Image: {})", i));
+#endif
+#else
 		p->GraphicCommandBuffers[i] = &p->GraphicCommandPools[i]->GetCommandBuffer(false);
+#endif
 
 		//Create Render Fences/Semaphores
 		p->RenderCompleteFences[i] = Fence::Create();
@@ -2945,7 +2957,15 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 
 		//Compute
 		p->ComputeCommandPools[i] = CommandPool::Create({s_computeQueue });
+#ifdef ENABLE_GRAPHICS_DEBUG
+#ifndef TRAP_HEADLESS_MODE
+		p->ComputeCommandBuffers[i] = &p->ComputeCommandPools[i]->GetCommandBuffer(false, fmt::format("PerViewportData CommandBuffer (Window: \"{}\", QueueType: \"Compute\", Image: {})", window->GetTitle(), i));
+#else
+		p->ComputeCommandBuffers[i] = &p->ComputeCommandPools[i]->GetCommandBuffer(false, fmt::format("PerViewportData CommandBuffer (QueueType: \"Compute\", Image: {})", i));
+#endif
+#else
 		p->ComputeCommandBuffers[i] = &p->ComputeCommandPools[i]->GetCommandBuffer(false);
+#endif
 
 		p->ComputeCompleteFences[i] = Fence::Create();
 		p->ComputeCompleteSemaphores[i] = Semaphore::Create();
@@ -3537,7 +3557,11 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	cmdPoolDesc.CreateFlags = CommandPoolCreateFlags::Transient;
 	const TRAP::Ref<VulkanCommandPool> cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
 
+#ifdef ENABLE_GRAPHICS_DEBUG
+	CommandBuffer& cmd = cmdPool->GetCommandBuffer(false, "Initial Transition CommandBuffer");
+#else
 	CommandBuffer& cmd = cmdPool->GetCommandBuffer(false);
+#endif
 
 	const TRAP::Ref<VulkanFence> fence = TRAP::MakeRef<VulkanFence>();
 

@@ -52,11 +52,11 @@ TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::CommandBuffer& TRAP::Graphics::API::VulkanCommandPool::GetCommandBuffer(const bool secondary)
+[[nodiscard]] TRAP::Graphics::CommandBuffer& TRAP::Graphics::API::VulkanCommandPool::GetCommandBuffer(const bool secondary, const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	const auto& cmdBuffer = m_commandBuffers.emplace_back(TRAP::MakeScope<VulkanCommandBuffer>(m_device, m_queue, m_vkCommandPool, secondary));
+	const auto& cmdBuffer = m_commandBuffers.emplace_back(TRAP::MakeScope<VulkanCommandBuffer>(m_device, m_queue, m_vkCommandPool, secondary, name));
 	if(!cmdBuffer)
 	{
 		TRAP_ASSERT(false);

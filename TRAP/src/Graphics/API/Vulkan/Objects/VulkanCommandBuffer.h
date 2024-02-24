@@ -23,8 +23,9 @@ namespace TRAP::Graphics::API
 		/// @param queue Queue to use for resource barriers.
 		/// @param commandPool Command pool to retrieve command buffer from.
 		/// @param secondary Is this a secondary command buffer?
+		/// @param name Optional: Name for the command buffer
 		VulkanCommandBuffer(TRAP::Ref<VulkanDevice> device, TRAP::Ref<Queue> queue, VkCommandPool commandPool,
-		                    bool secondary);
+		                    bool secondary, std::string_view name = "");
 
 		/// @brief Destructor.
 		~VulkanCommandBuffer() override;

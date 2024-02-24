@@ -35,10 +35,11 @@ namespace TRAP::Graphics::API
 
 		/// @brief Retrieve a new command buffer.
 		/// @param secondary Should the command buffer be a secondary command buffer.
+		/// @param name Optional: Name for the command buffer.
 		/// @return Newly created command buffer.
 		/// @note The lifetime of the command buffer ends when the command pool gets
 		///       destroyed or when ReleaseCommandBuffer() gets called.
-		[[nodiscard]] CommandBuffer& GetCommandBuffer(bool secondary) override;
+		[[nodiscard]] CommandBuffer& GetCommandBuffer(bool secondary, std::string_view name = "") override;
 		/// @brief Release a command buffer
 		/// @param cmdBuffer Command buffer to release.
 		void ReleaseCommandBuffer(const CommandBuffer& cmdBuffer) override;

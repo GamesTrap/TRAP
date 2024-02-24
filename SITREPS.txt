@@ -4891,3 +4891,5 @@ SITREP 02/24/2024|24w08c1
     - VulkanDescriptorSet Refactored Update() function ~<45 mins
     - VulkanDevice Changed GetPhysicalDevice() to return a const reference instead of pointer ~<5 mins
     - VulkanPhysicalDevice Made some function const ~<15 mins
+    - VulkanCommandBuffer Added VkSetObjectName() calls ~<5 mins
+    - Added names for VulkanCommandBuffers ~<5 mins

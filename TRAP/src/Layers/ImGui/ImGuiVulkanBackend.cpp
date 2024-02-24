@@ -768,7 +768,11 @@ namespace
                 .CreateFlags = TRAP::Graphics::RendererAPI::CommandPoolCreateFlags::Transient
             };
             fd.CommandPool = TRAP::MakeScope<TRAP::Graphics::API::VulkanCommandPool>(cmdPoolDesc);
+#ifdef ENABLE_GRAPHICS_DEBUG
+            fd.CommandBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(&fd.CommandPool->GetCommandBuffer(false, fmt::format("ImGui Window CommandBuffer (Image: {}, QueueType: {})", i, queue->GetQueueType())));
+#else
             fd.CommandBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(&fd.CommandPool->GetCommandBuffer(false));
+#endif
 
             fd.Fence = TRAP::MakeRef<TRAP::Graphics::API::VulkanFence>();
 
@@ -1400,7 +1404,11 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
     {
         TRAP_ASSERT(bd->FontCommandPool != nullptr, "ImGui::INTERNAL::Vulkan::CreateFontsTexture(): bd->FontCommandPool is nullptr!");
 
+#ifdef ENABLE_GRAPHICS_DEBUG
+        bd->FontCommandBuffer = &bd->FontCommandPool->GetCommandBuffer(false, fmt::format("ImGui Staging Font CommandBuffer"));
+#else
         bd->FontCommandBuffer = &bd->FontCommandPool->GetCommandBuffer(false);
+#endif
     }
 
     //Start command buffer

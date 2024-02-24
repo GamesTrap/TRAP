@@ -52,10 +52,6 @@ namespace TRAP::Graphics::API
 		void UnMapBuffer() override;
 
 	private:
-		/// @brief Set a name for the buffer.
-		/// @param name Name for the buffer.
-		void SetBufferName(std::string_view name) const;
-
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 		TRAP::Ref<VulkanMemoryAllocator> m_VMA = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetVMA();
 

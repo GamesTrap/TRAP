@@ -13,6 +13,7 @@
 #include "Objects/Queue.h"
 #include "Objects/Sampler.h"
 #include "Objects/SwapChain.h"
+#include "Graphics/Textures/Texture.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -457,7 +458,12 @@ void TRAP::Graphics::RendererAPI::Transition(const Ref<TRAP::Graphics::Texture>&
 	cmdPoolDesc.CreateFlags = CommandPoolCreateFlags::Transient;
 	TRAP::Ref<CommandPool> cmdPool = TRAP::Graphics::CommandPool::Create(cmdPoolDesc);
 
+#ifdef ENABLE_GRAPHICS_DEBUG
+	CommandBuffer& cmd = cmdPool->GetCommandBuffer(false, fmt::format("Transition CommandBuffer (Texture: \"{}\", QueueType: \"{}\", Old layout: \"{}\", New layout: \"{}\")",
+	                                                                  texture->GetName(), queueType, oldLayout, newLayout));
+#else
 	CommandBuffer& cmd = cmdPool->GetCommandBuffer(false);
+#endif
 
 	//Start recording
 	cmd.Begin();

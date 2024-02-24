@@ -143,6 +143,24 @@ namespace
 
 		VkCall(vkCreateBufferView(device.GetVkDevice(), &viewInfo, nullptr, &outBufferView));
 	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void SetBufferName(const std::string_view name, VkBuffer buffer, const TRAP::Graphics::API::VulkanDevice& device)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+		TRAP_ASSERT(!name.empty(), "VulkanBuffer::SetBufferName(): Name is empty!");
+
+		if(!TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport)
+			return;
+
+	#ifdef ENABLE_DEBUG_UTILS_EXTENSION
+		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(buffer), VK_OBJECT_TYPE_BUFFER, name);
+	#else
+		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(buffer), VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT, name);
+	#endif
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -181,7 +199,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if (!desc.Name.empty())
-		SetBufferName(desc.Name);
+		SetBufferName(desc.Name, m_vkBuffer, *m_device);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
@@ -252,22 +270,4 @@ void TRAP::Graphics::API::VulkanBuffer::UnMapBuffer()
 	if (!m_CPUMappedAddress.empty() && m_VMA && (m_allocation != nullptr))
 		vmaUnmapMemory(m_VMA->GetVMAAllocator(), m_allocation);
 	m_CPUMappedAddress = {};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanBuffer::SetBufferName(const std::string_view name) const
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	TRAP_ASSERT(!name.empty(), "VulkanBuffer::SetBufferName(): Name is empty!");
-
-	if(!VulkanRenderer::s_debugMarkerSupport)
-		return;
-
-#ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkBuffer), VK_OBJECT_TYPE_BUFFER, name);
-#else
-	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkBuffer), VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT, name);
-#endif
 }

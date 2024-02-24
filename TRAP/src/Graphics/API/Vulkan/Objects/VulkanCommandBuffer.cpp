@@ -18,6 +18,27 @@
 #include "VulkanInits.h"
 #include "VulkanTexture.h"
 
+namespace
+{
+	void SetCommandBufferName(const std::string_view name, VkCommandBuffer cmdBuffer, const TRAP::Graphics::API::VulkanDevice& device)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+		TRAP_ASSERT(!name.empty(), "VulkanBuffer::SetBufferName(): Name is empty!");
+
+		if(!TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport)
+			return;
+
+	#ifdef ENABLE_DEBUG_UTILS_EXTENSION
+		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(cmdBuffer), VK_OBJECT_TYPE_COMMAND_BUFFER, name);
+	#else
+		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(cmdBuffer), VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_BUFFER_EXT, name);
+	#endif
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::API::VulkanCommandBuffer::~VulkanCommandBuffer()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -33,7 +54,8 @@ TRAP::Graphics::API::VulkanCommandBuffer::~VulkanCommandBuffer()
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDevice> device, TRAP::Ref<Queue> queue,
-                                                              VkCommandPool commandPool, const bool secondary)
+                                                              VkCommandPool commandPool, const bool secondary,
+															  const std::string_view name)
 	: CommandBuffer(std::move(queue)),
 	  m_device(std::move(device)),
 	  m_vkCommandPool(commandPool),
@@ -52,6 +74,11 @@ TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDe
 
 	VkCall(vkAllocateCommandBuffers(m_device->GetVkDevice(), &info, &m_vkCommandBuffer));
 	TRAP_ASSERT(m_vkCommandBuffer, "VulkanCommandBuffer(): Vulkan CommandBuffer is nullptr!");
+
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if (!name.empty())
+		SetCommandBufferName(name, m_vkCommandBuffer, *m_device);
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
