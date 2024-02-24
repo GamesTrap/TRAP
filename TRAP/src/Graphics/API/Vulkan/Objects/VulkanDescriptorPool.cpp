@@ -4,13 +4,13 @@
 #include "VulkanRootSignature.h"
 #include "VulkanDescriptorSet.h"
 #include "VulkanInits.h"
+#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
-#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
 TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const u32 numDescriptorSets)
-	: DescriptorPool(numDescriptorSets), m_descriptorPoolSizes(DescriptorTypeRangeSize)
+	: DescriptorPool(numDescriptorSets)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -21,11 +21,7 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const u32 numDes
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	if (VulkanRenderer::s_rayTracingExtension)
-		std::get<DESCRIPTOR_TYPE_RANGE_SIZE - 1>(s_descriptorPoolSizes) = { VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR,
-		                                                                    1024 };
-
-	for(u32 i = 0; i < DescriptorTypeRangeSize; i++)
-		m_descriptorPoolSizes[i] = s_descriptorPoolSizes[i];
+		m_descriptorPoolSizes.emplace_back(VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR, 1024);
 
 	const VkDescriptorPoolCreateInfo info = VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
 	                                                                              m_numDescriptorSets);

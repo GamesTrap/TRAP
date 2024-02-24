@@ -13,9 +13,6 @@ namespace TRAP::Graphics::API
 
 	class VulkanDescriptorPool final : public DescriptorPool
 	{
-	private:
-		static constexpr u32 DESCRIPTOR_TYPE_RANGE_SIZE = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT + 2;
-
 	public:
 		/// @brief Constructor.
 		/// @param numDescriptorSets Max number of descriptor sets that can be allocated from the pool.
@@ -51,7 +48,6 @@ namespace TRAP::Graphics::API
 		/// @return New descriptor set.
 		[[nodiscard]] TRAP::Scope<DescriptorSet> RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc) override;
 
-		inline static constexpr u32 DescriptorTypeRangeSize = DESCRIPTOR_TYPE_RANGE_SIZE - 1;
 	private:
 		/// @brief Retrieve a new VkDescriptorSet with the given layout.
 		/// @param layout Descriptor set layout.
@@ -60,13 +56,13 @@ namespace TRAP::Graphics::API
 
 		VkDescriptorPool m_currentPool = VK_NULL_HANDLE;
 		std::vector<VkDescriptorPool> m_descriptorPools{};
-		std::vector<VkDescriptorPoolSize> m_descriptorPoolSizes;
+		std::vector<VkDescriptorPoolSize> m_descriptorPoolSizes = s_descriptorPoolSizes;
 		u32 m_usedDescriptorSetCount = 0;
 		TracyLockable(std::mutex, m_mutex);
 
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 
-		inline constinit static std::array<VkDescriptorPoolSize, DESCRIPTOR_TYPE_RANGE_SIZE> s_descriptorPoolSizes
+		inline const static std::vector<VkDescriptorPoolSize> s_descriptorPoolSizes
 		{
 			{
 				{VK_DESCRIPTOR_TYPE_SAMPLER, 1024},

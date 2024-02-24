@@ -80,8 +80,7 @@ namespace ImGui::INTERNAL::Vulkan
 {
     /// @brief Initialization data, for ImGui_ImplVulkan_Init()
 	/// @remark @headless This struct is not available in headless mode.
-    /// @note - VkDescriptorPool should be created with VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
-    ///         and must contain a pool size large enough to hold an ImGui VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER descriptor.
+    /// @note - VkDescriptorPool should be created with a pool size large enough to hold an ImGui VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER descriptor.
     ///       - When using dynamic rendering, set UseDynamicRendering=true and fill PipelineRenderingCreateInfo structure.
     struct InitInfo
     {
