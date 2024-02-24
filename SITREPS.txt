@@ -4893,3 +4893,5 @@ SITREP 02/24/2024|24w08c1
     - VulkanPhysicalDevice Made some function const ~<15 mins
     - VulkanCommandBuffer Added VkSetObjectName() calls ~<5 mins
     - Added names for VulkanCommandBuffers ~<5 mins
+    - VulkanCommandPool Added VkSetObjectName() calls ~<5 mins
+    - Added names for VulkanCommandPools ~<5 mins

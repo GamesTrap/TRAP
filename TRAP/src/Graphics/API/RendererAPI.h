@@ -2138,6 +2138,8 @@ namespace TRAP::Graphics
 			//Queue to be used by the command pool
 			TRAP::Ref<TRAP::Graphics::Queue> Queue;
 			CommandPoolCreateFlags CreateFlags = CommandPoolCreateFlags::None;
+			//Debug name used in GPU-profile
+			std::string Name{};
 		};
 
 		/// @brief Description of a queue.

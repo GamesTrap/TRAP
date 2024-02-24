@@ -765,7 +765,8 @@ namespace
             const TRAP::Graphics::RendererAPI::CommandPoolDesc cmdPoolDesc
             {
                 .Queue = queue,
-                .CreateFlags = TRAP::Graphics::RendererAPI::CommandPoolCreateFlags::Transient
+                .CreateFlags = TRAP::Graphics::RendererAPI::CommandPoolCreateFlags::Transient,
+                .Name = fmt::format("ImGui Window CommandPool (Image: {}, QueueType: \"{}\")", i, queue->GetQueueType())
             };
             fd.CommandPool = TRAP::MakeScope<TRAP::Graphics::API::VulkanCommandPool>(cmdPoolDesc);
 #ifdef ENABLE_GRAPHICS_DEBUG
@@ -1396,7 +1397,8 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
         const TRAP::Graphics::RendererAPI::CommandPoolDesc cmdPoolDesc
         {
             .Queue = v.Queue,
-            .CreateFlags = TRAP::Graphics::RendererAPI::CommandPoolCreateFlags::Transient
+            .CreateFlags = TRAP::Graphics::RendererAPI::CommandPoolCreateFlags::Transient,
+            .Name = fmt::format("ImGui Staging Font CommandPool (Transient, QueueType: \"{}\")", v.Queue->GetQueueType())
         };
         bd->FontCommandPool = TRAP::MakeRef<TRAP::Graphics::API::VulkanCommandPool>(cmdPoolDesc);
     }
@@ -1405,7 +1407,7 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
         TRAP_ASSERT(bd->FontCommandPool != nullptr, "ImGui::INTERNAL::Vulkan::CreateFontsTexture(): bd->FontCommandPool is nullptr!");
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-        bd->FontCommandBuffer = &bd->FontCommandPool->GetCommandBuffer(false, fmt::format("ImGui Staging Font CommandBuffer"));
+        bd->FontCommandBuffer = &bd->FontCommandPool->GetCommandBuffer(false, fmt::format("ImGui Staging Font CommandBuffer (QueueType: \"{}\")", v.Queue->GetQueueType()));
 #else
         bd->FontCommandBuffer = &bd->FontCommandPool->GetCommandBuffer(false);
 #endif

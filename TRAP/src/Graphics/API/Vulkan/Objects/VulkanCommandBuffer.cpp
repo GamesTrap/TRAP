@@ -25,7 +25,7 @@ namespace
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-		TRAP_ASSERT(!name.empty(), "VulkanBuffer::SetBufferName(): Name is empty!");
+		TRAP_ASSERT(!name.empty(), "VulkanCommandBuffer::SetCommandBufferName(): Name is empty!");
 
 		if(!TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport)
 			return;
@@ -57,7 +57,7 @@ TRAP::Graphics::API::VulkanCommandBuffer::~VulkanCommandBuffer()
 
 TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDevice> device, TRAP::Ref<Queue> queue,
                                                               VkCommandPool commandPool, const bool secondary,
-															  const std::string_view name)
+															  [[maybe_unused]] const std::string_view name)
 	: CommandBuffer(std::move(queue)),
 	  m_device(std::move(device)),
 	  m_vkCommandPool(commandPool),

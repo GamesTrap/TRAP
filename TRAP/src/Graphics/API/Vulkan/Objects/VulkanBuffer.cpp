@@ -129,13 +129,13 @@ namespace
 		{
 			if((bufferUsage & VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT) != 0u)
 			{
-				TP_ERROR(TRAP::Log::RendererVulkanBufferPrefix, "Failed to create storage texel buffer view for format ",
+				TP_ERROR(TRAP::Log::RendererVulkanBufferPrefix, "VulkanBuffer::CreateTexelBufferView():Failed to create storage texel buffer view for format ",
 						std::to_underlying(desc.Format));
 				return;
 			}
 			if((bufferUsage & VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT) != 0u)
 			{
-				TP_ERROR(TRAP::Log::RendererVulkanBufferPrefix, "Failed to create uniform texel buffer view for format ",
+				TP_ERROR(TRAP::Log::RendererVulkanBufferPrefix, "VulkanBuffer::CreateTexelBufferView():Failed to create uniform texel buffer view for format ",
 						std::to_underlying(desc.Format));
 				return;
 			}

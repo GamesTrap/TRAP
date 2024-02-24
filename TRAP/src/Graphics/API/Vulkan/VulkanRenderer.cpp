@@ -2359,9 +2359,12 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	CommandPoolDesc cmdPoolDesc{};
-	cmdPoolDesc.Queue = s_graphicQueue;
-	cmdPoolDesc.CreateFlags = CommandPoolCreateFlags::Transient;
+	const CommandPoolDesc cmdPoolDesc
+	{
+		.Queue = s_graphicQueue,
+		.CreateFlags = CommandPoolCreateFlags::Transient,
+		.Name = fmt::format("MapRenderTarget CommandPool (Transient, QueueType: \"Graphics\")")
+	};
 	TRAP::Ref<VulkanCommandPool> cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
@@ -3552,9 +3555,12 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	queueDesc.Type = QueueType::Graphics;
 	const TRAP::Ref<VulkanQueue> graphicsQueue = TRAP::MakeRef<VulkanQueue>(queueDesc);
 
-	CommandPoolDesc cmdPoolDesc{};
-	cmdPoolDesc.Queue = graphicsQueue;
-	cmdPoolDesc.CreateFlags = CommandPoolCreateFlags::Transient;
+	const CommandPoolDesc cmdPoolDesc
+	{
+		.Queue = graphicsQueue,
+		.CreateFlags = CommandPoolCreateFlags::Transient,
+		.Name = fmt::format("Initial Transition CommandPool (Transient, QueueType: \"Graphics\")")
+	};
 	const TRAP::Ref<VulkanCommandPool> cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
 
 #ifdef ENABLE_GRAPHICS_DEBUG

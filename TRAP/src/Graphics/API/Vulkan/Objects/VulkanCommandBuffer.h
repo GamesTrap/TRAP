@@ -25,7 +25,7 @@ namespace TRAP::Graphics::API
 		/// @param secondary Is this a secondary command buffer?
 		/// @param name Optional: Name for the command buffer
 		VulkanCommandBuffer(TRAP::Ref<VulkanDevice> device, TRAP::Ref<Queue> queue, VkCommandPool commandPool,
-		                    bool secondary, std::string_view name = "");
+		                    bool secondary, [[maybe_unused]] std::string_view name = "");
 
 		/// @brief Destructor.
 		~VulkanCommandBuffer() override;
