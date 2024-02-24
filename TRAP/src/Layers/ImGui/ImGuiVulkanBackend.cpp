@@ -1005,8 +1005,8 @@ namespace
         ImGui_ImplVulkan_Data* const bd = GetBackendData();
         InitInfo& v = bd->VulkanInitInfo;
 
-        const VkDescriptorPoolCreateInfo poolInfo = TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(v.DescriptorPoolSizes,
-                                                                                                               1000);
+        VkDescriptorPoolCreateInfo poolInfo = TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(v.DescriptorPoolSizes, 1);
+        poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
 
         VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
         CheckVkResult(vkCreateDescriptorPool(v.Device->GetVkDevice(), &poolInfo, nullptr, &descriptorPool));
@@ -1527,10 +1527,12 @@ void ImGui::INTERNAL::Vulkan::DestroyFontsTexture()
 
     ImGuiIO& io = ImGui::GetIO();
     ImGui_ImplVulkan_Data* const bd = GetBackendData();
+    const InitInfo& v = bd->VulkanInitInfo;
 
     if(bd->FontDescriptorSet != nullptr)
     {
         RemoveTexture(bd->FontImage);
+        VkCall(vkFreeDescriptorSets(v.Device->GetVkDevice(), v.DescriptorPool, 1, &bd->FontDescriptorSet));
         bd->FontDescriptorSet = VK_NULL_HANDLE;
         io.Fonts->SetTexID(nullptr);
     }

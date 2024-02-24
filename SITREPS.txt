@@ -4886,3 +4886,5 @@ SITREP 02/24/2024|24w08c1
     - Changed TRAP Engine version to 24w08c1(0.10.46)
     - VulkanDebug Added more safety checks ~<5 mins
     - VulkanCommon Added missing VkResult entries to VkResultToString map ~<5 mins
+    - ImGuiVulkanBackend Reduced DescriptorSets to 1 ~<5 mins
+    - ImGuiVulkanBackend Reduced DescriptorPool size to 1 combined image sampler ~<5 mins
