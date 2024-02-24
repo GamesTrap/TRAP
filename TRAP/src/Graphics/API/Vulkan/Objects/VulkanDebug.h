@@ -68,7 +68,7 @@ namespace TRAP::Graphics::API
 constexpr VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugUtilsCallback(const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
                                                                               [[maybe_unused]] const VkDebugUtilsMessageTypeFlagsEXT messageType,
                                                                               const VkDebugUtilsMessengerCallbackDataEXT* const callbackData,
-                                                                              [[maybe_unused]] void* userData)
+                                                                              [[maybe_unused]] void* const userData)
 {
 	std::string str = Log::RendererVulkanDebugPrefix;
 	str.pop_back();

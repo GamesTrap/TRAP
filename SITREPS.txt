@@ -4881,3 +4881,7 @@ SITREP 02/21/2024|24w08b1
     - Math Fixed Decompose function returning invalid euler angles for rotation ~<15 mins
     - Math Removed deprecated projection matrix functions ~<5 mins
     - Updated UnitTests ~<10 mins
+
+SITREP 02/24/2024|24w08c1
+    - Changed TRAP Engine version to 24w08c1(0.10.46)
+    - VulkanDebug Added more safety checks ~<5 mins

@@ -4,6 +4,7 @@
 #include "VulkanInits.h"
 #include "VulkanInstance.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Graphics/API/Vulkan/VulkanCommon.h"
 
 TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 	: m_instance(std::move(instance))
@@ -23,7 +24,10 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 		const VkResult res = vkCreateDebugUtilsMessengerEXT(m_instance->GetVkInstance(), &info, nullptr, &m_debugUtils);
 		TRAP_ASSERT(m_debugUtils, "VulkanDebug(): Debug Utils Messenger is nullptr");
 		if(res != VK_SUCCESS)
+		{
 			TP_ERROR(TRAP::Log::RendererVulkanPrefix, "Couldn't create Debug Utils Messenger!");
+			VkCall(res);
+		}
 	}
 #else
 	if(VulkanRenderer::s_debugReportExtension)
@@ -32,7 +36,10 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 		const VkResult res = vkCreateDebugReportCallbackEXT(m_instance->GetVkInstance(), &info, nullptr, &m_debugReport);
 		TRAP_ASSERT(m_debugReport, "VulkanDebug(): Debug Report Messenger is nullptr");
 		if(res != VK_SUCCESS)
+		{
 			TP_ERROR(TRAP::Log::RendererVulkanPrefix, "Couldn't create Debug Report Messenger!");
+			VkCall(res);
+		}
 	}
 #endif
 }
@@ -48,8 +55,10 @@ TRAP::Graphics::API::VulkanDebug::~VulkanDebug()
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	vkDestroyDebugUtilsMessengerEXT(m_instance->GetVkInstance(), m_debugUtils, nullptr);
+	if(m_debugUtils != VK_NULL_HANDLE)
+		vkDestroyDebugUtilsMessengerEXT(m_instance->GetVkInstance(), m_debugUtils, nullptr);
 #else
-	vkDestroyDebugReportCallbackEXT(m_instance->GetVkInstance(), m_debugReport, nullptr);
+	if(m_debugReport != VK_NULL_HANDLE)
+		vkDestroyDebugReportCallbackEXT(m_instance->GetVkInstance(), m_debugReport, nullptr);
 #endif
 }
