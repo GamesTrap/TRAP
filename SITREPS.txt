@@ -4908,3 +4908,7 @@ SITREP 02/25/2024|24w08c2
     - VulkanCommon Changed VkSetObjectName() ~<10 mins
     - VulkanFence Added ResetState() function ~<5 mins
     - VulkanFence Refactored various functions ~<10 mins
+
+SITREP 02/26/2024|24w09a1
+    - Changed TRAP Engine version to 24w09a1(0.10.48)
+    - VulkanFrameBuffer Refactored constructor ~<5 mins
