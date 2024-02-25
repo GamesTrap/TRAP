@@ -73,8 +73,6 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 
 	s_descriptorPool.reset();
 
-	s_ResourceLoader.reset();
-
 	RemoveDefaultResources();
 
 	std::lock_guard lock(s_renderPassMutex);
@@ -553,8 +551,6 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 	m_device->FindQueueFamilyIndices();
 
 	AddDefaultResources();
-
-	s_ResourceLoader = TRAP::MakeScope<ResourceLoader>();
 
 	const VkPhysicalDeviceProperties& devProps = m_device->GetPhysicalDevice().GetVkPhysicalDeviceProperties();
 	const VkPhysicalDeviceDriverProperties& devDriverProps = m_device->GetPhysicalDevice().GetVkPhysicalDeviceDriverProperties();

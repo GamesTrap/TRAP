@@ -4900,3 +4900,4 @@ SITREP 02/25/2024|24w08c2
     - Changed TRAP Engine version to 24w08c2(0.10.47)
     - VulkanDescriptorPool Added VkSetObjectName() calls ~<5 mins
     - Added names for VulkanDescriptorPools ~<5 mins
+    - Moved ResourceLoader initialization to RendererAPI ~<5 mins

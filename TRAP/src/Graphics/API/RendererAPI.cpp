@@ -69,6 +69,8 @@ void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const Re
 	s_transferQueue = Queue::Create(queueDesc);
 
 	s_Anisotropy = static_cast<SampleCount>(GPUSettings.MaxAnisotropy);
+
+	s_ResourceLoader = TRAP::MakeScope<API::ResourceLoader>();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -84,6 +86,8 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 #endif /*TRAP_HEADLESS_MODE*/
 
 	TRAP::Graphics::Sampler::ClearCache();
+
+	s_ResourceLoader.reset();
 
 	s_Renderer->s_graphicQueue->WaitQueueIdle();
 	s_Renderer->s_graphicQueue.reset();
