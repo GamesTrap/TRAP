@@ -190,9 +190,11 @@ namespace TRAP::Graphics
 		/// @note Data array length and sizeInBytes must match the textures current size or it won't update
 		void Update(const void* data, u32 sizeInBytes, u32 mipLevel = 0, u32 arrayLayer = 0);
 
+#ifdef ENABLE_GRAPHICS_DEBUG
 		/// @brief Set the texture name.
 		/// @param name Name for the texture.
         virtual void SetTextureName(std::string_view name) const = 0;
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 		/// @brief Retrieve whether the texture owns the image data.
 		/// @return True if texture owns the image data, false otherwise.

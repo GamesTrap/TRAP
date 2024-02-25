@@ -2361,11 +2361,7 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	};
 	TRAP::Ref<VulkanCommandPool> cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
 	CommandBuffer& cmd = cmdPool->GetCommandBuffer(false, "MapRenderTarget CommandBuffer"); //TODO Add RenderTarget name
-#else
-	CommandBuffer& cmd = cmdPool->GetCommandBuffer(false);
-#endif
 
 	//Add a staging buffer
 	const u32 formatByteWidth = ImageFormatBitSizeOfBlock(renderTarget->GetImageFormat()) / 8u;
@@ -2940,14 +2936,10 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 		};
 		p->GraphicCommandPools[i] = CommandPool::Create(cmdPoolDescGraphics);
 		//Allocate Graphic Command Buffer
-#ifdef ENABLE_GRAPHICS_DEBUG
 #ifndef TRAP_HEADLESS_MODE
 		p->GraphicCommandBuffers[i] = &p->GraphicCommandPools[i]->GetCommandBuffer(false, fmt::format("PerViewportData CommandBuffer (Window: \"{}\", QueueType: \"Graphics\", Image: {})", window->GetTitle(), i));
 #else
 		p->GraphicCommandBuffers[i] = &p->GraphicCommandPools[i]->GetCommandBuffer(false, fmt::format("PerViewportData CommandBuffer (QueueType: \"Graphics\", Image: {})", i));
-#endif
-#else
-		p->GraphicCommandBuffers[i] = &p->GraphicCommandPools[i]->GetCommandBuffer(false);
 #endif
 
 		//Create Render Fences/Semaphores
@@ -2974,14 +2966,10 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 #endif
 		};
 		p->ComputeCommandPools[i] = CommandPool::Create(cmdPoolDescCompute);
-#ifdef ENABLE_GRAPHICS_DEBUG
 #ifndef TRAP_HEADLESS_MODE
 		p->ComputeCommandBuffers[i] = &p->ComputeCommandPools[i]->GetCommandBuffer(false, fmt::format("PerViewportData CommandBuffer (Window: \"{}\", QueueType: \"Compute\", Image: {})", window->GetTitle(), i));
 #else
 		p->ComputeCommandBuffers[i] = &p->ComputeCommandPools[i]->GetCommandBuffer(false, fmt::format("PerViewportData CommandBuffer (QueueType: \"Compute\", Image: {})", i));
-#endif
-#else
-		p->ComputeCommandBuffers[i] = &p->ComputeCommandPools[i]->GetCommandBuffer(false);
 #endif
 
 		p->ComputeCompleteFences[i] = Fence::Create(false, fmt::format("PerViewportData Fence (ComputeComplete, Image: {})", i));
@@ -3215,19 +3203,16 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 
-#ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	if(VulkanInstance::IsExtensionSupported(VK_EXT_DEBUG_UTILS_EXTENSION_NAME))
 	{
 		extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 		s_debugUtilsExtension = true;
 	}
-#else
 	if(VulkanInstance::IsExtensionSupported(VK_EXT_DEBUG_REPORT_EXTENSION_NAME))
 	{
 		extensions.emplace_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
-		s_debugUtilsExtension = true;
+		s_debugReportExtension = true;
 	}
-#endif
 
 #ifdef ENABLE_GPU_BASED_VALIDATION
 	if(VulkanInstance::IsExtensionSupported(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME))
@@ -3282,13 +3267,13 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 	//VK_KHR_multiview
 
 	//Debug marker extension in case debug utils is not supported
-#ifndef ENABLE_DEBUG_UTILS_EXTENSION
+#ifndef ENABLE_GRAPHICS_DEBUG
 	if (physicalDevice->IsExtensionSupported(VK_EXT_DEBUG_MARKER_EXTENSION_NAME))
 	{
 		extensions.emplace_back(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
 		s_debugMarkerSupport = true;
 	}
-#endif /*ENABLE_DEBUG_UTILS_EXTENSION*/
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 	if (physicalDevice->IsExtensionSupported(VK_KHR_DRAW_INDIRECT_COUNT_EXTENSION_NAME))
 	{
@@ -3577,11 +3562,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	};
 	const TRAP::Ref<VulkanCommandPool> cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
 	CommandBuffer& cmd = cmdPool->GetCommandBuffer(false, "Initial Transition CommandBuffer");
-#else
-	CommandBuffer& cmd = cmdPool->GetCommandBuffer(false);
-#endif
 
 	const TRAP::Ref<VulkanFence> fence = TRAP::MakeRef<VulkanFence>(false, "Initial Transition Fence");
 

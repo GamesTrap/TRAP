@@ -65,9 +65,11 @@ namespace TRAP::Graphics::API
 		/// @return True if the texture is lazily allocated, false otherwise.
 		[[nodiscard]] constexpr bool IsLazilyAllocated() const noexcept;
 
+#ifdef ENABLE_GRAPHICS_DEBUG
 		/// @brief Set the name of the texture.
 		/// @param name Name for the texture.
 		void SetTextureName(std::string_view name) const override;
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 	protected:
 		/// @brief Shutdown API dependent texture.

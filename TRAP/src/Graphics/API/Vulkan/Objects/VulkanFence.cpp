@@ -15,14 +15,7 @@ namespace
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-		if(!TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport)
-			return;
-
-	#ifdef ENABLE_DEBUG_UTILS_EXTENSION
 		TRAP::Graphics::API::VkSetObjectName(device, std::bit_cast<u64>(fence), VK_OBJECT_TYPE_FENCE, name);
-	#else
-		TRAP::Graphics::API::VkSetObjectName(device, std::bit_cast<u64>(fence), VK_DEBUG_REPORT_OBJECT_TYPE_FENCE_EXT, name);
-	#endif
 	}
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
@@ -46,7 +39,8 @@ TRAP::Graphics::API::VulkanFence::VulkanFence(const bool signalled, [[maybe_unus
 	TRAP_ASSERT(m_fence, "VulkanFence(): Vulkan Fence is nullptr");
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-	SetFenceName(name, m_fence, m_device->GetVkDevice());
+	if(!name.empty())
+		SetFenceName(name, m_fence, m_device->GetVkDevice());
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 

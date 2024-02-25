@@ -51,13 +51,11 @@ namespace TRAP::Graphics::API
 																	              VkDebugReportObjectTypeEXT objectType,
 																	              u64 object, usize location,
 																	              i32 messageCode,
-																	              std::string_view layerPrefix,
-																	              std::string_view message, void* userData);
-#ifdef ENABLE_DEBUG_UTILS_EXTENSION
+																	              const char* layerPrefix,
+																	              const char* message, void* userData);
+
 		VkDebugUtilsMessengerEXT m_debugUtils = nullptr;
-#else
 		VkDebugReportCallbackEXT m_debugReport = nullptr;
-#endif
 
 		Ref<VulkanInstance> m_instance;
 	};
@@ -93,19 +91,19 @@ constexpr VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugReportCallback(c
 																	           [[maybe_unused]] const u64 object,
 																	           [[maybe_unused]] const usize location,
 																	           const i32 messageCode,
-																	           const std::string_view layerPrefix,
-																	           const std::string_view message,
+																	           const char* const layerPrefix,
+																	           const char* const message,
 																	           [[maybe_unused]] void* const userData)
 {
 	std::string str = Log::RendererVulkanDebugPrefix;
 	str.pop_back();
 
 	if((flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT) != 0u)
-		TP_INFO(str, '[', !layerPrefix.empty() ? layerPrefix : "", "] ", message, " (", messageCode, ')');
+		TP_INFO(str, '[', layerPrefix != nullptr ? layerPrefix : "", "] ", message, " (", messageCode, ')');
 	if((flags & VK_DEBUG_REPORT_WARNING_BIT_EXT) != 0u)
-		TP_WARN(str, '[', !layerPrefix.empty() ? layerPrefix : "", "] ", message, " (", messageCode, ')');
+		TP_WARN(str, '[', layerPrefix != nullptr ? layerPrefix : "", "] ", message, " (", messageCode, ')');
 	if((flags & VK_DEBUG_REPORT_ERROR_BIT_EXT) != 0u)
-		TP_ERROR(str, '[', !layerPrefix.empty() ? layerPrefix : "", "] ", message, " (", messageCode, ')');
+		TP_ERROR(str, '[', layerPrefix != nullptr ? layerPrefix : "", "] ", message, " (", messageCode, ')');
 
 	return VK_FALSE;
 }

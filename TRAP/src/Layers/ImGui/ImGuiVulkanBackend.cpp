@@ -769,11 +769,7 @@ namespace
                 .Name = fmt::format("ImGui Window CommandPool (Image: {}, QueueType: \"{}\")", i, queue->GetQueueType())
             };
             fd.CommandPool = TRAP::MakeScope<TRAP::Graphics::API::VulkanCommandPool>(cmdPoolDesc);
-#ifdef ENABLE_GRAPHICS_DEBUG
             fd.CommandBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(&fd.CommandPool->GetCommandBuffer(false, fmt::format("ImGui Window CommandBuffer (Image: {}, QueueType: {})", i, queue->GetQueueType())));
-#else
-            fd.CommandBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(&fd.CommandPool->GetCommandBuffer(false));
-#endif
 
             fd.Fence = TRAP::MakeRef<TRAP::Graphics::API::VulkanFence>(false, fmt::format("ImGui Window Fence (Image: {}, QueueType: \"{}\")", i, queue->GetQueueType()));
 

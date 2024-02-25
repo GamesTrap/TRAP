@@ -17,7 +17,6 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 	TP_DEBUG(Log::RendererVulkanDebugPrefix, "Registering Debug Callback");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-#ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	if(VulkanRenderer::s_debugUtilsExtension)
 	{
 		const VkDebugUtilsMessengerCreateInfoEXT info = VulkanInits::DebugUtilsMessengerCreateInfo(VulkanDebugUtilsCallback);
@@ -29,8 +28,7 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 			VkCall(res);
 		}
 	}
-#else
-	if(VulkanRenderer::s_debugReportExtension)
+	else if(VulkanRenderer::s_debugReportExtension)
 	{
 		const VkDebugReportCallbackCreateInfoEXT info = VulkanInits::DebugReportCallbackCreateInfo(VulkanDebugReportCallback);
 		const VkResult res = vkCreateDebugReportCallbackEXT(m_instance->GetVkInstance(), &info, nullptr, &m_debugReport);
@@ -41,7 +39,6 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 			VkCall(res);
 		}
 	}
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -54,11 +51,9 @@ TRAP::Graphics::API::VulkanDebug::~VulkanDebug()
 	TP_DEBUG(Log::RendererVulkanDebugPrefix, "Unregistering Debug Callback");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-#ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	if(m_debugUtils != VK_NULL_HANDLE)
 		vkDestroyDebugUtilsMessengerEXT(m_instance->GetVkInstance(), m_debugUtils, nullptr);
-#else
+
 	if(m_debugReport != VK_NULL_HANDLE)
 		vkDestroyDebugReportCallbackEXT(m_instance->GetVkInstance(), m_debugReport, nullptr);
-#endif
 }

@@ -9,29 +9,6 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
-namespace
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	void SetDescriptorPoolName(const std::string_view name, VkDescriptorPool descriptorPool, const TRAP::Graphics::API::VulkanDevice& device)
-	{
-		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-		TRAP_ASSERT(!name.empty(), "VulkanDescriptorPool::SetDescriptorPoolName(): Name is empty!");
-
-		if(!TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport)
-			return;
-
-	#ifdef ENABLE_DEBUG_UTILS_EXTENSION
-		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(descriptorPool), VK_OBJECT_TYPE_DESCRIPTOR_POOL, name);
-	#else
-		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(descriptorPool), VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_POOL_EXT, name);
-	#endif
-	}
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const u32 numDescriptorSets,
                                                                 [[maybe_unused]] const std::string_view name)
 	: DescriptorPool(numDescriptorSets)
@@ -56,7 +33,8 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const u32 numDes
 	{
 		m_descriptorPools.emplace_back(m_currentPool);
 #ifdef ENABLE_GRAPHICS_DEBUG
-		SetDescriptorPoolName(name, m_currentPool, *m_device);
+		if(!name.empty())
+			TRAP::Graphics::API::VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_currentPool), VK_OBJECT_TYPE_DESCRIPTOR_POOL, name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 	}
 }

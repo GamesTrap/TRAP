@@ -42,9 +42,11 @@ namespace TRAP::Graphics::API
 		/// @param desc Pipeline description
 		void InitGraphicsPipeline(const RendererAPI::PipelineDesc& desc);
 
+#ifdef ENABLE_GRAPHICS_DEBUG
 		/// @brief Set a name for the pipeline.
 		/// @param name Name for the pipeline.
 		void SetPipelineName(std::string_view name) const;
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 		VkPipeline m_vkPipeline = VK_NULL_HANDLE;
 		RendererAPI::PipelineType m_type = TRAP::Graphics::RendererAPI::PipelineType::Undefined;

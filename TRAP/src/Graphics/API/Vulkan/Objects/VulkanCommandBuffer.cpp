@@ -18,29 +18,6 @@
 #include "VulkanInits.h"
 #include "VulkanTexture.h"
 
-namespace
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	void SetCommandBufferName(const std::string_view name, VkCommandBuffer cmdBuffer, const TRAP::Graphics::API::VulkanDevice& device)
-	{
-		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-		TRAP_ASSERT(!name.empty(), "VulkanCommandBuffer::SetCommandBufferName(): Name is empty!");
-
-		if(!TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport)
-			return;
-
-	#ifdef ENABLE_DEBUG_UTILS_EXTENSION
-		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(cmdBuffer), VK_OBJECT_TYPE_COMMAND_BUFFER, name);
-	#else
-		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(cmdBuffer), VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_BUFFER_EXT, name);
-	#endif
-	}
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Graphics::API::VulkanCommandBuffer::~VulkanCommandBuffer()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -79,7 +56,7 @@ TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDe
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if (!name.empty())
-		SetCommandBufferName(name, m_vkCommandBuffer, *m_device);
+		TRAP::Graphics::API::VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkCommandBuffer), VK_OBJECT_TYPE_COMMAND_BUFFER, name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
@@ -637,19 +614,16 @@ void TRAP::Graphics::API::VulkanCommandBuffer::AddDebugMarker(const TRAP::Math::
 
 	TRAP_ASSERT(name.empty(), "VulkanCommandBuffer::AddDebugMarker(): Name is empty!");
 
-#ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	if(!VulkanRenderer::s_debugUtilsExtension)
-		return;
-
-	const VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x(), color.y(), color.z(), name);
-	vkCmdInsertDebugUtilsLabelEXT(m_vkCommandBuffer, &markerInfo);
-#else
-	if(!VulkanRenderer::s_debugReportExtension)
-		return;
-
-	const VkDebugMarkerMarkerInfoEXT markerInfo = VulkanInits::DebugMarkerMarkerInfo(color.x(), color.y(), color.z(), name);
-	vkCmdDebugMarkerInsertEXT(m_vkCommandBuffer, &markerInfo);
-#endif
+	if(VulkanRenderer::s_debugUtilsExtension)
+	{
+		const VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x(), color.y(), color.z(), name);
+		vkCmdInsertDebugUtilsLabelEXT(m_vkCommandBuffer, &markerInfo);
+	}
+	else if(VulkanRenderer::s_debugReportExtension)
+	{
+		const VkDebugMarkerMarkerInfoEXT markerInfo = VulkanInits::DebugMarkerMarkerInfo(color.x(), color.y(), color.z(), name);
+		vkCmdDebugMarkerInsertEXT(m_vkCommandBuffer, &markerInfo);
+	}
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
 	if(RendererAPI::s_aftermathSupport)
@@ -665,19 +639,16 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BeginDebugMarker(const TRAP::Math
 
 	TRAP_ASSERT(name.empty(), "VulkanCommandBuffer::BeginDebugMarker(): Name is empty!");
 
-#ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	if(!VulkanRenderer::s_debugUtilsExtension)
-		return;
-
-	const VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x(), color.y(), color.z(), name);
-	vkCmdBeginDebugUtilsLabelEXT(m_vkCommandBuffer, &markerInfo);
-#elif !defined(USE_RENDER_DOC)
-	if(!VulkanRenderer::s_debugReportExtension)
-		return;
-
-	const VkDebugMarkerMarkerInfoEXT markerInfo = VulkanInits::DebugMarkerMarkerInfo(color.x(), color.y(), color.z(), name);
-	vkCmdDebugMarkerBeginEXT(m_vkCommandBuffer, &markerInfo);
-#endif
+	if(VulkanRenderer::s_debugUtilsExtension)
+	{
+		const VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x(), color.y(), color.z(), name);
+		vkCmdBeginDebugUtilsLabelEXT(m_vkCommandBuffer, &markerInfo);
+	}
+	else if(VulkanRenderer::s_debugReportExtension)
+	{
+		const VkDebugMarkerMarkerInfoEXT markerInfo = VulkanInits::DebugMarkerMarkerInfo(color.x(), color.y(), color.z(), name);
+		vkCmdDebugMarkerBeginEXT(m_vkCommandBuffer, &markerInfo);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -686,17 +657,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::EndDebugMarker() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-#ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	if(!VulkanRenderer::s_debugUtilsExtension)
-		return;
-
-	vkCmdEndDebugUtilsLabelEXT(m_vkCommandBuffer);
-#elif !defined(USE_RENDER_DOC)
-	if(!VulkanRenderer::s_debugReportExtension)
-		return;
-
-	vkCmdDebugMarkerEndEXT(m_vkCommandBuffer);
-#endif
+	if(VulkanRenderer::s_debugUtilsExtension)
+		vkCmdEndDebugUtilsLabelEXT(m_vkCommandBuffer);
+	else if(VulkanRenderer::s_debugReportExtension)
+		vkCmdDebugMarkerEndEXT(m_vkCommandBuffer);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

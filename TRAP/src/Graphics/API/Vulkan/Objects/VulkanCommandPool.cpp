@@ -9,29 +9,6 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
-namespace
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	void SetCommandPoolName(const std::string_view name, VkCommandPool cmdPool, const TRAP::Graphics::API::VulkanDevice& device)
-	{
-		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-		TRAP_ASSERT(!name.empty(), "VulkanCommandPool::SetCommandPoolName(): Name is empty!");
-
-		if(!TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport)
-			return;
-
-	#ifdef ENABLE_DEBUG_UTILS_EXTENSION
-		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(cmdPool), VK_OBJECT_TYPE_COMMAND_POOL, name);
-	#else
-		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(cmdPool), VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_POOL_EXT, name);
-	#endif
-	}
-#endif
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::CommandPoolDesc& desc)
 	: CommandPool(desc.Queue)
 {
@@ -58,7 +35,8 @@ TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::Com
 	TRAP_ASSERT(m_vkCommandPool, "VulkanCommandPool(): Vulkan CommandPool is nullptr");
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-	SetCommandPoolName(desc.Name, m_vkCommandPool, *m_device);
+	if(!desc.Name.empty())
+		TRAP::Graphics::API::VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkCommandPool), VK_OBJECT_TYPE_COMMAND_POOL, desc.Name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 

@@ -55,9 +55,11 @@ namespace TRAP::Graphics::API
 			                                                                    u32 depthMipSlice,
 							   												    const TRAP::Ref<RenderTarget>& shadingRate);
 
+#ifdef ENABLE_GRAPHICS_DEBUG
 		/// @brief Set the name of the render target.
 		/// @param name Name to use.
 		void SetRenderTargetName(std::string_view name) const;
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 

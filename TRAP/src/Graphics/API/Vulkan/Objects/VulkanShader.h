@@ -200,10 +200,12 @@ namespace TRAP::Graphics::API
 		void Shutdown() override;
 
 	private:
+#ifdef ENABLE_GRAPHICS_DEBUG
 		/// @brief Set a name for the shader stage.
 		/// @param name Name for the shader stage.
 		/// @param stage Shader stage to name.
 		void SetShaderStageName(std::string_view name, VkShaderModule stage) const;
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Use a buffer object with this shader on the given window.

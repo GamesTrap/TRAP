@@ -377,16 +377,11 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef ENABLE_GRAPHICS_DEBUG
 void TRAP::Graphics::API::VulkanPipeline::SetPipelineName(const std::string_view name) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	if(!VulkanRenderer::s_debugMarkerSupport)
-		return;
-
-#ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkPipeline), VK_OBJECT_TYPE_PIPELINE, name);
-#else
-	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkPipeline), VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_EXT, name);
-#endif
 }
+#endif /*ENABLE_GRAPHICS_DEBUG*/

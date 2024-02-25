@@ -11,22 +11,6 @@
 
 namespace
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
-	void SetDeviceName(const std::string_view name, VkDevice device)
-	{
-		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-		if(!TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport)
-			return;
-
-	#ifdef ENABLE_DEBUG_UTILS_EXTENSION
-		TRAP::Graphics::API::VkSetObjectName(device, std::bit_cast<u64>(device), VK_OBJECT_TYPE_DEVICE, name);
-	#else
-		TRAP::Graphics::API::VkSetObjectName(device, std::bit_cast<u64>(device), VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_EXT, name);
-	#endif
-	}
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	void DebugPrintActiveDeviceExtensions(const std::span<const std::string> deviceExtensions,
 	                                      const TRAP::Graphics::API::VulkanPhysicalDevice& physicalDevice)
@@ -297,7 +281,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if (m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName[0] != '\0')
-		SetDeviceName(m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName, m_device);
+		TRAP::Graphics::API::VkSetObjectName(m_device, std::bit_cast<u64>(m_device), VK_OBJECT_TYPE_DEVICE, m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)

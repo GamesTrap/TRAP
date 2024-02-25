@@ -143,26 +143,6 @@ namespace
 
 		VkCall(vkCreateBufferView(device.GetVkDevice(), &viewInfo, nullptr, &outBufferView));
 	}
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-	void SetBufferName(const std::string_view name, VkBuffer buffer, const TRAP::Graphics::API::VulkanDevice& device)
-	{
-		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-		TRAP_ASSERT(!name.empty(), "VulkanBuffer::SetBufferName(): Name is empty!");
-
-		if(!TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport)
-			return;
-
-	#ifdef ENABLE_DEBUG_UTILS_EXTENSION
-		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(buffer), VK_OBJECT_TYPE_BUFFER, name);
-	#else
-		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(buffer), VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT, name);
-	#endif
-	}
-#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -201,7 +181,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if (!desc.Name.empty())
-		SetBufferName(desc.Name, m_vkBuffer, *m_device);
+		TRAP::Graphics::API::VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkBuffer), VK_OBJECT_TYPE_BUFFER, desc.Name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 

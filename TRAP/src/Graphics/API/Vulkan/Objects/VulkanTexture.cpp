@@ -392,21 +392,16 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef ENABLE_GRAPHICS_DEBUG
 void TRAP::Graphics::API::VulkanTexture::SetTextureName(const std::string_view name) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(!name.empty(), "VulkanTexture::SetTextureName(): Name is empty!");
 
-	if (!VulkanRenderer::s_debugMarkerSupport)
-		return;
-
-#ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkImage), VK_OBJECT_TYPE_IMAGE, name);
-#else
-	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkImage), VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT, name);
-#endif
 }
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

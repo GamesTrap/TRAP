@@ -67,9 +67,11 @@ namespace TRAP::Graphics::API
 #endif /*TRAP_HEADLESS_MODE*/
 
 	private:
+#ifdef ENABLE_GRAPHICS_DEBUG
 		/// @brief Set a name for the queue.
 		/// @param name Name for the queue.
 		void SetQueueName(std::string_view name) const;
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 

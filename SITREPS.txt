@@ -4904,3 +4904,5 @@ SITREP 02/25/2024|24w08c2
     - VulkanDevice Refactored various functions ~<20 mins
     - VulkanFence Added VkSetObjectName() calls ~<5 mins
     - Added names for VulkanFencess ~<5 mins
+    - Removed ENABLE_DEBUG_UTILS_EXTENSION macro ~<15 mins
+    - VulkanCommon Changed VkSetObjectName() ~<10 mins
