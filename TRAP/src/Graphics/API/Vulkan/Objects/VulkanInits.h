@@ -609,12 +609,17 @@ namespace TRAP::Graphics::API::VulkanInits
 
 [[nodiscard]] constexpr VkFenceCreateInfo TRAP::Graphics::API::VulkanInits::FenceCreateInfo(const bool signalled) noexcept
 {
-	return VkFenceCreateInfo
+	VkFenceCreateInfo fenceCreateInfo
 	{
 		.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
 		.pNext = nullptr,
-		.flags = signalled ? VK_FENCE_CREATE_SIGNALED_BIT : VkFenceCreateFlags{}
+		.flags = 0
 	};
+
+	if(signalled)
+		fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+	return fenceCreateInfo;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
