@@ -775,7 +775,7 @@ namespace
             fd.CommandBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(&fd.CommandPool->GetCommandBuffer(false));
 #endif
 
-            fd.Fence = TRAP::MakeRef<TRAP::Graphics::API::VulkanFence>();
+            fd.Fence = TRAP::MakeRef<TRAP::Graphics::API::VulkanFence>(false, fmt::format("ImGui Window Fence (Image: {}, QueueType: \"{}\")", i, queue->GetQueueType()));
 
         }
 

@@ -2951,7 +2951,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 #endif
 
 		//Create Render Fences/Semaphores
-		p->RenderCompleteFences[i] = Fence::Create();
+		p->RenderCompleteFences[i] = Fence::Create(false, fmt::format("PerViewportData Fence (RenderComplete, Image: {})", i));
 		p->RenderCompleteSemaphores[i] = Semaphore::Create();
 		p->GraphicsCompleteSemaphores[i] = Semaphore::Create();
 
@@ -2984,7 +2984,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 		p->ComputeCommandBuffers[i] = &p->ComputeCommandPools[i]->GetCommandBuffer(false);
 #endif
 
-		p->ComputeCompleteFences[i] = Fence::Create();
+		p->ComputeCompleteFences[i] = Fence::Create(false, fmt::format("PerViewportData Fence (ComputeComplete, Image: {})", i));
 		p->ComputeCompleteSemaphores[i] = Semaphore::Create();
 
 		p->ComputeTimestampQueryPools[i] = QueryPool::Create(queryPoolDesc);
@@ -3583,7 +3583,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	CommandBuffer& cmd = cmdPool->GetCommandBuffer(false);
 #endif
 
-	const TRAP::Ref<VulkanFence> fence = TRAP::MakeRef<VulkanFence>();
+	const TRAP::Ref<VulkanFence> fence = TRAP::MakeRef<VulkanFence>(false, "Initial Transition Fence");
 
 	s_NullDescriptors->InitialTransitionQueue = graphicsQueue;
 	s_NullDescriptors->InitialTransitionCmdPool = cmdPool;
