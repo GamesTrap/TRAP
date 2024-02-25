@@ -613,7 +613,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	{
 		.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
 		.pNext = nullptr,
-		.flags = signalled ? VK_FENCE_CREATE_SIGNALED_BIT : VkFenceCreateFlagBits()
+		.flags = signalled ? VK_FENCE_CREATE_SIGNALED_BIT : VkFenceCreateFlags{}
 	};
 }
 
