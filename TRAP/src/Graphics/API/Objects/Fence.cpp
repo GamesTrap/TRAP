@@ -3,7 +3,7 @@
 
 #include "Graphics/API/Vulkan/Objects/VulkanFence.h"
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create(const bool signalled)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create(const bool signalled, [[maybe_unused]] const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -11,7 +11,7 @@
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
-		return TRAP::MakeRef<API::VulkanFence>(signalled);
+		return TRAP::MakeRef<API::VulkanFence>(signalled, name);
 
 	case RenderAPI::NONE:
 		return nullptr;

@@ -809,7 +809,7 @@ void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 
 		const CopyEngine::CopyResourceSet cpyResSet
 		{
-			.Fence = Fence::Create(),
+			.Fence = Fence::Create(false, fmt::format("ResourceLoader Fence (QueueType: \"{}\", Resource set: {})", desc.Type, i)),
 			.CommandPool = cmdPool,
 #ifdef ENABLE_GRAPHICS_DEBUG
 			.Cmd = cmdPool->GetCommandBuffer(false, fmt::format("ResourceLoader Staging CommandBuffer (QueueType: \"{}\", Resource set: {})", desc.Type, i)),
