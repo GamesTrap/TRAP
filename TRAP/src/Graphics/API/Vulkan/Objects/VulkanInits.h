@@ -139,7 +139,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param semaphore Semaphore to wait on.
 	/// @param value Signal value to set.
 	/// @return VkSemaphoreWaitInfoKHR
-	[[nodiscard]] VkSemaphoreWaitInfoKHR SemaphoreWaitInfo(VkSemaphore& semaphore, u64& value);
+	[[nodiscard]] VkSemaphoreWaitInfoKHR SemaphoreWaitInfo(VkSemaphore semaphore, const u64& value);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

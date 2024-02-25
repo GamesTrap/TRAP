@@ -157,7 +157,7 @@ namespace
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	void InitNVIDIAReflex(VkSemaphore& reflexSemaphore, const TRAP::Graphics::RendererAPI::GPUVendor gpuVendor, VkDevice device)
 	{
-		if (gpuVendor == RendererAPI::GPUVendor::NVIDIA &&
+		if (gpuVendor == TRAP::Graphics::RendererAPI::GPUVendor::NVIDIA &&
 			TRAP::Graphics::API::VulkanRenderer::s_timelineSemaphore &&
 			TRAP::Utils::IsWindows10BuildOrGreaterWin32(10240))
 		{

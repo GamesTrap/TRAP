@@ -12,7 +12,8 @@ namespace TRAP::Graphics
 		/// @brief Create a new fence. Fence is not signaled.
 		/// @return Created fence.
 		/// @param signalled Whether the Fence should be in signalled state or not. Default: Not signalled.
-		[[nodiscard]] static TRAP::Ref<Fence> Create(bool signalled = false);
+		/// @param name Optional: Name for the Fence.
+		[[nodiscard]] static TRAP::Ref<Fence> Create(bool signalled = false, [[maybe_unused]] std::string_view name = "");
 
 		/// @brief Destructor.
 		virtual ~Fence();
