@@ -11,6 +11,7 @@
 
 namespace
 {
+#ifdef ENABLE_GRAPHICS_DEBUG
 	void SetDeviceName(const std::string_view name, VkDevice device)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -24,6 +25,7 @@ namespace
 		TRAP::Graphics::API::VkSetObjectName(device, std::bit_cast<u64>(device), VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_EXT, name);
 	#endif
 	}
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	void DebugPrintActiveDeviceExtensions(const std::span<const std::string> deviceExtensions,

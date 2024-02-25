@@ -2825,12 +2825,10 @@ namespace TRAP::Graphics
 		[[nodiscard]] static u32 GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
 
-#ifdef ENABLE_NSIGHT_AFTERMATH
 		//GPU crash dump tracker using Nsight Aftermath instrumentation
 		inline constinit static bool s_aftermathSupport = false;
 		inline constinit static bool s_diagnosticsConfigSupport = false;
 		inline constinit static bool s_diagnosticCheckPointsSupport = false;
-#endif /*ENABLE_NSIGHT_AFTERMATH*/
 
 	protected:
 		static TRAP::Scope<RendererAPI> s_Renderer;
