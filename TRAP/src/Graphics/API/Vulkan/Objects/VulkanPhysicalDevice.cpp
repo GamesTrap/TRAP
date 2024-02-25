@@ -214,22 +214,25 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentShaderInterlockFeatures()
+void TRAP::Graphics::API::VulkanPhysicalDevice::LoadPhysicalDeviceFragmentShaderInterlockFeatures()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	if(VulkanRenderer::s_fragmentShaderInterlockExtension)
 	{
-		VkPhysicalDeviceFeatures2 features2;
+		VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT fragShaderInterlock{};
+		fragShaderInterlock.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT;
+
+		VkPhysicalDeviceFeatures2 features2{};
 		features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-		m_physicalDeviceFragmentShaderInterlockFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT;
-		m_physicalDeviceFragmentShaderInterlockFeatures.pNext = nullptr;
-		features2.pNext = &m_physicalDeviceFragmentShaderInterlockFeatures;
+		features2.pNext = &fragShaderInterlock;
+
 		vkGetPhysicalDeviceFeatures2(m_physicalDevice, &features2);
 
-		RendererAPI::GPUSettings.ROVsSupported = m_physicalDeviceFragmentShaderInterlockFeatures.fragmentShaderPixelInterlock;
+		RendererAPI::GPUSettings.ROVsSupported = fragShaderInterlock.fragmentShaderPixelInterlock;
 	}
-	RendererAPI::GPUSettings.ROVsSupported = 0u;
+	else
+		RendererAPI::GPUSettings.ROVsSupported = 0u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

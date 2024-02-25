@@ -548,8 +548,6 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 
 	s_descriptorPool = TRAP::MakeRef<VulkanDescriptorPool>(8192, "VulkanRenderer Global DescriptorPool");
 
-	m_device->FindQueueFamilyIndices();
-
 	AddDefaultResources();
 
 	const VkPhysicalDeviceProperties& devProps = m_device->GetPhysicalDevice().GetVkPhysicalDeviceProperties();

@@ -52,9 +52,6 @@ namespace TRAP::Graphics::API
 		/// @brief Retrieve the Vulkan physical device features.
 		/// @return VkPhysicalDeviceFeatures.
 		[[nodiscard]] constexpr const VkPhysicalDeviceFeatures& GetVkPhysicalDeviceFeatures() const noexcept;
-		/// @brief Retrieve the Vulkan physical device fragment shader interlock features.
-		/// @return VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT.
-		[[nodiscard]] constexpr const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT& GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const noexcept;
 		/// @brief Retrieve the Vulkan physical device driver properties.
 		/// @return VkPhysicalDeviceDriverProperties.
 		[[nodiscard]] constexpr const VkPhysicalDeviceDriverProperties& GetVkPhysicalDeviceDriverProperties() const noexcept;
@@ -78,9 +75,9 @@ namespace TRAP::Graphics::API
 		/// @return Physical device UUID.
 		[[nodiscard]] constexpr const TRAP::Utils::UUID& GetPhysicalDeviceUUID() const noexcept;
 
-		/// @brief Retrieve the physical device fragment shader interlock features.
+		/// @brief Load the physical device fragment shader interlock features.
 		/// Value is saved in RendererAPI::GPUSettings.ROVsSupported.
-		void RetrievePhysicalDeviceFragmentShaderInterlockFeatures();
+		void LoadPhysicalDeviceFragmentShaderInterlockFeatures();
 
 		/// @brief Retrieve the vendor of the physical device.
 		/// @return Vendor.
@@ -156,7 +153,6 @@ namespace TRAP::Graphics::API
 		VkPhysicalDeviceIDProperties m_physicalDeviceIDProperties{};
 		VkPhysicalDeviceMemoryProperties m_physicalDeviceMemoryProperties{};
 		VkPhysicalDeviceFeatures m_physicalDeviceFeatures{};
-		VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT m_physicalDeviceFragmentShaderInterlockFeatures{};
 		VkPhysicalDeviceDriverProperties m_physicalDeviceDriverProperties{};
 		std::vector<VkQueueFamilyProperties> m_queueFamilyProperties{};
 
@@ -260,13 +256,6 @@ namespace TRAP::Graphics::API
 [[nodiscard]] constexpr const VkPhysicalDeviceFeatures &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFeatures() const noexcept
 {
 	return m_physicalDeviceFeatures;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const noexcept
-{
-	return m_physicalDeviceFragmentShaderInterlockFeatures;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

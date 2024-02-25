@@ -42,9 +42,6 @@ namespace TRAP::Graphics::API
 		/// @return List of physical device extensions.
 		[[nodiscard]] constexpr const std::vector<std::string>& GetUsedPhysicalDeviceExtensions() const noexcept;
 
-		/// @brief Find a queue family index for each queue type.
-		void FindQueueFamilyIndices();
-
 		/// @brief Wait for the completion of outstanding queue operations for all queues on the device.
 		void WaitIdle() const;
 
@@ -76,17 +73,15 @@ namespace TRAP::Graphics::API
 		/// @return Semaphore.
 		/// @remark @headless This function is not available in headless mode.
 		/// @remark This function is only available when NVIDIA Reflex SDK is provided.
-		[[nodiscard]] constexpr VkSemaphore& GetReflexSemaphore() noexcept;
+		[[nodiscard]] constexpr VkSemaphore GetReflexSemaphore() const noexcept;
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 	private:
 		friend VulkanQueue;
 
-		/// @brief Find the queue family index for a given queue type.
-		/// @param queueType Queue type to search for.
-		/// @param queueFamilyIndex Output queue family index.
-		/// @param queueIndex Output queue index.
-		void FindQueueFamilyIndex(RendererAPI::QueueType queueType, u8& queueFamilyIndex, u8& queueIndex);
+		/// @brief Find a queue family index for each queue type.
+		void FindQueueFamilyIndices();
+
 		/// @brief Find the queue family index for a given queue type from the given queue family properties.
 		/// @param queueType Queue type to search for.
 		/// @param queueFamilyProperties Queue family properties to search in.
@@ -94,13 +89,6 @@ namespace TRAP::Graphics::API
 		/// @param queueIndex Output queue index.
 		void FindQueueFamilyIndex(RendererAPI::QueueType queueType, VkQueueFamilyProperties& queueFamilyProperties,
 		                          u8& queueFamilyIndex, u8& queueIndex);
-
-		/// @brief Set a name for the device device.
-		/// @param name Name for the device.
-		void SetDeviceName(std::string_view name) const;
-
-		/// @brief Load the variable shading rate capabilities from the physical device.
-		void LoadShadingRateCaps(const VkPhysicalDeviceFragmentShadingRateFeaturesKHR& shadingRateFeatures) const;
 
 		TRAP::Scope<VulkanPhysicalDevice> m_physicalDevice;
 
@@ -118,7 +106,7 @@ namespace TRAP::Graphics::API
 		u8 m_computeQueueIndex = 0;
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-		VkSemaphore m_reflexSemaphore;
+		VkSemaphore m_reflexSemaphore = VK_NULL_HANDLE;
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 		VkDevice m_device = VK_NULL_HANDLE;
@@ -191,7 +179,7 @@ namespace TRAP::Graphics::API
 //-------------------------------------------------------------------------------------------------------------------//
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-[[nodiscard]] constexpr VkSemaphore& TRAP::Graphics::API::VulkanDevice::GetReflexSemaphore() noexcept
+[[nodiscard]] constexpr VkSemaphore TRAP::Graphics::API::VulkanDevice::GetReflexSemaphore() const noexcept
 {
 	return m_reflexSemaphore;
 }
