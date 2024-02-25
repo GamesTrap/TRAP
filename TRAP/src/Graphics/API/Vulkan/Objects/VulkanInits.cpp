@@ -184,7 +184,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkSemaphoreWaitInfoKHR TRAP::Graphics::API::VulkanInits::SemaphoreWaitInfo(VkSemaphore& semaphore, u64& value)
+[[nodiscard]] VkSemaphoreWaitInfoKHR TRAP::Graphics::API::VulkanInits::SemaphoreWaitInfo(VkSemaphore semaphore, const u64& value)
 {
 	TRAP_ASSERT(semaphore != VK_NULL_HANDLE, "VulkanInits::SemaphoreWaitInfo(): Semaphore can't be VK_NULL_HANDLE!");
 
