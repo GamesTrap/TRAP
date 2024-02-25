@@ -358,9 +358,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ReInitSwapChain()
 
 		if(res == VK_ERROR_OUT_OF_DATE_KHR || res == VK_SUBOPTIMAL_KHR)
 		{
-			VkFence vkF = fen->GetVkFence();
-			VkCall(vkResetFences(m_device->GetVkDevice(), 1, &vkF));
-			fen->m_submitted = false;
+			fen->ResetState();
 			return std::nullopt;
 		}
 

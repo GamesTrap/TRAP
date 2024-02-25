@@ -4906,3 +4906,5 @@ SITREP 02/25/2024|24w08c2
     - Added names for VulkanFencess ~<5 mins
     - Removed ENABLE_DEBUG_UTILS_EXTENSION macro ~<15 mins
     - VulkanCommon Changed VkSetObjectName() ~<10 mins
+    - VulkanFence Added ResetState() function ~<5 mins
+    - VulkanFence Refactored various functions ~<10 mins

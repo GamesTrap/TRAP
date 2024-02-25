@@ -1296,8 +1296,7 @@ namespace
                 VkFence fence = fd.Fence->GetVkFence();
 
                 fd.CommandBuffer->End();
-                err = vkResetFences(v.Device->GetVkDevice(), 1, &fence);
-                CheckVkResult(err);
+                fd.Fence->ResetState();
                 err = vkQueueSubmit(v.Queue->GetVkQueue(), 1, &info, fence);
                 CheckVkResult(err);
             }

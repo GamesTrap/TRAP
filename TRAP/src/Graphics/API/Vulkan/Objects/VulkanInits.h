@@ -128,8 +128,9 @@ namespace TRAP::Graphics::API::VulkanInits
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// @brief Create a Vulkan fence create info.
+	/// @param signalled Whether to set the fence state to signalled state on creation or not. Default: Unsignalled.
 	/// @return VkFenceCreateInfo.
-	[[nodiscard]] constexpr VkFenceCreateInfo FenceCreateInfo() noexcept;
+	[[nodiscard]] constexpr VkFenceCreateInfo FenceCreateInfo(bool signalled = false) noexcept;
 
 	/// @brief Create a Vulkan semaphore create info.
 	/// @return VkSemaphoreCreateInfo.
@@ -606,13 +607,13 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkFenceCreateInfo TRAP::Graphics::API::VulkanInits::FenceCreateInfo() noexcept
+[[nodiscard]] constexpr VkFenceCreateInfo TRAP::Graphics::API::VulkanInits::FenceCreateInfo(const bool signalled) noexcept
 {
 	return VkFenceCreateInfo
 	{
 		.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
 		.pNext = nullptr,
-		.flags = 0
+		.flags = signalled ? VK_FENCE_CREATE_SIGNALED_BIT : VkFenceCreateFlagBits()
 	};
 }
 

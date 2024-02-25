@@ -39,6 +39,10 @@ namespace TRAP::Graphics
 		///        2. Resets the fence.
 		virtual void Wait() = 0;
 
+		/// @brief Reset the fence to the unsignalled state.
+		/// @note If fence is already in unsignalled state then this function has no effect.
+		virtual void ResetState() = 0;
+
 		/// @brief Utility function to wait for multiple fences.
 		/// @param fences Fences to wait for.
 		static void WaitForFences(std::vector<Fence>& fences);

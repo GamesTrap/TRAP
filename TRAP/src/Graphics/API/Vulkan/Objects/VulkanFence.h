@@ -45,6 +45,10 @@ namespace TRAP::Graphics::API
 		/// 2. Resets the fence.
 		void Wait() override;
 
+		/// @brief Reset the fence to the unsignalled state.
+		/// @note If fence is already in unsignalled state then this function has no effect.
+		void ResetState() override;
+
 	private:
 #ifndef TRAP_HEADLESS_MODE
 		friend std::optional<u32> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
