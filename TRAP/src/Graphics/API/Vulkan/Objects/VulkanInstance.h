@@ -15,10 +15,11 @@ namespace TRAP::Graphics::API
 	public:
 		/// @brief Constructor.
 		/// @param appName Application name.
-		/// @param instanceLayers Instance layers to use.
-		/// @param instanceExtensions Instance extensions to use.
-		VulkanInstance(std::string_view appName, std::vector<std::string> instanceLayers,
-		               std::vector<std::string> instanceExtensions);
+		/// @param instanceLayers Optional: Instance layers to use.
+		/// @param instanceExtensions Optional: Instance extensions to use.
+		explicit VulkanInstance(std::string_view appName,
+		                        std::vector<std::string> instanceLayers = {},
+		                        std::vector<std::string> instanceExtensions = {});
 		/// @brief Destructor.
 		~VulkanInstance();
 
@@ -44,12 +45,6 @@ namespace TRAP::Graphics::API
 		/// @brief Retrieve the Vulkan instance version packed by VK_MAKE_API_VERSION.
 		/// @return Vulkan instance version if available, empty optional otherwise.
 		[[nodiscard]] static std::optional<u32> GetInstanceVersion();
-		/// @brief Retrieve a list of available instance layers.
-		/// @return List of available instance layers.
-		[[nodiscard]] static const std::vector<VkLayerProperties>& GetAvailableInstanceLayers();
-		/// @brief Retrieve a list of available instance extensions.
-		/// @return List of available instance extensions.
-		[[nodiscard]] static const std::vector<VkExtensionProperties>& GetAvailableInstanceExtensions();
 		/// @brief Retrieve the properties for the given instance layer.
 		/// @param instanceLayer Instance layer to get properties from.
 		/// @return Instance layer properties.
@@ -68,20 +63,10 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] static bool IsExtensionSupported(std::string_view extension);
 
 	private:
-		/// @brief Load a list of available instance layers.
-		static void LoadAllInstanceLayers();
-		/// @brief Load a list of available instance extensions.
-		static void LoadAllInstanceExtensions();
-
-		inline constinit static std::optional<u32> s_instanceVersion = std::nullopt;
-
 		VkInstance m_instance = VK_NULL_HANDLE;
 
 		std::vector<std::string> m_instanceLayers{};
 		std::vector<std::string> m_instanceExtensions{};
-
-		inline static std::vector<VkLayerProperties> s_availableInstanceLayers{};
-		inline static std::vector<VkExtensionProperties> s_availableInstanceExtensions{};
 	};
 }
 

@@ -6,6 +6,93 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
+namespace
+{
+	[[nodiscard]] const std::vector<VkLayerProperties>& GetAllInstanceLayers()
+	{
+		static std::vector<VkLayerProperties> instanceLayers{};
+
+		if(instanceLayers.empty())
+		{
+			u32 layersCount = 0;
+			VkCall(vkEnumerateInstanceLayerProperties(&layersCount, nullptr));
+			instanceLayers.resize(layersCount);
+			VkCall(vkEnumerateInstanceLayerProperties(&layersCount, instanceLayers.data()));
+		}
+
+		return instanceLayers;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] const std::vector<VkExtensionProperties>& GetAllInstanceExtensions()
+	{
+		static std::vector<VkExtensionProperties> instanceExtensions{};
+
+		if(instanceExtensions.empty())
+		{
+			u32 extensionsCount = 0;
+			VkCall(vkEnumerateInstanceExtensionProperties(nullptr, &extensionsCount, nullptr));
+			instanceExtensions.resize(extensionsCount);
+			VkCall(vkEnumerateInstanceExtensionProperties(nullptr, &extensionsCount, instanceExtensions.data()));
+		}
+
+
+		return instanceExtensions;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef VERBOSE_GRAPHICS_DEBUG
+	void DebugPrintInstanceLayers(const std::span<const std::string> layers)
+	{
+		if(layers.empty())
+			return;
+
+		TP_DEBUG(TRAP::Log::RendererVulkanInstancePrefix, "Loading Instance Layer(s):");
+		for (const std::string_view str : layers)
+		{
+			const auto layerProps = TRAP::Graphics::API::VulkanInstance::GetInstanceLayerProperties(str);
+			if(layerProps)
+			{
+				TP_DEBUG(TRAP::Log::RendererVulkanInstancePrefix, "    ", str, " (", layerProps->description, ") Spec: ",
+						VK_API_VERSION_MAJOR(layerProps->specVersion), '.', VK_API_VERSION_MINOR(layerProps->specVersion), '.',
+						VK_API_VERSION_PATCH(layerProps->specVersion), '.', VK_API_VERSION_VARIANT(layerProps->specVersion),
+						" Rev: ", layerProps->implementationVersion);
+			}
+			else
+				TP_DEBUG(TRAP::Log::RendererVulkanInstancePrefix, "    ", str);
+		}
+	}
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef VERBOSE_GRAPHICS_DEBUG
+	void DebugPrintInstanceExtensions(const std::span<const std::string> extensions)
+	{
+		if(extensions.empty())
+			return;
+
+		TP_DEBUG(TRAP::Log::RendererVulkanInstancePrefix, "Loading Instance Extension(s):");
+		for (const std::string_view str : extensions)
+		{
+			const auto extensionProps = TRAP::Graphics::API::VulkanInstance::GetInstanceExtensionProperties(str);
+			if(extensionProps)
+			{
+				TP_DEBUG(TRAP::Log::RendererVulkanInstancePrefix, "    ", str, " Spec: ",
+						VK_API_VERSION_MAJOR(extensionProps->specVersion), '.', VK_API_VERSION_MINOR(extensionProps->specVersion), '.',
+						VK_API_VERSION_PATCH(extensionProps->specVersion), '.', VK_API_VERSION_VARIANT(extensionProps->specVersion));
+			}
+			else
+				TP_DEBUG(TRAP::Log::RendererVulkanInstancePrefix, "    ", str);
+		}
+	}
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appName,
 													std::vector<std::string> instanceLayers,
                                                     std::vector<std::string> instanceExtensions)
@@ -14,54 +101,21 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appNa
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	std::erase_if(m_instanceLayers, [](const std::string_view layer){return !IsLayerSupported(layer);});
-	std::erase_if(m_instanceExtensions, [](const std::string_view extension){return !IsExtensionSupported(extension);});
-
-	std::vector<const char*> layers(m_instanceLayers.size());
-	for (usize i = 0; i < m_instanceLayers.size(); i++)
-		layers[i] = m_instanceLayers[i].c_str();
-
-	std::vector<const char*> extensions(m_instanceExtensions.size());
-	for (usize i = 0; i < m_instanceExtensions.size(); i++)
-		extensions[i] = m_instanceExtensions[i].c_str();
+	std::erase_if(m_instanceLayers, std::not_fn(IsLayerSupported));
+	std::erase_if(m_instanceExtensions, std::not_fn(IsExtensionSupported));
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanInstancePrefix, "Creating Instance");
 
-	if (!m_instanceLayers.empty())
-	{
-		TP_DEBUG(Log::RendererVulkanInstancePrefix, "Loading Instance Layer(s):");
-		for (const std::string_view str : m_instanceLayers)
-		{
-			const auto layerProps = GetInstanceLayerProperties(str);
-			if(layerProps)
-			{
-				TP_DEBUG(Log::RendererVulkanInstancePrefix, "    ", str, " (", layerProps->description, ") Spec: ",
-				         VK_API_VERSION_MAJOR(layerProps->specVersion), '.', VK_API_VERSION_MINOR(layerProps->specVersion), '.',
-						 VK_API_VERSION_PATCH(layerProps->specVersion), '.', VK_API_VERSION_VARIANT(layerProps->specVersion),
-						 " Rev: ", layerProps->implementationVersion);
-			}
-			else
-				TP_DEBUG(Log::RendererVulkanInstancePrefix, "    ", str);
-		}
-	}
-	if (!m_instanceExtensions.empty())
-	{
-		TP_DEBUG(Log::RendererVulkanInstancePrefix, "Loading Instance Extension(s):");
-		for (const std::string_view str : m_instanceExtensions)
-		{
-			const auto extensionProps = GetInstanceExtensionProperties(str);
-			if(extensionProps)
-			{
-				TP_DEBUG(Log::RendererVulkanInstancePrefix, "    ", str, " Spec: ",
-				         VK_API_VERSION_MAJOR(extensionProps->specVersion), '.', VK_API_VERSION_MINOR(extensionProps->specVersion), '.',
-						 VK_API_VERSION_PATCH(extensionProps->specVersion), '.', VK_API_VERSION_VARIANT(extensionProps->specVersion));
-			}
-			else
-				TP_DEBUG(Log::RendererVulkanInstancePrefix, "    ", str);
-		}
-	}
+	DebugPrintInstanceLayers(m_instanceLayers);
+	DebugPrintInstanceExtensions(m_instanceExtensions);
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
+
+	std::vector<const char*> layers(m_instanceLayers.size());
+	std::ranges::transform(m_instanceLayers, layers.begin(), std::mem_fn(&std::string::c_str));
+
+	std::vector<const char*> extensions(m_instanceExtensions.size());
+	std::ranges::transform(m_instanceExtensions, extensions.begin(), std::mem_fn(&std::string::c_str));
 
 	const VkApplicationInfo appInfo = VulkanInits::ApplicationInfo(appName);
 	VkInstanceCreateInfo info = VulkanInits::InstanceCreateInfo(appInfo, layers, extensions);
@@ -104,50 +158,22 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 
 [[nodiscard]] std::optional<u32> TRAP::Graphics::API::VulkanInstance::GetInstanceVersion()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
-	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	if(!s_instanceVersion)
-		s_instanceVersion = VkGetInstanceVersion();
-
-	return s_instanceVersion;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const std::vector<VkLayerProperties>& TRAP::Graphics::API::VulkanInstance::GetAvailableInstanceLayers()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
-	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
-	if (s_availableInstanceLayers.empty())
-		LoadAllInstanceLayers();
-
-	return s_availableInstanceLayers;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const std::vector<VkExtensionProperties>& TRAP::Graphics::API::VulkanInstance::GetAvailableInstanceExtensions()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
-	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
-	if (s_availableInstanceExtensions.empty())
-		LoadAllInstanceExtensions();
-
-	return s_availableInstanceExtensions;
+	return VkGetInstanceVersion();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] std::optional<VkLayerProperties> TRAP::Graphics::API::VulkanInstance::GetInstanceLayerProperties(const std::string_view instanceLayer)
 {
-	const std::vector<VkLayerProperties>& instanceLayers = GetAvailableInstanceLayers();
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+	const std::vector<VkLayerProperties>& instanceLayers = GetAllInstanceLayers();
 	auto res = std::ranges::find_if(instanceLayers, [instanceLayer](const VkLayerProperties& layerProps)
 	                                                {return instanceLayer == layerProps.layerName;});
 
-	if(res == std::ranges::end(instanceLayers))
+	if(res == instanceLayers.end())
 		return std::nullopt;
 
 	return *res;
@@ -157,11 +183,13 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 
 [[nodiscard]] std::optional<VkExtensionProperties> TRAP::Graphics::API::VulkanInstance::GetInstanceExtensionProperties(const std::string_view instanceExtension)
 {
-	const std::vector<VkExtensionProperties>& instanceExtensions = GetAvailableInstanceExtensions();
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+	const std::vector<VkExtensionProperties>& instanceExtensions = GetAllInstanceExtensions();
 	auto res = std::ranges::find_if(instanceExtensions, [instanceExtension](const VkExtensionProperties& extensionProps)
 	                                                {return instanceExtension == extensionProps.extensionName;});
 
-	if(res == std::ranges::end(instanceExtensions))
+	if(res == instanceExtensions.end())
 		return std::nullopt;
 
 	return *res;
@@ -173,14 +201,12 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	if (s_availableInstanceLayers.empty())
-		LoadAllInstanceLayers();
-
-	const auto result = std::ranges::find_if(s_availableInstanceLayers,
+	const std::vector<VkLayerProperties>& instanceLayers = GetAllInstanceLayers();
+	const auto result = std::ranges::find_if(instanceLayers,
 	                                         [layer](const VkLayerProperties& prop)
 		                                     { return layer == prop.layerName; });
 
-	if (result == s_availableInstanceLayers.end())
+	if (result == instanceLayers.end())
 	{
 		if (layer == "VK_LAYER_KHRONOS_validation")
 			TP_WARN(Log::RendererVulkanInstancePrefix, "Layer: \"", layer,
@@ -200,14 +226,12 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	if (s_availableInstanceExtensions.empty())
-		LoadAllInstanceExtensions();
-
-	const auto result = std::ranges::find_if(s_availableInstanceExtensions,
+	const std::vector<VkExtensionProperties>& instanceExtensions = GetAllInstanceExtensions();
+	const auto result = std::ranges::find_if(instanceExtensions,
 	                                         [extension](const VkExtensionProperties& prop)
 								             { return extension == prop.extensionName; });
 
-	if (result == s_availableInstanceExtensions.end())
+	if (result == instanceExtensions.end())
 	{
 		if (extension == VK_EXT_DEBUG_UTILS_EXTENSION_NAME)
 			TP_WARN(Log::RendererVulkanInstancePrefix, "Extension: \"", extension,
@@ -219,28 +243,4 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 	}
 
 	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanInstance::LoadAllInstanceLayers()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	u32 layersCount = 0;
-	VkCall(vkEnumerateInstanceLayerProperties(&layersCount, nullptr));
-	s_availableInstanceLayers.resize(layersCount);
-	VkCall(vkEnumerateInstanceLayerProperties(&layersCount, s_availableInstanceLayers.data()));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanInstance::LoadAllInstanceExtensions()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	u32 extensionsCount = 0;
-	VkCall(vkEnumerateInstanceExtensionProperties(nullptr, &extensionsCount, nullptr));
-	s_availableInstanceExtensions.resize(extensionsCount);
-	VkCall(vkEnumerateInstanceExtensionProperties(nullptr, &extensionsCount, s_availableInstanceExtensions.data()));
 }

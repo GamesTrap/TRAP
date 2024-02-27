@@ -4916,3 +4916,4 @@ SITREP 02/26/2024|24w09a1
 SITREP 02/27/2024|24w09a2
     - Changed TRAP Engine version to 24w09a2(0.10.49)
     - VulkanInits Refactored various functions ~<30 mins
+    - VulkanInstance Refactored various functions ~<20 mins
