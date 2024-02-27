@@ -22,7 +22,7 @@ namespace TRAP::Graphics::API
 		/// @brief Constructor.
 		/// @param device Logical Vulkan device.
 		/// @param instance Vulkan instance.
-		VulkanMemoryAllocator(const TRAP::Ref<VulkanDevice>& device, const TRAP::Ref<VulkanInstance>& instance);
+		VulkanMemoryAllocator(TRAP::Ref<VulkanDevice> device, TRAP::Ref<VulkanInstance> instance);
 		/// @brief Destructor.
 		~VulkanMemoryAllocator();
 
@@ -31,7 +31,7 @@ namespace TRAP::Graphics::API
 		/// @brief Copy assignment operator.
 		consteval VulkanMemoryAllocator& operator=(const VulkanMemoryAllocator&) noexcept = delete;
 		/// @brief Move constructor.
-		constexpr VulkanMemoryAllocator(VulkanMemoryAllocator&&) noexcept = default;
+		VulkanMemoryAllocator(VulkanMemoryAllocator&&) noexcept = default;
 		/// @brief Move assignment operator.
 		VulkanMemoryAllocator& operator=(VulkanMemoryAllocator&&) noexcept = default;
 
@@ -41,6 +41,10 @@ namespace TRAP::Graphics::API
 
 	private:
 		VmaAllocator m_allocator = VK_NULL_HANDLE;
+
+		//Used to keep objects alive
+		TRAP::Ref<VulkanDevice> m_device = nullptr;
+		TRAP::Ref<VulkanInstance> m_instance = nullptr;
 	};
 }
 
