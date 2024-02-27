@@ -111,8 +111,8 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 		++signalCount;
 	}
 
-	const VkSubmitInfo submitInfo = VulkanInits::SubmitInfo(waitSemaphores, waitCount, waitMasks,
-	                                                        cmds, signalSemaphores, signalCount);
+	const VkSubmitInfo submitInfo = VulkanInits::SubmitInfo(std::span(waitSemaphores.begin(), waitCount), waitMasks,
+	                                                        cmds, std::span(signalSemaphores.begin(), signalCount));
 
 	//Lightweight lock to make sure multiple threads dont use the same queue simultaneously
 	//Many setups have just one queue family and one queue.

@@ -61,9 +61,9 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkDeviceCreateInfo TRAP::Graphics::API::VulkanInits::DeviceCreateInfo(const void* const pNext,
-                                                                                    const std::vector<VkDeviceQueueCreateInfo>& queueCreateInfos,
-																	                const std::vector<const char*>& deviceExtensions)
+[[nodiscard]] VkDeviceCreateInfo TRAP::Graphics::API::VulkanInits::DeviceCreateInfo(const std::span<VkDeviceQueueCreateInfo> queueCreateInfos,
+																	                const std::span<const char*> deviceExtensions,
+																					const void* const pNext)
 {
 	TRAP_ASSERT(!queueCreateInfos.empty(), "VulkanInits::DeviceCreateInfo(): QueueCreateInfos can't be empty!");
 
@@ -120,7 +120,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkDescriptorPoolCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(const std::vector<VkDescriptorPoolSize>& descriptorPoolSizes,
+[[nodiscard]] VkDescriptorPoolCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(const std::span<const VkDescriptorPoolSize> descriptorPoolSizes,
                                                                                                     const u32 numDescriptorSets)
 {
 	TRAP_ASSERT(numDescriptorSets != 0, "VulkanInits::DescriptorPoolCreateInfo(): NumDescriptorSets can't be 0!");
@@ -157,23 +157,21 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] VkDescriptorUpdateTemplateCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorUpdateTemplateCreateInfo(VkDescriptorSetLayout descriptorSetLayout,
-	                                                                                                                    const u32 entryCount,
-	                                                                                                                    const VkDescriptorUpdateTemplateEntry* const entries,
+	                                                                                                                    const std::span<const VkDescriptorUpdateTemplateEntry> entries,
 	                                                                                                                    const VkPipelineBindPoint bindPoint,
 	                                                                                                                    VkPipelineLayout pipelineLayout,
 	                                                                                                                    const u32 setIndex)
 {
 	TRAP_ASSERT(descriptorSetLayout != VK_NULL_HANDLE, "VulkanInits::DescriptorUpdateTemplateCreateInfo(): DescriptorSetLayout can't be VK_NULL_HANDLE!");
-	TRAP_ASSERT(entryCount != 0, "VulkanInits::DescriptorUpdateTemplateCreateInfo(): EntryCount can't be 0!");
-	TRAP_ASSERT(entries, "VulkanInits::DescriptorUpdateTemplateCreateInfo(): Entries can't be nullptr!");
+	TRAP_ASSERT(!entries.empty(), "VulkanInits::DescriptorUpdateTemplateCreateInfo(): Entries can't be empty!");
 
 	return VkDescriptorUpdateTemplateCreateInfo
 	{
 		.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO,
 		.pNext = nullptr,
 		.flags = 0,
-		.descriptorUpdateEntryCount = entryCount,
-		.pDescriptorUpdateEntries = entries,
+		.descriptorUpdateEntryCount = NumericCast<u32>(entries.size()),
+		.pDescriptorUpdateEntries = entries.data(),
 		.templateType = VK_DESCRIPTOR_UPDATE_TEMPLATE_TYPE_DESCRIPTOR_SET,
 		.descriptorSetLayout = descriptorSetLayout,
 		.pipelineBindPoint = bindPoint,
@@ -201,8 +199,8 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkFragmentShadingRateAttachmentInfoKHR TRAP::Graphics::API::VulkanInits::FragmentShadingRateAttachmentInfo(VkAttachmentReference2KHR& shadingRateAttachment,
-	                                                                                                                     VkExtent2D texelSize)
+[[nodiscard]] VkFragmentShadingRateAttachmentInfoKHR TRAP::Graphics::API::VulkanInits::FragmentShadingRateAttachmentInfo(const VkAttachmentReference2KHR& shadingRateAttachment,
+	                                                                                                                     const VkExtent2D& texelSize)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -284,8 +282,8 @@
 
 [[nodiscard]] VkRenderPassBeginInfo TRAP::Graphics::API::VulkanInits::RenderPassBeginInfo(VkRenderPass renderPass,
 	                                                                                      VkFramebuffer frameBuffer,
-	                                                                                      const VkRect2D renderArea,
-	                                                                                      const std::vector<VkClearValue>& colorValues)
+	                                                                                      const VkRect2D& renderArea,
+	                                                                                      const std::span<const VkClearValue> colorValues)
 {
 	TRAP_ASSERT(renderPass != VK_NULL_HANDLE, "VulkanInits::RenderPassBeginInfo(): RenderPass can't be VK_NULL_HANDLE!");
 	TRAP_ASSERT(frameBuffer != VK_NULL_HANDLE, "VulkanInits::RenderPassBeginInfo(): FrameBuffer can't be VK_NULL_HANDLE!");
@@ -305,7 +303,7 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] VkFramebufferCreateInfo TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo(VkRenderPass renderPass,
-	                                                                                          const std::vector<VkImageView>& attachments,
+	                                                                                          const std::span<const VkImageView> attachments,
 	                                                                                          const u32 width,
 	                                                                                          const u32 height,
 	                                                                                          const u32 layerCount)
@@ -546,7 +544,7 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] VkPipelineShaderStageCreateInfo TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo(const VkShaderStageFlagBits stage,
-	                                                                                                          VkShaderModule module,
+	                                                                                                          VkShaderModule shaderModule,
 	                                                                                                          const std::string_view name)
 {
 	TRAP_ASSERT(!name.empty(), "VulkanInits::PipelineShaderStageCreateInfo(): Shader name can not be empty!");
@@ -557,7 +555,7 @@
 		.pNext = nullptr,
 		.flags = 0,
 		.stage = stage,
-		.module = module,
+		.module = shaderModule,
 		.pName = name.data(),
 		.pSpecializationInfo = nullptr
 	};
@@ -586,10 +584,10 @@
 
 [[nodiscard]] VkSwapchainCreateInfoKHR TRAP::Graphics::API::VulkanInits::SwapchainCreateInfoKHR(VkSurfaceKHR surface,
 	                                                                                            const u32 imageCount,
-	                                                                                            const VkSurfaceFormatKHR surfaceFormat,
-	                                                                                            const VkExtent2D imageExtent,
+	                                                                                            const VkSurfaceFormatKHR& surfaceFormat,
+	                                                                                            const VkExtent2D& imageExtent,
 	                                                                                            const VkSharingMode sharingMode,
-	                                                                                            const std::vector<u32>& queueFamilyIndices,
+	                                                                                            const std::span<const u32> queueFamilyIndices,
 	                                                                                            const VkSurfaceTransformFlagBitsKHR preTransform,
 	                                                                                            const VkCompositeAlphaFlagBitsKHR compositeAlpha,
 	                                                                                            const VkPresentModeKHR presentMode,

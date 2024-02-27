@@ -485,7 +485,7 @@ namespace
             }
         };
 
-        const VkPipelineVertexInputStateCreateInfo vertex_info = TRAP::Graphics::API::VulkanInits::PipelineVertexInputStateCreateInfo(1, &binding_desc, 3, attribute_desc.data());
+        const VkPipelineVertexInputStateCreateInfo vertex_info = TRAP::Graphics::API::VulkanInits::PipelineVertexInputStateCreateInfo(std::span(&binding_desc, 1), attribute_desc);
         static constexpr VkPipelineInputAssemblyStateCreateInfo ia_info = TRAP::Graphics::API::VulkanInits::PipelineInputAssemblyStateCreateInfo(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, false);
         static constexpr VkPipelineViewportStateCreateInfo viewport_info = TRAP::Graphics::API::VulkanInits::PipelineViewportStateCreateInfo();
 
@@ -545,7 +545,7 @@ namespace
         const std::vector<VkDynamicState> dynamic_states{ VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
         const VkPipelineDynamicStateCreateInfo dynamic_state = TRAP::Graphics::API::VulkanInits::PipelineDynamicStateCreateInfo(dynamic_states);
 
-        const VkGraphicsPipelineCreateInfo info = TRAP::Graphics::API::VulkanInits::GraphicsPipelineCreateInfo(2, stage.data(), vertex_info, ia_info, viewport_info, raster_info, ms_info, depth_info, blend_info, dynamic_state, bd->PipelineLayout, renderPass);
+        const VkGraphicsPipelineCreateInfo info = TRAP::Graphics::API::VulkanInits::GraphicsPipelineCreateInfo(stage, vertex_info, ia_info, viewport_info, raster_info, ms_info, depth_info, blend_info, dynamic_state, bd->PipelineLayout, renderPass);
 
     #ifdef IMGUI_IMPL_VULKAN_HAY_DYNAMIC_RENDERING
         if(bd->VulkanInitInfo.UseDynamicRendering)
@@ -623,14 +623,17 @@ namespace
         if (bd->PipelineLayout == nullptr)
         {
             // Constants: we are using 'vec2 offset' and 'vec2 scale' instead of a full 3d projection matrix
-            static constexpr VkPushConstantRange push_constants
+            static constexpr std::array<VkPushConstantRange, 1> push_constants
             {
-                .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-                .offset = sizeof(f32) * 0,
-                .size = sizeof(f32) * 4
+                VkPushConstantRange
+                {
+                    .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+                    .offset = sizeof(f32) * 0,
+                    .size = sizeof(f32) * 4
+                }
             };
-            VkDescriptorSetLayout set_layout = bd->DescriptorSetLayout;
-            const VkPipelineLayoutCreateInfo layout_info = TRAP::Graphics::API::VulkanInits::PipelineLayoutCreateInfo(1, &set_layout, 1, &push_constants);
+            std::array<VkDescriptorSetLayout, 1> set_layout{bd->DescriptorSetLayout};
+            const VkPipelineLayoutCreateInfo layout_info = TRAP::Graphics::API::VulkanInits::PipelineLayoutCreateInfo(set_layout, push_constants);
             err = vkCreatePipelineLayout(v.Device->GetVkDevice(), &layout_info, v.Allocator, &bd->PipelineLayout);
             CheckVkResult(err);
         }

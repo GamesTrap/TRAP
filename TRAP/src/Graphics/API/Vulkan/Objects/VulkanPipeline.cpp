@@ -248,10 +248,8 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 			}
 		}
 
-		const VkPipelineVertexInputStateCreateInfo vi = VulkanInits::PipelineVertexInputStateCreateInfo(inputBindingCount,
-		                                                                                                inputBindings.data(),
-																								        inputAttributeCount,
-																								        inputAttributes.data());
+		const VkPipelineVertexInputStateCreateInfo vi = VulkanInits::PipelineVertexInputStateCreateInfo(std::span(inputBindings.begin(), inputBindingCount),
+		                                                                                                std::span(inputAttributes.begin(), inputAttributeCount));
 
 		VkPrimitiveTopology topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 		switch(graphicsDesc.PrimitiveTopology)
@@ -358,7 +356,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 			dynamicStates.emplace_back(VK_DYNAMIC_STATE_FRAGMENT_SHADING_RATE_KHR);
 		const VkPipelineDynamicStateCreateInfo dy = VulkanInits::PipelineDynamicStateCreateInfo(dynamicStates);
 
-		VkGraphicsPipelineCreateInfo info = VulkanInits::GraphicsPipelineCreateInfo(NumericCast<u32>(stageCount), stages.data(),
+		VkGraphicsPipelineCreateInfo info = VulkanInits::GraphicsPipelineCreateInfo(std::span(stages.begin(), stageCount),
 																					vi, ia, vs, rs, ms, ds, cb, dy,
 																					std::dynamic_pointer_cast<VulkanRootSignature>(graphicsDesc.RootSignature)->GetVkPipelineLayout(),
 																					renderPass->GetVkRenderPass()

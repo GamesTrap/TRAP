@@ -20,7 +20,7 @@ namespace
 		imageViews.reserve(colorAttachmentCount + depthAttachmentCount + shadingRateAttachmentCount);
 
 		//Color
-		for(usize i = 0; i < desc.RenderTargets.size(); i++)
+		for(usize i = 0; i < desc.RenderTargets.size(); ++i)
 		{
 			const auto rTarget = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanRenderTarget>(desc.RenderTargets[i]);
 

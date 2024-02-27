@@ -265,8 +265,8 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	std::vector<const char*> extensions(m_deviceExtensions.size());
 	std::ranges::transform(m_deviceExtensions, extensions.begin(), [](const std::string_view ext){return ext.data();});
 
-	const VkDeviceCreateInfo deviceCreateInfo = VulkanInits::DeviceCreateInfo(&devFeatures2, queueCreateInfos,
-	                                                                          extensions);
+	const VkDeviceCreateInfo deviceCreateInfo = VulkanInits::DeviceCreateInfo(queueCreateInfos, extensions,
+	                                                                          &devFeatures2);
 
 	VkCall(vkCreateDevice(m_physicalDevice->GetVkPhysicalDevice(), &deviceCreateInfo, nullptr, &m_device));
 	TRAP_ASSERT(m_device, "VulkanDevice(): No Vulkan device!");

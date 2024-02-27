@@ -4912,3 +4912,7 @@ SITREP 02/25/2024|24w08c2
 SITREP 02/26/2024|24w09a1
     - Changed TRAP Engine version to 24w09a1(0.10.48)
     - VulkanFrameBuffer Refactored constructor ~<5 mins
+
+SITREP 02/27/2024|24w09a2
+    - Changed TRAP Engine version to 24w09a2(0.10.49)
+    - VulkanInits Refactored various functions ~<30 mins

@@ -291,18 +291,17 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	}
 
 	//Pipeline layout
-	std::array<VkDescriptorSetLayout, maxLayoutCount> descriptorSetLayouts{};
-	u32 descriptorSetLayoutCount = 0;
+	std::vector<VkDescriptorSetLayout> descriptorSetLayouts{};
+	descriptorSetLayouts.reserve(maxLayoutCount);
+
 	for(u32 i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
 	{
 		if (m_vkDescriptorSetLayouts[i] != nullptr)
-			descriptorSetLayouts[descriptorSetLayoutCount++] = m_vkDescriptorSetLayouts[i];
+			descriptorSetLayouts.emplace_back(m_vkDescriptorSetLayouts[i]);
 	}
 
-	const VkPipelineLayoutCreateInfo addInfo = VulkanInits::PipelineLayoutCreateInfo(descriptorSetLayoutCount,
-	                                                                                 descriptorSetLayouts.data(),
-																			         m_vkPushConstantCount,
-																			         pushConstants.data());
+	const VkPipelineLayoutCreateInfo addInfo = VulkanInits::PipelineLayoutCreateInfo(descriptorSetLayouts,
+	                                                                                 std::span(pushConstants.begin(), m_vkPushConstantCount));
 	VkCall(vkCreatePipelineLayout(m_device->GetVkDevice(), &addInfo, nullptr, &m_pipelineLayout));
 	TRAP_ASSERT(m_pipelineLayout, "VulkanRootSignature(): Vulkan PipelineLayout is nullptr!");
 
@@ -429,7 +428,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 			const VkDescriptorUpdateTemplateCreateInfo createInfo = VulkanInits::DescriptorUpdateTemplateCreateInfo
 			(
-				m_vkDescriptorSetLayouts[setIndex], entryCount, entries.data(),
+				m_vkDescriptorSetLayouts[setIndex], std::span(entries.begin(), entryCount),
 				VkPipelineBindPointTranslator[std::to_underlying(m_pipelineType)],
 				m_pipelineLayout, setIndex
 			);
