@@ -34,13 +34,6 @@ namespace
 	}
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	template<typename T>
-	constexpr void LinkFeatureStruct(VkBaseOutStructure*& base, T& toLink)
-	{
-		base->pNext = reinterpret_cast<VkBaseOutStructure* const>(&toLink);
-		base = base->pNext;
-	}
-
 	void EnableNsightAftermath(VkBaseOutStructure*& base, VkDeviceDiagnosticsConfigCreateInfoNV& diagnosticsCreateInfoNV)
 	{
 		if(TRAP::Graphics::RendererAPI::s_diagnosticCheckPointsSupport && TRAP::Graphics::RendererAPI::s_diagnosticsConfigSupport)
@@ -49,7 +42,7 @@ namespace
 		if(!TRAP::Graphics::RendererAPI::s_aftermathSupport)
 			return;
 
-		LinkFeatureStruct(base, diagnosticsCreateInfoNV);
+		TRAP::Graphics::API::LinkVulkanStruct(base, diagnosticsCreateInfoNV);
 		//Enable Nsight Aftermath GPU crash dump creation.
 		//This needs to be done before the Vulkan device is created.
 		TRAP::Graphics::AftermathTracker::Initialize();
@@ -211,27 +204,27 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	VkBaseOutStructure* base = reinterpret_cast<VkBaseOutStructure*>(&devFeatures2);
 
 	if(VulkanRenderer::s_fragmentShaderInterlockExtension)
-		LinkFeatureStruct(base, fragmentShaderInterlockFeatures);
+		TRAP::Graphics::API::LinkVulkanStruct(base, fragmentShaderInterlockFeatures);
 	if (VulkanRenderer::s_descriptorIndexingExtension)
-		LinkFeatureStruct(base, descriptorIndexingFeatures);
+		TRAP::Graphics::API::LinkVulkanStruct(base, descriptorIndexingFeatures);
 	if (VulkanRenderer::s_samplerYcbcrConversionExtension)
-		LinkFeatureStruct(base, ycbcrFeatures);
-	LinkFeatureStruct(base, shaderDrawParametersFeatures);
+		TRAP::Graphics::API::LinkVulkanStruct(base, ycbcrFeatures);
+	TRAP::Graphics::API::LinkVulkanStruct(base, shaderDrawParametersFeatures);
 	//RayTracing
 	if (VulkanRenderer::s_bufferDeviceAddressExtension)
-		LinkFeatureStruct(base, bufferDeviceAddressFeatures);
+		TRAP::Graphics::API::LinkVulkanStruct(base, bufferDeviceAddressFeatures);
 	if (VulkanRenderer::s_rayTracingExtension)
-		LinkFeatureStruct(base, rayTracingPipelineFeatures);
+		TRAP::Graphics::API::LinkVulkanStruct(base, rayTracingPipelineFeatures);
 	if (VulkanRenderer::s_rayTracingExtension)
-		LinkFeatureStruct(base, accelerationStructureFeatures);
+		TRAP::Graphics::API::LinkVulkanStruct(base, accelerationStructureFeatures);
 	if (VulkanRenderer::s_rayTracingExtension)
-		LinkFeatureStruct(base, rayQueryFeatures);
+		TRAP::Graphics::API::LinkVulkanStruct(base, rayQueryFeatures);
 	//Shading rate
 	if(VulkanRenderer::s_shadingRate)
-		LinkFeatureStruct(base, shadingRateFeatures);
+		TRAP::Graphics::API::LinkVulkanStruct(base, shadingRateFeatures);
 	//Timeline semaphore
 	if(VulkanRenderer::s_timelineSemaphore)
-		LinkFeatureStruct(base, timelineSemaphoreFeatures);
+		TRAP::Graphics::API::LinkVulkanStruct(base, timelineSemaphoreFeatures);
 
 	vkGetPhysicalDeviceFeatures2(m_physicalDevice->GetVkPhysicalDevice(), &devFeatures2);
 

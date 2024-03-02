@@ -84,7 +84,7 @@ void TRAP::Graphics::API::VulkanSampler::Init()
 	{
 		TRAP_ASSERT(VulkanRenderer::s_samplerYcbcrConversionExtension, "VulkanSampler(): Sampler YCbCr Conversion Extension is not supported by this device!");
 
-		const VkFormatProperties formatProps = m_device->GetPhysicalDevice().GetVkPhysicalDeviceFormatProperties(format);
+		const VkFormatProperties formatProps = m_device->GetPhysicalDevice().GetVkPhysicalDeviceFormatProperties(conversionDesc.Format);
 		if(conversionDesc.ChromaOffsetX == RendererAPI::SampleLocation::Midpoint)
 		{
 			TRAP_ASSERT(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_MIDPOINT_CHROMA_SAMPLES_BIT, "VulkanSampler(): Format does not support Midpoint Chroma Sampling!");

@@ -12,6 +12,7 @@
 namespace TRAP::Utils
 {
 	using UUID = std::array<u8, 16>;
+	constexpr UUID EMPTY_UUID = UUID{};
 
 	/// @brief Convert a 16 byte long UUID to a string.
 	/// @param uuid UUID.

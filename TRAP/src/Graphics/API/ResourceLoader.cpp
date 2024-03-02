@@ -928,7 +928,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		(
 			RendererAPI::GetRenderer()
 		);
-	const VkFormatProperties formatProperties = vkRenderer->GetDevice()->GetPhysicalDevice().GetVkPhysicalDeviceFormatProperties(TRAP::Graphics::API::ImageFormatToVkFormat(texture->GetImageFormat()));
+	const VkFormatProperties formatProperties = vkRenderer->GetDevice()->GetPhysicalDevice().GetVkPhysicalDeviceFormatProperties(texture->GetImageFormat());
 
 	if((formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT) == 0u)
 	{

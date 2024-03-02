@@ -144,7 +144,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 			info.flags |= VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT;
 
 
-		const VkFormatProperties formatProps = m_device->GetPhysicalDevice().GetVkPhysicalDeviceFormatProperties(info.format);
+		const VkFormatProperties formatProps = m_device->GetPhysicalDevice().GetVkPhysicalDeviceFormatProperties(desc.Format);
 
 		// Multi-Planar formats must have each plane separately bound to memory, rather than having a single memory binding for the whole image
 		if (isPlanarFormat)

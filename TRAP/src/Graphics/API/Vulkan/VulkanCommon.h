@@ -174,6 +174,9 @@ namespace TRAP::Graphics::API
 	/// @return Converted ImageFormat.
 	[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat ImageFormatFromVkFormat(VkFormat format) noexcept;
 
+	template<typename T>
+	constexpr void LinkVulkanStruct(VkBaseOutStructure*& base, T& toLink);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	/// @brief Set a name for a Vulkan object.
 	/// @param device Vulkan device.
@@ -1104,6 +1107,15 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 	default:
 		return TRAP::Graphics::API::ImageFormat::Undefined;
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+constexpr void TRAP::Graphics::API::LinkVulkanStruct(VkBaseOutStructure*& base, T& toLink)
+{
+	base->pNext = reinterpret_cast<VkBaseOutStructure* const>(&toLink);
+	base = base->pNext;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

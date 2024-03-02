@@ -4918,3 +4918,7 @@ SITREP 02/27/2024|24w09a2
     - VulkanInits Refactored various functions ~<30 mins
     - VulkanInstance Refactored various functions ~<20 mins
     - VulkanMemoryAllocator Refactored constructor ~<5 mins
+
+SITREP 03/02/2024|24w09b1
+    - Changed TRAP Engine version to 24w09a2(0.10.50)
+    - VulkanPhysicalDevice Refactored various functions ~>45 mins

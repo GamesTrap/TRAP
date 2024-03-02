@@ -124,7 +124,7 @@ namespace
 		                                                                                               ImageFormatToVkFormat(desc.Format),
 		                                                                                               0,
 		                                                                                               desc.ElementCount * desc.StructStride);
-		const VkFormatProperties formatProps = device.GetPhysicalDevice().GetVkPhysicalDeviceFormatProperties(viewInfo.format);
+		const VkFormatProperties formatProps = device.GetPhysicalDevice().GetVkPhysicalDeviceFormatProperties(desc.Format);
 		if ((formatProps.bufferFeatures & BufferUsageToFormatFeatureFlag(bufferUsage)) == 0u) //Format doesnt support texel buffer usage
 		{
 			if((bufferUsage & VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT) != 0u)

@@ -7,19 +7,177 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
+#include "Maths/Math.h"
 
-std::multimap<u32, TRAP::Utils::UUID> TRAP::Graphics::API::VulkanPhysicalDevice::s_availablePhysicalDeviceUUIDs{};
+namespace
+{
+	[[nodiscard]] std::vector<VkExtensionProperties> LoadAllPhysicalDeviceExtensions(VkPhysicalDevice physicalDevice)
+	{
+		std::vector<VkExtensionProperties> deviceExtensions{};
+
+		u32 extensionsCount = 0;
+		VkCall(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionsCount, nullptr));
+		deviceExtensions.resize(extensionsCount);
+		VkCall(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionsCount, deviceExtensions.data()));
+
+		return deviceExtensions;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr u32 GetMaxUsableMSAASampleCount(const VkPhysicalDeviceProperties& devProps)
+	{
+		VkSampleCountFlags sampleCounts = TRAP::Math::Min(devProps.limits.framebufferColorSampleCounts,
+														  devProps.limits.framebufferDepthSampleCounts);
+		sampleCounts = TRAP::Math::Min(sampleCounts, devProps.limits.framebufferStencilSampleCounts);
+
+		if((sampleCounts & VK_SAMPLE_COUNT_64_BIT) != 0u)
+			return VK_SAMPLE_COUNT_64_BIT;
+		if((sampleCounts & VK_SAMPLE_COUNT_32_BIT) != 0u)
+			return VK_SAMPLE_COUNT_32_BIT;
+		if((sampleCounts & VK_SAMPLE_COUNT_16_BIT) != 0u)
+			return VK_SAMPLE_COUNT_16_BIT;
+		if((sampleCounts & VK_SAMPLE_COUNT_8_BIT) != 0u)
+			return VK_SAMPLE_COUNT_8_BIT;
+		if((sampleCounts & VK_SAMPLE_COUNT_4_BIT) != 0u)
+			return VK_SAMPLE_COUNT_4_BIT;
+		if((sampleCounts & VK_SAMPLE_COUNT_2_BIT) != 0u)
+			return VK_SAMPLE_COUNT_2_BIT;
+
+		return VK_SAMPLE_COUNT_1_BIT;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] std::vector<VkPhysicalDevice> GetAllVkPhysicalDevices(VkInstance instance)
+	{
+		u32 physicalDeviceCount = 0;
+		VkCall(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, nullptr));
+
+		std::vector<VkPhysicalDevice> physicalDevices(physicalDeviceCount);
+		VkCall(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, physicalDevices.data()));
+
+		return physicalDevices;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void SetupRendererAPIGPUSettings(const TRAP::Graphics::API::VulkanPhysicalDevice& physicalDevice)
+	{
+		// Capabilities for VulkanRenderer
+		for (u32 i = 0; i < std::to_underlying(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
+		{
+			const VkFormat fmt = ImageFormatToVkFormat(static_cast<TRAP::Graphics::API::ImageFormat>(i));
+			if (fmt == VK_FORMAT_UNDEFINED)
+				continue;
+
+			VkFormatProperties formatSupport{};
+			vkGetPhysicalDeviceFormatProperties(physicalDevice.GetVkPhysicalDevice(), fmt, &formatSupport);
+			TRAP::Graphics::API::VulkanRenderer::s_GPUCapBits.CanShaderReadFrom[i] = (formatSupport.optimalTilingFeatures &
+																                      VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) != 0;
+			TRAP::Graphics::API::VulkanRenderer::s_GPUCapBits.CanShaderWriteTo[i] = (formatSupport.optimalTilingFeatures &
+																                     VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT) != 0;
+			TRAP::Graphics::API::VulkanRenderer::s_GPUCapBits.CanRenderTargetWriteTo[i] = (formatSupport.optimalTilingFeatures &
+																	                       (VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT |
+																	                        VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)) != 0;
+		}
+
+		const auto& devProps = physicalDevice.GetVkPhysicalDeviceProperties();
+		const auto& devFeatures = physicalDevice.GetVkPhysicalDeviceFeatures();
+		const auto& devSubGroupProps = physicalDevice.GetVkPhysicalDeviceSubgroupProperties();
+
+		TRAP::Graphics::RendererAPI::GPUSettings.UniformBufferAlignment = devProps.limits.minUniformBufferOffsetAlignment;
+		TRAP::Graphics::RendererAPI::GPUSettings.MaxUniformBufferRange = devProps.limits.maxUniformBufferRange;
+		TRAP::Graphics::RendererAPI::GPUSettings.StorageBufferAlignment = devProps.limits.minStorageBufferOffsetAlignment;
+		TRAP::Graphics::RendererAPI::GPUSettings.MaxStorageBufferRange = devProps.limits.maxStorageBufferRange;
+		TRAP::Graphics::RendererAPI::GPUSettings.UploadBufferTextureAlignment = NumericCast<u32>(devProps.limits.optimalBufferCopyOffsetAlignment);
+		TRAP::Graphics::RendererAPI::GPUSettings.UploadBufferTextureRowAlignment = NumericCast<u32>(devProps.limits.optimalBufferCopyRowPitchAlignment);
+		TRAP::Graphics::RendererAPI::GPUSettings.MaxVertexInputBindings = devProps.limits.maxVertexInputBindings;
+		TRAP::Graphics::RendererAPI::GPUSettings.MaxVertexInputAttributes = devProps.limits.maxVertexInputAttributes;
+		TRAP::Graphics::RendererAPI::GPUSettings.MultiDrawIndirectSupported = devProps.limits.maxDrawIndirectCount > 1u;
+		TRAP::Graphics::RendererAPI::GPUSettings.MaxAnisotropy = devProps.limits.maxSamplerAnisotropy;
+		TRAP::Graphics::RendererAPI::GPUSettings.MaxImageDimension2D = devProps.limits.maxImageDimension2D;
+		TRAP::Graphics::RendererAPI::GPUSettings.MaxImageDimensionCube = devProps.limits.maxImageDimensionCube;
+		TRAP::Graphics::RendererAPI::GPUSettings.FillModeNonSolid = (devFeatures.fillModeNonSolid != 0u);
+		TRAP::Graphics::RendererAPI::GPUSettings.MaxPushConstantSize = devProps.limits.maxPushConstantsSize;
+		TRAP::Graphics::RendererAPI::GPUSettings.MaxSamplerAllocationCount = devProps.limits.maxSamplerAllocationCount;
+		TRAP::Graphics::RendererAPI::GPUSettings.MaxTessellationControlPoints = devProps.limits.maxTessellationPatchSize;
+		TRAP::Graphics::RendererAPI::GPUSettings.MaxMSAASampleCount = static_cast<TRAP::Graphics::RendererAPI::SampleCount>(TRAP::Math::Min(GetMaxUsableMSAASampleCount(devProps), static_cast<u32>(VK_SAMPLE_COUNT_16_BIT)));
+		TRAP::Graphics::RendererAPI::GPUSettings.MaxColorRenderTargets = devProps.limits.maxColorAttachments;
+
+		// maxBoundDescriptorSets not needed because engine is always limited to 4 descriptor sets
+
+		TRAP::Graphics::RendererAPI::GPUSettings.WaveLaneCount = devSubGroupProps.subgroupSize;
+		TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags = TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::None;
+		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_BASIC_BIT) != 0u)
+			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Basic;
+		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_VOTE_BIT) != 0u)
+			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Vote;
+		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_ARITHMETIC_BIT) != 0u)
+			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Arithmetic;
+		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_BALLOT_BIT) != 0u)
+			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Ballot;
+		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_SHUFFLE_BIT) != 0u)
+			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Shuffle;
+		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT) != 0u)
+			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::ShuffleRelative;
+		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_CLUSTERED_BIT) != 0u)
+			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Clustered;
+		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_QUAD_BIT) != 0u)
+			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Quad;
+		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV) != 0u)
+			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::PartitionedNV;
+
+		TRAP::Graphics::RendererAPI::GPUSettings.TessellationSupported = (devFeatures.tessellationShader != 0u);
+		TRAP::Graphics::RendererAPI::GPUSettings.GeometryShaderSupported = (devFeatures.geometryShader != 0u);
+		TRAP::Graphics::RendererAPI::GPUSettings.SampleRateShadingSupported = (devFeatures.sampleRateShading != 0u);
+
+#ifndef TRAP_HEADLESS_MODE
+		//Surface and present test is a hard requirement to pass the Physical device rating.
+		TRAP::Graphics::RendererAPI::GPUSettings.SurfaceSupported = true;
+		TRAP::Graphics::RendererAPI::GPUSettings.PresentSupported = true;
+#endif /*TRAP_HEADLESS_MODE*/
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] VkPhysicalDevice FindPhysicalDeviceViaUUID(const TRAP::Graphics::API::VulkanInstance& instance,
+	                                                         const TRAP::Utils::UUID& physicalDeviceUUID)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+		const auto physicalDevices = GetAllVkPhysicalDevices(instance.GetVkInstance());
+
+		for (VkPhysicalDevice device : physicalDevices)
+		{
+			VkPhysicalDeviceIDPropertiesKHR physicalDeviceIDProperties{};
+			physicalDeviceIDProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES;
+			VkPhysicalDeviceProperties2 props2{};
+			props2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+			props2.pNext = &physicalDeviceIDProperties;
+			vkGetPhysicalDeviceProperties2(device, &props2);
+
+			const TRAP::Utils::UUID testUUID = std::to_array(physicalDeviceIDProperties.deviceUUID);
+
+			if(testUUID == physicalDeviceUUID)
+				return device;
+		}
+
+		return nullptr;
+	}
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<VulkanInstance>& instance,
+TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(TRAP::Ref<VulkanInstance> instance,
 																const TRAP::Utils::UUID& physicalDeviceUUID)
+	: m_instance(std::move(instance))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	TRAP_ASSERT(instance, "VulkanPhysicalDevice(): Vulkan Instance is nullptr");
+	TRAP_ASSERT(m_instance, "VulkanPhysicalDevice(): Vulkan Instance is nullptr");
 
-	m_physicalDevice = FindPhysicalDeviceViaUUID(instance, physicalDeviceUUID);
+	m_physicalDevice = FindPhysicalDeviceViaUUID(*m_instance, physicalDeviceUUID);
 	TRAP_ASSERT(m_physicalDevice, "VulkanPhysicalDevice(): Vulkan Physical Device is nullptr!");
 
 	if (m_physicalDevice == nullptr)
@@ -29,165 +187,11 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	TP_DEBUG(Log::RendererVulkanPhysicalDevicePrefix, "Creating PhysicalDevice");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	vkGetPhysicalDeviceProperties(m_physicalDevice, &m_physicalDeviceProperties);
-	vkGetPhysicalDeviceMemoryProperties(m_physicalDevice, &m_physicalDeviceMemoryProperties);
-	vkGetPhysicalDeviceFeatures(m_physicalDevice, &m_physicalDeviceFeatures);
+	LoadDevicePropertiesAndFeatures();
 
-	VkPhysicalDeviceProperties2 props2;
-	props2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
-	props2.pNext = &m_physicalDeviceIDProperties;
-	m_physicalDeviceIDProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES;
-	m_physicalDeviceIDProperties.pNext = nullptr;
-	vkGetPhysicalDeviceProperties2(m_physicalDevice, &props2);
+	SetupRendererAPIGPUSettings(*this);
 
-	VkPhysicalDeviceProperties2 props{};
-	props.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
-	props.pNext = &m_physicalDeviceSubgroupProperties;
-	m_physicalDeviceSubgroupProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_PROPERTIES;
-	m_physicalDeviceSubgroupProperties.pNext = nullptr;
-	vkGetPhysicalDeviceProperties2(m_physicalDevice, &props);
-
-	VkPhysicalDeviceProperties2 propsDriver{};
-	propsDriver.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
-	propsDriver.pNext = &m_physicalDeviceDriverProperties;
-	m_physicalDeviceDriverProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES;
-	m_physicalDeviceDriverProperties.pNext = nullptr;
-	vkGetPhysicalDeviceProperties2(m_physicalDevice, &propsDriver);
-
-	u32 queueFamilyPropertyCount = 0;
-	vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevice, &queueFamilyPropertyCount, nullptr);
-	m_queueFamilyProperties.resize(queueFamilyPropertyCount);
-	vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevice, &queueFamilyPropertyCount,
-											 m_queueFamilyProperties.data());
-
-	// Copy UUID
-	std::ranges::copy(m_physicalDeviceIDProperties.deviceUUID, m_deviceUUID.begin());
-
-	// Capabilities for VulkanRenderer
-	for (u32 i = 0; i < std::to_underlying(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
-	{
-		const VkFormat fmt = ImageFormatToVkFormat(static_cast<TRAP::Graphics::API::ImageFormat>(i));
-		if (fmt == VK_FORMAT_UNDEFINED)
-			continue;
-
-		VkFormatProperties formatSupport{};
-		vkGetPhysicalDeviceFormatProperties(m_physicalDevice, fmt, &formatSupport);
-		VulkanRenderer::s_GPUCapBits.CanShaderReadFrom[i] = (formatSupport.optimalTilingFeatures &
-															 VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) != 0;
-		VulkanRenderer::s_GPUCapBits.CanShaderWriteTo[i] = (formatSupport.optimalTilingFeatures &
-															VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT) != 0;
-		VulkanRenderer::s_GPUCapBits.CanRenderTargetWriteTo[i] = (formatSupport.optimalTilingFeatures &
-																  (VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT |
-																   VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)) != 0;
-	}
-
-	RendererAPI::GPUSettings.UniformBufferAlignment = m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment;
-	RendererAPI::GPUSettings.MaxUniformBufferRange = m_physicalDeviceProperties.limits.maxUniformBufferRange;
-	RendererAPI::GPUSettings.StorageBufferAlignment = m_physicalDeviceProperties.limits.minStorageBufferOffsetAlignment;
-	RendererAPI::GPUSettings.MaxStorageBufferRange = m_physicalDeviceProperties.limits.maxStorageBufferRange;
-	RendererAPI::GPUSettings.UploadBufferTextureAlignment = NumericCast<u32>(m_physicalDeviceProperties.limits.optimalBufferCopyOffsetAlignment);
-	RendererAPI::GPUSettings.UploadBufferTextureRowAlignment = NumericCast<u32>(m_physicalDeviceProperties.limits.optimalBufferCopyRowPitchAlignment);
-	RendererAPI::GPUSettings.MaxVertexInputBindings = m_physicalDeviceProperties.limits.maxVertexInputBindings;
-	RendererAPI::GPUSettings.MaxVertexInputAttributes = m_physicalDeviceProperties.limits.maxVertexInputAttributes;
-	RendererAPI::GPUSettings.MultiDrawIndirectSupported = m_physicalDeviceProperties.limits.maxDrawIndirectCount > 1u;
-	RendererAPI::GPUSettings.MaxAnisotropy = m_physicalDeviceProperties.limits.maxSamplerAnisotropy;
-	RendererAPI::GPUSettings.MaxImageDimension2D = m_physicalDeviceProperties.limits.maxImageDimension2D;
-	RendererAPI::GPUSettings.MaxImageDimensionCube = m_physicalDeviceProperties.limits.maxImageDimensionCube;
-	RendererAPI::GPUSettings.FillModeNonSolid = (m_physicalDeviceFeatures.fillModeNonSolid != 0u);
-	RendererAPI::GPUSettings.MaxPushConstantSize = m_physicalDeviceProperties.limits.maxPushConstantsSize;
-	RendererAPI::GPUSettings.MaxSamplerAllocationCount = m_physicalDeviceProperties.limits.maxSamplerAllocationCount;
-	RendererAPI::GPUSettings.MaxTessellationControlPoints = m_physicalDeviceProperties.limits.maxTessellationPatchSize;
-	RendererAPI::GPUSettings.MaxMSAASampleCount = static_cast<RendererAPI::SampleCount>(TRAP::Math::Min(GetMaxUsableMSAASampleCount(), static_cast<u32>(VK_SAMPLE_COUNT_16_BIT)));
-	RendererAPI::GPUSettings.MaxColorRenderTargets = m_physicalDeviceProperties.limits.maxColorAttachments;
-
-	// maxBoundDescriptorSets not needed because engine is always limited to 4 descriptor sets
-
-	RendererAPI::GPUSettings.WaveLaneCount = m_physicalDeviceSubgroupProperties.subgroupSize;
-	RendererAPI::GPUSettings.WaveOpsSupportFlags = RendererAPI::WaveOpsSupportFlags::None;
-	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_BASIC_BIT) != 0u)
-		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Basic;
-	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_VOTE_BIT) != 0u)
-		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Vote;
-	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_ARITHMETIC_BIT) != 0u)
-		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Arithmetic;
-	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_BALLOT_BIT) != 0u)
-		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Ballot;
-	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_SHUFFLE_BIT) != 0u)
-		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Shuffle;
-	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT) != 0u)
-		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::ShuffleRelative;
-	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_CLUSTERED_BIT) != 0u)
-		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Clustered;
-	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_QUAD_BIT) != 0u)
-		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Quad;
-	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV) != 0u)
-		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::PartitionedNV;
-
-	RendererAPI::GPUSettings.TessellationSupported = (m_physicalDeviceFeatures.tessellationShader != 0u);
-	RendererAPI::GPUSettings.GeometryShaderSupported = (m_physicalDeviceFeatures.geometryShader != 0u);
-	RendererAPI::GPUSettings.SampleRateShadingSupported = (m_physicalDeviceFeatures.sampleRateShading != 0u);
-
-	LoadAllPhysicalDeviceExtensions();
-
-	// Surface & Present test
-#ifndef TRAP_HEADLESS_MODE
-	{
-		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
-		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
-		INTERNAL::WindowingAPI::InternalWindow* win = INTERNAL::WindowingAPI::CreateWindow(2, 2, "Vulkan Surface Tester", nullptr);
-		INTERNAL::WindowingAPI::DefaultWindowHints();
-		if (win != nullptr)
-		{
-			VkSurfaceKHR surface = VK_NULL_HANDLE;
-			VkResult res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance->GetVkInstance(), *win, nullptr, surface);
-
-			if (surface != VK_NULL_HANDLE && res == VK_SUCCESS)
-			{
-				// Passed Surface creation
-				// Check if Surface contains present modes
-				u32 surfPresModeCount = 0;
-				VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(m_physicalDevice, surface, &surfPresModeCount, nullptr));
-				std::vector<VkPresentModeKHR> presModes(surfPresModeCount);
-				VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(m_physicalDevice, surface, &surfPresModeCount, presModes.data()));
-				if (!presModes.empty())
-				{
-					// Passed present mode check
-					// Check if Surface contains formats
-					u32 surfFormatCount = 0;
-					VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(m_physicalDevice, surface, &surfFormatCount, nullptr));
-					std::vector<VkSurfaceFormatKHR> surfFormats(surfFormatCount);
-					VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(m_physicalDevice, surface, &surfFormatCount, surfFormats.data()));
-					RendererAPI::GPUSettings.SurfaceSupported = !surfFormats.empty(); // Finished Surface format check
-				}
-				else
-					RendererAPI::GPUSettings.SurfaceSupported = false;
-
-				// Present test
-				VkBool32 presentSupport = VK_FALSE;
-				const auto &queueFam = GetQueueFamilyProperties();
-				for (usize i = 0; i < queueFam.size(); ++i)
-				{
-					VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(m_physicalDevice, NumericCast<u32>(i), surface, &presentSupport));
-					if (presentSupport != 0u)
-					{
-						RendererAPI::GPUSettings.PresentSupported = true;
-						break;
-					}
-				}
-
-				// Cleanup
-				vkDestroySurfaceKHR(instance->GetVkInstance(), surface, nullptr);
-				TRAP::INTERNAL::WindowingAPI::DestroyWindow(win);
-			}
-			else
-			{
-				RendererAPI::GPUSettings.SurfaceSupported = false;
-				// Cleanup
-				TRAP::INTERNAL::WindowingAPI::DestroyWindow(win);
-			}
-		}
-	}
-#endif /*TRAP_HEADLESS_MODE*/
+	m_availablePhysicalDeviceExtensions = LoadAllPhysicalDeviceExtensions(m_physicalDevice);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -201,15 +205,40 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkFormatProperties TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFormatProperties(const VkFormat format) const
+void TRAP::Graphics::API::VulkanPhysicalDevice::LoadDevicePropertiesAndFeatures()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+	vkGetPhysicalDeviceProperties(m_physicalDevice, &m_physicalDeviceProperties);
+	vkGetPhysicalDeviceMemoryProperties(m_physicalDevice, &m_physicalDeviceMemoryProperties);
+	vkGetPhysicalDeviceFeatures(m_physicalDevice, &m_physicalDeviceFeatures);
 
-	VkFormatProperties formatProps{};
+	VkPhysicalDeviceProperties2 props2{};
+	props2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
 
-	vkGetPhysicalDeviceFormatProperties(m_physicalDevice, format, &formatProps);
+	m_physicalDeviceIDProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES;
+	m_physicalDeviceSubgroupProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_PROPERTIES;
+	m_physicalDeviceDriverProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES;
 
-	return formatProps;
+	VkBaseOutStructure* base = reinterpret_cast<VkBaseOutStructure*>(&props2);
+	TRAP::Graphics::API::LinkVulkanStruct(base, m_physicalDeviceIDProperties);
+	TRAP::Graphics::API::LinkVulkanStruct(base, m_physicalDeviceSubgroupProperties);
+	TRAP::Graphics::API::LinkVulkanStruct(base, m_physicalDeviceDriverProperties);
+
+	vkGetPhysicalDeviceProperties2(m_physicalDevice, &props2);
+
+	u32 queueFamilyPropertyCount = 0;
+	vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevice, &queueFamilyPropertyCount, nullptr);
+	m_queueFamilyProperties.resize(queueFamilyPropertyCount);
+	vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevice, &queueFamilyPropertyCount,
+											 m_queueFamilyProperties.data());
+
+	for (u32 i = 0; i < std::to_underlying(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
+	{
+		const VkFormat fmt = ImageFormatToVkFormat(static_cast<TRAP::Graphics::API::ImageFormat>(i));
+		if (fmt == VK_FORMAT_UNDEFINED)
+			continue;
+
+		vkGetPhysicalDeviceFormatProperties(m_physicalDevice, fmt, &m_physicalDeviceFormatProperties[i]);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -237,76 +266,21 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::LoadPhysicalDeviceFragmentShader
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::multimap<u32, TRAP::Utils::UUID> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const TRAP::Ref<VulkanInstance> &instance)
+[[nodiscard]] const std::multimap<u32, TRAP::Graphics::API::RatedVulkanPhysicalDevice>& TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const VulkanInstance& instance)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	TRAP_ASSERT(instance, "VulkanPhysicalDevice::GetAllRatedPhysicalDevices(): Vulkan Instance is nullptr");
-
-	if (!s_availablePhysicalDeviceUUIDs.empty())
-		return s_availablePhysicalDeviceUUIDs;
-
-	const std::vector<VkPhysicalDevice> physicalDevices = GetAllVkPhysicalDevices(instance->GetVkInstance());
-
-	if (!physicalDevices.empty())
-		RatePhysicalDevices(physicalDevices, instance->GetVkInstance());
-	else
-		Utils::DisplayError(Utils::ErrorCode::VulkanNoPhysicalDeviceFound);
-
-	return s_availablePhysicalDeviceUUIDs;
+	return GetAllRatedPhysicalDevices(instance.GetVkInstance());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(const TRAP::Ref<VulkanInstance>& instance,
-																					                const TRAP::Utils::UUID& physicalDeviceUUID)
+[[nodiscard]] const std::multimap<u32, TRAP::Graphics::API::RatedVulkanPhysicalDevice>& TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(VkInstance instance)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	TRAP_ASSERT(instance, "VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(): Vulkan Instance is nullptr");
-
-	const auto physicalDevices = GetAllVkPhysicalDevices(instance->GetVkInstance());
-
-	for (const auto &device : physicalDevices)
-	{
-		TRAP::Utils::UUID testUUID{};
-
-		VkPhysicalDeviceIDPropertiesKHR physicalDeviceIDProperties;
-		VkPhysicalDeviceProperties2 props2;
-		props2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
-		props2.pNext = &physicalDeviceIDProperties;
-		physicalDeviceIDProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES;
-		physicalDeviceIDProperties.pNext = nullptr;
-		vkGetPhysicalDeviceProperties2(device, &props2);
-
-		// Copy UUID
-		std::ranges::copy(physicalDeviceIDProperties.deviceUUID, testUUID.begin());
-
-		bool same = true;
-		for (u32 i = 0; i < physicalDeviceUUID.size(); i++)
-		{
-			if (physicalDeviceUUID[i] != testUUID[i])
-			{
-				same = false;
-				break;
-			}
-		}
-
-		if (same)
-			return device;
-	}
-
-	return nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const std::multimap<u32, TRAP::Utils::UUID> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const VkInstance &instance)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	if (!s_availablePhysicalDeviceUUIDs.empty())
-		return s_availablePhysicalDeviceUUIDs;
+	if (!s_ratedPhysicalDevices.empty())
+		return s_ratedPhysicalDevices;
 
 	const std::vector<VkPhysicalDevice> physicalDevices = GetAllVkPhysicalDevices(instance);
 
@@ -315,25 +289,15 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::LoadPhysicalDeviceFragmentShader
 	else
 		Utils::DisplayError(Utils::ErrorCode::VulkanNoPhysicalDeviceFound);
 
-	return s_availablePhysicalDeviceUUIDs;
+	return s_ratedPhysicalDevices;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::vector<VkPhysicalDevice> TRAP::Graphics::API::VulkanPhysicalDevice::GetAllVkPhysicalDevices(const VkInstance &instance)
+namespace
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	u32 physicalDeviceCount = 0;
-	VkCall(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, nullptr));
-
-	std::vector<VkPhysicalDevice> physicalDevices(physicalDeviceCount);
-	VkCall(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, physicalDevices.data()));
-
-	return physicalDevices;
+	//TODO Split RatePhysicalDevices() into smaller chunks
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::vector<VkPhysicalDevice> &physicalDevices, VkInstance instance)
 {
@@ -751,20 +715,13 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		std::ranges::copy(physicalDeviceIDProperties.deviceUUID, physicalDeviceUUID.begin());
 
 		TP_INFO(Log::RendererVulkanPrefix, "Found GPU: \"", devProps.deviceName, "\"(", TRAP::Utils::UUIDToString(physicalDeviceUUID), ')', " Score: ", score);
-		s_availablePhysicalDeviceUUIDs.emplace(score, physicalDeviceUUID);
+
+		const RatedVulkanPhysicalDevice ratedDevice
+		{
+			.PhysicalDeviceUUID = physicalDeviceUUID,
+			.PhysicalDeviceName = devProps.deviceName,
+		};
+		s_ratedPhysicalDevices.emplace(score, ratedDevice);
 		score = 0;
 	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanPhysicalDevice::LoadAllPhysicalDeviceExtensions()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	u32 extensionsCount = 0;
-	VkCall(vkEnumerateDeviceExtensionProperties(m_physicalDevice, nullptr, &extensionsCount, nullptr));
-	m_availablePhysicalDeviceExtensions.resize(extensionsCount);
-	VkCall(vkEnumerateDeviceExtensionProperties(m_physicalDevice, nullptr, &extensionsCount,
-												m_availablePhysicalDeviceExtensions.data()));
 }

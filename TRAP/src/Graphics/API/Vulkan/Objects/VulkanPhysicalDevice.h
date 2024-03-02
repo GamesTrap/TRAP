@@ -4,11 +4,16 @@
 #include <map>
 
 #include "Graphics/API/RendererAPI.h"
-#include "Maths/Math.h"
 
 namespace TRAP::Graphics::API
 {
 	class VulkanInstance;
+
+	struct RatedVulkanPhysicalDevice
+	{
+		TRAP::Utils::UUID PhysicalDeviceUUID{};
+		std::string PhysicalDeviceName{};
+	};
 
 	class VulkanPhysicalDevice
 	{
@@ -16,7 +21,7 @@ namespace TRAP::Graphics::API
 		/// @brief Constructor.
 		/// @param instance Vulkan instance.
 		/// @param physicalDeviceUUID UUID of physical device to create.
-		VulkanPhysicalDevice(const TRAP::Ref<VulkanInstance>& instance,
+		VulkanPhysicalDevice(TRAP::Ref<VulkanInstance> instance,
 			                 const TRAP::Utils::UUID& physicalDeviceUUID);
 		/// @brief Destructor.
 		~VulkanPhysicalDevice();
@@ -26,7 +31,7 @@ namespace TRAP::Graphics::API
 		/// @brief Copy assignment operator.
 		consteval VulkanPhysicalDevice& operator=(const VulkanPhysicalDevice&) noexcept = delete;
 		/// @brief Move constructor.
-		constexpr VulkanPhysicalDevice(VulkanPhysicalDevice&&) noexcept = default;
+		VulkanPhysicalDevice(VulkanPhysicalDevice&&) noexcept = default;
 		/// @brief Move assignment operator.
 		VulkanPhysicalDevice& operator=(VulkanPhysicalDevice&&) noexcept = default;
 
@@ -36,7 +41,7 @@ namespace TRAP::Graphics::API
 		/// @brief Retrieve the Vulkan physical device format properties for a specific format.
 		/// @param format Format to retrieve properties for.
 		/// @return VkFormatProperties.
-		[[nodiscard]] VkFormatProperties GetVkPhysicalDeviceFormatProperties(VkFormat format) const;
+		[[nodiscard]] constexpr const VkFormatProperties& GetVkPhysicalDeviceFormatProperties(ImageFormat format) const noexcept;
 		/// @brief Retrieve the Vulkan physical device properties.
 		/// @return VkPhysicalDeviceProperties.
 		[[nodiscard]] constexpr const VkPhysicalDeviceProperties& GetVkPhysicalDeviceProperties() const noexcept;
@@ -63,9 +68,6 @@ namespace TRAP::Graphics::API
 		/// @return True if extension is supported, false otherwise.
 		[[nodiscard]] constexpr bool IsExtensionSupported(std::string_view extension) const;
 
-		/// @brief Retrieve a list of all available physical device extensions.
-		/// @return List of physical device extensions.
-		[[nodiscard]] constexpr const std::vector<VkExtensionProperties>& GetAvailablePhysicalDeviceExtensions() const noexcept;
 		/// @brief Retrieve the properties for the given physical device extension.
 		/// @param physicalDeviceExtension Physical device extension to get properties from.
 		/// @return Physical device extension properties.
@@ -73,41 +75,38 @@ namespace TRAP::Graphics::API
 
 		/// @brief Retrieve the physical device's UUID.
 		/// @return Physical device UUID.
-		[[nodiscard]] constexpr const TRAP::Utils::UUID& GetPhysicalDeviceUUID() const noexcept;
+		[[nodiscard]] constexpr TRAP::Utils::UUID GetUUID() const noexcept;
 
 		/// @brief Load the physical device fragment shader interlock features.
 		/// Value is saved in RendererAPI::GPUSettings.ROVsSupported.
+		/// @note Only call this function when VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION is enabled.
 		void LoadPhysicalDeviceFragmentShaderInterlockFeatures();
 
 		/// @brief Retrieve the vendor of the physical device.
 		/// @return Vendor.
 		[[nodiscard]] constexpr RendererAPI::GPUVendor GetVendor() const noexcept;
 
+		/// @brief Retrieve the name of the physical device.
+		/// @return Vendor.
+		[[nodiscard]] constexpr std::string GetName() const noexcept;
+
 		/// @brief Retrieve a list of all rated physical devices.
 		/// Key is the devices score, value is the UUID of the physical device.
 		/// @param instance Vulkan instance.
 		/// @return List of rated physical devices.
-		[[nodiscard]] static const std::multimap<u32, TRAP::Utils::UUID>& GetAllRatedPhysicalDevices(const TRAP::Ref<VulkanInstance>& instance);
-
-		/// @brief Retrieve a phyiscal device via its UUID.
-		/// @param instance Vulkan instance.
-		/// @param physicalDeviceUUID Physical device UUID to retrieve.
-		/// @return Vulkan physical device.
-		[[nodiscard]] static VkPhysicalDevice FindPhysicalDeviceViaUUID(const TRAP::Ref<VulkanInstance>& instance,
-			                                                            const TRAP::Utils::UUID& physicalDeviceUUID);
+		[[nodiscard]] static const std::multimap<u32, RatedVulkanPhysicalDevice>& GetAllRatedPhysicalDevices(const VulkanInstance& instance);
 
 	private:
 		friend bool TRAP::Graphics::RendererAPI::IsVulkanCapable();
+
+		/// @brief Loads physical device properties and features for future use.
+		void LoadDevicePropertiesAndFeatures();
+
 		/// @brief Retrieve a list of all rated physical devices.
 		/// Key is the devices score, value is the UUID of the physical device.
 		/// @param instance Vulkan instance handle.
 		/// @return List of rated physical devices.
-		[[nodiscard]] static const std::multimap<u32, TRAP::Utils::UUID>& GetAllRatedPhysicalDevices(const VkInstance& instance);
-
-		/// @brief Retrieve a list of all Vulkan physical device handles.
-		/// @param instance Vulkan instance handle.
-		/// @return List of Vulkan physical device handles.
-		[[nodiscard]] static std::vector<VkPhysicalDevice> GetAllVkPhysicalDevices(const VkInstance& instance);
+		[[nodiscard]] static const std::multimap<u32, RatedVulkanPhysicalDevice>& GetAllRatedPhysicalDevices(VkInstance instance);
 
 		/// @brief Rate a list of physical devices.
 		///
@@ -140,13 +139,6 @@ namespace TRAP::Graphics::API
 		/// @param instance Vulkan instance used to retrieve the physical devices.
 		static void RatePhysicalDevices(const std::vector<VkPhysicalDevice>& physicalDevices, VkInstance instance);
 
-		/// @brief Load a list of available instance layers.
-		void LoadAllPhysicalDeviceExtensions();
-
-		/// @brief Retrieve the max usable MSAA sample count for the GPU.
-		/// @return Max usable MSAA sample count.
-		[[nodiscard]] constexpr u32 GetMaxUsableMSAASampleCount() const noexcept;
-
 		VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
 		VkPhysicalDeviceProperties m_physicalDeviceProperties{};
 		VkPhysicalDeviceSubgroupProperties m_physicalDeviceSubgroupProperties{};
@@ -154,13 +146,15 @@ namespace TRAP::Graphics::API
 		VkPhysicalDeviceMemoryProperties m_physicalDeviceMemoryProperties{};
 		VkPhysicalDeviceFeatures m_physicalDeviceFeatures{};
 		VkPhysicalDeviceDriverProperties m_physicalDeviceDriverProperties{};
+		std::array<VkFormatProperties, std::to_underlying(ImageFormat::IMAGE_FORMAT_COUNT)> m_physicalDeviceFormatProperties{};
 		std::vector<VkQueueFamilyProperties> m_queueFamilyProperties{};
-
-		TRAP::Utils::UUID m_deviceUUID{};
 
 		std::vector<VkExtensionProperties> m_availablePhysicalDeviceExtensions{};
 
-		static std::multimap<u32, TRAP::Utils::UUID> s_availablePhysicalDeviceUUIDs;
+		TRAP::Ref<VulkanInstance> m_instance = nullptr; //Take ownership of VulkanInstance because we rely on it being around.
+
+		//Multiple physical devices can theoretically have the same score, so we use a multimap here.
+		inline static std::multimap<u32, RatedVulkanPhysicalDevice> s_ratedPhysicalDevices{};
 	};
 }
 
@@ -169,6 +163,13 @@ namespace TRAP::Graphics::API
 [[nodiscard]] constexpr VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDevice() const noexcept
 {
 	return m_physicalDevice;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const VkFormatProperties& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFormatProperties(const TRAP::Graphics::API::ImageFormat format) const noexcept
+{
+	return m_physicalDeviceFormatProperties[std::to_underlying(format)];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -204,20 +205,12 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr const std::vector<VkExtensionProperties>& TRAP::Graphics::API::VulkanPhysicalDevice::GetAvailablePhysicalDeviceExtensions() const noexcept
-{
-	return m_availablePhysicalDeviceExtensions;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] constexpr std::optional<VkExtensionProperties> TRAP::Graphics::API::VulkanPhysicalDevice::GetPhysicalDeviceExtensionProperties(const std::string_view physicalDeviceExtension) const
 {
-	const std::vector<VkExtensionProperties>& physicalDeviceExtensions = GetAvailablePhysicalDeviceExtensions();
-	auto res = std::ranges::find_if(physicalDeviceExtensions, [physicalDeviceExtension](const VkExtensionProperties& extensionProps)
-	                                                          {return physicalDeviceExtension == extensionProps.extensionName;});
+	const auto res = std::ranges::find_if(m_availablePhysicalDeviceExtensions, [physicalDeviceExtension](const VkExtensionProperties& extensionProps)
+		{return physicalDeviceExtension == extensionProps.extensionName;});
 
-	if(res == std::ranges::end(physicalDeviceExtensions))
+	if(res == m_availablePhysicalDeviceExtensions.end())
 		return std::nullopt;
 
 	return *res;
@@ -225,35 +218,35 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr const VkPhysicalDeviceProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceProperties() const noexcept
+[[nodiscard]] constexpr const VkPhysicalDeviceProperties& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceProperties() const noexcept
 {
 	return m_physicalDeviceProperties;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr const VkPhysicalDeviceSubgroupProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceSubgroupProperties() const noexcept
+[[nodiscard]] constexpr const VkPhysicalDeviceSubgroupProperties& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceSubgroupProperties() const noexcept
 {
 	return m_physicalDeviceSubgroupProperties;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr const VkPhysicalDeviceIDProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceIDProperties() const noexcept
+[[nodiscard]] constexpr const VkPhysicalDeviceIDProperties& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceIDProperties() const noexcept
 {
 	return m_physicalDeviceIDProperties;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr const VkPhysicalDeviceMemoryProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceMemoryProperties() const noexcept
+[[nodiscard]] constexpr const VkPhysicalDeviceMemoryProperties& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceMemoryProperties() const noexcept
 {
 	return m_physicalDeviceMemoryProperties;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr const VkPhysicalDeviceFeatures &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFeatures() const noexcept
+[[nodiscard]] constexpr const VkPhysicalDeviceFeatures& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFeatures() const noexcept
 {
 	return m_physicalDeviceFeatures;
 }
@@ -267,9 +260,12 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr const TRAP::Utils::UUID& TRAP::Graphics::API::VulkanPhysicalDevice::GetPhysicalDeviceUUID() const noexcept
+[[nodiscard]] constexpr TRAP::Utils::UUID TRAP::Graphics::API::VulkanPhysicalDevice::GetUUID() const noexcept
 {
-	return m_deviceUUID;
+	TRAP::Utils::UUID devUUID{};
+	std::ranges::copy(m_physicalDeviceIDProperties.deviceUUID, devUUID.begin());
+
+	return devUUID;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -312,26 +308,9 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr u32 TRAP::Graphics::API::VulkanPhysicalDevice::GetMaxUsableMSAASampleCount() const noexcept
+[[nodiscard]] constexpr std::string TRAP::Graphics::API::VulkanPhysicalDevice::GetName() const noexcept
 {
-	VkSampleCountFlags sampleCounts = TRAP::Math::Min(m_physicalDeviceProperties.limits.framebufferColorSampleCounts,
-	                                                  m_physicalDeviceProperties.limits.framebufferDepthSampleCounts);
-	sampleCounts = TRAP::Math::Min(sampleCounts, m_physicalDeviceProperties.limits.framebufferStencilSampleCounts);
-
-	if((sampleCounts & VK_SAMPLE_COUNT_64_BIT) != 0u)
-		return VK_SAMPLE_COUNT_64_BIT;
-	if((sampleCounts & VK_SAMPLE_COUNT_32_BIT) != 0u)
-		return VK_SAMPLE_COUNT_32_BIT;
-	if((sampleCounts & VK_SAMPLE_COUNT_16_BIT) != 0u)
-		return VK_SAMPLE_COUNT_16_BIT;
-	if((sampleCounts & VK_SAMPLE_COUNT_8_BIT) != 0u)
-		return VK_SAMPLE_COUNT_8_BIT;
-	if((sampleCounts & VK_SAMPLE_COUNT_4_BIT) != 0u)
-		return VK_SAMPLE_COUNT_4_BIT;
-	if((sampleCounts & VK_SAMPLE_COUNT_2_BIT) != 0u)
-		return VK_SAMPLE_COUNT_2_BIT;
-
-	return VK_SAMPLE_COUNT_1_BIT;
+	return m_physicalDeviceProperties.deviceName;
 }
 
 #endif /*TRAP_VULKANPHYSICALDEVICE_H*/

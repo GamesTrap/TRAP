@@ -319,7 +319,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 			for(usize i = 0; i < graphicsDesc.ColorFormats.size(); ++i)
 			{
 				const ImageFormat fmt = graphicsDesc.ColorFormats[i];
-				const auto formatProps = m_device->GetPhysicalDevice().GetVkPhysicalDeviceFormatProperties(ImageFormatToVkFormat(fmt));
+				const auto formatProps = m_device->GetPhysicalDevice().GetVkPhysicalDeviceFormatProperties(fmt);
 				if((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT) != 0u)
 					graphicsDesc.BlendState->RenderTargetMask |= static_cast<RendererAPI::BlendStateTargets>(BIT(NumericCast<u32>(i)));
 			}

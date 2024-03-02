@@ -334,9 +334,7 @@ namespace
 
 		for(const ImageFormat depthStencilFormat : depthStencilFormats)
 		{
-			const VkFormat vkDepthStencilFormat = ImageFormatToVkFormat(depthStencilFormat);
-
-			const auto formatProps = device.GetPhysicalDevice().GetVkPhysicalDeviceFormatProperties(vkDepthStencilFormat);
+			const auto formatProps = device.GetPhysicalDevice().GetVkPhysicalDeviceFormatProperties(depthStencilFormat);
 			if((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) == VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
 				return depthStencilFormat;
 		}
@@ -508,7 +506,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 	m_debug = TRAP::MakeScope<VulkanDebug>(m_instance);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
-	const std::multimap<u32, TRAP::Utils::UUID> physicalDevices = VulkanPhysicalDevice::GetAllRatedPhysicalDevices(m_instance);
+	const auto& physicalDevices = VulkanPhysicalDevice::GetAllRatedPhysicalDevices(*m_instance);
 	TRAP::Scope<VulkanPhysicalDevice> physicalDevice;
 
 	//Get Vulkan GPU UUID
@@ -517,20 +515,22 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 	if(UUIDstr)
 		gpuUUID = TRAP::Utils::UUIDFromString(*UUIDstr);
 
-	if(gpuUUID == TRAP::Utils::UUID{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0})
+	if(gpuUUID == TRAP::Utils::EMPTY_UUID)
 	{
 		TP_ERROR(Log::RendererVulkanPrefix, "Invalid GPU UUID: \"", Utils::UUIDToString(gpuUUID), "\"!");
 		TP_ERROR(Log::RendererVulkanPrefix, "Falling back to score based system");
-		physicalDevice = TRAP::MakeScope<VulkanPhysicalDevice>(m_instance, (--physicalDevices.end())->second);
+
+		const auto& [highscore, ratedDev] = *physicalDevices.rbegin();
+		physicalDevice = TRAP::MakeScope<VulkanPhysicalDevice>(m_instance, ratedDev.PhysicalDeviceUUID);
 	}
 	else
 	{
-		for (const auto& [score, devUUID] : physicalDevices)
+		for (const auto& [score, ratedDev] : physicalDevices)
 		{
-			if(gpuUUID != devUUID)
+			if(gpuUUID != ratedDev.PhysicalDeviceUUID)
 				continue;
 
-			physicalDevice = TRAP::MakeScope<VulkanPhysicalDevice>(m_instance, devUUID);
+			physicalDevice = TRAP::MakeScope<VulkanPhysicalDevice>(m_instance, ratedDev.PhysicalDeviceUUID);
 			break;
 		}
 
@@ -538,7 +538,9 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 		{
 			TP_ERROR(Log::RendererVulkanPrefix, "Could not find a GPU with UUID: \"", Utils::UUIDToString(gpuUUID), "\"!");
 			TP_ERROR(Log::RendererVulkanPrefix, "Falling back to score based system");
-			physicalDevice = TRAP::MakeScope<VulkanPhysicalDevice>(m_instance, (--physicalDevices.end())->second);
+
+			const auto& [highscore, ratedDev] = *physicalDevices.rbegin();
+			physicalDevice = TRAP::MakeScope<VulkanPhysicalDevice>(m_instance, ratedDev.PhysicalDeviceUUID);
 		}
 	}
 
@@ -2301,7 +2303,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u3
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	return m_device->GetPhysicalDevice().GetPhysicalDeviceUUID();
+	return m_device->GetPhysicalDevice().GetUUID();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2311,7 +2313,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u3
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	return m_device->GetPhysicalDevice().GetVkPhysicalDeviceProperties().deviceName;
+	return m_device->GetPhysicalDevice().GetName();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2333,14 +2335,8 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u3
 	if(!s_usableGPUs.empty())
 		return s_usableGPUs;
 
-	for (const auto& [score, devUUID] : VulkanPhysicalDevice::GetAllRatedPhysicalDevices(m_instance))
-	{
-		VkPhysicalDevice dev = VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(m_instance, devUUID);
-		VkPhysicalDeviceProperties props;
-		vkGetPhysicalDeviceProperties(dev, &props);
-
-		s_usableGPUs.emplace_back(props.deviceName, devUUID);
-	}
+	for (const auto& [score, ratedDevice] : VulkanPhysicalDevice::GetAllRatedPhysicalDevices(*m_instance))
+		s_usableGPUs.emplace_back(ratedDevice.PhysicalDeviceName, ratedDevice.PhysicalDeviceUUID);
 
 	return s_usableGPUs;
 }
