@@ -4920,5 +4920,9 @@ SITREP 02/27/2024|24w09a2
     - VulkanMemoryAllocator Refactored constructor ~<5 mins
 
 SITREP 03/02/2024|24w09b1
-    - Changed TRAP Engine version to 24w09a2(0.10.50)
+    - Changed TRAP Engine version to 24w09b1(0.10.50)
     - VulkanPhysicalDevice Refactored various functions ~>45 mins
+
+SITREP 03/03/2024|24w09b2
+    - Changed TRAP Engine version to 24w09b2(0.10.51)
+    - VulkanPhysicalDevice Refactored RatePhysicalDevices() function ~>45 mins

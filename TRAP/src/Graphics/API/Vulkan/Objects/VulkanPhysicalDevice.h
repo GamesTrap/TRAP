@@ -137,7 +137,7 @@ namespace TRAP::Graphics::API
 		/// 24. Optionally check if anisotropic filtering is supported (500 score).
 		/// @param physicalDevices Vulkan physical devices to rate.
 		/// @param instance Vulkan instance used to retrieve the physical devices.
-		static void RatePhysicalDevices(const std::vector<VkPhysicalDevice>& physicalDevices, VkInstance instance);
+		static void RatePhysicalDevices(std::span<const VkPhysicalDevice> physicalDevices, [[maybe_unused]] VkInstance instance);
 
 		VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
 		VkPhysicalDeviceProperties m_physicalDeviceProperties{};
