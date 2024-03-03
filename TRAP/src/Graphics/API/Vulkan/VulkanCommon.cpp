@@ -126,6 +126,40 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] VkShaderStageFlagBits TRAP::Graphics::API::ShaderStageToVkShaderStageFlagBits(const RendererAPI::ShaderStage stage) noexcept
+{
+	VkShaderStageFlagBits res{};
+
+	//Graphics
+	if (stage == RendererAPI::ShaderStage::Vertex)
+		return VK_SHADER_STAGE_VERTEX_BIT;
+	if (stage == RendererAPI::ShaderStage::Geometry)
+		return VK_SHADER_STAGE_GEOMETRY_BIT;
+	if (stage == RendererAPI::ShaderStage::TessellationEvaluation)
+		return VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
+	if (stage == RendererAPI::ShaderStage::TessellationControl)
+		return VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
+	if (stage == RendererAPI::ShaderStage::Fragment)
+		return VK_SHADER_STAGE_FRAGMENT_BIT;
+
+	//Compute
+	if (stage == RendererAPI::ShaderStage::Compute)
+		return VK_SHADER_STAGE_COMPUTE_BIT;
+
+	//RayTracing
+	// if (stage == RendererAPI::ShaderStage::RayTracing)
+	// {
+	// 	return (VK_SHADER_STAGE_RAYGEN_BIT_KHR | VK_SHADER_STAGE_ANY_HIT_BIT_KHR |
+	// 		    VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_MISS_BIT_KHR |
+	// 		    VK_SHADER_STAGE_INTERSECTION_BIT_KHR | VK_SHADER_STAGE_CALLABLE_BIT_KHR);
+	// }
+
+	TRAP_ASSERT(false, "ShaderStageToVkShaderStageFlagBits(): Invalid ShaderStage provided!");
+	return res;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 namespace
 {
@@ -343,6 +377,7 @@ void TRAP::Graphics::API::VkSetObjectName(VkDevice device, const u64 handle, con
 	blendDescIndex = 0;
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
+	attachments.resize(8);
 	for(u32 i = 0; i < 8; ++i)
 	{
 		const VkBool32 blendEnable = VkBool32

@@ -104,7 +104,13 @@ namespace TRAP::Graphics::API
 	/// @brief Convert the RendererAPI::ShaderStage to VkShaderStageFlags.
 	/// @param stages ShaderStage(s) to convert.
 	/// @return Converted VkShaderStageFlags.
+	/// @note This returns all found VkShaderStageFlagBits in stages as a single VkShaderStageFlags value.
 	[[nodiscard]] VkShaderStageFlags ShaderStageToVkShaderStageFlags(RendererAPI::ShaderStage stages) noexcept;
+	/// @brief Convert the RendererAPI::ShaderStage to VkShaderStageFlagBits.
+	/// @param stages ShaderStage(s) to convert.
+	/// @return Converted VkShaderStageFlagBits.
+	/// @note This returns the first found VkShaderStageFlagBits.
+	[[nodiscard]] VkShaderStageFlagBits ShaderStageToVkShaderStageFlagBits(RendererAPI::ShaderStage stage) noexcept;
 	/// @brief Convert the RendererAPI::PipelineCacheFlags to VkPipelineCacheCreateFlags.
 	/// @param flags PipelineCacheFlag to convert.
 	/// @return Converted VkPipelineCacheCreateFlags.
@@ -126,6 +132,10 @@ namespace TRAP::Graphics::API
 	/// @param type QueryType to convert.
 	/// @return Converted VkQueryType.
 	[[nodiscard]] VkQueryType QueryTypeToVkQueryType(RendererAPI::QueryType type) noexcept;
+	/// @brief Convert the RendererAPI::PrimitiveTopology to VkPrimitiveTopology.
+	/// @param primitiveTopology Primitive topology to convert.
+	/// @return Converted VkPrimitiveTopology.
+	[[nodiscard]] constexpr VkPrimitiveTopology PrimitiveTopologyToVkPrimitiveTopology(RendererAPI::PrimitiveTopology primitiveToplogy) noexcept;
 
 	/// @brief Utility to create the VkPipelineColorBlendStateCreateInfo struct from
 	/// a RendererAPI::BlendStateDesc and color blend attachments.
@@ -285,6 +295,12 @@ namespace TRAP::Graphics::API
 	{
 		VK_FRONT_FACE_COUNTER_CLOCKWISE,
 		VK_FRONT_FACE_CLOCKWISE
+	};
+
+	constexpr std::array<VkVertexInputRate, 2> VkVertexInputRateTranslator =
+	{
+		VK_VERTEX_INPUT_RATE_VERTEX,
+		VK_VERTEX_INPUT_RATE_INSTANCE
 	};
 }
 
@@ -864,6 +880,27 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 		return VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR;
 
 	return VK_IMAGE_LAYOUT_UNDEFINED;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkPrimitiveTopology TRAP::Graphics::API::PrimitiveTopologyToVkPrimitiveTopology(const TRAP::Graphics::RendererAPI::PrimitiveTopology primitiveToplogy) noexcept
+{
+	if(primitiveToplogy == TRAP::Graphics::RendererAPI::PrimitiveTopology::PointList)
+		return VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+	if(primitiveToplogy == TRAP::Graphics::RendererAPI::PrimitiveTopology::LineList)
+		return VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+	if(primitiveToplogy == TRAP::Graphics::RendererAPI::PrimitiveTopology::LineStrip)
+		return VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
+	if(primitiveToplogy == TRAP::Graphics::RendererAPI::PrimitiveTopology::TriangleList)
+		return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+	if(primitiveToplogy == TRAP::Graphics::RendererAPI::PrimitiveTopology::TriangleStrip)
+		return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+	if(primitiveToplogy == TRAP::Graphics::RendererAPI::PrimitiveTopology::PatchList)
+		return VK_PRIMITIVE_TOPOLOGY_PATCH_LIST;
+
+	TRAP_ASSERT(false, "PrimitiveTopologyToVkPrimitiveTopology(): Unknown primitive topology!");
+	return {};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -4926,3 +4926,4 @@ SITREP 03/02/2024|24w09b1
 SITREP 03/03/2024|24w09b2
     - Changed TRAP Engine version to 24w09b2(0.10.51)
     - VulkanPhysicalDevice Refactored RatePhysicalDevices() function ~>45 mins
+    - VulkanPipeline Refactored InitGraphicsPipeline() function ~<30 mins
