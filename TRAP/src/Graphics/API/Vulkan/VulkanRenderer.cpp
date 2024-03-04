@@ -3164,12 +3164,6 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 		layers.emplace_back("VK_LAYER_KHRONOS_validation");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
-#ifdef USE_RENDER_DOC
-	//Turn on render doc layer for gpu capture
-	if(VulkanInstance::IsLayerSupported("VK_LAYER_RENDERDOC_Capture"))
-		layers.emplace_back("VK_LAYER_RENDERDOC_Capture");
-#endif /*USE_RENDER_DOC*/
-
 	return layers;
 }
 

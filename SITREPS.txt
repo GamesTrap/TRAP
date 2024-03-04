@@ -4932,3 +4932,4 @@ SITREP 03/05/2024|24w10a1
     - Changed TRAP Engine version to 24w10a1(0.10.52)
     - VulkanPipelineCache Added VkSetObjectName() calls ~<5 mins
     - VulkanQueryPool Added VkSetObjectName() calls ~<5 mins
+    - Removed USE_RENDER_DOC macro (RenderDoc will inject the capture layer by itself) ~<5 mins

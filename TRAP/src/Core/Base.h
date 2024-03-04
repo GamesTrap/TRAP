@@ -17,9 +17,6 @@
 #include "Backports.h"
 #include "Version.h"
 
-//Set this define to enable RenderDoc layer
-//#define USE_RENDER_DOC
-
 //-------------------------------------------------------------------------------------------------------------------//
 
 /// @brief Activate this to enable support for texture import/exporting from/to other processes
