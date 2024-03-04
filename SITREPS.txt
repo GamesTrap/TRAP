@@ -4927,3 +4927,8 @@ SITREP 03/03/2024|24w09b2
     - Changed TRAP Engine version to 24w09b2(0.10.51)
     - VulkanPhysicalDevice Refactored RatePhysicalDevices() function ~>45 mins
     - VulkanPipeline Refactored InitGraphicsPipeline() function ~<30 mins
+
+SITREP 03/05/2024|24w10a1
+    - Changed TRAP Engine version to 24w10a1(0.10.52)
+    - VulkanPipelineCache Added VkSetObjectName() calls ~<5 mins
+    - VulkanQueryPool Added VkSetObjectName() calls ~<5 mins

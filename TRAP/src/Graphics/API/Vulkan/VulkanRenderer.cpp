@@ -2906,7 +2906,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 	p->GraphicsFrameTime = 0.0f;
 	p->ComputeFrameTime = 0.0f;
 
-	const RendererAPI::QueryPoolDesc queryPoolDesc{QueryType::Timestamp, 1 * 2};
+	RendererAPI::QueryPoolDesc queryPoolDesc{QueryType::Timestamp, 1 * 2};
 	RendererAPI::BufferDesc bufferDesc{};
 	bufferDesc.MemoryUsage = RendererAPI::ResourceMemoryUsage::GPUToCPU;
 	bufferDesc.Flags = RendererAPI::BufferCreationFlags::OwnMemory;
@@ -2943,6 +2943,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 		p->RenderCompleteSemaphores[i] = Semaphore::Create();
 		p->GraphicsCompleteSemaphores[i] = Semaphore::Create();
 
+		queryPoolDesc.Name = "GPU FrameTime Graphics QueryPool";
 		p->GraphicsTimestampQueryPools[i] = QueryPool::Create(queryPoolDesc);
 		bufferDesc.Name = "GPU FrameTime Graphics Query Readback Buffer";
 		RendererAPI::BufferLoadDesc loadDesc{};
@@ -2971,6 +2972,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 		p->ComputeCompleteFences[i] = Fence::Create(false, fmt::format("PerViewportData Fence (ComputeComplete, Image: {})", i));
 		p->ComputeCompleteSemaphores[i] = Semaphore::Create();
 
+		queryPoolDesc.Name = "GPU FrameTime Compute QueryPool";
 		p->ComputeTimestampQueryPools[i] = QueryPool::Create(queryPoolDesc);
 		bufferDesc.Name = "GPU FrameTime Compute Query Readback Buffer";
 		loadDesc = {};
@@ -3723,6 +3725,7 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 		{
 			PipelineCacheLoadDesc cacheDesc{};
 			cacheDesc.Path = *tempFolder / fmt::format("{}.cache", hash);
+			cacheDesc.Name = fmt::format("Pipeline cache (Pipeline: \"{}\")", desc.Name);
 			res = s_pipelineCaches.try_emplace(hash, PipelineCache::Create(cacheDesc));
 		}
 

@@ -189,11 +189,16 @@ void TRAP::ImGuiLayer::OnAttach()
 		if(tempFolder)
 		{
 			const TRAP::Graphics::RendererAPI::PipelineCacheLoadDesc cacheDesc{.Path = *tempFolder / "ImGui.cache",
-			                                                                   .Flags = TRAP::Graphics::RendererAPI::PipelineCacheFlags::None};
+			                                                                   .Flags = TRAP::Graphics::RendererAPI::PipelineCacheFlags::None,
+																			   .Name = "Pipeline cache (Pipeline: \"ImGui\")"};
 			m_imguiPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
 		}
 		else //Create empty cache as fallback
-			m_imguiPipelineCache = TRAP::Graphics::PipelineCache::Create(TRAP::Graphics::RendererAPI::PipelineCacheDesc{});
+		{
+			TRAP::Graphics::RendererAPI::PipelineCacheDesc cacheDesc{};
+			cacheDesc.Name = "Pipeline cache (Pipeline: \"ImGui\")";
+			m_imguiPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
+		}
 
 		TRAP::Graphics::AntiAliasing aaMethod = TRAP::Graphics::AntiAliasing::Off;
 		TRAP::Graphics::SampleCount aaSamples = TRAP::Graphics::SampleCount::Two;

@@ -21,6 +21,12 @@ TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const RendererAPI::QueryPo
 	const VkQueryPoolCreateInfo info = VulkanInits::QueryPoolCreateInfo(m_count, m_type);
 	VkCall(vkCreateQueryPool(device->GetVkDevice(), &info, nullptr, &m_vkQueryPool));
 	TRAP_ASSERT(m_vkQueryPool, "VulkanQueryPool(): Vulkan QueryPool is nullptr!");
+
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if(!desc.Name.empty())
+		TRAP::Graphics::API::VkSetObjectName(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()->GetVkDevice(),
+	                                         std::bit_cast<u64>(m_vkQueryPool), VK_OBJECT_TYPE_QUERY_POOL, desc.Name);
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

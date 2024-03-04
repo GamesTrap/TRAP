@@ -47,7 +47,7 @@ void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path) cons
 	{
 	case RenderAPI::Vulkan:
 	{
-		TRAP::Graphics::RendererAPI::PipelineCacheDesc cacheDesc{.Data = {}, .Flags = desc.Flags};
+		TRAP::Graphics::RendererAPI::PipelineCacheDesc cacheDesc{.Data = {}, .Flags = desc.Flags, .Name = desc.Name};
 		if(!TRAP::FileSystem::Exists(desc.Path))
 			return TRAP::Graphics::PipelineCache::Create(cacheDesc); //Empty cache
 

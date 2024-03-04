@@ -19,6 +19,11 @@ TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI:
 	                                                     PipelineCacheFlagsToVkPipelineCacheCreateFlags(desc.Flags));
 	VkCall(vkCreatePipelineCache(m_device->GetVkDevice(), &psoCacheCreateInfo, nullptr, &m_cache));
 	TRAP_ASSERT(m_cache, "VulkanPipelineCache(): PipelineCache is nullptr");
+
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if(!desc.Name.empty())
+		TRAP::Graphics::API::VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_cache), VK_OBJECT_TYPE_PIPELINE_CACHE, desc.Name);
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

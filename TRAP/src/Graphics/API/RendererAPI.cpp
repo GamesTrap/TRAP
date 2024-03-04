@@ -132,7 +132,7 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 	TP_INFO(Log::RendererPrefix, "Auto selecting RenderAPI");
 
 	//Check if Vulkan capable
-	if (s_Renderer->IsVulkanCapable())
+	if (RendererAPI::IsVulkanCapable())
 		return RenderAPI::Vulkan;
 	TP_WARN(Log::RendererVulkanPrefix, "Device isn't Vulkan 1.1 capable!");
 

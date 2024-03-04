@@ -2256,6 +2256,8 @@ namespace TRAP::Graphics
 			std::vector<u8> Data{};
 			//Pipeline cache creation flags
 			PipelineCacheFlags Flags{};
+			//Debug name used in GPU profile
+			std::string Name{};
 		};
 
 		/// @brief Description of a pipeline cache to load.
@@ -2265,6 +2267,8 @@ namespace TRAP::Graphics
 			std::filesystem::path Path{};
 			//Pipeline cache creation flags
 			PipelineCacheFlags Flags{};
+			//Debug name used in GPU profile
+			std::string Name{};
 		};
 
 		/// @brief Description of a compute pipeline.
@@ -2367,6 +2371,8 @@ namespace TRAP::Graphics
 			QueryType Type{};
 			//Max amount of queries to manage
 			u32 QueryCount{};
+			//Debug name used in GPU profile
+			std::string Name{};
 		};
 
 		/// @brief Description of a query.
