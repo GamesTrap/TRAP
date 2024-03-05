@@ -58,14 +58,17 @@ void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const Re
 	//Create Graphic Queue
 	QueueDesc queueDesc{};
 	queueDesc.Type = QueueType::Graphics;
+	queueDesc.Name = "Main RendererAPI Queue";
 	s_graphicQueue = Queue::Create(queueDesc);
 
 	//Create Compute Queue
 	queueDesc.Type = QueueType::Compute;
+	queueDesc.Name = "Main RendererAPI Queue";
 	s_computeQueue = Queue::Create(queueDesc);
 
 	//Create Transfer Queue
 	queueDesc.Type = QueueType::Transfer;
+	queueDesc.Name = "Main RendererAPI Queue";
 	s_transferQueue = Queue::Create(queueDesc);
 
 	s_Anisotropy = static_cast<SampleCount>(GPUSettings.MaxAnisotropy);

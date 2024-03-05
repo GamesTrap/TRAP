@@ -20,10 +20,10 @@ TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc
 	TP_DEBUG(Log::RendererVulkanQueuePrefix, "Creating Queue");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	VkQueueFamilyProperties queueProps = {};
+	VkQueueFamilyProperties queueProps{};
 
 	m_device->FindQueueFamilyIndex(m_type, queueProps, m_vkQueueFamilyIndex, m_vkQueueIndex);
-	++m_device->m_usedQueueCount[queueProps.queueFlags];
+	++(m_device->m_usedQueueCount[queueProps.queueFlags]);
 
 	m_flags = queueProps.queueFlags;
 
@@ -32,20 +32,8 @@ TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc
 	TRAP_ASSERT(m_vkQueue != VK_NULL_HANDLE, "VulkanQueue(): Vulkan Queue is nullptr");
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-	switch(m_type)
-	{
-	case RendererAPI::QueueType::Graphics:
-		SetQueueName("Queue_Graphics");
-		break;
-	case RendererAPI::QueueType::Compute:
-		SetQueueName("Queue_Compute");
-		break;
-	case RendererAPI::QueueType::Transfer:
-		SetQueueName("Queue_Transfer");
-		break;
-	default:
-		break;
-	}
+	if(!desc.Name.empty())
+		VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkQueue), VK_OBJECT_TYPE_QUEUE, fmt::format("{} (QueueType: \"{}\")", desc.Name, m_type));
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
@@ -59,7 +47,7 @@ TRAP::Graphics::API::VulkanQueue::~VulkanQueue()
 	TP_DEBUG(Log::RendererVulkanQueuePrefix, "Destroying Queue");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	--m_device->m_usedQueueCount[m_flags];
+	--(m_device->m_usedQueueCount[m_flags]);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -83,43 +71,41 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	for (u32 i = 0; i < desc.Cmds.size(); ++i)
 		cmds[i] = dynamic_cast<VulkanCommandBuffer*>(&desc.Cmds[i].get())->GetVkCommandBuffer();
 
-	std::vector<VkSemaphore> waitSemaphores(desc.WaitSemaphores.size());
-	std::vector<VkPipelineStageFlags> waitMasks(desc.WaitSemaphores.size());
-	u32 waitCount = 0;
+	std::vector<VkSemaphore> waitSemaphores{};
+	waitSemaphores.reserve(desc.WaitSemaphores.size());
+	std::vector<VkPipelineStageFlags> waitMasks{};
+	waitMasks.reserve(desc.WaitSemaphores.size());
 	for (const auto& waitSemaphore : desc.WaitSemaphores)
 	{
 		if(!waitSemaphore->IsSignaled())
 			continue;
 
-		waitSemaphores[waitCount] = std::dynamic_pointer_cast<VulkanSemaphore>(waitSemaphore)->GetVkSemaphore();
-		waitMasks[waitCount] = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
-		++waitCount;
+		waitSemaphores.push_back(std::dynamic_pointer_cast<VulkanSemaphore>(waitSemaphore)->GetVkSemaphore());
+		waitMasks.emplace_back(VK_PIPELINE_STAGE_ALL_COMMANDS_BIT);
 
 		waitSemaphore->m_signaled = false;
 	}
 
-	std::vector<VkSemaphore> signalSemaphores(desc.SignalSemaphores.size());
-	u32 signalCount = 0;
+	std::vector<VkSemaphore> signalSemaphores{};
+	signalSemaphores.reserve(desc.SignalSemaphores.size());
 
 	for(const auto& signalSemaphore : desc.SignalSemaphores)
 	{
 		if(signalSemaphore->IsSignaled())
 			continue;
 
-		signalSemaphores[signalCount] = std::dynamic_pointer_cast<VulkanSemaphore>(signalSemaphore)->GetVkSemaphore();
+		signalSemaphores.push_back(std::dynamic_pointer_cast<VulkanSemaphore>(signalSemaphore)->GetVkSemaphore());
 		signalSemaphore->m_signaled = true;
-		++signalCount;
 	}
 
-	const VkSubmitInfo submitInfo = VulkanInits::SubmitInfo(std::span(waitSemaphores.begin(), waitCount), waitMasks,
-	                                                        cmds, std::span(signalSemaphores.begin(), signalCount));
+	const VkSubmitInfo submitInfo = VulkanInits::SubmitInfo(waitSemaphores, waitMasks, cmds, signalSemaphores);
 
 	//Lightweight lock to make sure multiple threads dont use the same queue simultaneously
 	//Many setups have just one queue family and one queue.
 	//In this case, async compute, async transfer doesn't exist and we end up using the same queue for all
 	//three operations
-	std::lock_guard lock(m_submitMutex);
-	LockMark(m_submitMutex);
+	std::lock_guard lock(m_submitMutex.get());
+	LockMark(m_submitMutex.get());
 	VkCall(vkQueueSubmit(m_vkQueue, 1, &submitInfo, desc.SignalFence ?
 	                                                std::dynamic_pointer_cast<VulkanFence>(desc.SignalFence)->GetVkFence() :
 													VK_NULL_HANDLE));
@@ -141,9 +127,8 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	if(!desc.SwapChain)
 		return presentStatus;
 
-	std::vector<VkSemaphore> wSemaphores;
-	if (!waitSemaphores.empty())
-		wSemaphores.reserve(waitSemaphores.size());
+	std::vector<VkSemaphore> wSemaphores{};
+	wSemaphores.reserve(waitSemaphores.size());
 	for (const auto& waitSemaphore : waitSemaphores)
 	{
 		if(waitSemaphore->IsSignaled())
@@ -153,15 +138,13 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 		}
 	}
 
-	u32 presentIndex = desc.Index;
-
 	const Ref<VulkanSwapChain> sChain = std::dynamic_pointer_cast<VulkanSwapChain>(desc.SwapChain);
 	VkSwapchainKHR sc = sChain->GetVkSwapChain();
-	const VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sc, presentIndex);
+	const VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sc, desc.Index);
 
 	//Lightweigt lock to make sure multiple threads dont use the same queue simultaneously
-	std::lock_guard lock(m_submitMutex);
-	LockMark(m_submitMutex);
+	std::lock_guard lock(m_submitMutex.get());
+	LockMark(m_submitMutex.get());
 	const VkResult res = vkQueuePresentKHR(sChain->GetPresentVkQueue() != nullptr ? sChain->GetPresentVkQueue() : m_vkQueue,
 	                                       &presentInfo);
 	if (res == VK_SUCCESS)
@@ -178,14 +161,3 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	return presentStatus;
 }
 #endif /*TRAP_HEADLESS_MODE*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-void TRAP::Graphics::API::VulkanQueue::SetQueueName(const std::string_view name) const
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkQueue), VK_OBJECT_TYPE_QUEUE, name);
-}
-#endif /*ENABLE_GRAPHICS_DEBUG*/

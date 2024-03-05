@@ -3544,6 +3544,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	//Create Command Buffer to transition resources to the correct state
 	QueueDesc queueDesc{};
 	queueDesc.Type = QueueType::Graphics;
+	queueDesc.Name = "Initial Transition Queue";
 	const TRAP::Ref<VulkanQueue> graphicsQueue = TRAP::MakeRef<VulkanQueue>(queueDesc);
 
 	const CommandPoolDesc cmdPoolDesc

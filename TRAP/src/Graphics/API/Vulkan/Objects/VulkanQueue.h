@@ -67,19 +67,13 @@ namespace TRAP::Graphics::API
 #endif /*TRAP_HEADLESS_MODE*/
 
 	private:
-#ifdef ENABLE_GRAPHICS_DEBUG
-		/// @brief Set a name for the queue.
-		/// @param name Name for the queue.
-		void SetQueueName(std::string_view name) const;
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 
 		VkQueue m_vkQueue = VK_NULL_HANDLE;
 #ifdef TRACY_ENABLE
-		tracy::Lockable<std::mutex>& m_submitMutex = VulkanRenderer::s_NullDescriptors->SubmitMutex;
+		std::reference_wrapper<tracy::Lockable<std::mutex>> m_submitMutex = VulkanRenderer::s_NullDescriptors->SubmitMutex;
 #else
-		std::mutex& m_submitMutex = VulkanRenderer::s_NullDescriptors->SubmitMutex;
+		std::reference_wrapper<std::mutex> m_submitMutex = VulkanRenderer::s_NullDescriptors->SubmitMutex;
 #endif
 		u8 m_vkQueueFamilyIndex = std::numeric_limits<u8>::max();
 		u8 m_vkQueueIndex = std::numeric_limits<u8>::max();

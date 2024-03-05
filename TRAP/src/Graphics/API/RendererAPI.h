@@ -2151,6 +2151,8 @@ namespace TRAP::Graphics
 			QueueFlag Flag{};
 			//Priority for the queue (DirectX 12)
 			QueuePriority Priority{};
+			//Debug name used in GPU-profile
+			std::string Name{};
 		};
 
 		/// @brief Read range used for buffer mapping.

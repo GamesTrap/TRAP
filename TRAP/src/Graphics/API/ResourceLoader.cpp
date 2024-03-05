@@ -790,7 +790,7 @@ void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 	/*const RendererAPI::QueueDesc desc{ RendererAPI::QueueType::Transfer, RendererAPI::QueueFlag::None,
 	                                     RendererAPI::QueuePriority::Normal };*/
 	const RendererAPI::QueueDesc desc{ RendererAPI::QueueType::Graphics, RendererAPI::QueueFlag::None,
-	                                   RendererAPI::QueuePriority::Normal };
+	                                   RendererAPI::QueuePriority::Normal, "Main ResourceLoader Queue" };
 	m_copyEngine.Queue = Queue::Create(desc);
 
 	static constexpr u64 maxBlockSize = 32;

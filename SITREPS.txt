@@ -4933,3 +4933,5 @@ SITREP 03/05/2024|24w10a1
     - VulkanPipelineCache Added VkSetObjectName() calls ~<5 mins
     - VulkanQueryPool Added VkSetObjectName() calls ~<5 mins
     - Removed USE_RENDER_DOC macro (RenderDoc will inject the capture layer by itself) ~<5 mins
+    - VulkanQueue Refactored various functions ~<15 mins
+    - VulkanQueue Added VkSetObjectName() calls ~<5 mins
