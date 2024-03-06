@@ -295,6 +295,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	for (u32 i = 0; i < imageCount; ++i)
 	{
 		descColor.NativeHandle = images[i];
+		descColor.Name = fmt::format("RenderTarget (Index: {})", i); //TODO Swapchain Name
 		m_renderTargets[i] = TRAP::MakeRef<VulkanRenderTarget>(descColor);
 	}
 

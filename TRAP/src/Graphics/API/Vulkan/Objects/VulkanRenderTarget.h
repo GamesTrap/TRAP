@@ -40,32 +40,10 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] constexpr u64 GetID() const noexcept;
 
 	private:
-		friend void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>* bufferBarriers,
-			                                                                  const std::vector<RendererAPI::TextureBarrier>* textureBarriers,
-			                                                                  const std::vector<RendererAPI::RenderTargetBarrier>* renderTargetBarriers) const;
-		friend void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const RendererAPI::BufferBarrier* bufferBarrier,
-			                                                                  const RendererAPI::TextureBarrier* textureBarrier,
-			                                                                  const RendererAPI::RenderTargetBarrier* renderTargetBarrier) const;
-		friend void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vector<TRAP::Ref<RenderTarget>>& renderTargets,
-			                                                                    const TRAP::Ref<RenderTarget>& depthStencil,
-			                                                                    RendererAPI::LoadActionsDesc* loadActions,
-			                                                                    const std::vector<u32>* colorArraySlices,
-			                                                                    const std::vector<u32>* colorMipSlices,
-			                                                                    u32 depthArraySlice,
-			                                                                    u32 depthMipSlice,
-							   												    const TRAP::Ref<RenderTarget>& shadingRate);
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-		/// @brief Set the name of the render target.
-		/// @param name Name to use.
-		void SetRenderTargetName(std::string_view name) const;
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 
 		VkImageView m_vkDescriptor = VK_NULL_HANDLE;
 		std::vector<VkImageView> m_vkSliceDescriptors{};
-		volatile u32 m_used = 0;
 
 		u64 m_ID = s_RenderTargetIDs++;
 

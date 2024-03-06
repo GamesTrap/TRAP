@@ -413,7 +413,7 @@ namespace
 			.ClearValue = TRAP::Graphics::RendererAPI::DepthStencil{0.0f, 0},
 			.SampleQuality = 0,
 			.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture,
-			.Name = "Swapchain Depth/Stencil attachment",
+			.Name = "Swapchain Depth/Stencil RenderTarget", //TODO Swapchain name
 			.NativeHandle = nullptr
 		};
 
@@ -483,7 +483,10 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData* const p) cons
 			rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
 			rTDesc.SampleCount = SampleCount::One;
 			for(u32 i = 0; i < RendererAPI::ImageCount; ++i)
+			{
+				rTDesc.Name = fmt::format("Color RenderTarget (Index: {})", i);
 				p->RenderTargets[i] = RenderTarget::Create(rTDesc);
+			}
 
 			p->CurrentSwapChainImageIndex = 0;
 			p->ImageIndex = 0;
@@ -2650,7 +2653,10 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 #endif /*TRAP_HEADLESS_MODE*/
 		viewportData->InternalRenderTargets.resize(imageCount);
 		for(u32 i = 0; i < imageCount; ++i)
+		{
+			rTDesc.Name = fmt::format("Intermediate Color RenderTarget (Index: {})", i);
 			viewportData->InternalRenderTargets[i] = RenderTarget::Create(rTDesc);
+		}
 	}
 
 	if(rebuildDepthStencil)
@@ -2669,7 +2675,7 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 			.ClearValue = TRAP::Graphics::RendererAPI::DepthStencil{0.0f, 0},
 			.SampleQuality = 0,
 			.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture,
-			.Name = "Swapchain Depth/Stencil attachment",
+			.Name = "Swapchain Depth/Stencil RenderTarget", //TODO Swapchain name
 			.NativeHandle = nullptr
 		};
 
@@ -2731,6 +2737,7 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
 			rTDesc.Format = GetRecommendedSwapchainFormat(true, false);
 			rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
 			rTDesc.SampleCount = SampleCount::One;
+			rTDesc.Name = "MSAA Resolve RenderTarget (RenderScalePass)";
 			tempTarget = RenderTarget::Create(rTDesc);
 
 			p->TemporaryResolveRenderTargets[p->ImageIndex] = tempTarget;
@@ -3018,7 +3025,10 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 		rTMSAADesc.StartState = RendererAPI::ResourceState::RenderTarget;
 		rTMSAADesc.SampleCount = p->CurrentSampleCount;
 		for(u32 i = 0; i < RendererAPI::ImageCount; ++i)
+		{
+			rTMSAADesc.Name = fmt::format("MSAA RenderTarget (Index: {})", i); //TODO Swapchain name
 			p->InternalRenderTargets[i] = RenderTarget::Create(rTMSAADesc);
+		}
 	}
 #else
 	RendererAPI::RenderTargetDesc rTDesc{};
@@ -3031,12 +3041,18 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 	rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
 	rTDesc.SampleCount = SampleCount::One;
 	for(u32 i = 0; i < RendererAPI::ImageCount; ++i)
+	{
+		rTDesc.Name = fmt::format("Color RenderTarget (Index: {})", i);
 		p->RenderTargets[i] = RenderTarget::Create(rTDesc);
+	}
 	if(p->CurrentAntiAliasing == AntiAliasing::MSAA)
 	{
 		rTDesc.SampleCount = p->CurrentSampleCount;
 		for(u32 i = 0; i < RendererAPI::ImageCount; ++i)
+		{
+			rTDesc.Name = fmt::format("MSAA RenderTarget (Index: {})", i);
 			p->InternalRenderTargets[i] = RenderTarget::Create(rTDesc);
+		}
 	}
 #endif
 

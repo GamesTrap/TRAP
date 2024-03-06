@@ -252,9 +252,9 @@ void TRAPEditorLayer::OnAttach()
     m_renderTargetDesc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
     m_renderTargetDesc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
     m_renderTargetDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
-    m_renderTargetDesc.Name = "Viewport Framebuffer";
+    m_renderTargetDesc.Name = "Viewport RenderTarget";
 	m_renderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
-    m_renderTargetDesc.Name = "Viewport ID Framebuffer";
+    m_renderTargetDesc.Name = "Viewport ID RenderTarget";
 	m_renderTargetDesc.Format = TRAP::Graphics::API::ImageFormat::R32_SINT;
 	m_IDRenderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
 
@@ -304,9 +304,9 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		m_renderTargetDesc.Width = NumericCast<u32>(m_viewportSize.x());
 		m_renderTargetDesc.Height = NumericCast<u32>(m_viewportSize.y());
     	m_renderTargetDesc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
-    	m_renderTargetDesc.Name = "Viewport Framebuffer";
+    	m_renderTargetDesc.Name = "Viewport RenderTarget";
 		m_renderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
-    	m_renderTargetDesc.Name = "Viewport ID Framebuffer";
+    	m_renderTargetDesc.Name = "Viewport ID RenderTarget";
     	m_renderTargetDesc.Format = TRAP::Graphics::API::ImageFormat::R32_SINT;
 		m_IDRenderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
 

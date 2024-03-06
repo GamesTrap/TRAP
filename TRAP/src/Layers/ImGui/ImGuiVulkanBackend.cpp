@@ -892,7 +892,7 @@ namespace
                     .ClearValue = {},
                     .SampleQuality = 0,
                     .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Undefined,
-                    .Name = fmt::format("ImGui Backbuffer {}", i),
+                    .Name = fmt::format("ImGui Backbuffer (Index: {})", i),
                     .NativeHandle = backbuffers[i]
                 };
                 wd.Frames[i].Backbuffer = TRAP::MakeRef<TRAP::Graphics::API::VulkanRenderTarget>(rtDesc);

@@ -3,7 +3,8 @@
 namespace
 {
     TRAP::Ref<TRAP::Graphics::RenderTarget> BuildRenderTarget(const u32 width, const u32 height,
-                                                              const TRAP::Graphics::SampleCount sampleCount)
+                                                              const TRAP::Graphics::SampleCount sampleCount,
+                                                              const std::string& name = "")
     {
         TRAP::Graphics::RendererAPI::RenderTargetDesc desc{};
         desc.Width = width;
@@ -16,7 +17,7 @@ namespace
         desc.StartState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
         desc.SampleCount = sampleCount;
         desc.SampleQuality = 0;
-        desc.Name = "Test Framebuffer";
+        desc.Name = name;
         return TRAP::Graphics::RenderTarget::Create(desc);
     }
 }
@@ -73,8 +74,8 @@ void FrameBufferTests::OnAttach()
     TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
     m_MSAAEnabled = aaMethod == TRAP::Graphics::AntiAliasing::MSAA;
 
-    m_renderTarget = BuildRenderTarget(m_texture->GetWidth() / 2, m_texture->GetHeight() / 2, aaSamples);
-    m_resolveTarget = BuildRenderTarget(m_texture->GetWidth() / 2, m_texture->GetHeight() / 2, TRAP::Graphics::SampleCount::One);
+    m_renderTarget = BuildRenderTarget(m_texture->GetWidth() / 2, m_texture->GetHeight() / 2, aaSamples, "Intermediate RenderTarget (FrameBufferTests)");
+    m_resolveTarget = BuildRenderTarget(m_texture->GetWidth() / 2, m_texture->GetHeight() / 2, TRAP::Graphics::SampleCount::One, "MSAA Resolve RenderTarget (FrameBufferTests)");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -85,7 +86,7 @@ void FrameBufferTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
     TRAP::Graphics::SampleCount aaSamples = TRAP::Graphics::SampleCount::One;
     TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
     if(m_MSAAEnabled != (aaMethod == TRAP::Graphics::AntiAliasing::MSAA))
-        m_renderTarget = BuildRenderTarget(m_texture->GetWidth() / 2, m_texture->GetHeight() / 2, aaSamples);
+        m_renderTarget = BuildRenderTarget(m_texture->GetWidth() / 2, m_texture->GetHeight() / 2, aaSamples, "Intermediate RenderTarget (FrameBufferTests)");
     m_MSAAEnabled = aaMethod == TRAP::Graphics::AntiAliasing::MSAA;
 
     m_shader->UseSampler(0, 1, m_textureSampler.get());

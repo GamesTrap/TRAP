@@ -200,7 +200,7 @@ TRAP::Ref<TRAP::Graphics::RenderTarget> VRSTests::CreateShadingRateTexture(const
     rTDesc.ArraySize = 1;
     rTDesc.MipLevels = 1;
     rTDesc.SampleCount = TRAP::Graphics::SampleCount::One;
-	rTDesc.Name = "Shading Rate Texture";
+	rTDesc.Name = "Shading Rate RenderTarget (VRSTests)";
 
     TRAP::Ref<TRAP::Graphics::RenderTarget> shadingRateTex = TRAP::Graphics::RenderTarget::Create(rTDesc);
 

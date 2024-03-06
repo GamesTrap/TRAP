@@ -176,14 +176,3 @@ TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 		}
 	}
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-void TRAP::Graphics::API::VulkanRenderTarget::SetRenderTargetName(const std::string_view name) const
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	m_texture->SetTextureName(name);
-}
-#endif /*ENABLE_GRAPHICS_DEBUG*/
