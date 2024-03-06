@@ -4,6 +4,7 @@
 #include <map>
 
 #include "Graphics/API/RendererAPI.h"
+#include "Utils/Optional.h"
 
 namespace TRAP::Graphics::API
 {
@@ -42,6 +43,14 @@ namespace TRAP::Graphics::API
 		/// @param format Format to retrieve properties for.
 		/// @return VkFormatProperties.
 		[[nodiscard]] constexpr const VkFormatProperties& GetVkPhysicalDeviceFormatProperties(ImageFormat format) const noexcept;
+		/// @brief Retrieve the Vulkan physical device image format properties for a specific format image type and image usage combination.
+		/// @param format Format to retrieve image properties for.
+		/// @param imageType Vulkan image type.
+		/// @param imageUsageFlags Vulkan image usage flags.
+		/// @return VkImageFormatProperties on success, empty optional otherwise.
+		[[nodiscard]] TRAP::Optional<VkImageFormatProperties> GetVkPhysicalDeviceImageFormatProperties(ImageFormat format,
+																					                   VkImageType imageType,
+																					                   VkImageUsageFlags imageUsageFlags) const;
 		/// @brief Retrieve the Vulkan physical device properties.
 		/// @return VkPhysicalDeviceProperties.
 		[[nodiscard]] constexpr const VkPhysicalDeviceProperties& GetVkPhysicalDeviceProperties() const noexcept;

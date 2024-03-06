@@ -8,6 +8,145 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 
+namespace
+{
+	[[nodiscard]] TRAP::Ref<TRAP::Graphics::API::VulkanTexture> CreateRenderTargetTexture(const TRAP::Graphics::RendererAPI::RenderTargetDesc& desc,
+	                                                                                      const TRAP::Graphics::API::VulkanPhysicalDevice& physicalDevice)
+	{
+		TRAP::Graphics::RendererAPI::TextureDesc textureDesc{};
+		textureDesc.Flags = desc.Flags;
+		textureDesc.Width = desc.Width;
+		textureDesc.Height = desc.Height;
+		textureDesc.Depth = desc.Depth;
+		textureDesc.ArraySize = desc.ArraySize;
+		textureDesc.MipLevels = TRAP::Math::Max(1U, desc.MipLevels);
+		textureDesc.SampleCount = desc.SampleCount;
+		textureDesc.SampleQuality = desc.SampleQuality;
+		textureDesc.Format = desc.Format;
+		textureDesc.ClearValue = desc.ClearValue;
+		textureDesc.NativeHandle = desc.NativeHandle;
+		textureDesc.Name = desc.Name;
+
+		const bool isDepth = TRAP::Graphics::API::ImageFormatIsDepthOnly(desc.Format) ||
+							 TRAP::Graphics::API::ImageFormatIsDepthAndStencil(desc.Format);
+
+		TRAP_ASSERT(!((isDepth) && (desc.Descriptors & TRAP::Graphics::RendererAPI::DescriptorType::RWTexture) != TRAP::Graphics::RendererAPI::DescriptorType::Undefined),
+					"VulkanRenderTarget::CreateRenderTargetTexture(): Cannot use depth stencil as UAV");
+
+		if (!isDepth)
+			textureDesc.StartState |= TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
+		else
+			textureDesc.StartState |= TRAP::Graphics::RendererAPI::ResourceState::DepthWrite;
+
+		if((desc.StartState & TRAP::Graphics::RendererAPI::ResourceState::ShadingRateSource) != TRAP::Graphics::RendererAPI::ResourceState::Undefined)
+			textureDesc.StartState |= TRAP::Graphics::RendererAPI::ResourceState::ShadingRateSource;
+
+		//Set this by default to be able to sample the renderTarget in shader
+		textureDesc.Descriptors = desc.Descriptors;
+		//Create SRV by default for a render target unless this is on tile texture
+		//where SRV is not supported
+		if((desc.Flags & TRAP::Graphics::RendererAPI::TextureCreationFlags::OnTile) == TRAP::Graphics::RendererAPI::TextureCreationFlags::None)
+			textureDesc.Descriptors |= TRAP::Graphics::RendererAPI::DescriptorType::Texture;
+		else
+		{
+			if((textureDesc.Descriptors & TRAP::Graphics::RendererAPI::DescriptorType::Texture) != TRAP::Graphics::RendererAPI::DescriptorType::Undefined ||
+			   (textureDesc.Descriptors & TRAP::Graphics::RendererAPI::DescriptorType::RWTexture) != TRAP::Graphics::RendererAPI::DescriptorType::Undefined)
+			{
+				TP_WARN(TRAP::Log::RendererVulkanRenderTargetPrefix, "On tile textures do not support DescriptorType::Texture or DescriptorType::RWTexture");
+			}
+
+			//On tile textures do not support SRV/UAV as there is no backing memory
+			//You can only read these textures as input attachments inside same render pass
+			textureDesc.Descriptors &= TRAP::Graphics::RendererAPI::DescriptorType::Texture | TRAP::Graphics::RendererAPI::DescriptorType::RWTexture;
+		}
+
+		if(isDepth)
+		{
+			//Make sure depth/stencil format is supported - fall back to VK_FORMAT_D16_UNORM if not
+			const VkFormat vkDepthStencilFormat = ImageFormatToVkFormat(desc.Format);
+			if(VK_FORMAT_UNDEFINED != vkDepthStencilFormat &&
+			   !physicalDevice.GetVkPhysicalDeviceImageFormatProperties(desc.Format, VK_IMAGE_TYPE_2D, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT))
+			{
+				//Fall back to something that's guaranteed to work
+				textureDesc.Format = TRAP::Graphics::API::ImageFormat::D16_UNORM;
+				TP_WARN(TRAP::Log::RendererVulkanRenderTargetPrefix, "Depth stencil format (",
+						std::to_underlying(desc.Format), ") is not supported. Falling back to D16 format");
+			}
+		}
+
+		TRAP::Ref<TRAP::Graphics::API::VulkanTexture> rTTexture = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>();
+		TRAP_ASSERT(rTTexture, "VulkanRenderTarget::CreateRenderTargetTexture(): Texture is nullptr!");
+		rTTexture->Init(textureDesc);
+
+		return rTTexture;
+	}
+
+	[[nodiscard]] VkImageViewCreateInfo GetImageViewCreateInfo(const TRAP::Graphics::API::VulkanTexture& texture)
+	{
+		const u32 depthOrArraySize = texture.GetArraySize() * texture.GetDepth();
+
+		VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_MAX_ENUM;
+		if (texture.GetHeight() > 1)
+			viewType = depthOrArraySize > 1 ? VK_IMAGE_VIEW_TYPE_2D_ARRAY : VK_IMAGE_VIEW_TYPE_2D;
+		else
+			viewType = depthOrArraySize > 1 ? VK_IMAGE_VIEW_TYPE_1D_ARRAY : VK_IMAGE_VIEW_TYPE_1D;
+
+		return TRAP::Graphics::API::VulkanInits::ImageViewCreateInfo(texture.GetVkImage(), viewType,
+																	 ImageFormatToVkFormat(texture.GetImageFormat()), 1,
+																	 depthOrArraySize);
+	}
+
+	[[nodiscard]] VkImageView CreateMainImageView(const TRAP::Graphics::API::VulkanTexture& texture, const TRAP::Graphics::API::VulkanDevice& device)
+	{
+		const VkImageViewCreateInfo rtvDesc = GetImageViewCreateInfo(texture);
+
+		VkImageView imageView = VK_NULL_HANDLE;
+		VkCall(vkCreateImageView(device.GetVkDevice(), &rtvDesc, nullptr, &imageView));
+		TRAP_ASSERT(imageView, "VulkanRenderTarget::CreateMainImageView(): Vulkan Descriptor is nullptr!");
+
+		return imageView;
+	}
+
+	[[nodiscard]] std::vector<VkImageView> CreateSliceDescriptors(const TRAP::Graphics::API::VulkanTexture& texture,
+	                                                              const TRAP::Graphics::API::VulkanDevice& device)
+	{
+		const u32 depthOrArraySize = texture.GetArraySize() * texture.GetDepth();
+
+		u32 numRTVs = texture.GetMipLevels();
+		if(((texture.GetDescriptorTypes() & TRAP::Graphics::RendererAPI::DescriptorType::RenderTargetArraySlices) != TRAP::Graphics::RendererAPI::DescriptorType::Undefined) ||
+		   ((texture.GetDescriptorTypes() & TRAP::Graphics::RendererAPI::DescriptorType::RenderTargetDepthSlices) != TRAP::Graphics::RendererAPI::DescriptorType::Undefined))
+		{
+			numRTVs *= depthOrArraySize;
+		}
+
+		std::vector<VkImageView> sliceDescriptors(numRTVs);
+
+		VkImageViewCreateInfo rtvDesc = GetImageViewCreateInfo(texture);
+
+		for(u32 i = 0; i < texture.GetMipLevels(); ++i)
+		{
+			rtvDesc.subresourceRange.baseMipLevel = i;
+			if (((texture.GetDescriptorTypes() & TRAP::Graphics::RendererAPI::DescriptorType::RenderTargetArraySlices) != TRAP::Graphics::RendererAPI::DescriptorType::Undefined) ||
+				((texture.GetDescriptorTypes() & TRAP::Graphics::RendererAPI::DescriptorType::RenderTargetDepthSlices) != TRAP::Graphics::RendererAPI::DescriptorType::Undefined))
+			{
+				for (u32 j = 0; j < depthOrArraySize; ++j)
+				{
+					rtvDesc.subresourceRange.layerCount = 1;
+					rtvDesc.subresourceRange.baseArrayLayer = j;
+					VkCall(vkCreateImageView(device.GetVkDevice(), &rtvDesc, nullptr,
+											&sliceDescriptors[i * depthOrArraySize + j]));
+				}
+			}
+			else
+				VkCall(vkCreateImageView(device.GetVkDevice(), &rtvDesc, nullptr, &sliceDescriptors[i]));
+		}
+
+		return sliceDescriptors;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::RenderTargetDesc& desc)
 	: RenderTarget(desc)
 {
@@ -19,120 +158,11 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	TP_DEBUG(Log::RendererVulkanRenderTargetPrefix, "Creating RenderTarget");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	const bool isDepth = TRAP::Graphics::API::ImageFormatIsDepthOnly(m_format) ||
-	                     TRAP::Graphics::API::ImageFormatIsDepthAndStencil(m_format);
+	const TRAP::Ref<TRAP::Graphics::API::VulkanTexture> vkTexture = CreateRenderTargetTexture(desc, m_device->GetPhysicalDevice());
+	m_texture = vkTexture;
 
-	TRAP_ASSERT(!((isDepth) && (m_descriptors & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined),
-	            "VulkanRenderTarget(): Cannot use depth stencil as UAV");
-
-	const u32 depthOrArraySize = m_arraySize * m_depth;
-	u32 numRTVs = m_mipLevels;
-	if(((m_descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) != RendererAPI::DescriptorType::Undefined) ||
-	   ((m_descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices) != RendererAPI::DescriptorType::Undefined))
-	{
-		numRTVs *= depthOrArraySize;
-	}
-
-	m_vkSliceDescriptors.resize(numRTVs);
-
-	RendererAPI::TextureDesc textureDesc{};
-	textureDesc.Flags = desc.Flags;
-	textureDesc.Width = m_width;
-	textureDesc.Height = m_height;
-	textureDesc.Depth = m_depth;
-	textureDesc.ArraySize = m_arraySize;
-	textureDesc.MipLevels = m_mipLevels;
-	textureDesc.SampleCount = m_sampleCount;
-	textureDesc.SampleQuality = m_sampleQuality;
-	textureDesc.Format = m_format;
-	textureDesc.ClearValue = m_clearValue;
-	textureDesc.NativeHandle = desc.NativeHandle;
-
-	if (!isDepth)
-		textureDesc.StartState |= RendererAPI::ResourceState::RenderTarget;
-	else
-		textureDesc.StartState |= RendererAPI::ResourceState::DepthWrite;
-	if((desc.StartState & RendererAPI::ResourceState::ShadingRateSource) != RendererAPI::ResourceState::Undefined)
-		textureDesc.StartState |= RendererAPI::ResourceState::ShadingRateSource;
-
-	//Set this by default to be able to sample the renderTarget in shader
-	textureDesc.Descriptors = m_descriptors;
-	//Create SRV by default for a render target unless this is on tile texture
-	//where SRV is not supported
-	if((desc.Flags & RendererAPI::TextureCreationFlags::OnTile) == RendererAPI::TextureCreationFlags::None)
-		textureDesc.Descriptors |= RendererAPI::DescriptorType::Texture;
-	else
-	{
-		if((textureDesc.Descriptors & RendererAPI::DescriptorType::Texture) != RendererAPI::DescriptorType::Undefined ||
-		   (textureDesc.Descriptors & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined)
-		{
-			TP_WARN(Log::RendererVulkanRenderTargetPrefix, "On tile textures do not support DescriptorType::Texture or DescriptorType::RWTexture");
-		}
-
-		//On tile textures do not support SRV/UAV as there is no backing memory
-		//You can only read these textures as input attachments inside same render pass
-		textureDesc.Descriptors &= RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::RWTexture;
-	}
-
-	if(isDepth)
-	{
-		//Make sure depth/stencil format is supported - fall back to VK_FORMAT_D16_UNORM if not
-		const VkFormat vkDepthStencilFormat = ImageFormatToVkFormat(m_format);
-		if(VK_FORMAT_UNDEFINED != vkDepthStencilFormat)
-		{
-			VkImageFormatProperties props{};
-			const VkResult res = vkGetPhysicalDeviceImageFormatProperties(m_device->GetPhysicalDevice().GetVkPhysicalDevice(),
-				                                                          vkDepthStencilFormat,
-																	      VK_IMAGE_TYPE_2D, VK_IMAGE_TILING_OPTIMAL,
-				                                                          VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
-																	      0, &props);
-			//Fall back to something that's guaranteed to work
-			if(res != VK_SUCCESS)
-			{
-				textureDesc.Format = TRAP::Graphics::API::ImageFormat::D16_UNORM;
-				TP_WARN(Log::RendererVulkanRenderTargetPrefix, "Depth stencil format (",
-				        std::to_underlying(m_format), ") is not supported. Falling back to D16 format");
-			}
-		}
-	}
-
-	textureDesc.Name = desc.Name;
-
-	m_texture = TRAP::MakeRef<VulkanTexture>();
-	TRAP_ASSERT(m_texture, "VulkanRenderTarget(): Texture is nullptr!");
-	m_texture->Init(textureDesc);
-
-	VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_MAX_ENUM;
-	if (m_height > 1)
-		viewType = depthOrArraySize > 1 ? VK_IMAGE_VIEW_TYPE_2D_ARRAY : VK_IMAGE_VIEW_TYPE_2D;
-	else
-		viewType = depthOrArraySize > 1 ? VK_IMAGE_VIEW_TYPE_1D_ARRAY : VK_IMAGE_VIEW_TYPE_1D;
-
-	auto vkTexture = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(m_texture);
-	VkImageViewCreateInfo rtvDesc = VulkanInits::ImageViewCreateInfo(vkTexture->GetVkImage(), viewType,
-	                                                                 ImageFormatToVkFormat(m_format), 1,
-																	 depthOrArraySize);
-
-	VkCall(vkCreateImageView(m_device->GetVkDevice(), &rtvDesc, nullptr, &m_vkDescriptor));
-	TRAP_ASSERT(m_vkDescriptor, "VulkanRenderTarget(): Vulkan Descriptor is nullptr!");
-
-	for(u32 i = 0; i < m_mipLevels; ++i)
-	{
-		rtvDesc.subresourceRange.baseMipLevel = i;
-		if (((m_descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) != RendererAPI::DescriptorType::Undefined) ||
-			((m_descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices) != RendererAPI::DescriptorType::Undefined))
-		{
-			for (u32 j = 0; j < depthOrArraySize; ++j)
-			{
-				rtvDesc.subresourceRange.layerCount = 1;
-				rtvDesc.subresourceRange.baseArrayLayer = j;
-				VkCall(vkCreateImageView(m_device->GetVkDevice(), &rtvDesc, nullptr,
-				                         &m_vkSliceDescriptors[i * depthOrArraySize + j]));
-			}
-		}
-		else
-			VkCall(vkCreateImageView(m_device->GetVkDevice(), &rtvDesc, nullptr, &m_vkSliceDescriptors[i]));
-	}
+	m_vkDescriptor = CreateMainImageView(*vkTexture, *m_device);
+	m_vkSliceDescriptors = CreateSliceDescriptors(*vkTexture, *m_device);
 
 	//Unlike DirectX 12, Vulkan textures start in undefined layout.
 	//To keep in line with DirectX 12, we transition them to the specified layout
@@ -153,26 +183,9 @@ TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 
 	vkDestroyImageView(m_device->GetVkDevice(), m_vkDescriptor, nullptr);
 
-	const u32 depthOrArraySize = m_arraySize * m_depth;
-	if (((m_descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) != RendererAPI::DescriptorType::Undefined) ||
-		((m_descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices) != RendererAPI::DescriptorType::Undefined))
+	for(const auto& imageView : m_vkSliceDescriptors)
 	{
-		for(u32 i = 0; i < m_mipLevels; ++i)
-		{
-			for (u32 j = 0; j < depthOrArraySize; ++j)
-			{
-				if(m_vkSliceDescriptors[i * depthOrArraySize + j] != nullptr)
-					vkDestroyImageView(m_device->GetVkDevice(), m_vkSliceDescriptors[i * depthOrArraySize + j],
-					                   nullptr);
-			}
-		}
-	}
-	else
-	{
-		for (u32 i = 0; i < m_mipLevels; ++i)
-		{
-			if(m_vkSliceDescriptors[i] != nullptr)
-				vkDestroyImageView(m_device->GetVkDevice(), m_vkSliceDescriptors[i], nullptr);
-		}
+		if(imageView != VK_NULL_HANDLE)
+			vkDestroyImageView(m_device->GetVkDevice(), imageView, nullptr);
 	}
 }

@@ -9,7 +9,6 @@
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 #include "Maths/Math.h"
-#include "Utils/Optional.h"
 
 namespace
 {
@@ -203,6 +202,24 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPhysicalDevicePrefix, "Destroying PhysicalDevice");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Optional<VkImageFormatProperties> TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceImageFormatProperties(const TRAP::Graphics::API::ImageFormat format,
+                                                                                                                                          const VkImageType imageType,
+																														                  const VkImageUsageFlags imageUsageFlags) const
+{
+	VkImageFormatProperties props{};
+	VkResult res = vkGetPhysicalDeviceImageFormatProperties(m_physicalDevice, ImageFormatToVkFormat(format),
+	                                                        imageType, VK_IMAGE_TILING_OPTIMAL, imageUsageFlags, 0,
+															&props);
+	VkCall(res);
+
+	if(res != VK_SUCCESS)
+		return TRAP::NullOpt;
+
+	return props;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

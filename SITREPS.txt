@@ -4940,3 +4940,4 @@ SITREP 03/06/2024|24w10a2
     - Changed TRAP Engine version to 24w10a2(0.10.53)
     - VulkanRenderPass Refactored various functions ~<30 mins
     - VulkanRenderTarget Added VkSetObjectName() calls ~<5 mins
+    - VulkanRenderTarget Refactored various functions ~>30 mins
