@@ -43,6 +43,20 @@ namespace TRAP::Utils
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// @brief Hasher for string like types with enabled heterogeneous lookup.
+	struct StringHasher
+	{
+		using is_transparent = void; //Enable heterogeneous lookup.
+
+		[[nodiscard]] usize operator()(const std::string_view sv) const
+		{
+			std::hash<std::string_view> hasher{};
+			return hasher(sv);
+		}
+	};
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
 	/// @brief Enum used to describe endianness.
 	enum class Endian
 	{

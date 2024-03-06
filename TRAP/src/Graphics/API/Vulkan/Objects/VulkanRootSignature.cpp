@@ -27,7 +27,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	std::array<VkPushConstantRange, std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> pushConstants{};
 	u32 pushConstantCount = 0;
 	std::vector<ShaderReflection::ShaderResource> shaderResources{};
-	std::unordered_map<std::string, TRAP::Ref<VulkanSampler>> staticSamplerMap;
+	std::unordered_map<std::string, TRAP::Ref<VulkanSampler>, TRAP::Utils::StringHasher> staticSamplerMap;
 
 	for(usize i = 0; i < desc.StaticSamplers.size(); ++i)
 	{
@@ -466,20 +466,6 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 	}
 
 	vkDestroyPipelineLayout(m_device->GetVkDevice(), m_pipelineLayout, nullptr);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const std::string_view resName)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
-	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
-	const auto it = std::ranges::find_if(m_descriptorNameToIndexMap, [resName](const auto& pair){return pair.first == resName;});
-	if (it != m_descriptorNameToIndexMap.end())
-		return &m_descriptors[it->second];
-
-	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -64,9 +64,6 @@ namespace TRAP::Graphics::API
 
 		/// @brief Retrieve a descriptor via its name.
 		/// @return Descriptor if found, nullptr otherwise.
-		[[nodiscard]] RendererAPI::DescriptorInfo* GetDescriptor(std::string_view resName);
-		/// @brief Retrieve a descriptor via its name.
-		/// @return Descriptor if found, nullptr otherwise.
 		[[nodiscard]] const RendererAPI::DescriptorInfo* GetDescriptor(std::string_view resName) const;
 	private:
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();

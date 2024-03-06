@@ -4941,3 +4941,5 @@ SITREP 03/06/2024|24w10a2
     - VulkanRenderPass Refactored various functions ~<30 mins
     - VulkanRenderTarget Added VkSetObjectName() calls ~<5 mins
     - VulkanRenderTarget Refactored various functions ~>30 mins
+    - Utils Added StringHasher to enable heterogeneous string lookup for associative containers ~<5 mins
+    - Enabled heterogeneous lookup for std::unordered_map and std::map using std::string as key ~<15 mins

@@ -138,7 +138,7 @@ namespace TRAP::Network
 			/// @return True if the field exists, false otherwise.
 			[[nodiscard]] bool HasField(const std::string& field) const;
 
-			using FieldTable = std::map<std::string, std::string>;
+			using FieldTable = std::map<std::string, std::string, std::equal_to<>>;
 
 			FieldTable m_fields;     //Fields of the header associated to their value
 			Method m_method;         //Method to use for the request
@@ -257,7 +257,7 @@ namespace TRAP::Network
 			/// @param in String stream containing the header values.
 			void ParseFields(std::istream& in);
 
-			using FieldTable = std::map<std::string, std::string>;
+			using FieldTable = std::map<std::string, std::string, std::equal_to<>>;
 
 			FieldTable m_fields;     //Fields of the header
 			Status m_status;         //Status code
