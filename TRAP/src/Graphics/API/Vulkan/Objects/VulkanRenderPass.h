@@ -54,9 +54,6 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] constexpr RendererAPI::LoadActionType GetLoadActionTypeStencil() const noexcept;
 
 	private:
-		[[nodiscard]] static VkRenderPass CreateRenderPass(const TRAP::Ref<VulkanDevice>& device, const VulkanRenderer::RenderPassDesc& desc);
-		[[nodiscard]] static VkRenderPass CreateRenderPass2(const TRAP::Ref<VulkanDevice>& device, const VulkanRenderer::RenderPassDesc& desc);
-
 		VkRenderPass m_renderPass = VK_NULL_HANDLE;
 
 		std::vector<TRAP::Graphics::API::ImageFormat> m_colorFormats;
@@ -67,7 +64,7 @@ namespace TRAP::Graphics::API
 		RendererAPI::LoadActionType m_loadActionDepth;
 		RendererAPI::LoadActionType m_loadActionStencil;
 
-		TRAP::Ref<VulkanDevice> m_device;
+		TRAP::Ref<VulkanDevice> m_device = nullptr;
 	};
 }
 
