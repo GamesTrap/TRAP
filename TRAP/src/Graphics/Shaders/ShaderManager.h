@@ -45,7 +45,7 @@ namespace TRAP::Graphics::ShaderManager
 	[[nodiscard]] Ref<Shader> Get(const std::string& name);
 	/// @brief Retrieve all loaded shader from the ShaderManager.
 	/// @return Map of all loaded shaders.
-	[[nodiscard]] const std::unordered_map<std::string, Ref<Shader>, Utils::StringHasher>& GetShaders() noexcept;
+	[[nodiscard]] const std::unordered_map<std::string, Ref<Shader>, Utils::StringHasher, std::equal_to<>>& GetShaders() noexcept;
 	/// @brief Clear all shaders from the ShaderManager.
 	/// Except fallback shaders.
 	void Clean();

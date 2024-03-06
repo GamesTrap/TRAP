@@ -2636,7 +2636,7 @@ namespace TRAP::Graphics
 		};
 
 		/// @brief Map resolving a name to its descriptor index in a root signature.
-		using DescriptorIndexMap = std::unordered_map<std::string, u32, TRAP::Utils::StringHasher>;
+		using DescriptorIndexMap = std::unordered_map<std::string, u32, TRAP::Utils::StringHasher, std::equal_to<>>;
 
 		enum class MappedRangeFlags : u32
 		{

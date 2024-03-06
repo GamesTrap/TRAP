@@ -27,7 +27,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	std::array<VkPushConstantRange, std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> pushConstants{};
 	u32 pushConstantCount = 0;
 	std::vector<ShaderReflection::ShaderResource> shaderResources{};
-	std::unordered_map<std::string, TRAP::Ref<VulkanSampler>, TRAP::Utils::StringHasher> staticSamplerMap;
+	std::unordered_map<std::string, TRAP::Ref<VulkanSampler>, TRAP::Utils::StringHasher, std::equal_to<>> staticSamplerMap;
 
 	for(usize i = 0; i < desc.StaticSamplers.size(); ++i)
 	{
