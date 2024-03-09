@@ -6,7 +6,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Shader>, TRAP::Utils::StringHasher, std::equal_to<>> Shaders{};
+TRAP::Utils::UnorderedStringMap<TRAP::Ref<TRAP::Graphics::Shader>> Shaders{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -133,7 +133,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(const st
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Shader>, TRAP::Utils::StringHasher, std::equal_to<>>& TRAP::Graphics::ShaderManager::GetShaders() noexcept
+[[nodiscard]] const TRAP::Utils::UnorderedStringMap<TRAP::Ref<TRAP::Graphics::Shader>>& TRAP::Graphics::ShaderManager::GetShaders() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);

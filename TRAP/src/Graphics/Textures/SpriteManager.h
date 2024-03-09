@@ -58,7 +58,7 @@ namespace TRAP::Graphics::SpriteManager
 	[[nodiscard]] Ref<SubTexture2D> Get(const std::string& name);
 	/// @brief Retrieve all loaded sprites from the SpriteManager.
 	/// @return Map of all loaded sprites.
-	[[nodiscard]] const std::unordered_map<std::string, Ref<SubTexture2D>, Utils::StringHasher, std::equal_to<>>& GetSprites() noexcept;
+	[[nodiscard]] const TRAP::Utils::UnorderedStringMap<Ref<SubTexture2D>>& GetSprites() noexcept;
 	/// @brief Clear all sprites from the SpriteManager.
 	void Clean() noexcept;
 

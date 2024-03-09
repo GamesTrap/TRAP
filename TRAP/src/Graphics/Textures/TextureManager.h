@@ -87,7 +87,7 @@ namespace TRAP::Graphics::TextureManager
 	[[nodiscard]] Ref<Texture> GetCube(const std::string& name);
 	/// @brief Retrieve all loaded textures from the TextureManager.
 	/// @return Map of all loaded textures.
-	[[nodiscard]] const std::unordered_map<std::string, Ref<Texture>, Utils::StringHasher, std::equal_to<>>& GetTextures() noexcept;
+	[[nodiscard]] const TRAP::Utils::UnorderedStringMap<Ref<Texture>>& GetTextures() noexcept;
 	/// @brief Clear all textures from the TextureManager.
 	/// Except fallback textures.
 	void Clean();

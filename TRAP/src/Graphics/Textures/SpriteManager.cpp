@@ -5,7 +5,7 @@
 #include "Texture.h"
 #include "FileSystem/FileSystem.h"
 
-std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::SubTexture2D>, TRAP::Utils::StringHasher, std::equal_to<>> Sprites;
+TRAP::Utils::UnorderedStringMap<TRAP::Ref<TRAP::Graphics::SubTexture2D>> Sprites;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -133,7 +133,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::SubTexture2D>, TRAP::Utils::StringHasher, std::equal_to<>>& TRAP::Graphics::SpriteManager::GetSprites() noexcept
+[[nodiscard]] const TRAP::Utils::UnorderedStringMap<TRAP::Ref<TRAP::Graphics::SubTexture2D>>& TRAP::Graphics::SpriteManager::GetSprites() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
