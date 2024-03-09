@@ -779,10 +779,10 @@ namespace
 
         }
 
-        for(auto& fsd : wd.FrameSemaphores)
+        for(u32 i = 0; i < wd.FrameSemaphores.size(); ++i)
         {
-            fsd.ImageAcquiredSemaphore = TRAP::MakeRef<TRAP::Graphics::API::VulkanSemaphore>();
-            fsd.RenderCompleteSemaphore = TRAP::MakeRef<TRAP::Graphics::API::VulkanSemaphore>();
+            wd.FrameSemaphores[i].ImageAcquiredSemaphore = TRAP::MakeRef<TRAP::Graphics::API::VulkanSemaphore>(fmt::format("ImGui Window Semaphore (Image: {}, ImageAcquired)", i));
+            wd.FrameSemaphores[i].RenderCompleteSemaphore = TRAP::MakeRef<TRAP::Graphics::API::VulkanSemaphore>(fmt::format("ImGui Window Semaphore (Image: {}, RenderComplete)", i));
         }
     }
 

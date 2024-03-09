@@ -4950,3 +4950,4 @@ SITREP 03/09/2024|24w10a3
     - Utils Added typedef for std::unordered_map with std::string as key and enabled heterogeneous lookup ~<5 mins
     - VulkanSampler Refactored various functions ~<15 mins
     - VulkanSampler Added VkSetObjectName() calls ~<5 mins
+    - VulkanSemaphore Added VkSetObjectName() calls ~<5 mins

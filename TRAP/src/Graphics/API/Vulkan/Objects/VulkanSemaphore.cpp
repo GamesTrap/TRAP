@@ -4,7 +4,7 @@
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
-TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore()
+TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore(const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -17,6 +17,11 @@ TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore()
 	const VkSemaphoreCreateInfo info = VulkanInits::SemaphoreCreateInfo();
 	VkCall(vkCreateSemaphore(m_device->GetVkDevice(), &info, nullptr, &m_semaphore));
 	TRAP_ASSERT(m_semaphore, "VulkanSemaphore(): Vulkan Semaphore is nullptr");
+
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if(!name.empty())
+		TRAP::Graphics::API::VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_semaphore), VK_OBJECT_TYPE_SEMAPHORE, name);
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

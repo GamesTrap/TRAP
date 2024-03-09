@@ -2947,8 +2947,8 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 
 		//Create Render Fences/Semaphores
 		p->RenderCompleteFences[i] = Fence::Create(false, fmt::format("PerViewportData Fence (RenderComplete, Image: {})", i));
-		p->RenderCompleteSemaphores[i] = Semaphore::Create();
-		p->GraphicsCompleteSemaphores[i] = Semaphore::Create();
+		p->RenderCompleteSemaphores[i] = Semaphore::Create(fmt::format("PerViewportData Semaphore (RenderComplete, Image: {})", i));
+		p->GraphicsCompleteSemaphores[i] = Semaphore::Create(fmt::format("PerViewportData Semaphore (GraphicsComplete, Image: {})", i));
 
 		queryPoolDesc.Name = "GPU FrameTime Graphics QueryPool";
 		p->GraphicsTimestampQueryPools[i] = QueryPool::Create(queryPoolDesc);
@@ -2977,7 +2977,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 #endif
 
 		p->ComputeCompleteFences[i] = Fence::Create(false, fmt::format("PerViewportData Fence (ComputeComplete, Image: {})", i));
-		p->ComputeCompleteSemaphores[i] = Semaphore::Create();
+		p->ComputeCompleteSemaphores[i] = Semaphore::Create(fmt::format("PerViewportData Semaphore (ComputeComplete, Image: {})", i));
 
 		queryPoolDesc.Name = "GPU FrameTime Compute QueryPool";
 		p->ComputeTimestampQueryPools[i] = QueryPool::Create(queryPoolDesc);
@@ -2989,7 +2989,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 
 #ifndef TRAP_HEADLESS_MODE
 		//Image Acquire Semaphore
-		p->ImageAcquiredSemaphores[i] = Semaphore::Create();
+		p->ImageAcquiredSemaphores[i] = Semaphore::Create(fmt::format("PerViewportData Semaphore (ImageAcquired, Image: {})", i));
 #endif /*TRAP_HEADLESS_MODE*/
 	}
 

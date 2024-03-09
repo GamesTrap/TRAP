@@ -10,8 +10,9 @@ namespace TRAP::Graphics
 	{
 	public:
 		/// @brief Create a new semaphore.
+		/// @param name Optional: Debug name used in GPU-profile
 		/// @return Created semaphore.
-		[[nodiscard]] static TRAP::Ref<Semaphore> Create();
+		[[nodiscard]] static TRAP::Ref<Semaphore> Create(std::string_view name = "");
 
 		/// @brief Destructor.
 		virtual ~Semaphore();
