@@ -341,7 +341,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ReInitSwapChain()
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] std::optional<u32> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
-                                                                                             const TRAP::Ref<Fence>& fence) const
+                                                                                        const TRAP::Ref<Fence>& fence) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 

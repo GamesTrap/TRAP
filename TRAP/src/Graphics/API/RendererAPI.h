@@ -2024,6 +2024,8 @@ namespace TRAP::Graphics
 			f32 OverrideAnisotropyLevel{};
 			//Comparison function compares sampled data against existing sampled data
 			CompareMode CompareFunc{};
+			//Debug name used in GPU-profile
+			std::string Name{};
 
 			/// @brief Description of YCbCr(YUV) conversion sampler.
 			struct SamplerConversionDesc

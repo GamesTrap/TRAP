@@ -93,6 +93,11 @@ namespace
 			CreatePlanarImageSampler(samplerDesc, device, info, sampler, samplerYcbcrConversion);
 
 		TRAP_ASSERT(sampler, "VulkanSampler::Init(): Vulkan Sampler is nullptr!");
+
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if(!samplerDesc.Name.empty())
+		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(sampler), VK_OBJECT_TYPE_SAMPLER, samplerDesc.Name);
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 	}
 
 	void Shutdown(const TRAP::Graphics::API::VulkanDevice& device, VkSampler& sampler, VkSamplerYcbcrConversion& samplerYcbcrConversion)

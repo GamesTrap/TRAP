@@ -578,7 +578,7 @@ namespace
         if (bd->FontSampler == nullptr)
         {
             // Bilinear sampling is required by default. Set 'io.Fonts->Flags |= ImFontAtlasFlags_NoBakedLines' or 'style.AntiAliasedLinesUseTex = false' to allow point/nearest sampling.
-            static constexpr TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc
+            const TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc
             {
                 .MinFilter = TRAP::Graphics::RendererAPI::FilterType::Linear,
                 .MagFilter = TRAP::Graphics::RendererAPI::FilterType::Linear,
@@ -593,6 +593,7 @@ namespace
                 .EnableAnisotropy = true,
                 .OverrideAnisotropyLevel = 1.0f,
                 .CompareFunc = TRAP::Graphics::RendererAPI::CompareMode::Never,
+                .Name = "ImGui Font Sampler",
                 .SamplerConversionDesc = {}
             };
             bd->FontSampler = TRAP::MakeRef<TRAP::Graphics::API::VulkanSampler>(samplerDesc);

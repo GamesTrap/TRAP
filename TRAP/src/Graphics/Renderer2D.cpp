@@ -243,7 +243,9 @@ void TRAP::Graphics::Renderer2DData::QuadData::Init()
 	WhiteTexture = Texture::CreateFromImage("Renderer2DWhite", whiteImage.get(), TextureType::Texture2D);
 	WhiteTexture->AwaitLoading();
 
-	TextureSampler = Sampler::Create({});
+	RendererAPI::SamplerDesc samplerDesc{};
+	samplerDesc.Name = "Renderer2D Default Sampler";
+	TextureSampler = Sampler::Create(samplerDesc);
 
 	//Initialize quad indices
 	const auto IndicesData = MakeScope<std::array<u32, MaxQuadIndices>>();
