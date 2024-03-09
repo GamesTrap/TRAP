@@ -1674,7 +1674,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader) const
 			}
 		}
 	}
-	else if (stages != ShaderStage::None && stages != ShaderStage::SHADER_STAGE_COUNT)
+	else if ((stages & ShaderStage::AllGraphics) != ShaderStage::None)
 	{
 		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(data->GraphicsPipelineDesc.Pipeline);
 

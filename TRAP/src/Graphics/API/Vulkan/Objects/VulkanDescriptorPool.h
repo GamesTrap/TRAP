@@ -49,12 +49,12 @@ namespace TRAP::Graphics::API
 		/// @return New descriptor set.
 		[[nodiscard]] TRAP::Scope<DescriptorSet> RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc) override;
 
-	private:
 		/// @brief Retrieve a new VkDescriptorSet with the given layout.
 		/// @param layout Descriptor set layout.
 		/// @return VkDescriptorSet handle.
 		[[nodiscard]] VkDescriptorSet RetrieveVkDescriptorSet(VkDescriptorSetLayout layout);
 
+	private:
 		VkDescriptorPool m_currentPool = VK_NULL_HANDLE;
 		std::vector<VkDescriptorPool> m_descriptorPools{};
 		std::vector<VkDescriptorPoolSize> m_descriptorPoolSizes = s_descriptorPoolSizes;
@@ -79,9 +79,6 @@ namespace TRAP::Graphics::API
 				{VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1}
 			}
 		};
-
-		friend VulkanDescriptorSet;
-		friend VulkanRootSignature;
 	};
 }
 

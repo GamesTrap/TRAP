@@ -4943,3 +4943,7 @@ SITREP 03/06/2024|24w10a2
     - VulkanRenderTarget Refactored various functions ~>30 mins
     - Utils Added StringHasher to enable heterogeneous string lookup for associative containers ~<5 mins
     - Enabled heterogeneous lookup for std::unordered_map and std::map using std::string as key ~<15 mins
+
+SITREP 03/09/2024|24w10a3
+    - Changed TRAP Engine version to 24w10a3(0.10.54)
+    - VulkanRootSignature Refactored various functions ~>45 mins

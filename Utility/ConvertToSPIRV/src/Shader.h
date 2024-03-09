@@ -82,8 +82,11 @@ enum class ShaderStage : u32
 	AllGraphics = (static_cast<u32>(Vertex) | static_cast<u32>(TessellationControl) |
 	               static_cast<u32>(TessellationEvaluation) | static_cast<u32>(Geometry) |
 		           static_cast<u32>(Fragment)),
+
+	//DirectX 12 name aliases
 	Hull = TessellationControl,
 	Domain = TessellationEvaluation,
+	Pixel = Fragment,
 
 	SHADER_STAGE_COUNT = 7
 };

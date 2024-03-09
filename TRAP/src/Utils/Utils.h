@@ -5,6 +5,7 @@
 #include <string>
 
 #include <fmt/core.h>
+#include <unordered_map>
 
 #include "Core/Types.h"
 #include "TRAP_Assert.h"
@@ -54,6 +55,9 @@ namespace TRAP::Utils
 			return hasher(sv);
 		}
 	};
+
+	template<typename Value>
+	using UnorderedStringMap = std::unordered_map<std::string, Value, TRAP::Utils::StringHasher, std::equal_to<>>;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
