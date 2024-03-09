@@ -14,7 +14,7 @@ namespace TRAP::Graphics::API
 	public:
 		/// @brief Constructor.
 		/// @param name Optional: Debug name used in GPU-profile.
-		explicit VulkanSemaphore(std::string_view name = "");
+		explicit VulkanSemaphore([[maybe_unused]] std::string_view name = "");
 		/// @brief Destructor.
 		~VulkanSemaphore() override;
 

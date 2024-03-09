@@ -4,7 +4,7 @@
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
-TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore(const std::string_view name)
+TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore([[maybe_unused]] const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
