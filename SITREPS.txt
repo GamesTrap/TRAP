@@ -4948,3 +4948,4 @@ SITREP 03/09/2024|24w10a3
     - Changed TRAP Engine version to 24w10a3(0.10.54)
     - VulkanRootSignature Refactored various functions ~>45 mins
     - Utils Added typedef for std::unordered_map with std::string as key and enabled heterogeneous lookup ~<5 mins
+    - VulkanSampler Refactored various functions ~<15 mins

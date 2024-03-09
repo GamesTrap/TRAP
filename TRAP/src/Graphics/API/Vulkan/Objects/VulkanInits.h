@@ -373,6 +373,36 @@ namespace TRAP::Graphics::API::VulkanInits
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// @brief Create a Vulkan sampler Ycbcr conversion create info.
+	/// @param format Vulkan format of the image from which color information will be retrieved.
+	/// @param ycbcrModel Describes the color matrix for conversion between color models.
+	/// @param ycbcrRange Describes whether the encoded values have headroom and foot room, or whether the encoding uses
+	///                   the full numerical range.
+	/// @param xChromaOffset Describes the sample locaton associated with downsampled chroma components in the x dimension.
+	///                      xChromaOffset has no effect for formats in which chroma components are not downsampled
+	///                      horizontally.
+	/// @param yChromaOffset Describes the sample location associated with downsampled chroma components in the y dimension.
+	///                      yChromaOffset has no effect for formats in which the chroma components are not downsampled
+	///                      vertically.
+	/// @param chromaFilter Filter to use for chroma reconstruction
+	/// @param forceExplicitReconstruction Can be used to ensure that reconstruction is done explicitly, if supported.
+	///                                    Note: Settings this to true may have a performance penalty.
+	/// @return VkSamplerYcbcrConversionCreateInfo.
+	[[nodiscard]] constexpr VkSamplerYcbcrConversionCreateInfo SamplerYcbcrConversionCreateInfo(VkFormat format,
+	                                                                                            VkSamplerYcbcrModelConversion ycbcrModel,
+																								VkSamplerYcbcrRange ycbcrRange,
+	                                                                                            VkChromaLocation xChromaOffset,
+																								VkChromaLocation yChromaOffset,
+																								VkFilter chromaFilter,
+																								bool forceExplicitReconstruction);
+
+	/// @brief Create a Vulkan sampler Ycbcr conversion info.
+	/// @param ycbcrConversion Handle to VkSamplerYcbcrConversion object.
+	/// @return VkSamplerYcbcrConversionInfo.
+	[[nodiscard]] constexpr VkSamplerYcbcrConversionInfo SamplerYcbcrConversionInfo(VkSamplerYcbcrConversion ycbcrConversion);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
 	/// @brief Create a Vulkan pipeline layout create info.
 	/// @param layouts Vulkan descriptor set layouts.
 	/// @param pushConstants Vulkan push constant ranges.
@@ -822,6 +852,42 @@ namespace TRAP::Graphics::API::VulkanInits
 		.maxLod = maxLod,
 		.borderColor = VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK,
 		.unnormalizedCoordinates = VK_FALSE
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkSamplerYcbcrConversionCreateInfo TRAP::Graphics::API::VulkanInits::SamplerYcbcrConversionCreateInfo(const VkFormat format,
+																							                                  const VkSamplerYcbcrModelConversion ycbcrModel,
+																							                                  const VkSamplerYcbcrRange ycbcrRange,
+																							                                  const VkChromaLocation xChromaOffset,
+																							                                  const VkChromaLocation yChromaOffset,
+																							                                  const VkFilter chromaFilter,
+																															  const bool forceExplicitReconstruction)
+{
+	return VkSamplerYcbcrConversionCreateInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_CREATE_INFO,
+		.pNext = nullptr,
+		.format = format,
+		.ycbcrModel = ycbcrModel,
+		.ycbcrRange = ycbcrRange,
+		.components = {VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY,
+					   VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY},
+		.xChromaOffset = xChromaOffset,
+		.yChromaOffset = yChromaOffset,
+		.chromaFilter = chromaFilter,
+		.forceExplicitReconstruction = static_cast<VkBool32>(forceExplicitReconstruction)
+	};
+}
+
+[[nodiscard]] constexpr VkSamplerYcbcrConversionInfo TRAP::Graphics::API::VulkanInits::SamplerYcbcrConversionInfo(VkSamplerYcbcrConversion ycbcrConversion)
+{
+	return VkSamplerYcbcrConversionInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_INFO,
+		.pNext = nullptr,
+		.conversion = ycbcrConversion
 	};
 }
 

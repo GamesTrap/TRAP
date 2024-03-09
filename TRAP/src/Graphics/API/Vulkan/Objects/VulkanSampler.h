@@ -34,15 +34,11 @@ namespace TRAP::Graphics::API
 	private:
 		void UpdateAnisotropy(f32 anisotropy) override;
 
-		void Init();
-		void Shutdown();
-
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 
 		//Native handle of the underlying resource
 		VkSampler m_vkSampler = VK_NULL_HANDLE;
 		VkSamplerYcbcrConversion m_vkSamplerYcbcrConversion{};
-		VkSamplerYcbcrConversionInfo m_vkSamplerYcbcrConversionInfo{};
 	};
 }
 
