@@ -327,9 +327,6 @@ namespace
 	[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat FindSupportedDepthStencilFormat(const std::span<TRAP::Graphics::API::ImageFormat> depthStencilFormats,
 	                                                                                         const TRAP::Graphics::API::VulkanDevice& device)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
-	                                           (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
 		using namespace TRAP::Graphics::API;
 
 		for(const ImageFormat depthStencilFormat : depthStencilFormats)
@@ -347,9 +344,6 @@ namespace
 	                                                                                const bool stencilEnabled,
 	                                                                                const TRAP::Graphics::API::VulkanDevice& device)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
-	                                           (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
 		using namespace TRAP::Graphics::API;
 
 		if(!depthEnabled && !stencilEnabled)

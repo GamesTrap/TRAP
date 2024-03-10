@@ -329,8 +329,6 @@ namespace
 {
     constexpr void DeduplicateEvents(std::vector<TRAP::Events::FileSystemChangeEvent>& events)
     {
-	    ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
-
         const auto last = std::ranges::unique(events, [](const auto& lhs, const auto& rhs)
         {
             return lhs.GetStatus() == rhs.GetStatus() && lhs.GetPath() == rhs.GetPath() && lhs.GetOldPath() == rhs.GetOldPath();

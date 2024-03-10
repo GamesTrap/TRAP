@@ -104,8 +104,9 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	//Many setups have just one queue family and one queue.
 	//In this case, async compute, async transfer doesn't exist and we end up using the same queue for all
 	//three operations
-	std::lock_guard lock(m_submitMutex.get());
-	LockMark(m_submitMutex.get());
+	auto& submitMutex = m_submitMutex.get();
+	std::lock_guard lock(submitMutex);
+	LockMark(submitMutex);
 	VkCall(vkQueueSubmit(m_vkQueue, 1, &submitInfo, desc.SignalFence ?
 	                                                std::dynamic_pointer_cast<VulkanFence>(desc.SignalFence)->GetVkFence() :
 													VK_NULL_HANDLE));
@@ -143,8 +144,9 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	const VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sc, desc.Index);
 
 	//Lightweigt lock to make sure multiple threads dont use the same queue simultaneously
-	std::lock_guard lock(m_submitMutex.get());
-	LockMark(m_submitMutex.get());
+	auto& submitMutex = m_submitMutex.get();
+	std::lock_guard lock(submitMutex);
+	LockMark(submitMutex);
 	const VkResult res = vkQueuePresentKHR(sChain->GetPresentVkQueue() != nullptr ? sChain->GetPresentVkQueue() : m_vkQueue,
 	                                       &presentInfo);
 	if (res == VK_SUCCESS)
