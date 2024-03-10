@@ -4951,3 +4951,7 @@ SITREP 03/09/2024|24w10a3
     - VulkanSampler Refactored various functions ~<15 mins
     - VulkanSampler Added VkSetObjectName() calls ~<5 mins
     - VulkanSemaphore Added VkSetObjectName() calls ~<5 mins
+
+SITREP 03/10/2024|24w10a4
+    - Changed TRAP Engine version to 24w10a4(0.10.55)
+    - Linux Disabled XNegative and YNegative macros ~<5 mins

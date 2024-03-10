@@ -92,6 +92,12 @@
 #ifdef Success
 	#undef Success
 #endif /*Success*/
+#ifdef XNegative
+    #undef XNegative
+#endif /*XNegative*/
+#ifdef YNegative
+    #undef YNegative
+#endif /*YNegative*/
 
 #endif /*TRAP_PLATFORM_LINUX*/
 
