@@ -80,6 +80,13 @@ void TRAP::Graphics::Renderer::BeginScene(const Camera& camera, const Math::Mat4
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::Renderer::EndScene()
+{
+	s_modelStorageBuffer->AwaitLoading();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuffer* const vertexBuffer, const Math::Mat4& transform)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
@@ -91,7 +98,6 @@ void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuf
 
 	s_modelStorageBuffer->SetData(&transform, sizeof(Math::Mat4),
 	                              NumericCast<u64>(s_currentDrawCalls) * StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
-	s_modelStorageBuffer->AwaitLoading();
 
 	vertexBuffer->Use();
 	if(shader)
@@ -120,7 +126,6 @@ void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuf
 
 	s_modelStorageBuffer->SetData(&transform, sizeof(Math::Mat4),
 	                              NumericCast<u64>(s_currentDrawCalls) * StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
-	s_modelStorageBuffer->AwaitLoading();
 
 	vertexBuffer->Use();
 	indexBuffer->Use();

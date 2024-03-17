@@ -31,7 +31,7 @@ namespace TRAP::Graphics
 		/// @param transform Camera transform.
 		static void BeginScene(const Camera& camera, const Math::Mat4& transform);
 		/// @brief End a running Renderer scene.
-		static constexpr void EndScene() noexcept;
+		static void EndScene();
 
 		/// @brief Submit a non-indexed draw call.
 		/// @param shader Shader to use.
@@ -61,12 +61,6 @@ namespace TRAP::Graphics
 		inline constinit static u32 s_maxDrawCalls = 1000;
 		inline constinit static u32 s_currentDrawCalls = 0;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr void TRAP::Graphics::Renderer::EndScene() noexcept
-{
 }
 
 #endif /*TRAP_RENDERER_H*/
