@@ -101,7 +101,7 @@ void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuf
 		shader->Use();
 	}
 
-	RenderCommand::DrawInstanced(vertexBuffer->GetCount(), s_currentDrawCalls + 1, 0, s_currentDrawCalls);
+	RenderCommand::DrawInstanced(vertexBuffer->GetCount(), 1, 0, s_currentDrawCalls);
 	++s_currentDrawCalls;
 }
 
@@ -131,6 +131,6 @@ void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuf
 		shader->Use();
 	}
 
-	RenderCommand::DrawIndexedInstanced(indexBuffer->GetCount(), s_currentDrawCalls + 1, 0, s_currentDrawCalls);
+	RenderCommand::DrawIndexedInstanced(indexBuffer->GetCount(), 1, 0, s_currentDrawCalls);
 	++s_currentDrawCalls;
 }

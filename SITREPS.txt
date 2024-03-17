@@ -4956,3 +4956,7 @@ SITREP 03/10/2024|24w10a4
     - Changed TRAP Engine version to 24w10a4(0.10.55)
     - Linux Disabled XNegative and YNegative macros ~<5 mins
     - Removed invalid profiling trace points ~<5 mins
+
+SITREP 03/17/2024|24w11a1
+    - Changed TRAP Engine version to 24w11a1(0.10.56)
+    - Renderer Fixed wrong instance count usage ~<5 mins
