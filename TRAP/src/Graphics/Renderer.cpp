@@ -61,7 +61,6 @@ void TRAP::Graphics::Renderer::BeginScene(const OrthographicCamera& camera)
 	s_sceneData->m_projectionMatrix = camera.GetProjectionMatrix();
 	s_sceneData->m_viewMatrix = camera.GetViewMatrix();
 	s_sceneStorageBuffer->SetData(s_sceneData.get(), sizeof(SceneData));
-	s_sceneStorageBuffer->AwaitLoading();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -75,13 +74,13 @@ void TRAP::Graphics::Renderer::BeginScene(const Camera& camera, const Math::Mat4
 	s_sceneData->m_projectionMatrix = camera.GetProjectionMatrix();
 	s_sceneData->m_viewMatrix = Math::Inverse(transform);
 	s_sceneStorageBuffer->SetData(s_sceneData.get(), sizeof(SceneData));
-	s_sceneStorageBuffer->AwaitLoading();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer::EndScene()
 {
+	s_sceneStorageBuffer->AwaitLoading();
 	s_modelStorageBuffer->AwaitLoading();
 }
 

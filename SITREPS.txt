@@ -4961,3 +4961,4 @@ SITREP 03/17/2024|24w11a1
     - Changed TRAP Engine version to 24w11a1(0.10.56)
     - Renderer Fixed wrong instance count usage ~<5 mins
     - Renderer EndScene() now waits for model SSBO to finish uploading instead of each Submit() call ~<5 mins
+    - Renderer EndScene() now waits for scene SSBO to finish uploading instead of BeginScene() ~<5 mins
