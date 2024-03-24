@@ -2456,6 +2456,27 @@ namespace TRAP::Math
 	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, bool> IsFinite(const Vec<L, T>& x) noexcept;
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	//Noise--------------------------------------------------------------------------------------------------------------//
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// @brief Classic perlin noise.
+	template<u32 L, typename T>
+	requires std::floating_point<T> && (L > 1) && (L < 5)
+	[[nodiscard]] constexpr T Perlin(const Vec<L, T>& p);
+
+	/// @brief Periodic perlin noise.
+	template<u32 L, typename T>
+	requires std::floating_point<T> && (L > 1) && (L < 5)
+	[[nodiscard]] constexpr T Perlin(const Vec<L, T>& p, const Vec<L, T>& rep);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// @brief Simplex noise.
+	template<u32 L, typename T>
+	requires std::floating_point<T> && (L > 1) && (L < 5)
+	[[nodiscard]] constexpr T Simplex(const Vec<L, T>& v);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5444,6 +5465,759 @@ requires std::floating_point<T>
 		result[i] = TRAP::Math::IsFinite(x[i]);
 
 	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//Noise--------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+namespace TRAP::INTERNAL
+{
+	template<typename T>
+	[[nodiscard]] constexpr T Mod289(const T& x)
+	{
+		return x - TRAP::Math::Floor(x * (static_cast<T>(1.0) / static_cast<T>(289.0))) * static_cast<T>(289.0);
+	}
+
+	template<typename T>
+	requires std::floating_point<T>
+	[[nodiscard]] constexpr T Permute(const T& x)
+	{
+		return Mod289(((x * static_cast<T>(34)) + static_cast<T>(1)) * x);
+	}
+
+	template<u32 L, typename T>
+	requires std::floating_point<T> && (L > 1) && (L < 5)
+	[[nodiscard]] constexpr TRAP::Math::Vec<L, T> Permute(const TRAP::Math::Vec<L, T>& x)
+	{
+		return Mod289(((x * static_cast<T>(34)) + static_cast<T>(1)) * x);
+	}
+
+	template<typename T>
+	requires std::floating_point<T>
+	[[nodiscard]] constexpr T TaylorInvSqrt(const T& r)
+	{
+		return static_cast<T>(1.79284291400159) - static_cast<T>(0.85373472095314) * r;
+	}
+
+	template<u32 L, typename T>
+	requires std::floating_point<T> && (L > 1) && (L < 5)
+	[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TaylorInvSqrt(const TRAP::Math::Vec<L, T>& r)
+	{
+		return static_cast<T>(1.79284291400159) - static_cast<T>(0.85373472095314) * r;
+	}
+
+	template<u32 L, typename T>
+	requires std::floating_point<T> && (L > 1) && (L < 5)
+	[[nodiscard]] constexpr TRAP::Math::Vec<L, T> Fade(const TRAP::Math::Vec<L, T>& t)
+	{
+		return (t * t * t) * (t * (t * static_cast<T>(6) - static_cast<T>(15)) + static_cast<T>(10));
+	}
+
+	template<typename T>
+	requires std::floating_point<T>
+	[[nodiscard]] constexpr TRAP::Math::Vec<4, T> Grad4(const T& j, const TRAP::Math::Vec<4, T>& ip)
+	{
+		using namespace TRAP::Math;
+
+		Vec<3, T> pXYZ = Floor(Fract(Vec<3, T>(j) * Vec<3, T>(ip)) * T(7)) * ip[2] - T(1);
+		const T pW = static_cast<T>(1.5) - Dot(Abs(pXYZ), Vec<3, T>(1));
+		const Vec<4, T> s = Vec<4, T>(LessThan(Vec<4, T>(pXYZ, pW), Vec<4, T>(0.0)));
+		pXYZ = pXYZ + (Vec<3, T>(s) * T(2) - T(1)) * s.w();
+		return Vec<4, T>(pXYZ, pW);
+
+	}
+}
+
+template<u32 L, typename T>
+requires std::floating_point<T> && (L > 1) && (L < 5)
+[[nodiscard]] constexpr T TRAP::Math::Perlin(const Vec<L, T>& p)
+{
+	if constexpr(L == 2)
+	{
+		Vec<4, T> pi = Floor(Vec<4, T>(p.x(), p.y(), p.x(), p.y())) + Vec<4, T>(0.0, 0.0, 1.0, 1.0);
+		const Vec<4, T> pf = Fract(Vec<4, T>(p.x(), p.y(), p.x(), p.y())) - Vec<4, T>(0.0, 0.0, 1.0, 1.0);
+		pi = Mod(pi, Vec<4, T>(289)); //To avoid truncation effects in permutation
+		const Vec<4, T> ix(pi.x(), pi.z(), pi.x(), pi.z());
+		const Vec<4, T> iy(pi.y(), pi.y(), pi.w(), pi.w());
+		const Vec<4, T> fx(pf.x(), pf.z(), pf.x(), pf.z());
+		const Vec<4, T> fy(pf.y(), pf.y(), pf.w(), pf.w());
+
+		const Vec<4, T> i = INTERNAL::Permute(INTERNAL::Permute(ix) + iy);
+
+		Vec<4, T> gx = static_cast<T>(2) * Fract(i / T(41)) - T(1);
+		const Vec<4, T> gy = Abs(gx) - T(0.5);
+		const Vec<4, T> tx = Floor(gx + T(0.5));
+		gx = gx - tx;
+
+		Vec<2, T> g00(gx.x(), gy.x());
+		Vec<2, T> g10(gx.y(), gy.y());
+		Vec<2, T> g01(gx.z(), gy.z());
+		Vec<2, T> g11(gx.w(), gy.w());
+
+		const Vec<4, T> norm = INTERNAL::TaylorInvSqrt(Vec<4, T>(Dot(g00, g00), Dot(g01, g01), Dot(g10, g10), Dot(g11, g11)));
+		g00 *= norm.x();
+		g01 *= norm.y();
+		g10 *= norm.z();
+		g11 *= norm.w();
+
+		const T n00 = Dot(g00, Vec<2, T>(fx.x(), fy.x()));
+		const T n10 = Dot(g10, Vec<2, T>(fx.y(), fy.y()));
+		const T n01 = Dot(g01, Vec<2, T>(fx.z(), fy.z()));
+		const T n11 = Dot(g11, Vec<2, T>(fx.w(), fy.w()));
+
+		const Vec<2, T> fade_xy = INTERNAL::Fade(Vec<2, T>(pf.x(), pf.y()));
+		const Vec<2, T> n_x = Mix(Vec<2, T>(n00, n01), Vec<2, T>(n10, n11), fade_xy.x());
+		const T n_xy = Mix(n_x.x(), n_x.y(), fade_xy.y());
+		return T(2.3) * n_xy;
+	}
+	else if constexpr(L == 3)
+	{
+		Vec<3, T> pi0 = Floor(p); //Integer part for indexing
+		Vec<3, T> pi1 = pi0 + T(1); //Integer part + 1
+		pi0 = INTERNAL::Mod289(pi0);
+		pi1 = INTERNAL::Mod289(pi1);
+		const Vec<3, T> pf0 = Fract(p); //Fractional part for interpolation
+		const Vec<3, T> pf1 = pf0 - T(1); //Fractional part - 1.0
+		const Vec<4, T> ix(pi0.x(), pi1.x(), pi0.x(), pi1.x());
+		const Vec<4, T> iy = Vec<4, T>(Vec<2, T>(pi0.y()), Vec<2, T>(pi1.y()));
+		const Vec<4, T> iz0(pi0.z());
+		const Vec<4, T> iz1(pi1.z());
+
+		const Vec<4, T> ixy = INTERNAL::Permute(INTERNAL::Permute(ix) + iy);
+		const Vec<4, T> ixy0 = INTERNAL::Permute(ixy + iz0);
+		const Vec<4, T> ixy1 = INTERNAL::Permute(ixy + iz1);
+
+		Vec<4, T> gx0 = ixy0 * T(1.0 / 7.0);
+		Vec<4, T> gy0 = Fract(Floor(gx0) * T(1.0 / 7.0)) - T(0.5);
+		gx0 = Fract(gx0);
+		const Vec<4, T> gz0 = Vec<4, T>(0.5) - Abs(gx0) - Abs(gy0);
+		const Vec<4, T> sz0 = Step(gz0, Vec<4, T>(0.0));
+		gx0 -= sz0 * (Step(T(0), gx0) - T(0.5));
+		gy0 -= sz0 * (Step(T(0), gy0) - T(0.5));
+
+		Vec<4, T> gx1 = ixy1 * T(1.0 / 7.0);
+		Vec<4, T> gy1 = Fract(Floor(gx1) * T(1.0 / 7.0)) - T(0.5);
+		gx1 = Fract(gx1);
+		const Vec<4, T> gz1 = Vec<4, T>(0.5) - Abs(gx1) - Abs(gy1);
+		const Vec<4, T> sz1 = Step(gz1, Vec<4, T>(0.0));
+		gx1 -= sz1 * (Step(T(0), gx1) - T(0.5));
+		gy1 -= sz1 * (Step(T(0), gy1) - T(0.5));
+
+		Vec<3, T> g000(gx0.x(), gy0.x(), gz0.x());
+		Vec<3, T> g100(gx0.y(), gy0.y(), gz0.y());
+		Vec<3, T> g010(gx0.z(), gy0.z(), gz0.z());
+		Vec<3, T> g110(gx0.w(), gy0.w(), gz0.w());
+		Vec<3, T> g001(gx1.x(), gy1.x(), gz1.x());
+		Vec<3, T> g101(gx1.y(), gy1.y(), gz1.y());
+		Vec<3, T> g011(gx1.z(), gy1.z(), gz1.z());
+		Vec<3, T> g111(gx1.w(), gy1.w(), gz1.w());
+
+		const Vec<4, T> norm0 = INTERNAL::TaylorInvSqrt(Vec<4, T>(Dot(g000, g000), Dot(g010, g010), Dot(g100, g100), Dot(g110, g110)));
+		g000 *= norm0.x();
+		g010 *= norm0.y();
+		g100 *= norm0.z();
+		g110 *= norm0.w();
+		const Vec<4, T> norm1 = INTERNAL::TaylorInvSqrt(Vec<4, T>(Dot(g001, g001), Dot(g011, g011), Dot(g101, g101), Dot(g111, g111)));
+		g001 *= norm1.x();
+		g011 *= norm1.y();
+		g101 *= norm1.z();
+		g111 *= norm1.w();
+
+		const T n000 = Dot(g000, pf0);
+		const T n100 = Dot(g100, Vec<3, T>(pf1.x(), pf0.y(), pf0.z()));
+		const T n010 = Dot(g010, Vec<3, T>(pf0.x(), pf1.y(), pf0.z()));
+		const T n110 = Dot(g110, Vec<3, T>(pf1.x(), pf1.y(), pf0.z()));
+		const T n001 = Dot(g001, Vec<3, T>(pf0.x(), pf0.y(), pf1.z()));
+		const T n101 = Dot(g101, Vec<3, T>(pf1.x(), pf0.y(), pf1.z()));
+		const T n011 = Dot(g011, Vec<3, T>(pf0.x(), pf1.y(), pf1.z()));
+		const T n111 = Dot(g111, pf1);
+
+		const Vec<3, T> fade_xyz = INTERNAL::Fade(pf0);
+		const Vec<4, T> n_z = Mix(Vec<4, T>(n000, n100, n010, n110), Vec<4, T>(n001, n101, n011, n111), fade_xyz.z());
+		const Vec<2, T> n_yz = Mix(Vec<2, T>(n_z.x(), n_z.y()), Vec<2, T>(n_z.z(), n_z.w()), fade_xyz.y());
+		const T n_xyz = Mix(n_yz.x(), n_yz.y(), fade_xyz.x());
+		return T(2.2) * n_xyz;
+	}
+	else if constexpr(L == 4)
+	{
+		Vec<4, T> pi0 = Floor(p); //Integer part for indexing
+		Vec<4, T> pi1 = pi0 + T(1); //Integer part + 1
+		pi0 = Mod(pi0, Vec<4, T>(289));
+		pi1 = Mod(pi1, Vec<4, T>(289));
+		const Vec<4, T> pf0 = Fract(p); //Fractional part for interpolation
+		const Vec<4, T> pf1 = pf0 - T(1); //Fractional part - 1.0
+		const Vec<4, T> ix(pi0.x(), pi1.x(), pi0.x(), pi1.x());
+		const Vec<4, T> iy(pi0.y(), pi0.y(), pi1.y(), pi1.y());
+		const Vec<4, T> iz0(pi0.z());
+		const Vec<4, T> iz1(pi1.z());
+		const Vec<4, T> iw0(pi0.w());
+		const Vec<4, T> iw1(pi1.w());
+
+		const Vec<4, T> ixy = INTERNAL::Permute(INTERNAL::Permute(ix) + iy);
+		const Vec<4, T> ixy0 = INTERNAL::Permute(ixy + iz0);
+		const Vec<4, T> ixy1 = INTERNAL::Permute(ixy + iz1);
+		const Vec<4, T> ixy00 = INTERNAL::Permute(ixy0 + iw0);
+		const Vec<4, T> ixy01 = INTERNAL::Permute(ixy0 + iw1);
+		const Vec<4, T> ixy10 = INTERNAL::Permute(ixy1 + iw0);
+		const Vec<4, T> ixy11 = INTERNAL::Permute(ixy1 + iw1);
+
+		Vec<4, T> gx00 = ixy00 / T(7);
+		Vec<4, T> gy00 = Floor(gx00) / T(7);
+		Vec<4, T> gz00 = Floor(gy00) / T(6);
+		gx00 = Fract(gx00) - T(0.5);
+		gy00 = Fract(gy00) - T(0.5);
+		gz00 = Fract(gz00) - T(0.5);
+		const Vec<4, T> gw00 = Vec<4, T>(0.75) - Abs(gx00) - Abs(gy00) - Abs(gz00);
+		const Vec<4, T> sw00 = Step(gw00, Vec<4, T>(0.0));
+		gx00 -= sw00 * (Step(T(0), gx00) - T(0.5));
+		gy00 -= sw00 * (Step(T(0), gy00) - T(0.5));
+
+		Vec<4, T> gx01 = ixy01 / T(7);
+		Vec<4, T> gy01 = Floor(gx01) / T(7);
+		Vec<4, T> gz01 = Floor(gy01) / T(6);
+		gx01 = Fract(gx01) - T(0.5);
+		gy01 = Fract(gy01) - T(0.5);
+		gz01 = Fract(gz01) - T(0.5);
+		const Vec<4, T> gw01 = Vec<4, T>(0.75) - Abs(gx01) - Abs(gy01) - Abs(gz01);
+		const Vec<4, T> sw01 = Step(gw01, Vec<4, T>(0.0));
+		gx01 -= sw01 * (Step(T(0), gx01) - T(0.5));
+		gy01 -= sw01 * (Step(T(0), gy01) - T(0.5));
+
+		Vec<4, T> gx10 = ixy10 / T(7);
+		Vec<4, T> gy10 = Floor(gx10) / T(7);
+		Vec<4, T> gz10 = Floor(gy10) / T(6);
+		gx10 = Fract(gx10) - T(0.5);
+		gy10 = Fract(gy10) - T(0.5);
+		gz10 = Fract(gz10) - T(0.5);
+		const Vec<4, T> gw10 = Vec<4, T>(0.75) - Abs(gx10) - Abs(gy10) - Abs(gz10);
+		const Vec<4, T> sw10 = Step(gw10, Vec<4, T>(0));
+		gx10 -= sw10 * (Step(T(0), gx10) - T(0.5));
+		gy10 -= sw10 * (Step(T(0), gy10) - T(0.5));
+
+		Vec<4, T> gx11 = ixy11 / T(7);
+		Vec<4, T> gy11 = Floor(gx11) / T(7);
+		Vec<4, T> gz11 = Floor(gy11) / T(6);
+		gx11 = Fract(gx11) - T(0.5);
+		gy11 = Fract(gy11) - T(0.5);
+		gz11 = Fract(gz11) - T(0.5);
+		const Vec<4, T> gw11 = Vec<4, T>(0.75) - Abs(gx11) - Abs(gy11) - Abs(gz11);
+		const Vec<4, T> sw11 = Step(gw11, Vec<4, T>(0.0));
+		gx11 -= sw11 * (Step(T(0), gx11) - T(0.5));
+		gy11 -= sw11 * (Step(T(0), gy11) - T(0.5));
+
+		Vec<4, T> g0000(gx00.x(), gy00.x(), gz00.x(), gw00.x());
+		Vec<4, T> g1000(gx00.y(), gy00.y(), gz00.y(), gw00.y());
+		Vec<4, T> g0100(gx00.z(), gy00.z(), gz00.z(), gw00.z());
+		Vec<4, T> g1100(gx00.w(), gy00.w(), gz00.w(), gw00.w());
+		Vec<4, T> g0010(gx10.x(), gy10.x(), gz10.x(), gw10.x());
+		Vec<4, T> g1010(gx10.y(), gy10.y(), gz10.y(), gw10.y());
+		Vec<4, T> g0110(gx10.z(), gy10.z(), gz10.z(), gw10.z());
+		Vec<4, T> g1110(gx10.w(), gy10.w(), gz10.w(), gw10.w());
+		Vec<4, T> g0001(gx01.x(), gy01.x(), gz01.x(), gw01.x());
+		Vec<4, T> g1001(gx01.y(), gy01.y(), gz01.y(), gw01.y());
+		Vec<4, T> g0101(gx01.z(), gy01.z(), gz01.z(), gw01.z());
+		Vec<4, T> g1101(gx01.w(), gy01.w(), gz01.w(), gw01.w());
+		Vec<4, T> g0011(gx11.x(), gy11.x(), gz11.x(), gw11.x());
+		Vec<4, T> g1011(gx11.y(), gy11.y(), gz11.y(), gw11.y());
+		Vec<4, T> g0111(gx11.z(), gy11.z(), gz11.z(), gw11.z());
+		Vec<4, T> g1111(gx11.w(), gy11.w(), gz11.w(), gw11.w());
+
+		const Vec<4, T> norm00 = INTERNAL::TaylorInvSqrt(Vec<4, T>(Dot(g0000, g0000), Dot(g0100, g0100), Dot(g1000, g1000), Dot(g1100, g1100)));
+		g0000 *= norm00.x();
+		g0100 *= norm00.y();
+		g1000 *= norm00.z();
+		g1100 *= norm00.w();
+
+		const Vec<4, T> norm01 = INTERNAL::TaylorInvSqrt(Vec<4, T>(Dot(g0001, g0001), Dot(g0101, g0101), Dot(g1001, g1001), Dot(g1101, g1101)));
+		g0001 *= norm01.x();
+		g0101 *= norm01.y();
+		g1001 *= norm01.z();
+		g1101 *= norm01.w();
+
+		const Vec<4, T> norm10 = INTERNAL::TaylorInvSqrt(Vec<4, T>(Dot(g0010, g0010), Dot(g0110, g0110), Dot(g1010, g1010), Dot(g1110, g1110)));
+		g0010 *= norm10.x();
+		g0110 *= norm10.y();
+		g1010 *= norm10.z();
+		g1110 *= norm10.w();
+
+		const Vec<4, T> norm11 = INTERNAL::TaylorInvSqrt(Vec<4, T>(Dot(g0011, g0011), Dot(g0111, g0111), Dot(g1011, g1011), Dot(g1111, g1111)));
+		g0011 *= norm11.x();
+		g0111 *= norm11.y();
+		g1011 *= norm11.z();
+		g1111 *= norm11.w();
+
+		const T n0000 = Dot(g0000, pf0);
+		const T n1000 = Dot(g1000, Vec<4, T>(pf1.x(), pf0.y(), pf0.z(), pf0.w()));
+		const T n0100 = Dot(g0100, Vec<4, T>(pf0.x(), pf1.y(), pf0.z(), pf0.w()));
+		const T n1100 = Dot(g1100, Vec<4, T>(pf1.x(), pf1.y(), pf0.z(), pf0.w()));
+		const T n0010 = Dot(g0010, Vec<4, T>(pf0.x(), pf0.y(), pf1.z(), pf0.w()));
+		const T n1010 = Dot(g1010, Vec<4, T>(pf1.x(), pf0.y(), pf1.z(), pf0.w()));
+		const T n0110 = Dot(g0110, Vec<4, T>(pf0.x(), pf1.y(), pf1.z(), pf0.w()));
+		const T n1110 = Dot(g1110, Vec<4, T>(pf1.x(), pf1.y(), pf1.z(), pf0.w()));
+		const T n0001 = Dot(g0001, Vec<4, T>(pf0.x(), pf0.y(), pf0.z(), pf1.w()));
+		const T n1001 = Dot(g1001, Vec<4, T>(pf1.x(), pf0.y(), pf0.z(), pf1.w()));
+		const T n0101 = Dot(g0101, Vec<4, T>(pf0.x(), pf1.y(), pf0.z(), pf1.w()));
+		const T n1101 = Dot(g1101, Vec<4, T>(pf1.x(), pf1.y(), pf0.z(), pf1.w()));
+		const T n0011 = Dot(g0011, Vec<4, T>(pf0.x(), pf0.y(), pf1.z(), pf1.w()));
+		const T n1011 = Dot(g1011, Vec<4, T>(pf1.x(), pf0.y(), pf1.z(), pf1.w()));
+		const T n0111 = Dot(g0111, Vec<4, T>(pf0.x(), pf1.y(), pf1.z(), pf1.w()));
+		const T n1111 = Dot(g1111, pf1);
+
+		const Vec<4, T> fadeXYZW = INTERNAL::Fade(pf0);
+		const Vec<4, T> n0W = Mix(Vec<4, T>(n0000, n1000, n0100, n1100), Vec<4, T>(n0001, n1001, n0101, n1101), fadeXYZW.w());
+		const Vec<4, T> n1W = Mix(Vec<4, T>(n0010, n1010, n0110, n1110), Vec<4, T>(n0011, n1011, n0111, n1111), fadeXYZW.w());
+		const Vec<4, T> nZW = Mix(n0W, n1W, fadeXYZW.z());
+		const Vec<2, T> nYZW = Mix(Vec<2, T>(nZW.x(), nZW.y()), Vec<2, T>(nZW.z(), nZW.w()), fadeXYZW.y());
+		const T nXYZW = Mix(nYZW.x(), nYZW.y(), fadeXYZW.x());
+		return T(2.2) * nXYZW;
+	}
+}
+
+template<u32 L, typename T>
+requires std::floating_point<T> && (L > 1) && (L < 5)
+[[nodiscard]] constexpr T TRAP::Math::Perlin(const Vec<L, T>& p, const Vec<L, T>& rep)
+{
+	if constexpr(L == 2)
+	{
+		Vec<4, T> pi = Floor(Vec<4, T>(p.x(), p.y(), p.x(), p.y())) + Vec<4, T>(0.0, 0.0, 1.0, 1.0);
+		const Vec<4, T> pf = Fract(Vec<4, T>(p.x(), p.y(), p.x(), p.y())) - Vec<4, T>(0.0, 0.0, 1.0, 1.0);
+		pi = Mod(pi, Vec<4, T>(rep.x(), rep.y(), rep.x(), rep.y())); //To create noise with explicit period
+		pi = Mod(pi, Vec<4, T>(289)); //To avoid truncation effects in permutation
+		const Vec<4, T> ix(pi.x(), pi.z(), pi.x(), pi.z());
+		const Vec<4, T> iy(pi.y(), pi.y(), pi.w(), pi.w());
+		const Vec<4, T> fx(pf.x(), pf.z(), pf.x(), pf.z());
+		const Vec<4, T> fy(pf.y(), pf.y(), pf.w(), pf.w());
+
+		const Vec<4, T> i = INTERNAL::Permute(INTERNAL::Permute(ix) + iy);
+
+		Vec<4, T> gx = static_cast<T>(2) * Fract(i / T(41)) - T(1);
+		const Vec<4, T> gy = Abs(gx) - T(0.5);
+		const Vec<4, T> tx = Floor(gx + T(0.5));
+		gx = gx - tx;
+
+		Vec<2, T> g00(gx.x(), gy.x());
+		Vec<2, T> g10(gx.y(), gy.y());
+		Vec<2, T> g01(gx.z(), gy.z());
+		Vec<2, T> g11(gx.w(), gy.w());
+
+		const Vec<4, T> norm = INTERNAL::TaylorInvSqrt(Vec<4, T>(Dot(g00, g00), Dot(g01, g01), Dot(g10, g10), Dot(g11, g11)));
+		g00 *= norm.x();
+		g01 *= norm.y();
+		g10 *= norm.z();
+		g11 *= norm.w();
+
+		const T n00 = Dot(g00, Vec<2, T>(fx.x(), fy.x()));
+		const T n10 = Dot(g10, Vec<2, T>(fx.y(), fy.y()));
+		const T n01 = Dot(g01, Vec<2, T>(fx.z(), fy.z()));
+		const T n11 = Dot(g11, Vec<2, T>(fx.w(), fy.w()));
+
+		const Vec<2, T> fade_xy = INTERNAL::Fade(Vec<2, T>(pf.x(), pf.y()));
+		const Vec<2, T> n_x = Mix(Vec<2, T>(n00, n01), Vec<2, T>(n10, n11), fade_xy.x());
+		const T n_xy = Mix(n_x.x(), n_x.y(), fade_xy.y());
+		return T(2.3) * n_xy;
+	}
+	else if constexpr(L == 3)
+	{
+		Vec<3, T> pi0 = Mod(Floor(p), rep); //Integer part, modulo period
+		Vec<3, T> pi1 = Mod(pi0 + Vec<3, T>(T(1)), rep); //Interger part + 1.0, mod period
+		pi0 = INTERNAL::Mod289(pi0);
+		pi1 = INTERNAL::Mod289(pi1);
+		const Vec<3, T> pf0 = Fract(p); //Fractional part for interpolation
+		const Vec<3, T> pf1 = pf0 - T(1); //Fractional part - 1.0
+		const Vec<4, T> ix(pi0.x(), pi1.x(), pi0.x(), pi1.x());
+		const Vec<4, T> iy = Vec<4, T>(Vec<2, T>(pi0.y()), Vec<2, T>(pi1.y()));
+		const Vec<4, T> iz0(pi0.z());
+		const Vec<4, T> iz1(pi1.z());
+
+		const Vec<4, T> ixy = INTERNAL::Permute(INTERNAL::Permute(ix) + iy);
+		const Vec<4, T> ixy0 = INTERNAL::Permute(ixy + iz0);
+		const Vec<4, T> ixy1 = INTERNAL::Permute(ixy + iz1);
+
+		Vec<4, T> gx0 = ixy0 * T(1.0 / 7.0);
+		Vec<4, T> gy0 = Fract(Floor(gx0) * T(1.0 / 7.0)) - T(0.5);
+		gx0 = Fract(gx0);
+		const Vec<4, T> gz0 = Vec<4, T>(0.5) - Abs(gx0) - Abs(gy0);
+		const Vec<4, T> sz0 = Step(gz0, Vec<4, T>(0.0));
+		gx0 -= sz0 * (Step(T(0), gx0) - T(0.5));
+		gy0 -= sz0 * (Step(T(0), gy0) - T(0.5));
+
+		Vec<4, T> gx1 = ixy1 * T(1.0 / 7.0);
+		Vec<4, T> gy1 = Fract(Floor(gx1) * T(1.0 / 7.0)) - T(0.5);
+		gx1 = Fract(gx1);
+		const Vec<4, T> gz1 = Vec<4, T>(0.5) - Abs(gx1) - Abs(gy1);
+		const Vec<4, T> sz1 = Step(gz1, Vec<4, T>(0.0));
+		gx1 -= sz1 * (Step(T(0), gx1) - T(0.5));
+		gy1 -= sz1 * (Step(T(0), gy1) - T(0.5));
+
+		Vec<3, T> g000(gx0.x(), gy0.x(), gz0.x());
+		Vec<3, T> g100(gx0.y(), gy0.y(), gz0.y());
+		Vec<3, T> g010(gx0.z(), gy0.z(), gz0.z());
+		Vec<3, T> g110(gx0.w(), gy0.w(), gz0.w());
+		Vec<3, T> g001(gx1.x(), gy1.x(), gz1.x());
+		Vec<3, T> g101(gx1.y(), gy1.y(), gz1.y());
+		Vec<3, T> g011(gx1.z(), gy1.z(), gz1.z());
+		Vec<3, T> g111(gx1.w(), gy1.w(), gz1.w());
+
+		const Vec<4, T> norm0 = INTERNAL::TaylorInvSqrt(Vec<4, T>(Dot(g000, g000), Dot(g010, g010), Dot(g100, g100), Dot(g110, g110)));
+		g000 *= norm0.x();
+		g010 *= norm0.y();
+		g100 *= norm0.z();
+		g110 *= norm0.w();
+		const Vec<4, T> norm1 = INTERNAL::TaylorInvSqrt(Vec<4, T>(Dot(g001, g001), Dot(g011, g011), Dot(g101, g101), Dot(g111, g111)));
+		g001 *= norm1.x();
+		g011 *= norm1.y();
+		g101 *= norm1.z();
+		g111 *= norm1.w();
+
+		const T n000 = Dot(g000, pf0);
+		const T n100 = Dot(g100, Vec<3, T>(pf1.x(), pf0.y(), pf0.z()));
+		const T n010 = Dot(g010, Vec<3, T>(pf0.x(), pf1.y(), pf0.z()));
+		const T n110 = Dot(g110, Vec<3, T>(pf1.x(), pf1.y(), pf0.z()));
+		const T n001 = Dot(g001, Vec<3, T>(pf0.x(), pf0.y(), pf1.z()));
+		const T n101 = Dot(g101, Vec<3, T>(pf1.x(), pf0.y(), pf1.z()));
+		const T n011 = Dot(g011, Vec<3, T>(pf0.x(), pf1.y(), pf1.z()));
+		const T n111 = Dot(g111, pf1);
+
+		const Vec<3, T> fadeXYZ = INTERNAL::Fade(pf0);
+		const Vec<4, T> nZ = Mix(Vec<4, T>(n000, n100, n010, n110), Vec<4, T>(n001, n101, n011, n111), fadeXYZ.z());
+		const Vec<2, T> nYZ = Mix(Vec<2, T>(nZ.x(), nZ.y()), Vec<2, T>(nZ.z(), nZ.w()), fadeXYZ.y());
+		const T nXYZ = Mix(nYZ.x(), nYZ.y(), fadeXYZ.x());
+		return T(2.2) * nXYZ;
+	}
+	else if constexpr(L == 4)
+	{
+		Vec<4, T> pi0 = Mod(Floor(p), rep); //Integer part f modulo rep
+		Vec<4, T> pi1 = Mod(pi0 + T(1), rep); //Integer part + 1 mod rep
+		pi0 = Mod(pi0, Vec<4, T>(289));
+		pi1 = Mod(pi1, Vec<4, T>(289));
+		const Vec<4, T> pf0 = Fract(p); //Fractional part for interpolation
+		const Vec<4, T> pf1 = pf0 - T(1); //Fractional part - 1.0
+		const Vec<4, T> ix(pi0.x(), pi1.x(), pi0.x(), pi1.x());
+		const Vec<4, T> iy(pi0.y(), pi0.y(), pi1.y(), pi1.y());
+		const Vec<4, T> iz0(pi0.z());
+		const Vec<4, T> iz1(pi1.z());
+		const Vec<4, T> iw0(pi0.w());
+		const Vec<4, T> iw1(pi1.w());
+
+		const Vec<4, T> ixy = INTERNAL::Permute(INTERNAL::Permute(ix) + iy);
+		const Vec<4, T> ixy0 = INTERNAL::Permute(ixy + iz0);
+		const Vec<4, T> ixy1 = INTERNAL::Permute(ixy + iz1);
+		const Vec<4, T> ixy00 = INTERNAL::Permute(ixy0 + iw0);
+		const Vec<4, T> ixy01 = INTERNAL::Permute(ixy0 + iw1);
+		const Vec<4, T> ixy10 = INTERNAL::Permute(ixy1 + iw0);
+		const Vec<4, T> ixy11 = INTERNAL::Permute(ixy1 + iw1);
+
+		Vec<4, T> gx00 = ixy00 / T(7);
+		Vec<4, T> gy00 = Floor(gx00) / T(7);
+		Vec<4, T> gz00 = Floor(gy00) / T(6);
+		gx00 = Fract(gx00) - T(0.5);
+		gy00 = Fract(gy00) - T(0.5);
+		gz00 = Fract(gz00) - T(0.5);
+		const Vec<4, T> gw00 = Vec<4, T>(0.75) - Abs(gx00) - Abs(gy00) - Abs(gz00);
+		const Vec<4, T> sw00 = Step(gw00, Vec<4, T>(0.0));
+		gx00 -= sw00 * (Step(T(0), gx00) - T(0.5));
+		gy00 -= sw00 * (Step(T(0), gy00) - T(0.5));
+
+		Vec<4, T> gx01 = ixy01 / T(7);
+		Vec<4, T> gy01 = Floor(gx01) / T(7);
+		Vec<4, T> gz01 = Floor(gy01) / T(6);
+		gx01 = Fract(gx01) - T(0.5);
+		gy01 = Fract(gy01) - T(0.5);
+		gz01 = Fract(gz01) - T(0.5);
+		const Vec<4, T> gw01 = Vec<4, T>(0.75) - Abs(gx01) - Abs(gy01) - Abs(gz01);
+		const Vec<4, T> sw01 = Step(gw01, Vec<4, T>(0.0));
+		gx01 -= sw01 * (Step(T(0), gx01) - T(0.5));
+		gy01 -= sw01 * (Step(T(0), gy01) - T(0.5));
+
+		Vec<4, T> gx10 = ixy10 / T(7);
+		Vec<4, T> gy10 = Floor(gx10) / T(7);
+		Vec<4, T> gz10 = Floor(gy10) / T(6);
+		gx10 = Fract(gx10) - T(0.5);
+		gy10 = Fract(gy10) - T(0.5);
+		gz10 = Fract(gz10) - T(0.5);
+		const Vec<4, T> gw10 = Vec<4, T>(0.75) - Abs(gx10) - Abs(gy10) - Abs(gz10);
+		const Vec<4, T> sw10 = Step(gw10, Vec<4, T>(0));
+		gx10 -= sw10 * (Step(T(0), gx10) - T(0.5));
+		gy10 -= sw10 * (Step(T(0), gy10) - T(0.5));
+
+		Vec<4, T> gx11 = ixy11 / T(7);
+		Vec<4, T> gy11 = Floor(gx11) / T(7);
+		Vec<4, T> gz11 = Floor(gy11) / T(6);
+		gx11 = Fract(gx11) - T(0.5);
+		gy11 = Fract(gy11) - T(0.5);
+		gz11 = Fract(gz11) - T(0.5);
+		const Vec<4, T> gw11 = Vec<4, T>(0.75) - Abs(gx11) - Abs(gy11) - Abs(gz11);
+		const Vec<4, T> sw11 = Step(gw11, Vec<4, T>(0.0));
+		gx11 -= sw11 * (Step(T(0), gx11) - T(0.5));
+		gy11 -= sw11 * (Step(T(0), gy11) - T(0.5));
+
+		Vec<4, T> g0000(gx00.x(), gy00.x(), gz00.x(), gw00.x());
+		Vec<4, T> g1000(gx00.y(), gy00.y(), gz00.y(), gw00.y());
+		Vec<4, T> g0100(gx00.z(), gy00.z(), gz00.z(), gw00.z());
+		Vec<4, T> g1100(gx00.w(), gy00.w(), gz00.w(), gw00.w());
+		Vec<4, T> g0010(gx10.x(), gy10.x(), gz10.x(), gw10.x());
+		Vec<4, T> g1010(gx10.y(), gy10.y(), gz10.y(), gw10.y());
+		Vec<4, T> g0110(gx10.z(), gy10.z(), gz10.z(), gw10.z());
+		Vec<4, T> g1110(gx10.w(), gy10.w(), gz10.w(), gw10.w());
+		Vec<4, T> g0001(gx01.x(), gy01.x(), gz01.x(), gw01.x());
+		Vec<4, T> g1001(gx01.y(), gy01.y(), gz01.y(), gw01.y());
+		Vec<4, T> g0101(gx01.z(), gy01.z(), gz01.z(), gw01.z());
+		Vec<4, T> g1101(gx01.w(), gy01.w(), gz01.w(), gw01.w());
+		Vec<4, T> g0011(gx11.x(), gy11.x(), gz11.x(), gw11.x());
+		Vec<4, T> g1011(gx11.y(), gy11.y(), gz11.y(), gw11.y());
+		Vec<4, T> g0111(gx11.z(), gy11.z(), gz11.z(), gw11.z());
+		Vec<4, T> g1111(gx11.w(), gy11.w(), gz11.w(), gw11.w());
+
+		const Vec<4, T> norm00 = INTERNAL::TaylorInvSqrt(Vec<4, T>(Dot(g0000, g0000), Dot(g0100, g0100), Dot(g1000, g1000), Dot(g1100, g1100)));
+		g0000 *= norm00.x();
+		g0100 *= norm00.y();
+		g1000 *= norm00.z();
+		g1100 *= norm00.w();
+
+		const Vec<4, T> norm01 = INTERNAL::TaylorInvSqrt(Vec<4, T>(Dot(g0001, g0001), Dot(g0101, g0101), Dot(g1001, g1001), Dot(g1101, g1101)));
+		g0001 *= norm01.x();
+		g0101 *= norm01.y();
+		g1001 *= norm01.z();
+		g1101 *= norm01.w();
+
+		const Vec<4, T> norm10 = INTERNAL::TaylorInvSqrt(Vec<4, T>(Dot(g0010, g0010), Dot(g0110, g0110), Dot(g1010, g1010), Dot(g1110, g1110)));
+		g0010 *= norm10.x();
+		g0110 *= norm10.y();
+		g1010 *= norm10.z();
+		g1110 *= norm10.w();
+
+		const Vec<4, T> norm11 = INTERNAL::TaylorInvSqrt(Vec<4, T>(Dot(g0011, g0011), Dot(g0111, g0111), Dot(g1011, g1011), Dot(g1111, g1111)));
+		g0011 *= norm11.x();
+		g0111 *= norm11.y();
+		g1011 *= norm11.z();
+		g1111 *= norm11.w();
+
+		const T n0000 = Dot(g0000, pf0);
+		const T n1000 = Dot(g1000, Vec<4, T>(pf1.x(), pf0.y(), pf0.z(), pf0.w()));
+		const T n0100 = Dot(g0100, Vec<4, T>(pf0.x(), pf1.y(), pf0.z(), pf0.w()));
+		const T n1100 = Dot(g1100, Vec<4, T>(pf1.x(), pf1.y(), pf0.z(), pf0.w()));
+		const T n0010 = Dot(g0010, Vec<4, T>(pf0.x(), pf0.y(), pf1.z(), pf0.w()));
+		const T n1010 = Dot(g1010, Vec<4, T>(pf1.x(), pf0.y(), pf1.z(), pf0.w()));
+		const T n0110 = Dot(g0110, Vec<4, T>(pf0.x(), pf1.y(), pf1.z(), pf0.w()));
+		const T n1110 = Dot(g1110, Vec<4, T>(pf1.x(), pf1.y(), pf1.z(), pf0.w()));
+		const T n0001 = Dot(g0001, Vec<4, T>(pf0.x(), pf0.y(), pf0.z(), pf1.w()));
+		const T n1001 = Dot(g1001, Vec<4, T>(pf1.x(), pf0.y(), pf0.z(), pf1.w()));
+		const T n0101 = Dot(g0101, Vec<4, T>(pf0.x(), pf1.y(), pf0.z(), pf1.w()));
+		const T n1101 = Dot(g1101, Vec<4, T>(pf1.x(), pf1.y(), pf0.z(), pf1.w()));
+		const T n0011 = Dot(g0011, Vec<4, T>(pf0.x(), pf0.y(), pf1.z(), pf1.w()));
+		const T n1011 = Dot(g1011, Vec<4, T>(pf1.x(), pf0.y(), pf1.z(), pf1.w()));
+		const T n0111 = Dot(g0111, Vec<4, T>(pf0.x(), pf1.y(), pf1.z(), pf1.w()));
+		const T n1111 = Dot(g1111, pf1);
+
+		const Vec<4, T> fadeXYZW = INTERNAL::Fade(pf0);
+		const Vec<4, T> n0W = Mix(Vec<4, T>(n0000, n1000, n0100, n1100), Vec<4, T>(n0001, n1001, n0101, n1101), fadeXYZW.w());
+		const Vec<4, T> n1W = Mix(Vec<4, T>(n0010, n1010, n0110, n1110), Vec<4, T>(n0011, n1011, n0111, n1111), fadeXYZW.w());
+		const Vec<4, T> nZW = Mix(n0W, n1W, fadeXYZW.z());
+		const Vec<2, T> nYZW = Mix(Vec<2, T>(nZW.x(), nZW.y()), Vec<2, T>(nZW.z(), nZW.w()), fadeXYZW.y());
+		const T nXYZW = Mix(nYZW.x(), nYZW.y(), fadeXYZW.x());
+		return T(2.2) * nXYZW;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<u32 L, typename T>
+requires std::floating_point<T> && (L > 1) && (L < 5)
+[[nodiscard]] constexpr T TRAP::Math::Simplex(const Vec<L, T>& v)
+{
+	if constexpr(L == 2)
+	{
+		constexpr Vec<4, T> c
+		{
+			T( 0.211324865405187), //(3.0 -  Sqrt(3.0)) / 6.0
+			T( 0.366025403784439), // 0.5 * (Sqrt(3.0)  - 1.0)
+			T(-0.577350269189626), // -1.0 + 2.0 * c.x
+			T( 0.024390243902439), //  1.0 / 41.0
+		};
+
+		//First corner
+		Vec<2, T> i = Floor(v + Dot(v, Vec<2, T>(std::get<1>(c))));
+		const Vec<2, T> x0 = v -  i + Dot(i, Vec<2, T>(std::get<0>(c)));
+
+		//Other corners
+		const Vec<2, T> i1 = (x0.x() > x0.y()) ? Vec<2, T>(1, 0) : Vec<2, T>(0, 1);
+		Vec<4, T> x12 = Vec<4, T>(x0.x(), x0.y(), x0.x(), x0.y()) + Vec<4, T>(c.x(), c.x(), c.z(), c.z());
+		x12 = Vec<4, T>(Vec<2, T>(x12) - i1, x12.z(), x12.w());
+
+		//Permutations
+		i = Mod(i, Vec<2, T>(289)); //Avoid truncation effects in permutation
+		const Vec<3, T> p = INTERNAL::Permute(INTERNAL::Permute(i.y() + Vec<3, T>(T(0), i1.y(), T(1))) + i.x() + Vec<3, T>(T(0), i1.x(), T(1)));
+
+		Vec<3, T> m = Max(Vec<3, T>(0.5) - Vec<3, T>(Dot(x0, x0),
+		                                             Dot(Vec<2, T>(x12.x(), x12.y()), Vec<2, T>(x12.x(), x12.y())),
+													 Dot(Vec<2, T>(x12.z(), x12.w()), Vec<2, T>(x12.z(), x12.w()))), Vec<3, T>(0));
+        m = m * m;
+		m = m * m;
+
+		//Gradients: 41 points uniformly over a line, mapped onto a diamond.
+		//The ring size 17*17 = 289 is close to a multiple of 41 (41 * 7 = 287)
+
+		const Vec<3, T> x = static_cast<T>(2) * Fract(p * c.w()) - T(1);
+		const Vec<3, T> h = Abs(x) - T(0.5);
+		const Vec<3, T> ox = Floor(x + T(0.5));
+		const Vec<3, T> a0 = x - ox;
+
+		//Normalize gradients implicitly be scaling m
+		//Inlined for speed: m *= TraylorInvSqrt(a0*a0 + h*h);
+		m *= static_cast<T>(1.79284291400159) - T(0.85373472095314) * (a0 * a0 + h * h);
+
+		//Compute final noise value at p
+		Vec<3, T> g
+		{
+			a0.x() * x0.x() + h.x() * x0.y(),
+			a0.y() * x12.x() + h.y() * x12.y(),
+			a0.z() * x12.z() + h.z() * x12.w()
+		};
+		return T(130) * Dot(m, g);
+	}
+	else if constexpr(L == 3)
+	{
+		constexpr Vec<2, T> c(1.0 / 6.0, 1.0 / 3.0);
+		constexpr Vec<4, T> d(0.0, 0.5, 1.0, 2.0);
+
+		//First corner
+		Vec<3, T> i(Floor(v + Dot(v, Vec<3, T>(c.y()))));
+		const Vec<3, T> x0(v - i + Dot(i, Vec<3, T>(c.x())));
+
+		//Other corners
+		const Vec<3, T> g(Step(Vec<3, T>(x0.y(), x0.z(), x0.x()), x0));
+		const Vec<3, T> l(T(1) - g);
+		const Vec<3, T> i1(Min(g, Vec<3, T>(l.z(), l.x(), l.y())));
+		const Vec<3, T> i2(Max(g, Vec<3, T>(l.z(), l.x(), l.y())));
+
+		const Vec<3, T> x1(x0 - i1 + c.x());
+		const Vec<3, T> x2(x0 - i2 + c.y()); //2.0 * c.x = 1/3 = c.y
+		const Vec<3, T> x3(x0 - d.y()); //-1.0 + 3.0 * c.x = -0.5 = -d.y
+
+		//Permutations
+		i = INTERNAL::Mod289(i);
+		const Vec<4, T> p(INTERNAL::Permute(INTERNAL::Permute(INTERNAL::Permute(
+			i.z() + Vec<4, T>(T(0), i1.z(), i2.z(), T(1))) +
+			i.y() + Vec<4, T>(T(0), i1.y(), i2.y(), T(1))) +
+			i.x() + Vec<4, T>(T(0), i1.x(), i2.x(), T(1))));
+
+		//Gradients: 7x7 points over a square, mapped onto an octahedron.
+		//The ring size 17 * 17 = 289 is close to a multiple of 49 (49 * 6 = 294)
+		constexpr T n_ = static_cast<T>(0.142857142857); //1.0 / 7.0
+		const Vec<3, T> ns(n_ * Vec<3, T>(d.w(), d.y(), d.z()) - Vec<3, T>(d.x(), d.z(), d.x()));
+
+		const Vec<4, T> j(p - T(49) * Floor(p * ns.z() * ns.z())); //Mod(p, 7 * 7)
+
+		const Vec<4, T> x_(Floor(j * ns.z()));
+		const Vec<4, T> y_(Floor(j - T(7) * x_)); //Mod(j, N)
+
+		const Vec<4, T> x(x_ * ns.x() + ns.y());
+		const Vec<4, T> y(y_ * ns.x() + ns.y());
+		const Vec<4, T> h(T(1) - Abs(x) - Abs(y));
+
+		const Vec<4, T> b0(x.x(), x.y(), y.x(), y.y());
+		const Vec<4, T> b1(x.z(), x.w(), y.z(), y.w());
+
+		const Vec<4, T> s0(Floor(b0) * T(2) + T(1));
+		const Vec<4, T> s1(Floor(b1) * T(2) + T(1));
+		const Vec<4, T> sh(-Step(h, Vec<4, T>(0.0)));
+
+		const Vec<4, T> a0 = Vec<4, T>(b0.x(), b0.z(), b0.y(), b0.w()) + Vec<4, T>(s0.x(), s0.z(), s0.y(), s0.w()) * Vec<4, T>(sh.x(), sh.x(), sh.y(), sh.y());
+		const Vec<4, T> a1 = Vec<4, T>(b1.x(), b1.z(), b1.y(), b1.w()) + Vec<4, T>(s1.x(), s1.z(), s1.y(), s1.w()) * Vec<4, T>(sh.z(), sh.z(), sh.w(), sh.w());
+
+		Vec<3, T> p0(a0.x(), a0.y(), h.x());
+		Vec<3, T> p1(a0.z(), a0.w(), h.y());
+		Vec<3, T> p2(a1.x(), a1.y(), h.z());
+		Vec<3, T> p3(a1.z(), a1.w(), h.w());
+
+		//Normalize gradients
+		const Vec<4, T> norm = INTERNAL::TaylorInvSqrt(Vec<4, T>(Dot(p0, p0), Dot(p1, p1), Dot(p2, p2), Dot(p3, p3)));
+		p0 *= norm.x();
+		p1 *= norm.y();
+		p2 *= norm.z();
+		p3 *= norm.w();
+
+		//Mix final noise value
+		Vec<4, T> m = Max(T(0.6) - Vec<4, T>(Dot(x0, x0), Dot(x1, x1), Dot(x2, x2), Dot(x3, x3)), Vec<4, T>(0));
+		m = m * m;
+		return T(42) * Dot(m * m, Vec<4, T>(Dot(p0, x0), Dot(p1, x1), Dot(p2, x2), Dot(p3, x3)));
+	}
+	else if constexpr(L == 4)
+	{
+		constexpr Vec<4, T> c
+		{
+			 0.138196601125011, // (5 - sqrt(5))/20  G4
+			 0.276393202250021, // 2 * G4
+			 0.414589803375032, // 3 * G4
+			-0.447213595499958  //-1 + 4 * G4
+		};
+
+		//(Sqrt(5) - 1)/4 = F4, used once below
+		constexpr T F4 = static_cast<T>(0.309016994374947451);
+
+		//First corner
+		Vec<4, T> i  = Floor(v + Dot(v, Vec<4, T>(F4)));
+		const Vec<4, T> x0 = v -   i + Dot(i, Vec<4, T>(c.x()));
+
+		//Other corners
+
+		//Rank sorting originally contributed by Bill Licea-Kane, AMD (formerly ATI)
+		const Vec<3, T> isX = Step(Vec<3, T>(x0.y(), x0.z(), x0.w()), Vec<3, T>(x0.x()));
+		const Vec<3, T> isYZ = Step(Vec<3, T>(x0.z(), x0.w(), x0.w()), Vec<3, T>(x0.y(), x0.y(), x0.z()));
+		Vec<4, T> i0 = Vec<4, T>(isX.x() + isX.y() + isX.z(), T(1) - isX);
+		i0.y() += isYZ.x() + isYZ.y();
+		i0.z() += static_cast<T>(1) - isYZ.x();
+		i0.w() += static_cast<T>(1) - isYZ.y();
+		i0.z() += isYZ.z();
+		i0.w() += static_cast<T>(1) - isYZ.z();
+
+		//i0 now contains the unique values 0,1,2,3 in each channel
+		const Vec<4, T> i3 = Clamp(i0, T(0), T(1));
+		const Vec<4, T> i2 = Clamp(i0 - T(1), T(0), T(1));
+		const Vec<4, T> i1 = Clamp(i0 - T(2), T(0), T(1));
+
+		const Vec<4, T> x1 = x0 - i1 + c.x();
+		const Vec<4, T> x2 = x0 - i2 + c.y();
+		const Vec<4, T> x3 = x0 - i3 + c.z();
+		const Vec<4, T> x4 = x0 + c.w();
+
+		// Permutations
+		i = Mod(i, Vec<4, T>(289));
+		const T j0 = INTERNAL::Permute(INTERNAL::Permute(INTERNAL::Permute(INTERNAL::Permute(i.w()) + i.z()) + i.y()) + i.x());
+		const Vec<4, T> j1 = INTERNAL::Permute(INTERNAL::Permute(INTERNAL::Permute(INTERNAL::Permute(
+			i.w() + Vec<4, T>(i1.w(), i2.w(), i3.w(), T(1))) +
+			i.z() + Vec<4, T>(i1.z(), i2.z(), i3.z(), T(1))) +
+			i.y() + Vec<4, T>(i1.y(), i2.y(), i3.y(), T(1))) +
+			i.x() + Vec<4, T>(i1.x(), i2.x(), i3.x(), T(1)));
+
+		//Gradients: 7x7x6 points over a cube, mapped onto a 4-cross polytope
+		//7*7*6 = 294, which is close to the ring size 17*17 = 289.
+		constexpr Vec<4, T> ip = Vec<4, T>(T(1) / T(294), T(1) / T(49), T(1) / T(7), T(0));
+
+		Vec<4, T> p0 = INTERNAL::Grad4(j0, ip);
+		Vec<4, T> p1 = INTERNAL::Grad4(j1.x(), ip);
+		Vec<4, T> p2 = INTERNAL::Grad4(j1.y(), ip);
+		Vec<4, T> p3 = INTERNAL::Grad4(j1.z(), ip);
+		Vec<4, T> p4 = INTERNAL::Grad4(j1.w(), ip);
+
+		//Normalize gradients
+		const Vec<4, T> norm = INTERNAL::TaylorInvSqrt(Vec<4, T>(Dot(p0, p0), Dot(p1, p1), Dot(p2, p2), Dot(p3, p3)));
+		p0 *= norm.x();
+		p1 *= norm.y();
+		p2 *= norm.z();
+		p3 *= norm.w();
+		p4 *= INTERNAL::TaylorInvSqrt(Dot(p4, p4));
+
+		//Mix contributions from the five corners
+		Vec<3, T> m0 = Max(T(0.6) - Vec<3, T>(Dot(x0, x0), Dot(x1, x1), Dot(x2, x2)), Vec<3, T>(0));
+		Vec<2, T> m1 = Max(T(0.6) - Vec<2, T>(Dot(x3, x3), Dot(x4, x4)             ), Vec<2, T>(0));
+		m0 = m0 * m0;
+		m1 = m1 * m1;
+		return T(49) *
+			   (Dot(m0 * m0, Vec<3, T>(Dot(p0, x0), Dot(p1, x1), Dot(p2, x2))) +
+			    Dot(m1 * m1, Vec<2, T>(Dot(p3, x3), Dot(p4, x4))));
+	}
 }
 
 #endif /*TRAP_MATH_H*/
