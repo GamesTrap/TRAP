@@ -3756,6 +3756,8 @@ void TRAP::Graphics::API::VulkanRenderer::BeginGPUFrameProfile(const QueueType t
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
+	TRAP_ASSERT(type != QueueType::Transfer, "VulkanRenderer::BeginGPUFrameProfile(): QueueType must not be QueueType::Transfer!");
+
 	const CommandBuffer* cmd = nullptr;
 	if(type == QueueType::Graphics)
 		cmd = p->GraphicCommandBuffers[p->ImageIndex];
@@ -3777,6 +3779,8 @@ void TRAP::Graphics::API::VulkanRenderer::BeginGPUFrameProfile(const QueueType t
 void TRAP::Graphics::API::VulkanRenderer::EndGPUFrameProfile(const QueueType type, const PerViewportData* const p)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+	TRAP_ASSERT(type != QueueType::Transfer, "VulkanRenderer::EndGPUFrameProfile(): QueueType must not be QueueType::Transfer!");
 
 	const CommandBuffer* cmd = nullptr;
 	if(type == QueueType::Graphics)

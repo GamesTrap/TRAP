@@ -757,7 +757,8 @@ TRAP::Graphics::Texture::Texture() noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Texture::Texture(std::string name, std::array<std::filesystem::path, 6> filepaths) noexcept
-	: m_name(std::move(name)), m_filepaths(std::move(filepaths))
+	: m_name(std::move(name)), m_textureType(TextureType::TextureCube), m_filepaths(std::move(filepaths)),
+	  m_textureCubeFormat(TextureCubeFormat::MultiFile)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 }

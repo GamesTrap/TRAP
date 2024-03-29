@@ -4967,3 +4967,7 @@ SITREP 03/24/2024|24w12a1
     - Changed TRAP Engine version to 24w12a1(0.10.57)
     - Math Added perlin and simplex noise functions ~<30 mins
     - UnitTests Added tests for perlin and simplex noise ~>20 mins
+
+SITREP 03/29/2024|24w13a1
+    - Changed TRAP Engine version to 24w13a1(0.10.58)
+    - Texture Fixed wrong texture type used when creating a multi-file cube texture ~<5 mins
