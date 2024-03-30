@@ -4971,3 +4971,8 @@ SITREP 03/24/2024|24w12a1
 SITREP 03/29/2024|24w13a1
     - Changed TRAP Engine version to 24w13a1(0.10.58)
     - Texture Fixed wrong texture type used when creating a multi-file cube texture ~<5 mins
+
+SITREP 03/30/2024|24w13b1
+    - Changed TRAP Engine version to 24w13b1(0.10.59)
+    - Added ContentionFreeSharedMutex a contention free std::shared_mutex alternative ~>120 mins
+    - Added Safe a wrapper for a user-defined type and a mutex ~<60 mins
