@@ -831,7 +831,7 @@ namespace
                 continue;
             }
 
-            const std::string_view fileName(event->name, event->len);
+            const std::string_view fileName(event->name);
             const std::filesystem::path filePath = watchDescriptors.at(event->wd) / std::filesystem::path(fileName);
             TRAP_ASSERT(!filePath.empty());
 

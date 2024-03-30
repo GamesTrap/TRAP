@@ -800,8 +800,8 @@ bool TRAP::Application::OnFileSystemChangeEvent(const Events::FileSystemChangeEv
 {
 	ZoneScoped;
 
-	if(event.GetStatus() != FileSystem::FileSystemStatus::Modified && event.GetStatus() != FileSystem::FileSystemStatus::Created)
-		return false; //Only handle modified and created files
+	if(event.GetStatus() == FileSystem::FileSystemStatus::Erased)
+		return false; //Don't handle erased files
 
 	const auto fileEnding = FileSystem::GetFileEnding(event.GetPath());
 	if(!fileEnding) //Ignore files without an extension
