@@ -268,20 +268,20 @@ namespace TRAP::Utils
         {
             thread_local static std::unordered_map<void*, Unregister> threadLocalIndexHashmap{};
 
-            //Get thread index - in any cases
-            if(const auto it = threadLocalIndexHashmap.find(this); it != threadLocalIndexHashmap.cend())
+            //Get thread index - in any cases. Use &m_sharedLocksArray as key ("this" may get recycled)
+            if(const auto it = threadLocalIndexHashmap.find(&m_sharedLocksArray); it != threadLocalIndexHashmap.cend())
                 setIndex = it->second.ThreadIndex;
 
             if(indexOp == IndexOp::UnregisterThreadOp) //Unregister thread
             {
                 if(m_sharedLocksArray[setIndex].Value == 1) //If isn't shared_lock now
-                    threadLocalIndexHashmap.erase(this);
+                    threadLocalIndexHashmap.erase(&m_sharedLocksArray);
                 else
                     return -1;
             }
             else if(indexOp == IndexOp::RegisterThreadOp) //Register thread
             {
-                threadLocalIndexHashmap.emplace(this, Unregister(setIndex, m_sharedLocksArrayPtr));
+                threadLocalIndexHashmap.emplace(&m_sharedLocksArray, Unregister(setIndex, m_sharedLocksArrayPtr));
 
                 //Remove info about deleted contentionfree-mutexes
                 for(auto it = threadLocalIndexHashmap.begin(), ite = threadLocalIndexHashmap.end(); it != ite;)
