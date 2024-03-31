@@ -50,7 +50,7 @@ jobs:
         id: get-vulkan-version
         run: echo "VULKAN_VERSION=$(grep -oP '#define VULKANLOADER_HEADER_VERSION \K\d+' TRAP/src/Graphics/API/Vulkan/Utils/VulkanLoader.h | cut -d ' ' -f 4)" >> "$GITHUB_OUTPUT"
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v6
         with:
           base: dev
           branch: vk-update/1-3-${{steps.get-vulkan-version.outputs.VULKAN_VERSION}}
@@ -61,5 +61,5 @@ jobs:
           assignees: "GamesTrap"
           milestone: 5
           token: ${{steps.generate-token.outputs.token}}
-          author: "TRAP CI/CD <gamestrap@web.de>"
-          committer: "TRAP CI/CD <gamestrap@web.de>"
+          author: "TRAP CI/CD <no-reply@trappedgames.de>"
+          committer: "TRAP CI/CD <no-reply@trappedgames.de>"

@@ -16,7 +16,7 @@ inputs:
   update-method:
     description: ""
     required: true
-    default: "latest-commit"
+    default: "latest-commit or latest-tag"
   pr-title:
     description: ""
     required: true
@@ -46,7 +46,7 @@ runs:
           fi
           cd $homePath
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v5
+      uses: peter-evans/create-pull-request@v6
       with:
           base: dev
           add-paths: ${{inputs.dependency-path}}
@@ -58,5 +58,5 @@ runs:
           assignees: "GamesTrap"
           milestone: 5
           token: ${{inputs.pr-token}}
-          author: "TRAP CI/CD <gamestrap@web.de>"
-          committer: "TRAP CI/CD <gamestrap@web.de>"
+          author: "TRAP CI/CD <no-reply@trappedgames.de>"
+          committer: "TRAP CI/CD <no-reply@trappedgames.de>"

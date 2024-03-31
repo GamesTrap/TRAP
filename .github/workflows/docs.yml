@@ -63,7 +63,7 @@ jobs:
         rm -rf TRAP-Docs/docs/
         mv docs/ TRAP-Docs/
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v5
+      uses: peter-evans/create-pull-request@v6
       with:
         path: 'TRAP-Docs'
         branch: docs-update/${{steps.get-docs-version.outputs.DOCS_VERSION}}
@@ -75,5 +75,5 @@ jobs:
         assignees: "GamesTrap"
         milestone: 1
         token: ${{steps.generate-token.outputs.token}}
-        author: "TRAP CI/CD <gamestrap@web.de>"
-        committer: "TRAP CI/CD <gamestrap@web.de>"
+        author: "TRAP CI/CD <no-reply@trappedgames.de>"
+        committer: "TRAP CI/CD <no-reply@trappedgames.de>"

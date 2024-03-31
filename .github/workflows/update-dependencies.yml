@@ -208,7 +208,7 @@ jobs:
             echo "IMGUI_VERSION=${newest_commit}" >> "$GITHUB_OUTPUT"
             cd ../..
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v6
         with:
             base: dev
             add-paths: Dependencies/ImGui
@@ -220,5 +220,5 @@ jobs:
             assignees: "GamesTrap"
             milestone: 5
             token: ${{steps.generate-token.outputs.token}}
-            author: "TRAP CI/CD <gamestrap@web.de>"
-            committer: "TRAP CI/CD <gamestrap@web.de>"
+            author: "TRAP CI/CD <no-reply@trappedgames.de>"
+            committer: "TRAP CI/CD <no-reply@trappedgames.de>"

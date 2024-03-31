@@ -129,7 +129,7 @@ jobs:
       env:
         artifact_hostname: ${{secrets.ARTIFACT_HOST}}
       if: env.artifact_hostname == null
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Linux GCC Release Executables
         path: |
@@ -255,7 +255,7 @@ jobs:
       env:
         artifact_hostname: ${{secrets.ARTIFACT_HOST}}
       if: env.artifact_hostname == null
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Linux Clang Release Executables
         path: |
@@ -367,7 +367,7 @@ jobs:
       env:
         artifact_hostname: ${{secrets.ARTIFACT_HOST}}
       if: env.artifact_hostname == null
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Windows MSVC 2022 Release Executables
         path: |
@@ -400,7 +400,7 @@ jobs:
         env:
           artifact_hostname: ${{secrets.ARTIFACT_HOST}}
         if: env.artifact_hostname == null
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: Windows MSVC 2022 Release Executables
       - name: Run Tests
@@ -430,7 +430,7 @@ jobs:
         env:
           artifact_hostname: ${{secrets.ARTIFACT_HOST}}
         if: env.artifact_hostname == null
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: Linux Clang Release Executables
       - name: Run Tests
