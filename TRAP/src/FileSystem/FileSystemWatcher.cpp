@@ -18,10 +18,7 @@ void TRAP::FileSystem::FileSystemWatcher::SetEventCallback(const EventCallbackFn
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
-    std::scoped_lock lock(m_mtx);
-    LockMark(m_mtx);
-
-    m_callback = callback;
+    *m_callback.WriteLock() = callback;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -30,10 +27,7 @@ void TRAP::FileSystem::FileSystemWatcher::SetEventCallback(const EventCallbackFn
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
-    std::shared_lock lock(m_mtx);
-    LockMark(m_mtx);
-
-    return m_callback;
+    return *m_callback.ReadLock();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -928,9 +922,8 @@ void TRAP::FileSystem::FileSystemWatcher::Watch(const std::stop_token& stopToken
         if(!events.empty())
         {
             DeduplicateEvents(events);
-            std::shared_lock lock(m_mtx);
-            LockMark(m_mtx);
-            DispatchEvents(events, m_callback);
+            const auto callback = m_callback.ReadLock();
+            DispatchEvents(events, *callback);
         }
     }
 }

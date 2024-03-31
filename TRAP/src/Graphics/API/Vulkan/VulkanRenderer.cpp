@@ -56,12 +56,25 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanRenderer::Default
 	}, DefaultBlendAttachments
 );
 
-std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::RenderPassMap> TRAP::Graphics::API::VulkanRenderer::s_renderPassMap{};
-std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::FrameBufferMap> TRAP::Graphics::API::VulkanRenderer::s_frameBufferMap{};
-
 std::unordered_map<u64, TRAP::Ref<TRAP::Graphics::Pipeline>> TRAP::Graphics::API::VulkanRenderer::s_pipelines{};
 std::unordered_map<u64,
                    TRAP::Ref<TRAP::Graphics::PipelineCache>> TRAP::Graphics::API::VulkanRenderer::s_pipelineCaches{};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+namespace
+{
+	struct RenderPassData
+	{
+		//RenderPass map per thread (this will make lookups lock free and we only need a lock when inserting
+		//a RenderPass Map for the first time)
+		std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::RenderPassMap> ThreadRenderPassMap;
+		//FrameBuffer map per thread (this will make lookups lock free and we only need a lock when inserting
+		//a FrameBuffer Map for the first time)
+		std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::FrameBufferMap> ThreadFrameBufferMap;
+	};
+	TRAP::Utils::Safe<RenderPassData> s_safeRenderPassData{};
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -75,11 +88,9 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 
 	RemoveDefaultResources();
 
-	std::lock_guard lock(s_renderPassMutex);
-	LockMark(s_renderPassMutex);
-	s_frameBufferMap.clear();
-
-	s_renderPassMap.clear();
+	auto renderPassData = s_safeRenderPassData.WriteLock();
+	renderPassData->ThreadFrameBufferMap.clear();
+	renderPassData->ThreadRenderPassMap.clear();
 
 	s_pipelines.clear();
 
@@ -3570,10 +3581,11 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 
 	const TRAP::Ref<VulkanFence> fence = TRAP::MakeRef<VulkanFence>(false, "Initial Transition Fence");
 
-	s_NullDescriptors->InitialTransitionQueue = graphicsQueue;
-	s_NullDescriptors->InitialTransitionCmdPool = cmdPool;
-	s_NullDescriptors->InitialTransitionCmd = dynamic_cast<VulkanCommandBuffer*>(&cmd);
-	s_NullDescriptors->InitialTransitionFence = fence;
+	auto& NullDescriptorsObjs = s_NullDescriptors->SafeNullDescriptorsObjs.GetUnsafe();
+	NullDescriptorsObjs.InitialTransitionQueue = graphicsQueue;
+	NullDescriptorsObjs.InitialTransitionCmdPool = cmdPool;
+	NullDescriptorsObjs.InitialTransitionCmd = dynamic_cast<VulkanCommandBuffer*>(&cmd);
+	NullDescriptorsObjs.InitialTransitionFence = fence;
 
 	//Transition resources
 	for (u32 dim = 0; dim < std::to_underlying(ShaderReflection::TextureDimension::TextureDimCount); ++dim)
@@ -3613,9 +3625,10 @@ void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 
 	s_NullDescriptors->DefaultSampler.reset();
 
-	s_NullDescriptors->InitialTransitionFence.reset();
-	s_NullDescriptors->InitialTransitionCmdPool.reset();
-	s_NullDescriptors->InitialTransitionQueue.reset();
+	auto& nullDescriptors = s_NullDescriptors->SafeNullDescriptorsObjs.GetUnsafe();
+	nullDescriptors.InitialTransitionFence.reset();
+	nullDescriptors.InitialTransitionCmdPool.reset();
+	nullDescriptors.InitialTransitionQueue.reset();
 
 	s_NullDescriptors.reset();
 }
@@ -3627,20 +3640,19 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	std::lock_guard lock(s_NullDescriptors->InitialTransitionMutex);
-	auto& mutex = s_NullDescriptors->InitialTransitionMutex;
-	LockMark(mutex);
-	VulkanCommandBuffer* const cmd = s_NullDescriptors->InitialTransitionCmd;
-	s_NullDescriptors->InitialTransitionCmdPool->Reset();
+	const auto& nullDescriptorData = s_NullDescriptors->SafeNullDescriptorsObjs.WriteLock();
+
+	VulkanCommandBuffer* const cmd = nullDescriptorData->InitialTransitionCmd;
+	nullDescriptorData->InitialTransitionCmdPool->Reset();
 	cmd->Begin();
 	const TextureBarrier barrier{texture.get(), RendererAPI::ResourceState::Undefined, startState};
 	cmd->ResourceBarrier(nullptr, &barrier, nullptr);
 	cmd->End();
 	RendererAPI::QueueSubmitDesc submitDesc{};
 	submitDesc.Cmds = {*cmd};
-	submitDesc.SignalFence = s_NullDescriptors->InitialTransitionFence;
-	s_NullDescriptors->InitialTransitionQueue->Submit(submitDesc);
-	s_NullDescriptors->InitialTransitionFence->Wait();
+	submitDesc.SignalFence = nullDescriptorData->InitialTransitionFence;
+	nullDescriptorData->InitialTransitionQueue->Submit(submitDesc);
+	nullDescriptorData->InitialTransitionFence->Wait();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3650,13 +3662,13 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	//Only need a lock when creating a new RenderPass Map for this thread
-	std::lock_guard lock(s_renderPassMutex);
-	LockMark(s_renderPassMutex);
-	const auto it = s_renderPassMap.find(std::this_thread::get_id());
-	if (it == s_renderPassMap.end())
+	auto renderPassData = s_safeRenderPassData.WriteLock();
+
+	const auto it = renderPassData->ThreadRenderPassMap.find(std::this_thread::get_id());
+	if (it == renderPassData->ThreadRenderPassMap.end())
 	{
-		s_renderPassMap[std::this_thread::get_id()] = {};
-		return s_renderPassMap[std::this_thread::get_id()];
+		renderPassData->ThreadRenderPassMap[std::this_thread::get_id()] = {};
+		return renderPassData->ThreadRenderPassMap[std::this_thread::get_id()];
 	}
 
 	return it->second;
@@ -3669,13 +3681,13 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	//Only need a lock when creating a new FrameBuffer Map for this thread
-	std::lock_guard lock(s_renderPassMutex);
-	LockMark(s_renderPassMutex);
-	const auto it = s_frameBufferMap.find(std::this_thread::get_id());
-	if(it == s_frameBufferMap.end())
+	auto renderPassData = s_safeRenderPassData.WriteLock();
+
+	const auto it = renderPassData->ThreadFrameBufferMap.find(std::this_thread::get_id());
+	if(it == renderPassData->ThreadFrameBufferMap.end())
 	{
-		s_frameBufferMap[std::this_thread::get_id()] = {};
-		return s_frameBufferMap[std::this_thread::get_id()];
+		renderPassData->ThreadFrameBufferMap[std::this_thread::get_id()] = {};
+		return renderPassData->ThreadFrameBufferMap[std::this_thread::get_id()];
 	}
 
 	return it->second;

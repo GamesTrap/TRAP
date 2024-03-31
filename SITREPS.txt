@@ -4978,3 +4978,7 @@ SITREP 03/30/2024|24w13b1
     - Added Safe a wrapper for a user-defined type and a mutex ~<60 mins
     - ConstexprMap Extended API to more closely match STL containers ~>60 mins
     - HotReloading Fixed incorrect filenames on Linux resulting in no reload ~<15 mins
+
+SITREP 03/31/2024|24w13b2
+    - Changed TRAP Engine version to 24w13b2(0.10.60)
+    - Replaced usages of std::mutex with Safe ~<45 mins

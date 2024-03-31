@@ -108,7 +108,7 @@ namespace TRAP::Utils
         Safe() = default;
 
         /// @brief Construct a Safe object with default construction of the mutex and
-        ///        perfect forwarding of the other arguemnts to construct the value object.
+        ///        perfect forwarding of the other arguments to construct the value object.
         /// @param valueArgs Perfect forwarding arguments to construct the value object.
         template<typename... ValueArgs>
         explicit Safe([[maybe_unused]] DefaultConstructMutex _, ValueArgs&&... valueArgs)
@@ -135,11 +135,25 @@ namespace TRAP::Utils
         consteval Safe& operator=(const Safe&) = delete;
         consteval Safe& operator=(Safe&&) = delete;
 
+        template<template<typename> class LockType = INTERNAL::DefaultReadOnlyLock>
+        [[nodiscard]] ReadAccess<LockType> ReadLock() const
+        {
+            ZoneScoped;
+            return ReadAccess<LockType>{*this};
+        }
+
         template<template<typename> class LockType = INTERNAL::DefaultReadOnlyLock, typename... LockArgs>
         [[nodiscard]] ReadAccess<LockType> ReadLock(LockArgs&&... lockArgs) const
         {
             ZoneScoped;
             return ReadAccess<LockType>{*this, std::forward<LockArgs>(lockArgs)...};
+        }
+
+        template<template<typename> class LockType = INTERNAL::DefaultReadWriteLock>
+        [[nodiscard]] WriteAccess<LockType> WriteLock()
+        {
+            ZoneScoped;
+            return WriteAccess<LockType>{*this};
         }
 
         template<template<typename> class LockType = INTERNAL::DefaultReadWriteLock, typename... LockArgs>
@@ -223,6 +237,7 @@ namespace TRAP::Utils
                 : Lock(mutex, std::forward<OtherLockArgs>(otherLockArgs)...), m_value(value)
             {
                 ZoneScoped;
+                LockMark(mutex);
             }
 
             /// @brief Construct a read-only Access object from a const Safe object and any
@@ -236,7 +251,6 @@ namespace TRAP::Utils
             explicit Access(const Safe& safe, OtherLockArgs&&... otherLockArgs)
                 : Access(safe.m_value, safe.m_mutex.Get, std::forward<OtherLockArgs>(otherLockArgs)...)
             {
-                ZoneScoped;
             }
 
             /// @brief Construct a read-write Access object from a Safe object and any
@@ -250,7 +264,6 @@ namespace TRAP::Utils
             explicit Access(Safe& safe, OtherLockArgs&&... otherLockArgs)
                 : Access(safe.m_value, safe.m_mutex.Get, std::forward<OtherLockArgs>(otherLockArgs)...)
             {
-                ZoneScoped;
             }
 
             /// @brief Construct an Access object from another one.
@@ -261,7 +274,6 @@ namespace TRAP::Utils
             explicit Access(Access<OtherLockType, OtherMode>& otherAccess, OtherLockArgs&&... otherLockArgs)
                 : Access(*otherAccess, *otherAccess.lock().release(), std::adopt_lock, std::forward<OtherLockArgs>(otherLockArgs)...)
             {
-                ZoneScoped;
                 static_assert(OtherMode == AccessMode::ReadWrite || OtherMode == Mode,
                               "Cannot construct a ReadWrite Access object from a ReadOnly one!");
             }

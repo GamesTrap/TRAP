@@ -70,11 +70,7 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 
 		VkQueue m_vkQueue = VK_NULL_HANDLE;
-#ifdef TRACY_ENABLE
-		std::reference_wrapper<tracy::Lockable<std::mutex>> m_submitMutex = VulkanRenderer::s_NullDescriptors->SubmitMutex;
-#else
-		std::reference_wrapper<std::mutex> m_submitMutex = VulkanRenderer::s_NullDescriptors->SubmitMutex;
-#endif
+		std::reference_wrapper<decltype(VulkanRenderer::s_NullDescriptors->SubmitMutex)> m_submitMutex = VulkanRenderer::s_NullDescriptors->SubmitMutex;
 		u8 m_vkQueueFamilyIndex = std::numeric_limits<u8>::max();
 		u8 m_vkQueueIndex = std::numeric_limits<u8>::max();
 		u32 m_flags = 0;

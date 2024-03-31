@@ -4,6 +4,7 @@
 #include <atomic>
 #include <condition_variable>
 #include <thread>
+#include <shared_mutex>
 
 #include "RendererAPI.h"
 #include "ImageLoader/Image.h"
@@ -351,7 +352,7 @@ namespace TRAP::Graphics::API
 		std::atomic<u64> m_tokenSubmitted = 0;
 		std::atomic<u64> m_tokenCounter = 0;
 
-		TracyLockable(std::mutex, m_semaphoreMutex);
+		TracySharedLockable(std::shared_mutex, m_semaphoreMutex);
 
 		std::array<SyncToken, TRAP::Graphics::RendererAPI::ImageCount> m_currentTokenState{};
 

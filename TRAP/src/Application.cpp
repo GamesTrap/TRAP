@@ -698,16 +698,15 @@ void TRAP::Application::UpdateHotReloading()
 
 	//Hot code
 	{
-		std::lock_guard lock(m_hotReloadingMutex);
-		LockMark(m_hotReloadingMutex);
+		auto hotReloadData = m_hotReloadingData.WriteLock();
 
 		//Shader
-		shaderPaths = m_hotReloadingShaderPaths;
-		m_hotReloadingShaderPaths.clear();
+		shaderPaths = hotReloadData->HotReloadingShaderPaths;
+		hotReloadData->HotReloadingShaderPaths.clear();
 
 		//Textures
-		texturePaths = m_hotReloadingTexturePaths;
-		m_hotReloadingTexturePaths.clear();
+		texturePaths = hotReloadData->HotReloadingTexturePaths;
+		hotReloadData->HotReloadingTexturePaths.clear();
 	}
 
 	//Shader reloading
@@ -811,31 +810,29 @@ bool TRAP::Application::OnFileSystemChangeEvent(const Events::FileSystemChangeEv
 
 	if(std::ranges::contains(Image::SupportedImageFormatSuffixes, fEnding))
 	{
-		std::lock_guard lock(m_hotReloadingMutex); //Hot code
-		LockMark(m_hotReloadingMutex);
+		auto hotReloadData = m_hotReloadingData.WriteLock();
 
 		//Don't add duplicates!
-		for(const auto& path : m_hotReloadingTexturePaths)
+		for(const auto& path : hotReloadData->HotReloadingTexturePaths)
 		{
 			if(FileSystem::IsEquivalent(path, event.GetPath()))
 				return false;
 		}
 
-		m_hotReloadingTexturePaths.push_back(event.GetPath());
+		hotReloadData->HotReloadingTexturePaths.push_back(event.GetPath());
 	}
 	else if(std::ranges::contains(Graphics::Shader::SupportedShaderFormatSuffixes, fEnding))
 	{
-		std::lock_guard lock(m_hotReloadingMutex); //Hot code
-		LockMark(m_hotReloadingMutex);
+		auto hotReloadData = m_hotReloadingData.WriteLock();
 
 		//Don't add duplicates!
-		for(const auto& path : m_hotReloadingShaderPaths)
+		for(const auto& path : hotReloadData->HotReloadingShaderPaths)
 		{
 			if(FileSystem::IsEquivalent(path, event.GetPath()))
 				return false;
 		}
 
-		m_hotReloadingShaderPaths.push_back(event.GetPath());
+		hotReloadData->HotReloadingShaderPaths.push_back(event.GetPath());
 	}
 
 	return false;

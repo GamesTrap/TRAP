@@ -5,6 +5,7 @@
 
 #include "Graphics/API/ShaderReflection.h"
 #include "Objects/VulkanDebug.h"
+#include "Utils/Concurrency/Safe.h"
 
 namespace TRAP::Graphics
 {
@@ -1096,11 +1097,14 @@ namespace TRAP::Graphics::API
 			//Unlike DirectX 12, Vulkan textures start in undefined layout.
 			//With this, we transition them to the specified layout so app code doesn't
 			//have to worry about this
-			TracyLockable(std::mutex, InitialTransitionMutex);
-			TRAP::Ref<VulkanQueue> InitialTransitionQueue;
-			TRAP::Ref<VulkanCommandPool> InitialTransitionCmdPool;
-			VulkanCommandBuffer* InitialTransitionCmd;
-			TRAP::Ref<VulkanFence> InitialTransitionFence;
+			struct NullDescriptorsObjs
+			{
+				TRAP::Ref<VulkanQueue> InitialTransitionQueue{};
+				TRAP::Ref<VulkanCommandPool> InitialTransitionCmdPool{};
+				VulkanCommandBuffer* InitialTransitionCmd{};
+				TRAP::Ref<VulkanFence> InitialTransitionFence{};
+			};
+			Utils::Safe<NullDescriptorsObjs> SafeNullDescriptorsObjs{};
 		};
 		static TRAP::Scope<NullDescriptors> s_NullDescriptors;
 		static std::vector<VkPipelineColorBlendAttachmentState> DefaultBlendAttachments;
@@ -1221,14 +1225,6 @@ namespace TRAP::Graphics::API
 		TRAP::Scope<VulkanDebug> m_debug = nullptr;
 		TRAP::Ref<VulkanDevice> m_device = nullptr;
 		TRAP::Ref<VulkanMemoryAllocator> m_vma = nullptr;
-
-		//RenderPass map per thread (this will make lookups lock free and we only need a lock when inserting
-		//a RenderPass Map for the first time)
-		static std::unordered_map<std::thread::id, RenderPassMap> s_renderPassMap;
-		//FrameBuffer map per thread (this will make lookups lock free and we only need a lock when inserting
-		//a FrameBuffer Map for the first time)
-		static std::unordered_map<std::thread::id, FrameBufferMap> s_frameBufferMap;
-		inline static TracyLockable(std::mutex, s_renderPassMutex);
 
 		inline static std::vector<std::pair<std::string, TRAP::Utils::UUID>> s_usableGPUs{};
 		static std::unordered_map<u64, TRAP::Ref<Pipeline>> s_pipelines;

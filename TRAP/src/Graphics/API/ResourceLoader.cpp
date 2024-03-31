@@ -552,7 +552,7 @@ void TRAP::Graphics::API::ResourceLoader::WaitForTokenSubmitted(const SyncToken*
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	std::unique_lock lock(m_semaphoreMutex);
+	std::shared_lock lock(m_semaphoreMutex);
 	LockMark(m_semaphoreMutex);
 
 	return m_copyEngine.LastCompletedSemaphore;

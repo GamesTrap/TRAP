@@ -8,6 +8,7 @@
 #include "Utils/Config/Config.h"
 #include "Layers/LayerStack.h"
 #include "ThreadPool/ThreadPool.h"
+#include "Utils/Concurrency/Safe.h"
 #include "Utils/Time/Timer.h"
 
 #if !defined(DOXYGEN_DOCUMENTATION_BUILD) && !defined(TRAP_UNITTESTS)
@@ -333,10 +334,13 @@ namespace TRAP
 #endif /*TRAP_HEADLESS_MODE*/
 
 		//Hot Reloading
-		std::vector<std::filesystem::path> m_hotReloadingShaderPaths{};
-		std::vector<std::filesystem::path> m_hotReloadingTexturePaths{};
-		TracyLockable(std::mutex, m_hotReloadingMutex);
+		struct HotReloadingData
+		{
+			std::vector<std::filesystem::path> HotReloadingShaderPaths{};
+			std::vector<std::filesystem::path> HotReloadingTexturePaths{};
+		};
 		std::unique_ptr<FileSystem::FileSystemWatcher> m_hotReloadingFileSystemWatcher = nullptr;
+		Utils::Safe<HotReloadingData> m_hotReloadingData{};
 
 		//Layers
 		LayerStack m_layerStack{};

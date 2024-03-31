@@ -5,7 +5,6 @@
 #include <functional>
 #include <future>
 #include <thread>
-#include <shared_mutex>
 
 #include <fmt/core.h>
 
@@ -22,6 +21,7 @@
 
 #include "Utils/Optional.h"
 #include "Utils/UniqueResource.h"
+#include "Utils/Concurrency/Safe.h"
 
 namespace TRAP::Events
 {
@@ -124,10 +124,8 @@ namespace TRAP::FileSystem
         /// @brief Callback to stop the running file watcher thread.
         void StopCallback() const;
 
-        mutable TracySharedLockable(std::shared_mutex, m_mtx);
-
         //Thread unsafe members
-        EventCallbackFn m_callback = nullptr;
+        Utils::Safe<EventCallbackFn> m_callback{};
 
         //Thread safe members
         std::vector<std::filesystem::path> m_paths{};
