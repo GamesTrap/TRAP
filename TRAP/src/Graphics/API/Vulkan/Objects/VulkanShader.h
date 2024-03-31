@@ -59,6 +59,10 @@ namespace TRAP::Graphics::API
 		/// @return Entry point names.
 		[[nodiscard]] constexpr const std::vector<std::string>& GetEntryNames() const noexcept;
 
+		/// @brief Retrieve the unique identifier of the shader.
+		/// @note The ID of the shader changes when reloaded.
+		[[nodiscard]] constexpr usize GetID() const noexcept override;
+
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Use shader for rendering on the given window.
 		/// @param window Window to use the shader for.
@@ -272,6 +276,18 @@ namespace TRAP::Graphics::API
 [[nodiscard]] constexpr std::array<u32, 3> TRAP::Graphics::API::VulkanShader::GetNumThreadsPerGroup() const noexcept
 {
 	return m_numThreadsPerGroup;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr usize TRAP::Graphics::API::VulkanShader::GetID() const noexcept
+{
+	usize hash = 0;
+
+	for(const VkShaderModule& module : m_shaderModules)
+		TRAP::Utils::HashCombine(hash, module);
+
+	return hash;
 }
 
 #endif /*TRAP_VULKANSHADER_H*/

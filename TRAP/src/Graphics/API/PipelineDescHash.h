@@ -29,7 +29,7 @@ namespace std
 				TRAP::Utils::HashCombine
                 (
                     res,
-                    c.ShaderProgram->GetName()
+                    c.ShaderProgram->GetID()
                 );
 			}
 
@@ -40,7 +40,7 @@ namespace std
 				TRAP::Utils::HashCombine
                 (
                     res,
-					g.ShaderProgram->GetName(),
+					g.ShaderProgram->GetID(),
 					g.RenderTargetCount,
 					g.SampleCount,
 					g.SampleQuality,

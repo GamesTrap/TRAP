@@ -4983,3 +4983,7 @@ SITREP 03/31/2024|24w13b2
     - Changed TRAP Engine version to 24w13b2(0.10.60)
     - Replaced usages of std::mutex with Safe ~<45 mins
     - Updated GitHub Action workflows ~<5 mins
+
+SITREP 04/01/2024|24w14a1
+    - Changed TRAP Engine version to 24w14a1(0.10.61)
+    - HotReloading Fixed shader changes not being visible after reload ~<5 mins

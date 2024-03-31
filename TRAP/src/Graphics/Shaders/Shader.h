@@ -52,6 +52,10 @@ namespace TRAP::Graphics
 		/// @return True on successful reload (valid shader), else (invalid shader) otherwise.
 		bool Reload();
 
+		/// @brief Retrieve the unique identifier of the shader.
+		/// @note The ID of the shader changes when reloaded.
+		[[nodiscard]] constexpr virtual usize GetID() const noexcept = 0;
+
 		/// @brief Retrieve the name of the shader.
 		/// @return Name of the shader.
 		[[nodiscard]] constexpr std::string GetName() const noexcept;
