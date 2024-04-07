@@ -14,9 +14,9 @@ inputs:
     required: false
     default: ""
   update-method:
-    description: ""
+    description: "Either latest-commit or latest-tag"
     required: true
-    default: "latest-commit or latest-tag"
+    default: "latest-commit"
   pr-title:
     description: ""
     required: true
