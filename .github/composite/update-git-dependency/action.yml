@@ -60,3 +60,4 @@ runs:
           token: ${{inputs.pr-token}}
           author: "TRAP CI/CD <no-reply@trappedgames.de>"
           committer: "TRAP CI/CD <no-reply@trappedgames.de>"
+          body: "Automated dependency update through TRAP CI/CD."
