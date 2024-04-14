@@ -202,6 +202,7 @@ namespace TRAP::Utils
 
         /// @brief Accessor to the mutex.
         /// @return Reference to the mutex.
+        /// @note Use this to lock multiple Safe objects at the same time by using std::scoped_lock.
         [[nodiscard]] MutexReferenceType GetMutex() const noexcept
         {
             ZoneScoped;

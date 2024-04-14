@@ -234,7 +234,7 @@ namespace TRAP::Utils
 
         using ThreadID = std::thread::id;
         std::atomic<std::thread::id> m_ownerThreadID = ThreadID();
-        [[nodiscard]] std::thread::id GetFastThisThreadID() noexcept
+        [[nodiscard]] std::thread::id GetFastThisThreadID() const noexcept
         {
             return std::this_thread::get_id();
         }
