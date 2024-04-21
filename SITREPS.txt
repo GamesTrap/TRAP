@@ -4993,3 +4993,7 @@ SITREP 04/14/2024|24w15a1
     - Utils Added IsFutureType trait ~<5 mins
     - Utils Added WaitForAll() function which waits for multiple futures ~<30 mins
     - UnitTests Added tests for IsFutureType and WaitForAll() ~<30 mins
+
+SITREP 04/21/2024|24w16a1
+    - Changed TRAP Engine version to 24w16a1(0.10.63)
+    - UnitTests Added tests for ContentionFreeSharedMutex ~<30 mins
