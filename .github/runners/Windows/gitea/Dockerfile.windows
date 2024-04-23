@@ -1,0 +1,17 @@
+# escape=`
+
+FROM trappedgames/actions-runner-windows-base:latest
+LABEL maintainer="gamestrap@trappedgames.de"
+
+ARG GT_RUNNER_VERSION="0.2.6"
+
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';"]
+
+#Set working directory
+WORKDIR /actions-runner
+
+ADD install_gta.ps1 start.ps1 ./
+
+RUN .\install_gta.ps1
+
+ENTRYPOINT ["powershell", "./start.ps1"]

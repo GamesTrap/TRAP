@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Cleanup workspace
         if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.4
+        uses: gamestrap/gha-workspace-cleanup@v1.2.5
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -26,11 +26,11 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
           git_committer_name: TRAP CI/CD
-      - uses: tibdex/github-app-token@v2
+      - uses: actions/create-github-app-token@v1
         id: generate-token
         with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Update Box2D
         if: ${{ always() }}
@@ -163,6 +163,16 @@ jobs:
           pr-title: "Premake-VSCodeGen"
           pr-branch-name: "premake-vscodegen-update"
           pr-token: ${{steps.generate-token.outputs.token}}
+      - name: Update Premake-Ninja
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
+        with:
+          dependency-path: ".modules/ninja"
+          update-method: "latest-commit"
+          branch: "main"
+          pr-title: "Premake-Ninja"
+          pr-branch-name: "premake-ninja-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
 
       - name: Update GLSLang
         if: ${{ always() }}
@@ -198,7 +208,7 @@ jobs:
             echo "IMGUI_VERSION=${newest_commit}" >> "$GITHUB_OUTPUT"
             cd ../..
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v6
         with:
             base: dev
             add-paths: Dependencies/ImGui
@@ -210,5 +220,5 @@ jobs:
             assignees: "GamesTrap"
             milestone: 5
             token: ${{steps.generate-token.outputs.token}}
-            author: "TRAP CI/CD <gamestrap@web.de>"
-            committer: "TRAP CI/CD <gamestrap@web.de>"
+            author: "TRAP CI/CD <no-reply@trappedgames.de>"
+            committer: "TRAP CI/CD <no-reply@trappedgames.de>"

@@ -17,7 +17,7 @@ jobs:
     steps:
     - name: Cleanup workspace
       if: ${{ always() }}
-      uses: gamestrap/gha-workspace-cleanup@v1.2.4
+      uses: gamestrap/gha-workspace-cleanup@v1.2.5
     - name: Check-out repository
       uses: actions/checkout@v4
       with:
@@ -50,11 +50,11 @@ jobs:
         git_commit_gpgsign: true
         git_committer_name: TRAP CI/CD
         workdir: 'TRAP-Docs'
-    - uses: tibdex/github-app-token@v2
+    - uses: actions/create-github-app-token@v1
       id: generate-token
       with:
-        app_id: ${{ secrets.APP_ID }}
-        private_key: ${{ secrets.APP_PRIVATE_KEY }}
+        app-id: ${{ secrets.APP_ID }}
+        private-key: ${{ secrets.APP_PRIVATE_KEY }}
     - name: Retrieve new docs version
       id: get-docs-version
       run: echo "DOCS_VERSION=$(grep -oP -m 1 '\d+w\d+[a-zA-Z]+\d+' .modules/generatedocs/pages/changelog.md)" >> "$GITHUB_OUTPUT"
@@ -63,7 +63,7 @@ jobs:
         rm -rf TRAP-Docs/docs/
         mv docs/ TRAP-Docs/
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v5
+      uses: peter-evans/create-pull-request@v6
       with:
         path: 'TRAP-Docs'
         branch: docs-update/${{steps.get-docs-version.outputs.DOCS_VERSION}}
@@ -75,5 +75,5 @@ jobs:
         assignees: "GamesTrap"
         milestone: 1
         token: ${{steps.generate-token.outputs.token}}
-        author: "TRAP CI/CD <gamestrap@web.de>"
-        committer: "TRAP CI/CD <gamestrap@web.de>"
+        author: "TRAP CI/CD <no-reply@trappedgames.de>"
+        committer: "TRAP CI/CD <no-reply@trappedgames.de>"

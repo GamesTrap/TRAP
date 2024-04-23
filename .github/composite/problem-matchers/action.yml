@@ -1,6 +1,6 @@
 name: Problem Matcher
 description: Attaches a problem matcher that looks for errors during compilation
-author: Jan "GamesTrap" Schürkamp
+author: Jan Schürkamp <gamestrap@trappedgames.de>
 branding:
   icon: check-square
   color: yellow

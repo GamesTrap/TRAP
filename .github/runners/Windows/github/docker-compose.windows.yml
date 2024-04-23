@@ -9,7 +9,11 @@ services:
       GH_TOKEN: <PAT_TOKEN>
       RUNNER_NAME: windows-v4-cpu
       RUNNER_LABELS: windows,x64,server,2022,cpu
+      CONTAINER_MAX_CPUS: 4
     deploy:
       resources:
         limits:
-          cpus: "4.0"
+          cpus: "4"
+          memory: 8GB
+        reservations:
+          cpus: "4"
