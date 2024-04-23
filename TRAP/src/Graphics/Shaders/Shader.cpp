@@ -97,7 +97,7 @@ bool TRAP::Graphics::Shader::Reload()
 	if (!isSPIRV)
 	{
 		std::vector<std::pair<std::string, RendererAPI::ShaderStage>> shaders{};
-		if (!PreProcessGLSL(glslSource, shaders, &m_macros) || !ValidateShaderStages(shaders))
+		if (!PreProcessGLSL(glslSource, shaders, m_macros) || !ValidateShaderStages(shaders))
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", m_name, "\" using fallback shader");
 			m_valid = false;
@@ -147,7 +147,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name,
                                                                                        const std::filesystem::path& filePath,
-																		               const std::vector<Macro>* const userMacros)
+																		               const std::vector<Macro>& userMacros)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -193,7 +193,7 @@ bool TRAP::Graphics::Shader::Reload()
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::filesystem::path& filePath,
-                                                                                       const std::vector<Macro>* const userMacros)
+                                                                                       const std::vector<Macro>& userMacros)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -242,7 +242,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const std::string& name,
                                                                                          const std::string& glslSource,
-																		                 const std::vector<Macro>* const userMacros)
+																		                 const std::vector<Macro>& userMacros)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -274,11 +274,9 @@ bool TRAP::Graphics::Shader::Reload()
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const RendererAPI::ShaderStage stages,
-                               const std::vector<Macro>* const userMacros, const std::filesystem::path& filepath)
-	: m_name(std::move(name)), m_filepath(filepath), m_shaderStages(stages), m_valid(valid)
+                               const std::vector<Macro>& userMacros, const std::filesystem::path& filepath)
+	: m_name(std::move(name)), m_filepath(filepath), m_shaderStages(stages), m_macros(userMacros), m_valid(valid)
 {
-	if(userMacros != nullptr)
-		m_macros = *userMacros;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -310,7 +308,7 @@ TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const Rendere
 
 [[nodiscard]] bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
                                                           std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders,
-											              const std::vector<Macro>* const userMacros)
+											              const std::span<const Macro> userMacros)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -400,11 +398,8 @@ TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const Rendere
 			preprocessed = "#version 460 core\n";
 		}
 
-		if(userMacros != nullptr)
-		{
-			for(const Macro& macro : *userMacros)
-				preprocessed += fmt::format("#define {} {}\n", macro.Definition, macro.Value);
-		}
+		for(const Macro& macro : userMacros)
+			preprocessed += fmt::format("#define {} {}\n", macro.Definition, macro.Value);
 
 		//Add preprocessed macros to shader
 		shaderCode = preprocessed + shaderCode;
@@ -577,7 +572,7 @@ TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const Rendere
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] bool TRAP::Graphics::Shader::PreInit(const std::string& name, const std::filesystem::path& filePath,
-                                                   const std::vector<Macro>* const userMacros,
+                                                   const std::vector<Macro>& userMacros,
 									               RendererAPI::BinaryShaderDesc& outShaderDesc, Ref<Shader>& outFailShader)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);

@@ -17,7 +17,7 @@
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::filesystem::path& filepath,
 												const RendererAPI::BinaryShaderDesc& desc,
-                                                const std::vector<Macro>* const userMacros, const bool valid)
+                                                const std::vector<Macro>& userMacros, const bool valid)
 	: Shader(std::move(name), valid, desc.Stages, userMacros, filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -33,7 +33,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::fil
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const RendererAPI::BinaryShaderDesc& desc,
-                                                const std::vector<Macro>* const userMacros, const bool valid)
+                                                const std::vector<Macro>& userMacros, const bool valid)
 	: Shader(std::move(name), valid, desc.Stages, userMacros)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -49,7 +49,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::filesystem::path& filepath,
-                                                const std::vector<Macro>* const userMacros,
+                                                const std::vector<Macro>& userMacros,
 												const RendererAPI::ShaderStage stages)
 	: Shader(std::move(name), false, stages, userMacros, filepath)
 {
@@ -82,7 +82,7 @@ TRAP::Graphics::API::VulkanShader::~VulkanShader()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanShader::Use(const Window* const window)
+void TRAP::Graphics::API::VulkanShader::Use(const Window& window)
 #else
 void TRAP::Graphics::API::VulkanShader::Use()
 #endif /*TRAP_HEADLESS_MODE*/
@@ -90,8 +90,6 @@ void TRAP::Graphics::API::VulkanShader::Use()
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
-	TRAP_ASSERT(window, "VulkanShader::Use(): Window is nullptr");
-
 	dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->BindShader(this, window);
 #else
 	dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->BindShader(this);
@@ -102,7 +100,7 @@ void TRAP::Graphics::API::VulkanShader::Use()
 		//Following some descriptor set allocation and reusing logic
 
 #ifndef TRAP_HEADLESS_MODE
-		const u32 currImageIndex = RendererAPI::GetCurrentImageIndex(window);
+		const u32 currImageIndex = RendererAPI::GetCurrentImageIndex(&window);
 #else
 		const u32 currImageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -449,8 +447,6 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 			createInfo.pNext = nullptr;
 			createInfo.flags = 0;
 
-			const RendererAPI::BinaryShaderStageDesc* stageDesc = nullptr;
-
 			const std::string stageName = m_name + "_";
 			switch(stageMask)
 			{
@@ -460,7 +456,6 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 
 					createInfo.codeSize = desc.Vertex.ByteCode.size() * sizeof(u32);
 					createInfo.pCode = desc.Vertex.ByteCode.data();
-					stageDesc = &desc.Vertex;
 					m_shaderModules.emplace_back(VK_NULL_HANDLE);
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
 					                            &m_shaderModules.back()));
@@ -478,7 +473,6 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 
 					createInfo.codeSize = desc.TessellationControl.ByteCode.size() * sizeof(u32);
 					createInfo.pCode = desc.TessellationControl.ByteCode.data();
-					stageDesc = &desc.TessellationControl;
 					m_shaderModules.emplace_back(VK_NULL_HANDLE);
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
 					                            &m_shaderModules.back()));
@@ -496,7 +490,6 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 
 					createInfo.codeSize = desc.TessellationEvaluation.ByteCode.size() * sizeof(u32);
 					createInfo.pCode = desc.TessellationEvaluation.ByteCode.data();
-					stageDesc = &desc.TessellationEvaluation;
 					m_shaderModules.emplace_back(VK_NULL_HANDLE);
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
 					                            &m_shaderModules.back()));
@@ -513,7 +506,6 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 
 					createInfo.codeSize = desc.Geometry.ByteCode.size() * sizeof(u32);
 					createInfo.pCode = desc.Geometry.ByteCode.data();
-					stageDesc = &desc.Geometry;
 					m_shaderModules.emplace_back(VK_NULL_HANDLE);
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
 					                            &m_shaderModules.back()));
@@ -530,7 +522,6 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 
 					createInfo.codeSize = desc.Fragment.ByteCode.size() * sizeof(u32);
 					createInfo.pCode = desc.Fragment.ByteCode.data();
-					stageDesc = &desc.Fragment;
 					m_shaderModules.emplace_back(VK_NULL_HANDLE);
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
 					                            &m_shaderModules.back()));
@@ -549,7 +540,6 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 
 					createInfo.codeSize = desc.Compute.ByteCode.size() * sizeof(u32);
 					createInfo.pCode = desc.Compute.ByteCode.data();
-					stageDesc = &desc.Compute;
 					m_shaderModules.emplace_back(VK_NULL_HANDLE);
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
 					                            &m_shaderModules.back()));
@@ -564,7 +554,6 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 					TRAP_ASSERT(false, "VulkanShader::Init(): Shader Stage not supported!");
 					break;
 			}
-			m_entryNames.push_back(stageDesc->EntryPoint);
 		}
 	}
 
@@ -606,6 +595,7 @@ void TRAP::Graphics::API::VulkanShader::Shutdown()
 	{
 		m_shaderModules = {};
 		m_shaderStages = RendererAPI::ShaderStage::None;
+		return;
 	}
 
 	if ((m_shaderStages & RendererAPI::ShaderStage::Vertex) != RendererAPI::ShaderStage::None)

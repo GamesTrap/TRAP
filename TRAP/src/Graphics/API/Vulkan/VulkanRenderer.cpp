@@ -658,7 +658,7 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<u32, 3> workGroupE
 	{
 		//Bind fallback shader
 #ifndef TRAP_HEADLESS_MODE
-		this->BindShader(TRAP::Graphics::ShaderManager::Get("FallbackCompute").get(), p->Window);
+		this->BindShader(TRAP::Graphics::ShaderManager::Get("FallbackCompute").get(), *p->Window);
 #else
 		this->BindShader(TRAP::Graphics::ShaderManager::Get("FallbackCompute").get());
 #endif /*TRAP_HEADLESS_MODE*/
@@ -1622,7 +1622,7 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(const u32 indexCo
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, const Window* const window) const
+void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, const Window& window) const
 #else
 void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader) const
 #endif /*TRAP_HEADLESS_MODE*/
@@ -1630,9 +1630,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader) const
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
-	TRAP_ASSERT(window, "VulkanRenderer::BindShader(): Window is nullptr!");
-
-	PerViewportData* const data = s_perViewportDataMap.at(window).get();
+	PerViewportData* const data = s_perViewportDataMap.at(&window).get();
 #else
 	PerViewportData* const data = s_perViewportData.get();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -1981,7 +1979,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graph
 	if(rebindShader && gpd.ShaderProgram != nullptr)
 	{
 #ifndef TRAP_HEADLESS_MODE
-		BindShader(gpd.ShaderProgram, window);
+		BindShader(gpd.ShaderProgram, *window);
 #else
 		BindShader(gpd.ShaderProgram);
 #endif /*TRAP_HEADLESS_MODE*/
@@ -2058,7 +2056,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 	if(rebindShader && gpd.ShaderProgram != nullptr)
 	{
 #ifndef TRAP_HEADLESS_MODE
-		BindShader(gpd.ShaderProgram, window);
+		BindShader(gpd.ShaderProgram, *window);
 #else
 		BindShader(gpd.ShaderProgram);
 #endif /*TRAP_HEADLESS_MODE*/

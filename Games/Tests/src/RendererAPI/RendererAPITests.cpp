@@ -40,7 +40,7 @@ void RendererAPITests::OnAttach()
 	TRAP::Graphics::ShaderManager::LoadFile("Test", "./Assets/Shaders/test.shader");
 	TRAP::Graphics::ShaderManager::LoadFile("TestPushConstant", "./Assets/Shaders/testpushconstant.shader");
 	const std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
-	TRAP::Graphics::ShaderManager::LoadFile("TestUBO", "./Assets/Shaders/testubo.shader", &macros);
+	TRAP::Graphics::ShaderManager::LoadFile("TestUBO", "./Assets/Shaders/testubo.shader", macros);
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();

@@ -20,14 +20,14 @@ namespace TRAP::Graphics::API
 		/// @param userMacros Optional user defined macros. Default: nullptr.
 		/// @param valid Whether the shader is valid or not. Default: true.
 		VulkanShader(std::string name, const std::filesystem::path& filepath, const RendererAPI::BinaryShaderDesc& desc,
-		             const std::vector<Macro>* userMacros = nullptr, bool valid = true);
+		             const std::vector<Macro>& userMacros = {}, bool valid = true);
 		/// @brief Constructor.
 		/// @param name Name for the shader.
 		/// @param desc Binary shader description.
 		/// @param userMacros Optional user defined macros. Default: nullptr.
 		/// @param valid Whether the shader is valid or not. Default: true.
 		VulkanShader(std::string name, const RendererAPI::BinaryShaderDesc& desc,
-		             const std::vector<Macro>* userMacros = nullptr, bool valid = true);
+		             const std::vector<Macro>& userMacros = {}, bool valid = true);
 		/// @brief Constructor. Creates an invalid placeholder shader.
 		/// @param name Name for the shader.
 		/// @param filepath Filepath of the shader.
@@ -35,7 +35,7 @@ namespace TRAP::Graphics::API
 		/// @param stages Optional Stages of the shader. Default: None.
 		/// @note Used for invalid shaders, this doesn't create a usable shader.
 		VulkanShader(std::string name, const std::filesystem::path& filepath,
-		             const std::vector<Macro>* userMacros = nullptr,
+		             const std::vector<Macro>& userMacros = {},
 					 RendererAPI::ShaderStage stages = RendererAPI::ShaderStage::None);
 		/// @brief Destructor.
 		~VulkanShader() override;
@@ -51,13 +51,10 @@ namespace TRAP::Graphics::API
 
 		/// @brief Retrieve the Vulkan shader module handles of each contained shader stage.
 		/// @return Vulkan shader module handles.
-		[[nodiscard]] constexpr const std::vector<VkShaderModule>& GetVkShaderModules() const noexcept;
+		[[nodiscard]] constexpr std::span<const VkShaderModule> GetVkShaderModules() const noexcept;
 		/// @brief Retrieve the reflection data of each contained shader stage.
 		/// @return Shader reflection data.
 		[[nodiscard]] TRAP::Ref<ShaderReflection::PipelineReflection> GetReflection() const noexcept;
-		/// @brief Retrieve the entry point names used by each contained shader stage.
-		/// @return Entry point names.
-		[[nodiscard]] constexpr const std::vector<std::string>& GetEntryNames() const noexcept;
 
 		/// @brief Retrieve the unique identifier of the shader.
 		/// @note The ID of the shader changes when reloaded.
@@ -67,7 +64,7 @@ namespace TRAP::Graphics::API
 		/// @brief Use shader for rendering on the given window.
 		/// @param window Window to use the shader for.
 		/// @remark @headless This function is not available in headless mode.
-		void Use(const Window* window) override;
+		void Use(const Window& window) override;
 #else
 		/// @brief Use shader for rendering.
 		/// @remark This function is only available in headless mode.
@@ -249,7 +246,6 @@ namespace TRAP::Graphics::API
 
 		std::vector<VkShaderModule> m_shaderModules{};
 		TRAP::Ref<ShaderReflection::PipelineReflection> m_reflection = nullptr;
-		std::vector<std::string> m_entryNames{};
 
 		std::array<std::vector<TRAP::Scope<DescriptorSet>>, RendererAPI::ImageCount> m_dirtyDescriptorSets{};
 		std::array<std::vector<TRAP::Scope<DescriptorSet>>, RendererAPI::ImageCount> m_cleanedDescriptorSets{};
@@ -259,16 +255,9 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr const std::vector<VkShaderModule>& TRAP::Graphics::API::VulkanShader::GetVkShaderModules() const noexcept
+[[nodiscard]] constexpr std::span<const VkShaderModule> TRAP::Graphics::API::VulkanShader::GetVkShaderModules() const noexcept
 {
 	return m_shaderModules;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr const std::vector<std::string>& TRAP::Graphics::API::VulkanShader::GetEntryNames() const noexcept
-{
-	return m_entryNames;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

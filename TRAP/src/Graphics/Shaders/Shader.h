@@ -35,7 +35,7 @@ namespace TRAP::Graphics
 
 	protected:
 		/// @brief Constructor.
-		Shader(std::string name, bool valid, RendererAPI::ShaderStage stages, const std::vector<Macro>* userMacros = nullptr, const std::filesystem::path& filepath = "");
+		Shader(std::string name, bool valid, RendererAPI::ShaderStage stages, const std::vector<Macro>& userMacros = {}, const std::filesystem::path& filepath = "");
 	public:
 		/// @brief Copy constructor.
 		consteval Shader(const Shader&) = delete;
@@ -87,7 +87,7 @@ namespace TRAP::Graphics
 		/// @brief Use shader for rendering on the given window.
 		/// @param window Window to use the shader for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void Use(const Window* window = TRAP::Application::GetWindow()) = 0;
+		virtual void Use(const Window& window = *TRAP::Application::GetWindow()) = 0;
 #else
 		/// @brief Use shader for rendering.
 		/// @remark This function is only available in headless mode.
@@ -222,21 +222,21 @@ namespace TRAP::Graphics
 		/// @param userMacros Optional user defined macros. Default: nullptr.
 		/// @return Loaded Shader on success, Fallback Shader otherwise.
 		[[nodiscard]] static Ref<Shader> CreateFromFile(const std::string& name, const std::filesystem::path& filePath,
-		                                                const std::vector<Macro>* userMacros = nullptr);
+		                                                const std::vector<Macro>& userMacros = {});
 		/// @brief Create a shader from file.
 		/// File name will be used as the shader name.
 		/// @param filePath File path of the shader.
 		/// @param userMacros Optional user defined macros. Default: nullptr.
 		/// @return Loaded Shader on success, Fallback Shader otherwise.
 		[[nodiscard]] static Ref<Shader> CreateFromFile(const std::filesystem::path& filePath,
-		                                                const std::vector<Macro>* userMacros = nullptr);
+		                                                const std::vector<Macro>& userMacros = {});
 		/// @brief Create a shader from GLSL source.
 		/// @param name Name for the shader.
 		/// @param glslSource GLSL Source code.
 		/// @param userMacros Optional user defined macros. Default: nullptr.
 		/// @return Loaded Shader on success, Fallback Shader otherwise.
 		[[nodiscard]] static Ref<Shader> CreateFromSource(const std::string& name, const std::string& glslSource,
-		                                                  const std::vector<Macro>* userMacros = nullptr);
+		                                                  const std::vector<Macro>& userMacros = {});
 
 		static constexpr std::array<std::string_view, 3> SupportedShaderFormatSuffixes{".shader", ".glsl", ".tp-spv"};
 		static constexpr u32 SPIRVMagicNumber = 0x07230203u;
@@ -278,7 +278,7 @@ namespace TRAP::Graphics
 		/// @return True if pre processing was successful, false otherwise.
 		[[nodiscard]] static bool PreProcessGLSL(const std::string& glslSource,
 		                                         std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders,
-								                 const std::vector<Macro>* userMacros);
+								                 std::span<const Macro> userMacros);
 		/// @brief Parse a glslang::TShader object.
 		/// @param shader glslang::TShader object.
 		/// @return True if parsing was successful, false otherwise.
@@ -328,7 +328,7 @@ namespace TRAP::Graphics
 		/// @param outFailShader Optional Output used if pre initialization failed.
 		/// @return True on successful pre initialization, false otherwise.
 		/// If false outFailShader may be filled with a fail shader.
-		[[nodiscard]] static bool PreInit(const std::string& name, const std::filesystem::path& filePath, const std::vector<Macro>* userMacros, RendererAPI::BinaryShaderDesc& outShaderDesc, Ref<Shader>& outFailShader);
+		[[nodiscard]] static bool PreInit(const std::string& name, const std::filesystem::path& filePath, const std::vector<Macro>& userMacros, RendererAPI::BinaryShaderDesc& outShaderDesc, Ref<Shader>& outFailShader);
 
 		inline constinit static bool s_glslangInitialized = false;
 

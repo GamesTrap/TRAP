@@ -60,7 +60,7 @@ void MultiWindowTests::OnAttach()
 	//Load Shaders
 	TRAP::Graphics::ShaderManager::LoadFile("Test", "./Assets/Shaders/test.shader");
 	const std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
-	TRAP::Graphics::ShaderManager::LoadFile("TestUBO", "./Assets/Shaders/testubo.shader", &macros);
+	TRAP::Graphics::ShaderManager::LoadFile("TestUBO", "./Assets/Shaders/testubo.shader", macros);
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -113,10 +113,10 @@ void MultiWindowTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 			shader->UseUBO(1, 0, m_sizeMultiplicatorUniformBuffer.get());
 			shader->UseUBO(1, 1, m_colorUniformBuffer.get());
 
-			shader->Use(m_window.get());
+			shader->Use(*m_window);
 		}
 		else
-			TRAP::Graphics::ShaderManager::Get("Test")->Use(m_window.get());
+			TRAP::Graphics::ShaderManager::Get("Test")->Use(*m_window);
 
 		TRAP::Graphics::RenderCommand::DrawIndexed(3, 0, 0, m_window.get());
 
