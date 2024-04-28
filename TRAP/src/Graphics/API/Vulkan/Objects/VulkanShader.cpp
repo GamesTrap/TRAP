@@ -90,79 +90,75 @@ void TRAP::Graphics::API::VulkanShader::Use()
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
-	dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->BindShader(this, window);
+	dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->BindShader(*this, window);
 #else
-	dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->BindShader(this);
+	dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->BindShader(*this);
 #endif /*TRAP_HEADLESS_MODE*/
 
-	if(m_rootSignature) //Only do the following if the shader actually uses descriptors
-	{
-		//Following some descriptor set allocation and reusing logic
+	if(!m_rootSignature)
+		return;
+
+	//Only do the following if the shader actually uses descriptors
+
+	//Following some descriptor set allocation and reusing logic
 
 #ifndef TRAP_HEADLESS_MODE
-		const u32 currImageIndex = RendererAPI::GetCurrentImageIndex(&window);
+	const u32 currImageIndex = RendererAPI::GetCurrentImageIndex(window);
 #else
-		const u32 currImageIndex = RendererAPI::GetCurrentImageIndex();
+	const u32 currImageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
 
-		if(m_lastImageIndex != std::numeric_limits<u32>::max())
-		{
-			//Move last dirty descriptor sets to cleaned descriptor sets
-			if(currImageIndex != m_lastImageIndex && !m_dirtyDescriptorSets[m_lastImageIndex].empty())
-				m_cleanedDescriptorSets[m_lastImageIndex] = std::move(m_dirtyDescriptorSets[m_lastImageIndex]);
+	if(m_lastImageIndex != std::numeric_limits<u32>::max())
+	{
+		//Move last dirty descriptor sets to cleaned descriptor sets
+		if(currImageIndex != m_lastImageIndex && !m_dirtyDescriptorSets[m_lastImageIndex].empty())
+			m_cleanedDescriptorSets[m_lastImageIndex] = std::move(m_dirtyDescriptorSets[m_lastImageIndex]);
 
-			//Set current descriptor sets as dirty
-			for(auto & m_descriptorSet : m_descriptorSets)
-				m_dirtyDescriptorSets[currImageIndex].push_back(std::move(m_descriptorSet));
-		}
-
-		//Get a clean descriptor set
-		if(m_lastImageIndex == std::numeric_limits<u32>::max() ||
-		m_cleanedDescriptorSets[currImageIndex].empty()) //Slow path
-		{
-			//Descriptor sets are now dirty, so we need new ones
-			const Ref<VulkanRootSignature> root = std::dynamic_pointer_cast<VulkanRootSignature>(m_rootSignature);
-			RendererAPI::DescriptorSetDesc setDesc{};
-			setDesc.RootSignature = m_rootSignature;
-			for(usize i = 0; i < m_descriptorSets.size(); ++i)
-			{
-				if(root->GetVkDescriptorSetLayouts()[i] != VK_NULL_HANDLE)
-				{
-					setDesc.MaxSets = (i == 0) ? 1 : RendererAPI::ImageCount;
-					setDesc.Set = NumericCast<u32>(i);
-					m_descriptorSets[i] = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
-				}
-			}
-		}
-		else //Fast path
-		{
-			for(auto& m_descriptorSet : std::ranges::reverse_view(m_descriptorSets))
-			{
-				m_descriptorSet = std::move(m_cleanedDescriptorSets[currImageIndex].back());
-				m_cleanedDescriptorSets[currImageIndex].pop_back();
-			}
-		}
-
-		m_lastImageIndex = currImageIndex;
+		//Set current descriptor sets as dirty
+		for(auto& m_descriptorSet : m_descriptorSets)
+			m_dirtyDescriptorSets[currImageIndex].emplace_back(std::move(m_descriptorSet));
 	}
+
+	//Get a clean descriptor set
+	if(m_lastImageIndex == std::numeric_limits<u32>::max() || m_cleanedDescriptorSets[currImageIndex].empty()) //Slow path
+	{
+		//Descriptor sets are now dirty, so we need new ones
+		const Ref<VulkanRootSignature> root = std::dynamic_pointer_cast<VulkanRootSignature>(m_rootSignature);
+		RendererAPI::DescriptorSetDesc setDesc{};
+		setDesc.RootSignature = m_rootSignature;
+		for(usize i = 0; i < m_descriptorSets.size(); ++i)
+		{
+			if(root->GetVkDescriptorSetLayouts()[i] == VK_NULL_HANDLE)
+				continue;
+
+			setDesc.MaxSets = (i == 0) ? 1 : RendererAPI::ImageCount;
+			setDesc.Set = NumericCast<u32>(i);
+			m_descriptorSets[i] = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
+		}
+	}
+	else //Fast path
+	{
+		for(auto& m_descriptorSet : std::ranges::reverse_view(m_descriptorSets))
+		{
+			m_descriptorSet = std::move(m_cleanedDescriptorSets[currImageIndex].back());
+			m_cleanedDescriptorSets[currImageIndex].pop_back();
+		}
+	}
+
+	m_lastImageIndex = currImageIndex;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanShader::UseTexture(const u32 set, const u32 binding,
-                                                   Ref<TRAP::Graphics::Texture> const texture, const Window* const window) const
+                                                   const TRAP::Graphics::Texture& texture, const Window& window) const
 #else
 void TRAP::Graphics::API::VulkanShader::UseTexture(const u32 set, const u32 binding,
-                                                   Ref<TRAP::Graphics::Texture> const texture) const
+                                                   const TRAP::Graphics::Texture& texture) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	TRAP_ASSERT(texture, "VulkanShader::UseTexture(): Texture is nullptr!");
-#ifndef TRAP_HEADLESS_MODE
-	TRAP_ASSERT(window, "VulkanShader::UseTexture(): Window is nullptr");
-#endif /*TRAP_HEADLESS_MODE*/
 
 	if(!m_valid)
 		return;
@@ -171,7 +167,7 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const u32 set, const u32 bind
 	bool shaderUAV = false;
 	const std::string name = RetrieveDescriptorName(set, binding, (RendererAPI::DescriptorType::Texture |
 	                                                               RendererAPI::DescriptorType::TextureCube |
-																   texture->GetDescriptorTypes()), &shaderUAV);
+																   texture.GetDescriptorTypes()), &shaderUAV);
 
 	if(name.empty())
 	{
@@ -181,9 +177,9 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const u32 set, const u32 bind
 
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
 	params[0].Name = name;
-	params[0].Resource = std::vector<Ref<TRAP::Graphics::Texture>>{texture};
+	params[0].Resource = std::vector<const TRAP::Graphics::Texture*>{&texture};
 
-	if(shaderUAV && (texture->GetDescriptorTypes() & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined)
+	if(shaderUAV && (texture.GetDescriptorTypes() & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined)
 		params[0].Offset = RendererAPI::DescriptorData::TextureSlice{};
 
 	if(set == std::to_underlying(RendererAPI::DescriptorUpdateFrequency::Static))
@@ -203,11 +199,11 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const u32 set, const u32 bind
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanShader::UseTextures(const u32 set, const u32 binding,
-													const std::vector<Ref<TRAP::Graphics::Texture>>& textures,
+													const std::vector<const TRAP::Graphics::Texture*>& textures,
 													const Window* const window) const
 #else
 void TRAP::Graphics::API::VulkanShader::UseTextures(const u32 set, const u32 binding,
-													const std::vector<Ref<TRAP::Graphics::Texture>>& textures) const
+													const std::vector<const TRAP::Graphics::Texture*>& textures) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -246,7 +242,7 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const u32 set, const u32 bin
 	else
 	{
 #ifndef TRAP_HEADLESS_MODE
-		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*window);
 #else
 		const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -291,7 +287,7 @@ void TRAP::Graphics::API::VulkanShader::UseSampler(const u32 set, const u32 bind
 	else
 	{
 #ifndef TRAP_HEADLESS_MODE
-		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*window);
 #else
 		const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -339,7 +335,7 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const u32 set, const u32 bin
 	else
 	{
 #ifndef TRAP_HEADLESS_MODE
-		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*window);
 #else
 		const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -363,7 +359,7 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const u32 set, const u32 binding,
 		return;
 
 	const u32 UBOIndex = (uniformBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
-		                          0 : RendererAPI::GetCurrentImageIndex(window);
+		                          0 : RendererAPI::GetCurrentImageIndex(*window);
 
 	UseBuffer(set, binding, uniformBuffer->GetUBOs()[UBOIndex].get(), size != 0u ? size : uniformBuffer->GetSize(), offset, window);
 }
@@ -402,7 +398,7 @@ void TRAP::Graphics::API::VulkanShader::UseSSBO(const u32 set, const u32 binding
 		return;
 
 	const u32 SSBOIndex = (storageBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
-		                           0 : RendererAPI::GetCurrentImageIndex(window);
+		                           0 : RendererAPI::GetCurrentImageIndex(*window);
 
 	UseBuffer(set, binding, storageBuffer->GetSSBOs()[SSBOIndex].get(), size != 0u ? size : storageBuffer->GetSize(), 0, window);
 }
@@ -695,7 +691,7 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(const u32 set, const u32 bindi
 	else
 	{
 #ifndef TRAP_HEADLESS_MODE
-		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*window);
 #else
 		const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/

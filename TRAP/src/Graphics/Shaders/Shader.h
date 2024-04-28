@@ -100,15 +100,15 @@ namespace TRAP::Graphics
 		/// @param texture Texture to use.
 		/// @param window Window to use the shader for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void UseTexture(u32 set, u32 binding, Ref<TRAP::Graphics::Texture> texture,
-		                        const Window* window = TRAP::Application::GetWindow()) const = 0;
+		virtual void UseTexture(u32 set, u32 binding, const TRAP::Graphics::Texture& texture,
+		                        const Window& window = *TRAP::Application::GetWindow()) const = 0;
 #else
 		/// @brief Use texture with this shader.
 		/// @param set Descriptor set to use the texture with.
 		/// @param binding Binding point of the texture.
 		/// @param texture Texture to use.
 		/// @remark This function is only available in headless mode.
-		virtual void UseTexture(u32 set, u32 binding, Ref<TRAP::Graphics::Texture> texture) const = 0;
+		virtual void UseTexture(u32 set, u32 binding, const TRAP::Graphics::Texture& texture) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -119,7 +119,7 @@ namespace TRAP::Graphics
 		/// @param window Window to use the shader for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
 		virtual void UseTextures(u32 set, u32 binding,
-		                         const std::vector<Ref<TRAP::Graphics::Texture>>& textures,
+		                         const std::vector<const TRAP::Graphics::Texture*>& textures,
 								 const Window* window = TRAP::Application::GetWindow()) const = 0;
 #else
 		/// @brief Use multiple textures with this shader.
@@ -128,7 +128,7 @@ namespace TRAP::Graphics
 		/// @param textures Textures to use.
 		/// @remark This function is only available in headless mode.
 		virtual void UseTextures(u32 set, u32 binding,
-		                         const std::vector<Ref<TRAP::Graphics::Texture>>& textures) const = 0;
+		                         const std::vector<const TRAP::Graphics::Texture*>& textures) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE

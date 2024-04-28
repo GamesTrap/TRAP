@@ -658,9 +658,9 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<u32, 3> workGroupE
 	{
 		//Bind fallback shader
 #ifndef TRAP_HEADLESS_MODE
-		this->BindShader(TRAP::Graphics::ShaderManager::Get("FallbackCompute").get(), *p->Window);
+		this->BindShader(*TRAP::Graphics::ShaderManager::Get("FallbackCompute"), *p->Window);
 #else
-		this->BindShader(TRAP::Graphics::ShaderManager::Get("FallbackCompute").get());
+		this->BindShader(*TRAP::Graphics::ShaderManager::Get("FallbackCompute"));
 #endif /*TRAP_HEADLESS_MODE*/
 	}
 
@@ -1622,12 +1622,14 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(const u32 indexCo
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, const Window& window) const
+void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader& shader, const Window& window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader) const
+void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader& shader) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+	std::reference_wrapper<Shader> actualShader = shader;
 
 #ifndef TRAP_HEADLESS_MODE
 	PerViewportData* const data = s_perViewportDataMap.at(&window).get();
@@ -1635,7 +1637,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader) const
 	PerViewportData* const data = s_perViewportData.get();
 #endif /*TRAP_HEADLESS_MODE*/
 
-	const ShaderStage stages = shader->GetShaderStages();
+	const ShaderStage stages = actualShader.get().GetShaderStages();
 
 	if (stages == ShaderStage::RayTracing)
 	{
@@ -1646,23 +1648,23 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader) const
 	{
 		ComputePipelineDesc& cpd = std::get<ComputePipelineDesc>(data->ComputePipelineDesc.Pipeline);
 
-		if(!shader->IsShaderValid())
+		if(!actualShader.get().IsShaderValid())
 		{
 			//Overwrite invalid shader with fallback
-			shader = TRAP::Graphics::ShaderManager::Get("FallbackCompute").get();
+			actualShader = *TRAP::Graphics::ShaderManager::Get("FallbackCompute").get();
 
-			cpd.ShaderProgram = shader;
-			cpd.RootSignature = shader->GetRootSignature();
+			cpd.ShaderProgram = &actualShader.get();
+			cpd.RootSignature = actualShader.get().GetRootSignature();
 		}
-		else if(shader->IsShaderValid() && cpd.ShaderProgram != shader)
+		else if(actualShader.get().IsShaderValid() && cpd.ShaderProgram != &actualShader.get())
 		{
-			cpd.ShaderProgram = shader;
-			cpd.RootSignature = shader->GetRootSignature();
+			cpd.ShaderProgram = &actualShader.get();
+			cpd.RootSignature = actualShader.get().GetRootSignature();
 		}
 
-		data->CurrentComputeWorkGroupSize.x() = std::get<0>(shader->GetNumThreadsPerGroup());
-		data->CurrentComputeWorkGroupSize.y() = std::get<1>(shader->GetNumThreadsPerGroup());
-		data->CurrentComputeWorkGroupSize.z() = std::get<2>(shader->GetNumThreadsPerGroup());
+		data->CurrentComputeWorkGroupSize.x() = std::get<0>(actualShader.get().GetNumThreadsPerGroup());
+		data->CurrentComputeWorkGroupSize.y() = std::get<1>(actualShader.get().GetNumThreadsPerGroup());
+		data->CurrentComputeWorkGroupSize.z() = std::get<2>(actualShader.get().GetNumThreadsPerGroup());
 
 		data->CurrentComputePipeline = GetPipeline(data->ComputePipelineDesc);
 		data->ComputeCommandBuffers[data->ImageIndex]->BindPipeline(*(data->CurrentComputePipeline));
@@ -1670,10 +1672,10 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader) const
 		//Bind Descriptors
 		for(u32 i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
 		{
-			if(shader->GetDescriptorSets()[i])
+			if(actualShader.get().GetDescriptorSets()[i])
 			{
 				data->ComputeCommandBuffers[data->ImageIndex]->BindDescriptorSet(i == 0 ? 0 : data->ImageIndex,
-																			 	 *(shader->GetDescriptorSets()[i]));
+																			 	 *(actualShader.get().GetDescriptorSets()[i]));
 			}
 		}
 	}
@@ -1681,18 +1683,18 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader) const
 	{
 		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(data->GraphicsPipelineDesc.Pipeline);
 
-		if(!shader->IsShaderValid())
+		if(!actualShader.get().IsShaderValid())
 		{
 			//Overwrite invalid shader with fallback
-			shader = TRAP::Graphics::ShaderManager::Get("FallbackGraphics").get();
+			actualShader = *TRAP::Graphics::ShaderManager::Get("FallbackGraphics").get();
 
-			gpd.ShaderProgram = shader;
-			gpd.RootSignature = shader->GetRootSignature();
+			gpd.ShaderProgram = &actualShader.get();
+			gpd.RootSignature = actualShader.get().GetRootSignature();
 		}
-		else if(shader->IsShaderValid() && gpd.ShaderProgram != shader)
+		else if(actualShader.get().IsShaderValid() && gpd.ShaderProgram != &actualShader.get())
 		{
-			gpd.ShaderProgram = shader;
-			gpd.RootSignature = shader->GetRootSignature();
+			gpd.ShaderProgram = &actualShader.get();
+			gpd.RootSignature = actualShader.get().GetRootSignature();
 		}
 
 		data->CurrentGraphicsPipeline = GetPipeline(data->GraphicsPipelineDesc);
@@ -1701,10 +1703,10 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader) const
 		//Bind Descriptors
 		for(u32 i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
 		{
-			if(shader->GetDescriptorSets()[i])
+			if(actualShader.get().GetDescriptorSets()[i])
 			{
 				data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(i == 0 ? 0 : data->ImageIndex,
-																			 	 *(shader->GetDescriptorSets()[i]));
+																			 	 *(actualShader.get().GetDescriptorSets()[i]));
 			}
 		}
 	}
@@ -1979,9 +1981,9 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graph
 	if(rebindShader && gpd.ShaderProgram != nullptr)
 	{
 #ifndef TRAP_HEADLESS_MODE
-		BindShader(gpd.ShaderProgram, *window);
+		BindShader(*gpd.ShaderProgram, *window);
 #else
-		BindShader(gpd.ShaderProgram);
+		BindShader(*gpd.ShaderProgram);
 #endif /*TRAP_HEADLESS_MODE*/
 	}
 
@@ -2056,9 +2058,9 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 	if(rebindShader && gpd.ShaderProgram != nullptr)
 	{
 #ifndef TRAP_HEADLESS_MODE
-		BindShader(gpd.ShaderProgram, *window);
+		BindShader(*gpd.ShaderProgram, *window);
 #else
-		BindShader(gpd.ShaderProgram);
+		BindShader(*gpd.ShaderProgram);
 #endif /*TRAP_HEADLESS_MODE*/
 	}
 

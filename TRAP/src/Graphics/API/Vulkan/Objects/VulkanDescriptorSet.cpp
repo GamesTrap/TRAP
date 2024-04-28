@@ -116,7 +116,7 @@ namespace
 	{
 		bool needsUpdate = false;
 
-		const std::span<const TRAP::Ref<TRAP::Graphics::Texture>> textures = std::get<std::vector<TRAP::Ref<TRAP::Graphics::Texture>>>(descData.Resource);
+		const auto& textures = std::get<std::vector<const TRAP::Graphics::Texture*>>(descData.Resource);
 		if(!ValidateDescriptor(!textures.empty(), "VulkanDescriptorSet::UpdateCombinedImageSampler(): Empty texture(s) (\"", descInfo.Name, "\")"))
 		{
 			return needsUpdate;
@@ -140,7 +140,7 @@ namespace
 			updateData[NumericCast<usize>(descInfo.HandleIndex) + arr].ImageInfo =
 			{
 				VK_NULL_HANDLE, //Sampler
-				std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[arr])->GetSRVVkImageView(), //Image View
+				dynamic_cast<const TRAP::Graphics::API::VulkanTexture*>(textures[arr])->GetSRVVkImageView(), //Image View
 				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL //Image Layout
 			};
 
@@ -159,7 +159,7 @@ namespace
 	{
 		bool needsUpdate = false;
 
-		const std::span<const TRAP::Ref<TRAP::Graphics::Texture>> textures = std::get<std::vector<TRAP::Ref<TRAP::Graphics::Texture>>>(descData.Resource);
+		const auto& textures = std::get<std::vector<const TRAP::Graphics::Texture*>>(descData.Resource);
 		if(!ValidateDescriptor(!textures.empty(), "VulkanDescriptorSet::UpdateTexture(): Empty texture(s) (\"", descInfo.Name, "\")"))
 			return needsUpdate;
 
@@ -175,7 +175,7 @@ namespace
 				updateData[NumericCast<usize>(descInfo.HandleIndex) + arr].ImageInfo =
 				{
 					VK_NULL_HANDLE, //Sampler
-					std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[arr])->GetSRVVkImageView(), //Image View
+					dynamic_cast<const TRAP::Graphics::API::VulkanTexture*>(textures[arr])->GetSRVVkImageView(), //Image View
 					VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL //Image Layout
 				};
 
@@ -194,7 +194,7 @@ namespace
 				updateData[NumericCast<usize>(descInfo.HandleIndex) + arr].ImageInfo =
 				{
 					VK_NULL_HANDLE, //Sampler
-					std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[arr])->GetSRVStencilVkImageView(), //Image View
+					dynamic_cast<const TRAP::Graphics::API::VulkanTexture*>(textures[arr])->GetSRVStencilVkImageView(), //Image View
 					VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL //Image Layout
 				};
 
@@ -214,7 +214,7 @@ namespace
 	{
 		bool needsUpdate = false;
 
-		const std::span<const TRAP::Ref<TRAP::Graphics::Texture>> textures = std::get<std::vector<TRAP::Ref<TRAP::Graphics::Texture>>>(descData.Resource);
+		const auto& textures = std::get<std::vector<const TRAP::Graphics::Texture*>>(descData.Resource);
 		if(!ValidateDescriptor(!textures.empty(), "VulkanDescriptorSet::UpdateRWTexture(): Empty RW texture(s) (\"", descInfo.Name, "\")"))
 		{
 			return needsUpdate;
@@ -230,7 +230,7 @@ namespace
 				updateData[NumericCast<usize>(descInfo.HandleIndex) + arr].ImageInfo =
 				{
 					VK_NULL_HANDLE, //Sampler
-					std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[0])->GetUAVVkImageViews()[arr], //Image View
+					dynamic_cast<const TRAP::Graphics::API::VulkanTexture*>(textures[0])->GetUAVVkImageViews()[arr], //Image View
 					VK_IMAGE_LAYOUT_GENERAL //Image Layout
 				};
 
@@ -257,7 +257,7 @@ namespace
 				updateData[NumericCast<usize>(descInfo.HandleIndex) + arr].ImageInfo =
 				{
 					VK_NULL_HANDLE, //Sampler
-					std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[arr])->GetUAVVkImageViews()[mipSlice], //Image View
+					dynamic_cast<const TRAP::Graphics::API::VulkanTexture*>(textures[arr])->GetUAVVkImageViews()[mipSlice], //Image View
 					VK_IMAGE_LAYOUT_GENERAL //Image Layout
 				};
 

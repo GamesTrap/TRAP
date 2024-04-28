@@ -50,7 +50,7 @@ namespace TRAP::Graphics
 			{
 				Scope<Graphics::VertexBuffer> VertexBuffer = nullptr;
 				std::vector<QuadVertex> Vertices = std::vector<QuadVertex>(MaxQuadVertices);
-				std::vector<Ref<Texture>> TextureSlots = std::vector<Ref<Texture>>(MaxTextureSlots);
+				std::vector<const Texture*> TextureSlots = std::vector<const Texture*>(MaxTextureSlots);
 				u32 QuadCount = 0;
 			};
 			std::array<std::vector<QuadBuffers>, RendererAPI::ImageCount> DataBuffers{};
@@ -281,11 +281,11 @@ void TRAP::Graphics::Renderer2DData::QuadData::InitBuffers()
 																	 UpdateFrequency::Dynamic);
 		buffers[DataBufferIndex].VertexBuffer->SetLayout(VertexLayout);
 
-		std::ranges::fill(buffers[DataBufferIndex].TextureSlots, WhiteTexture);
+		std::ranges::fill(buffers[DataBufferIndex].TextureSlots, WhiteTexture.get());
 	}
 
 #ifndef TRAP_HEADLESS_MODE
-	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*TRAP::Application::GetWindow());
 #else
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -312,7 +312,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::Reset()
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
-	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*TRAP::Application::GetWindow());
 #else
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -321,7 +321,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::Reset()
 	{
 		VertexBufferPtr = DataBuffers[imageIndex][DataBufferIndex].Vertices.data();
 
-		std::ranges::fill(DataBuffers[imageIndex][DataBufferIndex].TextureSlots, WhiteTexture);
+		std::ranges::fill(DataBuffers[imageIndex][DataBufferIndex].TextureSlots, WhiteTexture.get());
 	}
 
 	TextureSlotIndex = 1;
@@ -336,7 +336,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::ExtendBuffers()
 	DataBufferIndex++;
 
 #ifndef TRAP_HEADLESS_MODE
-	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*TRAP::Application::GetWindow());
 #else
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -352,7 +352,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::ExtendBuffers()
 	                                                            TRAP::Graphics::UpdateFrequency::Dynamic);
 	buffers.VertexBuffer->SetLayout(VertexLayout);
 
-	std::ranges::fill(DataBuffers[imageIndex][DataBufferIndex].TextureSlots, WhiteTexture);
+	std::ranges::fill(DataBuffers[imageIndex][DataBufferIndex].TextureSlots, WhiteTexture.get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -366,7 +366,7 @@ u32 TRAP::Graphics::Renderer2DData::QuadData::DrawBuffers(UniformBuffer* camera)
 	u32 drawcalls = 0;
 
 #ifndef TRAP_HEADLESS_MODE
-	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*TRAP::Application::GetWindow());
 #else
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -418,16 +418,16 @@ u32 TRAP::Graphics::Renderer2DData::QuadData::DrawBuffers(UniformBuffer* camera)
 	TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Renderer2DData::QuadData::GetTextureIndex(): Texture is not a Texture2D!");
 
 #ifndef TRAP_HEADLESS_MODE
-	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*TRAP::Application::GetWindow());
 #else
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
 
-	const auto res = std::ranges::find(DataBuffers[imageIndex][DataBufferIndex].TextureSlots, texture);
+	const auto res = std::ranges::find(DataBuffers[imageIndex][DataBufferIndex].TextureSlots, texture.get());
 
 	if(res == DataBuffers[imageIndex][DataBufferIndex].TextureSlots.end())
 	{
-		DataBuffers[imageIndex][DataBufferIndex].TextureSlots[TextureSlotIndex++] = texture;
+		DataBuffers[imageIndex][DataBufferIndex].TextureSlots[TextureSlotIndex++] = texture.get();
 		return TextureSlotIndex - 1;
 	}
 
@@ -481,7 +481,7 @@ void TRAP::Graphics::Renderer2DData::CircleData::InitBuffers()
 	}
 
 #ifndef TRAP_HEADLESS_MODE
-	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*TRAP::Application::GetWindow());
 #else
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -505,7 +505,7 @@ void TRAP::Graphics::Renderer2DData::CircleData::Reset()
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
-	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*TRAP::Application::GetWindow());
 #else
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -523,7 +523,7 @@ void TRAP::Graphics::Renderer2DData::CircleData::ExtendBuffers()
 	DataBufferIndex++;
 
 #ifndef TRAP_HEADLESS_MODE
-	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*TRAP::Application::GetWindow());
 #else
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -551,7 +551,7 @@ u32 TRAP::Graphics::Renderer2DData::CircleData::DrawBuffers(UniformBuffer* camer
 	u32 drawcalls = 0;
 
 #ifndef TRAP_HEADLESS_MODE
-	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*TRAP::Application::GetWindow());
 #else
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -618,7 +618,7 @@ void TRAP::Graphics::Renderer2DData::LineData::InitBuffers()
 	}
 
 #ifndef TRAP_HEADLESS_MODE
-	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*TRAP::Application::GetWindow());
 #else
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -641,7 +641,7 @@ void TRAP::Graphics::Renderer2DData::LineData::Reset()
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
-	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*TRAP::Application::GetWindow());
 #else
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -659,7 +659,7 @@ void TRAP::Graphics::Renderer2DData::LineData::ExtendBuffers()
 	DataBufferIndex++;
 
 #ifndef TRAP_HEADLESS_MODE
-	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*TRAP::Application::GetWindow());
 #else
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -687,7 +687,7 @@ u32 TRAP::Graphics::Renderer2DData::LineData::DrawBuffers(UniformBuffer* camera)
 	u32 drawcalls = 0;
 
 #ifndef TRAP_HEADLESS_MODE
-	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*TRAP::Application::GetWindow());
 #else
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -973,7 +973,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 		currData.QuadData.InitBuffers();
 
 #ifndef TRAP_HEADLESS_MODE
-	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*TRAP::Application::GetWindow());
 #else
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -1018,7 +1018,7 @@ void TRAP::Graphics::Renderer2D::DrawCircle(const Math::Mat4& transform, const M
 		currData.CircleData.InitBuffers();
 
 #ifndef TRAP_HEADLESS_MODE
-	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*TRAP::Application::GetWindow());
 #else
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -1069,7 +1069,7 @@ void TRAP::Graphics::Renderer2D::DrawLine(const TRAP::Math::Vec3& p0, const TRAP
 		currData.LineData.InitBuffers();
 
 #ifndef TRAP_HEADLESS_MODE
-	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+	const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*TRAP::Application::GetWindow());
 #else
 	const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/

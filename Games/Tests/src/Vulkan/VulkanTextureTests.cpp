@@ -51,7 +51,7 @@ void VulkanTextureTests::OnAttach()
 
 void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
-    m_shader->UseTexture(0, 0, m_texture);
+    m_shader->UseTexture(0, 0, *m_texture);
     m_shader->UseSampler(0, 1, m_textureSampler.get());
 
     m_vertexBuffer->Use();

@@ -77,15 +77,15 @@ namespace TRAP::Graphics::API
 		/// @param texture Texture to use.
 		/// @param window Window to use the shader for.
 		/// @remark @headless This function is not available in headless mode.
-		void UseTexture(u32 set, u32 binding, Ref<TRAP::Graphics::Texture> texture,
-		                const Window* window) const override;
+		void UseTexture(u32 set, u32 binding, const TRAP::Graphics::Texture& texture,
+		                const Window& window) const override;
 #else
 		/// @brief Use texture with this shader.
 		/// @param set Descriptor set to use the texture with.
 		/// @param binding Binding point of the texture.
 		/// @param texture Texture to use.
 		/// @remark This function is only available in headless mode.
-		void UseTexture(u32 set, u32 binding, Ref<TRAP::Graphics::Texture> texture) const override;
+		void UseTexture(u32 set, u32 binding, const TRAP::Graphics::Texture& texture) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -96,7 +96,7 @@ namespace TRAP::Graphics::API
 		/// @param window Window to use the shader for.
 		/// @remark @headless This function is not available in headless mode.
 		void UseTextures(u32 set, u32 binding,
-						 const std::vector<Ref<TRAP::Graphics::Texture>>& textures,
+						 const std::vector<const TRAP::Graphics::Texture*>& textures,
 						 const Window* window) const override;
 #else
 		/// @brief Use multiple textures with this shader.
@@ -105,7 +105,7 @@ namespace TRAP::Graphics::API
 		/// @param textures Textures to use.
 		/// @remark This function is only available in headless mode.
 		void UseTextures(u32 set, u32 binding,
-						 const std::vector<Ref<TRAP::Graphics::Texture>>& textures) const override;
+						 const std::vector<const TRAP::Graphics::Texture*>& textures) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE

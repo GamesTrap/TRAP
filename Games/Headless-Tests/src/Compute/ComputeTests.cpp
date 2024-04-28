@@ -86,8 +86,8 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
         const auto shader = TRAP::Graphics::ShaderManager::Get("ComputeEmboss");
 
         //Set shader descriptors
-        shader->UseTexture(1, 0, m_colTex);
-        shader->UseTexture(1, 1, m_compTex);
+        shader->UseTexture(1, 0, *m_colTex);
+        shader->UseTexture(1, 1, *m_compTex);
         //Bind compute shader
         shader->Use();
 
@@ -117,7 +117,7 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
 
     //Use shader
     const auto texShader = TRAP::Graphics::ShaderManager::Get("Texture");
-    texShader->UseTexture(1, 0, m_compTex);
+    texShader->UseTexture(1, 0, *m_compTex);
     texShader->Use();
 
     //Render Quad

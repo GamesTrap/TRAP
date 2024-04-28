@@ -113,7 +113,7 @@ void FrameBufferTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
     //Bind geometry and shader
     m_vertexBuffer->Use();
     m_indexBuffer->Use();
-    m_shader->UseTexture(1, 0, m_texture);
+    m_shader->UseTexture(1, 0, *m_texture);
     m_shader->Use();
 
     //Render Quad

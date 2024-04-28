@@ -93,8 +93,8 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
 
         //ALWAYS Bind descriptors (textures, buffers, etc) before binding the shader (pipeline)!
         //else you will get a black texture (learned this the hard way, thx NVIDIA driver :C)
-        shader->UseTexture(1, 0, m_colTex);
-        shader->UseTexture(1, 1, m_compTex);
+        shader->UseTexture(1, 0, *m_colTex);
+        shader->UseTexture(1, 1, *m_compTex);
         shader->Use();
 
         //Set push constants
@@ -125,9 +125,9 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
     //Use shader
     const auto texShader = TRAP::Graphics::ShaderManager::Get("Texture");
     if(m_disabled)
-        texShader->UseTexture(1, 0, m_colTex, TRAP::Application::GetWindow());
+        texShader->UseTexture(1, 0, *m_colTex);
     else
-        texShader->UseTexture(1, 0, m_compTex, TRAP::Application::GetWindow());
+        texShader->UseTexture(1, 0, *m_compTex);
     texShader->Use();
 
     //Render Quad

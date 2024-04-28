@@ -788,14 +788,12 @@ TRAP::Graphics::RendererAPI::PerViewportData::~PerViewportData()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-[[nodiscard]] u32 TRAP::Graphics::RendererAPI::GetCurrentImageIndex(const TRAP::Window* const window)
+[[nodiscard]] u32 TRAP::Graphics::RendererAPI::GetCurrentImageIndex(const TRAP::Window& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	TRAP_ASSERT(window, "RendererAPI::GetCurrentImageIndex(): Window is nullptr!");
-
-	return s_perViewportDataMap.at(window)->ImageIndex;
+	return s_perViewportDataMap.at(&window)->ImageIndex;
 }
 #else
 [[nodiscard]] u32 TRAP::Graphics::RendererAPI::GetCurrentImageIndex()

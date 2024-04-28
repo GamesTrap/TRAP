@@ -2598,9 +2598,10 @@ namespace TRAP::Graphics
 			//Array of pipeline descriptors
 			//DescriptorSet buffer extraction
 			//Custom binding (RayTracing acceleration structure ...)
-			std::variant<std::vector<Ref<TRAP::Graphics::Texture>>, std::vector<Sampler*>,
+			std::variant<std::vector<const TRAP::Graphics::Texture*>, std::vector<Sampler*>,
 				std::vector<Buffer*>, std::vector<Pipeline*>,
-				std::vector<DescriptorSet*>> Resource{std::vector<Ref<TRAP::Graphics::Texture>>()}; //TODO RayTracing acceleration structure
+				std::vector<DescriptorSet*>> Resource{std::vector<const TRAP::Graphics::Texture*>()}; //TODO RayTracing acceleration structure
+			//TODO Replace raw pointers with std::reference_wrapper
 
 			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
 			u32 Count{};
@@ -2830,7 +2831,7 @@ namespace TRAP::Graphics
 		/// @param window Window to retrieve image index from.
 		/// @return Image index.
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] static u32 GetCurrentImageIndex(const TRAP::Window* window);
+		[[nodiscard]] static u32 GetCurrentImageIndex(const TRAP::Window& window);
 #else
 		/// @brief Retrieve the image index currently used for rendering.
 		/// @return Image index.
