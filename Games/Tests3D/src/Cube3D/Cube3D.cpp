@@ -310,9 +310,9 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
     //Use Textures
     TRAP::Graphics::ShaderManager::Get("Texture")->UseTexture(0, 0, *TRAP::Graphics::TextureManager::Get2D("UVGrid"));
-    TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, m_textureSampler.get());
+    TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, *m_textureSampler);
     TRAP::Graphics::ShaderManager::Get("SkyBox")->UseTexture(0, 0, *TRAP::Graphics::TextureManager::GetCube("SkyBox"));
-    TRAP::Graphics::ShaderManager::Get("SkyBox")->UseSampler(0, 1, m_textureSampler.get());
+    TRAP::Graphics::ShaderManager::Get("SkyBox")->UseSampler(0, 1, *m_textureSampler);
 
     if(m_wireFrame)
     {

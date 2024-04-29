@@ -385,7 +385,7 @@ u32 TRAP::Graphics::Renderer2DData::QuadData::DrawBuffers(UniformBuffer* camera)
 		//Use dynamic shader resources
 		Shader->UseTextures(1, 1, buffers.TextureSlots);
 		Shader->UseUBO(1, 0, camera);
-		Shader->UseSampler(0, 1, TextureSampler.get());
+		Shader->UseSampler(0, 1, *TextureSampler);
 
 		//Use Vertex & Index Buffer
 		buffers.VertexBuffer->Use();

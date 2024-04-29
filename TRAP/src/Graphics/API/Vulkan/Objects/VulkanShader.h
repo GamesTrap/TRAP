@@ -97,7 +97,7 @@ namespace TRAP::Graphics::API
 		/// @remark @headless This function is not available in headless mode.
 		void UseTextures(u32 set, u32 binding,
 						 const std::vector<const TRAP::Graphics::Texture*>& textures,
-						 const Window* window) const override;
+						 const Window& window) const override;
 #else
 		/// @brief Use multiple textures with this shader.
 		/// @param set Descriptor set to use the textures with.
@@ -115,15 +115,15 @@ namespace TRAP::Graphics::API
 		/// @param sampler Sampler to use.
 		/// @param window Window to use the shader for.
 		/// @remark @headless This function is not available in headless mode.
-		void UseSampler(u32 set, u32 binding, TRAP::Graphics::Sampler* sampler,
-		                const Window* window) const override;
+		void UseSampler(u32 set, u32 binding, const TRAP::Graphics::Sampler& sampler,
+		                const Window& window) const override;
 #else
 		/// @brief Use sampler with this shader.
 		/// @param set Descriptor set to use the sampler with.
 		/// @param binding Binding point of the sampler.
 		/// @param sampler Sampler to use.
 		/// @remark This function is only available in headless mode.
-		void UseSampler(u32 set, u32 binding, TRAP::Graphics::Sampler* sampler) const override;
+		void UseSampler(u32 set, u32 binding, const TRAP::Graphics::Sampler& sampler) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Use multiple samplers with this shader on the given window.
@@ -133,8 +133,8 @@ namespace TRAP::Graphics::API
 		/// @param window Window to use the shader for.
 		/// @remark @headless This function is not available in headless mode.
 		void UseSamplers(u32 set, u32 binding,
-		                 const std::vector<TRAP::Graphics::Sampler*>& samplers,
-						 const Window* window) const override;
+		                 const std::vector<const TRAP::Graphics::Sampler*>& samplers,
+						 const Window& window) const override;
 #else
 		/// @brief Use multiple samplers with this shader.
 		/// @param set Descriptor set to use the samplers with.
@@ -142,7 +142,7 @@ namespace TRAP::Graphics::API
 		/// @param samplers Samplers to use.
 		/// @remark This function is only available in headless mode.
 		void UseSamplers(u32 set, u32 binding,
-		                 const std::vector<TRAP::Graphics::Sampler*>& samplers) const override;
+		                 const std::vector<const TRAP::Graphics::Sampler*>& samplers) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -235,10 +235,9 @@ namespace TRAP::Graphics::API
 		/// @param set Descriptor set used by the descriptor.
 		/// @param binding Binding point used by the descriptor.
 		/// @param type Descriptor type of the descriptor.
-		/// @param outUAV Out: Descriptor has UAV.
 		/// @param size Size of the descriptor.
-		/// @return Descriptor's name if found, empty string otherwise.
-		[[nodiscard]] std::string RetrieveDescriptorName(u32 set, u32 binding, RendererAPI::DescriptorType type, bool* outUAV = nullptr, u64 size = 1) const;
+		/// @return Descriptor's if found, nullptr otherwise.
+		[[nodiscard]] const ShaderReflection::ShaderResource* RetrieveDescriptor(u32 set, u32 binding, RendererAPI::DescriptorType type, u64 size = 1) const;
 
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 
@@ -249,7 +248,7 @@ namespace TRAP::Graphics::API
 
 		std::array<std::vector<TRAP::Scope<DescriptorSet>>, RendererAPI::ImageCount> m_dirtyDescriptorSets{};
 		std::array<std::vector<TRAP::Scope<DescriptorSet>>, RendererAPI::ImageCount> m_cleanedDescriptorSets{};
-		u32 m_lastImageIndex = std::numeric_limits<u32>::max();
+		TRAP::Optional<u32> m_lastImageIndex = TRAP::NullOpt;
 	};
 }
 
@@ -273,8 +272,8 @@ namespace TRAP::Graphics::API
 {
 	usize hash = 0;
 
-	for(const VkShaderModule& module : m_shaderModules)
-		TRAP::Utils::HashCombine(hash, module);
+	for(const VkShaderModule& shaderModule : m_shaderModules)
+		TRAP::Utils::HashCombine(hash, shaderModule);
 
 	return hash;
 }

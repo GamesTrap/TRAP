@@ -2598,10 +2598,9 @@ namespace TRAP::Graphics
 			//Array of pipeline descriptors
 			//DescriptorSet buffer extraction
 			//Custom binding (RayTracing acceleration structure ...)
-			std::variant<std::vector<const TRAP::Graphics::Texture*>, std::vector<Sampler*>,
+			std::variant<std::vector<const TRAP::Graphics::Texture*>, std::vector<const Sampler*>,
 				std::vector<Buffer*>, std::vector<Pipeline*>,
 				std::vector<DescriptorSet*>> Resource{std::vector<const TRAP::Graphics::Texture*>()}; //TODO RayTracing acceleration structure
-			//TODO Replace raw pointers with std::reference_wrapper
 
 			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
 			u32 Count{};

@@ -89,7 +89,7 @@ void FrameBufferTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
         m_renderTarget = BuildRenderTarget(m_texture->GetWidth() / 2, m_texture->GetHeight() / 2, aaSamples, "Intermediate RenderTarget (FrameBufferTests)");
     m_MSAAEnabled = aaMethod == TRAP::Graphics::AntiAliasing::MSAA;
 
-    m_shader->UseSampler(0, 1, m_textureSampler.get());
+    m_shader->UseSampler(0, 1, *m_textureSampler);
 
     //Stop RenderPass (necessary for transition)
     TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);

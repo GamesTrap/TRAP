@@ -15,6 +15,22 @@
 #include "Graphics/Buffers/UniformBuffer.h"
 #include "Graphics/Buffers/StorageBuffer.h"
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+namespace
+{
+	[[nodiscard]] constexpr bool IsDescriptorUAV(const TRAP::Graphics::API::ShaderReflection::ShaderResource& res)
+	{
+		using namespace TRAP::Graphics;
+
+		return (res.Type & (RendererAPI::DescriptorType::RWTexture | RendererAPI::DescriptorType::RWBuffer)) != RendererAPI::DescriptorType::Undefined;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::filesystem::path& filepath,
 												const RendererAPI::BinaryShaderDesc& desc,
                                                 const std::vector<Macro>& userMacros, const bool valid)
@@ -108,11 +124,11 @@ void TRAP::Graphics::API::VulkanShader::Use()
 	const u32 currImageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
 
-	if(m_lastImageIndex != std::numeric_limits<u32>::max())
+	if(m_lastImageIndex)
 	{
 		//Move last dirty descriptor sets to cleaned descriptor sets
-		if(currImageIndex != m_lastImageIndex && !m_dirtyDescriptorSets[m_lastImageIndex].empty())
-			m_cleanedDescriptorSets[m_lastImageIndex] = std::move(m_dirtyDescriptorSets[m_lastImageIndex]);
+		if(currImageIndex != *m_lastImageIndex && !m_dirtyDescriptorSets[*m_lastImageIndex].empty())
+			m_cleanedDescriptorSets[*m_lastImageIndex] = std::move(m_dirtyDescriptorSets[*m_lastImageIndex]);
 
 		//Set current descriptor sets as dirty
 		for(auto& m_descriptorSet : m_descriptorSets)
@@ -120,7 +136,7 @@ void TRAP::Graphics::API::VulkanShader::Use()
 	}
 
 	//Get a clean descriptor set
-	if(m_lastImageIndex == std::numeric_limits<u32>::max() || m_cleanedDescriptorSets[currImageIndex].empty()) //Slow path
+	if(!m_lastImageIndex || m_cleanedDescriptorSets[currImageIndex].empty()) //Slow path
 	{
 		//Descriptor sets are now dirty, so we need new ones
 		const Ref<VulkanRootSignature> root = std::dynamic_pointer_cast<VulkanRootSignature>(m_rootSignature);
@@ -164,26 +180,26 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const u32 set, const u32 bind
 		return;
 
 	//OPTIMIZE Use index into root signature instead of name
-	bool shaderUAV = false;
-	const std::string name = RetrieveDescriptorName(set, binding, (RendererAPI::DescriptorType::Texture |
-	                                                               RendererAPI::DescriptorType::TextureCube |
-																   texture.GetDescriptorTypes()), &shaderUAV);
-
-	if(name.empty())
+	const auto* const descRes = RetrieveDescriptor(set, binding, (RendererAPI::DescriptorType::Texture |
+	                                                              RendererAPI::DescriptorType::TextureCube |
+														          texture.GetDescriptorTypes()));
+	if(descRes == nullptr)
 	{
 		//TP_ERROR(Log::RendererVulkanShaderPrefix, "Texture with invalid set and/or binding provided!");
 		return;
 	}
 
-	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
-	params[0].Name = name;
+	const bool shaderUAV = IsDescriptorUAV(*descRes);
+
+	std::array<TRAP::Graphics::RendererAPI::DescriptorData, 1> params;
+	params[0].Name = descRes->Name;
 	params[0].Resource = std::vector<const TRAP::Graphics::Texture*>{&texture};
 
 	if(shaderUAV && (texture.GetDescriptorTypes() & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined)
 		params[0].Offset = RendererAPI::DescriptorData::TextureSlice{};
 
 	if(set == std::to_underlying(RendererAPI::DescriptorUpdateFrequency::Static))
-		GetDescriptorSets()[set]->Update(0, params);
+		m_descriptorSets[set]->Update(0, params);
 	else
 	{
 #ifndef TRAP_HEADLESS_MODE
@@ -191,7 +207,7 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const u32 set, const u32 bind
 #else
 		const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
-		GetDescriptorSets()[set]->Update(imageIndex, params);
+		m_descriptorSets[set]->Update(imageIndex, params);
 	}
 }
 
@@ -200,7 +216,7 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const u32 set, const u32 bind
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanShader::UseTextures(const u32 set, const u32 binding,
 													const std::vector<const TRAP::Graphics::Texture*>& textures,
-													const Window* const window) const
+													const Window& window) const
 #else
 void TRAP::Graphics::API::VulkanShader::UseTextures(const u32 set, const u32 binding,
 													const std::vector<const TRAP::Graphics::Texture*>& textures) const
@@ -209,28 +225,25 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const u32 set, const u32 bin
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(!textures.empty(), "VulkanShader::UseTextures(): Textures are empty!");
-#ifndef TRAP_HEADLESS_MODE
-	TRAP_ASSERT(window, "VulkanShader::UseTextures(): Window is nullptr");
-#endif /*TRAP_HEADLESS_MODE*/
 
 	if(!m_valid)
 		return;
 
 	//OPTIMIZE Use index into root signature instead of name
-	bool shaderUAV = false;
-	const std::string name = RetrieveDescriptorName(set, binding, (RendererAPI::DescriptorType::Texture |
-	                                                               RendererAPI::DescriptorType::TextureCube |
-																   textures[0]->GetDescriptorTypes()),
-	                                                &shaderUAV, textures.size());
-
-	if(name.empty())
+	const auto* const descRes = RetrieveDescriptor(set, binding, (RendererAPI::DescriptorType::Texture |
+	                                                              RendererAPI::DescriptorType::TextureCube |
+															      textures[0]->GetDescriptorTypes()),
+	                                               textures.size());
+	if(descRes == nullptr)
 	{
 		//TP_ERROR(Log::RendererVulkanShaderPrefix, "Textures with invalid set and/or binding provided!");
 		return;
 	}
 
-	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
-	params[0].Name = name;
+	const bool shaderUAV = IsDescriptorUAV(*descRes);
+
+	std::array<TRAP::Graphics::RendererAPI::DescriptorData, 1> params{};
+	params[0].Name = descRes->Name;
 	params[0].Resource = textures;
 	params[0].Count = NumericCast<u32>(textures.size());
 
@@ -238,15 +251,15 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const u32 set, const u32 bin
 		params[0].Offset = RendererAPI::DescriptorData::TextureSlice{};
 
 	if(set == std::to_underlying(RendererAPI::DescriptorUpdateFrequency::Static))
-		GetDescriptorSets()[set]->Update(0, params);
+		m_descriptorSets[set]->Update(0, params);
 	else
 	{
 #ifndef TRAP_HEADLESS_MODE
-		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*window);
+		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(window);
 #else
 		const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
-		GetDescriptorSets()[set]->Update(imageIndex, params);
+		m_descriptorSets[set]->Update(imageIndex, params);
 	}
 }
 
@@ -254,44 +267,38 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const u32 set, const u32 bin
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanShader::UseSampler(const u32 set, const u32 binding,
-	                                               TRAP::Graphics::Sampler* const sampler, const Window* const window) const
+	                                               const TRAP::Graphics::Sampler& sampler, const Window& window) const
 #else
 void TRAP::Graphics::API::VulkanShader::UseSampler(const u32 set, const u32 binding,
-	                                               TRAP::Graphics::Sampler* const sampler) const
+	                                               const TRAP::Graphics::Sampler& sampler) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	TRAP_ASSERT(sampler, "VulkanShader::UseSampler(): Sampler is nullptr!");
-#ifndef TRAP_HEADLESS_MODE
-	TRAP_ASSERT(window, "VulkanShader::UseSampler(): Window is nullptr");
-#endif /*TRAP_HEADLESS_MODE*/
 
 	if(!m_valid)
 		return;
 
 	//OPTIMIZE Use index into root signature instead of name
-	const std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Sampler);
-
-	if(name.empty())
+	const auto* const descRes = RetrieveDescriptor(set, binding, RendererAPI::DescriptorType::Sampler);
+	if(descRes == nullptr)
 	{
 		//TP_ERROR(Log::RendererVulkanShaderPrefix, "Sampler with invalid set and/or binding provided!");
 		return;
 	}
 
-	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
-	params[0].Name = name;
-	params[0].Resource = std::vector<TRAP::Graphics::Sampler*>{sampler};
+	std::array<TRAP::Graphics::RendererAPI::DescriptorData, 1> params{};
+	params[0].Name = descRes->Name;
+	params[0].Resource = std::vector<const TRAP::Graphics::Sampler*>{&sampler};
 	if(set == std::to_underlying(RendererAPI::DescriptorUpdateFrequency::Static))
-		GetDescriptorSets()[set]->Update(0, params);
+		m_descriptorSets[set]->Update(0, params);
 	else
 	{
 #ifndef TRAP_HEADLESS_MODE
-		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*window);
+		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(window);
 #else
 		const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
-		GetDescriptorSets()[set]->Update(imageIndex, params);
+		m_descriptorSets[set]->Update(imageIndex, params);
 	}
 }
 
@@ -299,47 +306,42 @@ void TRAP::Graphics::API::VulkanShader::UseSampler(const u32 set, const u32 bind
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanShader::UseSamplers(const u32 set, const u32 binding,
-	                                                const std::vector<TRAP::Graphics::Sampler*>& samplers,
-													const Window* const window) const
+	                                                const std::vector<const TRAP::Graphics::Sampler*>& samplers,
+													const Window& window) const
 #else
 void TRAP::Graphics::API::VulkanShader::UseSamplers(const u32 set, const u32 binding,
-	                                                const std::vector<TRAP::Graphics::Sampler*>& samplers) const
+	                                                const std::vector<const TRAP::Graphics::Sampler*>& samplers) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(!samplers.empty(), "VulkanShader::UseSamplers(): Samplers are empty!");
-#ifndef TRAP_HEADLESS_MODE
-	TRAP_ASSERT(window, "VulkanShader::UseSamplers(): Window is nullptr");
-#endif /*TRAP_HEADLESS_MODE*/
 
 	if(!m_valid)
 		return;
 
 	//OPTIMIZE Use index into root signature instead of name
-	const std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Sampler,
-	                                                nullptr, samplers.size());
-
-	if(name.empty())
+	const auto* const descRes = RetrieveDescriptor(set, binding, RendererAPI::DescriptorType::Sampler, samplers.size());
+	if(descRes == nullptr)
 	{
 		//TP_ERROR(Log::RendererVulkanShaderPrefix, "Samplers with invalid set and/or binding provided!");
 		return;
 	}
 
-	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
-	params[0].Name = name;
+	std::array<TRAP::Graphics::RendererAPI::DescriptorData, 1> params{};
+	params[0].Name = descRes->Name;
 	params[0].Resource = samplers;
 	params[0].Count = NumericCast<u32>(samplers.size());
 	if(set == std::to_underlying(RendererAPI::DescriptorUpdateFrequency::Static))
-		GetDescriptorSets()[set]->Update(0, params);
+		m_descriptorSets[set]->Update(0, params);
 	else
 	{
 #ifndef TRAP_HEADLESS_MODE
-		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(*window);
+		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(window);
 #else
 		const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
-		GetDescriptorSets()[set]->Update(imageIndex, params);
+		m_descriptorSets[set]->Update(imageIndex, params);
 	}
 }
 
@@ -589,7 +591,7 @@ void TRAP::Graphics::API::VulkanShader::Shutdown()
 
 	if(!m_reflection || !m_valid)
 	{
-		m_shaderModules = {};
+		m_shaderModules.clear();
 		m_shaderStages = RendererAPI::ShaderStage::None;
 		return;
 	}
@@ -617,7 +619,7 @@ void TRAP::Graphics::API::VulkanShader::Shutdown()
 	if ((m_shaderStages & RendererAPI::ShaderStage::RayTracing) != RendererAPI::ShaderStage::None)
 		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[0], nullptr);
 
-	m_shaderModules = {};
+	m_shaderModules.clear();
 	m_shaderStages = RendererAPI::ShaderStage::None;
 	m_reflection.reset();
 }
@@ -650,21 +652,20 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(const u32 set, const u32 bindi
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	//OPTIMIZE Use index into root signature instead of name
-	std::string name = RetrieveDescriptorName(set, binding,
-	                                          buffer->GetDescriptors(),
-											  nullptr, buffer->GetSize());
+	const auto* descRes = RetrieveDescriptor(set, binding, buffer->GetDescriptors(), buffer->GetSize());
+
 	bool isDynamic = false;
-	if(name.empty()) //Try again as this might be a dynamic Buffer
+	if(descRes == nullptr) //Try again as this might be a dynamic Buffer
 	{
 		//OPTIMIZE Use index into root signature instead of name
-		name = RetrieveDescriptorName(set, binding, buffer->GetDescriptors(), nullptr, 1);
-		if(!name.empty())
+		descRes = RetrieveDescriptor(set, binding, buffer->GetDescriptors(), 1);
+		if(descRes != nullptr)
 			isDynamic = true;
 		else //Try again as this might be a storage buffer
-			name = RetrieveDescriptorName(set, binding, buffer->GetDescriptors(), nullptr, 0);
+			descRes = RetrieveDescriptor(set, binding, buffer->GetDescriptors(), 0);
 	}
 
-	if(name.empty()) //Unable to find Buffer @ with set, binding & size
+	if(descRes == nullptr) //Unable to find Buffer @ with set, binding & size
 	{
 		//TP_ERROR(Log::RendererVulkanShaderPrefix, "UniformBuffer with invalid set and/or binding & size provided!");
 		return;
@@ -672,7 +673,7 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(const u32 set, const u32 bindi
 
 	//Bind Buffer
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
-	params[0].Name = name;
+	params[0].Name = descRes->Name;
 	if(isDynamic)
 	{
 		TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset off{};
@@ -686,7 +687,7 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(const u32 set, const u32 bindi
 	if(set == std::to_underlying(RendererAPI::DescriptorUpdateFrequency::Static))
 	{
 		params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{buffer};
-		GetDescriptorSets()[set]->Update(0, params);
+		m_descriptorSets[set]->Update(0, params);
 	}
 	else
 	{
@@ -696,16 +697,16 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(const u32 set, const u32 bindi
 		const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
 		params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{buffer};
-		GetDescriptorSets()[set]->Update(imageIndex, params);
+		m_descriptorSets[set]->Update(imageIndex, params);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::string TRAP::Graphics::API::VulkanShader::RetrieveDescriptorName(const u32 set, const u32 binding,
-                                                                                    const RendererAPI::DescriptorType type,
-																	                bool* const outUAV,
-																	                const u64 size) const
+[[nodiscard]] const TRAP::Graphics::API::ShaderReflection::ShaderResource* TRAP::Graphics::API::VulkanShader::RetrieveDescriptor(const u32 set,
+                                                                                                                                 const u32 binding,
+                                                                                                                                 const RendererAPI::DescriptorType type,
+																	                                                             const u64 size) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -714,12 +715,9 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(const u32 set, const u32 bindi
 		if((resource.Type & type) != RendererAPI::DescriptorType::Undefined &&
 		   resource.Set == set && resource.Reg == binding && resource.Size == size)
 		{
-			if(outUAV != nullptr)
-				*outUAV = (resource.Type & (RendererAPI::DescriptorType::RWTexture | RendererAPI::DescriptorType::RWBuffer)) != RendererAPI::DescriptorType::Undefined;
-
-			return resource.Name;
+			return &resource;
 		}
 	}
 
-	return "";
+	return nullptr;
 }

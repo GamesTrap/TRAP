@@ -83,7 +83,7 @@ namespace
 			return needsUpdate;
 		}
 
-		const std::span<const TRAP::Graphics::Sampler* const> samplers = std::get<std::vector<TRAP::Graphics::Sampler*>>(descData.Resource);
+		const std::span<const TRAP::Graphics::Sampler* const> samplers = std::get<std::vector<const TRAP::Graphics::Sampler*>>(descData.Resource);
 		if(!ValidateDescriptor(!samplers.empty(), "VulkanDescriptorSet::UpdateSampler(): Empty sampler(s) (\"", descInfo.Name, "\")!"))
 			return needsUpdate;
 

@@ -139,7 +139,7 @@ public:
 		{
 			f32 time = TRAP::Application::GetTime();
 			m_shader->UseTexture(0, 0, *m_texture);
-			m_shader->UseSampler(0, 1, m_sampler.get());
+			m_shader->UseSampler(0, 1, *m_sampler);
 			if (m_indexedDrawing)
 			{
 				TRAP::Graphics::RenderCommand::SetPushConstants("TimeRootConstant", time);
@@ -217,7 +217,7 @@ public:
 	{
 		m_shader = event.GetShader();
 		m_shader->UseTexture(0, 0, *m_texture);
-		m_shader->UseSampler(0, 1, m_sampler.get());
+		m_shader->UseSampler(0, 1, *m_sampler);
 		m_shader->Use();
 		return true;
 	}

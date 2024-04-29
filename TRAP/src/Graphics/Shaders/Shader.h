@@ -120,7 +120,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		virtual void UseTextures(u32 set, u32 binding,
 		                         const std::vector<const TRAP::Graphics::Texture*>& textures,
-								 const Window* window = TRAP::Application::GetWindow()) const = 0;
+								 const Window& window = *TRAP::Application::GetWindow()) const = 0;
 #else
 		/// @brief Use multiple textures with this shader.
 		/// @param set Descriptor set to use the textures with.
@@ -138,15 +138,15 @@ namespace TRAP::Graphics
 		/// @param sampler Sampler to use.
 		/// @param window Window to use the shader for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void UseSampler(u32 set, u32 binding, TRAP::Graphics::Sampler* sampler,
-		                        const Window* window = TRAP::Application::GetWindow()) const = 0;
+		virtual void UseSampler(u32 set, u32 binding, const TRAP::Graphics::Sampler& sampler,
+		                        const Window& window = *TRAP::Application::GetWindow()) const = 0;
 #else
 		/// @brief Use sampler with this shader.
 		/// @param set Descriptor set to use the sampler with.
 		/// @param binding Binding point of the sampler.
 		/// @param sampler Sampler to use.
 		/// @remark This function is only available in headless mode.
-		virtual void UseSampler(u32 set, u32 binding, TRAP::Graphics::Sampler* sampler) const = 0;
+		virtual void UseSampler(u32 set, u32 binding, const TRAP::Graphics::Sampler& sampler) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Use multiple samplers with this shader on the given window.
@@ -156,8 +156,8 @@ namespace TRAP::Graphics
 		/// @param window Window to use the shader for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
 		virtual void UseSamplers(u32 set, u32 binding,
-		                         const std::vector<TRAP::Graphics::Sampler*>& samplers,
-								 const Window* window = TRAP::Application::GetWindow()) const = 0;
+		                         const std::vector<const TRAP::Graphics::Sampler*>& samplers,
+								 const Window& window = *TRAP::Application::GetWindow()) const = 0;
 #else
 		/// @brief Use multiple samplers with this shader.
 		/// @param set Descriptor set to use the samplers with.
@@ -165,7 +165,7 @@ namespace TRAP::Graphics
 		/// @param samplers Samplers to use.
 		/// @remark This function is only available in headless mode.
 		virtual void UseSamplers(u32 set, u32 binding,
-		                         const std::vector<TRAP::Graphics::Sampler*>& samplers) const = 0;
+		                         const std::vector<const TRAP::Graphics::Sampler*>& samplers) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
