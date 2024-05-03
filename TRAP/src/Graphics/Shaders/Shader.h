@@ -177,8 +177,8 @@ namespace TRAP::Graphics
 		/// @param offset Offset of the UBO.
 		/// @param window Window to use the shader for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer* uniformBuffer,
-							u64 size = 0, u64 offset = 0, const Window* window = TRAP::Application::GetWindow()) const = 0;
+		virtual void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer& uniformBuffer,
+							u64 size = 0, u64 offset = 0, const Window& window = *TRAP::Application::GetWindow()) const = 0;
 #else
 		/// @brief Use uniform buffer object with this shader.
 		/// @param set Descriptor set to use the UBO with.
@@ -187,7 +187,7 @@ namespace TRAP::Graphics
 		/// @param size Size of the UBO.
 		/// @param offset Offset of the UBO.
 		/// @remark This function is only available in headless mode.
-		virtual void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer* uniformBuffer,
+		virtual void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer& uniformBuffer,
 							u64 size = 0, u64 offset = 0) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -199,8 +199,8 @@ namespace TRAP::Graphics
 		/// @param size Size of the SSBO.
 		/// @param window Window to use the shader for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void UseSSBO(u32 set, u32 binding, const TRAP::Graphics::StorageBuffer* storageBuffer,
-							 u64 size = 0, const Window* window = TRAP::Application::GetWindow()) const = 0;
+		virtual void UseSSBO(u32 set, u32 binding, const TRAP::Graphics::StorageBuffer& storageBuffer,
+							 u64 size = 0, const Window& window = *TRAP::Application::GetWindow()) const = 0;
 #else
 		/// @brief Use shader storage buffer object with this shader.
 		/// @param set Descriptor set to use the SSBO with.
@@ -208,7 +208,7 @@ namespace TRAP::Graphics
 		/// @param storageBuffer Storage buffer to use.
 		/// @param size Size of the SSBO.
 		/// @remark This function is only available in headless mode.
-		virtual void UseSSBO(u32 set, u32 binding, const TRAP::Graphics::StorageBuffer* storageBuffer,
+		virtual void UseSSBO(u32 set, u32 binding, const TRAP::Graphics::StorageBuffer& storageBuffer,
 							 u64 size = 0) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 

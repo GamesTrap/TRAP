@@ -384,7 +384,7 @@ u32 TRAP::Graphics::Renderer2DData::QuadData::DrawBuffers(UniformBuffer* camera)
 
 		//Use dynamic shader resources
 		Shader->UseTextures(1, 1, buffers.TextureSlots);
-		Shader->UseUBO(1, 0, camera);
+		Shader->UseUBO(1, 0, *camera);
 		Shader->UseSampler(0, 1, *TextureSampler);
 
 		//Use Vertex & Index Buffer
@@ -568,7 +568,7 @@ u32 TRAP::Graphics::Renderer2DData::CircleData::DrawBuffers(UniformBuffer* camer
 		buffers.VertexBuffer->SetData({reinterpret_cast<const f32*>(buffers.Vertices.data()), verticesSize});
 
 		//Use dynamic shader resources
-		Shader->UseUBO(1, 0, camera);
+		Shader->UseUBO(1, 0, *camera);
 
 		//Use Vertex & Index Buffer
 		buffers.VertexBuffer->Use();
@@ -705,7 +705,7 @@ u32 TRAP::Graphics::Renderer2DData::LineData::DrawBuffers(UniformBuffer* camera)
 		buffers.VertexBuffer->SetData({reinterpret_cast<const f32*>(buffers.Vertices.data()), verticesSize});
 
 		//Use dynamic shader resources
-		Shader->UseUBO(1, 0, camera);
+		Shader->UseUBO(1, 0, *camera);
 
 		//Use Vertex Buffer
 		buffers.VertexBuffer->Use();

@@ -72,7 +72,7 @@ void IcoSphereTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delt
 		                                  TRAP::Math::Vec3(1.0f, 1.0f, 1.0f));
 
 		m_cameraUBO->SetData(&camera, sizeof(CameraUBOData));
-		m_shader->UseUBO(1, 0, m_cameraUBO.get());
+		m_shader->UseUBO(1, 0, *m_cameraUBO);
 	}
 
 	m_vertexBuffer->Use();

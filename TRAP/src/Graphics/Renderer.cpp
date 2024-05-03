@@ -101,8 +101,8 @@ void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuf
 	vertexBuffer->Use();
 	if(shader)
 	{
-		shader->UseSSBO(1, 1, s_modelStorageBuffer.get(), s_maxDrawCalls * sizeof(Math::Mat4));
-		shader->UseSSBO(1, 0, s_sceneStorageBuffer.get());
+		shader->UseSSBO(1, 1, *s_modelStorageBuffer, s_maxDrawCalls * sizeof(Math::Mat4));
+		shader->UseSSBO(1, 0, *s_sceneStorageBuffer);
 		shader->Use();
 	}
 
@@ -130,8 +130,8 @@ void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuf
 	indexBuffer->Use();
 	if(shader)
 	{
-		shader->UseSSBO(1, 1, s_modelStorageBuffer.get(), s_maxDrawCalls * sizeof(Math::Mat4));
-		shader->UseSSBO(1, 0, s_sceneStorageBuffer.get());
+		shader->UseSSBO(1, 1, *s_modelStorageBuffer, s_maxDrawCalls * sizeof(Math::Mat4));
+		shader->UseSSBO(1, 0, *s_sceneStorageBuffer);
 		shader->Use();
 	}
 

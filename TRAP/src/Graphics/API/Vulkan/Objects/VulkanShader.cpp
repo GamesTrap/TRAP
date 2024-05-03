@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "VulkanShader.h"
 
+#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/ShaderReflection.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
@@ -25,6 +26,20 @@ namespace
 
 		return (res.Type & (RendererAPI::DescriptorType::RWTexture | RendererAPI::DescriptorType::RWBuffer)) != RendererAPI::DescriptorType::Undefined;
 	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef ENABLE_GRAPHICS_DEBUG
+	void SetShaderStageName(const VkDevice& device, const std::string_view name, VkShaderModule stage)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+		if(name.empty())
+			return;
+
+		TRAP::Graphics::API::VkSetObjectName(device, std::bit_cast<u64>(stage), VK_OBJECT_TYPE_SHADER_MODULE, name);
+	}
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -349,38 +364,33 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const u32 set, const u32 bin
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanShader::UseUBO(const u32 set, const u32 binding,
-                                               const TRAP::Graphics::UniformBuffer* const uniformBuffer,
-											   const u64 size, const u64 offset, const Window* const window) const
+                                               const TRAP::Graphics::UniformBuffer& uniformBuffer,
+											   const u64 size, const u64 offset, const Window& window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	TRAP_ASSERT(uniformBuffer, "VulkanShader::UseUBO(): UniformBuffer is nullptr!");
-	TRAP_ASSERT(window, "VulkanShader::UseUBO(): Window is nullptr");
 
 	if(!m_valid)
 		return;
 
-	const u32 UBOIndex = (uniformBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
-		                          0 : RendererAPI::GetCurrentImageIndex(*window);
+	const u32 UBOIndex = (uniformBuffer.GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
+		                          0 : RendererAPI::GetCurrentImageIndex(window);
 
-	UseBuffer(set, binding, uniformBuffer->GetUBOs()[UBOIndex].get(), size != 0u ? size : uniformBuffer->GetSize(), offset, window);
+	UseBuffer(set, binding, uniformBuffer.GetUBOs()[UBOIndex].get(), size != 0u ? size : uniformBuffer.GetSize(), offset, &window);
 }
 #else
 void TRAP::Graphics::API::VulkanShader::UseUBO(const u32 set, const u32 binding,
-                                               const TRAP::Graphics::UniformBuffer* const uniformBuffer,
+                                               const TRAP::Graphics::UniformBuffer& uniformBuffer,
 											   const u64 size, const u64 offset) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	TRAP_ASSERT(uniformBuffer, "VulkanShader::UseUBO(): UniformBuffer is nullptr!");
-
 	if(!m_valid)
 		return;
 
-	const u32 UBOIndex = (uniformBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
+	const u32 UBOIndex = (uniformBuffer.GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
 		                          0 : RendererAPI::GetCurrentImageIndex();
 
-	UseBuffer(set, binding, uniformBuffer->GetUBOs()[UBOIndex].get(), size != 0u ? size : uniformBuffer->GetSize(), offset);
+	UseBuffer(set, binding, uniformBuffer.GetUBOs()[UBOIndex].get(), size != 0u ? size : uniformBuffer.GetSize(), offset);
 }
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -388,40 +398,87 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const u32 set, const u32 binding,
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanShader::UseSSBO(const u32 set, const u32 binding,
-                                                const TRAP::Graphics::StorageBuffer* const storageBuffer,
-											    const u64 size, const Window* const window) const
+                                                const TRAP::Graphics::StorageBuffer& storageBuffer,
+											    const u64 size, const Window& window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	TRAP_ASSERT(storageBuffer, "VulkanShader::UseSSBO(): StorageBuffer is nullptr!");
-	TRAP_ASSERT(window, "VulkanShader::UseSSBO(): Window is nullptr");
 
 	if(!m_valid)
 		return;
 
-	const u32 SSBOIndex = (storageBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
-		                           0 : RendererAPI::GetCurrentImageIndex(*window);
+	const u32 SSBOIndex = (storageBuffer.GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
+		                           0 : RendererAPI::GetCurrentImageIndex(window);
 
-	UseBuffer(set, binding, storageBuffer->GetSSBOs()[SSBOIndex].get(), size != 0u ? size : storageBuffer->GetSize(), 0, window);
+	UseBuffer(set, binding, storageBuffer.GetSSBOs()[SSBOIndex].get(), size != 0u ? size : storageBuffer.GetSize(), 0, &window);
 }
 #else
 void TRAP::Graphics::API::VulkanShader::UseSSBO(const u32 set, const u32 binding,
-                                                const TRAP::Graphics::StorageBuffer* const storageBuffer,
+                                                const TRAP::Graphics::StorageBuffer& storageBuffer,
 											    const u64 size) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	TRAP_ASSERT(storageBuffer, "VulkanShader::UseSSBO(): StorageBuffer is nullptr!");
-
 	if(!m_valid)
 		return;
 
-	const u32 SSBOIndex = (storageBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
+	const u32 SSBOIndex = (storageBuffer.GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
 		                           0 : RendererAPI::GetCurrentImageIndex();
 
-	UseBuffer(set, binding, storageBuffer->GetSSBOs()[SSBOIndex].get(), size != 0u ? size : storageBuffer->GetSize(), 0);
+	UseBuffer(set, binding, storageBuffer.GetSSBOs()[SSBOIndex].get(), size != 0u ? size : storageBuffer.GetSize(), 0);
 }
 #endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+namespace
+{
+	[[nodiscard]] constexpr const TRAP::Graphics::RendererAPI::BinaryShaderStageDesc* GetShaderStageDesc(const TRAP::Graphics::RendererAPI::ShaderStage stage,
+	                                                                                                     const TRAP::Graphics::RendererAPI::BinaryShaderDesc& desc)
+	{
+		switch(stage)
+		{
+		case TRAP::Graphics::RendererAPI::ShaderStage::Vertex:
+			return &desc.Vertex;
+		case TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl:
+			return &desc.TessellationControl;
+		case TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation:
+			return &desc.TessellationEvaluation;
+		case TRAP::Graphics::RendererAPI::ShaderStage::Geometry:
+			return &desc.Geometry;
+		case TRAP::Graphics::RendererAPI::ShaderStage::Fragment:
+			return &desc.Fragment;
+		case TRAP::Graphics::RendererAPI::ShaderStage::Compute:
+			return &desc.Compute;
+
+		default:
+			TRAP_ASSERT(false, "VulkanShader::InitShaderStage(): Unknown shader stage!");
+			return nullptr;
+		}
+	}
+}
+
+[[nodiscard]] TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VulkanShader::InitShaderStage(const RendererAPI::ShaderStage stage,
+                                                                                                                         const RendererAPI::BinaryShaderStageDesc& stageDesc)
+{
+	const TRAP::Graphics::API::ShaderReflection::ShaderReflection reflection = VkCreateShaderReflection(stageDesc.ByteCode, stage);
+
+	const VkShaderModuleCreateInfo createInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
+		.pNext = nullptr,
+		.flags = 0,
+		.codeSize = stageDesc.ByteCode.size() * sizeof(u32),
+		.pCode = stageDesc.ByteCode.data()
+	};
+	m_shaderModules.emplace_back(VK_NULL_HANDLE);
+	VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr, &m_shaderModules.back()));
+
+#ifdef ENABLE_GRAPHICS_DEBUG
+	SetShaderStageName(m_device->GetVkDevice(), fmt::format("{}_{}", m_name, stage), m_shaderModules.back());
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+
+	return reflection;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -438,120 +495,11 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 	for(usize i = 0; i < std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT); i++)
 	{
 		const RendererAPI::ShaderStage stageMask = static_cast<RendererAPI::ShaderStage>(BIT(i));
+
 		if(stageMask == (m_shaderStages & stageMask))
 		{
-			VkShaderModuleCreateInfo createInfo{};
-			createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-			createInfo.pNext = nullptr;
-			createInfo.flags = 0;
-
-			const std::string stageName = m_name + "_";
-			switch(stageMask)
-			{
-				case RendererAPI::ShaderStage::Vertex:
-				{
-					stageReflections.push_back(VkCreateShaderReflection(desc.Vertex.ByteCode, stageMask));
-
-					createInfo.codeSize = desc.Vertex.ByteCode.size() * sizeof(u32);
-					createInfo.pCode = desc.Vertex.ByteCode.data();
-					m_shaderModules.emplace_back(VK_NULL_HANDLE);
-					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
-					                            &m_shaderModules.back()));
-#ifdef ENABLE_GRAPHICS_DEBUG
-					if (!m_name.empty())
-						SetShaderStageName(m_name + "_Vertex", m_shaderModules.back());
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-					break;
-				}
-
-				case RendererAPI::ShaderStage::TessellationControl:
-				{
-					stageReflections.push_back(VkCreateShaderReflection(desc.TessellationControl.ByteCode,
-					                                                    stageMask));
-
-					createInfo.codeSize = desc.TessellationControl.ByteCode.size() * sizeof(u32);
-					createInfo.pCode = desc.TessellationControl.ByteCode.data();
-					m_shaderModules.emplace_back(VK_NULL_HANDLE);
-					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
-					                            &m_shaderModules.back()));
-#ifdef ENABLE_GRAPHICS_DEBUG
-					if (!m_name.empty())
-						SetShaderStageName(m_name + "_TessellationControl", m_shaderModules.back());
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-					break;
-				}
-
-				case RendererAPI::ShaderStage::TessellationEvaluation:
-				{
-					stageReflections.push_back(VkCreateShaderReflection(desc.TessellationEvaluation.ByteCode,
-					                                                    stageMask));
-
-					createInfo.codeSize = desc.TessellationEvaluation.ByteCode.size() * sizeof(u32);
-					createInfo.pCode = desc.TessellationEvaluation.ByteCode.data();
-					m_shaderModules.emplace_back(VK_NULL_HANDLE);
-					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
-					                            &m_shaderModules.back()));
-#ifdef ENABLE_GRAPHICS_DEBUG
-					if (!m_name.empty())
-						SetShaderStageName(m_name + "_TessellationEvaluation", m_shaderModules.back());
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-					break;
-				}
-
-				case RendererAPI::ShaderStage::Geometry:
-				{
-					stageReflections.push_back(VkCreateShaderReflection(desc.Geometry.ByteCode, stageMask));
-
-					createInfo.codeSize = desc.Geometry.ByteCode.size() * sizeof(u32);
-					createInfo.pCode = desc.Geometry.ByteCode.data();
-					m_shaderModules.emplace_back(VK_NULL_HANDLE);
-					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
-					                            &m_shaderModules.back()));
-#ifdef ENABLE_GRAPHICS_DEBUG
-					if (!m_name.empty())
-						SetShaderStageName(m_name + "_Geometry", m_shaderModules.back());
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-					break;
-				}
-
-				case RendererAPI::ShaderStage::Fragment:
-				{
-					stageReflections.push_back(VkCreateShaderReflection(desc.Fragment.ByteCode, stageMask));
-
-					createInfo.codeSize = desc.Fragment.ByteCode.size() * sizeof(u32);
-					createInfo.pCode = desc.Fragment.ByteCode.data();
-					m_shaderModules.emplace_back(VK_NULL_HANDLE);
-					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
-					                            &m_shaderModules.back()));
-#ifdef ENABLE_GRAPHICS_DEBUG
-					if (!m_name.empty())
-						SetShaderStageName(m_name + "_Fragment", m_shaderModules.back());
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-					break;
-				}
-
-				case RendererAPI::ShaderStage::Compute:
-					[[fallthrough]];
-				case RendererAPI::ShaderStage::RayTracing:
-				{
-					stageReflections.push_back(VkCreateShaderReflection(desc.Compute.ByteCode, stageMask));
-
-					createInfo.codeSize = desc.Compute.ByteCode.size() * sizeof(u32);
-					createInfo.pCode = desc.Compute.ByteCode.data();
-					m_shaderModules.emplace_back(VK_NULL_HANDLE);
-					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
-					                            &m_shaderModules.back()));
-#ifdef ENABLE_GRAPHICS_DEBUG
-					if (!m_name.empty())
-						SetShaderStageName(m_name + "_Compute/RayTracing", m_shaderModules.back());
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-					break;
-				}
-
-				default:
-					TRAP_ASSERT(false, "VulkanShader::Init(): Shader Stage not supported!");
-					break;
-			}
+			if(const auto* const stageDesc = GetShaderStageDesc(stageMask, desc))
+				stageReflections.push_back(InitShaderStage(stageMask, *stageDesc));
 		}
 	}
 
@@ -623,20 +571,6 @@ void TRAP::Graphics::API::VulkanShader::Shutdown()
 	m_shaderStages = RendererAPI::ShaderStage::None;
 	m_reflection.reset();
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-void TRAP::Graphics::API::VulkanShader::SetShaderStageName(const std::string_view name, VkShaderModule stage) const
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	if(!m_valid)
-		return;
-
-	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(stage), VK_OBJECT_TYPE_SHADER_MODULE, name);
-}
-#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

@@ -154,8 +154,8 @@ namespace TRAP::Graphics::API
 		/// @param offset Offset of the UBO.
 		/// @param window Window to use the shader for.
 		/// @remark @headless This function is not available in headless mode.
-		void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer* uniformBuffer,
-		            u64 size, u64 offset, const Window* window) const override;
+		void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer& uniformBuffer,
+		            u64 size, u64 offset, const Window& window) const override;
 #else
 		/// @brief Use uniform buffer object with this shader.
 		/// @param set Descriptor set to use the UBO with.
@@ -164,7 +164,7 @@ namespace TRAP::Graphics::API
 		/// @param size Size of the UBO.
 		/// @param offset Offset of the UBO.
 		/// @remark This function is only available in headless mode.
-		void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer* uniformBuffer,
+		void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer& uniformBuffer,
 		            u64 size, u64 offset) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -176,8 +176,8 @@ namespace TRAP::Graphics::API
 		/// @param size Size of the SSBO.
 		/// @param window Window to use the shader for.
 		/// @remark @headless This function is not available in headless mode.
-		void UseSSBO(u32 set, u32 binding, const TRAP::Graphics::StorageBuffer* storageBuffer,
-		             u64 size, const Window* window) const override;
+		void UseSSBO(u32 set, u32 binding, const TRAP::Graphics::StorageBuffer& storageBuffer,
+		             u64 size, const Window& window) const override;
 #else
 		/// @brief Use shader storage buffer object with this shader.
 		/// @param set Descriptor set to use the SSBO with.
@@ -185,7 +185,7 @@ namespace TRAP::Graphics::API
 		/// @param storageBuffer Storage buffer to use.
 		/// @param size Size of the SSBO.
 		/// @remark This function is only available in headless mode.
-		void UseSSBO(u32 set, u32 binding, const TRAP::Graphics::StorageBuffer* storageBuffer,
+		void UseSSBO(u32 set, u32 binding, const TRAP::Graphics::StorageBuffer& storageBuffer,
 		             u64 size) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -194,6 +194,13 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] constexpr std::array<u32, 3> GetNumThreadsPerGroup() const noexcept override;
 
 	protected:
+		/// @brief Initialize a shader stage.
+		/// @param stage Shader stage to initialize.
+		/// @param stageDesc Shader stage data.
+		/// @return Reflection for the shader stage.
+		[[nodiscard]] TRAP::Graphics::API::ShaderReflection::ShaderReflection InitShaderStage(RendererAPI::ShaderStage stage,
+		                                                                                      const RendererAPI::BinaryShaderStageDesc& stageDesc);
+
 		/// @brief Initialize API dependent shader.
 		/// @param desc Binary shader description.
 		void Init(const RendererAPI::BinaryShaderDesc& desc) override;
@@ -201,13 +208,6 @@ namespace TRAP::Graphics::API
 		void Shutdown() override;
 
 	private:
-#ifdef ENABLE_GRAPHICS_DEBUG
-		/// @brief Set a name for the shader stage.
-		/// @param name Name for the shader stage.
-		/// @param stage Shader stage to name.
-		void SetShaderStageName(std::string_view name, VkShaderModule stage) const;
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Use a buffer object with this shader on the given window.
 		/// @param set Descriptor set to use the buffer with.
