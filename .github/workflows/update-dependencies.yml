@@ -169,7 +169,7 @@ jobs:
         with:
           dependency-path: ".modules/ninja"
           update-method: "latest-commit"
-          branch: "main"
+          branch: "master"
           pr-title: "Premake-Ninja"
           pr-branch-name: "premake-ninja-update"
           pr-token: ${{steps.generate-token.outputs.token}}
