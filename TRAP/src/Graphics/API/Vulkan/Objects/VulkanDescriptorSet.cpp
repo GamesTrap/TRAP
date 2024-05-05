@@ -282,7 +282,7 @@ namespace
 		if(descInfo.VkType != VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC)
 			return false;
 
-		const std::span<const TRAP::Graphics::Buffer* const> buffers = std::get<std::vector<TRAP::Graphics::Buffer*>>(descData.Resource);
+		const std::span<const TRAP::Graphics::Buffer* const> buffers = std::get<std::vector<const TRAP::Graphics::Buffer*>>(descData.Resource);
 		const TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset& off = std::get<TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset>(descData.Offset);
 		if(!ValidateDescriptor(!buffers.empty(), "VulkanDescriptorSet::UpdateDynamicUniformBuffer(): Empty uniform buffer(s) (\"", descInfo.Name, "\")"))
 			return needsUpdate;
@@ -330,7 +330,7 @@ namespace
 	{
 		bool needsUpdate = false;
 
-		const std::span<const TRAP::Graphics::Buffer* const> buffers = std::get<std::vector<TRAP::Graphics::Buffer*>>(descData.Resource);
+		const std::span<const TRAP::Graphics::Buffer* const> buffers = std::get<std::vector<const TRAP::Graphics::Buffer*>>(descData.Resource);
 		if(!ValidateDescriptor(!buffers.empty(), "VulkanDescriptorSet::UpdateBuffer(): Empty buffer(s) (\"", descInfo.Name, "\")"))
 			return false;
 
@@ -380,7 +380,7 @@ namespace
 	{
 		bool needsUpdate = false;
 
-		const std::span<const TRAP::Graphics::Buffer* const> buffers = std::get<std::vector<TRAP::Graphics::Buffer*>>(descData.Resource);
+		const std::span<const TRAP::Graphics::Buffer* const> buffers = std::get<std::vector<const TRAP::Graphics::Buffer*>>(descData.Resource);
 		if(!ValidateDescriptor(!buffers.empty(), "VulkanDescriptorSet::UpdateTexelBuffer(): Empty texel buffer(s) (\"", descInfo.Name, "\")"))
 			return needsUpdate;
 
@@ -408,7 +408,7 @@ namespace
 	{
 		bool needsUpdate = false;
 
-		const std::span<const TRAP::Graphics::Buffer* const> buffers = std::get<std::vector<TRAP::Graphics::Buffer*>>(descData.Resource);
+		const std::span<const TRAP::Graphics::Buffer* const> buffers = std::get<std::vector<const TRAP::Graphics::Buffer*>>(descData.Resource);
 		if(!ValidateDescriptor(!buffers.empty(), "VulkanDescriptorSet::UpdateRWTexelBuffer(): Empty RW Texel buffer(s) (\"", descInfo.Name, "\")"))
 			return needsUpdate;
 

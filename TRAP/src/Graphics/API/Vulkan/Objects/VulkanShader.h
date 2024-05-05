@@ -193,21 +193,13 @@ namespace TRAP::Graphics::API
 		/// @return Shaders thread count per work group.
 		[[nodiscard]] constexpr std::array<u32, 3> GetNumThreadsPerGroup() const noexcept override;
 
-	protected:
-		/// @brief Initialize a shader stage.
-		/// @param stage Shader stage to initialize.
-		/// @param stageDesc Shader stage data.
-		/// @return Reflection for the shader stage.
-		[[nodiscard]] TRAP::Graphics::API::ShaderReflection::ShaderReflection InitShaderStage(RendererAPI::ShaderStage stage,
-		                                                                                      const RendererAPI::BinaryShaderStageDesc& stageDesc);
-
+	private:
 		/// @brief Initialize API dependent shader.
 		/// @param desc Binary shader description.
 		void Init(const RendererAPI::BinaryShaderDesc& desc) override;
 		/// @brief Shutdown API dependent shader.
 		void Shutdown() override;
 
-	private:
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Use a buffer object with this shader on the given window.
 		/// @param set Descriptor set to use the buffer with.
@@ -217,8 +209,8 @@ namespace TRAP::Graphics::API
 		/// @param offset Offset into the buffer to start at.
 		/// @param window Window to use the buffer for.
 		/// @remark @headless This function is not available in headless mode.
-		void UseBuffer(u32 set, u32 binding, TRAP::Graphics::Buffer* buffer,
-		               u64 size, u64 offset, const Window* window) const;
+		void UseBuffer(u32 set, u32 binding, const TRAP::Graphics::Buffer& buffer,
+		               u64 size, u64 offset, const Window& window) const;
 #else
 		/// @brief Use a buffer object with this shader.
 		/// @param set Descriptor set to use the buffer with.
@@ -227,17 +219,9 @@ namespace TRAP::Graphics::API
 		/// @param size Size of the buffer.
 		/// @param offset Offset into the buffer to start at.
 		/// @remark This function is only available in headless mode.
-		void UseBuffer(u32 set, u32 binding, TRAP::Graphics::Buffer* buffer,
+		void UseBuffer(u32 set, u32 binding, const TRAP::Graphics::Buffer& buffer,
 		               u64 size, u64 offset) const;
 #endif /*TRAP_HEADLESS_MODE*/
-
-		/// @brief </summary>
-		/// @param set Descriptor set used by the descriptor.
-		/// @param binding Binding point used by the descriptor.
-		/// @param type Descriptor type of the descriptor.
-		/// @param size Size of the descriptor.
-		/// @return Descriptor's if found, nullptr otherwise.
-		[[nodiscard]] const ShaderReflection::ShaderResource* RetrieveDescriptor(u32 set, u32 binding, RendererAPI::DescriptorType type, u64 size = 1) const;
 
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 

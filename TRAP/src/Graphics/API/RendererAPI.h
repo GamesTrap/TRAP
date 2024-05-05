@@ -2557,6 +2557,12 @@ namespace TRAP::Graphics
 			u16 ArrayLayer{};
 		};
 
+		using DescriptorResource = std::variant<std::vector<const TRAP::Graphics::Texture*>,
+		                                        std::vector<const Sampler*>,
+				                                std::vector<const Buffer*>,
+												std::vector<Pipeline*>,
+				                                std::vector<DescriptorSet*>>;
+
 		/// @brief Struct holding a data of a descriptor.
 		struct DescriptorData
 		{
@@ -2598,9 +2604,7 @@ namespace TRAP::Graphics
 			//Array of pipeline descriptors
 			//DescriptorSet buffer extraction
 			//Custom binding (RayTracing acceleration structure ...)
-			std::variant<std::vector<const TRAP::Graphics::Texture*>, std::vector<const Sampler*>,
-				std::vector<Buffer*>, std::vector<Pipeline*>,
-				std::vector<DescriptorSet*>> Resource{std::vector<const TRAP::Graphics::Texture*>()}; //TODO RayTracing acceleration structure
+			DescriptorResource Resource{std::vector<const TRAP::Graphics::Texture*>()}; //TODO RayTracing acceleration structure
 
 			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
 			u32 Count{};
