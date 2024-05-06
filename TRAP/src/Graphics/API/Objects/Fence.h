@@ -49,7 +49,8 @@ namespace TRAP::Graphics
 
 	protected:
 		/// @brief Constructor. Fence is not signaled.
-		Fence();
+		/// @param signalled Whether the Fence should be in signalled state or not. Default: Not signalled.
+		explicit Fence(bool signalled);
 
 		bool m_submitted = false;
 
