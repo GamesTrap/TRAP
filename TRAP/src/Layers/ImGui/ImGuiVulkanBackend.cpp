@@ -198,7 +198,6 @@ namespace
         VkSurfaceFormatKHR  SurfaceFormat{};
         VkPresentModeKHR    PresentMode = VK_PRESENT_MODE_MAX_ENUM_KHR;
         VkRenderPass        RenderPass = VK_NULL_HANDLE;
-        VkPipeline          Pipeline = VK_NULL_HANDLE; // The window pipeline may uses a different VkRenderPass than the one passed in ImGui_ImplVulkan_InitInfo
         bool                UseDynamicRendering = false;
         bool                ClearEnable = true;
         VkClearValue        ClearValue{};
@@ -263,7 +262,8 @@ namespace
         VkDescriptorSetLayout       DescriptorSetLayout = VK_NULL_HANDLE;
         VkPipelineLayout            PipelineLayout = VK_NULL_HANDLE;
         VkDescriptorSet             DescriptorSet = VK_NULL_HANDLE;
-        VkPipeline                  Pipeline = VK_NULL_HANDLE;
+        VkPipeline                  Pipeline = VK_NULL_HANDLE; //Pipeline for main render pass (created by app)
+        VkPipeline                  PipelineForViewports = VK_NULL_HANDLE; //Pipeline for secondary viewports (created by backend)
         VkShaderModule              ShaderModuleVert = VK_NULL_HANDLE;
         VkShaderModule              ShaderModuleFrag = VK_NULL_HANDLE;
 
@@ -659,6 +659,7 @@ namespace
         if (bd->DescriptorSetLayout != nullptr)  { vkDestroyDescriptorSetLayout(v.Device->GetVkDevice(), bd->DescriptorSetLayout, v.Allocator); bd->DescriptorSetLayout = VK_NULL_HANDLE; }
         if (bd->PipelineLayout != nullptr)       { vkDestroyPipelineLayout(v.Device->GetVkDevice(), bd->PipelineLayout, v.Allocator); bd->PipelineLayout = VK_NULL_HANDLE; }
         if (bd->Pipeline != nullptr)             { vkDestroyPipeline(v.Device->GetVkDevice(), bd->Pipeline, v.Allocator); bd->Pipeline = VK_NULL_HANDLE; }
+        if (bd->PipelineForViewports != nullptr) { vkDestroyPipeline(v.Device->GetVkDevice(), bd->PipelineForViewports, v.Allocator); bd->PipelineForViewports = VK_NULL_HANDLE; }
     }
 
     //-------------------------------------------------------------------------
@@ -826,8 +827,6 @@ namespace
         wd.ImageCount = 0;
         if (wd.RenderPass != nullptr)
             vkDestroyRenderPass(device.GetVkDevice(), wd.RenderPass, allocator);
-        if (wd.Pipeline != nullptr)
-            vkDestroyPipeline(device.GetVkDevice(), wd.Pipeline, allocator);
 
         // If min image count was not specified, request different count of images dependent on selected present mode
         if (min_image_count == 0)
@@ -924,7 +923,7 @@ namespace
             //Secondary viewports in multi-viewport mode may want to create their own pipelines.
             //This fixes the RenderPass incompatibility coming from the bd->RenderPass
             //which was first passed on to ImGui_ImplVulkan_Init().
-            CreatePipeline(device, allocator, VK_NULL_HANDLE, wd.RenderPass, VK_SAMPLE_COUNT_1_BIT, wd.Pipeline);
+            // CreatePipeline(device, allocator, VK_NULL_HANDLE, wd.RenderPass, VK_SAMPLE_COUNT_1_BIT, wd.Pipeline);
         }
 
         // Create Framebuffer
@@ -975,7 +974,6 @@ namespace
             DestroyFrame(device, wnd.Frames[i], allocator);
         wnd.Frames.clear();
         wnd.FrameSemaphores.clear();
-        vkDestroyPipeline(device.GetVkDevice(), wnd.Pipeline, allocator);
         vkDestroyRenderPass(device.GetVkDevice(), wnd.RenderPass, allocator);
         vkDestroySwapchainKHR(device.GetVkDevice(), wnd.Swapchain, allocator);
         vkDestroySurfaceKHR(instance.GetVkInstance(), wnd.Surface, allocator);
@@ -1046,7 +1044,7 @@ namespace
 
         TRAP_ASSERT(viewport != nullptr, "ImGuiVulkanBackend::CreateWindow(): viewport is nullptr!");
 
-        const ImGui_ImplVulkan_Data* const bd = GetBackendData();
+        ImGui_ImplVulkan_Data* const bd = GetBackendData();
         ImGui_ImplVulkan_ViewportData* const vd = IM_NEW(ImGui_ImplVulkan_ViewportData)();
         viewport->RendererUserData = vd;
         ImGui_ImplVulkanH_Window& wd = vd->Window;
@@ -1089,6 +1087,10 @@ namespace
         wd.UseDynamicRendering = v.UseDynamicRendering;
         CreateOrResizeWindow(*v.Device, wd, v.Queue, v.Allocator, NumericCast<i32>(viewport->Size.x), NumericCast<i32>(viewport->Size.y), v.MinImageCount);
         vd->WindowOwned = true;
+
+        //Create pipeline (shared by all secondary viewports)
+        if(bd->PipelineForViewports == VK_NULL_HANDLE)
+            CreatePipeline(*v.Device, v.Allocator, VK_NULL_HANDLE, wd.RenderPass, VK_SAMPLE_COUNT_1_BIT, bd->PipelineForViewports);
     }
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -1310,7 +1312,7 @@ void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* const viewport, [[mayb
 
     TRAP_ASSERT(viewport->DrawData != nullptr, "ImGuiVulkanBackend::RenderWindow(): viewport->DrawData is nullptr!");
     TRAP_ASSERT(fd.CommandBuffer != nullptr, "ImGuiVulkanBackend::RenderWindow(): fd.CommandBuffer is nullptr!");
-    RenderDrawData(*viewport->DrawData, *fd.CommandBuffer, wd.Pipeline);
+    RenderDrawData(*viewport->DrawData, *fd.CommandBuffer, bd->PipelineForViewports);
 
     {
 #ifdef IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING
