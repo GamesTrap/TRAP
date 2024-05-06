@@ -33,7 +33,8 @@ TRAP::Graphics::Fence::~Fence()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Fence::Fence()
+TRAP::Graphics::Fence::Fence(const bool signalled)
+	: m_submitted(signalled)
 {
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererFencePrefix, "Creating Fence");
