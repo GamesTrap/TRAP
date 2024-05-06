@@ -198,7 +198,6 @@ namespace
         VkSurfaceFormatKHR  SurfaceFormat{};
         VkPresentModeKHR    PresentMode = VK_PRESENT_MODE_MAX_ENUM_KHR;
         VkRenderPass        RenderPass = VK_NULL_HANDLE;
-        VkPipeline          Pipeline = VK_NULL_HANDLE; // The window pipeline may uses a different VkRenderPass than the one passed in ImGui_ImplVulkan_InitInfo
         bool                UseDynamicRendering = false;
         bool                ClearEnable = true;
         VkClearValue        ClearValue{};
@@ -263,7 +262,8 @@ namespace
         VkDescriptorSetLayout       DescriptorSetLayout = VK_NULL_HANDLE;
         VkPipelineLayout            PipelineLayout = VK_NULL_HANDLE;
         VkDescriptorSet             DescriptorSet = VK_NULL_HANDLE;
-        VkPipeline                  Pipeline = VK_NULL_HANDLE;
+        VkPipeline                  Pipeline = VK_NULL_HANDLE; //Pipeline for main render pass (created by app)
+        VkPipeline                  PipelineForViewports = VK_NULL_HANDLE; //Pipeline for secondary viewports (created by backend)
         VkShaderModule              ShaderModuleVert = VK_NULL_HANDLE;
         VkShaderModule              ShaderModuleFrag = VK_NULL_HANDLE;
 
@@ -321,7 +321,6 @@ namespace
     void CreateWindow(ImGuiViewport* viewport);
     void DestroyWindow(ImGuiViewport* viewport);
     void SetWindowSize(ImGuiViewport* viewport, ImVec2 size);
-    void RenderWindow(ImGuiViewport* viewport, [[maybe_unused]] void* render_arg);
     void SwapBuffers(ImGuiViewport* viewport, [[maybe_unused]] void* render_arg);
 
     void InitPlatformInterface();
@@ -660,6 +659,7 @@ namespace
         if (bd->DescriptorSetLayout != nullptr)  { vkDestroyDescriptorSetLayout(v.Device->GetVkDevice(), bd->DescriptorSetLayout, v.Allocator); bd->DescriptorSetLayout = VK_NULL_HANDLE; }
         if (bd->PipelineLayout != nullptr)       { vkDestroyPipelineLayout(v.Device->GetVkDevice(), bd->PipelineLayout, v.Allocator); bd->PipelineLayout = VK_NULL_HANDLE; }
         if (bd->Pipeline != nullptr)             { vkDestroyPipeline(v.Device->GetVkDevice(), bd->Pipeline, v.Allocator); bd->Pipeline = VK_NULL_HANDLE; }
+        if (bd->PipelineForViewports != nullptr) { vkDestroyPipeline(v.Device->GetVkDevice(), bd->PipelineForViewports, v.Allocator); bd->PipelineForViewports = VK_NULL_HANDLE; }
     }
 
     //-------------------------------------------------------------------------
@@ -775,8 +775,7 @@ namespace
             fd.CommandPool = TRAP::MakeScope<TRAP::Graphics::API::VulkanCommandPool>(cmdPoolDesc);
             fd.CommandBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(&fd.CommandPool->GetCommandBuffer(false, fmt::format("ImGui Window CommandBuffer (Image: {}, QueueType: {})", i, queue->GetQueueType())));
 
-            fd.Fence = TRAP::MakeRef<TRAP::Graphics::API::VulkanFence>(false, fmt::format("ImGui Window Fence (Image: {}, QueueType: \"{}\")", i, queue->GetQueueType()));
-
+            fd.Fence = TRAP::MakeRef<TRAP::Graphics::API::VulkanFence>(true, fmt::format("ImGui Window Fence (Image: {}, QueueType: \"{}\")", i, queue->GetQueueType()));
         }
 
         for(u32 i = 0; i < wd.FrameSemaphores.size(); ++i)
@@ -828,8 +827,6 @@ namespace
         wd.ImageCount = 0;
         if (wd.RenderPass != nullptr)
             vkDestroyRenderPass(device.GetVkDevice(), wd.RenderPass, allocator);
-        if (wd.Pipeline != nullptr)
-            vkDestroyPipeline(device.GetVkDevice(), wd.Pipeline, allocator);
 
         // If min image count was not specified, request different count of images dependent on selected present mode
         if (min_image_count == 0)
@@ -926,7 +923,7 @@ namespace
             //Secondary viewports in multi-viewport mode may want to create their own pipelines.
             //This fixes the RenderPass incompatibility coming from the bd->RenderPass
             //which was first passed on to ImGui_ImplVulkan_Init().
-            CreatePipeline(device, allocator, VK_NULL_HANDLE, wd.RenderPass, VK_SAMPLE_COUNT_1_BIT, wd.Pipeline);
+            // CreatePipeline(device, allocator, VK_NULL_HANDLE, wd.RenderPass, VK_SAMPLE_COUNT_1_BIT, wd.Pipeline);
         }
 
         // Create Framebuffer
@@ -977,7 +974,6 @@ namespace
             DestroyFrame(device, wnd.Frames[i], allocator);
         wnd.Frames.clear();
         wnd.FrameSemaphores.clear();
-        vkDestroyPipeline(device.GetVkDevice(), wnd.Pipeline, allocator);
         vkDestroyRenderPass(device.GetVkDevice(), wnd.RenderPass, allocator);
         vkDestroySwapchainKHR(device.GetVkDevice(), wnd.Swapchain, allocator);
         vkDestroySurfaceKHR(instance.GetVkInstance(), wnd.Surface, allocator);
@@ -1048,7 +1044,7 @@ namespace
 
         TRAP_ASSERT(viewport != nullptr, "ImGuiVulkanBackend::CreateWindow(): viewport is nullptr!");
 
-        const ImGui_ImplVulkan_Data* const bd = GetBackendData();
+        ImGui_ImplVulkan_Data* const bd = GetBackendData();
         ImGui_ImplVulkan_ViewportData* const vd = IM_NEW(ImGui_ImplVulkan_ViewportData)();
         viewport->RendererUserData = vd;
         ImGui_ImplVulkanH_Window& wd = vd->Window;
@@ -1091,6 +1087,10 @@ namespace
         wd.UseDynamicRendering = v.UseDynamicRendering;
         CreateOrResizeWindow(*v.Device, wd, v.Queue, v.Allocator, NumericCast<i32>(viewport->Size.x), NumericCast<i32>(viewport->Size.y), v.MinImageCount);
         vd->WindowOwned = true;
+
+        //Create pipeline (shared by all secondary viewports)
+        if(bd->PipelineForViewports == VK_NULL_HANDLE)
+            CreatePipeline(*v.Device, v.Allocator, VK_NULL_HANDLE, wd.RenderPass, VK_SAMPLE_COUNT_1_BIT, bd->PipelineForViewports);
     }
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -1132,178 +1132,6 @@ namespace
             const InitInfo& v = bd->VulkanInitInfo;
             vd->Window.ClearEnable = (viewport->Flags & ImGuiViewportFlags_NoRendererClear) == 0;
             CreateOrResizeWindow(*v.Device, vd->Window, v.Queue, v.Allocator, NumericCast<i32>(size.x), NumericCast<i32>(size.y), v.MinImageCount);
-        }
-    }
-
-    //-------------------------------------------------------------------------------------------------------------------//
-
-    void RenderWindow(ImGuiViewport* const viewport, [[maybe_unused]] void* const render_arg)
-    {
-        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
-
-        TRAP_ASSERT(viewport != nullptr, "ImGuiVulkanBackend::RenderWindow(): viewport is nullptr!");
-        if(viewport == nullptr)
-            return;
-
-        const ImGui_ImplVulkan_Data* const bd = GetBackendData();
-        ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData);
-        TRAP_ASSERT(vd != nullptr, "ImGuiVulkanBackend::RenderWindow(): vd is nullptr!");
-        if(vd == nullptr)
-            return;
-
-        ImGui_ImplVulkanH_Window& wd = vd->Window;
-        const InitInfo& v = bd->VulkanInitInfo;
-        VkResult err = VK_SUCCESS;
-
-        const ImGui_ImplVulkanH_FrameSemaphores& fsd = wd.FrameSemaphores[wd.SemaphoreIndex];
-        {
-            {
-                err = vkAcquireNextImageKHR(v.Device->GetVkDevice(), wd.Swapchain, std::numeric_limits<u64>::max(), fsd.ImageAcquiredSemaphore->GetVkSemaphore(), VK_NULL_HANDLE, &wd.FrameIndex);
-                CheckVkResult(err);
-            }
-
-            const ImGui_ImplVulkanH_Frame& fd = wd.Frames[wd.FrameIndex];
-
-            fd.Fence->Wait();
-            {
-                fd.CommandPool->Reset();
-                fd.CommandBuffer->Begin();
-            }
-            {
-                static constexpr ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
-                std::copy_n(&clear_color.x, 4, &wd.ClearValue.color.float32[0]);
-            }
-    #ifdef IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING
-            if(v.UseDynamicRendering)
-            {
-                //Transition swapchain image to a layout suitable for drawing.
-                std::vector<TRAP::Graphics::RendererAPI::TextureBarrier> barriers
-                {
-                    TRAP::Graphics::RendererAPI::TextureBarrier
-                    {
-                        .Texture = dynamic_cast<TRAP::Graphics::Texture*>(fd.Backbuffer->GetTexture().get()),
-                        .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
-                        .NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource,
-                        .BeginOnly = false,
-                        .EndOnly = false,
-                        .Acquire = false,
-                        .Release = false,
-                        .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
-                        .SubresourceBarrier = false,
-                        .MipLevel = 0,
-                        .ArrayLayer = 0
-                    }
-                };
-                fd.CommandBuffer->ResourceBarrier(nullptr, &barriers, nullptr);
-
-                const VkRenderingAttachmentInfo attachmentInfo =
-                {
-                    .sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
-                    .pNext = nullptr,
-                    .imageView = fd.Backbuffer->GetVkImageView(),
-                    .imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-                    .resolveMode = VK_RESOLVE_MODE_NONE,
-                    .resolveImageView = VK_NULL_HANDLE,
-                    .resolveImageLayout = VK_IMAGE_LAYOUT_UNDEFINED,
-                    .loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
-                    .storeOp = VK_ATTACHMENT_STORE_OP_STORE,
-                    .clearValue = wd.ClearValue
-                };
-
-                const VkRenderingInfo renderingInfo
-                {
-                    .sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR,
-                    .pNext = nullptr,
-                    .flags = 0,
-                    .renderArea = VkRect2D{.offset = VkOffset2D{.x = 0, .y = 0},
-                                           .extent = VkExtent2D{.width = NumericCast<u32>(wd.Width), .height = NumericCast<u32>(wd.Height)}},
-                    .layerCount = 1,
-                    .viewMask = 0,
-                    .colorAttachmentCount = 1,
-                    .pColorAttachments = &attachmentInfo,
-                    .pDepthAttachment = nullptr,
-                    .pStencilAttachment = nullptr
-                };
-
-                vkCmdBeginRenderingKHR(fd.CommandBuffer->GetVkCommandBuffer(), &renderingInfo);
-            }
-            else
-    #endif /*IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING*/
-            {
-                const VkRect2D renderArea
-                {
-                    .offset{.x = 0, .y = 0},
-                    .extent{.width = NumericCast<u32>(wd.Width), .height = NumericCast<u32>(wd.Height)}
-                };
-                const VkRenderPassBeginInfo info = TRAP::Graphics::API::VulkanInits::RenderPassBeginInfo(wd.RenderPass, fd.Framebuffer,
-                                                                                                        renderArea, (viewport->Flags & ImGuiViewportFlags_NoRendererClear) != 0 ? std::vector<VkClearValue>{} : std::vector<VkClearValue>{wd.ClearValue});
-
-                vkCmdBeginRenderPass(fd.CommandBuffer->GetVkCommandBuffer(), &info, VK_SUBPASS_CONTENTS_INLINE);
-            }
-        }
-
-        const ImGui_ImplVulkanH_Frame& fd = wd.Frames[wd.FrameIndex];
-
-        TRAP_ASSERT(viewport->DrawData != nullptr, "ImGuiVulkanBackend::RenderWindow(): viewport->DrawData is nullptr!");
-        TRAP_ASSERT(fd.CommandBuffer != nullptr, "ImGuiVulkanBackend::RenderWindow(): fd.CommandBuffer is nullptr!");
-        RenderDrawData(*viewport->DrawData, *fd.CommandBuffer, wd.Pipeline);
-
-        {
-    #ifdef IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING
-            if(v.UseDynamicRendering)
-            {
-                vkCmdEndRenderingKHR(fd.CommandBuffer->GetVkCommandBuffer());
-
-                //Transition image to a layout suitable for presentation
-                std::vector<TRAP::Graphics::RendererAPI::TextureBarrier> barriers
-                {
-                    TRAP::Graphics::RendererAPI::TextureBarrier
-                    {
-                        .Texture = dynamic_cast<TRAP::Graphics::Texture*>(fd.Backbuffer->GetTexture().get()),
-                        .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource,
-                        .NewState = TRAP::Graphics::RendererAPI::ResourceState::Present,
-                        .BeginOnly = false,
-                        .EndOnly = false,
-                        .Acquire = false,
-                        .Release = false,
-                        .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
-                        .SubresourceBarrier = false,
-                        .MipLevel = 0,
-                        .ArrayLayer = 0
-                    }
-                };
-                fd.CommandBuffer->ResourceBarrier(nullptr, &barriers, nullptr);
-            }
-            else
-    #endif /*IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING*/
-            {
-                vkCmdEndRenderPass(fd.CommandBuffer->GetVkCommandBuffer());
-            }
-            {
-                static constexpr VkPipelineStageFlags wait_stage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-                VkSemaphore imageAcquiredSemaphore = fsd.ImageAcquiredSemaphore->GetVkSemaphore();
-                VkSemaphore renderCompleteSemaphore = fsd.RenderCompleteSemaphore->GetVkSemaphore();
-                VkCommandBuffer cmdBuffer = fd.CommandBuffer->GetVkCommandBuffer();
-                const VkSubmitInfo info
-                {
-                    .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
-                    .pNext = nullptr,
-                    .waitSemaphoreCount = 1,
-                    .pWaitSemaphores = &imageAcquiredSemaphore,
-                    .pWaitDstStageMask = &wait_stage,
-                    .commandBufferCount = 1,
-                    .pCommandBuffers = &cmdBuffer,
-                    .signalSemaphoreCount = 1,
-                    .pSignalSemaphores = &renderCompleteSemaphore
-                };
-
-                VkFence fence = fd.Fence->GetVkFence();
-
-                fd.CommandBuffer->End();
-                fd.Fence->ResetState();
-                err = vkQueueSubmit(v.Queue->GetVkQueue(), 1, &info, fence);
-                CheckVkResult(err);
-            }
         }
     }
 
@@ -1374,6 +1202,178 @@ namespace
 //-----------------------------------------------------------------------------
 // FUNCTIONS
 //-----------------------------------------------------------------------------
+
+void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* const viewport, [[maybe_unused]] void* const render_arg)
+{
+    ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
+
+    TRAP_ASSERT(viewport != nullptr, "ImGuiVulkanBackend::RenderWindow(): viewport is nullptr!");
+    if(viewport == nullptr)
+        return;
+
+    const ImGui_ImplVulkan_Data* const bd = GetBackendData();
+    ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData);
+    TRAP_ASSERT(vd != nullptr, "ImGuiVulkanBackend::RenderWindow(): vd is nullptr!");
+    if(vd == nullptr)
+        return;
+
+    ImGui_ImplVulkanH_Window& wd = vd->Window;
+    const InitInfo& v = bd->VulkanInitInfo;
+    VkResult err = VK_SUCCESS;
+
+    const ImGui_ImplVulkanH_FrameSemaphores& fsd = wd.FrameSemaphores[wd.SemaphoreIndex];
+    {
+        {
+            err = vkAcquireNextImageKHR(v.Device->GetVkDevice(), wd.Swapchain, std::numeric_limits<u64>::max(), fsd.ImageAcquiredSemaphore->GetVkSemaphore(), VK_NULL_HANDLE, &wd.FrameIndex);
+            CheckVkResult(err);
+        }
+
+        const ImGui_ImplVulkanH_Frame& fd = wd.Frames[wd.FrameIndex];
+
+        fd.Fence->Wait();
+        {
+            fd.CommandPool->Reset();
+            fd.CommandBuffer->Begin();
+        }
+        {
+            static constexpr ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+            std::copy_n(&clear_color.x, 4, &wd.ClearValue.color.float32[0]);
+        }
+#ifdef IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING
+        if(v.UseDynamicRendering)
+        {
+            //Transition swapchain image to a layout suitable for drawing.
+            std::vector<TRAP::Graphics::RendererAPI::TextureBarrier> barriers
+            {
+                TRAP::Graphics::RendererAPI::TextureBarrier
+                {
+                    .Texture = dynamic_cast<TRAP::Graphics::Texture*>(fd.Backbuffer->GetTexture().get()),
+                    .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
+                    .NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource,
+                    .BeginOnly = false,
+                    .EndOnly = false,
+                    .Acquire = false,
+                    .Release = false,
+                    .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
+                    .SubresourceBarrier = false,
+                    .MipLevel = 0,
+                    .ArrayLayer = 0
+                }
+            };
+            fd.CommandBuffer->ResourceBarrier(nullptr, &barriers, nullptr);
+
+            const VkRenderingAttachmentInfo attachmentInfo =
+            {
+                .sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
+                .pNext = nullptr,
+                .imageView = fd.Backbuffer->GetVkImageView(),
+                .imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+                .resolveMode = VK_RESOLVE_MODE_NONE,
+                .resolveImageView = VK_NULL_HANDLE,
+                .resolveImageLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+                .loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
+                .storeOp = VK_ATTACHMENT_STORE_OP_STORE,
+                .clearValue = wd.ClearValue
+            };
+
+            const VkRenderingInfo renderingInfo
+            {
+                .sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR,
+                .pNext = nullptr,
+                .flags = 0,
+                .renderArea = VkRect2D{.offset = VkOffset2D{.x = 0, .y = 0},
+                                        .extent = VkExtent2D{.width = NumericCast<u32>(wd.Width), .height = NumericCast<u32>(wd.Height)}},
+                .layerCount = 1,
+                .viewMask = 0,
+                .colorAttachmentCount = 1,
+                .pColorAttachments = &attachmentInfo,
+                .pDepthAttachment = nullptr,
+                .pStencilAttachment = nullptr
+            };
+
+            vkCmdBeginRenderingKHR(fd.CommandBuffer->GetVkCommandBuffer(), &renderingInfo);
+        }
+        else
+#endif /*IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING*/
+        {
+            const VkRect2D renderArea
+            {
+                .offset{.x = 0, .y = 0},
+                .extent{.width = NumericCast<u32>(wd.Width), .height = NumericCast<u32>(wd.Height)}
+            };
+            const VkRenderPassBeginInfo info = TRAP::Graphics::API::VulkanInits::RenderPassBeginInfo(wd.RenderPass, fd.Framebuffer,
+                                                                                                    renderArea, (viewport->Flags & ImGuiViewportFlags_NoRendererClear) != 0 ? std::vector<VkClearValue>{} : std::vector<VkClearValue>{wd.ClearValue});
+
+            vkCmdBeginRenderPass(fd.CommandBuffer->GetVkCommandBuffer(), &info, VK_SUBPASS_CONTENTS_INLINE);
+        }
+    }
+
+    const ImGui_ImplVulkanH_Frame& fd = wd.Frames[wd.FrameIndex];
+
+    TRAP_ASSERT(viewport->DrawData != nullptr, "ImGuiVulkanBackend::RenderWindow(): viewport->DrawData is nullptr!");
+    TRAP_ASSERT(fd.CommandBuffer != nullptr, "ImGuiVulkanBackend::RenderWindow(): fd.CommandBuffer is nullptr!");
+    RenderDrawData(*viewport->DrawData, *fd.CommandBuffer, bd->PipelineForViewports);
+
+    {
+#ifdef IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING
+        if(v.UseDynamicRendering)
+        {
+            vkCmdEndRenderingKHR(fd.CommandBuffer->GetVkCommandBuffer());
+
+            //Transition image to a layout suitable for presentation
+            std::vector<TRAP::Graphics::RendererAPI::TextureBarrier> barriers
+            {
+                TRAP::Graphics::RendererAPI::TextureBarrier
+                {
+                    .Texture = dynamic_cast<TRAP::Graphics::Texture*>(fd.Backbuffer->GetTexture().get()),
+                    .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource,
+                    .NewState = TRAP::Graphics::RendererAPI::ResourceState::Present,
+                    .BeginOnly = false,
+                    .EndOnly = false,
+                    .Acquire = false,
+                    .Release = false,
+                    .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
+                    .SubresourceBarrier = false,
+                    .MipLevel = 0,
+                    .ArrayLayer = 0
+                }
+            };
+            fd.CommandBuffer->ResourceBarrier(nullptr, &barriers, nullptr);
+        }
+        else
+#endif /*IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING*/
+        {
+            vkCmdEndRenderPass(fd.CommandBuffer->GetVkCommandBuffer());
+        }
+        {
+            static constexpr VkPipelineStageFlags wait_stage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+            VkSemaphore imageAcquiredSemaphore = fsd.ImageAcquiredSemaphore->GetVkSemaphore();
+            VkSemaphore renderCompleteSemaphore = fsd.RenderCompleteSemaphore->GetVkSemaphore();
+            VkCommandBuffer cmdBuffer = fd.CommandBuffer->GetVkCommandBuffer();
+            const VkSubmitInfo info
+            {
+                .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+                .pNext = nullptr,
+                .waitSemaphoreCount = 1,
+                .pWaitSemaphores = &imageAcquiredSemaphore,
+                .pWaitDstStageMask = &wait_stage,
+                .commandBufferCount = 1,
+                .pCommandBuffers = &cmdBuffer,
+                .signalSemaphoreCount = 1,
+                .pSignalSemaphores = &renderCompleteSemaphore
+            };
+
+            fd.CommandBuffer->End();
+            // fd.Fence->ResetState(); //Already done by Fence::Wait();
+            err = vkQueueSubmit(v.Queue->GetVkQueue(), 1, &info, fd.Fence->GetVkFence());
+            CheckVkResult(err);
+
+            fd.Fence->m_submitted = true;
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 
 void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
 {

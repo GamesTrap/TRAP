@@ -6,6 +6,14 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Fence.h"
 
+#ifndef TRAP_HEADLESS_MODE
+struct ImGuiViewport;
+namespace ImGui::INTERNAL::Vulkan
+{
+	void RenderWindow(ImGuiViewport* viewport, void* render_arg);
+}
+#endif /*TRAP_HEADLESS_MODE*/
+
 namespace TRAP::Graphics::API
 {
 	class VulkanQueue;
@@ -53,6 +61,7 @@ namespace TRAP::Graphics::API
 #ifndef TRAP_HEADLESS_MODE
 		friend std::optional<u32> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
 		                                                                                      const TRAP::Ref<Fence>& fence) const;
+		friend void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* viewport, void* render_arg);
 #endif /*TRAP_HEADLESS_MODE*/
 
 		VkFence m_fence = VK_NULL_HANDLE;

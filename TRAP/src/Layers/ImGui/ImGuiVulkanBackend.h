@@ -122,6 +122,8 @@ namespace ImGui::INTERNAL::Vulkan
                   ImTextureID UpdateTextureInfo(VkDescriptorSet descriptorSet, const TRAP::Graphics::API::VulkanSampler& sampler, VkImageView image_view, VkImageLayout image_layout);
                   void        ClearCache() noexcept;
                   void        SetMSAASamples(VkSampleCountFlagBits sampleCount);
+
+                  void        RenderWindow(ImGuiViewport* viewport, [[maybe_unused]] void* render_arg);
 };
 
 #endif /*TRAP_HEADLESS_MODE*/
