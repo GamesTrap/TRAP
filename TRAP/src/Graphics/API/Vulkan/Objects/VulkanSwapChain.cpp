@@ -47,7 +47,7 @@ TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainDesc& desc,
-                                                         VkSwapchainKHR oldSwapChain)
+                                                         VkSwapchainKHR* oldSwapChain)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -57,6 +57,22 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	if(m_surface == nullptr)
 		m_surface = TRAP::MakeRef<VulkanSurface>(m_instance, m_device, desc.Window);
 
+	VkSurfaceCapabilitiesKHR caps = m_surface->GetVkSurfaceCapabilities();
+
+	VkExtent2D extent{};
+	extent.width = TRAP::Math::Clamp(desc.Width, caps.minImageExtent.width, caps.maxImageExtent.width);
+	extent.height = TRAP::Math::Clamp(desc.Height, caps.minImageExtent.height, caps.maxImageExtent.height);
+	if((extent.width != desc.Width || extent.height != desc.Height) && oldSwapChain != nullptr)
+	{
+		vkDestroySwapchainKHR(m_device->GetVkDevice(), *oldSwapChain, nullptr);
+		*oldSwapChain = nullptr;
+
+		m_surface = TRAP::MakeRef<VulkanSurface>(m_instance, m_device, desc.Window);
+		caps = m_surface->GetVkSurfaceCapabilities();
+		extent.width = TRAP::Math::Clamp(desc.Width, caps.minImageExtent.width, caps.maxImageExtent.width);
+		extent.height = TRAP::Math::Clamp(desc.Height, caps.minImageExtent.height, caps.maxImageExtent.height);
+	}
+
 	////////////////////
 	//Create SwapChain//
 	////////////////////
@@ -64,7 +80,6 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	if (desc.ImageCount == 0)
 		desc.ImageCount = 2;
 
-	const VkSurfaceCapabilitiesKHR caps = m_surface->GetVkSurfaceCapabilities();
 	if ((caps.maxImageCount > 0) && (desc.ImageCount > caps.maxImageCount))
 	{
 		TP_WARN(Log::RendererVulkanSwapChainPrefix, "Changed requested SwapChain images ", desc.ImageCount,
@@ -152,10 +167,6 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	}
 
 	//SwapChain
-	VkExtent2D extent{};
-	extent.width = TRAP::Math::Clamp(desc.Width, caps.minImageExtent.width, caps.maxImageExtent.width);
-	extent.height = TRAP::Math::Clamp(desc.Height, caps.minImageExtent.height, caps.maxImageExtent.height);
-
 	desc.Width = extent.width;
 	desc.Height = extent.height;
 
@@ -247,8 +258,12 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 
 	TRAP_ASSERT(compositeAlpha != VK_COMPOSITE_ALPHA_FLAG_BITS_MAX_ENUM_KHR, "VulkanSwapChain::InitSwapchain(): No composite alpha flag available!");
 
+	VkSwapchainKHR oldSwapChainTmp = nullptr;
 	if(auto* oldVkSwapChain = dynamic_cast<VulkanSwapChain*>(desc.OldSwapChain); oldSwapChain == nullptr && desc.OldSwapChain != nullptr)
-		oldSwapChain = oldVkSwapChain->GetVkSwapChain();
+	{
+		oldSwapChainTmp = oldVkSwapChain->GetVkSwapChain();
+		oldSwapChain = &oldSwapChainTmp;
+	}
 
 	VkSwapchainKHR swapChain = VK_NULL_HANDLE;
 	const VkSwapchainCreateInfoKHR swapChainCreateInfo = VulkanInits::SwapchainCreateInfoKHR(m_surface->GetVkSurface(),
@@ -260,7 +275,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 		                                                                                     preTransform,
 		                                                                                     compositeAlpha,
 		                                                                                     presentMode,
-																							 oldSwapChain);
+																							 oldSwapChain != nullptr ? *oldSwapChain : nullptr);
 
 	m_desc.OldSwapChain = nullptr;
 
@@ -333,9 +348,10 @@ void TRAP::Graphics::API::VulkanSwapChain::ReInitSwapChain()
 	VkSwapchainKHR oldSwapChain = m_swapChain;
 
 	DeInitSwapchain(true);
-	InitSwapchain(m_desc, m_swapChain);
+	InitSwapchain(m_desc, &oldSwapChain);
 
-	vkDestroySwapchainKHR(m_device->GetVkDevice(), oldSwapChain, nullptr);
+	if(oldSwapChain != nullptr)
+		vkDestroySwapchainKHR(m_device->GetVkDevice(), oldSwapChain, nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -357,7 +373,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ReInitSwapChain()
 		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<u64>::max(),
 		                            VK_NULL_HANDLE, fen->GetVkFence(), &imageIndex);
 
-		if(res == VK_ERROR_OUT_OF_DATE_KHR || res == VK_SUBOPTIMAL_KHR)
+		if(res == VK_ERROR_OUT_OF_DATE_KHR)
 		{
 			fen->ResetState();
 			return std::nullopt;
@@ -371,13 +387,16 @@ void TRAP::Graphics::API::VulkanSwapChain::ReInitSwapChain()
 		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<u64>::max(),
 		                            sema->GetVkSemaphore(), VK_NULL_HANDLE, &imageIndex);
 
-		if(res == VK_ERROR_OUT_OF_DATE_KHR || res == VK_SUBOPTIMAL_KHR)
+		if(res == VK_ERROR_OUT_OF_DATE_KHR)
 		{
 			sema->m_signaled = false;
 			return std::nullopt;
 		}
+		if(res == VK_SUBOPTIMAL_KHR)
+			TP_WARN(Log::RendererVulkanSwapChainPrefix, "VulkanSwapChain::AcquireNextImage(): vkAcquireNextImageKHR returned VK_SUBOPTIMAL_KHR. If window was just resized, ignore this message.");
+		else
+			VkCall(res);
 
-		VkCall(res);
 		sema->m_signaled = true;
 	}
 

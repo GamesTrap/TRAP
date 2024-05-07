@@ -153,7 +153,7 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 		presentStatus = RendererAPI::PresentStatus::Success;
 	else if (res == VK_ERROR_DEVICE_LOST)
 		presentStatus = RendererAPI::PresentStatus::DeviceReset;
-	else if(res == VK_ERROR_OUT_OF_DATE_KHR)
+	else if(res == VK_ERROR_OUT_OF_DATE_KHR || res == VK_SUBOPTIMAL_KHR)
 		presentStatus = RendererAPI::PresentStatus::OutOfDate;
 	else
 	{

@@ -136,7 +136,6 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 	if(!acquiredImage)
 	{
 		p->SwapChain->UpdateFramebufferSize();
-
 		acquiredImage = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphores[p->ImageIndex], nullptr);
 	}
 
