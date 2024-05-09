@@ -2557,6 +2557,12 @@ namespace TRAP::Graphics
 			u16 ArrayLayer{};
 		};
 
+		using DescriptorResource = std::variant<std::vector<const TRAP::Graphics::Texture*>,
+		                                        std::vector<const Sampler*>,
+				                                std::vector<const Buffer*>,
+												std::vector<Pipeline*>,
+				                                std::vector<DescriptorSet*>>;
+
 		/// @brief Struct holding a data of a descriptor.
 		struct DescriptorData
 		{
@@ -2598,9 +2604,7 @@ namespace TRAP::Graphics
 			//Array of pipeline descriptors
 			//DescriptorSet buffer extraction
 			//Custom binding (RayTracing acceleration structure ...)
-			std::variant<std::vector<Ref<TRAP::Graphics::Texture>>, std::vector<Sampler*>,
-				std::vector<Buffer*>, std::vector<Pipeline*>,
-				std::vector<DescriptorSet*>> Resource{std::vector<Ref<TRAP::Graphics::Texture>>()}; //TODO RayTracing acceleration structure
+			DescriptorResource Resource{std::vector<const TRAP::Graphics::Texture*>()}; //TODO RayTracing acceleration structure
 
 			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
 			u32 Count{};
@@ -2830,7 +2834,7 @@ namespace TRAP::Graphics
 		/// @param window Window to retrieve image index from.
 		/// @return Image index.
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] static u32 GetCurrentImageIndex(const TRAP::Window* window);
+		[[nodiscard]] static u32 GetCurrentImageIndex(const TRAP::Window& window);
 #else
 		/// @brief Retrieve the image index currently used for rendering.
 		/// @return Image index.
@@ -3316,6 +3320,77 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::QueueType>
             enumStr = "<MISSING ENUM VALUE>";
             break;
         }
+
+        return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::Graphics::RendererAPI::ShaderStage>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Graphics::RendererAPI::ShaderStage shaderStage,
+	                                            fmt::format_context& ctx)
+    {
+		if(shaderStage == TRAP::Graphics::RendererAPI::ShaderStage::None)
+			return ctx.out();
+
+        std::string enumStr{};
+
+		if((shaderStage & TRAP::Graphics::RendererAPI::ShaderStage::Vertex) != TRAP::Graphics::RendererAPI::ShaderStage::None)
+		{
+			if(!enumStr.empty())
+				enumStr += '/';
+			enumStr += "Vertex";
+		}
+		if((shaderStage & TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl) != TRAP::Graphics::RendererAPI::ShaderStage::None)
+		{
+			if(!enumStr.empty())
+				enumStr += '/';
+			enumStr += "TessellationControl";
+		}
+		if((shaderStage & TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation) != TRAP::Graphics::RendererAPI::ShaderStage::None)
+		{
+			if(!enumStr.empty())
+				enumStr += '/';
+			enumStr += "TessellationEvaluation";
+		}
+		if((shaderStage & TRAP::Graphics::RendererAPI::ShaderStage::Geometry) != TRAP::Graphics::RendererAPI::ShaderStage::None)
+		{
+			if(!enumStr.empty())
+				enumStr += '/';
+			enumStr += "Geometry";
+		}
+		if((shaderStage & TRAP::Graphics::RendererAPI::ShaderStage::Fragment) != TRAP::Graphics::RendererAPI::ShaderStage::None)
+		{
+			if(!enumStr.empty())
+				enumStr += '/';
+			enumStr += "Fragment";
+		}
+		if((shaderStage & TRAP::Graphics::RendererAPI::ShaderStage::Compute) != TRAP::Graphics::RendererAPI::ShaderStage::None)
+		{
+			if(!enumStr.empty())
+				enumStr += '/';
+			enumStr += "Compute";
+		}
+		if((shaderStage & TRAP::Graphics::RendererAPI::ShaderStage::RayTracing) != TRAP::Graphics::RendererAPI::ShaderStage::None)
+		{
+			if(!enumStr.empty())
+				enumStr += '/';
+			enumStr += "RayTracing";
+		}
+
+		if(enumStr.empty())
+		{
+			TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RendererAPI::ShaderStage>: Missing enum value!");
+			enumStr = "<MISSING ENUM VALUE>";
+		}
 
         return fmt::format_to(ctx.out(), "{}", enumStr);
     }

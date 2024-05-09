@@ -132,7 +132,7 @@ inline void TRAP::Graphics::StorageBuffer::GetData(const auto* const data, const
 	RendererAPI::BufferUpdateDesc desc{};
 	const u32 imageIndex = GetUpdateFrequency() ==
 								RendererAPI::DescriptorUpdateFrequency::Static ?
-									0 : RendererAPI::GetCurrentImageIndex(window);
+									0 : RendererAPI::GetCurrentImageIndex(*window);
 	desc.Buffer = m_storageBuffers[imageIndex];
 	desc.DstOffset = offset;
 	API::ResourceLoader::BeginUpdateResource(desc);

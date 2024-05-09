@@ -20,14 +20,14 @@ namespace TRAP::Graphics::API
 		/// @param userMacros Optional user defined macros. Default: nullptr.
 		/// @param valid Whether the shader is valid or not. Default: true.
 		VulkanShader(std::string name, const std::filesystem::path& filepath, const RendererAPI::BinaryShaderDesc& desc,
-		             const std::vector<Macro>* userMacros = nullptr, bool valid = true);
+		             const std::vector<Macro>& userMacros = {}, bool valid = true);
 		/// @brief Constructor.
 		/// @param name Name for the shader.
 		/// @param desc Binary shader description.
 		/// @param userMacros Optional user defined macros. Default: nullptr.
 		/// @param valid Whether the shader is valid or not. Default: true.
 		VulkanShader(std::string name, const RendererAPI::BinaryShaderDesc& desc,
-		             const std::vector<Macro>* userMacros = nullptr, bool valid = true);
+		             const std::vector<Macro>& userMacros = {}, bool valid = true);
 		/// @brief Constructor. Creates an invalid placeholder shader.
 		/// @param name Name for the shader.
 		/// @param filepath Filepath of the shader.
@@ -35,7 +35,7 @@ namespace TRAP::Graphics::API
 		/// @param stages Optional Stages of the shader. Default: None.
 		/// @note Used for invalid shaders, this doesn't create a usable shader.
 		VulkanShader(std::string name, const std::filesystem::path& filepath,
-		             const std::vector<Macro>* userMacros = nullptr,
+		             const std::vector<Macro>& userMacros = {},
 					 RendererAPI::ShaderStage stages = RendererAPI::ShaderStage::None);
 		/// @brief Destructor.
 		~VulkanShader() override;
@@ -51,13 +51,10 @@ namespace TRAP::Graphics::API
 
 		/// @brief Retrieve the Vulkan shader module handles of each contained shader stage.
 		/// @return Vulkan shader module handles.
-		[[nodiscard]] constexpr const std::vector<VkShaderModule>& GetVkShaderModules() const noexcept;
+		[[nodiscard]] constexpr std::span<const VkShaderModule> GetVkShaderModules() const noexcept;
 		/// @brief Retrieve the reflection data of each contained shader stage.
 		/// @return Shader reflection data.
 		[[nodiscard]] TRAP::Ref<ShaderReflection::PipelineReflection> GetReflection() const noexcept;
-		/// @brief Retrieve the entry point names used by each contained shader stage.
-		/// @return Entry point names.
-		[[nodiscard]] constexpr const std::vector<std::string>& GetEntryNames() const noexcept;
 
 		/// @brief Retrieve the unique identifier of the shader.
 		/// @note The ID of the shader changes when reloaded.
@@ -67,7 +64,7 @@ namespace TRAP::Graphics::API
 		/// @brief Use shader for rendering on the given window.
 		/// @param window Window to use the shader for.
 		/// @remark @headless This function is not available in headless mode.
-		void Use(const Window* window) override;
+		void Use(const Window& window) override;
 #else
 		/// @brief Use shader for rendering.
 		/// @remark This function is only available in headless mode.
@@ -80,15 +77,15 @@ namespace TRAP::Graphics::API
 		/// @param texture Texture to use.
 		/// @param window Window to use the shader for.
 		/// @remark @headless This function is not available in headless mode.
-		void UseTexture(u32 set, u32 binding, Ref<TRAP::Graphics::Texture> texture,
-		                const Window* window) const override;
+		void UseTexture(u32 set, u32 binding, const TRAP::Graphics::Texture& texture,
+		                const Window& window) const override;
 #else
 		/// @brief Use texture with this shader.
 		/// @param set Descriptor set to use the texture with.
 		/// @param binding Binding point of the texture.
 		/// @param texture Texture to use.
 		/// @remark This function is only available in headless mode.
-		void UseTexture(u32 set, u32 binding, Ref<TRAP::Graphics::Texture> texture) const override;
+		void UseTexture(u32 set, u32 binding, const TRAP::Graphics::Texture& texture) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -99,8 +96,8 @@ namespace TRAP::Graphics::API
 		/// @param window Window to use the shader for.
 		/// @remark @headless This function is not available in headless mode.
 		void UseTextures(u32 set, u32 binding,
-						 const std::vector<Ref<TRAP::Graphics::Texture>>& textures,
-						 const Window* window) const override;
+						 const std::vector<const TRAP::Graphics::Texture*>& textures,
+						 const Window& window) const override;
 #else
 		/// @brief Use multiple textures with this shader.
 		/// @param set Descriptor set to use the textures with.
@@ -108,7 +105,7 @@ namespace TRAP::Graphics::API
 		/// @param textures Textures to use.
 		/// @remark This function is only available in headless mode.
 		void UseTextures(u32 set, u32 binding,
-						 const std::vector<Ref<TRAP::Graphics::Texture>>& textures) const override;
+						 const std::vector<const TRAP::Graphics::Texture*>& textures) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -118,15 +115,15 @@ namespace TRAP::Graphics::API
 		/// @param sampler Sampler to use.
 		/// @param window Window to use the shader for.
 		/// @remark @headless This function is not available in headless mode.
-		void UseSampler(u32 set, u32 binding, TRAP::Graphics::Sampler* sampler,
-		                const Window* window) const override;
+		void UseSampler(u32 set, u32 binding, const TRAP::Graphics::Sampler& sampler,
+		                const Window& window) const override;
 #else
 		/// @brief Use sampler with this shader.
 		/// @param set Descriptor set to use the sampler with.
 		/// @param binding Binding point of the sampler.
 		/// @param sampler Sampler to use.
 		/// @remark This function is only available in headless mode.
-		void UseSampler(u32 set, u32 binding, TRAP::Graphics::Sampler* sampler) const override;
+		void UseSampler(u32 set, u32 binding, const TRAP::Graphics::Sampler& sampler) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Use multiple samplers with this shader on the given window.
@@ -136,8 +133,8 @@ namespace TRAP::Graphics::API
 		/// @param window Window to use the shader for.
 		/// @remark @headless This function is not available in headless mode.
 		void UseSamplers(u32 set, u32 binding,
-		                 const std::vector<TRAP::Graphics::Sampler*>& samplers,
-						 const Window* window) const override;
+		                 const std::vector<const TRAP::Graphics::Sampler*>& samplers,
+						 const Window& window) const override;
 #else
 		/// @brief Use multiple samplers with this shader.
 		/// @param set Descriptor set to use the samplers with.
@@ -145,7 +142,7 @@ namespace TRAP::Graphics::API
 		/// @param samplers Samplers to use.
 		/// @remark This function is only available in headless mode.
 		void UseSamplers(u32 set, u32 binding,
-		                 const std::vector<TRAP::Graphics::Sampler*>& samplers) const override;
+		                 const std::vector<const TRAP::Graphics::Sampler*>& samplers) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -157,8 +154,8 @@ namespace TRAP::Graphics::API
 		/// @param offset Offset of the UBO.
 		/// @param window Window to use the shader for.
 		/// @remark @headless This function is not available in headless mode.
-		void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer* uniformBuffer,
-		            u64 size, u64 offset, const Window* window) const override;
+		void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer& uniformBuffer,
+		            u64 size, u64 offset, const Window& window) const override;
 #else
 		/// @brief Use uniform buffer object with this shader.
 		/// @param set Descriptor set to use the UBO with.
@@ -167,7 +164,7 @@ namespace TRAP::Graphics::API
 		/// @param size Size of the UBO.
 		/// @param offset Offset of the UBO.
 		/// @remark This function is only available in headless mode.
-		void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer* uniformBuffer,
+		void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer& uniformBuffer,
 		            u64 size, u64 offset) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -179,8 +176,8 @@ namespace TRAP::Graphics::API
 		/// @param size Size of the SSBO.
 		/// @param window Window to use the shader for.
 		/// @remark @headless This function is not available in headless mode.
-		void UseSSBO(u32 set, u32 binding, const TRAP::Graphics::StorageBuffer* storageBuffer,
-		             u64 size, const Window* window) const override;
+		void UseSSBO(u32 set, u32 binding, const TRAP::Graphics::StorageBuffer& storageBuffer,
+		             u64 size, const Window& window) const override;
 #else
 		/// @brief Use shader storage buffer object with this shader.
 		/// @param set Descriptor set to use the SSBO with.
@@ -188,7 +185,7 @@ namespace TRAP::Graphics::API
 		/// @param storageBuffer Storage buffer to use.
 		/// @param size Size of the SSBO.
 		/// @remark This function is only available in headless mode.
-		void UseSSBO(u32 set, u32 binding, const TRAP::Graphics::StorageBuffer* storageBuffer,
+		void UseSSBO(u32 set, u32 binding, const TRAP::Graphics::StorageBuffer& storageBuffer,
 		             u64 size) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -196,20 +193,12 @@ namespace TRAP::Graphics::API
 		/// @return Shaders thread count per work group.
 		[[nodiscard]] constexpr std::array<u32, 3> GetNumThreadsPerGroup() const noexcept override;
 
-	protected:
+	private:
 		/// @brief Initialize API dependent shader.
 		/// @param desc Binary shader description.
 		void Init(const RendererAPI::BinaryShaderDesc& desc) override;
 		/// @brief Shutdown API dependent shader.
 		void Shutdown() override;
-
-	private:
-#ifdef ENABLE_GRAPHICS_DEBUG
-		/// @brief Set a name for the shader stage.
-		/// @param name Name for the shader stage.
-		/// @param stage Shader stage to name.
-		void SetShaderStageName(std::string_view name, VkShaderModule stage) const;
-#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Use a buffer object with this shader on the given window.
@@ -220,8 +209,8 @@ namespace TRAP::Graphics::API
 		/// @param offset Offset into the buffer to start at.
 		/// @param window Window to use the buffer for.
 		/// @remark @headless This function is not available in headless mode.
-		void UseBuffer(u32 set, u32 binding, TRAP::Graphics::Buffer* buffer,
-		               u64 size, u64 offset, const Window* window) const;
+		void UseBuffer(u32 set, u32 binding, const TRAP::Graphics::Buffer& buffer,
+		               u64 size, u64 offset, const Window& window) const;
 #else
 		/// @brief Use a buffer object with this shader.
 		/// @param set Descriptor set to use the buffer with.
@@ -230,18 +219,9 @@ namespace TRAP::Graphics::API
 		/// @param size Size of the buffer.
 		/// @param offset Offset into the buffer to start at.
 		/// @remark This function is only available in headless mode.
-		void UseBuffer(u32 set, u32 binding, TRAP::Graphics::Buffer* buffer,
+		void UseBuffer(u32 set, u32 binding, const TRAP::Graphics::Buffer& buffer,
 		               u64 size, u64 offset) const;
 #endif /*TRAP_HEADLESS_MODE*/
-
-		/// @brief </summary>
-		/// @param set Descriptor set used by the descriptor.
-		/// @param binding Binding point used by the descriptor.
-		/// @param type Descriptor type of the descriptor.
-		/// @param outUAV Out: Descriptor has UAV.
-		/// @param size Size of the descriptor.
-		/// @return Descriptor's name if found, empty string otherwise.
-		[[nodiscard]] std::string RetrieveDescriptorName(u32 set, u32 binding, RendererAPI::DescriptorType type, bool* outUAV = nullptr, u64 size = 1) const;
 
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 
@@ -249,26 +229,18 @@ namespace TRAP::Graphics::API
 
 		std::vector<VkShaderModule> m_shaderModules{};
 		TRAP::Ref<ShaderReflection::PipelineReflection> m_reflection = nullptr;
-		std::vector<std::string> m_entryNames{};
 
 		std::array<std::vector<TRAP::Scope<DescriptorSet>>, RendererAPI::ImageCount> m_dirtyDescriptorSets{};
 		std::array<std::vector<TRAP::Scope<DescriptorSet>>, RendererAPI::ImageCount> m_cleanedDescriptorSets{};
-		u32 m_lastImageIndex = std::numeric_limits<u32>::max();
+		TRAP::Optional<u32> m_lastImageIndex = TRAP::NullOpt;
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr const std::vector<VkShaderModule>& TRAP::Graphics::API::VulkanShader::GetVkShaderModules() const noexcept
+[[nodiscard]] constexpr std::span<const VkShaderModule> TRAP::Graphics::API::VulkanShader::GetVkShaderModules() const noexcept
 {
 	return m_shaderModules;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr const std::vector<std::string>& TRAP::Graphics::API::VulkanShader::GetEntryNames() const noexcept
-{
-	return m_entryNames;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -284,8 +256,8 @@ namespace TRAP::Graphics::API
 {
 	usize hash = 0;
 
-	for(const VkShaderModule& module : m_shaderModules)
-		TRAP::Utils::HashCombine(hash, module);
+	for(const VkShaderModule& shaderModule : m_shaderModules)
+		TRAP::Utils::HashCombine(hash, shaderModule);
 
 	return hash;
 }

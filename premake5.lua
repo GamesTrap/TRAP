@@ -210,7 +210,7 @@ workspace "TRAP"
 		end
 
 	filter { "toolset:gcc"}
-		buildoptions "-fdiagnostics-color=always -Wno-interference-size"
+		buildoptions "-fdiagnostics-color=always -Wno-interference-size -Winvalid-pch"
 	filter { "toolset:clang"}
 		buildoptions "-fcolor-diagnostics"
 

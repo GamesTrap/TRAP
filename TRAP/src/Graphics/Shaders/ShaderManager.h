@@ -11,14 +11,14 @@ namespace TRAP::Graphics::ShaderManager
 	/// @param userMacros Optional user defined macros. Default: nullptr.
 	/// @return Loaded shader.
 	Ref<Shader> LoadFile(const std::filesystem::path& filepath,
-					     const std::vector<Shader::Macro>* userMacros = nullptr);
+					     const std::vector<Shader::Macro>& userMacros = {});
 	/// @brief Load a shader from file.
 	/// @param name Name for the shader.
 	/// @param filepath File path of shader to load.
 	/// @param userMacros Optional user defined macros. Default: nullptr.
 	/// @return Loaded shader.
 	Ref<Shader> LoadFile(const std::string& name, const std::filesystem::path& filepath,
-					     const std::vector<Shader::Macro>* userMacros = nullptr);
+					     const std::vector<Shader::Macro>& userMacros = {});
 	/// @brief Load a shader from GLSL source.
 	/// @param name Name for the shader.
 	/// @param glslSource GLSL source code.
@@ -26,7 +26,7 @@ namespace TRAP::Graphics::ShaderManager
 	/// @return Loaded shader.
 	Ref<Shader> LoadSource(const std::string& name,
 					       const std::string& glslSource,
-					       const std::vector<Shader::Macro>* userMacros = nullptr);
+					       const std::vector<Shader::Macro>& userMacros = {});
 
 	/// @brief Add a shader to the ShaderManager.
 	/// @param shader Shader to add.

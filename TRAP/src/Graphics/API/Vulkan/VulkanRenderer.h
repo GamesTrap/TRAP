@@ -581,12 +581,12 @@ namespace TRAP::Graphics::API
 		/// @param shader Shader to bind.
 		/// @param window Window to bind the shader for.
 		/// @remark @headless This function is not available in headless mode.
-		void BindShader(Shader* shader, const Window* window) const;
+		void BindShader(Shader& shader, const Window& window) const;
 #else
 		/// @brief Bind shader on the given window.
 		/// @param shader Shader to bind.
 		/// @remark This function is only available in headless mode.
-		void BindShader(Shader* shader) const;
+		void BindShader(Shader& shader) const;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Bind vertex buffer on the given window.

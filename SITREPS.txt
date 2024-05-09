@@ -4998,6 +4998,10 @@ SITREP 04/21/2024|24w16a1
     - Changed TRAP Engine version to 24w16a1(0.10.63)
     - UnitTests Added tests for ContentionFreeSharedMutex ~<30 mins
 
+SITREP 05/06/2024|24w19a1
+    - Changed TRAP Engine version to 24w19a1(0.10.64)
+    - VulkanShader Refactored various functions ~>120 mins
+
 SITREP 05/06/2024|24w19a2
     - Changed TRAP Engine version to 24w19a2(0.10.65)
     - ImGuiVulkanBackend Fixed fence synchronization errors ~<45 mins

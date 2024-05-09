@@ -40,7 +40,7 @@ void RendererAPITests::OnAttach()
 	TRAP::Graphics::ShaderManager::LoadFile("Test", "./Assets/Shaders/test.shader");
 	TRAP::Graphics::ShaderManager::LoadFile("TestPushConstant", "./Assets/Shaders/testpushconstant.shader");
 	const std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
-	TRAP::Graphics::ShaderManager::LoadFile("TestUBO", "./Assets/Shaders/testubo.shader", &macros);
+	TRAP::Graphics::ShaderManager::LoadFile("TestUBO", "./Assets/Shaders/testubo.shader", macros);
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -134,8 +134,8 @@ void RendererAPITests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 
 		const auto& shader = TRAP::Graphics::ShaderManager::Get("TestUBO");
 		//Use UBOs
-		shader->UseUBO(1, 0, m_sizeMultiplicatorUniformBuffer.get());
-		shader->UseUBO(1, 1, m_colorUniformBuffer.get());
+		shader->UseUBO(1, 0, *m_sizeMultiplicatorUniformBuffer);
+		shader->UseUBO(1, 1, *m_colorUniformBuffer);
 
 		shader->Use();
 	}
