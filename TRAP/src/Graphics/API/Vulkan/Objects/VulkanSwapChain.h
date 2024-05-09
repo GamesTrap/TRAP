@@ -57,7 +57,7 @@ namespace TRAP::Graphics::API
 		/// @brief Initialize the swap chain.
 		/// @param desc Swap chain description.
 		/// @param oldSwapChain Optional: Old Vulkan swapchain, potentially speeds up creation of new swapchain.
-		void InitSwapchain(RendererAPI::SwapChainDesc& desc, VkSwapchainKHR oldSwapChain = VK_NULL_HANDLE);
+		void InitSwapchain(RendererAPI::SwapChainDesc& desc, VkSwapchainKHR* oldSwapChain = nullptr);
 		/// @brief Uninitialize the swap chain.
 		/// @param allowSwapChainReuse Don't destroy swap chain and surface to allow for reuse on new swap chain creation.
 		void DeInitSwapchain(bool allowSwapChainReuse = false);

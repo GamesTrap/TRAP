@@ -5006,3 +5006,7 @@ SITREP 05/06/2024|24w19a2
     - Changed TRAP Engine version to 24w19a2(0.10.65)
     - ImGuiVulkanBackend Fixed fence synchronization errors ~<45 mins
     - Updated ImGuiVulkanBackend ~<15 mins
+
+SITREP 05/09/2024|24w19a3
+    - Changed TRAP Engine version to 24w19a3(0.10.66)
+    - VulkanSwapChain Fixed crash when resizing on Linux X11/Xwayland ~>60 mins
