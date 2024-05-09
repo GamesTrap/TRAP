@@ -134,7 +134,7 @@ namespace
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	[[nodiscard]] std::pair<VkShaderModule, TRAP::Graphics::API::ShaderReflection::ShaderReflection> InitShaderStage(const TRAP::Graphics::API::VulkanDevice& device,
-	                                                                                                                 const std::string_view name,
+	                                                                                                                 [[maybe_unused]] const std::string_view name,
 		                                                                                                             const TRAP::Graphics::RendererAPI::ShaderStage stage,
 																						                             const TRAP::Graphics::RendererAPI::BinaryShaderStageDesc& stageDesc)
 	{
