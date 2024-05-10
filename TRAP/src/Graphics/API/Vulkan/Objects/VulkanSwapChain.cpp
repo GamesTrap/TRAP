@@ -51,11 +51,13 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
+	TRAP_ASSERT(desc.Window, "VulkanSwapChain::InitSwapchain(): desc.Window is nullptr!");
+
 	//////////////////
 	//Create Surface//
 	//////////////////
 	if(m_surface == nullptr)
-		m_surface = TRAP::MakeRef<VulkanSurface>(m_instance, m_device, desc.Window);
+		m_surface = TRAP::MakeRef<VulkanSurface>(m_instance, *m_device, *desc.Window);
 
 	VkSurfaceCapabilitiesKHR caps = m_surface->GetVkSurfaceCapabilities();
 
@@ -67,7 +69,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 		vkDestroySwapchainKHR(m_device->GetVkDevice(), *oldSwapChain, nullptr);
 		*oldSwapChain = nullptr;
 
-		m_surface = TRAP::MakeRef<VulkanSurface>(m_instance, m_device, desc.Window);
+		m_surface = TRAP::MakeRef<VulkanSurface>(m_instance, *m_device, *desc.Window);
 		caps = m_surface->GetVkSurfaceCapabilities();
 		extent.width = TRAP::Math::Clamp(desc.Width, caps.minImageExtent.width, caps.maxImageExtent.width);
 		extent.height = TRAP::Math::Clamp(desc.Height, caps.minImageExtent.height, caps.maxImageExtent.height);

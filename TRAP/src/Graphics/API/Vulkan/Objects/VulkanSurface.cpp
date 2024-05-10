@@ -8,43 +8,65 @@
 #include "VulkanInstance.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
+namespace
+{
+	[[nodiscard]] std::vector<VkSurfaceFormatKHR> GetSurfaceFormats(const TRAP::Graphics::API::VulkanDevice& device, VkSurfaceKHR surface)
+	{
+		std::vector<VkSurfaceFormatKHR> formats{};
+
+		u32 surfaceFormatCount = 0;
+		VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(device.GetPhysicalDevice().GetVkPhysicalDevice(), surface,
+													&surfaceFormatCount, nullptr));
+		formats.resize(surfaceFormatCount);
+		VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(device.GetPhysicalDevice().GetVkPhysicalDevice(), surface,
+													&surfaceFormatCount, formats.data()));
+
+		return formats;
+	}
+
+	[[nodiscard]] std::vector<VkPresentModeKHR> GetSurfacePresentMode(const TRAP::Graphics::API::VulkanDevice& device, VkSurfaceKHR surface)
+	{
+		std::vector<VkPresentModeKHR> presentModes{};
+
+		u32 surfacePresentCount = 0;
+		VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(device.GetPhysicalDevice().GetVkPhysicalDevice(), surface,
+														&surfacePresentCount, nullptr));
+		presentModes.resize(surfacePresentCount);
+		VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(device.GetPhysicalDevice().GetVkPhysicalDevice(), surface,
+														&surfacePresentCount, presentModes.data()));
+
+		return presentModes;
+	}
+}
 
 TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> instance,
-												  const TRAP::Ref<VulkanDevice>& device,
-                                                  const TRAP::Window* const window)
+												  const VulkanDevice& device,
+                                                  const TRAP::Window& window)
 	: m_instance(std::move(instance))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_instance, "VulkanSurface(): Vulkan Instance is nullptr");
-	TRAP_ASSERT(device, "VulkanSurface(): Vulkan Device is nullptr");
-	TRAP_ASSERT(window, "VulkanSurface(): Window is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSurfacePrefix, "Creating Surface");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	VkCall(TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(m_instance->GetVkInstance(),
-	                                                         *static_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()),
+	                                                         *static_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(window.GetInternalWindow()),
 															 nullptr, m_surface));
 	TRAP_ASSERT(m_surface, "VulkanSurface(): Vulkan Surface is nullptr");
 
-	VkCall(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device->GetPhysicalDevice().GetVkPhysicalDevice(), m_surface,
+	VkCall(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device.GetPhysicalDevice().GetVkPhysicalDevice(), m_surface,
 	                                                 &m_surfaceCapabilities));
 
-	u32 surfaceFormatCount = 0;
-	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(device->GetPhysicalDevice().GetVkPhysicalDevice(), m_surface,
-	                                            &surfaceFormatCount, nullptr));
-	m_surfaceFormats.resize(surfaceFormatCount);
-	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(device->GetPhysicalDevice().GetVkPhysicalDevice(), m_surface,
-	                                            &surfaceFormatCount, m_surfaceFormats.data()));
+	m_surfaceFormats = GetSurfaceFormats(device, m_surface);
+	m_surfacePresentModes = GetSurfacePresentMode(device, m_surface);
 
-	u32 surfacePresentCount = 0;
-	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(device->GetPhysicalDevice().GetVkPhysicalDevice(), m_surface,
-	                                                 &surfacePresentCount, nullptr));
-	m_surfacePresentModes.resize(surfacePresentCount);
-	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(device->GetPhysicalDevice().GetVkPhysicalDevice(), m_surface,
-	                                                 &surfacePresentCount, m_surfacePresentModes.data()));
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if(!window.GetTitle().empty())
+		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(m_surface), VK_OBJECT_TYPE_SURFACE_KHR, window.GetTitle());
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -21,8 +21,8 @@ namespace TRAP::Graphics::API
 		/// @param device Vulkan device.
 		/// @param window Window to create surface for.
 		VulkanSurface(TRAP::Ref<VulkanInstance> instance,
-		              const TRAP::Ref<VulkanDevice>& device,
-		              const TRAP::Window* window);
+		              const VulkanDevice& device,
+		              const TRAP::Window& window);
 		/// @brief Destructor.
 		~VulkanSurface();
 
@@ -40,7 +40,7 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] constexpr VkSurfaceKHR GetVkSurface() const noexcept;
 		/// @brief Retrieve the Vulkan surface capabilities.
 		/// @return Vulkan surface capabilities.
-		[[nodiscard]] constexpr VkSurfaceCapabilitiesKHR GetVkSurfaceCapabilities() const noexcept;
+		[[nodiscard]] constexpr const VkSurfaceCapabilitiesKHR& GetVkSurfaceCapabilities() const noexcept;
 		/// @brief Retrieve all formats supported by the surface.
 		/// @return All formats supported by the surface.
 		[[nodiscard]] constexpr const std::vector<VkSurfaceFormatKHR>& GetVkSurfaceFormats() const noexcept;
@@ -68,7 +68,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkSurfaceCapabilitiesKHR TRAP::Graphics::API::VulkanSurface::GetVkSurfaceCapabilities() const noexcept
+[[nodiscard]] constexpr const VkSurfaceCapabilitiesKHR& TRAP::Graphics::API::VulkanSurface::GetVkSurfaceCapabilities() const noexcept
 {
 	return m_surfaceCapabilities;
 }
