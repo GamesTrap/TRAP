@@ -2612,7 +2612,11 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 		rebuildColor = true;
 	}
 
-	if(viewportData->DepthStencilTarget != nullptr &&
+	if(
+#ifndef TRAP_HEADLESS_MODE
+		viewportData->SwapChain == nullptr &&
+#endif /*TRAP_HEADLESS_MODE*/
+		viewportData->DepthStencilTarget != nullptr &&
 	   (viewportData->DepthStencilTarget->GetWidth() != newInternalRes.x() ||
 	    viewportData->DepthStencilTarget->GetHeight() != newInternalRes.y()))
 	{

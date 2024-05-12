@@ -121,6 +121,13 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	if (!desc.RenderTargets.empty() && desc.RenderTargets[0]->GetDepth() > 1)
 		m_arraySize = desc.RenderTargets[0]->GetDepth();
 
+	if(!desc.RenderTargets.empty() && desc.DepthStencil)
+	{
+		TRAP_ASSERT(desc.RenderTargets[0]->GetWidth() == desc.DepthStencil->GetWidth() &&
+		            desc.RenderTargets[0]->GetHeight() == desc.DepthStencil->GetHeight(),
+					"VulkanFrameBuffer(): Color RenderTarget size doesn't match that of Depth/Stencil RenderTarget!");
+	}
+
 	const std::vector<VkImageView> imageViews = GetImageViews(desc);
 
 	const VkFramebufferCreateInfo info = VulkanInits::FramebufferCreateInfo(desc.RenderPass->GetVkRenderPass(),

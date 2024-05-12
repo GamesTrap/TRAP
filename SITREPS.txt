@@ -5014,3 +5014,7 @@ SITREP 05/09/2024|24w19a3
 SITREP 05/10/2024|24w19b1
     - Changed TRAP Engine version to 24w19b1(0.10.67)
     - VulkanSurface Refactored various functions ~<20 mins
+
+SITREP 05/12/2024|24w19b2
+    - Changed TRAP Engine version to 24w19b2(0.10.68)
+    - Fixed a bug which resulted in Vulkan errors when resizing on Linux X11 ~<15 mins
