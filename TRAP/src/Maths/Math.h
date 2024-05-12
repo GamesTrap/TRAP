@@ -622,11 +622,7 @@ namespace TRAP::Math
 	/// @return Min(Max(x, minval), maxVal) for each component in x using the floating-point values minval and maxVal.
 	template<typename genType>
 	requires std::is_arithmetic_v<genType>
-	[[nodiscard]]
-#ifndef TRAP_ENABLE_ASSERTS
-	constexpr
-#endif /*TRAP_ENABLE_ASSERTS*/
-	genType Clamp(genType x, genType minVal, genType maxVal);
+	[[nodiscard]] constexpr genType Clamp(genType x, genType minVal, genType maxVal);
 
 	/// @brief Constrain x to lie between minVal and maxVal.
 	/// @param x Specify the value to constrain.
@@ -635,11 +631,7 @@ namespace TRAP::Math
 	/// @return Min(Max(x, minval), maxVal) for each component in x using the floating-point values minval and maxVal.
 	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]]
-#ifndef TRAP_ENABLE_ASSERTS
-	constexpr
-#endif /*TRAP_ENABLE_ASSERTS*/
-	Vec<L, T> Clamp(const Vec<L, T>& x, T minVal, T maxVal);
+	[[nodiscard]] constexpr Vec<L, T> Clamp(const Vec<L, T>& x, T minVal, T maxVal);
 
 	/// @brief Constrain x to lie between minVal and maxVal.
 	/// @param x Specify the value to constrain.
@@ -648,11 +640,7 @@ namespace TRAP::Math
 	/// @return Min(Max(x, minval), maxVal) for each component in x using the floating-point values minval and maxVal.
 	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]]
-#ifndef TRAP_ENABLE_ASSERTS
-	constexpr
-#endif /*TRAP_ENABLE_ASSERTS*/
-	Vec<L, T> Clamp(const Vec<L, T>& x, const Vec<L, T>& minVal, const Vec<L, T>& maxVal);
+	[[nodiscard]] constexpr Vec<L, T> Clamp(const Vec<L, T>& x, const Vec<L, T>& minVal, const Vec<L, T>& maxVal);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2877,11 +2865,7 @@ requires std::is_arithmetic_v<T>
 
 template<typename genType>
 requires std::is_arithmetic_v<genType>
-[[nodiscard]]
-#ifndef TRAP_ENABLE_ASSERTS
-constexpr
-#endif /*TRAP_ENABLE_ASSERTS*/
-genType TRAP::Math::Clamp(const genType x, const genType minVal, const genType maxVal)
+[[nodiscard]] constexpr genType TRAP::Math::Clamp(const genType x, const genType minVal, const genType maxVal)
 {
 	TRAP_ASSERT(minVal <= maxVal, "TRAP::Math::Clamp(): minVal is greater than maxVal!");
 
@@ -2890,11 +2874,7 @@ genType TRAP::Math::Clamp(const genType x, const genType minVal, const genType m
 
 template<u32 L, typename T>
 requires std::is_arithmetic_v<T>
-[[nodiscard]]
-#ifndef TRAP_ENABLE_ASSERTS
-constexpr
-#endif /*TRAP_ENABLE_ASSERTS*/
-TRAP::Math::Vec<L, T> TRAP::Math::Clamp(const Vec<L, T>& x, const T minVal, const T maxVal)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Clamp(const Vec<L, T>& x, const T minVal, const T maxVal)
 {
 	TRAP_ASSERT(minVal <= maxVal, "TRAP::Math::Clamp(): minVal is greater than maxVal!");
 
@@ -2903,12 +2883,8 @@ TRAP::Math::Vec<L, T> TRAP::Math::Clamp(const Vec<L, T>& x, const T minVal, cons
 
 template<u32 L, typename T>
 requires std::is_arithmetic_v<T>
-[[nodiscard]]
-#ifndef TRAP_ENABLE_ASSERTS
-constexpr
-#endif /*TRAP_ENABLE_ASSERTS*/
-TRAP::Math::Vec<L, T> TRAP::Math::Clamp(const Vec<L, T>& x, const Vec<L, T>& minVal,
-                                        const Vec<L, T>& maxVal)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Clamp(const Vec<L, T>& x, const Vec<L, T>& minVal,
+                                                                const Vec<L, T>& maxVal)
 {
 	TRAP_ASSERT(TRAP::Math::All(TRAP::Math::LessThan(minVal, maxVal)), "TRAP::Math::Clamp(): minVal is greater than maxVal!");
 
