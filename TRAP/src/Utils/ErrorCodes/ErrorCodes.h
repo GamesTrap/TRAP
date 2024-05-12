@@ -34,7 +34,10 @@ namespace TRAP::Utils
         SteamFailedGeneric = 0x0019,
         SteamVersionMismatch = 0x001A,
         WindowsVersionOlderThanWindows10 = 0x001B,
-        VulkanFailedToAllocateCommandBuffer = 0x001C
+        VulkanFailedToAllocateCommandBuffer = 0x001C,
+        VulkanNoMatchingSurfaceFormatFound = 0x001D,
+        VulkanNoQueueWithPresentationSupportFound = 0x001F,
+        VulkanNoSupportedCompositeAlphaFlagFound = 0x0020
     };
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -225,6 +225,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] bool TRAP::Graphics::API::VulkanPhysicalDevice::GetPhysicalDeviceSurfaceSupport(const VulkanSurface& surface, u32 queueFamilyIndex) const
 {
 	VkBool32 supportsPresent = VK_FALSE;
@@ -234,6 +235,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 
 	return supportsPresent != VK_FALSE;
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

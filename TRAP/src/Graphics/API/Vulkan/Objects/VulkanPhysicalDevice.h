@@ -9,7 +9,9 @@
 namespace TRAP::Graphics::API
 {
 	class VulkanInstance;
+#ifndef TRAP_HEADLESS_MODE
 	class VulkanSurface;
+#endif /*TRAP_HEADLESS_MODE*/
 
 	struct RatedVulkanPhysicalDevice
 	{
@@ -83,11 +85,13 @@ namespace TRAP::Graphics::API
 		/// @return Physical device extension properties.
 		[[nodiscard]] constexpr std::optional<VkExtensionProperties> GetPhysicalDeviceExtensionProperties(std::string_view physicalDeviceExtension) const;
 
+#ifndef TRAP_HEADLESS_MODE
 		/// @brief Retrieve whether the given queue family supports presentation to the given surface.
 		/// @param surface Surface to check for.
 		/// @param queueFamilyIndex Queue family to check for.
 		/// @return True if presentation is supported, false otherwise.
 		[[nodiscard]] bool GetPhysicalDeviceSurfaceSupport(const VulkanSurface& surface, u32 queueFamilyIndex) const;
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// @brief Retrieve the physical device's UUID.
 		/// @return Physical device UUID.

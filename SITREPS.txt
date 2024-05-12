@@ -5021,3 +5021,4 @@ SITREP 05/12/2024|24w19b2
     - Made some Vulkan classes final ~<5 mins
     - VulkanRenderer Moved SubmitMutex to VulkanQueue as static member ~<10 mins
     - VulkanPhysicalDevice Added GetPhysicalDeviceSurfaceSupport() function ~<5 mins
+    - VulkanSwapChain Refactored various functions ~>60 mins
