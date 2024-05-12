@@ -5020,3 +5020,4 @@ SITREP 05/12/2024|24w19b2
     - Fixed a bug which resulted in Vulkan errors when resizing on Linux X11 ~<15 mins
     - Made some Vulkan classes final ~<5 mins
     - VulkanRenderer Moved SubmitMutex to VulkanQueue as static member ~<10 mins
+    - VulkanPhysicalDevice Added GetPhysicalDeviceSurfaceSupport() function ~<5 mins
