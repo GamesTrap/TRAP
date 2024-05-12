@@ -16,7 +16,7 @@ namespace TRAP::Graphics::API
 		std::string PhysicalDeviceName{};
 	};
 
-	class VulkanPhysicalDevice
+	class VulkanPhysicalDevice final
 	{
 	public:
 		/// @brief Constructor.

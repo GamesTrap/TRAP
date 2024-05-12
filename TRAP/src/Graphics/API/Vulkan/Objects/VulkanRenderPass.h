@@ -8,7 +8,7 @@ namespace TRAP::Graphics::API
 {
 	class VulkanDevice;
 
-	class VulkanRenderPass
+	class VulkanRenderPass final
 	{
 	public:
 		/// @brief Constructor.

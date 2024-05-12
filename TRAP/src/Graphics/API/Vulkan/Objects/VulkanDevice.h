@@ -10,7 +10,7 @@ namespace TRAP::Graphics::API
 	class VulkanPhysicalDevice;
 	class VulkanQueue;
 
-	class VulkanDevice
+	class VulkanDevice final
 	{
 	public:
 		/// @brief Constructor.

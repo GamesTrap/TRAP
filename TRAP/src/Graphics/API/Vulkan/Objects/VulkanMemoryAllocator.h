@@ -16,7 +16,7 @@ namespace TRAP::Graphics::API
 	class VulkanInstance;
 	class VulkanDevice;
 
-	class VulkanMemoryAllocator
+	class VulkanMemoryAllocator final
 	{
 	public:
 		/// @brief Constructor.
