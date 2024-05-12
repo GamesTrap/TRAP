@@ -13,7 +13,7 @@ struct ErrorData
     std::string_view LogMessage;
 };
 
-static constexpr TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 25> s_errorMap
+static constexpr TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 28> s_errorMap
 {
     {
         {
@@ -29,6 +29,9 @@ static constexpr TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 25
             {TRAP::Utils::ErrorCode::VulkanDeviceLost, {"Vulkan API error", "Vulkan device was lost!\nError code: 0x0017", TRAP::Log::RendererVulkanPrefix, "Vulkan device lost! (0x0017)"}},
             {TRAP::Utils::ErrorCode::VulkanNoMatchingMemoryTypeFound, {"Vulkan API error", "Vulkan failed to find a matching memory type!\nError code: 0x0018", TRAP::Log::RendererVulkanPrefix, "Vulkan failed to find a matching memory type! (0x0018)"}},
             {TRAP::Utils::ErrorCode::VulkanFailedToAllocateCommandBuffer, {"Vulkan API error", "Vulkan failed to allocate a command buffer!\nError code: 0x001C", TRAP::Log::RendererVulkanCommandPoolPrefix, "Vulkan failed to allocate a command buffer! (0x001C)"}},
+            {TRAP::Utils::ErrorCode::VulkanNoMatchingSurfaceFormatFound, {"Vulkan API error", "Vulkan failed to find a supported surface format!\nError code: 0x001D", TRAP::Log::RendererVulkanSurfacePrefix, "Vulkan failed to find a supported surface format! (0x001D)"}},
+            {TRAP::Utils::ErrorCode::VulkanNoQueueWithPresentationSupportFound, {"Vulkan API error", "Vulkan failed to find a queue with presentation support!\nError code: 0x001F", TRAP::Log::RendererSwapChainPrefix, "Vulkan failed to find a queue with presentation support! (0x001F)"}},
+            {TRAP::Utils::ErrorCode::VulkanNoSupportedCompositeAlphaFlagFound, {"Vulkan API error", "Vulkan failed to find a supported composite alpha flag!\nError code: 0x0020", TRAP::Log::RendererSwapChainPrefix, "Vulkan failed to find a supported composite alpha flag! (0x0020)"}},
 
             {TRAP::Utils::ErrorCode::ApplicationIsAlreadyRunning, {"TRAP™ is already running", "A TRAP™ application is already running!\nError code: 0x0012", TRAP::Log::ApplicationPrefix, "A TRAP™ application is already running! (0x0012)"}},
             {TRAP::Utils::ErrorCode::ImGuiFailedInitialization, {"ImGui error", "Failed to initialize ImGui!\nError code: 0x0013", TRAP::Log::ImGuiPrefix, "Failed to initialize ImGui! (0x0013)"}},

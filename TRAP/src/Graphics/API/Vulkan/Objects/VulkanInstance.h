@@ -10,7 +10,7 @@
 
 namespace TRAP::Graphics::API
 {
-	class VulkanInstance
+	class VulkanInstance final
 	{
 	public:
 		/// @brief Constructor.

@@ -1,9 +1,9 @@
 #ifndef TRAP_VULKANSWAPCHAIN_H
 #define TRAP_VULKANSWAPCHAIN_H
 
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
 #ifndef TRAP_HEADLESS_MODE
 
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/SwapChain.h"
 
@@ -38,7 +38,7 @@ namespace TRAP::Graphics::API
 		/// @param fence Fence to wait for the image to be ready to be presented.
 		/// @return Acuired image index.
 		[[nodiscard]] std::optional<u32> AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
-		                                                       const TRAP::Ref<Fence>& fence) const override;
+		                                                  const TRAP::Ref<Fence>& fence) const override;
 
 		/// @brief Toggle VSync on and off.
 		void ToggleVSync() override;
@@ -57,10 +57,9 @@ namespace TRAP::Graphics::API
 		/// @brief Initialize the swap chain.
 		/// @param desc Swap chain description.
 		/// @param oldSwapChain Optional: Old Vulkan swapchain, potentially speeds up creation of new swapchain.
-		void InitSwapchain(RendererAPI::SwapChainDesc& desc, VkSwapchainKHR* oldSwapChain = nullptr);
+		void InitSwapchain(RendererAPI::SwapChainDesc& desc, VkSwapchainKHR oldSwapChain = nullptr);
 		/// @brief Uninitialize the swap chain.
-		/// @param allowSwapChainReuse Don't destroy swap chain and surface to allow for reuse on new swap chain creation.
-		void DeInitSwapchain(bool allowSwapChainReuse = false);
+		void DeInitSwapchain();
 		/// @brief Reinitialize the swap chain while reusing the old one.
 		void ReInitSwapChain();
 
@@ -73,9 +72,6 @@ namespace TRAP::Graphics::API
 		VkQueue m_presentQueue = VK_NULL_HANDLE;
 		VkSwapchainKHR m_swapChain = VK_NULL_HANDLE;
 		TRAP::Ref<VulkanSurface> m_surface = nullptr;
-		u32 m_presentQueueFamilyIndex = 0;
-		u32 m_imageCount = 0;
-		bool m_enableVSync = false;
 
 		RendererAPI::SwapChainDesc m_desc{};
 	};

@@ -1092,7 +1092,6 @@ namespace TRAP::Graphics::API
 			TRAP::Ref<VulkanBuffer> DefaultBufferSRV;
 			TRAP::Ref<VulkanBuffer> DefaultBufferUAV;
 			TRAP::Ref<VulkanSampler> DefaultSampler;
-			TracyLockable(std::mutex, SubmitMutex);
 
 			//Unlike DirectX 12, Vulkan textures start in undefined layout.
 			//With this, we transition them to the specified layout so app code doesn't

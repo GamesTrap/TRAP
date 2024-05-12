@@ -7,7 +7,7 @@ namespace TRAP::Graphics::API
 {
 	class VulkanRenderTarget;
 
-	class VulkanFrameBuffer
+	class VulkanFrameBuffer final
 	{
 	public:
 		/// @brief Constructor.

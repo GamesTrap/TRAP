@@ -13,7 +13,7 @@ namespace TRAP::Graphics::API
 	class VulkanInstance;
 
 	/// @remark @headless This class is not available in headless mode.
-	class VulkanSurface
+	class VulkanSurface final
 	{
 	public:
 		/// @brief Constructor.

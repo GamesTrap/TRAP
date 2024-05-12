@@ -6,6 +6,7 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Graphics/API/Vulkan/Objects/VulkanSurface.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 #include "Maths/Math.h"
@@ -221,6 +222,20 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 
 	return props;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+[[nodiscard]] bool TRAP::Graphics::API::VulkanPhysicalDevice::GetPhysicalDeviceSurfaceSupport(const VulkanSurface& surface, u32 queueFamilyIndex) const
+{
+	VkBool32 supportsPresent = VK_FALSE;
+
+	VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(m_physicalDevice, queueFamilyIndex, surface.GetVkSurface(),
+	                                            &supportsPresent));
+
+	return supportsPresent != VK_FALSE;
+}
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
