@@ -1272,7 +1272,7 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 
 	ImGuiIO& io = ImGui::GetIO();
 	ImGuiTRAPData* const bd = GetBackendData();
-	TRAP_ASSERT(bd != nullptr, "ImGuiWindowing::NewFrame(): Did you call ImGuiWindowing::Init()?");
+	TRAP_ASSERT(bd != nullptr, "ImGuiWindowing::NewFrame(): Context or backend not initialized! Did you call ImGuiWindowing::Init()?");
 
 	//Setup display size (every frame to accommodate for window resizing)
 	i32 width = 0, height = 0;
