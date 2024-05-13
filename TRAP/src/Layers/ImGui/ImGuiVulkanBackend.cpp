@@ -247,9 +247,10 @@ namespace
     // Helper structure we store in the void* RendererUserData field of each ImGuiViewport to easily retrieve our backend data.
     struct ImGui_ImplVulkan_ViewportData
     {
+        ImGui_ImplVulkanH_Window                Window{};                      // Used by secondary viewports only
+        ImGui_ImplVulkanH_WindowRenderBuffers   RenderBuffers{};               // Used by all viewports
         bool                                    WindowOwned = false;
-        ImGui_ImplVulkanH_Window                Window{};             // Used by secondary viewports only
-        ImGui_ImplVulkanH_WindowRenderBuffers   RenderBuffers{};      // Used by all viewports
+        bool                                    SwapChainNeedsRebuild = false; // Flag when viewport swapchain resized in the middle of processing a frame
     };
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -1155,6 +1156,9 @@ namespace
         ImGui_ImplVulkanH_Window& wd = vd->Window;
         const InitInfo& v = bd->VulkanInitInfo;
 
+        if(vd->SwapChainNeedsRebuild) //Frame data became invalid in the middle of rendering
+            return;
+
         VkResult err = VK_SUCCESS;
         u32 present_index = wd.FrameIndex;
 
@@ -1164,9 +1168,11 @@ namespace
 
         err = vkQueuePresentKHR(v.Queue->GetVkQueue(), &info);
         if (err == VK_ERROR_OUT_OF_DATE_KHR || err == VK_SUBOPTIMAL_KHR)
-            CreateOrResizeWindow(*v.Device, vd->Window, v.Queue, v.Allocator, NumericCast<i32>(viewport->Size.x), NumericCast<i32>(viewport->Size.y), v.MinImageCount);
-        else
-            CheckVkResult(err);
+        {
+            vd->SwapChainNeedsRebuild = true;
+            return;
+        }
+        CheckVkResult(err);
 
         wd.FrameIndex = (wd.FrameIndex + 1) % wd.ImageCount;         // This is for the next vkWaitForFences()
         wd.SemaphoreIndex = (wd.SemaphoreIndex + 1u) % NumericCast<u32>(wd.FrameSemaphores.size()); // Now we can use the next set of semaphores
@@ -1221,10 +1227,22 @@ void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* const viewport, [[mayb
     const InitInfo& v = bd->VulkanInitInfo;
     VkResult err = VK_SUCCESS;
 
+    if(vd->SwapChainNeedsRebuild)
+    {
+        CreateOrResizeWindow(*v.Device, wd, v.Queue, v.Allocator, NumericCast<i32>(viewport->Size.x), NumericCast<i32>(viewport->Size.y), v.MinImageCount);
+        vd->SwapChainNeedsRebuild = false;
+    }
+
     const ImGui_ImplVulkanH_FrameSemaphores& fsd = wd.FrameSemaphores[wd.SemaphoreIndex];
     {
         {
             err = vkAcquireNextImageKHR(v.Device->GetVkDevice(), wd.Swapchain, std::numeric_limits<u64>::max(), fsd.ImageAcquiredSemaphore->GetVkSemaphore(), VK_NULL_HANDLE, &wd.FrameIndex);
+            if(err == VK_ERROR_OUT_OF_DATE_KHR)
+            {
+                //Since we are not going to swap this frame anyway, it's ok that recreation happens on next frame.
+                vd->SwapChainNeedsRebuild = true;
+                return;
+            }
             CheckVkResult(err);
         }
 
