@@ -5026,3 +5026,7 @@ SITREP 05/12/2024|24w19b2
 SITREP 05/13/2024|24w20a1
     - Changed TRAP Engine version to 24w20a1(0.10.69)
     - Updated ImGuiVulkanBackend ~<30 mins
+
+SITREP 05/20/2024|24w21a1
+    - Changed TRAP Engine version to 24w21a1(0.10.70)
+    - Reworked TRAP::Optional class ~>120 mins

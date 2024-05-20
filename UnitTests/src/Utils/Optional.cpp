@@ -44,7 +44,7 @@ namespace
     {};
 }
 
-TEST_CASE("TRAP::Optional", "[utils][optional]")
+TEST_CASE("TRAP::Optional<T>", "[utils][optional]")
 {
     SECTION("Assignment value")
     {
@@ -77,43 +77,6 @@ TEST_CASE("TRAP::Optional", "[utils][optional]")
 
         o1 = std::move(o4);
         REQUIRE(*o1 == 42);
-    }
-
-    SECTION("Assignment reference")
-    {
-        i32 i = 42;
-        i32 j = 12;
-
-        TRAP::Optional<i32&> o1 = i;
-        TRAP::Optional<i32&> o2 = j;
-        static constexpr TRAP::Optional<i32&> o3;
-
-        o1 = o1;
-        REQUIRE(*o1 == 42);
-        REQUIRE(&*o1 == &i);
-
-        o1 = o2;
-        REQUIRE(*o1 == 12);
-
-        o1 = o3;
-        REQUIRE(!o1);
-
-        i32 k = 42;
-        o1 = k;
-        REQUIRE(*o1 == 42);
-        REQUIRE(*o1 == i);
-        REQUIRE(*o1 == k);
-        REQUIRE(&*o1 != &i);
-        REQUIRE(&*o1 == &k);
-
-        k = 12;
-        REQUIRE(*o1 == 12);
-
-        o1 = TRAP::NullOpt;
-        REQUIRE(!o1);
-
-        o1 = std::move(o2);
-        REQUIRE(*o1 == 12);
     }
 
     SECTION("Triviality")
@@ -301,25 +264,6 @@ TEST_CASE("TRAP::Optional", "[utils][optional]")
         TRAP::Optional<i32> o9 = std::move(o7);
         REQUIRE(*o9 == 42);
 
-        {
-            TRAP::Optional<i32&> o;
-            REQUIRE(!o);
-
-            TRAP::Optional<i32&> oo = o;
-            REQUIRE(!oo);
-        }
-
-        {
-            i32 i = 42;
-            TRAP::Optional<i32&> o = i;
-            REQUIRE(o);
-            REQUIRE(*o == 42);
-
-            TRAP::Optional<i32&> oo = o;
-            REQUIRE(oo);
-            REQUIRE(*oo == 42);
-        }
-
         std::vector<Foo> v;
         v.emplace_back();
         TRAP::Optional<std::vector<Foo>> ov = std::move(v);
@@ -392,9 +336,9 @@ TEST_CASE("TRAP::Optional", "[utils][optional]")
         REQUIRE(std::hash<i32>{}(1) == std::hash<TRAP::Optional<i32>>{}(op1));
 
         static constexpr TRAP::Optional<i32> op2(TRAP::NullOpt);
-        STATIC_REQUIRE(std::hash<TRAP::Optional<i32>>{}(op2) == 0);
+        STATIC_REQUIRE(std::hash<TRAP::Optional<i32>>{}(op2) == std::numeric_limits<std::size_t>::max());
         TRAP::Optional<i32> op2_1(TRAP::NullOpt);
-        REQUIRE(std::hash<TRAP::Optional<i32>>{}(op2_1) == 0);
+        REQUIRE(std::hash<TRAP::Optional<i32>>{}(op2_1) == std::numeric_limits<std::size_t>::max());
 
         using OptStr = TRAP::Optional<std::string>;
 
@@ -403,39 +347,39 @@ TEST_CASE("TRAP::Optional", "[utils][optional]")
 #ifdef TRAP_PLATFORM_LINUX
         REQUIRE(std::hash<OptStr>{}(std::get<0>(s)) == 11746482041453314842u);
         REQUIRE(std::hash<OptStr>{}(std::get<1>(s)) == 3663726644998027833);
-        REQUIRE(std::hash<OptStr>{}(std::get<2>(s)) == 0u);
+        REQUIRE(std::hash<OptStr>{}(std::get<2>(s)) == std::numeric_limits<std::size_t>::max());
         REQUIRE(std::hash<OptStr>{}(std::get<3>(s)) == 11697390762615875584u);
 #elif defined(TRAP_PLATFORM_WINDOWS)
         REQUIRE(std::hash<OptStr>{}(std::get<0>(s)) == 18027876433081418475u);
         REQUIRE(std::hash<OptStr>{}(std::get<1>(s)) == 3663726644998027833);
-        REQUIRE(std::hash<OptStr>{}(std::get<2>(s)) == 0u);
+        REQUIRE(std::hash<OptStr>{}(std::get<2>(s)) == std::numeric_limits<std::size_t>::max());
         REQUIRE(std::hash<OptStr>{}(std::get<3>(s)) == 11697390762615875584u);
 #endif
     }
 
     SECTION("In place")
     {
-        static constexpr TRAP::Optional<i32> o1{std::in_place};
-        static constexpr TRAP::Optional<i32> o2(std::in_place);
+        static constexpr TRAP::Optional<i32> o1{TRAP::InPlace};
+        static constexpr TRAP::Optional<i32> o2(TRAP::InPlace);
         STATIC_REQUIRE(o1);
         STATIC_REQUIRE(o1 == 0);
         STATIC_REQUIRE(o2);
         STATIC_REQUIRE(o2 == 0);
 
-        static constexpr TRAP::Optional<i32> o3(std::in_place, 42);
+        static constexpr TRAP::Optional<i32> o3(TRAP::InPlace, 42);
         STATIC_REQUIRE(o3 == 42);
 
-        static constexpr TRAP::Optional<std::tuple<i32, i32>> o4(std::in_place, 0, 1);
+        static constexpr TRAP::Optional<std::tuple<i32, i32>> o4(TRAP::InPlace, 0, 1);
         STATIC_REQUIRE(o4);
         STATIC_REQUIRE(std::get<0>(*o4) == 0);
         STATIC_REQUIRE(std::get<1>(*o4) == 1);
 
-        TRAP::Optional<std::vector<i32>> o5(std::in_place, {0, 1});
+        TRAP::Optional<std::vector<i32>> o5(TRAP::InPlace, {0, 1});
         REQUIRE(o5);
         REQUIRE((*o5)[0] == 0);
         REQUIRE((*o5)[1] == 1);
 
-        TRAP::Optional<TakesInitAndVariadic> o6(std::in_place, {0, 1}, 2, 3);
+        TRAP::Optional<TakesInitAndVariadic> o6(TRAP::InPlace, {0, 1}, 2, 3);
         REQUIRE(o6->v[0] == 0);
         REQUIRE(o6->v[1] == 1);
         REQUIRE(std::get<0>(o6->t) == 2);
@@ -468,12 +412,6 @@ TEST_CASE("TRAP::Optional", "[utils][optional]")
         REQUIRE(o5->v[1] == 1);
         REQUIRE(std::get<0>(o5->t) == 2);
         REQUIRE(std::get<1>(o5->t) == 3);
-
-        i32 i = 42;
-        auto o6 = TRAP::MakeOptional<i32&>(i);
-        STATIC_REQUIRE((std::same_as<decltype(o6), TRAP::Optional<i32&>>));
-        REQUIRE(o6);
-        REQUIRE(*o6 == 42);
 
         REQUIRE(TRAP::MakeOptional(42) == 42);
     }
@@ -607,7 +545,7 @@ TEST_CASE("TRAP::Optional", "[utils][optional]")
         STATIC_REQUIRE(!o3);
         STATIC_REQUIRE(!o4);
 
-        STATIC_REQUIRE(!std::is_default_constructible_v<TRAP::nullopt_t>);
+        STATIC_REQUIRE(!std::is_default_constructible_v<TRAP::NullOptT>);
     }
 
     SECTION("Observers")
@@ -640,7 +578,7 @@ TEST_CASE("TRAP::Optional", "[utils][optional]")
         static constexpr auto success3 = std::same_as<decltype(std::move(o3).Value()), const i32&&>;
         STATIC_REQUIRE(success3);
 
-        TRAP::Optional<MoveDetector> o4{std::in_place};
+        TRAP::Optional<MoveDetector> o4{TRAP::InPlace};
         MoveDetector o5 = std::move(o4).Value();
         REQUIRE(o4->BeenMoved);
         REQUIRE(!o5.BeenMoved);
@@ -876,59 +814,28 @@ TEST_CASE("TRAP::Optional", "[utils][optional]")
         STATIC_REQUIRE((std::same_as<decltype(o5r), const TRAP::Optional<i32>>));
         STATIC_REQUIRE(o5r.Value() == 42);
 
-        //Test void return
-        static constexpr TRAP::Optional<i32> o7 = 40;
-        static constexpr auto f7 = [](const i32&){return;};
-        static constexpr auto o7r = o7.Transform(f7);
-        STATIC_REQUIRE((std::same_as<decltype(o7r), const TRAP::Optional<std::monostate>>));
-        STATIC_REQUIRE(o7r.HasValue());
-
         //Test each overload in turn
         static constexpr TRAP::Optional<i32> o8 = 42;
         static constexpr auto o8r = o8.Transform([](i32) { return 42; });
         STATIC_REQUIRE(*o8r == 42);
 
-        static constexpr TRAP::Optional<i32> o9 = 42;
-        static constexpr auto o9r = o9.Transform([](i32) { return; });
-        STATIC_REQUIRE(o9r);
-
         static constexpr TRAP::Optional<i32> o12 = 42;
         static constexpr auto o12r = std::move(o12).Transform([](i32) { return 42; });
         STATIC_REQUIRE(*o12r == 42);
-
-        static constexpr TRAP::Optional<i32> o13 = 42;
-        static constexpr auto o13r = std::move(o13).Transform([](i32) { return; });
-        STATIC_REQUIRE(o13r);
 
         static constexpr TRAP::Optional<i32> o24 = TRAP::NullOpt;
         static constexpr auto o24r = o24.Transform([](i32) { return 42; });
         STATIC_REQUIRE(!o24r);
 
-        static constexpr TRAP::Optional<i32> o25 = TRAP::NullOpt;
-        static constexpr auto o25r = o25.Transform([](i32) { return; });
-        STATIC_REQUIRE(!o25r);
-
         static constexpr TRAP::Optional<i32> o28 = TRAP::NullOpt;
         static constexpr auto o28r = std::move(o28).Transform([](i32) { return 42; });
         STATIC_REQUIRE(!o28r);
-
-        static constexpr TRAP::Optional<i32> o29 = TRAP::NullOpt;
-        static constexpr auto o29r = std::move(o29).Transform([](i32) { return; });
-        STATIC_REQUIRE(!o29r);
 
         //Callable which returns a reference
         TRAP::Optional<i32> o38 = 42;
         auto o38r = o38.Transform([](i32& i) -> const i32& {return i;});
         REQUIRE(o38r);
         REQUIRE(*o38r == 42);
-
-        i32 i = 42;
-        TRAP::Optional<i32&> o39 = i;
-        o39.Transform([](i32& x){x = 12;});
-        REQUIRE(i == 12);
-
-        TRAP::Optional<i32> o40(TRAP::NullOpt);
-        REQUIRE(o40.Transform([](i32){}) == TRAP::Optional<std::monostate>(TRAP::NullOpt));
     }
 
     SECTION("AndThen")
@@ -1000,17 +907,8 @@ TEST_CASE("TRAP::Optional", "[utils][optional]")
         static constexpr auto o17r = std::move(o17).AndThen([](i32) { return TRAP::MakeOptional(42); });
         STATIC_REQUIRE(!o17r);
 
-        i32 i = 3;
-        TRAP::Optional<i32&> o20{i};
-        const auto _ = std::move(o20).AndThen([](i32& r){return TRAP::Optional<i32&>{++r};});
-        REQUIRE(o20);
-        REQUIRE(i == 4);
-
         TRAP::Optional<i32> o21(TRAP::NullOpt);
         REQUIRE(!std::move(o21).AndThen([](i32){return TRAP::MakeOptional(42);}).HasValue());
-
-        TRAP::Optional<i32&> o22{TRAP::NullOpt};
-        REQUIRE(!std::move(o22).AndThen([](i32& r){return TRAP::Optional<i32&>{++r};}).HasValue());
     }
 
     SECTION("OrElse")
@@ -1036,34 +934,6 @@ TEST_CASE("TRAP::Optional", "[utils][optional]")
 
         const TRAP::Optional<i32&> o4{TRAP::NullOpt};
         REQUIRE(o4.ValueOrElse([]{return 5;}) == 5);
-    }
-
-    SECTION("Disjunction")
-    {
-        static constexpr TRAP::Optional<i32> o1 = 42;
-        static constexpr TRAP::Optional<i32> o2 = 12;
-        static constexpr TRAP::Optional<i32> o3;
-
-        STATIC_REQUIRE(*o1.Disjunction(o2) == 42);
-        STATIC_REQUIRE(*o1.Disjunction(o3) == 42);
-        STATIC_REQUIRE(*o2.Disjunction(o1) == 12);
-        STATIC_REQUIRE(*o2.Disjunction(o3) == 12);
-        STATIC_REQUIRE(*o3.Disjunction(o1) == 42);
-        STATIC_REQUIRE(*o3.Disjunction(o2) == 12);
-    }
-
-    SECTION("Conjunction")
-    {
-        static constexpr TRAP::Optional<i32> o1 = 42;
-        STATIC_REQUIRE(*o1.Conjunction(42.0) == 42.0);
-        REQUIRE(*o1.Conjunction(std::string{"hello"}) == std::string{"hello"});
-
-        static constexpr TRAP::Optional<i32> o2;
-        STATIC_REQUIRE(!o2.Conjunction(42.0));
-        STATIC_REQUIRE(!o2.Conjunction(std::string{"hello"}));
-
-        TRAP::Optional<i32> o3(TRAP::NullOpt);
-        REQUIRE(!o3.Conjunction(42).HasValue());
     }
 
     SECTION("TransformOr")
@@ -1100,6 +970,744 @@ TEST_CASE("TRAP::Optional", "[utils][optional]")
         using namespace std::string_view_literals;
 
         const TRAP::BadOptionalAccess boa{};
-        REQUIRE("Optional has no value"sv == boa.what());
+        REQUIRE("BadOptionalAccess in TRAP::Optional"sv == boa.what());
+    }
+}
+
+namespace
+{
+    struct Empty
+    {
+    };
+
+    struct NoDefault
+    {
+        constexpr NoDefault() = delete;
+        constexpr NoDefault(const NoDefault&) = default;
+        constexpr NoDefault(NoDefault&&) = default;
+        constexpr NoDefault& operator=(const NoDefault&) = default;
+        constexpr NoDefault& operator=(NoDefault&&) = default;
+        constexpr NoDefault(Empty)
+        {
+        }
+    };
+
+    struct Base
+    {
+        i32 I;
+
+        constexpr Base()
+            : I(0)
+        {
+        }
+
+        constexpr Base(i32 i)
+            : I(i)
+        {
+        }
+    };
+
+    struct Derived : public Base
+    {
+        i32 J;
+
+        constexpr Derived()
+            : Base(0), J(0)
+        {
+        }
+
+        constexpr Derived(i32 i, i32 j)
+            : Base(i), J(j)
+        {
+        }
+    };
+
+    static_assert(std::is_default_constructible_v<Derived>);
+
+    struct MoveDetector
+    {
+        constexpr MoveDetector() = default;
+        constexpr MoveDetector(MoveDetector&& rhs)
+        {
+            rhs.BeenMoved = true;
+        }
+        bool BeenMoved = false;
+    };
+}
+
+TEST_CASE("TRAP::Optional<T&>", "[utils][optional]")
+{
+    SECTION("Constructors")
+    {
+        STATIC_REQUIRE(std::is_same_v<TRAP::Optional<i32&>::value_type, i32&>);
+
+        static constexpr TRAP::Optional<i32&> i1;
+        static constexpr TRAP::Optional<i32&> i2{TRAP::NullOpt};
+
+        i32 i = 0;
+        const TRAP::Optional<i32&> i3{i};
+
+        static constexpr TRAP::Optional<Empty&> e1;
+        static constexpr TRAP::Optional<Empty&> e2{TRAP::NullOpt};
+
+        Empty e{};
+        const TRAP::Optional<Empty&> e3{e};
+
+        static constexpr TRAP::Optional<NoDefault&> nd1;
+        static constexpr TRAP::Optional<NoDefault&> nd2{TRAP::NullOpt};
+
+        NoDefault nd{e};
+
+        const TRAP::Optional<NoDefault&> nd3{nd};
+
+        static constexpr TRAP::Optional<i32&> ie;
+        static constexpr TRAP::Optional<i32&> i4 = ie;
+        REQUIRE_FALSE(i4);
+
+        Base b{1};
+        Derived d(1, 2);
+        const TRAP::Optional<Base&> b1{b};
+        const TRAP::Optional<Base&> b2{d};
+
+        const TRAP::Optional<Derived&> d2{d};
+        const TRAP::Optional<Base&> b3{d2};
+        const TRAP::Optional<Base&> b4 = d2;
+
+        static constexpr TRAP::Optional<Derived&> empty;
+        static constexpr TRAP::Optional<Base&> fromEmpty{empty};
+        static constexpr TRAP::Optional<Base&> fromEmpty2 = empty;
+    }
+
+    SECTION("Assignment")
+    {
+        TRAP::Optional<i32&> i1;
+        REQUIRE_FALSE(i1);
+        i32 i = 5;
+        i1 = i;
+        i = 7;
+        REQUIRE(i1);
+        REQUIRE((*i1 = 7));
+
+        f64 d;
+        // i1 = d; //ill-formed by mandate
+        const TRAP::Optional<f64&> d1{d};
+        // i1 = d1; //ill-formed by mandate
+        TRAP::Optional<i32&> i2 = i1;
+        REQUIRE(i2);
+        REQUIRE((*i2 = 7));
+
+        TRAP::Optional<i32&> empty;
+        REQUIRE_FALSE(empty);
+        i2 = empty;
+        REQUIRE_FALSE(i2);
+        i32 eight = 8;
+        empty.Emplace(eight);
+        REQUIRE(empty);
+        // REQUIRE(empty == 8);
+    }
+
+    SECTION("RelationalOps")
+    {
+        i32 i1 = 4;
+        i32 i2 = 42;
+        const TRAP::Optional<i32&> o1{i1};
+        const TRAP::Optional<i32&> o2{i2};
+        static constexpr TRAP::Optional<i32&> o3{};
+
+        REQUIRE(!(o1 == o2));
+        REQUIRE(o1 == o1);
+        REQUIRE(o1 != o2);
+        REQUIRE(!(o1 != o1));
+        REQUIRE(o1 < o2);
+        REQUIRE(!(o1 < o1));
+        REQUIRE(!(o1 > o2));
+        REQUIRE(!(o1 > o1));
+        REQUIRE(o1 <= o2);
+        REQUIRE(o1 <= o1);
+        REQUIRE(!(o1 >= o2));
+        REQUIRE(o1 >= o1);
+
+        REQUIRE(!(o1 == TRAP::NullOpt));
+        REQUIRE(!(TRAP::NullOpt == o1));
+        REQUIRE(o1 != TRAP::NullOpt);
+        REQUIRE(TRAP::NullOpt != o1);
+        REQUIRE(!(o1 < TRAP::NullOpt));
+        REQUIRE(TRAP::NullOpt < o1);
+        REQUIRE(o1 > TRAP::NullOpt);
+        REQUIRE(!(TRAP::NullOpt > o1));
+        REQUIRE(!(o1 <= TRAP::NullOpt));
+        REQUIRE(TRAP::NullOpt <= o1);
+        REQUIRE(o1 >= TRAP::NullOpt);
+        REQUIRE(!(TRAP::NullOpt >= o1));
+
+        REQUIRE(o3 == TRAP::NullOpt);
+        REQUIRE(TRAP::NullOpt == o3);
+        REQUIRE(!(o3 != TRAP::NullOpt));
+        REQUIRE(!(TRAP::NullOpt != o3));
+        REQUIRE(!(o3 < TRAP::NullOpt));
+        REQUIRE(!(TRAP::NullOpt < o3));
+        REQUIRE(!(o3 > TRAP::NullOpt));
+        REQUIRE(!(TRAP::NullOpt > o3));
+        REQUIRE(o3 <= TRAP::NullOpt);
+        REQUIRE(TRAP::NullOpt <= o3);
+        REQUIRE(o3 >= TRAP::NullOpt);
+        REQUIRE(TRAP::NullOpt >= o3);
+
+        REQUIRE(!(o1 == 1));
+        REQUIRE(!(1 == o1));
+        REQUIRE(o1 != 1);
+        REQUIRE(1 != o1);
+        REQUIRE(!(o1 < 1));
+        REQUIRE(1 < o1);
+        REQUIRE(o1 > 1);
+        REQUIRE(!(1 > o1));
+        REQUIRE(!(o1 <= 1));
+        REQUIRE(1 <= o1);
+        REQUIRE(o1 >= 1);
+        REQUIRE(!(1 >= o1));
+
+        REQUIRE(o1 == 4);
+        REQUIRE(4 == o1);
+        REQUIRE(!(o1 != 4));
+        REQUIRE(!(4 != o1));
+        REQUIRE(!(o1 < 4));
+        REQUIRE(!(4 < o1));
+        REQUIRE(!(o1 > 4));
+        REQUIRE(!(4 > o1));
+        REQUIRE(o1 <= 4);
+        REQUIRE(4 <= o1);
+        REQUIRE(o1 >= 4);
+        REQUIRE(4 >= o1);
+
+        std::string s4 = "hello";
+        std::string s5 = "xyz";
+        const TRAP::Optional<std::string&> o4{s4};
+        const TRAP::Optional<std::string&> o5{s5};
+
+        REQUIRE(!(o4 == o5));
+        REQUIRE(o4 == o4);
+        REQUIRE(o4 != o5);
+        REQUIRE(!(o4 != o4));
+        REQUIRE(o4 < o5);
+        REQUIRE(!(o4 < o4));
+        REQUIRE(!(o4 > o5));
+        REQUIRE(!(o4 > o4));
+        REQUIRE(o4 <= o5);
+        REQUIRE(o4 <= o4);
+        REQUIRE(!(o4 >= o5));
+        REQUIRE(o4 >= o4);
+
+        REQUIRE(!(o4 == TRAP::NullOpt));
+        REQUIRE(!(TRAP::NullOpt == o4));
+        REQUIRE(o4 != TRAP::NullOpt);
+        REQUIRE(TRAP::NullOpt != o4);
+        REQUIRE(!(o4 < TRAP::NullOpt));
+        REQUIRE(TRAP::NullOpt < o4);
+        REQUIRE(o4 > TRAP::NullOpt);
+        REQUIRE(!(TRAP::NullOpt > o4));
+        REQUIRE(!(o4 <= TRAP::NullOpt));
+        REQUIRE(TRAP::NullOpt <= o4);
+        REQUIRE(o4 >= TRAP::NullOpt);
+        REQUIRE(!(TRAP::NullOpt >= o4));
+
+        REQUIRE(o3 == TRAP::NullOpt);
+        REQUIRE(TRAP::NullOpt == o3);
+        REQUIRE(!(o3 != TRAP::NullOpt));
+        REQUIRE(!(TRAP::NullOpt != o3));
+        REQUIRE(!(o3 < TRAP::NullOpt));
+        REQUIRE(!(TRAP::NullOpt < o3));
+        REQUIRE(!(o3 > TRAP::NullOpt));
+        REQUIRE(!(TRAP::NullOpt > o3));
+        REQUIRE(o3 <= TRAP::NullOpt);
+        REQUIRE(TRAP::NullOpt <= o3);
+        REQUIRE(o3 >= TRAP::NullOpt);
+        REQUIRE(TRAP::NullOpt >= o3);
+
+        REQUIRE(!(o4 == "a"));
+        REQUIRE(!("a" == o4));
+        REQUIRE(o4 != "a");
+        REQUIRE("a" != o4);
+        REQUIRE(!(o4 < "a"));
+        REQUIRE("a" < o4);
+        REQUIRE(o4 > "a");
+        REQUIRE(!("a" > o4));
+        REQUIRE(!(o4 <= "a"));
+        REQUIRE("a" <= o4);
+        REQUIRE(o4 >= "a");
+        REQUIRE(!("a" >= o4));
+
+        REQUIRE(o4 == "hello");
+        REQUIRE("hello" == o4);
+        REQUIRE(!(o4 != "hello"));
+        REQUIRE(!("hello" != o4));
+        REQUIRE(!(o4 < "hello"));
+        REQUIRE(!("hello" < o4));
+        REQUIRE(!(o4 > "hello"));
+        REQUIRE(!("hello" > o4));
+        REQUIRE(o4 <= "hello");
+        REQUIRE("hello" <= o4);
+        REQUIRE(o4 >= "hello");
+        REQUIRE("hello" >= o4);
+    }
+
+    SECTION("Triviality")
+    {
+        STATIC_REQUIRE(std::is_trivially_copy_constructible_v<TRAP::Optional<i32&>>);
+        STATIC_REQUIRE(std::is_trivially_copy_assignable_v<TRAP::Optional<i32&>>);
+        STATIC_REQUIRE(std::is_trivially_move_constructible_v<TRAP::Optional<i32&>>);
+        STATIC_REQUIRE(std::is_trivially_move_assignable_v<TRAP::Optional<i32&>>);
+        STATIC_REQUIRE(std::is_trivially_destructible_v<TRAP::Optional<i32&>>);
+
+        {
+            struct T
+            {
+                constexpr T(const T&) = default;
+                constexpr T(T&&) = default;
+                constexpr T& operator=(const T&) = default;
+                constexpr T& operator=(T&&) = default;
+                constexpr ~T() = default;
+            };
+            STATIC_REQUIRE(std::is_trivially_copy_constructible_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_trivially_copy_assignable_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_trivially_move_constructible_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_trivially_move_assignable_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_trivially_destructible_v<TRAP::Optional<T&>>);
+        }
+
+        {
+            struct T
+            {
+                constexpr T(const T&)
+                {
+                };
+                constexpr T(T&&)
+                {
+                };
+                constexpr T& operator=(const T&)
+                {
+                    return *this;
+                };
+                constexpr T& operator=(T&&)
+                {
+                    return *this;
+                };
+                constexpr ~T()
+                {
+                };
+            };
+            STATIC_REQUIRE(std::is_trivially_copy_constructible_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_trivially_copy_assignable_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_trivially_move_constructible_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_trivially_move_assignable_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_trivially_destructible_v<TRAP::Optional<T&>>);
+        }
+    }
+
+    SECTION("Deletion")
+    {
+        STATIC_REQUIRE(std::is_copy_constructible_v<TRAP::Optional<i32&>>);
+        STATIC_REQUIRE(std::is_copy_assignable_v<TRAP::Optional<i32&>>);
+        STATIC_REQUIRE(std::is_move_constructible_v<TRAP::Optional<i32&>>);
+        STATIC_REQUIRE(std::is_move_assignable_v<TRAP::Optional<i32&>>);
+        STATIC_REQUIRE(std::is_destructible_v<TRAP::Optional<i32&>>);
+
+        {
+            struct T
+            {
+                constexpr T(const T&) = default;
+                constexpr T(T&&) = default;
+                constexpr T& operator=(const T&) = default;
+                constexpr T& operator=(T&&) = default;
+                constexpr ~T() = default;
+            };
+            STATIC_REQUIRE(std::is_copy_constructible_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_copy_assignable_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_move_constructible_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_move_assignable_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_destructible_v<TRAP::Optional<T&>>);
+        }
+
+        {
+            struct T
+            {
+                constexpr T(const T&) = delete;
+                constexpr T(T&&) = delete;
+                constexpr T& operator=(const T&) = delete;
+                constexpr T& operator=(T&&) = delete;
+            };
+            STATIC_REQUIRE(std::is_copy_constructible_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_copy_assignable_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_move_constructible_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_move_assignable_v<TRAP::Optional<T&>>);
+        }
+
+        {
+            struct T
+            {
+                constexpr T(const T&) = delete;
+                constexpr T(T&&) = default;
+                constexpr T& operator=(const T&) = delete;
+                constexpr T& operator=(T&&) = default;
+            };
+            STATIC_REQUIRE(std::is_copy_constructible_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_copy_assignable_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_move_constructible_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_move_assignable_v<TRAP::Optional<T&>>);
+        }
+
+        {
+            struct T
+            {
+                constexpr T(const T&) = default;
+                constexpr T(T&&) = delete;
+                constexpr T& operator=(const T&) = default;
+                constexpr T& operator=(T&&) = delete;
+            };
+            STATIC_REQUIRE(std::is_copy_constructible_v<TRAP::Optional<T&>>);
+            STATIC_REQUIRE(std::is_copy_assignable_v<TRAP::Optional<T&>>);
+        }
+    }
+
+    SECTION("MakeOptional")
+    {
+        i32 var{42};
+        const auto o1 = TRAP::MakeOptional([&]()->i32&{return var;}());
+        const auto o2 = TRAP::Optional<i32&>(var);
+
+        STATIC_REQUIRE(std::same_as<decltype(o1), const TRAP::Optional<i32>>);
+        REQUIRE(*o1 == *o2);
+
+        std::tuple<i32, i32, i32, i32> tvar{0, 1, 2, 3};
+        const auto o3 = TRAP::MakeOptional<std::tuple<i32, i32, i32, i32>&>(tvar);
+        REQUIRE(std::get<0>(*o3) == 0);
+        REQUIRE(std::get<1>(*o3) == 1);
+        REQUIRE(std::get<2>(*o3) == 2);
+        REQUIRE(std::get<3>(*o3) == 3);
+
+        std::vector<i32> ivec{0, 1, 2, 3};
+        const auto o4 = TRAP::MakeOptional<std::vector<i32>&>(ivec);
+        REQUIRE(o4.Value()[0] == 0);
+        REQUIRE(o4.Value()[1] == 1);
+        REQUIRE(o4.Value()[2] == 2);
+        REQUIRE(o4.Value()[3] == 3);
+
+        TakesInitAndVariadic tiv{{0, 1}, 2, 3};
+        const auto o5 = TRAP::MakeOptional<TakesInitAndVariadic&>(tiv);
+        REQUIRE(o5->v[0] == 0);
+        REQUIRE(o5->v[1] == 1);
+        REQUIRE(std::get<0>(o5->t) == 2);
+        REQUIRE(std::get<1>(o5->t) == 3);
+
+        auto i = 42;
+        static const auto o6 = TRAP::MakeOptional<i32&>(i);
+
+        STATIC_REQUIRE(std::same_as<decltype(o6), const TRAP::Optional<i32>>);
+        REQUIRE(o6);
+        REQUIRE((*o6 == 42));
+    }
+
+    SECTION("NullOpt")
+    {
+        static constexpr TRAP::Optional<i32&> o1 = TRAP::NullOpt;
+        static constexpr TRAP::Optional<i32&> o2{TRAP::NullOpt};
+        static constexpr TRAP::Optional<i32&> o3{TRAP::NullOpt};
+        static constexpr TRAP::Optional<i32&> o4 = {TRAP::NullOpt};
+
+        STATIC_REQUIRE(!o1);
+        STATIC_REQUIRE(!o2);
+        STATIC_REQUIRE(!o3);
+        STATIC_REQUIRE(!o4);
+
+        STATIC_REQUIRE(!std::is_default_constructible_v<TRAP::NullOptT>);
+    }
+
+    SECTION("Observers")
+    {
+        i32 var = 42;
+        TRAP::Optional<i32&> o1{var};
+        static constexpr TRAP::Optional<i32&> o2;
+        const TRAP::Optional<i32&> o3{var};
+        i32 fortyTwo = 42;
+        REQUIRE(*o1 == 42);
+        REQUIRE(*o1 == o1.Value());
+        REQUIRE(o2.ValueOr(fortyTwo) == 42);
+        REQUIRE(o3.Value() == 42);
+        STATIC_REQUIRE(std::same_as<decltype(o1.Value()), i32&>);
+        STATIC_REQUIRE(std::same_as<decltype(o2.Value()), const i32&>);
+        STATIC_REQUIRE(std::same_as<decltype(o3.Value()), const i32&>);
+        STATIC_REQUIRE(std::same_as<decltype(std::move(o1).Value()), i32&>);
+
+        STATIC_REQUIRE(std::same_as<decltype(*o1), i32&>);
+        STATIC_REQUIRE(std::same_as<decltype(*o2), i32&>);
+        STATIC_REQUIRE(std::same_as<decltype(*o3), i32&>);
+        STATIC_REQUIRE(std::same_as<decltype(*std::move(o1)), i32&>);
+
+        STATIC_REQUIRE(std::same_as<decltype(o1.operator->()), i32*>);
+        STATIC_REQUIRE(std::same_as<decltype(o2.operator->()), const i32*>);
+        STATIC_REQUIRE(std::same_as<decltype(o3.operator->()), const i32*>);
+        STATIC_REQUIRE(std::same_as<decltype(std::move(o1).operator->()), i32*>);
+
+        struct IntBox
+        {
+            i32 I;
+        };
+        IntBox i1{3};
+        TRAP::Optional<IntBox&> ob1{i1};
+        static constexpr TRAP::Optional<IntBox&> ob2;
+        const TRAP::Optional<IntBox&> ob3{i1};
+        STATIC_REQUIRE(std::same_as<decltype(ob1->I), i32>);
+        STATIC_REQUIRE(std::same_as<decltype(ob2->I), i32>);
+        STATIC_REQUIRE(std::same_as<decltype(ob3->I), i32>);
+        STATIC_REQUIRE(std::same_as<decltype(std::move(ob1)->I), i32>);
+    }
+
+    SECTION("Move check")
+    {
+        i32 x = 0;
+        const i32& y = std::move(TRAP::Optional<i32&>(x)).Value();
+        REQUIRE((&y == &x));
+
+        const i32& z = *std::move(TRAP::Optional<i32&>(x));
+        REQUIRE((&z == &x));
+    }
+
+    SECTION("Swap value")
+    {
+        i32 var = 42;
+        i32 twelve = 12;
+        TRAP::Optional<i32&> o1{var};
+        TRAP::Optional<i32&> o2{twelve};
+        o1.Swap(o2);
+        REQUIRE(o1.Value() == 12);
+        REQUIRE(o2.Value() == 42);
+    }
+
+    SECTION("Swap with NullOpt")
+    {
+        i32 var = 42;
+
+        TRAP::Optional<i32&> o1{var};
+        TRAP::Optional<i32&> o2{TRAP::NullOpt};
+        o1.Swap(o2);
+        REQUIRE(!o1.HasValue());
+        REQUIRE(o2.Value() == 42);
+    }
+
+    SECTION("Swap NullOpt with value")
+    {
+        i32 var = 42;
+        TRAP::Optional<i32&> o1{TRAP::NullOpt};
+        TRAP::Optional<i32&> o2{var};
+        o1.Swap(o2);
+        REQUIRE(o1.Value() == 42);
+        REQUIRE(!o2.HasValue());
+    }
+
+    SECTION("Monadic Transform")
+    {
+        TRAP::Optional<i32&> o1;
+        auto o1r = o1.Transform([](i32 i){return i + 2; });
+        STATIC_REQUIRE(std::same_as<decltype(o1r), TRAP::Optional<i32>>);
+        REQUIRE(!o1r);
+
+        i32 forty = 40;
+        TRAP::Optional<i32&> o2 = forty;
+        auto o2r = o2.Transform([](i32 i){return i + 2; });
+        STATIC_REQUIRE(std::same_as<decltype(o2r), TRAP::Optional<i32>>);
+        REQUIRE(o2r.Value() == 42);
+
+        struct RValCallTransform
+        {
+            [[nodiscard]] constexpr f64 operator()(i32) &&
+            {
+                return 42.0;
+            }
+        };
+
+        i32 fortyTwo = 42;
+        TRAP::Optional<i32&> o3 = fortyTwo;
+        auto o3r = o3.Transform(RValCallTransform{});
+        STATIC_REQUIRE(std::same_as<decltype(o3r), TRAP::Optional<f64>>);
+        REQUIRE(o3r.Value() == 42);
+
+        forty = 40;
+        const TRAP::Optional<i32&> o5 = forty;
+        auto o5r = o5.Transform([](const i32& i){return i + 2;});
+        STATIC_REQUIRE(std::same_as<decltype(o5r), TRAP::Optional<i32>>);
+        REQUIRE(o5r.Value() == 42);
+
+        fortyTwo = 42;
+        TRAP::Optional<i32&> o8 = fortyTwo;
+        auto o8r = o8.Transform([](i32){return 42;});
+        REQUIRE(*o8r == 42);
+
+        TRAP::Optional<i32&> o12 = fortyTwo;
+        auto o12r = std::move(o12).Transform([](i32){return 42;});
+        REQUIRE(*o12r == 42);
+
+        const TRAP::Optional<i32&> o16 = fortyTwo;
+        auto o16r = o16.Transform([](i32){return 42;});
+        REQUIRE(*o16r == 42);
+
+        const TRAP::Optional<i32&> o20 = fortyTwo;
+        auto o20r = std::move(o20).Transform([](i32){return 42;});
+        REQUIRE(*o20r == 42);
+
+        TRAP::Optional<i32&> o24 = TRAP::NullOpt;
+        auto o24r = o24.Transform([](i32){return 42;});
+        REQUIRE(!o24r);
+
+        TRAP::Optional<i32&> o28 = TRAP::NullOpt;
+        auto o28r = std::move(o28).Transform([](i32){return 42;});
+        REQUIRE(!o28r);
+
+        const TRAP::Optional<i32&> o32 = TRAP::NullOpt;
+        auto o32r = o32.Transform([](i32){return 42;});
+        REQUIRE(!o32r);
+
+        const TRAP::Optional<i32&> o36 = TRAP::NullOpt;
+        auto o36r = std::move(o36).Transform([](i32){return 42;});
+        REQUIRE(!o36r);
+
+        TRAP::Optional<i32&> o38 = fortyTwo;
+        auto o38r = o38.Transform([](i32& i) -> const i32&{return i;});
+        REQUIRE(o38r);
+        REQUIRE(*o38r == 42);
+    }
+
+    SECTION("Monadic Transform constexpr")
+    {
+        static constexpr i32 constexprFortyTwo = 42;
+        static constexpr auto GetInt = [](i32){return 42;};
+
+        static constexpr TRAP::Optional<const i32&> o16 = constexprFortyTwo;
+        static constexpr auto o16r = o16.Transform(GetInt);
+
+        static constexpr TRAP::Optional<const i32&> o20 = constexprFortyTwo;
+        static constexpr auto o20r = std::move(o20).Transform(GetInt);
+
+        static constexpr TRAP::Optional<i32&> o32 = TRAP::NullOpt;
+        static constexpr auto o32r = o32.Transform(GetInt);
+        STATIC_REQUIRE(!o32r);
+        static constexpr TRAP::Optional<i32&> o36 = TRAP::NullOpt;
+        static constexpr auto o36r = std::move(o36).Transform(GetInt);
+        STATIC_REQUIRE(!o36r);
+    }
+
+    SECTION("Monadic AndThen")
+    {
+        TRAP::Optional<i32&> o1;
+        auto o1r = o1.AndThen([](i32){return TRAP::Optional<f32>{42};});
+        STATIC_REQUIRE(std::same_as<decltype(o1r), TRAP::Optional<f32>>);
+        REQUIRE(!o1r);
+
+        i32 twelve = 12;
+        TRAP::Optional<i32&> o2 = twelve;
+        auto o2r = o2.AndThen([](i32){return TRAP::Optional<f32>{42};});
+        STATIC_REQUIRE(std::same_as<decltype(o2r), TRAP::Optional<f32>>);
+        REQUIRE(o2r.Value() == 42.0f);
+
+        TRAP::Optional<i32&> o3;
+        auto o3r = o3.AndThen([](i32){return TRAP::Optional<f32>{};});
+        STATIC_REQUIRE(std::same_as<decltype(o3r), TRAP::Optional<f32>>);
+        REQUIRE(!o3r);
+
+        TRAP::Optional<i32&> o4 = twelve;
+        auto o4r = o4.AndThen([](i32){return TRAP::Optional<f32>{};});
+        STATIC_REQUIRE(std::same_as<decltype(o4r), TRAP::Optional<f32>>);
+        REQUIRE(!o4r);
+
+        struct RValCallAndThen
+        {
+            [[nodiscard]] constexpr TRAP::Optional<f64> operator()(i32) &&
+            {
+                return TRAP::Optional<f64>(42.0);
+            }
+        };
+
+        i32 fortyTwo = 42;
+        TRAP::Optional<i32&> o5 = fortyTwo;
+        auto o5r = o5.AndThen(RValCallAndThen{});
+        STATIC_REQUIRE(std::same_as<decltype(o5r), TRAP::Optional<f64>>);
+        REQUIRE(o5r.Value() == 42);
+
+        const TRAP::Optional<i32&> o7 = fortyTwo;
+        auto o7r = o7.AndThen([](const i32& i){return TRAP::Optional<f64>(i);});
+        STATIC_REQUIRE(std::same_as<decltype(o7r), TRAP::Optional<f64>>);
+        REQUIRE(o7r.Value() == 42);
+
+        TRAP::Optional<i32&> o8 = fortyTwo;
+        auto o8r = o8.AndThen([](i32){return TRAP::MakeOptional(42);});
+        REQUIRE(*o8r == 42);
+
+        TRAP::Optional<i32&> o9 = fortyTwo;
+        auto o9r = std::move(o9).AndThen([](i32){return TRAP::MakeOptional(42);});
+        REQUIRE(*o9r == 42);
+
+        const TRAP::Optional<i32&> o10 = fortyTwo;
+        auto o10r = o10.AndThen([](i32){return TRAP::MakeOptional(42);});
+        REQUIRE(*o10r == 42);
+
+        const TRAP::Optional<i32&> o11 = fortyTwo;
+        auto o11r = std::move(o11).AndThen([](i32){return TRAP::MakeOptional(42);});
+        REQUIRE(*o11r == 42);
+
+        TRAP::Optional<i32&> o16 = TRAP::NullOpt;
+        auto o16r = o16.AndThen([](i32){return TRAP::MakeOptional(42);});
+        REQUIRE(!o16r);
+
+        TRAP::Optional<i32&> o17 = TRAP::NullOpt;
+        auto o17r = std::move(o17).AndThen([](i32){return TRAP::MakeOptional(42);});
+        REQUIRE(!o17r);
+
+        const TRAP::Optional<i32&> o18 = TRAP::NullOpt;
+        auto o18r = o18.AndThen([](i32){return TRAP::MakeOptional(42);});
+        REQUIRE(!o18r);
+
+        const TRAP::Optional<i32&> o19 = TRAP::NullOpt;
+        auto o19r = std::move(o19).AndThen([](i32){return TRAP::MakeOptional(42);});
+        REQUIRE(!o19r);
+
+        i32 i = 3;
+        TRAP::Optional<i32&> o20{i};
+        std::move(o20).AndThen([](i32& r){return TRAP::Optional<i32&>{++r};});
+        REQUIRE(o20);
+        REQUIRE(i == 4);
+    }
+
+    SECTION("Monadic AndThen constexpr")
+    {
+        static constexpr i32 constexprFortyTwo = 42;
+        static constexpr auto GetOptInt = [](i32) -> TRAP::Optional<const i32&>
+        {
+            return constexprFortyTwo;
+        };
+
+        static constexpr TRAP::Optional<const i32&> o10 = constexprFortyTwo;
+        static constexpr auto o10r = o10.AndThen(GetOptInt);
+        REQUIRE(*o10r == 42);
+
+        static constexpr TRAP::Optional<const i32&> o11 = constexprFortyTwo;
+        static constexpr auto o11r = std::move(o11).AndThen(GetOptInt);
+        REQUIRE(*o11r == 42);
+
+        static constexpr TRAP::Optional<i32&> o18 = TRAP::NullOpt;
+        static constexpr auto o18r = o18.AndThen(GetOptInt);
+        REQUIRE(!o18r);
+
+        static constexpr TRAP::Optional<i32&> o19 = TRAP::NullOpt;
+        static constexpr auto o19r = std::move(o19).AndThen(GetOptInt);
+        REQUIRE(!o19r);
+    }
+
+    SECTION("Monadic OrElse")
+    {
+        i32 fortyTwo = 42;
+        i32 thirteen = 13;
+        TRAP::Optional<i32&> o1 = fortyTwo;
+        REQUIRE(*(o1.OrElse([&]{return TRAP::Optional<i32&>(thirteen);})) == 42);
+
+        TRAP::Optional<i32&> o2;
+        REQUIRE(*(o2.OrElse([&]{return TRAP::Optional<i32&>(thirteen);})) == 13);
     }
 }
