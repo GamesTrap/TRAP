@@ -1167,6 +1167,7 @@ namespace
 		return true; //Do nothing when not using any RenderAPI
 
 	ImGuiIO& io = ImGui::GetIO();
+	IMGUI_CHECKVERSION();
 	TRAP_ASSERT(io.BackendPlatformUserData == nullptr, "ImGuiWindowing::Init(): Platform backend is already initialized!");
 
 	//Setup back-end capabilities flags
