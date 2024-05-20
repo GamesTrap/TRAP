@@ -1263,8 +1263,8 @@ TEST_CASE("TRAP::Optional<T&>", "[utils][optional]")
             {
                 constexpr T(const T&) = default;
                 constexpr T(T&&) = default;
-                constexpr T& operator=(const T&) = default;
-                constexpr T& operator=(T&&) = default;
+                T& operator=(const T&) = default;
+                T& operator=(T&&) = default;
                 constexpr ~T() = default;
             };
             STATIC_REQUIRE(std::is_trivially_copy_constructible_v<TRAP::Optional<T&>>);
@@ -1316,8 +1316,8 @@ TEST_CASE("TRAP::Optional<T&>", "[utils][optional]")
             {
                 constexpr T(const T&) = default;
                 constexpr T(T&&) = default;
-                constexpr T& operator=(const T&) = default;
-                constexpr T& operator=(T&&) = default;
+                T& operator=(const T&) = default;
+                T& operator=(T&&) = default;
                 constexpr ~T() = default;
             };
             STATIC_REQUIRE(std::is_copy_constructible_v<TRAP::Optional<T&>>);
@@ -1347,7 +1347,7 @@ TEST_CASE("TRAP::Optional<T&>", "[utils][optional]")
                 constexpr T(const T&) = delete;
                 constexpr T(T&&) = default;
                 constexpr T& operator=(const T&) = delete;
-                constexpr T& operator=(T&&) = default;
+                T& operator=(T&&) = default;
             };
             STATIC_REQUIRE(std::is_copy_constructible_v<TRAP::Optional<T&>>);
             STATIC_REQUIRE(std::is_copy_assignable_v<TRAP::Optional<T&>>);
@@ -1360,7 +1360,7 @@ TEST_CASE("TRAP::Optional<T&>", "[utils][optional]")
             {
                 constexpr T(const T&) = default;
                 constexpr T(T&&) = delete;
-                constexpr T& operator=(const T&) = default;
+                T& operator=(const T&) = default;
                 constexpr T& operator=(T&&) = delete;
             };
             STATIC_REQUIRE(std::is_copy_constructible_v<TRAP::Optional<T&>>);
