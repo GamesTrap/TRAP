@@ -1597,13 +1597,13 @@ TEST_CASE("TRAP::Optional<T&>", "[utils][optional]")
     SECTION("Monadic AndThen")
     {
         TRAP::Optional<i32&> o1;
-        auto o1r = o1.AndThen([](i32){return TRAP::Optional<f32>{42};});
+        auto o1r = o1.AndThen([](i32){return TRAP::Optional<f32>{42.0f};});
         STATIC_REQUIRE(std::same_as<decltype(o1r), TRAP::Optional<f32>>);
         REQUIRE(!o1r);
 
         i32 twelve = 12;
         TRAP::Optional<i32&> o2 = twelve;
-        auto o2r = o2.AndThen([](i32){return TRAP::Optional<f32>{42};});
+        auto o2r = o2.AndThen([](i32){return TRAP::Optional<f32>{42.0f};});
         STATIC_REQUIRE(std::same_as<decltype(o2r), TRAP::Optional<f32>>);
         REQUIRE(o2r.Value() == 42.0f);
 
