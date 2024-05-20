@@ -149,10 +149,10 @@ namespace TRAP::Utils
 
             if(m_ownerThreadID.load(std::memory_order_acquire) != GetFastThisThreadID())
             {
-                for(bool flag = false; !m_wantXLock.compare_exchange_weak(flag, true, std::memory_order_seq_cst); flag = false)
-                {
+                bool flag = false;
+                if (!m_wantXLock.compare_exchange_weak(flag, true, std::memory_order_seq_cst))
                     return false;
-                }
+                flag = false;
 
                 m_ownerThreadID.store(GetFastThisThreadID(), std::memory_order_release);
 

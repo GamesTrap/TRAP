@@ -270,7 +270,7 @@ void TRAP::DBus::UnloadSymbols()
                                                   (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     if (IsErrorSet())
-        return s_error;
+        return TRAP::Optional<const TRAP::DBus::DBusError&>{s_error};
 
     return TRAP::NullOpt;
 }
@@ -293,7 +293,7 @@ void TRAP::DBus::UnloadSymbols()
                                                   (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
     if(IsConnected())
-        return *s_connection;
+        return TRAP::Optional<const TRAP::DBus::DBusConnection&>{*s_connection};
 
     return TRAP::NullOpt;
 }
