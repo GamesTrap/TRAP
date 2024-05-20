@@ -842,13 +842,13 @@ TEST_CASE("TRAP::Optional<T>", "[utils][optional]")
     {
         //lhs is empty
         static constexpr TRAP::Optional<i32> o1;
-        static constexpr auto o1r = o1.AndThen([](i32) { return TRAP::Optional<f32>{42}; });
+        static constexpr auto o1r = o1.AndThen([](i32) { return TRAP::Optional<f32>{42.0f}; });
         STATIC_REQUIRE((std::same_as<decltype(o1r), const TRAP::Optional<f32>>));
         STATIC_REQUIRE(!o1r);
 
         //lhs has value
         static constexpr TRAP::Optional<i32> o2 = 12;
-        static constexpr auto o2r = o2.AndThen([](i32) { return TRAP::Optional<f32>{42}; });
+        static constexpr auto o2r = o2.AndThen([](i32) { return TRAP::Optional<f32>{42.0f}; });
         STATIC_REQUIRE((std::same_as<decltype(o2r), const TRAP::Optional<f32>>));
         STATIC_REQUIRE(o2r.Value() == 42.f);
 

@@ -670,7 +670,6 @@ namespace TRAP
             : m_value(std::addressof(u))
         {
             static_assert(std::is_constructible_v<std::add_lvalue_reference_t<T>, U>, "Must be able to bind U to T&");
-            static_assert(std::is_lvalue_reference_v<U>, "U must be an lvalue");
         }
 
         template<typename U>
@@ -705,7 +704,6 @@ namespace TRAP
         requires (!IsOptional<std::decay_t<U>>::value)
         {
             static_assert(std::is_constructible_v<std::add_lvalue_reference_t<T>, U>, "Must be able to bind U to T&");
-            static_assert(std::is_lvalue_reference_v<U>, "U must be an lvalue");
 
             m_value = std::addressof(u);
 
