@@ -24,7 +24,7 @@ namespace
         return 42;
     }
 
-    constexpr TRAP::Optional<i32> GetOptInt([[maybe_unused]] const i32 _) noexcept
+    [[nodiscard]] constexpr TRAP::Optional<i32> GetOptInt([[maybe_unused]] const i32 _) noexcept
     {
         return 42;
     }
@@ -42,6 +42,8 @@ namespace
 
     struct NotHashable
     {};
+
+    constexpr i32 constexprFortyTwo = 42;
 }
 
 TEST_CASE("TRAP::Optional<T>", "[utils][optional]")
@@ -1677,12 +1679,6 @@ TEST_CASE("TRAP::Optional<T&>", "[utils][optional]")
 
     SECTION("Monadic AndThen constexpr")
     {
-        static constexpr i32 constexprFortyTwo = 42;
-        static constexpr auto GetOptInt = [](i32) -> TRAP::Optional<const i32&>
-        {
-            return constexprFortyTwo;
-        };
-
         static constexpr TRAP::Optional<const i32&> o10 = constexprFortyTwo;
         static constexpr auto o10r = o10.AndThen(GetOptInt);
         REQUIRE(*o10r == 42);
