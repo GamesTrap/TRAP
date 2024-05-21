@@ -5034,3 +5034,4 @@ SITREP 05/20/2024|24w21a1
 SITREP 05/21/2024|24w21a2
     - Changed TRAP Engine version to 24w21a2(0.10.71)
     - Updated ImGuiWindowing & ImGuiVulkanBackend ~<5 mins
+    - Fixed code coverage generation errors ~<5 mins

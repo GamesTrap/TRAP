@@ -15,12 +15,9 @@ mkdir -p ../Coverage
 
 lcov --capture --initial --directory ../ --output-file=../Coverage/coverage_baseline.info --exclude /usr --exclude Dependencies --parallel --branch-coverage
 
-currPath = $(pwd)
-
 cd "../UnitTests"
 #Execute UnitTest project (Generates gcov report)
 ../bin/Debug-linux-x86_64/UnitTests/./UnitTests
-cd "$currPath"
 
 #Run lcov
 lcov --capture --directory ../ --output-file=../Coverage/coverage.info --exclude /usr --exclude Dependencies --parallel --branch-coverage

@@ -41,3 +41,9 @@ project "UnitTests"
 		{
 			"gcov"
 		}
+
+	filter {"system:linux", "configurations:Debug"}
+		buildoptions
+		{
+			"-fprofile-update=atomic"
+		}
