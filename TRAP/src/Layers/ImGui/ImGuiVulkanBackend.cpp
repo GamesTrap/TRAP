@@ -1757,6 +1757,7 @@ void ImGui::INTERNAL::Vulkan::Init(const InitInfo& info)
     ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
     ImGuiIO& io = ImGui::GetIO();
+    IMGUI_CHECKVERSION();
     TRAP_ASSERT(io.BackendRendererUserData == nullptr, "ImGuiVulkanBackend::Init(): Renderer backend is already initialized!");
 
     // Setup backend capabilities flags
