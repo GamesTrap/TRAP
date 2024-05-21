@@ -25,8 +25,35 @@ namespace TRAP
     template<typename T>
     class Optional;
 
+    /// @brief Defines a type of object to be thrown by TRAP::Optional::Value() when accessing
+    ///        an optional object that does not contain a value.
     struct BadOptionalAccess final : std::exception
     {
+        /// @brief Constructs a new BadOptionalAccess object with an implementation-defined null-terminated byte
+        ///        string which is accessible through what().
+        ///
+        ///        Default constructor.
+        BadOptionalAccess() noexcept = default;
+        /// @brief Constructs a new BadOptionalAccess object with an implementation-defined null-terminated byte
+        ///        string which is accessible through what().
+        ///
+        ///        Copy constructor. If *this and other both have dynamic type TRAP::BadOptionalAccess then
+        ///        std::strcmp(what(), other.what()) == 0.
+        /// @param other Another exception object to copy.
+        constexpr BadOptionalAccess(const BadOptionalAccess& other) noexcept = default;
+
+        /// @brief Assigns the contents with those of other. If *this and other both have dynamic type
+        ///        TRAP::BadOptionalAccess then std::strcmp(what(), other.what()) == 0 after assignment.
+        /// @param other Another exception object to assign with.
+        /// @return *this.
+        BadOptionalAccess& operator=(const BadOptionalAccess& other) noexcept = default;
+
+        /// @brief Returns the explanatory string.
+        /// @return Pointer to a null-terminated string with explanatory information.
+        ///         The string is suitable for conversion and display as a std::wstring.
+        ///         The pointer is guaranteed to be valid at least until the exception object from
+        ///         which it is obtained is destroyed, or until a non-const member function
+        ///         (e.g. copy assignment operator) on the exception object is called.
         [[nodiscard]] constexpr const char* what() const noexcept override
         {
             return "BadOptionalAccess in TRAP::Optional";
@@ -79,6 +106,10 @@ namespace TRAP
                                                  !INTERNAL::IsAssignableFromOne<T, Optional<U>&, Optional<U>&&, const Optional<U>&, const Optional<U>&&>);
     }
 
+    /// @brief TRAP::NullOptT is an empty class type used to indicate optional type with
+    ///        uninitialized state. In particular, TRAP::Optional has a constructor
+    ///        with NullOptT as a single argument, which creates an optional that does ot
+    ///        contain a value.
     struct NullOptT
     {
         constexpr explicit NullOptT(int)
@@ -90,9 +121,43 @@ namespace TRAP
         constexpr explicit InPlaceT() = default;
     };
 
+    /// @brief TRAP::NullOpt is a constant of type TRAP::NullOptT that is used to indicate
+    ///        optional type with uninitialized state.
     inline constexpr NullOptT NullOpt{0};
     inline constexpr InPlaceT InPlace;
 
+    /// @brief The class template TRAP::Optional manages an optional contained value, i.e. a value that may or may not
+    ///        be present.
+    ///
+    ///        A common use case for optional is the return value of a function that may fail. As opposed to other
+    ///        approaches, such as std::pair<T, bool>, optional handles expensive-to-construct objects well and is more
+    ///        readable, as the intent is expressed explicitly.
+    ///
+    ///        Any instance of Optional<T> at any given point in time either contains a value or does not contain a value.
+    ///
+    ///        If an Optional<T> contains a value, the value is guaranteed to be allocated as part of the optional
+    ///        object footprint, i.e. no dynamic memory allocation ever takes place. Thus, an optional object models
+    ///        an object, not a pointer, even though operator*() and operator->() are defined.
+    ///
+    ///        When an object of type Optional<T> is contextually converted to bool, the conversion returns true
+    ///        if the object contains a value and false if it does not contain a value.
+    ///
+    ///        The optional object contains a value in the following conditions:
+    ///            - The object is initialized with/assigned from a value of type T or another optional that
+    ///              contains a value.
+    ///        The optional object does not contain a value in the following conditions:
+    ///            - The object is default-initialized.
+    ///            - The object is initialized with/assigned from a value of type TRAP::NullOptT or an optional object
+    ///              that does not contain a value.
+    ///            - The member function Reset() is called.
+    ///
+    ///        This implementation supports references with rebinding on assignment.
+    ///
+    ///        There are no optional functions, arrays, or cv void; a program is ill-formed if it instantiates
+    ///        an optional with such type. In addition, a program is ill-formed if it instantiates an optional
+    ///        with the (possibly cv-qualified) tag types TRAP::NullOptT or TRAP::InPlaceT.
+    /// @tparam T The type of the value to manage initialization state for. The type must meet the requiremnts of
+    ///           Destructible (in particular, array types are not allowed).
     template<typename T>
     class Optional
     {
@@ -121,18 +186,36 @@ namespace TRAP
         //Constructors-------------------------------------------------------------------------------------------------------//
         //-------------------------------------------------------------------------------------------------------------------//
 
+        /// @brief Constructs a new optional object.
+        ///
+        ///        Constructs an object that does not contain a value.
         constexpr Optional() noexcept
             : Optional(NullOpt)
         {
         }
 
+        /// @brief Constructs a new optional object.
+        ///
+        ///        Constructs an object that does not contain a value.
         constexpr Optional(NullOptT) noexcept
         {
         }
 
+        /// @brief Constructs a new optional object.
+        ///
+        ///        Copy constructor: If other contains a value, initializes the contained value as if direct-initializing
+        ///        (but not direct-list-initializing) an object of type T with the expression *other. If other does not
+        ///        contain a value, constructs an object that does not contain a value.
+        /// @param other Another optional object whose contained value is copied.
         constexpr Optional(const Optional& other)
         requires std::is_trivially_copy_constructible_v<T> = default;
 
+        /// @brief Constructs a new optional object.
+        ///
+        ///        Copy constructor: If other contains a value, initializes the contained value as if direct-initializing
+        ///        (but not direct-list-initializing) an object of type T with the expression *other. If other does not
+        ///        contain a value, constructs an object that does not contain a value.
+        /// @param other Another optional object whose contained value is copied.
         constexpr Optional(const Optional& other)
         requires (std::is_copy_constructible_v<T> && !std::is_trivially_copy_constructible_v<T>)
             : m_active(other.m_active)
@@ -140,9 +223,23 @@ namespace TRAP
             ConstructFromOptional(other);
         }
 
+        /// @brief Constructs a new optional object.
+        ///
+        ///        Move constructor: If other contains a value, initializes the contained value as if direct-initializing
+        ///        (but not direct-list-initializing) an object of type T with the expression std::move(*other) and does
+        ///        not make other empty: a moved-from TRAP::Optional still contains a value, but the value itself is
+        ///        moved from. If other does not contain a value, constructs an object that does not contain a value.
+        /// @param other Another optional object whose contained value is copied.
         constexpr Optional(Optional&& other)
         requires std::is_trivially_move_constructible_v<T> = default;
 
+        /// @brief Constructs a new optional object.
+        ///
+        ///        Move constructor: If other contains a value, initializes the contained value as if direct-initializing
+        ///        (but not direct-list-initializing) an object of type T with the expression std::move(*other) and does
+        ///        not make other empty: a moved-from TRAP::Optional still contains a value, but the value itself is
+        ///        moved from. If other does not contain a value, constructs an object that does not contain a value.
+        /// @param other Another optional object whose contained value is copied.
         constexpr Optional(Optional&& other) noexcept(std::is_nothrow_move_constructible_v<T>)
         requires (std::is_move_constructible_v<T> && !std::is_trivially_move_constructible_v<T>)
             : m_active(other.m_active)
@@ -150,6 +247,11 @@ namespace TRAP
             ConstructFromOptional(std::forward<Optional>(other));
         }
 
+        /// @brief Constructs a new optional object.
+        ///
+        ///        Constructs an optional object that contains a value, initialized as if direct-initializing
+        ///        (but not direct-list-initializing) an object of type T with the expression std::forward<U>(value).
+        /// @param u Value with which to initialize the contained value.
         template<typename U = T>
         constexpr explicit(!std::is_convertible_v<U, T>) Optional(U&& u)
         requires (std::is_constructible_v<T, U> &&
@@ -160,6 +262,11 @@ namespace TRAP
             ConstructFrom(std::forward<U>(u));
         }
 
+        /// @brief Constructs a new optional object.
+        ///
+        ///        Constructs an optional object that contains a value, initialized as if direct-initializing
+        ///        (but not direct-list-initializing) an object of type T from the arguments std::forward<Args>(args)....
+        /// @param args Arguments with which to initialize the contained value.
         template<typename... Args>
         constexpr explicit Optional(InPlaceT, Args&&... args)
         requires std::is_constructible_v<T, Args...>
@@ -168,6 +275,12 @@ namespace TRAP
             ConstructFrom(std::forward<Args>(args)...);
         }
 
+        /// @brief Constructs a new optional object.
+        ///
+        ///        Constructs an optional object that contains a value, initialized as if direct-initializing
+        ///        (but not direct-list-initializing) an object of type T from the arguments il, std::forward<Args>(args)....
+        /// @param il Initializer list with which to initialize the contained value.
+        /// @param args Arguments with which to initialize the contained value.
         template<typename U, typename... Args>
         constexpr explicit Optional(InPlaceT, std::initializer_list<U> il, Args&&... args)
         requires std::is_constructible_v<T, std::initializer_list<U>&, Args...>
@@ -176,6 +289,13 @@ namespace TRAP
             ConstructFrom(il, std::forward<Args>(args)...);
         }
 
+        /// @brief Constructs a new optional object.
+        ///
+        ///        Converting copy constructor: If other does not contain a value, constructs an optional object that
+        ///        does not contain a value. Otherwise, constructs an optional object that contains a value, initialized
+        ///        as if direct-initializing (but not direct-list-initializing) an object of type T with the
+        ///        expression *other.
+        /// @param other Another optional object whose contained value is copied.
         template<typename U = T>
         constexpr explicit(!std::is_convertible_v<const U&, T>) Optional(const Optional<U>& other)
         requires INTERNAL::OptionalConstructorRequirement<T, const U&, U>
@@ -184,6 +304,13 @@ namespace TRAP
             ConstructFromOptional(other);
         }
 
+        /// @brief Constructs a new optional object.
+        ///
+        ///        Converting move constructor: If other does not contain a value, constructs an optional object that does
+        ///        not contain a value. Otherwise, constructs an optional object that contains a value, initialized
+        ///        as if direct-initializing (but not direct-list-initializing) an object of type T with the expression
+        ///        std::move(*other).
+        /// @param other Another optional object whose contained value is copied.
         template<typename U = T>
         constexpr explicit(!std::is_convertible_v<U, T>) Optional(Optional<U>&& other)
         requires INTERNAL::OptionalConstructorRequirement<T, U&&, U>
@@ -196,9 +323,15 @@ namespace TRAP
         //Destructors--------------------------------------------------------------------------------------------------------//
         //-------------------------------------------------------------------------------------------------------------------//
 
+        /// @brief If the object contains a value and the type T is not trivially destructible, destroys the contained
+        ///        value by calling its destructor, as if by Value().T::~T().
+        ///        Otherwise, does nothing.
         constexpr ~Optional()
         requires std::is_trivially_destructible_v<T> = default;
 
+        /// @brief If the object contains a value and the type T is not trivially destructible, destroys the contained
+        ///        value by calling its destructor, as if by Value().T::~T().
+        ///        Otherwise, does nothing.
         constexpr ~Optional()
         requires (!std::is_trivially_destructible_v<T>)
         {
@@ -212,6 +345,11 @@ namespace TRAP
         //Assignment operators-----------------------------------------------------------------------------------------------//
         //-------------------------------------------------------------------------------------------------------------------//
 
+        /// @brief Replaces contents of *this with the contents of other.
+        ///
+        ///        If *this contains a value before the call, the contained value is destroyed by calling its destructor
+        ///        as if by Value().T::~T(). *this does not contain a value after this call.
+        /// @return *this.
         constexpr Optional& operator=(NullOptT) noexcept
         {
             if(!m_active)
@@ -221,26 +359,75 @@ namespace TRAP
             return *this;
         }
 
+        /// @brief Replaces contents of *this with the contents of other.
+        ///
+        ///        Assigns the state of other.
+        ///        - If both *this and other do not contain a value, the function has no effect.
+        ///        - If *this contains a value, but other does not, then the contained value is destroyed by calling
+        ///          its destructor.
+        ///        - If other contains a value, then depending on whether *this contains a value, the contained value
+        ///          is either direct-initialized or assigned from *other.
+        /// @param other Another optional object whose contained value to assign.
+        /// @return *this.
         constexpr Optional& operator=(const Optional& other)
         requires INTERNAL::IsTriviallyCopyAssignableAndConstructible<T>
         = default;
 
+        /// @brief Replaces contents of *this with the contents of other.
+        ///
+        ///        Assigns the state of other.
+        ///        - If both *this and other do not contain a value, the function has no effect.
+        ///        - If *this contains a value, but other does not, then the contained value is destroyed by calling
+        ///          its destructor.
+        ///        - If other contains a value, then depending on whether *this contains a value, the contained value
+        ///          is either direct-initialized or assigned from *other.
+        /// @param other Another optional object whose contained value to assign.
+        /// @return *this.
         constexpr Optional& operator=(const Optional& other)
         requires (INTERNAL::IsCopyAssignableAndConstructible<T> && !INTERNAL::IsTriviallyCopyAssignableAndConstructible<T>)
         {
             return AssignFromOptional(other);
         }
 
+        /// @brief Replaces contents of *this with the contents of other.
+        ///
+        ///        Assigns the state of other.
+        ///        - If both *this and other do not contain a value, the function has no effect.
+        ///        - If *this contains a value, but other does not, then the contained value is destroyed by calling
+        ///          its destructor.
+        ///        - If other contians a value, then depending on whether *this contains a value, the contained value
+        ///          is either direct-initialized or assigned from std::move(*other). Note that a moved-from optional
+        ///          still contains a value.
+        /// @param other Another optional object whose contained value to assign.
+        /// @return *this.
         constexpr Optional& operator=(Optional&& other)
         requires INTERNAL::IsTriviallyMoveAssignableAndConstructible<T>
         = default;
 
+        /// @brief Replaces contents of *this with the contents of other.
+        ///
+        ///        Assigns the state of other.
+        ///        - If both *this and other do not contain a value, the function has no effect.
+        ///        - If *this contains a value, but other does not, then the contained value is destroyed by calling
+        ///          its destructor.
+        ///        - If other contians a value, then depending on whether *this contains a value, the contained value
+        ///          is either direct-initialized or assigned from std::move(*other). Note that a moved-from optional
+        ///          still contains a value.
+        /// @param other Another optional object whose contained value to assign.
+        /// @return *this.
         constexpr Optional& operator=(Optional&& other)
         requires (INTERNAL::IsMoveAssignableAndConstructible<T> && !INTERNAL::IsTriviallyMoveAssignableAndConstructible<T>)
         {
             return AssignFromOptional(std::forward<Optional>(other));
         }
 
+        /// @brief Replaces contents of *this with the contents of other.
+        ///
+        ///        Perfect-forwarded assignment: depending on whether *this contains a value before the call, the
+        ///        contained value is either direct-initialized from std::forward<U>(value) or assigned from
+        ///        std::forward<U>(value).
+        /// @param u Value to assign to the contained value.
+        /// @return *this.
         template<typename U = T>
         constexpr Optional& operator=(U&& u)
         requires (!std::is_same_v<std::remove_cvref_t<U>, Optional> &&
@@ -256,6 +443,16 @@ namespace TRAP
             return *this;
         }
 
+        /// @brief Replaces contents of *this with the contents of other.
+        ///
+        ///        Assigns the state of other.
+        ///        - If both *this and other do not contain a value, the function has no effect.
+        ///        - If *this contains a value, but other does not, then the contained value is destroyed by calling
+        ///          its destructor. *this does not contain a value after the call.
+        ///        - If other contains a value, then depending on whether *this contains value, the contained
+        ///          value is either direct-initialized or assigned from *other.
+        /// @param u Another optional object whose contained value to assign.
+        /// @return *this.
         template<typename U>
         constexpr Optional& operator=(const Optional<U>& u)
         requires INTERNAL::OptionalAssignmentRequirement<T, const U&, U>
@@ -263,6 +460,17 @@ namespace TRAP
             return AssignFromOptional(u);
         }
 
+        /// @brief Replaces contents of *this with the contents of other.
+        ///
+        ///        Assigns the state of other.
+        ///        - If both *this and other do not contain a value, the function has no effect.
+        ///        - If *this contains a value, but other does not, then the contained value is destroyed by calling
+        ///          its destructor. *this does not contain a value after the call.
+        ///        - If other contains a value, then depending on whether *this contains value, the contained
+        ///          value is either direct-initialized or assigned from std::move(*other). Note that a moved-from
+        ///          optional still contains a value.
+        /// @param u Another optional object whose contained value to assign.
+        /// @return *this.
         template<typename U>
         constexpr Optional& operator=(Optional<U>&& u)
         requires INTERNAL::OptionalAssignmentRequirement<T, U, U>
@@ -274,46 +482,73 @@ namespace TRAP
         //Observers----------------------------------------------------------------------------------------------------------//
         //-------------------------------------------------------------------------------------------------------------------//
 
+        /// @brief Accesses the contained value.
+        ///        The behavior is undefined if *this does not contain a value.
+        /// @return Pointer to the contained value.
         [[nodiscard]] constexpr const T* operator->() const noexcept
         {
             return Ptr();
         }
 
+        /// @brief Accesses the contained value.
+        ///        The behavior is undefined if *this does not contain a value.
+        /// @return Pointer to the contained value.
         [[nodiscard]] constexpr T* operator->() noexcept
         {
             return Ptr();
         }
 
+        /// @brief Accesses the contained value.
+        ///        The behavior is undefined if *this does not contain a value.
+        /// @return Reference to the contained value.
         [[nodiscard]] constexpr const T& operator*() const& noexcept
         {
             return m_value;
         }
 
+        /// @brief Accesses the contained value.
+        ///        The behavior is undefined if *this does not contain a value.
+        /// @return Reference to the contained value.
         [[nodiscard]] constexpr T& operator*() & noexcept
         {
             return m_value;
         }
 
+        /// @brief Accesses the contained value.
+        ///        The behavior is undefined if *this does not contain a value.
+        /// @return Reference to the contained value.
         [[nodiscard]] constexpr const T&& operator*() const&& noexcept
         {
             return std::move(m_value);
         }
 
+        /// @brief Accesses the contained value.
+        ///        The behavior is undefined if *this does not contain a value.
+        /// @return Reference to the contained value.
         [[nodiscard]] constexpr T&& operator*() && noexcept
         {
             return std::move(m_value);
         }
 
+        /// @brief Checks whether *this contains a value.
+        /// @return true if *this contains a value, false if *this does not contain a value.
         [[nodiscard]] constexpr explicit operator bool() const noexcept
         {
             return m_active;
         }
 
+        /// @brief Checks whether *this contains a value.
+        /// @return true if *this contains a value, false if *this does not contain a value.
         [[nodiscard]] constexpr bool HasValue() const noexcept
         {
             return m_active;
         }
 
+        /// @brief If *this contains a value, returns a reference to the contained value.
+        ///        Otherwise, throws a TRAP::BadOptionalAccess exception.
+        /// @return Reference to the contained value.
+        /// @note The dereference operator operator*() does not check if this optional contains a value,
+        ///       which may be more efficient than Value().
         [[nodiscard]] constexpr T& Value() &
         {
             if (*this)
@@ -322,6 +557,11 @@ namespace TRAP
             INTERNAL::DoThrow<BadOptionalAccess>();
         }
 
+        /// @brief If *this contains a value, returns a reference to the contained value.
+        ///        Otherwise, throws a TRAP::BadOptionalAccess exception.
+        /// @return Reference to the contained value.
+        /// @note The dereference operator operator*() does not check if this optional contains a value,
+        ///       which may be more efficient than Value().
         [[nodiscard]] constexpr const T& Value() const&
         {
             if(*this)
@@ -330,6 +570,11 @@ namespace TRAP
             INTERNAL::DoThrow<BadOptionalAccess>();
         }
 
+        /// @brief If *this contains a value, returns a reference to the contained value.
+        ///        Otherwise, throws a TRAP::BadOptionalAccess exception.
+        /// @return Reference to the contained value.
+        /// @note The dereference operator operator*() does not check if this optional contains a value,
+        ///       which may be more efficient than Value().
         [[nodiscard]] constexpr T&& Value() &&
         {
             if(*this)
@@ -338,6 +583,11 @@ namespace TRAP
             INTERNAL::DoThrow<BadOptionalAccess>();
         }
 
+        /// @brief If *this contains a value, returns a reference to the contained value.
+        ///        Otherwise, throws a TRAP::BadOptionalAccess exception.
+        /// @return Reference to the contained value.
+        /// @note The dereference operator operator*() does not check if this optional contains a value,
+        ///       which may be more efficient than Value().
         [[nodiscard]] constexpr const T&& Value() const&&
         {
             if(*this)
@@ -346,6 +596,9 @@ namespace TRAP
             INTERNAL::DoThrow<BadOptionalAccess>();
         }
 
+        /// @brief Returns the contained value if *this has a value, otherwise returns u.
+        /// @param u The value to use in case *this is empty.
+        /// @return The current value if *this has a value, or u otherwise.
         template<typename U>
         [[nodiscard]] constexpr T ValueOr(U&& u) const &
         requires (std::is_copy_constructible_v<T> && std::is_convertible_v<U&&, T>)
@@ -353,6 +606,9 @@ namespace TRAP
             return bool(*this) ? **this : static_cast<T>(std::forward<U>(u));
         }
 
+        /// @brief Returns the contained value if *this has a value, otherwise returns u.
+        /// @param u The value to use in case *this is empty.
+        /// @return The current value if *this has a value, or u otherwise.
         template<typename U>
         [[nodiscard]] constexpr T ValueOr(U&& u) &&
         requires (std::is_move_constructible_v<T> && std::is_convertible_v<U&&, T>)
@@ -364,6 +620,13 @@ namespace TRAP
         //Modifiers----------------------------------------------------------------------------------------------------------//
         //-------------------------------------------------------------------------------------------------------------------//
 
+        /// @brief Construct the contained value in-place. If *this already contains a value before the call,
+        ///        the contained value is destroyed by calling its destructor.
+        ///
+        ///        Initializes the contained value by direct-initializing (but not direct-list-initializing) with
+        ///        std::forward<Args>(args)... as parameters.
+        /// @param args The arguments to pass to the constructor.
+        /// @return Reference to the new contained value.
         template<typename... Args>
         requires std::is_constructible_v<T, Args...>
         constexpr void Emplace(Args&&... args)
@@ -372,6 +635,13 @@ namespace TRAP
             ConstructFrom(std::forward<Args>(args)...);
         }
 
+        /// @brief Construct the contained value in-place. If *this already contains a value before the call,
+        ///        the contained value is destroyed by calling its destructor.
+        ///
+        ///        Initializes the contained value by direct-initializing (but not direct-list-initializing) with
+        ///        std::forward<Args>(args)... as parameters.
+        /// @param args The arguments to pass to the constructor.
+        /// @return Reference to the new contained value.
         template<typename U, typename... Args>
         requires std::is_constructible_v<T, std::initializer_list<U>&, Args...>
         constexpr void Emplace(std::initializer_list<U> il, Args&&... args)
@@ -380,6 +650,15 @@ namespace TRAP
             ConstructFrom(il, std::forward<Args>(args)...);
         }
 
+        /// @brief Swaps the contents with those of other.
+        ///
+        ///        - If neither *this nor other contain a value, the function has no effect.
+        ///        - If only one of *this and other contains a value (let's call this object in
+        ///          and the other un), the contained value of un is direct-initialized from std::move(*in),
+        ///          followed by destruction of the contained value of in as if by in->T::~T().
+        ///          After this call, in does not contain a value; un contains a value.
+        ///        - If both *this and other contain values, the contained values are exchanged.
+        /// @param other The optional object to exchange the contents with
         constexpr void Swap(Optional& other) noexcept(std::is_nothrow_move_constructible_v<T> && std::is_nothrow_swappable_v<T>)
         requires std::is_move_constructible_v<T>
         {
@@ -402,6 +681,8 @@ namespace TRAP
             }
         }
 
+        /// @brief If *this contains a value, destroy that value as if by Value().T::~T(). Otherwise,
+        ///        there are no effects. *this does not contain a value after this call.
         constexpr void Reset() noexcept
         {
             if(!m_active)
@@ -410,6 +691,8 @@ namespace TRAP
             ResetNoCheck();
         }
 
+        /// @brief Take the current value out of this optional, leaving it empty.
+        /// @return Returns the current value.
         [[nodiscard]] constexpr Optional Take()
         {
             Optional ret = std::move(*this);
@@ -417,6 +700,11 @@ namespace TRAP
             return ret;
         }
 
+        /// @brief If *this contains a value, invokes f with the contained value as an argument,
+        ///        and returns an TRAP::Optional that contains the result of that invocation;
+        ///        otherwise, returns an empty TRAP::Optional.
+        /// @param f A suitable function or Callable object whose call signature returns a non-reference type.
+        /// @return An TRAP::Optional containing the result of f or an empty TRAP::Optional, as described above.
         template<typename F, typename Ret = std::remove_cv_t<std::invoke_result_t<F, T&>>>
         constexpr auto Transform(F&& f) &
         requires (!std::is_void_v<Ret>)
@@ -427,6 +715,11 @@ namespace TRAP
             return Optional<Ret>(NullOpt);
         }
 
+        /// @brief If *this contains a value, invokes f with the contained value as an argument,
+        ///        and returns an TRAP::Optional that contains the result of that invocation;
+        ///        otherwise, returns an empty TRAP::Optional.
+        /// @param f A suitable function or Callable object whose call signature returns a non-reference type.
+        /// @return An TRAP::Optional containing the result of f or an empty TRAP::Optional, as described above.
         template<typename F, typename Ret = std::remove_cv_t<std::invoke_result_t<F, const T&>>>
         requires (!std::is_void_v<Ret>)
         constexpr auto Transform(F&& f) const&
@@ -437,6 +730,11 @@ namespace TRAP
             return Optional<Ret>(NullOpt);
         }
 
+        /// @brief If *this contains a value, invokes f with the contained value as an argument,
+        ///        and returns an TRAP::Optional that contains the result of that invocation;
+        ///        otherwise, returns an empty TRAP::Optional.
+        /// @param f A suitable function or Callable object whose call signature returns a non-reference type.
+        /// @return An TRAP::Optional containing the result of f or an empty TRAP::Optional, as described above.
         template<typename F, typename Ret = std::remove_cv_t<std::invoke_result_t<F, T>>>
         requires (!std::is_void_v<Ret>)
         constexpr auto Transform(F&& f) &&
@@ -447,6 +745,11 @@ namespace TRAP
             return Optional<Ret>(NullOpt);
         }
 
+        /// @brief If *this contains a value, invokes f with the contained value as an argument,
+        ///        and returns an TRAP::Optional that contains the result of that invocation;
+        ///        otherwise, returns an empty TRAP::Optional.
+        /// @param f A suitable function or Callable object whose call signature returns a non-reference type.
+        /// @return An TRAP::Optional containing the result of f or an empty TRAP::Optional, as described above.
         template<typename F, typename Ret = std::remove_cv_t<std::invoke_result_t<F, const T>>>
         requires (!std::is_void_v<Ret>)
         constexpr auto Transform(F&& f) const&&
@@ -457,6 +760,11 @@ namespace TRAP
             return Optional<Ret>(NullOpt);
         }
 
+        /// @brief If *this contains a value, invokes f with the contained value as an
+        ///        argument, and returns the result of that invocation; otherwise, returns
+        ///        an empty TRAP::Optional.
+        /// @param f A suitable function or Callable object that returns an TRAP::Optional.
+        /// @return The result of f or an empty TRAP::Optional, as described above.
         template<typename F>
         constexpr auto AndThen(F&& f) &
         {
@@ -469,6 +777,11 @@ namespace TRAP
             return std::remove_cvref_t<std::invoke_result_t<F, T&>>(NullOpt);
         }
 
+        /// @brief If *this contains a value, invokes f with the contained value as an
+        ///        argument, and returns the result of that invocation; otherwise, returns
+        ///        an empty TRAP::Optional.
+        /// @param f A suitable function or Callable object that returns an TRAP::Optional.
+        /// @return The result of f or an empty TRAP::Optional, as described above.
         template<typename F>
         constexpr auto AndThen(F&& f) const&
         {
@@ -481,6 +794,11 @@ namespace TRAP
             return std::remove_cvref_t<std::invoke_result_t<F, const T&>>(NullOpt);
         }
 
+        /// @brief If *this contains a value, invokes f with the contained value as an
+        ///        argument, and returns the result of that invocation; otherwise, returns
+        ///        an empty TRAP::Optional.
+        /// @param f A suitable function or Callable object that returns an TRAP::Optional.
+        /// @return The result of f or an empty TRAP::Optional, as described above.
         template<typename F>
         constexpr auto AndThen(F&& f) &&
         {
@@ -493,6 +811,11 @@ namespace TRAP
             return std::remove_cvref_t<std::invoke_result_t<F, T>>(NullOpt);
         }
 
+        /// @brief If *this contains a value, invokes f with the contained value as an
+        ///        argument, and returns the result of that invocation; otherwise, returns
+        ///        an empty TRAP::Optional.
+        /// @param f A suitable function or Callable object that returns an TRAP::Optional.
+        /// @return The result of f or an empty TRAP::Optional, as described above.
         template<typename F>
         constexpr auto AndThen(F&& f) const&&
         {
@@ -505,6 +828,9 @@ namespace TRAP
             return std::remove_cvref_t<std::invoke_result_t<F, const T>>(NullOpt);
         }
 
+        /// @brief Returns *this if it contains a value. Otherwise, returns the result of f.
+        /// @param f A function or Callable object that returns an TRAP::Optional<T>.
+        /// @return *this or the result of f, as described above.
         template<typename F>
         constexpr Optional<T> OrElse(F&& f) const&
         requires (std::copy_constructible<T> && std::invocable<F>)
@@ -516,6 +842,9 @@ namespace TRAP
 
         }
 
+        /// @brief Returns *this if it contains a value. Otherwise, returns the result of f.
+        /// @param f A function or Callable object that returns an TRAP::Optional<T>.
+        /// @return *this or the result of f, as described above.
         template<typename F>
         constexpr Optional<T> OrElse(F&& f) &&
         requires (std::move_constructible<T> && std::invocable<F>)
@@ -526,6 +855,10 @@ namespace TRAP
             return *this ? std::move(*this) : std::forward<F>(f)();
         }
 
+        /// @brief Returns the current value if it contains a value.
+        ///        Otherwise, returns the result of f.
+        /// @param f A function or Callable object that returns an T.
+        /// @return The current value or the result of f, as described above.
         template<typename F>
         [[nodiscard]] constexpr T ValueOrElse(F&& f) const&
         requires (std::copy_constructible<T> && std::invocable<F>)
@@ -533,6 +866,10 @@ namespace TRAP
             return m_active ? m_value : std::forward<F>(f)();
         }
 
+        /// @brief Returns the current value if it contains a value.
+        ///        Otherwise, returns the result of f.
+        /// @param f A function or Callable object that returns an T.
+        /// @return The current value or the result of f, as described above.
         template<typename F>
         [[nodiscard]] constexpr T ValueOrElse(F&& f) &&
         requires (std::move_constructible<T> && std::invocable<F>)
@@ -540,24 +877,40 @@ namespace TRAP
             return m_active ? std::move(**this) : std::forward<F>(f)();
         }
 
+        /// @brief Returns the result of f if optional contains a value.
+        ///        Otherwise, returns the result of u.
+        /// @param f A function or Callable object that returns an T.
+        /// @return The current value or the result of u, as described above.
         template<typename F, typename U>
         [[nodiscard]] constexpr auto TransformOrElse(F&& f, U&& u) const&
         {
             return m_active ? std::invoke(std::forward<F>(f), **this) : std::forward<U>(u)();
         }
 
+        /// @brief Returns the result of f if optional contains a value.
+        ///        Otherwise, returns the result of u.
+        /// @param f A function or Callable object that returns an T.
+        /// @return The current value or the result of u, as described above.
         template<typename F, typename U>
         [[nodiscard]] constexpr auto TransformOrElse(F&& f, U&& u) &&
         {
             return m_active ? std::invoke(std::forward<F>(f), std::move(**this)) : std::forward<U>(u)();
         }
 
+        /// @brief Returns the result of f if optional contains a value.
+        ///        Otherwise, returns the value u.
+        /// @param f A function or Callable object that returns an T.
+        /// @return The current value or u, as described above.
         template<typename F, typename U>
         [[nodiscard]] constexpr U TransformOr(F&& f, U&& u) const&
         {
             return m_active ? std::invoke(std::forward<F>(f), **this) : std::forward<U>(u);
         }
 
+        /// @brief Returns the result of f if optional contains a value.
+        ///        Otherwise, returns the value u.
+        /// @param f A function or Callable object that returns an T.
+        /// @return The current value or u, as described above.
         template<typename F, typename U>
         [[nodiscard]] constexpr U TransformOr(F&& f, U&& u) &&
         {
@@ -794,7 +1147,6 @@ namespace TRAP
             std::swap(m_value, rhs.m_value);
         }
 
-
         constexpr void Reset() noexcept
         {
             m_value = nullptr;
@@ -966,6 +1318,10 @@ namespace TRAP
     template<typename T>
     Optional(T) -> Optional<T>;
 
+    /// @brief Overloads the std::swap algorithm for TRAP::Optional. Exchanges the state of x
+    ///        with that of y. Effectively calls lhs.Swap(rhs).
+    /// @param x Optional object whose states to swap.
+    /// @param y Optional object whose states to swap.
     template<typename T>
     constexpr void swap(Optional<T>& x, Optional<T>& y) noexcept(noexcept(x.swap(y)))
     requires (std::is_move_constructible_v<T> && std::is_swappable_v<T>)
@@ -1087,18 +1443,28 @@ namespace TRAP
 
 #undef MAKE_OP
 
+    /// @brief Creates an optional object from v.
+    /// @param v The value to construct optional object with.
+    /// @return The constructed optional object.
     template<typename T = INTERNAL::IAmSecret, typename U, typename Ret = std::conditional_t<std::is_same_v<T, INTERNAL::IAmSecret>, std::decay_t<U>, T>>
     [[nodiscard]] constexpr auto MakeOptional(U&& v)
     {
         return Optional<std::remove_cvref_t<Ret>>(std::forward<U>(v));
     }
 
+    /// @brief Creates an optional object constructed in-place from args....
+    /// @param args Arguments to be passed to the constructor of T.
+    /// @return The constructed optional object.
     template<typename T, typename... Args>
     [[nodiscard]] constexpr auto MakeOptional(Args&&... args)
     {
         return Optional<std::remove_cvref_t<T>>{InPlace, std::forward<Args>(args)...};
     }
 
+    /// @brief Creates an optional object constructed in-place from il and args....
+    /// @param il Arguments to be passed to the constructor of T.
+    /// @param args Arguments to be passed to the constructor of T.
+    /// @return The constructed optional object.
     template<typename T, typename U, typename... Args>
     [[nodiscard]] constexpr auto MakeOptional(std::initializer_list<U> il, Args&&... args)
     {
@@ -1108,6 +1474,9 @@ namespace TRAP
 
 namespace std
 {
+    /// @brief The template specialization of std::hash for the TRAP::Optional class allows
+    ///        users to obtain hashes of the values contained in optional objects.
+    /// @note For an optional that does not contain a value, the hash is unspecified.
     template<typename T>
     requires requires {std::hash<std::decay_t<T>>{};}
     struct hash<TRAP::Optional<T>>
