@@ -5039,3 +5039,7 @@ SITREP 05/21/2024|24w21a2
 SITREP 05/22/2024|24w21a3
     - Changed TRAP Engine version to 24w21a3(0.10.72)
     - Added documentation for TRAP::Optional ~<30 mins
+
+SITREP 05/25/2024|24w21b1
+    - Changed TRAP Engine version to 24w21b1(0.10.73)
+    - SwapChain Reworked AcquireNextImage() ~<30 mins

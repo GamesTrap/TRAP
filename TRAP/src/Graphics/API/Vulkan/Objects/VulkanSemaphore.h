@@ -33,8 +33,10 @@ namespace TRAP::Graphics::API
 
 	private:
 #ifndef TRAP_HEADLESS_MODE
-		friend std::optional<u32> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
-		                                                                                 const TRAP::Ref<Fence>& fence) const;
+		friend std::optional<u32> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(Semaphore& signalSemaphore,
+		                                                                                 Fence& fence) const;
+		friend std::optional<u32> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(Semaphore& signalSemaphore) const;
+		friend std::optional<u32> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(Fence& fence) const;
 #endif /*TRAP_HEADLESS_MODE*/
 
 		VkSemaphore m_semaphore = VK_NULL_HANDLE;

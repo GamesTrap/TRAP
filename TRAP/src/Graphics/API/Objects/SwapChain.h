@@ -42,9 +42,17 @@ namespace TRAP::Graphics
 		/// @brief Acquire the next presentable image from the swapchain to render to.
 		/// @param signalSemaphore Semaphore to signal when the image is ready to be presented.
 		/// @param fence Fence to wait for the image to be ready to be presented.
-		/// @return Acuired image index.
-		[[nodiscard]] virtual std::optional<u32> AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
-		                                                               const TRAP::Ref<Fence>& fence) const = 0;
+		/// @return Acquired image index.
+		[[nodiscard]] virtual std::optional<u32> AcquireNextImage(Semaphore& signalSemaphore,
+		                                                          Fence& fence) const = 0;
+		/// @brief Acquire the next presentable image from the swapchain to render to.
+		/// @param signalSemaphore Semaphore to signal when the image is ready to be presented.
+		/// @return Acquired image index.
+		[[nodiscard]] virtual std::optional<u32> AcquireNextImage(Semaphore& signalSemaphore) const = 0;
+		/// @brief Acquire the next presentable image from the swapchain to render to.
+		/// @param fence Fence to wait for the image to be ready to be presented.
+		/// @return Acquired image index.
+		[[nodiscard]] virtual std::optional<u32> AcquireNextImage(Fence& fence) const = 0;
 
 		/// @brief Retrieve the render targets used by the swapchain.
 		/// @return Render targets used by the swapchain.

@@ -131,12 +131,12 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 
 	//Start Recording
 #ifndef TRAP_HEADLESS_MODE
-	std::optional<u32> acquiredImage = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphores[p->ImageIndex], nullptr);
+	std::optional<u32> acquiredImage = p->SwapChain->AcquireNextImage(*p->ImageAcquiredSemaphores[p->ImageIndex]);
 
 	if(!acquiredImage)
 	{
 		p->SwapChain->UpdateFramebufferSize();
-		acquiredImage = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphores[p->ImageIndex], nullptr);
+		acquiredImage = p->SwapChain->AcquireNextImage(*p->ImageAcquiredSemaphores[p->ImageIndex]);
 	}
 
 	//Try again, if it also fails with the updated swapchain, quit engine

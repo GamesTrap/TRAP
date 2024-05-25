@@ -36,9 +36,17 @@ namespace TRAP::Graphics::API
 		/// @brief Acquire the next presentable image from the swapchain to render to.
 		/// @param signalSemaphore Semaphore to signal when the image is ready to be presented.
 		/// @param fence Fence to wait for the image to be ready to be presented.
-		/// @return Acuired image index.
-		[[nodiscard]] std::optional<u32> AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
-		                                                  const TRAP::Ref<Fence>& fence) const override;
+		/// @return Acquired image index.
+		[[nodiscard]] std::optional<u32> AcquireNextImage(Semaphore& signalSemaphore,
+		                                                  Fence& fence) const override;
+		/// @brief Acquire the next presentable image from the swapchain to render to.
+		/// @param signalSemaphore Semaphore to signal when the image is ready to be presented.
+		/// @return Acquired image index.
+		[[nodiscard]] std::optional<u32> AcquireNextImage(Semaphore& signalSemaphore) const override;
+		/// @brief Acquire the next presentable image from the swapchain to render to.
+		/// @param fence Fence to wait for the image to be ready to be presented.
+		/// @return Acquired image index.
+		[[nodiscard]] std::optional<u32> AcquireNextImage(Fence& fence) const override;
 
 		/// @brief Toggle VSync on and off.
 		void ToggleVSync() override;

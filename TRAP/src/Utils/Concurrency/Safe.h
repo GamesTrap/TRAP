@@ -76,8 +76,6 @@ namespace TRAP::Utils
     struct DefaultConstructMutex{};
     static constexpr DefaultConstructMutex DefaultConstructMutexTag;
 
-    //TODO Add static_assert for types that can be used with std::atomic (Add another Safe wrapper for this)
-
     /// @brief Wraps a value together with a mutex.
     /// @tparam ValueType The type of the value to protect.
     /// @tparam MutexType The type of the mutex.

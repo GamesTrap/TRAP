@@ -467,49 +467,97 @@ void TRAP::Graphics::API::VulkanSwapChain::ReInitSwapChain()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::optional<u32> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
-                                                                                        const TRAP::Ref<Fence>& fence) const
+[[nodiscard]] std::optional<u32> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(Semaphore& signalSemaphore,
+                                                                                        Fence& fence) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_swapChain != VK_NULL_HANDLE, "VulkanSwapChain::AcquireNextImage(): Vulkan SwapChain is nullptr!");
-	TRAP_ASSERT(signalSemaphore || fence, "VulkanSwapChain::AcquireNextImage(): Semaphore and Fence are nullptr!");
 
 	u32 imageIndex = std::numeric_limits<u32>::max();
-	VkResult res{};
 
-	if(fence != nullptr)
+	VulkanSemaphore* const sema = dynamic_cast<VulkanSemaphore*>(&signalSemaphore);
+	VulkanFence* const fen = dynamic_cast<VulkanFence*>(&fence);
+
+	const VkResult res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<u64>::max(),
+	                                           sema->GetVkSemaphore(), fen->GetVkFence(), &imageIndex);
+
+	if(res == VK_ERROR_OUT_OF_DATE_KHR)
 	{
-		Ref<VulkanFence> fen = std::dynamic_pointer_cast<VulkanFence>(fence);
-		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<u64>::max(),
-		                            VK_NULL_HANDLE, fen->GetVkFence(), &imageIndex);
-
-		if(res == VK_ERROR_OUT_OF_DATE_KHR)
-		{
-			fen->ResetState();
-			return std::nullopt;
-		}
-
-		fen->m_submitted = true;
+		sema->m_signaled = false;
+		fen->ResetState();
+		return std::nullopt;
 	}
+
+	if(res == VK_SUBOPTIMAL_KHR)
+		TP_WARN(Log::RendererVulkanSwapChainPrefix, "VulkanSwapChain::AcquireNextImage(): vkAcquireNextImageKHR returned VK_SUBOPTIMAL_KHR. If window was just resized, ignore this message.");
 	else
+		VkCall(res);
+
+	sema->m_signaled = true;
+	fen->m_submitted = true;
+
+	if(imageIndex == std::numeric_limits<u32>::max())
+		return std::nullopt;
+
+	return imageIndex;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::optional<u32> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(Semaphore& signalSemaphore) const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+	TRAP_ASSERT(m_swapChain != VK_NULL_HANDLE, "VulkanSwapChain::AcquireNextImage(): Vulkan SwapChain is nullptr!");
+
+	u32 imageIndex = std::numeric_limits<u32>::max();
+	VulkanSemaphore* const sema = dynamic_cast<VulkanSemaphore*>(&signalSemaphore);
+
+	const VkResult res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<u64>::max(),
+								               sema->GetVkSemaphore(), VK_NULL_HANDLE, &imageIndex);
+
+	if(res == VK_ERROR_OUT_OF_DATE_KHR)
 	{
-		Ref<VulkanSemaphore> sema = std::dynamic_pointer_cast<VulkanSemaphore>(signalSemaphore);
-		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<u64>::max(),
-		                            sema->GetVkSemaphore(), VK_NULL_HANDLE, &imageIndex);
-
-		if(res == VK_ERROR_OUT_OF_DATE_KHR)
-		{
-			sema->m_signaled = false;
-			return std::nullopt;
-		}
-		if(res == VK_SUBOPTIMAL_KHR)
-			TP_WARN(Log::RendererVulkanSwapChainPrefix, "VulkanSwapChain::AcquireNextImage(): vkAcquireNextImageKHR returned VK_SUBOPTIMAL_KHR. If window was just resized, ignore this message.");
-		else
-			VkCall(res);
-
-		sema->m_signaled = true;
+		sema->m_signaled = false;
+		return std::nullopt;
 	}
+	if(res == VK_SUBOPTIMAL_KHR)
+		TP_WARN(Log::RendererVulkanSwapChainPrefix, "VulkanSwapChain::AcquireNextImage(): vkAcquireNextImageKHR returned VK_SUBOPTIMAL_KHR. If window was just resized, ignore this message.");
+	else
+		VkCall(res);
+
+	sema->m_signaled = true;
+
+	if(imageIndex == std::numeric_limits<u32>::max())
+		return std::nullopt;
+
+	return imageIndex;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::optional<u32> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(Fence& fence) const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+	TRAP_ASSERT(m_swapChain != VK_NULL_HANDLE, "VulkanSwapChain::AcquireNextImage(): Vulkan SwapChain is nullptr!");
+
+	u32 imageIndex = std::numeric_limits<u32>::max();
+	VulkanFence* const fen = dynamic_cast<VulkanFence*>(&fence);
+
+	const VkResult res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<u64>::max(),
+								               VK_NULL_HANDLE, fen->GetVkFence(), &imageIndex);
+
+	if(res == VK_ERROR_OUT_OF_DATE_KHR)
+	{
+		fen->ResetState();
+		return std::nullopt;
+	}
+
+	VkCall(res);
+
+	fen->m_submitted = true;
 
 	if(imageIndex == std::numeric_limits<u32>::max())
 		return std::nullopt;
