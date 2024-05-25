@@ -5043,3 +5043,4 @@ SITREP 05/22/2024|24w21a3
 SITREP 05/25/2024|24w21b1
     - Changed TRAP Engine version to 24w21b1(0.10.73)
     - SwapChain Reworked AcquireNextImage() ~<30 mins
+    - Updated Premake-Ninja submodule ~<5 mins
