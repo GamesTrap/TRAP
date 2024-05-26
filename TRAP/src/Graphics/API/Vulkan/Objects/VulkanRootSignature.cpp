@@ -187,7 +187,8 @@ namespace
 		{
 			const TRAP::Graphics::API::ShaderReflection::ShaderResource& res = shaderResources[i];
 			u32 setIndex = res.Set;
-			if(setIndex >= TRAP::Graphics::RendererAPI::MaxDescriptorSets)
+			if(setIndex >= TRAP::Graphics::RendererAPI::MaxDescriptorSets &&
+			   res.Type != TRAP::Graphics::RendererAPI::DescriptorType::RootConstant)
 			{
 				TP_ERROR(TRAP::Log::RendererVulkanRootSignaturePrefix, "Trying to use descriptor set ", setIndex, " which is not supported");
 				continue;
