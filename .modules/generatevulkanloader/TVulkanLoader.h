@@ -1,7 +1,7 @@
 /*
 volk
 
-Copyright (C) 2018-2023, by Arseny Kapoulkine (arseny.kapoulkine@gmail.com)
+Copyright (C) 2018-2024, by Arseny Kapoulkine (arseny.kapoulkine@gmail.com)
 Report bugs and download new versions at https://github.com/zeux/volk
 
 This library is distributed under the MIT License. See notice at the end of this file.
@@ -14,6 +14,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include <optional>
 
 #include "Core/Types.h"
+#include "Utils/Optional.h"
 
 #if defined(VULKAN_H_) && !defined(VK_NO_PROTOTYPES)
     #error To use VulkanLoader, you need to define VK_NO_PROTOTYPES before including vulkan.h
@@ -77,12 +78,12 @@ struct VkDeviceTable;
 /// @param handler Function pointer for custom loading.
 void VkInitializeCustom(PFN_vkGetInstanceProcAddr handler);
 
-/// @brief Finalize library by unloading Vulkan loader and resetting global symbols to NULL.
+/// @brief Finalize library by unloading Vulkan loader and resetting global symbols to nullptr.
 void VkFinalize();
 
 /// @brief Get Vulkan instance version supported by the Vulkan loader, or an empty optional if Vulkan isn't supported.
 /// @return Empty optional if VkInitialize wasn't called or failed.
-[[nodiscard]] std::optional<u32> VkGetInstanceVersion();
+[[nodiscard]] TRAP::Optional<u32> VkGetInstanceVersion();
 
 /// @brief Load global function pointers using application-created VkInstance; call this function after creating the Vulkan instance.
 /// @param instance VkInstance to load functions with.
@@ -153,24 +154,24 @@ static void* loadedModule = NULL;
 static VkInstance loadedInstance = VK_NULL_HANDLE;
 static VkDevice loadedDevice = VK_NULL_HANDLE;
 
-using VkGenLoaderFunction = PFN_vkVoidFunction (*)(void*, std::string_view);
+using VkGenLoaderFunction = PFN_vkVoidFunction (*)(void* const, const std::string_view);
 
-static void VkGenLoadLoader(void* context, VkGenLoaderFunction load);
+static void VkGenLoadLoader(void* const context, VkGenLoaderFunction load);
 static void VkGenLoadInstance(VkInstance instance, VkGenLoaderFunction load);
-static void VkGenLoadDevice(void* context, VkGenLoaderFunction load);
+static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load);
 static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoaderFunction load);
 
-static PFN_vkVoidFunction vkGetInstanceProcAddrStub(void* context, std::string_view name)
+static PFN_vkVoidFunction vkGetInstanceProcAddrStub(void* const context, const std::string_view name)
 {
 	return vkGetInstanceProcAddr(static_cast<VkInstance>(context), name.data());
 }
 
-static PFN_vkVoidFunction vkGetDeviceProcAddrStub(void* context, std::string_view name)
+static PFN_vkVoidFunction vkGetDeviceProcAddrStub(void* const context, const std::string_view name)
 {
 	return vkGetDeviceProcAddr(static_cast<VkDevice>(context), name.data());
 }
 
-static PFN_vkVoidFunction nullProcAddrStub([[maybe_unused]] void* context, [[maybe_unused]] std::string_view name) noexcept
+static PFN_vkVoidFunction nullProcAddrStub([[maybe_unused]] void* const context, [[maybe_unused]] const std::string_view name) noexcept
 {
 	return nullptr;
 }
@@ -219,7 +220,7 @@ void VkFinalize()
 	loadedDevice = VK_NULL_HANDLE;
 }
 
-[[nodiscard]] std::optional<u32> VkGetInstanceVersion()
+[[nodiscard]] TRAP::Optional<u32> VkGetInstanceVersion()
 {
 #if defined(VK_VERSION_1_1)
 	u32 apiVersion = 0;
@@ -230,7 +231,7 @@ void VkFinalize()
 	if (vkCreateInstance)
 		return VK_API_VERSION_1_0;
 
-	return std::nullopt;
+	return TRAP::NullOpt;
 }
 
 void VkLoadInstance(VkInstance instance)
@@ -267,7 +268,7 @@ void VkLoadDeviceTable(VkDeviceTable& table, VkDevice device)
 	VkGenLoadDeviceTable(table, device, vkGetDeviceProcAddrStub);
 }
 
-static void VkGenLoadLoader(void* context, VkGenLoaderFunction load)
+static void VkGenLoadLoader(void* const context, VkGenLoaderFunction load)
 {
 	/* VULKANLOADER_GENERATE_LOAD_LOADER */
 	/* VULKANLOADER_GENERATE_LOAD_LOADER */
@@ -279,7 +280,7 @@ static void VkGenLoadInstance(VkInstance instance, VkGenLoaderFunction load)
 	/* VULKANLOADER_GENERATE_LOAD_INSTANCE */
 }
 
-static void VkGenLoadDevice(void* context, VkGenLoaderFunction load)
+static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 {
 	/* VULKANLOADER_GENERATE_LOAD_DEVICE */
 	/* VULKANLOADER_GENERATE_LOAD_DEVICE */
@@ -313,7 +314,7 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 #endif /*VULKANLOADER_IMPLEMENTATION*/
 
 /*
-Copyright (c) 2018-2023 Arseny Kapoulkine
+Copyright (c) 2018-2024 Arseny Kapoulkine
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

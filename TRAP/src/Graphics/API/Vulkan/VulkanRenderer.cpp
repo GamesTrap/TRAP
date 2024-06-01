@@ -563,9 +563,9 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 	const VkPhysicalDeviceDriverProperties& devDriverProps = m_device->GetPhysicalDevice().GetVkPhysicalDeviceDriverProperties();
 	TP_INFO(Log::RendererVulkanPrefix, "----------------------------------");
 	TP_INFO(Log::RendererVulkanPrefix, "Vulkan Instance Version: ",
-		VK_VERSION_MAJOR(VulkanInstance::GetInstanceVersion().value_or(0)), '.',
-		VK_VERSION_MINOR(VulkanInstance::GetInstanceVersion().value_or(0)), '.',
-		VK_VERSION_PATCH(VulkanInstance::GetInstanceVersion().value_or(0)));
+		VK_VERSION_MAJOR(VulkanInstance::GetInstanceVersion().ValueOr(0)), '.',
+		VK_VERSION_MINOR(VulkanInstance::GetInstanceVersion().ValueOr(0)), '.',
+		VK_VERSION_PATCH(VulkanInstance::GetInstanceVersion().ValueOr(0)));
 	TP_INFO(Log::RendererVulkanPrefix, "Vulkan Device Version: ", VK_VERSION_MAJOR(devProps.apiVersion), '.',
 	        VK_VERSION_MINOR(devProps.apiVersion), '.', VK_VERSION_PATCH(devProps.apiVersion));
 	TP_INFO(Log::RendererVulkanPrefix, "Driver Version: ", VK_VERSION_MAJOR(devProps.driverVersion), '.',

@@ -44,7 +44,7 @@ namespace TRAP::Graphics::API
 
 		/// @brief Retrieve the Vulkan instance version packed by VK_MAKE_API_VERSION.
 		/// @return Vulkan instance version if available, empty optional otherwise.
-		[[nodiscard]] static std::optional<u32> GetInstanceVersion();
+		[[nodiscard]] static TRAP::Optional<u32> GetInstanceVersion();
 		/// @brief Retrieve the properties for the given instance layer.
 		/// @param instanceLayer Instance layer to get properties from.
 		/// @return Instance layer properties.

@@ -11,7 +11,7 @@ Checks: 'bugprone*,cert*,clang-analyzer*,concurrency*,cppcoreguidelines*,hicpp*,
          -readability-identifier-length,-cppcoreguidelines-non-private-member-variables-in-classes,
          -cppcoreguidelines-avoid-magic-numbers,-readability-magic-numbers,
          -modernize-return-braced-init-list,-cert-dcl58-cpp,-readability-const-return-type,
-         -cppcoreguidelines-pro-type-vararg,-hicpp-vararg'
+         -cppcoreguidelines-pro-type-vararg,-hicpp-vararg,-readability-redundant-member-init'
 # ExtraArgs:
 # ExtraArgsBefore:
 FormatStyle: none
