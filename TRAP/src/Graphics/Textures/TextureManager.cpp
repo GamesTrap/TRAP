@@ -13,7 +13,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Ref<Texture> texture = Texture::Create2D(filepath.filename(), filepath, flags);
+	Ref<Texture> texture = Texture::Create2D(filepath.filename().generic_string(), filepath, flags);
 	if(texture)
 	{
 		const std::string name = texture->GetName();
@@ -95,7 +95,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Ref<Texture> texture = Texture::CreateCube(filepath.filename(), filepath, format, flags);
+	Ref<Texture> texture = Texture::CreateCube(filepath.filename().generic_string(), filepath, format, flags);
 
 	if(texture)
 	{
