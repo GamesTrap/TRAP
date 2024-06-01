@@ -13,8 +13,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Ref<Texture> texture = Texture::CreateFromFile(filepath, TextureType::Texture2D, TextureCubeFormat::NONE,
-	                                               flags);
+	Ref<Texture> texture = Texture::Create2D(filepath.filename(), filepath, flags);
 	if(texture)
 	{
 		const std::string name = texture->GetName();
@@ -35,8 +34,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Ref<Texture> texture = Texture::CreateFromFile(name, filepath, TextureType::Texture2D,
-												   TextureCubeFormat::NONE, flags);
+	Ref<Texture> texture = Texture::Create2D(name, filepath, flags);
 
 	if(texture)
 	{
@@ -56,8 +54,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Ref<Texture> texture = Texture::CreateFromImage(name, img, TextureType::Texture2D, TextureCubeFormat::NONE,
-													flags);
+	Ref<Texture> texture = Texture::Create2D(name, *img, flags);
 
 	if (texture)
 	{
@@ -78,7 +75,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Ref<Texture> texture = Texture::CreateFromFile(name, filepath, TextureType::TextureCube, format, flags);
+	Ref<Texture> texture = Texture::CreateCube(name, filepath, format, flags);
 
 	if(texture)
 	{
@@ -98,7 +95,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Ref<Texture> texture = Texture::CreateFromFile(filepath, TextureType::TextureCube, format, flags);
+	Ref<Texture> texture = Texture::CreateCube(filepath.filename(), filepath, format, flags);
 
 	if(texture)
 	{
@@ -120,7 +117,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Ref<Texture> texture = Texture::CreateFromFiles(name, filepaths, flags);
+	Ref<Texture> texture = Texture::CreateCube(name, filepaths, flags);
 
 	if(texture)
 	{
@@ -141,7 +138,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Ref<Texture> texture = Texture::CreateFromImage(name, img, TextureType::TextureCube, format, flags);
+	Ref<Texture> texture = Texture::CreateCube(name, *img, format, flags);
 
 	if(texture)
 	{
@@ -296,7 +293,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Reload(const 
 		{
 			if (texture->GetType() == TextureType::Texture2D)
 			{
-				if (!texture->GetFilePath().empty() && FileSystem::IsEquivalent(nameOrPath, texture->GetFilePath()))
+				if (!texture->GetFilePaths().empty() && FileSystem::IsEquivalent(nameOrPath, texture->GetFilePaths()[0]))
 				{
 					if(texture->Reload())
 						TP_INFO(Log::TextureManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
@@ -376,12 +373,12 @@ void TRAP::Graphics::TextureManager::ReloadAll()
 	{
 		if (texture->GetType() == TextureType::Texture2D)
 		{
-			if (!texture->GetFilePath().empty() && FileSystem::IsEquivalent(texture->GetFilePath(), path))
+			if (!texture->GetFilePaths().empty() && FileSystem::IsEquivalent(texture->GetFilePaths()[0], path))
 				return true;
 		}
 		else if(texture->GetType() == TextureType::TextureCube)
 		{
-			const std::array<std::filesystem::path, 6> imageFilePaths = texture->GetFilePaths();
+			const std::vector<std::filesystem::path> imageFilePaths = texture->GetFilePaths();
 			for(const auto& filePath : imageFilePaths)
 			{
 				if (!filePath.empty() && FileSystem::IsEquivalent(filePath, path))

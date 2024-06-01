@@ -6,15 +6,55 @@
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 #include "Graphics/API/Objects/Queue.h"
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(std::string name,
-																			              std::array<std::filesystem::path, 6> filepaths,
-																			              const TextureCreationFlags flags)
+namespace
+{
+	void AddPathsToHotReloading(const std::span<const std::filesystem::path> paths)
+	{
+		const auto hotReloadingFileSystemWatcher = TRAP::Application::GetHotReloadingFileSystemWatcher();
+		if(!hotReloadingFileSystemWatcher)
+			return;
+
+		for(const std::filesystem::path& path : paths)
+		{
+			if(path.empty())
+				continue;
+
+			const auto folderPath = TRAP::FileSystem::GetFolderPath(path);
+			if(!folderPath)
+				continue;
+
+			hotReloadingFileSystemWatcher->get().AddFolder(*folderPath);
+		}
+	}
+
+	void AddPathToHotReloading(const std::filesystem::path& path)
+	{
+		const auto hotReloadingFileSystemWatcher = TRAP::Application::GetHotReloadingFileSystemWatcher();
+		if(!hotReloadingFileSystemWatcher)
+			return;
+
+		if(path.empty())
+			return;
+
+		const auto folderPath = TRAP::FileSystem::GetFolderPath(path);
+		if(!folderPath)
+			return;
+
+		hotReloadingFileSystemWatcher->get().AddFolder(*folderPath);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCube(std::string name,
+																			         const std::span<const std::filesystem::path, 6> filepaths,
+																			         const TextureCreationFlags flags)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	if(name.empty())
 	{
-		TRAP_ASSERT(false, "Texture::CreateFromFiles(): Name is empty!");
+		TRAP_ASSERT(false, "Texture::CreateCube(): Name is empty!");
 		TP_ERROR(Log::TexturePrefix, "Name is empty!");
 		return nullptr;
 	}
@@ -25,26 +65,7 @@
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::move(filepaths));
-
-		//Hot Reloading
-		const auto hotReloadingFileSystemWatcher = TRAP::Application::GetHotReloadingFileSystemWatcher();
-
-		if(hotReloadingFileSystemWatcher)
-		{
-			for(const std::filesystem::path& path : texture->m_filepaths)
-			{
-				if(!path.empty())
-				{
-					const auto folderPath = FileSystem::GetFolderPath(path);
-					if(!folderPath)
-						continue;
-
-					hotReloadingFileSystemWatcher->get().AddFolder(*folderPath);
-				}
-			}
-		}
-
+		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::vector<std::filesystem::path>{filepaths.begin(), filepaths.end()});
 		break;
 	}
 
@@ -52,17 +73,18 @@
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Texture::CreateFromFiles(): Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateCube(): Unknown RenderAPI");
 		return nullptr;
 	}
 
 	if(texture)
 	{
+		AddPathsToHotReloading(filepaths);
+
 		//Load Texture
 		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
 		desc.Filepaths = texture->m_filepaths;
-		desc.IsCubemap = texture->m_textureType == TextureType::TextureCube;
-		desc.Type = texture->m_textureCubeFormat;
+		desc.IsCubemap = true;
 		desc.CreationFlag = flags;
 		desc.Texture = texture.get();
 
@@ -74,20 +96,75 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::string name,
-																		                 std::filesystem::path filepath,
-																		                 const TextureType type,
-																		                 const TextureCubeFormat cubeFormat,
-																		                 const TextureCreationFlags flags)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCube(std::string name,
+																			         const std::span<const Image*, 6> images,
+																			         const TextureCreationFlags flags)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Texture::CreateFromFile(): Provided cube format is invalid");
+	TRAP_ASSERT(std::ranges::none_of(images, [](const Image* const img) { return img == nullptr; }),
+	            "Texture::CreateCube(): An Image is nullptr!");
 
 	if(name.empty())
 	{
-		TP_WARN(Log::TexturePrefix, "Name is empty! Using filename as name!");
-		name = filepath.string();
+		TRAP_ASSERT(false, "Texture::CreateCube(): Name is empty!");
+		TP_ERROR(Log::TexturePrefix, "Name is empty!");
+		return nullptr;
+	}
+
+	std::vector<std::filesystem::path> imagePaths{};
+	for(const auto* const img : images)
+		imagePaths.push_back(img->GetFilePath());
+
+	TRAP::Ref<Texture> texture = nullptr;
+
+	switch (RendererAPI::GetRenderAPI())
+	{
+	case RenderAPI::Vulkan:
+	{
+		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::move(imagePaths));
+		break;
+	}
+
+	case RenderAPI::NONE:
+		return nullptr;
+
+	default:
+		TRAP_ASSERT(false, "Texture::CreateCube(): Unknown RenderAPI");
+		return nullptr;
+	}
+
+	if(texture)
+	{
+		AddPathsToHotReloading(texture->m_filepaths);
+
+		//Load Texture
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
+		desc.Images = {images.begin(), images.end()};
+		desc.IsCubemap = true;
+		desc.CreationFlag = flags;
+		desc.Texture = texture.get();
+
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
+	}
+
+	return texture;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCube(std::string name,
+																		             const std::filesystem::path& filepath,
+																		             const TextureCubeFormat cubeFormat,
+																		             const TextureCreationFlags flags)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+
+	if(name.empty())
+	{
+		TRAP_ASSERT(false, "Texture::CreateCube(): Name is empty!");
+		TP_ERROR(Log::TexturePrefix, "Name is empty!");
+		return nullptr;
 	}
 
 	TRAP::Ref<Texture> texture = nullptr;
@@ -96,27 +173,7 @@
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::move(filepath), type, cubeFormat);
-
-		//Hot Reloading
-		const auto hotReloadingFileSystemWatcher = TRAP::Application::GetHotReloadingFileSystemWatcher();
-
-		if(hotReloadingFileSystemWatcher)
-		{
-			for(const std::filesystem::path& path : texture->m_filepaths)
-			{
-				if(!path.empty())
-				{
-					const auto folderPath = FileSystem::GetFolderPath(path);
-					if(!folderPath)
-						continue;
-
-					hotReloadingFileSystemWatcher->get().AddFolder(*folderPath);
-				}
-
-			}
-		}
-
+		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::vector{filepath}, cubeFormat);
 		break;
 	}
 
@@ -124,17 +181,19 @@
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Texture::CreateFromFile(): Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateCube(): Unknown RenderAPI");
 		return nullptr;
 	}
 
 	if(texture)
 	{
+		AddPathToHotReloading(filepath);
+
 		//Load Texture
 		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
 		desc.Filepaths = texture->m_filepaths;
-		desc.IsCubemap = texture->m_textureType == TextureType::TextureCube;
-		desc.Type = texture->m_textureCubeFormat;
+		desc.IsCubemap = true;
+		desc.Type = cubeFormat;
 		desc.CreationFlag = flags;
 		desc.Texture = texture.get();
 
@@ -146,124 +205,27 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::filesystem::path filepath,
-																		                 const TextureType type,
-		                                                                                 const TextureCubeFormat cubeFormat,
-																		                 const TextureCreationFlags flags)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCube(std::string name,
+																			         const Image& image,
+																					 const TextureCubeFormat cubeFormat,
+																			         const TextureCreationFlags flags)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Texture::CreateFromFile(): Provided cube format is invalid");
-
-	const auto name = FileSystem::GetFileNameWithoutEnding(filepath);
-	if(!name)
-	{
-		TRAP_ASSERT(false, "Texture::CreateFromFile(): Name is empty!");
-		TP_ERROR(Log::TexturePrefix, "Name is empty!");
-		return nullptr;
-	}
-
-	TRAP::Ref<Texture> texture = nullptr;
-
-	switch (RendererAPI::GetRenderAPI())
-	{
-	case RenderAPI::Vulkan:
-	{
-		texture = TRAP::MakeRef<API::VulkanTexture>(*name, std::move(filepath), type, cubeFormat);
-
-		//Hot Reloading
-		const auto hotReloadingFileSystemWatcher = TRAP::Application::GetHotReloadingFileSystemWatcher();
-
-		if(hotReloadingFileSystemWatcher)
-		{
-			for(const std::filesystem::path& path : texture->m_filepaths)
-			{
-				if(!path.empty())
-				{
-					const auto folderPath = FileSystem::GetFolderPath(path);
-					if(!folderPath)
-						continue;
-
-					hotReloadingFileSystemWatcher->get().AddFolder(*folderPath);
-				}
-			}
-		}
-
-		break;
-	}
-
-	case RenderAPI::NONE:
-		return nullptr;
-
-	default:
-		TRAP_ASSERT(false, "Texture::CreateFromFile(): Unknown RenderAPI");
-		return nullptr;
-	}
-
-	if(texture)
-	{
-		//Load Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
-		desc.Filepaths = texture->m_filepaths;
-		desc.IsCubemap = texture->m_textureType == TextureType::TextureCube;
-		desc.Type = texture->m_textureCubeFormat;
-		desc.CreationFlag = flags;
-		desc.Texture = texture.get();
-
-		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
-	}
-
-	return texture;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(std::string name,
-																			               const std::array<const Image*, 6>& imgs,
-																			               const TextureCreationFlags flags)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	TRAP_ASSERT(std::ranges::none_of(imgs, [](const Image* const img) { return img == nullptr; }),
-	            "Texture::CreateFromImages(): An Image is nullptr!");
 
 	if(name.empty())
 	{
-		TRAP_ASSERT(false, "Texture::CreateFromImages(): Name is empty!");
+		TRAP_ASSERT(false, "Texture::CreateCube(): Name is empty!");
 		TP_ERROR(Log::TexturePrefix, "Name is empty!");
 		return nullptr;
 	}
 
 	TRAP::Ref<Texture> texture = nullptr;
 
-	std::array<std::filesystem::path, 6> filePaths{};
-	for(usize i = 0; i < filePaths.size(); ++i)
-		filePaths[i] = imgs[i]->GetFilePath();
-
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::move(filePaths));
-
-		//Hot Reloading
-		const auto hotReloadingFileSystemWatcher = TRAP::Application::GetHotReloadingFileSystemWatcher();
-
-		if(hotReloadingFileSystemWatcher)
-		{
-			for(const std::filesystem::path& path : texture->m_filepaths)
-			{
-				if(!path.empty())
-				{
-					const auto folderPath = FileSystem::GetFolderPath(path);
-					if(!folderPath)
-						continue;
-
-					hotReloadingFileSystemWatcher->get().AddFolder(*folderPath);
-				}
-			}
-		}
-
+		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::vector{image.GetFilePath()}, cubeFormat);
 		break;
 	}
 
@@ -271,17 +233,19 @@
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Texture::CreateFromImages(): Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateCube(): Unknown RenderAPI");
 		return nullptr;
 	}
 
 	if(texture)
 	{
+		AddPathToHotReloading(image.GetFilePath());
+
 		//Load Texture
 		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
-		desc.Images = imgs;
-		desc.IsCubemap = texture->m_textureType == TextureType::TextureCube;
-		desc.Type = texture->m_textureCubeFormat;
+		desc.Images = {&image};
+		desc.IsCubemap = true;
+		desc.Type = cubeFormat;
 		desc.CreationFlag = flags;
 		desc.Texture = texture.get();
 
@@ -293,102 +257,33 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(std::string name,
-																			              const TRAP::Image* const img,
- 																	                      const TextureType type,
-		                                                                                  const TextureCubeFormat cubeFormat,
-																			              const TextureCreationFlags flags)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCube(std::string name,
+																		             const u32 width,
+																		             const u32 height,
+																		             const u32 bitsPerPixel,
+																		             const Image::ColorFormat format,
+																		             const TextureCreationFlags flags)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	TRAP_ASSERT(img, "Texture::CreateFromImage(): Image is nullptr!");
-	TRAP_ASSERT(cubeFormat != TextureCubeFormat::MultiFile, "Texture::CreateFromImage(): Provided cube format is invalid");
-	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Texture::CreateFromImage(): Provided cube format is invalid");
-
-	if(name.empty() && !img->GetFilePath().empty())
+	if(name.empty())
 	{
-		TP_WARN(Log::TexturePrefix, "Name is empty! Using filename as name!");
-		name = img->GetFilePath().filename().string();
-	}
-
-	TRAP::Ref<Texture> texture = nullptr;
-
-	switch(RendererAPI::GetRenderAPI())
-	{
-	case RenderAPI::Vulkan:
-	{
-		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), img->GetFilePath(), type, cubeFormat);
-
-		//Hot Reloading
-		const auto hotReloadingFileSystemWatcher = TRAP::Application::GetHotReloadingFileSystemWatcher();
-
-		if(hotReloadingFileSystemWatcher)
-		{
-			for(const std::filesystem::path& path : texture->m_filepaths)
-			{
-				if(!path.empty())
-				{
-					const auto folderPath = FileSystem::GetFolderPath(path);
-					if(!folderPath)
-						continue;
-
-					hotReloadingFileSystemWatcher->get().AddFolder(*folderPath);
-				}
-			}
-		}
-
-		break;
-	}
-
-	case RenderAPI::NONE:
-		return nullptr;
-
-	default:
-		TRAP_ASSERT(false, "Texture::CreateFromImage(): Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateCube(): Name is empty!");
+		TP_ERROR(Log::TexturePrefix, "Name is empty!");
 		return nullptr;
 	}
-
-	if(texture)
-	{
-		//Load Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
-		desc.Filepaths = texture->m_filepaths;
-		desc.Images = {img};
-		desc.IsCubemap = texture->m_textureType == TextureType::TextureCube;
-		desc.Type = texture->m_textureCubeFormat;
-		desc.CreationFlag = flags;
-		desc.Texture = texture.get();
-
-		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
-	}
-
-	return texture;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(std::string name,
-																		              const u32 width,
-																		              const u32 height,
-																		              const u32 bitsPerPixel,
-																		              const Image::ColorFormat format,
-																		              const TextureType type,
-																		              const TextureCreationFlags flags)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	TRAP::Ref<Texture> texture = nullptr;
 
 	const API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(format, bitsPerPixel);
-
 	if(imageFormat == API::ImageFormat::Undefined)
 		return nullptr;
 
+	TRAP::Ref<Texture> texture = nullptr;
+
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeRef<API::VulkanTexture>(type);
+		texture = TRAP::MakeRef<API::VulkanTexture>(name);
 		break;
 	}
 
@@ -396,7 +291,7 @@
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Texture::CreateEmpty(): Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateCube(): Unknown RenderAPI");
 		return nullptr;
 	}
 
@@ -409,10 +304,175 @@
 		texDesc.Width = width;
 		texDesc.Height = height;
 		texDesc.Format = imageFormat;
-		texDesc.ArraySize = texture->m_textureType == TextureType::TextureCube ? 6 : 1;
+		texDesc.ArraySize = 6;
 		texDesc.Name = std::move(name);
-		texDesc.Descriptors = texture->m_textureType == TextureType::TextureCube ? (RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::TextureCube) :
-																				   RendererAPI::DescriptorType::Texture;
+		texDesc.Descriptors = (RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::TextureCube);
+		texDesc.StartState = RendererAPI::ResourceState::Common;
+		if((flags & TextureCreationFlags::Storage) != TextureCreationFlags::None)
+			texDesc.Descriptors |= RendererAPI::DescriptorType::RWTexture;
+
+		desc.Desc = &texDesc;
+
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
+	}
+
+	return texture;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::Create2D(std::string name,
+																		           const std::filesystem::path& filepath,
+																		           const TextureCreationFlags flags)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+
+	if(name.empty())
+	{
+		TRAP_ASSERT(false, "Texture::Create2D(): Name is empty!");
+		TP_ERROR(Log::TexturePrefix, "Name is empty!");
+		return nullptr;
+	}
+
+	TRAP::Ref<Texture> texture = nullptr;
+
+	switch(RendererAPI::GetRenderAPI())
+	{
+	case RenderAPI::Vulkan:
+	{
+		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::vector{filepath});
+		break;
+	}
+
+	case RenderAPI::NONE:
+		return nullptr;
+
+	default:
+		TRAP_ASSERT(false, "Texture::Create2D(): Unknown RenderAPI");
+		return nullptr;
+	}
+
+	if(texture)
+	{
+		AddPathToHotReloading(filepath);
+
+		//Load Texture
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
+		desc.Filepaths = texture->m_filepaths;
+		desc.IsCubemap = false;
+		desc.Type = TRAP::NullOpt;
+		desc.CreationFlag = flags;
+		desc.Texture = texture.get();
+
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
+	}
+
+	return texture;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::Create2D(std::string name,
+																			       const TRAP::Image& image,
+ 																	               const TextureCreationFlags flags)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+
+	if(name.empty())
+	{
+		TRAP_ASSERT(false, "Texture::Create2D(): Name is empty!");
+		TP_ERROR(Log::TexturePrefix, "Name is empty!");
+		return nullptr;
+	}
+
+	TRAP::Ref<Texture> texture = nullptr;
+
+	switch(RendererAPI::GetRenderAPI())
+	{
+	case RenderAPI::Vulkan:
+	{
+		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::vector{image.GetFilePath()});
+		break;
+	}
+
+	case RenderAPI::NONE:
+		return nullptr;
+
+	default:
+		TRAP_ASSERT(false, "Texture::Create2D(): Unknown RenderAPI");
+		return nullptr;
+	}
+
+	if(texture)
+	{
+		AddPathToHotReloading(image.GetFilePath());
+
+		//Load Texture
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
+		desc.Images = {&image};
+		desc.IsCubemap = false;
+		desc.Type = TRAP::NullOpt;
+		desc.CreationFlag = flags;
+		desc.Texture = texture.get();
+
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
+	}
+
+	return texture;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::Create2D(std::string name,
+																		           const u32 width,
+																		           const u32 height,
+																		           const u32 bitsPerPixel,
+																		           const Image::ColorFormat format,
+																		           const TextureCreationFlags flags)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+
+	if(name.empty())
+	{
+		TRAP_ASSERT(false, "Texture::Create2D(): Name is empty!");
+		TP_ERROR(Log::TexturePrefix, "Name is empty!");
+		return nullptr;
+	}
+
+	const API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(format, bitsPerPixel);
+	if(imageFormat == API::ImageFormat::Undefined)
+		return nullptr;
+
+	TRAP::Ref<Texture> texture = nullptr;
+
+	switch (RendererAPI::GetRenderAPI())
+	{
+	case RenderAPI::Vulkan:
+	{
+		texture = TRAP::MakeRef<API::VulkanTexture>(name);
+		break;
+	}
+
+	case RenderAPI::NONE:
+		return nullptr;
+
+	default:
+		TRAP_ASSERT(false, "Texture::Create2D(): Unknown RenderAPI");
+		return nullptr;
+	}
+
+	if(texture)
+	{
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
+		desc.Texture = texture.get();
+
+		RendererAPI::TextureDesc texDesc{};
+		texDesc.Width = width;
+		texDesc.Height = height;
+		texDesc.Format = imageFormat;
+		texDesc.ArraySize = 1;
+		texDesc.Name = std::move(name);
+		texDesc.Descriptors = RendererAPI::DescriptorType::Texture;
 		texDesc.StartState = RendererAPI::ResourceState::Common;
 		if((flags & TextureCreationFlags::Storage) != TextureCreationFlags::None)
 			texDesc.Descriptors |= RendererAPI::DescriptorType::RWTexture;
@@ -442,7 +502,7 @@
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeRef<API::VulkanTexture>(desc.ArraySize == 6 ? TextureType::TextureCube : TextureType::Texture2D);
+		texture = TRAP::MakeRef<API::VulkanTexture>(desc.Name);
 		break;
 	}
 
@@ -475,11 +535,8 @@
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	const auto fallbackImg = TRAP::Image::LoadFallback();
-	TRAP::Ref<TRAP::Graphics::Texture> fallback2DTex = CreateFromImage("Fallback2D",
-																	   fallbackImg.get(),
-																	   TextureType::Texture2D,
-	                       											   TextureCubeFormat::NONE, TextureCreationFlags::Storage);
-
+	const TRAP::Ref<TRAP::Graphics::Texture> fallback2DTex = Create2D("Fallback2D", *fallbackImg,
+	                                                                  TextureCreationFlags::Storage);
 	fallback2DTex->AwaitLoading();
 
 	//By default Storage texture are in Unordered Access layout.
@@ -495,15 +552,14 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	std::array<TRAP::Scope<TRAP::Image>, 6> imgs{};
-	std::array<const TRAP::Image*, 6> imgPtrs{};
-	for(usize i = 0; i < imgs.size(); ++i)
-	{
-		imgs[i] = TRAP::Image::LoadFallback();
-		imgPtrs[i] = imgs[i].get();
-	}
+	const auto img = TRAP::Image::LoadFallback();
 
-	TRAP::Ref<TRAP::Graphics::Texture> fallbackCubeTex = CreateFromImages("FallbackCube", imgPtrs, TextureCreationFlags::Storage);
+	std::array<const TRAP::Image*, 6> imgPtrs{};
+	for(auto& imgPtr : imgPtrs)
+		imgPtr = img.get();
+
+	const TRAP::Ref<TRAP::Graphics::Texture> fallbackCubeTex = CreateCube("FallbackCube", imgPtrs,
+	                                                                      TextureCreationFlags::Storage);
 	fallbackCubeTex->AwaitLoading();
 
 	//By default Storage texture are in Unordered Access layout.
@@ -520,15 +576,10 @@ bool TRAP::Graphics::Texture::Reload()
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	//Can't reload if there is no filepath
-	if(m_textureType == TextureType::Texture2D && std::get<0>(m_filepaths).empty())
-		return false;
-	if(m_textureType == TextureType::TextureCube)
+	for(const auto& path : m_filepaths)
 	{
-		for(const auto& path : m_filepaths)
-		{
-			if(path.empty())
-				return false;
-		}
+		if(path.empty())
+			return false;
 	}
 
 	//Make sure rendering using the texture finished before reloading it.
@@ -541,7 +592,7 @@ bool TRAP::Graphics::Texture::Reload()
 	//Load texture
 	TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
 	desc.Filepaths = m_filepaths;
-	desc.IsCubemap = m_textureType == TextureType::TextureCube;
+	desc.IsCubemap = GetType() == TextureType::TextureCube;
 	desc.Type = m_textureCubeFormat;
 	desc.CreationFlag = RendererAPI::TextureCreationFlags::None;
 	desc.Texture = this;
@@ -554,16 +605,6 @@ bool TRAP::Graphics::Texture::Reload()
 	AwaitLoading();
 
 	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const std::filesystem::path& TRAP::Graphics::Texture::GetFilePath() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
-	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
-	return std::get<0>(m_filepaths);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -749,33 +790,31 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture::Texture() noexcept
+TRAP::Graphics::Texture::Texture(std::string name)
+	: m_name(std::move(name))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture::Texture(std::string name, std::array<std::filesystem::path, 6> filepaths) noexcept
-	: m_name(std::move(name)), m_textureType(TextureType::TextureCube), m_filepaths(std::move(filepaths)),
-	  m_textureCubeFormat(TextureCubeFormat::MultiFile)
+TRAP::Graphics::Texture::Texture(std::string name, std::vector<std::filesystem::path> filePaths)
+	: m_name(std::move(name)), m_filepaths(std::move(filePaths))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+
+	if(m_filepaths.size() == 6)
+		m_descriptorTypes |= RendererAPI::DescriptorType::TextureCube;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture::Texture(std::string name, std::filesystem::path filepath, const TextureType type,
-                                 const TextureCubeFormat cubeFormat) noexcept
-	: m_name(std::move(name)), m_textureType(type), m_filepaths{std::move(filepath)}, m_textureCubeFormat(cubeFormat)
+TRAP::Graphics::Texture::Texture(std::string name, std::vector<std::filesystem::path> filePaths,
+                                 const TRAP::Optional<TextureCubeFormat>& cubeFormat)
+	: m_name(std::move(name)), m_filepaths(std::move(filePaths)), m_textureCubeFormat(cubeFormat)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-}
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::Texture::Texture(const TextureType type) noexcept
-	: m_textureType(type)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+	if(cubeFormat || m_filepaths.size() == 6)
+		m_descriptorTypes |= RendererAPI::DescriptorType::TextureCube;
 }

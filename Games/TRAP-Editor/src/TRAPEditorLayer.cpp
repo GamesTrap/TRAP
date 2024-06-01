@@ -240,8 +240,8 @@ void TRAPEditorLayer::OnAttach()
 	//Enable Developer features
 	TRAP::Application::SetHotReloading(true);
 
-	m_iconPlay = TRAP::Graphics::Texture::CreateFromFile("./Resources/Icons/Play.png", TRAP::Graphics::TextureType::Texture2D);
-	m_iconStop = TRAP::Graphics::Texture::CreateFromFile("./Resources/Icons/Stop.png", TRAP::Graphics::TextureType::Texture2D);
+	m_iconPlay = TRAP::Graphics::Texture::Create2D("Play", "./Resources/Icons/Play.png");
+	m_iconStop = TRAP::Graphics::Texture::Create2D("Stop", "./Resources/Icons/Stop.png");
 
 	//Setup Viewport FrameBuffer
 	TRAP::Graphics::RendererAPI::RenderTargetDesc desc{};

@@ -27,9 +27,9 @@ void ComputeTests::OnAttach()
     m_colTex->AwaitLoading();
 
     //Create empty Texture
-    TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture::CreateEmpty("ComputeTargetUAV",
+    TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture::Create2D("ComputeTargetUAV",
                                         m_colTex->GetWidth(), m_colTex->GetHeight(), m_colTex->GetBitsPerPixel(),
-                                        m_colTex->GetColorFormat(), TRAP::Graphics::TextureType::Texture2D,
+                                        m_colTex->GetColorFormat(),
                                         TRAP::Graphics::TextureCreationFlags::Storage));
     m_compTex = TRAP::Graphics::TextureManager::Get2D("ComputeTargetUAV");
     m_compTex->AwaitLoading();

@@ -19,70 +19,84 @@ namespace TRAP::Graphics
 	class Texture
 	{
 	public:
+		//TODO Actually return fallback texture on error or change this to nullptr.
 		/// @brief Create a cube texture from 6 files.
 		/// @param name Name for the texture.
-		/// @param filepaths File paths of the 6 texture files.
-		/// Order: +X, -X, +Y, -Y, +Z, -Z
+		/// @param filePaths File paths of the 6 texture files.
+		///                  Order: +X, -X, +Y, -Y, +Z, -Z
 		/// @param flags Additional flags. Default: None.
-		/// @return Loaded texture on success, Fallback texture otherwise.
-		[[nodiscard]] static Ref<Texture> CreateFromFiles(std::string name,
-		                                                  std::array<std::filesystem::path, 6> filepaths,
-											              TextureCreationFlags flags = TextureCreationFlags::None);
-		/// @brief Create a texture from file.
-		/// @param name Name for the texture.
-		/// @param filepath File path of the texture.
-		/// @param type Type of Texture.
-		/// @param cubeFormat Format of the cube texture. Ignored when using TextureType::Texture2D.
-		/// @param flags Additional flags. Default: None.
-		/// @return Loaded texture on success, Fallback texture otherwise.
-		[[nodiscard]] static Ref<Texture> CreateFromFile(std::string name, std::filesystem::path filepath, TextureType type,
-		                                                 TextureCubeFormat cubeFormat = TextureCubeFormat::NONE,
-										                 TextureCreationFlags flags = TextureCreationFlags::None);
-		/// @brief Create a texture from file.
-		/// File name will be used as the texture name.
-		/// @param filepath File path of the texture.
-		/// @param type Type of Texture.
-		/// @param cubeFormat Format of the cube texture. Ignored when using TextureType::Texture2D.
-		/// @param flags Additional flags. Default: None.
-		/// @return Loaded texture on success, Fallback texture otherwise.
-		[[nodiscard]] static Ref<Texture> CreateFromFile(std::filesystem::path filepath, TextureType type,
-		                                                 TextureCubeFormat cubeFormat = TextureCubeFormat::NONE,
-										                 TextureCreationFlags flags = TextureCreationFlags::None);
+		/// @return Loaded texture on success, Fallback texture if texture loading failed, nullptr otherwise.
+		[[nodiscard]] static Ref<Texture> CreateCube(std::string name, std::span<const std::filesystem::path, 6> filePaths,
+		                                             TextureCreationFlags flags = TextureCreationFlags::None);
 		/// @brief Create a cube texture from 6 TRAP::Images.
 		/// @param name Name for the texture.
-		/// @param imgs Images to create the texture from.
-		/// Order: +X, -X, +Y, -Y, +Z, -Z
+		/// @param images Images to create the texture from.
+		///               Order: +X, -X, +Y, -Y, +Z, -Z
 		/// @param flags Additional flags. Default: None.
-		/// @return Loaded texture on success, Fallback texture otherwise.
+		/// @return Loaded texture on success, Fallback texture if texture loading failed, nullptr otherwise.
 		/// @note The images must be valid till IsLoaded() returns true.
-		[[nodiscard]] static Ref<Texture> CreateFromImages(std::string name, const std::array<const Image*, 6>& imgs,
-											               TextureCreationFlags flags = TextureCreationFlags::None);
-		/// @brief Create a texture from TRAP::Image.
+		[[nodiscard]] static Ref<Texture> CreateCube(std::string name, std::span<const Image*, 6> images,
+		                                             TextureCreationFlags flags = TextureCreationFlags::None);
+		/// @brief Create a cube texture from 1 file.
 		/// @param name Name for the texture.
-		/// @param img Image to create the texture from.
-		/// @param type Type of Texture.
-		/// @param cubeFormat Format of the cube texture. Ignored when using TextureType::Texture2D.
+		/// @param filePath File path of the texture file.
+		/// @param cubeFormat Format for the cube texture.
 		/// @param flags Additional flags. Default: None.
-		/// @return Loaded texture on success, Fallback texture otherwise.
+		/// @return Loaded texture on success, Fallback texture if texture loading failed, nullptr otherwise.
+		[[nodiscard]] static Ref<Texture> CreateCube(std::string name, const std::filesystem::path& filePath,
+		                                             TextureCubeFormat cubeFormat,
+													 TextureCreationFlags flags = TextureCreationFlags::None);
+		/// @brief Create a cube texture from 1 TRAP::Image.
+		/// @param name Name for the texture.
+		/// @param image Image to create the texture from.
+		/// @param cubeFormat Format for the cube texture.
+		/// @param flags Additional flags. Default: None.
+		/// @return Loaded texture on success, Fallback texture if texture loading failed, nullptr otherwise.
 		/// @note The image must be valid till IsLoaded() returns true.
-		[[nodiscard]] static Ref<Texture> CreateFromImage(std::string name, const TRAP::Image* img, TextureType type,
-		                                                  TextureCubeFormat cubeFormat = TextureCubeFormat::NONE,
-											              TextureCreationFlags flags = TextureCreationFlags::None);
-		/// @brief Create an empty texture.
+		[[nodiscard]] static Ref<Texture> CreateCube(std::string name, const Image& image, TextureCubeFormat cubeFormat,
+		                                             TextureCreationFlags flags = TextureCreationFlags::None);
+		/// @brief Create an empty cube texture.
 		/// @param name Name for the texture.
 		/// @param width Width for the texture.
 		/// @param height Height for the texture.
 		/// @param bitsPerPixel Bits per pixel for the texture.
 		/// @param format Color format for the texture.
-		/// @param type Type of texture.
 		/// @param flags Additional flags. Default: None.
 		/// @return Empty texture on success, nullptr otherwise.
-		[[nodiscard]] static Ref<Texture> CreateEmpty(std::string name, u32 width, u32 height, u32 bitsPerPixel,
-		                                              Image::ColorFormat format, TextureType type,
-										              TextureCreationFlags flags = TextureCreationFlags::None);
+		[[nodiscard]] static Ref<Texture> CreateCube(std::string name, u32 width, u32 height, u32 bitsPerPixel,
+		                                             Image::ColorFormat format,
+													 TextureCreationFlags flags = TextureCreationFlags::None);
+
+		/// @brief Create a 2d texture from file.
+		/// @param name Name for the texture.
+		/// @param filePath File path of the texture.
+		/// @param flags Additional flags. Default: None.
+		/// @return Loaded texture on success, Fallback texture if texture loading failed, nullptr otherwise.
+		[[nodiscard]] static Ref<Texture> Create2D(std::string name, const std::filesystem::path& filePath,
+		                                           TextureCreationFlags flags = TextureCreationFlags::None);
+		/// @brief Create a 2d texture from TRAP::Image.
+		/// @param name Name for the texture.
+		/// @param image Image to create the texture from.
+		/// @param flags Additional flags. Default: None.
+		/// @return Loaded texture on success, Fallback texture if texture loading failed, nullptr otherwise.
+		/// @note The image must be valid till IsLoaded() returns true.
+		[[nodiscard]] static Ref<Texture> Create2D(std::string name, const Image& image,
+		                                           TextureCreationFlags flags = TextureCreationFlags::None);
+		/// @brief Create an empty 2d texture.
+		/// @param name Name for the texture.
+		/// @param width Width for the texture.
+		/// @param height Height for the texture.
+		/// @param bitsPerPixel Bits per pixel for the texture.
+		/// @param format Color format for the texture.
+		/// @param flags Additional flags. Default: None.
+		/// @return Empty texture on success, nullptr otherwise.
+		[[nodiscard]] static Ref<Texture> Create2D(std::string name, u32 width, u32 height, u32 bitsPerPixel,
+		                                           Image::ColorFormat format,
+												   TextureCreationFlags flags = TextureCreationFlags::None);
+
 		/// @brief Create a custom texture.
 		/// @param desc Texture description.
-		/// @return New texture.
+		/// @return Create texture on success, nullptr otherwise.
         [[nodiscard]] static Ref<Texture> CreateCustom(const RendererAPI::TextureDesc& desc);
 		/// @brief Create the fallback 2D texture.
 		/// @return Fallback 2D texture.
@@ -172,15 +186,12 @@ namespace TRAP::Graphics
 		/// @param mipLevel Mip level.
 		/// @return Mip size.
 		[[nodiscard]] constexpr Math::Vec2ui GetMipSize(u32 mipLevel) const;
-		/// @brief Retrieve the file path of the texture.
-		/// @return File path of the texture.
-		[[nodiscard]] const std::filesystem::path& GetFilePath() const noexcept;
-		/// @brief Retrieve the file path of the texture.
-		/// @return File path of the texture.
-		[[nodiscard]] constexpr const std::array<std::filesystem::path, 6>& GetFilePaths() const noexcept;
+		/// @brief Retrieve the file paths of the texture.
+		/// @return File paths of the texture.
+		[[nodiscard]] constexpr const std::vector<std::filesystem::path>& GetFilePaths() const noexcept;
 		/// @brief Retrieve the cube format of the texture.
 		/// @return Cube format of the texture.
-		[[nodiscard]] constexpr TextureCubeFormat GetCubeFormat() const noexcept;
+		[[nodiscard]] constexpr TRAP::Optional<TextureCubeFormat> GetCubeFormat() const noexcept;
 
 		/// @brief Update the texture with raw pixel data.
 		/// @param data Raw pixel data.
@@ -189,12 +200,6 @@ namespace TRAP::Graphics
 		/// @param arrayLayer Array layer to update. Default: 0
 		/// @note Data array length and sizeInBytes must match the textures current size or it won't update
 		void Update(const void* data, u32 sizeInBytes, u32 mipLevel = 0, u32 arrayLayer = 0);
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-		/// @brief Set the texture name.
-		/// @param name Name for the texture.
-        virtual void SetTextureName(std::string_view name) const = 0;
-#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 		/// @brief Retrieve whether the texture owns the image data.
 		/// @return True if texture owns the image data, false otherwise.
@@ -242,30 +247,26 @@ namespace TRAP::Graphics
 		[[nodiscard]] static constexpr u32 GetBitsPerChannelFromImageFormat(API::ImageFormat imageFormat) noexcept;
 
 		/// @brief Constructor.
-		Texture() noexcept;
+		explicit Texture(std::string name);
 		/// @brief Constructor.
-		Texture(std::string name, std::array<std::filesystem::path, 6> filepaths) noexcept;
+		Texture(std::string name, std::vector<std::filesystem::path> filePaths);
 		/// @brief Constructor.
-		Texture(std::string name, std::filesystem::path filepath, TextureType type, TextureCubeFormat cubeFormat) noexcept;
-		/// @brief Constructor.
-		explicit Texture(TextureType type) noexcept;
+		Texture(std::string name, std::vector<std::filesystem::path> filePaths, const TRAP::Optional<TextureCubeFormat>& cubeFormat);
 
 		//RenderAPI independent data
-		std::string m_name{};
+		std::string m_name;
 		API::SyncToken m_syncToken = 0;
-		TextureType m_textureType = TextureType::Texture2D;
 		u32 m_width = 2;
 		u32 m_height = 2;
 		u32 m_depth = 1;
 		u32 m_arraySize = 1;
 		u32 m_mipLevels = 1;
-		Image::ColorFormat m_colorFormat = Image::ColorFormat::RGBA;
 		Graphics::API::ImageFormat m_imageFormat = Graphics::API::ImageFormat::R8G8B8A8_UNORM;
 		u32 m_aspectMask = 0;
 		RendererAPI::DescriptorType m_descriptorTypes = RendererAPI::DescriptorType::Texture;
 		bool m_ownsImage = true;
-		std::array<std::filesystem::path, 6> m_filepaths{};
-		TextureCubeFormat m_textureCubeFormat = TextureCubeFormat::NONE;
+		std::vector<std::filesystem::path> m_filepaths;
+		TRAP::Optional<TextureCubeFormat> m_textureCubeFormat = TRAP::NullOpt;
 	};
 }
 
@@ -280,7 +281,11 @@ namespace TRAP::Graphics
 
 [[nodiscard]] constexpr TRAP::Graphics::TextureType TRAP::Graphics::Texture::GetType() const noexcept
 {
-	return m_textureType;
+	[[maybe_unused]] const auto test = std::to_underlying(m_descriptorTypes);
+	if((m_descriptorTypes & RendererAPI::DescriptorType::TextureCube) == RendererAPI::DescriptorType::TextureCube)
+		return TextureType::TextureCube;
+
+	return TextureType::Texture2D;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -371,7 +376,7 @@ namespace TRAP::Graphics
 
 [[nodiscard]] constexpr u32 TRAP::Graphics::Texture::GetBitsPerPixel() const noexcept
 {
-	return GetBitsPerChannel() * std::to_underlying(m_colorFormat);
+	return GetBitsPerChannel() * std::to_underlying(ImageFormatToColorFormat(m_imageFormat));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -410,14 +415,14 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr const std::array<std::filesystem::path, 6>& TRAP::Graphics::Texture::GetFilePaths() const noexcept
+[[nodiscard]] constexpr const std::vector<std::filesystem::path>& TRAP::Graphics::Texture::GetFilePaths() const noexcept
 {
 	return m_filepaths;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Graphics::TextureCubeFormat TRAP::Graphics::Texture::GetCubeFormat() const noexcept
+[[nodiscard]] constexpr TRAP::Optional<TRAP::Graphics::TextureCubeFormat> TRAP::Graphics::Texture::GetCubeFormat() const noexcept
 {
 	return m_textureCubeFormat;
 }

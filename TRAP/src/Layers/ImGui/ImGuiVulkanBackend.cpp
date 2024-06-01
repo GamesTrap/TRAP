@@ -1442,7 +1442,6 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
     const usize upload_size = NumericCast<usize>(width) * NumericCast<usize>(height) * 4u * sizeof(u8);
 
     // Create the Image:
-    bd->FontImage = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>(TRAP::Graphics::TextureType::Texture2D);
     const TRAP::Graphics::RendererAPI::TextureDesc fontDesc
     {
         .Flags = TRAP::Graphics::RendererAPI::TextureCreationFlags::None,
@@ -1460,6 +1459,7 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
         .Name = "ImGui Font Texture",
         .VkSamplerYcbcrConversionInfo = nullptr
     };
+    bd->FontImage = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>(fontDesc.Name);
     bd->FontImage->Init(fontDesc);
 
     // Create the Descriptor Set:

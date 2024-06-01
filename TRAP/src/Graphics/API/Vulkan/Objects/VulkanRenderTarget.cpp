@@ -74,7 +74,7 @@ namespace
 			}
 		}
 
-		TRAP::Ref<TRAP::Graphics::API::VulkanTexture> rTTexture = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>();
+		TRAP::Ref<TRAP::Graphics::API::VulkanTexture> rTTexture = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>(fmt::format("RenderTarget {}", desc.Name));
 		TRAP_ASSERT(rTTexture, "VulkanRenderTarget::CreateRenderTargetTexture(): Texture is nullptr!");
 		rTTexture->Init(textureDesc);
 

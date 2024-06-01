@@ -32,9 +32,9 @@ void ComputeTests::OnAttach()
     TRAP::Graphics::RenderCommand::Transition(m_colTex, TRAP::Graphics::ResourceState::UnorderedAccess, TRAP::Graphics::ResourceState::ShaderResource);
 
     //Create empty Texture
-    TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture::CreateEmpty("ComputeTargetUAV",
+    TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture::Create2D("ComputeTargetUAV",
                                         m_colTex->GetWidth(), m_colTex->GetHeight(), m_colTex->GetBitsPerPixel(),
-                                        m_colTex->GetColorFormat(), TRAP::Graphics::TextureType::Texture2D,
+                                        m_colTex->GetColorFormat(),
                                         TRAP::Graphics::TextureCreationFlags::Storage));
     m_compTex = TRAP::Graphics::TextureManager::Get2D("ComputeTargetUAV");
     m_compTex->AwaitLoading();

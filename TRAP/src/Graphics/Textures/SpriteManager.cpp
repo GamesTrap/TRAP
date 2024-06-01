@@ -174,7 +174,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Reload(co
 	{
 		for (const auto& [name, sprite] : Sprites)
 		{
-            if (FileSystem::IsEquivalent(nameOrPath, sprite->GetTexture()->GetFilePath()))
+            if (!sprite->GetTexture()->GetFilePaths().empty() && FileSystem::IsEquivalent(nameOrPath, sprite->GetTexture()->GetFilePaths()[0]))
             {
                 if(sprite->GetTexture()->Reload())
                     TP_INFO(Log::SpriteManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
@@ -235,6 +235,6 @@ void TRAP::Graphics::SpriteManager::ReloadAll()
 
 	return std::ranges::any_of(Sprites, [&path](const auto& element)
 	{
-		return FileSystem::IsEquivalent(element.second->GetTexture()->GetFilePath(), path);
+		return !element.second->GetTexture()->GetFilePaths().empty() && FileSystem::IsEquivalent(element.second->GetTexture()->GetFilePaths()[0], path);
 	});
 }

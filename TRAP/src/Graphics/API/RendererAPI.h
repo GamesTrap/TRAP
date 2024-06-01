@@ -10,6 +10,7 @@
 #include "Utils/Utils.h"
 #include "Maths/Types.h"
 #include "Maths/Vec3.h"
+#include "Utils/Optional.h"
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 #include <NvLowLatencyVk.h>
@@ -1302,9 +1303,6 @@ namespace TRAP::Graphics
 		/// @brief Enum describing the different types of cube textures.
 		enum class TextureCubeType
 		{
-			NONE = 0,
-
-			MultiFile,
 			Cross,
 			//TODO
 			//Equirectangular
@@ -1353,29 +1351,21 @@ namespace TRAP::Graphics
 			None = 0x0,
 			//Texture will allocate its own memory (COMMITTED resource)
 			OwnMemory = BIT(0u),
-			//Texture will be allocated in memory which can be shared among multiple processes
-			Export = BIT(1u),
-			//Texture will be allocated in memory which can be shared among multiple GPUs
-			ExportAdapter = BIT(2u),
-			//Texture will be imported from a handle created in another process
-			Import = BIT(3u),
-			//Use ESRAM to store this texture
-			ESRAM = BIT(4u),
 			//Use on-tile memory to store this texture
 			OnTile = BIT(5u),
 			//Force 2D instead of automatically determining dimension based on width, height, depth
 			Force2D = BIT(7u),
 			//Force 3D instead of automatically determining dimension based on width, height, depth
 			Force3D = BIT(8u),
-			//Display target
+			//Display target //TODO Implement
 			AllowDisplayTarget = BIT(9u),
-			//Create an sRGB texture
+			//Create an sRGB texture //TODO Implement
 			SRGB = BIT(10u),
-			//Create a normal map texture
+			//Create a normal map texture //TODO Implement
 			NormalMap = BIT(11u),
-			//Fast clear
+			//Fast clear //TODO Implement
 			FastClear = BIT(12u),
-			//Fragment mask
+			//Fragment mask //TODO Implement
 			FragMask = BIT(13u),
 			//Create a storage texture
 			Storage = BIT(14u)
@@ -1947,17 +1937,17 @@ namespace TRAP::Graphics
 			TRAP::Graphics::Texture* Texture{};
 			//Load empty texture
 			TextureDesc* Desc{};
-			//Filepath with extension.
-			std::array<std::filesystem::path, 6> Filepaths;
+			//Filepath with extension
+			std::vector<std::filesystem::path> Filepaths;
 			//Loaded images (used to load in memory images, if set Filepaths are ignored)
-			std::array<const Image*, 6> Images{};
+			std::vector<const Image*> Images{};
 			//Following is ignored if Desc != nullptr.
 			//Desc->Flags will be considered instead.
 			TextureCreationFlags CreationFlag = TextureCreationFlags::None;
 			//Is Texture cubemap?
 			bool IsCubemap{};
-			//Type of cubemap texture
-			TextureCubeType Type = TextureCubeType::NONE;
+			//Type of cubemap texture (NullOpt + IsCubemap == true means Multi-file cube texture)
+			TRAP::Optional<TextureCubeType> Type = TRAP::NullOpt;
 		};
 
 		/// @brief Description of a buffer.

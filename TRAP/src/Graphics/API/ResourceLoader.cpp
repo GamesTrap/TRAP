@@ -325,7 +325,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::TextureLoadDe
 
 	TRAP_ASSERT(textureDesc.Texture, "ResourceLoader::AddResource(): Texture is nullptr!");
 
-	if(std::get<0>(textureDesc.Filepaths).empty() && (std::get<0>(textureDesc.Images) == nullptr) && (textureDesc.Desc != nullptr))
+	if(textureDesc.Filepaths.empty() && textureDesc.Images.empty() && (textureDesc.Desc != nullptr))
 	{
 		TRAP_ASSERT(textureDesc.Desc->StartState != RendererAPI::ResourceState::Undefined, "ResourceLoader::AddResource(): Texture start state is undefined!");
 		TRAP_ASSERT(textureDesc.Texture != nullptr, "ResourceLoader::AddResource(): Texture must be constructed before loading");
@@ -1153,7 +1153,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		);
 
 	bool validMultiFileCubemap = true;
-	if(std::get<0>(textureLoadDesc.Images) == nullptr)
+	if(textureLoadDesc.Images.empty())
 	{
 		//Use normal file loading
 		for(const std::filesystem::path& str : textureLoadDesc.Filepaths)
@@ -1179,17 +1179,17 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 	}
 
 	bool supported = true;
-	if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::MultiFile &&
+	if(textureLoadDesc.IsCubemap && textureLoadDesc.Filepaths.size() == 6 &&
 	   !validMultiFileCubemap)
 	{
 		supported = false;
 	}
 
-	if((std::get<0>(textureLoadDesc.Images) == nullptr) && supported)
+	if(textureLoadDesc.Images.empty() && supported)
 	{
-		if((std::get<0>(textureLoadDesc.Filepaths).empty() ||
-			!TRAP::FileSystem::Exists(std::get<0>(textureLoadDesc.Filepaths)) ||
-			!TRAP::Image::IsSupportedImageFile(std::get<0>(textureLoadDesc.Filepaths))))
+		if((textureLoadDesc.Filepaths.empty() ||
+			!TRAP::FileSystem::Exists(textureLoadDesc.Filepaths[0]) ||
+			!TRAP::Image::IsSupportedImageFile(textureLoadDesc.Filepaths[0])))
 		{
 			supported = false;
 		}
@@ -1214,29 +1214,29 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 	std::array<TRAP::Scope<TRAP::Image>, 6> ownedImages{}; //Storage for images that are getting loaded from here
 	std::array<const TRAP::Image*, 6> ptrImages{}; //Pointers to the images to upload
 
-	if((!std::get<0>(textureLoadDesc.Filepaths).empty() || (std::get<0>(textureLoadDesc.Images) != nullptr)) && supported)
+	if((!textureLoadDesc.Filepaths.empty() || !textureLoadDesc.Images.empty()) && supported)
 	{
 		//Get a name for the texture
 		textureDesc.Name = "Unknown";
-		if(std::get<0>(textureLoadDesc.Images) == nullptr)
+		if(textureLoadDesc.Images.empty())
 		{
 			//Use file path
-			const auto fileName = FileSystem::GetFileNameWithEnding(std::get<0>(textureLoadDesc.Filepaths));
+			const auto fileName = FileSystem::GetFileNameWithEnding(textureLoadDesc.Filepaths[0]);
 			if(fileName)
 				textureDesc.Name = *fileName;
 		}
-		else if(!std::get<0>(textureLoadDesc.Images)->GetFilePath().empty())
+		else if(!textureLoadDesc.Images[0]->GetFilePath().empty())
 		{
 			//Use already in memory image
-			const auto fileName = FileSystem::GetFileNameWithEnding(std::get<0>(textureLoadDesc.Images)->GetFilePath());
+			const auto fileName = FileSystem::GetFileNameWithEnding(textureLoadDesc.Images[0]->GetFilePath());
 			if(fileName)
 				textureDesc.Name = *fileName;
 		}
 
 		//Handle the different types of textures
-		if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::MultiFile)
+		if(textureLoadDesc.IsCubemap && textureLoadDesc.Filepaths.size() == 6)
 		{
-			if(std::get<0>(textureLoadDesc.Images) == nullptr)
+			if(textureLoadDesc.Images.empty())
 			{
 				//Use file paths
 				for(usize i = 0; i < ownedImages.size(); ++i)
@@ -1249,7 +1249,8 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 			else
 			{
 				//Use already in memory images
-				ptrImages = textureLoadDesc.Images;
+				TRAP_ASSERT(ptrImages.size() == 6, "ResourceLoader::LoadTexture(): There must be 6 images!");
+				std::ranges::copy(textureLoadDesc.Images, ptrImages.begin());
 			}
 
 			//Validation checks
@@ -1311,9 +1312,9 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		else if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::Cross)
 		{
 			TRAP::Scope<TRAP::Image> baseImg = nullptr;
-			if(std::get<0>(textureLoadDesc.Images) == nullptr)
-				baseImg = TRAP::Image::LoadFromFile(std::get<0>(textureLoadDesc.Filepaths));
-			const TRAP::Image* const baseImgPtr = std::get<0>(textureLoadDesc.Images) != nullptr ? std::get<0>(textureLoadDesc.Images) : baseImg.get();
+			if(textureLoadDesc.Images.empty())
+				baseImg = TRAP::Image::LoadFromFile(textureLoadDesc.Filepaths[0]);
+			const TRAP::Image* const baseImgPtr = !textureLoadDesc.Images.empty() ? textureLoadDesc.Images[0] : baseImg.get();
 
 			bool valid = true;
 			if(baseImgPtr->GetWidth() > baseImgPtr->GetHeight()) //Horizontal
@@ -1365,9 +1366,9 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		}
 		else //if(!textureLoadDesc.IsCubemap) //Normal Texture
 		{
-			if(std::get<0>(textureLoadDesc.Images) == nullptr)
-				std::get<0>(ownedImages) = TRAP::Image::LoadFromFile(std::get<0>(textureLoadDesc.Filepaths));
-			std::get<0>(ptrImages) = std::get<0>(textureLoadDesc.Images) != nullptr ? std::get<0>(textureLoadDesc.Images) : std::get<0>(ownedImages).get();
+			if(textureLoadDesc.Images.empty())
+				std::get<0>(ownedImages) = TRAP::Image::LoadFromFile(textureLoadDesc.Filepaths[0]);
+			std::get<0>(ptrImages) = !textureLoadDesc.Images.empty() ? textureLoadDesc.Images[0] : std::get<0>(ownedImages).get();
 
 			textureDesc.Width = std::get<0>(ptrImages)->GetWidth();
 			textureDesc.Height = std::get<0>(ptrImages)->GetHeight();

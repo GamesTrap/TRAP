@@ -502,6 +502,7 @@ void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
 	memReq2.sType = VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2;
 	memReq2.pNext = &memDedicatedReq;
 
+	planesOffsets.resize(planesCount);
 	for(u32 i = 0; i < planesCount; ++i)
 	{
 		imagePlaneMemReqInfo.planeAspect = static_cast<VkImageAspectFlagBits>(VK_IMAGE_ASPECT_PLANE_0_BIT << i);

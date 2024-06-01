@@ -5048,3 +5048,7 @@ SITREP 05/25/2024|24w21b1
 SITREP 05/26/2024|24w21b2
     - Changed TRAP Engine version to 24w21b2(0.10.74)
     - VulkanRootSignature Fixed wrong error on valid root constant ~<5 mins
+
+SITREP 06/01/2024|24w22a1
+    - Changed TRAP Engine version to 24w22a1(0.10.75)
+    - VulkanTexture Refactored various functions ~>120 mins

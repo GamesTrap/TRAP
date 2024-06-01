@@ -240,7 +240,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::Init()
 																			255, 255, 255, 255,
 																			255, 255, 255, 255,
 																			255, 255, 255, 255 });
-	WhiteTexture = Texture::CreateFromImage("Renderer2DWhite", whiteImage.get(), TextureType::Texture2D);
+	WhiteTexture = Texture::Create2D("Renderer2DWhite", *whiteImage);
 	WhiteTexture->AwaitLoading();
 
 	RendererAPI::SamplerDesc samplerDesc{};

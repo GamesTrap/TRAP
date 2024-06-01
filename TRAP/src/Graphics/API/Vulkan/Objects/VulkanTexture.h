@@ -14,21 +14,17 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		/// @brief Constructor.
-		VulkanTexture();
+		/// @param name Name of the texture.
+		explicit VulkanTexture(std::string name);
 		/// @brief Constructor.
-		/// @param name Name for the texture.
-		/// @param filepaths Filepaths to images used by the texture.
-		VulkanTexture(std::string name, std::array<std::filesystem::path, 6> filepaths);
+		/// @param name Name of the texture.
+		/// @param filePaths File paths of the texture.
+		VulkanTexture(std::string name, std::vector<std::filesystem::path> filePaths);
 		/// @brief Constructor.
-		/// @param name Name for the texture.
-		/// @param filepath Filepath to image used by the texture.
-		/// @param type Type of texture.
-		/// @param cubeFormat Cube format used by the texture. Ignored when using TextureType::Texture2D.
-		VulkanTexture(std::string name, std::filesystem::path filepath,
-					  TextureType type, TextureCubeFormat cubeFormat);
-		/// @brief Constructor.
-		/// @param type Type of texture.
-		explicit VulkanTexture(TextureType type);
+		/// @param name Name of the texture.
+		/// @param filePaths File paths of the texture.
+		/// @param cubeFormat Format for the cube texture.
+		VulkanTexture(std::string name, std::vector<std::filesystem::path> filePaths, const TRAP::Optional<TextureCubeFormat>& cubeFormat);
 		/// @brief Destructor.
 		~VulkanTexture() override;
 
@@ -48,7 +44,7 @@ namespace TRAP::Graphics::API
 		/// @brief Retrieve the read only color Vulkan image view handle of the texture.
 		/// @return Vulkan image view handle.
 		[[nodiscard]] constexpr VkImageView GetSRVVkImageView() const noexcept;
-		/// @brief Retrieve the read only  stencil Vulkan image view handle of the texture.
+		/// @brief Retrieve the read only stencil Vulkan image view handle of the texture.
 		/// @return Vulkan image view handle.
 		[[nodiscard]] constexpr VkImageView GetSRVStencilVkImageView() const noexcept;
 		/// @brief Retrieve all read-writable Vulkan image view handles of the texture.
@@ -57,19 +53,10 @@ namespace TRAP::Graphics::API
 		/// @brief Retrieve the Vulkan image handle.
 		/// @return Vulkan image handle.
 		[[nodiscard]] constexpr VkImage GetVkImage() const noexcept;
-		/// @brief Retrieve the VMA allocation handle used by the texture.
-		/// @return VMA allocation handle.
-		[[nodiscard]] constexpr VmaAllocation GetVMAAllocation() const noexcept;
 
 		/// @brief Retrieve whether the texture is lazily allocated or not.
 		/// @return True if the texture is lazily allocated, false otherwise.
 		[[nodiscard]] constexpr bool IsLazilyAllocated() const noexcept;
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-		/// @brief Set the name of the texture.
-		/// @param name Name for the texture.
-		void SetTextureName(std::string_view name) const override;
-#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 	protected:
 		/// @brief Shutdown API dependent texture.
@@ -79,14 +66,12 @@ namespace TRAP::Graphics::API
 		/// @brief Pre Initialization step run by every constructor.
 		void PreInit();
 
-		/// @brief Retrieve the memory type index via the given parameters.
-		/// @param typeBits Memory type bits from Vulkan memory requirements.
-		/// @param memProps Vulkan physical device memory properties.
-		/// @param props Vulkan memory property flags.
-		/// @param memTypeFound Output: True if memory type found, false otherwise.
-		/// @return Index of memory type.
-		[[nodiscard]] static u32 GetMemoryType(u32 typeBits, const VkPhysicalDeviceMemoryProperties& memProps,
-		                                            VkMemoryPropertyFlags props, VkBool32* memTypeFound = nullptr);
+		void CreateVkImage(const TRAP::Graphics::RendererAPI::TextureDesc& desc,
+		                   VkImageType imageType, bool cubeMapRequired,
+                           TRAP::Graphics::RendererAPI::DescriptorType descriptors);
+		void CreateVkImageViews(const TRAP::Graphics::RendererAPI::TextureDesc& desc,
+                                VkImageType imageType, bool cubeMapRequired,
+                                TRAP::Graphics::RendererAPI::DescriptorType descriptors);
 
 		TRAP::Ref<VulkanDevice> m_device = nullptr;
 		TRAP::Ref<VulkanMemoryAllocator> m_vma = nullptr;
@@ -109,7 +94,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr const std::vector<VkImageView> &TRAP::Graphics::API::VulkanTexture::GetUAVVkImageViews() const noexcept
+[[nodiscard]] constexpr const std::vector<VkImageView>& TRAP::Graphics::API::VulkanTexture::GetUAVVkImageViews() const noexcept
 {
 	return m_vkUAVDescriptors;
 }
@@ -133,13 +118,6 @@ namespace TRAP::Graphics::API
 [[nodiscard]] constexpr VkImage TRAP::Graphics::API::VulkanTexture::GetVkImage() const noexcept
 {
 	return m_vkImage;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr VmaAllocation TRAP::Graphics::API::VulkanTexture::GetVMAAllocation() const noexcept
-{
-	return m_vkAllocation;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
