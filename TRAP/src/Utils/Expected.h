@@ -1688,7 +1688,7 @@ namespace TRAP
                                                                                          std::is_nothrow_copy_assignable<E>>)
         requires std::is_copy_constructible_v<E> && std::is_copy_assignable_v<E>
         {
-            if(other.m_hasValeu)
+            if(other.m_hasValue)
                 Emplace();
             else
                 AssignUnexpected(other.m_unexpected);
