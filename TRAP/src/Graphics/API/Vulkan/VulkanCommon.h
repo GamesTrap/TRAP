@@ -185,6 +185,10 @@ namespace TRAP::Graphics::API
 	[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat ImageFormatFromVkFormat(VkFormat format) noexcept;
 
 	template<typename T>
+	requires (std::same_as<decltype(T::sType), VkStructureType>) && requires {T::pNext;}
+	/// @brief Links toLink to the pNext member of base and updates base pointer to point to toLink::pNext.
+	/// @param base Vulkan structure to set pNext member for.
+	/// @param toLink Vulkan structure to link to pNext member of base.
 	constexpr void LinkVulkanStruct(VkBaseOutStructure*& base, T& toLink);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
@@ -1149,8 +1153,11 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires (std::same_as<decltype(T::sType), VkStructureType>) && requires {T::pNext;}
 constexpr void TRAP::Graphics::API::LinkVulkanStruct(VkBaseOutStructure*& base, T& toLink)
 {
+	TRAP_ASSERT(base, "LinkVulkanStruct(): base is nullptr!");
+
 	base->pNext = reinterpret_cast<VkBaseOutStructure* const>(&toLink);
 	base = base->pNext;
 }

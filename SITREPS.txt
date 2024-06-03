@@ -5061,3 +5061,4 @@ SITREP 06/02/2024|24w22a2
 SITREP 06/04/2024|24w23a1
     - Changed TRAP Engine version to 24w23a1(0.10.77)
     - Expected Fixed a compiler errors ~<5 mins
+    - VulkanCommon Added documentation and requires clause for LinkVulkanStruct() ~<5 mins
