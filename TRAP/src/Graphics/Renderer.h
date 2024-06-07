@@ -46,20 +46,6 @@ namespace TRAP::Graphics
 		/// @param transform Model transform. Default is identity.
 		static void Submit(const Ref<Shader>& shader, const VertexBuffer* vertexBuffer, const IndexBuffer* indexBuffer,
 						   const Math::Mat4& transform = Math::Mat4(1.0f));
-
-	private:
-		struct SceneData
-		{
-			Math::Mat4 m_projectionMatrix;
-			Math::Mat4 m_viewMatrix;
-		};
-
-		static Scope<SceneData> s_sceneData;
-		static Scope<StorageBuffer> s_sceneStorageBuffer;
-		static Scope<StorageBuffer> s_modelStorageBuffer;
-
-		inline constinit static u32 s_maxDrawCalls = 1000;
-		inline constinit static u32 s_currentDrawCalls = 0;
 	};
 }
 

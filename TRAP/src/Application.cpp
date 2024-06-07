@@ -28,6 +28,19 @@
 #include "Layers/ImGui/ImGuiLayer.h"
 #include "Utils/DBus/DBus.h"
 
+namespace
+{
+	constexpr u32 MinLimitedFPS = 25u;
+	constexpr u32 MaxLimitedFPS = 500u;
+
+	constexpr u32 MinUnfocusedFPS = 10u;
+
+	//Singleton instance
+	constinit TRAP::Application* s_Instance = nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 #ifdef TRAP_UNITTESTS
 
 TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std::optional<u32> appID)
@@ -366,9 +379,6 @@ void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static constexpr u32 MinLimitedFPS = 25u;
-static constexpr u32 MaxLimitedFPS = 500u;
-
 void TRAP::Application::SetFPSLimit(const u32 targetFPS)
 {
 	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -398,8 +408,6 @@ void TRAP::Application::SetFPSLimit(const u32 targetFPS)
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
-
-static constexpr u32 MinUnfocusedFPS = 10u;
 
 void TRAP::Application::SetUnfocusedFPSLimit(const u32 targetFPS)
 {

@@ -1,5 +1,48 @@
 #include "RendererAPITests.h"
 
+namespace
+{
+	constexpr std::array<f32, 18> TriangleVertices
+	{
+		//XYZ RGB
+		 0.0f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,
+	};
+
+	constexpr std::array<u16, 3> TriangleIndices
+	{
+		0, 1, 2
+	};
+
+	constexpr std::array<f32, 36> QuadVertices
+	{
+		//XYZ RGB
+		-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,
+		 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f,
+		 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f,
+		-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f
+	};
+
+	constexpr std::array<f32, 32> QuadVerticesIndexed
+	{
+		//XYZ RGB UV
+		-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f,    0.0f, 1.0f,
+		 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,    1.0f, 1.0f,
+		 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f,    1.0f, 0.0f,
+		-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f,    0.0f, 0.0f
+	};
+
+	constexpr std::array<u16, 6> QuadIndices
+	{
+		0, 1, 2, 2, 3, 0
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 RendererAPITests::RendererAPITests()
 	: Layer("RendererAPITests")
 {

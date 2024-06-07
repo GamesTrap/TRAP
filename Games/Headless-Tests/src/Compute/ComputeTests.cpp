@@ -3,13 +3,32 @@
 #include <span>
 #include <ImageLoader/PortableMaps/PPMImage.h>
 
+namespace
+{
+    constexpr std::array<f32, 5ull * 4> QuadVerticesIndexed
+	{
+		//XYZ UV
+		-0.5f, -0.5f, 0.0f,    0.0f, 1.0f,
+		 0.5f, -0.5f, 0.0f,    1.0f, 1.0f,
+		 0.5f,  0.5f, 0.0f,    1.0f, 0.0f,
+		-0.5f,  0.5f, 0.0f,    0.0f, 0.0f
+	};
+
+    constexpr std::array<u16, 6> QuadIndices
+	{
+		0, 1, 2, 2, 3, 0
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void ComputeTests::OnAttach()
 {
     if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
         return;
 
     //Load Quad vertices
-    m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_quadVerticesIndexed, TRAP::Graphics::UpdateFrequency::Static);
+    m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(QuadVerticesIndexed, TRAP::Graphics::UpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout layout =
     {
         { TRAP::Graphics::ShaderDataType::Float3, "Pos" },
@@ -19,7 +38,7 @@ void ComputeTests::OnAttach()
     m_vertexBuffer->AwaitLoading();
 
     //Load Quad indices
-    m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_quadIndices, TRAP::Graphics::UpdateFrequency::Static);
+    m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(QuadIndices, TRAP::Graphics::UpdateFrequency::Static);
     m_indexBuffer->AwaitLoading();
 
     //Load Texture

@@ -1,5 +1,23 @@
 #include "MultiWindowTests.h"
 
+namespace
+{
+	constexpr std::array<f32, 18> TriangleVertices
+	{
+		//XYZ RGB
+		 0.0f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,
+	};
+
+	constexpr std::array<u16, 3> TriangleIndices
+	{
+		0, 1, 2
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 MultiWindowTests::MultiWindowTests()
 	: Layer("MultiWindow")
 {

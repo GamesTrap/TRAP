@@ -329,17 +329,6 @@ namespace TRAP::Graphics
 		/// @return True on successful pre initialization, false otherwise.
 		/// If false outFailShader may be filled with a fail shader.
 		[[nodiscard]] static bool PreInit(const std::string& name, const std::filesystem::path& filePath, const std::vector<Macro>& userMacros, RendererAPI::BinaryShaderDesc& outShaderDesc, Ref<Shader>& outFailShader);
-
-		inline constinit static bool s_glslangInitialized = false;
-
-		//Macros which are always provided by default.
-		inline static std::array<Macro, 2> s_defaultShaderMacrosVulkan
-		{
-			{
-				{"UpdateFreqStatic", "set = 0"},
-				{"UpdateFreqDynamic", "set = 1"}
-			}
-		};
 	};
 }
 

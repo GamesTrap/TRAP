@@ -172,9 +172,6 @@ namespace TRAP::Graphics::API
 		std::vector<VkExtensionProperties> m_availablePhysicalDeviceExtensions{};
 
 		TRAP::Ref<VulkanInstance> m_instance = nullptr; //Take ownership of VulkanInstance because we rely on it being around.
-
-		//Multiple physical devices can theoretically have the same score, so we use a multimap here.
-		inline static std::multimap<u32, RatedVulkanPhysicalDevice> s_ratedPhysicalDevices{};
 	};
 }
 

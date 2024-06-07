@@ -7,42 +7,58 @@
 #include "Utils/String/String.h"
 #include "Utils/Memory.h"
 
-struct ShaderStageData
+namespace
 {
-	TRAP::Graphics::RendererAPI::ShaderStage Stage;
-	std::string_view StageString;
-	EShLanguage StageGLSLang;
-};
+	constinit bool GlslangInitialized = false;
 
-static constexpr std::array<ShaderStageData, std::to_underlying(TRAP::Graphics::RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> ShaderStages
-{
+	//Macros which are always provided by default.
+	std::array<TRAP::Graphics::Shader::Macro, 2> DefaultShaderMacrosVulkan
 	{
-		{TRAP::Graphics::RendererAPI::ShaderStage::Vertex, "Vertex", EShLanguage::EShLangVertex},
-		{TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl, "TessellationControl", EShLanguage::EShLangTessControl},
-		{TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation, "TessellationEvaluation", EShLanguage::EShLangTessEvaluation},
-		{TRAP::Graphics::RendererAPI::ShaderStage::Geometry, "Geometry", EShLanguage::EShLangGeometry},
-		{TRAP::Graphics::RendererAPI::ShaderStage::Fragment, "Fragment", EShLanguage::EShLangFragment},
-		{TRAP::Graphics::RendererAPI::ShaderStage::Compute, "Compute", EShLanguage::EShLangCompute},
-		{TRAP::Graphics::RendererAPI::ShaderStage::RayTracing, "RayTracing", EShLanguage::EShLangCount} //TODO RayTracing Shader support
+		{
+			{"UpdateFreqStatic", "set = 0"},
+			{"UpdateFreqDynamic", "set = 1"}
+		}
+	};
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	struct ShaderStageData
+	{
+		TRAP::Graphics::RendererAPI::ShaderStage Stage;
+		std::string_view StageString;
+		EShLanguage StageGLSLang;
+	};
+
+	constexpr std::array<ShaderStageData, std::to_underlying(TRAP::Graphics::RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> ShaderStages
+	{
+		{
+			{TRAP::Graphics::RendererAPI::ShaderStage::Vertex, "Vertex", EShLanguage::EShLangVertex},
+			{TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl, "TessellationControl", EShLanguage::EShLangTessControl},
+			{TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation, "TessellationEvaluation", EShLanguage::EShLangTessEvaluation},
+			{TRAP::Graphics::RendererAPI::ShaderStage::Geometry, "Geometry", EShLanguage::EShLangGeometry},
+			{TRAP::Graphics::RendererAPI::ShaderStage::Fragment, "Fragment", EShLanguage::EShLangFragment},
+			{TRAP::Graphics::RendererAPI::ShaderStage::Compute, "Compute", EShLanguage::EShLangCompute},
+			{TRAP::Graphics::RendererAPI::ShaderStage::RayTracing, "RayTracing", EShLanguage::EShLangCount} //TODO RayTracing Shader support
+		}
+	};
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	constexpr std::string_view ShaderStageToString(const TRAP::Graphics::RendererAPI::ShaderStage stage)
+	{
+		const auto it = std::ranges::find_if(ShaderStages,
+									         [stage](const ShaderStageData& element){return stage == element.Stage;});
+		return it->StageString;
 	}
-};
 
-//-------------------------------------------------------------------------------------------------------------------//
+	//-------------------------------------------------------------------------------------------------------------------//
 
-constexpr std::string_view ShaderStageToString(const TRAP::Graphics::RendererAPI::ShaderStage stage)
-{
-	const auto it = std::ranges::find_if(ShaderStages,
-	                             [stage](const ShaderStageData& element){return stage == element.Stage;});
-	return it->StageString;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr EShLanguage ShaderStageToEShLanguage(const TRAP::Graphics::RendererAPI::ShaderStage stage)
-{
-	const auto it = std::ranges::find_if(ShaderStages,
-	                             [stage](const auto& element){return stage == element.Stage;});
-	return it->StageGLSLang;
+	constexpr EShLanguage ShaderStageToEShLanguage(const TRAP::Graphics::RendererAPI::ShaderStage stage)
+	{
+		const auto it = std::ranges::find_if(ShaderStages,
+									         [stage](const auto& element){return stage == element.Stage;});
+		return it->StageGLSLang;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -388,7 +404,7 @@ TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const Rendere
 			//Add GLSL version before any shader code &
 			//Add Descriptor defines
 			preprocessed = "#version 460 core\n";
-			for(const Macro& macro : s_defaultShaderMacrosVulkan)
+			for(const Macro& macro : DefaultShaderMacrosVulkan)
 				preprocessed += fmt::format("#define {} {}\n", macro.Definition, macro.Value);
 		}
 		else if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::Vulkan)
@@ -455,11 +471,11 @@ TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const Rendere
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	if(!s_glslangInitialized)
+	if(!GlslangInitialized)
 	{
 		if (!glslang::InitializeProcess())
 			return{};
-		s_glslangInitialized = true;
+		GlslangInitialized = true;
 	}
 
 	RendererAPI::BinaryShaderDesc desc{};

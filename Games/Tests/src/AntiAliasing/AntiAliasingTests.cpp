@@ -2,6 +2,27 @@
 
 #include <ImageLoader/PortableMaps/PPMImage.h>
 
+namespace
+{
+	struct SampleData
+	{
+		const char* Name;
+		TRAP::Graphics::SampleCount Samples;
+	};
+
+	constexpr std::array<SampleData, 4> Samples
+	{
+		{
+			{ "x2", TRAP::Graphics::SampleCount::Two },
+			{ "x4", TRAP::Graphics::SampleCount::Four },
+			{ "x8", TRAP::Graphics::SampleCount::Eight },
+			{ "x16", TRAP::Graphics::SampleCount::Sixteen }
+		}
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 AntiAliasingTests::AntiAliasingTests()
 	: Layer("AntiAliasing")
 {

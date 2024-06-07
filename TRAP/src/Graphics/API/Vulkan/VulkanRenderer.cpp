@@ -73,7 +73,54 @@ namespace
 		//a FrameBuffer Map for the first time)
 		std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::FrameBufferMap> ThreadFrameBufferMap;
 	};
-	TRAP::Utils::Safe<RenderPassData> s_safeRenderPassData{};
+	TRAP::Utils::Safe<RenderPassData> SafeRenderPassData{};
+
+	constexpr TRAP::Graphics::API::ImageFormat ShaderDataTypeToImageFormat(const TRAP::Graphics::ShaderDataType s)
+	{
+		switch(s)
+		{
+		case TRAP::Graphics::ShaderDataType::Float:
+			return TRAP::Graphics::API::ImageFormat::R32_SFLOAT;
+
+		case TRAP::Graphics::ShaderDataType::Float2:
+			return TRAP::Graphics::API::ImageFormat::R32G32_SFLOAT;
+
+		case TRAP::Graphics::ShaderDataType::Float3:
+			return TRAP::Graphics::API::ImageFormat::R32G32B32_SFLOAT;
+
+		case TRAP::Graphics::ShaderDataType::Float4:
+			return TRAP::Graphics::API::ImageFormat::R32G32B32A32_SFLOAT;
+
+		case TRAP::Graphics::ShaderDataType::Int:
+			return TRAP::Graphics::API::ImageFormat::R32_SINT;
+
+		case TRAP::Graphics::ShaderDataType::Int2:
+			return TRAP::Graphics::API::ImageFormat::R32G32_SINT;
+
+		case TRAP::Graphics::ShaderDataType::Int3:
+			return TRAP::Graphics::API::ImageFormat::R32G32B32_SINT;
+
+		case TRAP::Graphics::ShaderDataType::Int4:
+			return TRAP::Graphics::API::ImageFormat::R32G32B32A32_SINT;
+
+		case TRAP::Graphics::ShaderDataType::UInt:
+			return TRAP::Graphics::API::ImageFormat::R32_SINT;
+
+		case TRAP::Graphics::ShaderDataType::UInt2:
+			return TRAP::Graphics::API::ImageFormat::R32G32_SINT;
+
+		case TRAP::Graphics::ShaderDataType::UInt3:
+			return TRAP::Graphics::API::ImageFormat::R32G32B32_SINT;
+
+		case TRAP::Graphics::ShaderDataType::UInt4:
+			return TRAP::Graphics::API::ImageFormat::R32G32B32A32_SINT;
+
+		case TRAP::Graphics::ShaderDataType::None:
+			[[fallthrough]];
+		default:
+			return TRAP::Graphics::API::ImageFormat::Undefined;
+		}
+	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -88,7 +135,7 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 
 	RemoveDefaultResources();
 
-	auto renderPassData = s_safeRenderPassData.WriteLock();
+	auto renderPassData = SafeRenderPassData.WriteLock();
 	renderPassData->ThreadFrameBufferMap.clear();
 	renderPassData->ThreadRenderPassMap.clear();
 
@@ -1721,53 +1768,6 @@ void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffe
                                                            const VertexBufferLayout& layout) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
-	static constexpr auto ShaderDataTypeToImageFormat = [](const ShaderDataType s) -> ImageFormat
-	{
-		switch(s)
-		{
-		case ShaderDataType::Float:
-			return ImageFormat::R32_SFLOAT;
-
-		case ShaderDataType::Float2:
-			return ImageFormat::R32G32_SFLOAT;
-
-		case ShaderDataType::Float3:
-			return ImageFormat::R32G32B32_SFLOAT;
-
-		case ShaderDataType::Float4:
-			return ImageFormat::R32G32B32A32_SFLOAT;
-
-		case ShaderDataType::Int:
-			return ImageFormat::R32_SINT;
-
-		case ShaderDataType::Int2:
-			return ImageFormat::R32G32_SINT;
-
-		case ShaderDataType::Int3:
-			return ImageFormat::R32G32B32_SINT;
-
-		case ShaderDataType::Int4:
-			return ImageFormat::R32G32B32A32_SINT;
-
-		case ShaderDataType::UInt:
-			return ImageFormat::R32_SINT;
-
-		case ShaderDataType::UInt2:
-			return ImageFormat::R32G32_SINT;
-
-		case ShaderDataType::UInt3:
-			return ImageFormat::R32G32B32_SINT;
-
-		case ShaderDataType::UInt4:
-			return ImageFormat::R32G32B32A32_SINT;
-
-		case ShaderDataType::None:
-			[[fallthrough]];
-		default:
-			return ImageFormat::Undefined;
-		}
-	};
-
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 #ifndef TRAP_HEADLESS_MODE
@@ -3665,7 +3665,7 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	//Only need a lock when creating a new RenderPass Map for this thread
-	auto renderPassData = s_safeRenderPassData.WriteLock();
+	auto renderPassData = SafeRenderPassData.WriteLock();
 
 	const auto it = renderPassData->ThreadRenderPassMap.find(std::this_thread::get_id());
 	if (it == renderPassData->ThreadRenderPassMap.end())
@@ -3684,7 +3684,7 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	//Only need a lock when creating a new FrameBuffer Map for this thread
-	auto renderPassData = s_safeRenderPassData.WriteLock();
+	auto renderPassData = SafeRenderPassData.WriteLock();
 
 	const auto it = renderPassData->ThreadFrameBufferMap.find(std::this_thread::get_id());
 	if(it == renderPassData->ThreadFrameBufferMap.end())

@@ -17,7 +17,10 @@
 #include "Vulkan/Objects/VulkanCommandBuffer.h"
 #include "Vulkan/Objects/VulkanTexture.h"
 
-TRAP::Graphics::RendererAPI::ResourceLoaderDesc TRAP::Graphics::API::ResourceLoader::DefaultResourceLoaderDesc{8ull << 20u, 2u};
+namespace
+{
+	TRAP::Graphics::RendererAPI::ResourceLoaderDesc DefaultResourceLoaderDesc{8ull << 20u, 2u};
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

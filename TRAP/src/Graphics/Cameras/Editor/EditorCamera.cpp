@@ -9,6 +9,14 @@
 #include "Layers/ImGui/ImGuiLayer.h"
 #include "Application.h"
 
+namespace
+{
+    constexpr f32 MinSpeed = 0.002f;
+    constexpr f32 MaxSpeed = 2.5f;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::EditorCamera::OnUpdate(const Utils::TimeStep& deltaTime)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);

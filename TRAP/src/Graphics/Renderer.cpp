@@ -10,12 +10,21 @@
 #include "Renderer2D.h"
 #include "Graphics/RenderCommand.h"
 
-TRAP::Scope<TRAP::Graphics::Renderer::SceneData> TRAP::Graphics::Renderer::s_sceneData = MakeScope<SceneData>();
+namespace
+{
+	struct SceneData
+	{
+		TRAP::Math::Mat4 m_projectionMatrix;
+		TRAP::Math::Mat4 m_viewMatrix;
+	};
 
-//-------------------------------------------------------------------------------------------------------------------//
+	TRAP::Scope<SceneData> SceneDataObj = TRAP::MakeScope<SceneData>();
+	TRAP::Scope<TRAP::Graphics::StorageBuffer> SceneStorageBuffer = nullptr;
+	TRAP::Scope<TRAP::Graphics::StorageBuffer> ModelStorageBuffer = nullptr;
 
-TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::Renderer::s_sceneStorageBuffer = nullptr;
-TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::Renderer::s_modelStorageBuffer = nullptr;
+	constinit u32 MaxDrawCalls = 1000;
+	constinit u32 CurrentDrawCalls = 0;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -23,14 +32,14 @@ void TRAP::Graphics::Renderer::Init()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	s_maxDrawCalls = NumericCast<u32>(RendererAPI::GPUSettings.MaxStorageBufferRange /
-	                                       StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
-	s_maxDrawCalls = TRAP::Math::Min(s_maxDrawCalls, 1000000u); //Max 1 million draw calls (so we don't exceed heap sizes)
+	MaxDrawCalls = NumericCast<u32>(RendererAPI::GPUSettings.MaxStorageBufferRange /
+	                                StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
+	MaxDrawCalls = TRAP::Math::Min(MaxDrawCalls, 1000000u); //Max 1 million draw calls (so we don't exceed heap sizes)
 
-	s_sceneStorageBuffer = TRAP::Graphics::StorageBuffer::Create(s_sceneData.get(), sizeof(SceneData),
-	 														     TRAP::Graphics::UpdateFrequency::Dynamic);
-	s_modelStorageBuffer = TRAP::Graphics::StorageBuffer::Create(sizeof(TRAP::Math::Mat4) * s_maxDrawCalls,
-	                                                             TRAP::Graphics::UpdateFrequency::Dynamic);
+	SceneStorageBuffer = TRAP::Graphics::StorageBuffer::Create(SceneDataObj.get(), sizeof(SceneData),
+	 														   TRAP::Graphics::UpdateFrequency::Dynamic);
+	ModelStorageBuffer = TRAP::Graphics::StorageBuffer::Create(sizeof(TRAP::Math::Mat4) * MaxDrawCalls,
+	                                                           TRAP::Graphics::UpdateFrequency::Dynamic);
 
 	Renderer2D::Init();
 }
@@ -43,11 +52,11 @@ void TRAP::Graphics::Renderer::Shutdown()
 
 	Renderer2D::Shutdown();
 
-	if(s_sceneStorageBuffer)
-		s_sceneStorageBuffer.reset();
+	if(SceneStorageBuffer)
+		SceneStorageBuffer.reset();
 
-	if(s_modelStorageBuffer)
-	   s_modelStorageBuffer.reset();
+	if(ModelStorageBuffer)
+	   ModelStorageBuffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -56,11 +65,11 @@ void TRAP::Graphics::Renderer::BeginScene(const OrthographicCamera& camera)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	s_currentDrawCalls = 0;
+	CurrentDrawCalls = 0;
 
-	s_sceneData->m_projectionMatrix = camera.GetProjectionMatrix();
-	s_sceneData->m_viewMatrix = camera.GetViewMatrix();
-	s_sceneStorageBuffer->SetData(s_sceneData.get(), sizeof(SceneData));
+	SceneDataObj->m_projectionMatrix = camera.GetProjectionMatrix();
+	SceneDataObj->m_viewMatrix = camera.GetViewMatrix();
+	SceneStorageBuffer->SetData(SceneDataObj.get(), sizeof(SceneData));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -69,19 +78,19 @@ void TRAP::Graphics::Renderer::BeginScene(const Camera& camera, const Math::Mat4
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	s_currentDrawCalls = 0;
+	CurrentDrawCalls = 0;
 
-	s_sceneData->m_projectionMatrix = camera.GetProjectionMatrix();
-	s_sceneData->m_viewMatrix = Math::Inverse(transform);
-	s_sceneStorageBuffer->SetData(s_sceneData.get(), sizeof(SceneData));
+	SceneDataObj->m_projectionMatrix = camera.GetProjectionMatrix();
+	SceneDataObj->m_viewMatrix = Math::Inverse(transform);
+	SceneStorageBuffer->SetData(SceneDataObj.get(), sizeof(SceneData));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer::EndScene()
 {
-	s_sceneStorageBuffer->AwaitLoading();
-	s_modelStorageBuffer->AwaitLoading();
+	SceneStorageBuffer->AwaitLoading();
+	ModelStorageBuffer->AwaitLoading();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -92,22 +101,22 @@ void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuf
 
 	TRAP_ASSERT(vertexBuffer, "Renderer::Submit(): VertexBuffer is nullptr!");
 
-	if(s_currentDrawCalls >= s_maxDrawCalls)
+	if(CurrentDrawCalls >= MaxDrawCalls)
 		return;
 
-	s_modelStorageBuffer->SetData(&transform, sizeof(Math::Mat4),
-	                              NumericCast<u64>(s_currentDrawCalls) * StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
+	ModelStorageBuffer->SetData(&transform, sizeof(Math::Mat4),
+	                            NumericCast<u64>(CurrentDrawCalls) * StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
 
 	vertexBuffer->Use();
 	if(shader)
 	{
-		shader->UseSSBO(1, 1, *s_modelStorageBuffer, s_maxDrawCalls * sizeof(Math::Mat4));
-		shader->UseSSBO(1, 0, *s_sceneStorageBuffer);
+		shader->UseSSBO(1, 1, *ModelStorageBuffer, MaxDrawCalls * sizeof(Math::Mat4));
+		shader->UseSSBO(1, 0, *SceneStorageBuffer);
 		shader->Use();
 	}
 
-	RenderCommand::DrawInstanced(vertexBuffer->GetCount(), 1, 0, s_currentDrawCalls);
-	++s_currentDrawCalls;
+	RenderCommand::DrawInstanced(vertexBuffer->GetCount(), 1, 0, CurrentDrawCalls);
+	++CurrentDrawCalls;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -120,21 +129,21 @@ void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuf
 	TRAP_ASSERT(vertexBuffer, "Renderer::Submit(): VertexBuffer is nullptr!");
 	TRAP_ASSERT(indexBuffer, "Renderer::Submit(): IndexBuffer is nullptr!");
 
-	if(s_currentDrawCalls >= s_maxDrawCalls)
+	if(CurrentDrawCalls >= MaxDrawCalls)
 		return;
 
-	s_modelStorageBuffer->SetData(&transform, sizeof(Math::Mat4),
-	                              NumericCast<u64>(s_currentDrawCalls) * StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
+	ModelStorageBuffer->SetData(&transform, sizeof(Math::Mat4),
+	                            NumericCast<u64>(CurrentDrawCalls) * StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
 
 	vertexBuffer->Use();
 	indexBuffer->Use();
 	if(shader)
 	{
-		shader->UseSSBO(1, 1, *s_modelStorageBuffer, s_maxDrawCalls * sizeof(Math::Mat4));
-		shader->UseSSBO(1, 0, *s_sceneStorageBuffer);
+		shader->UseSSBO(1, 1, *ModelStorageBuffer, MaxDrawCalls * sizeof(Math::Mat4));
+		shader->UseSSBO(1, 0, *SceneStorageBuffer);
 		shader->Use();
 	}
 
-	RenderCommand::DrawIndexedInstanced(indexBuffer->GetCount(), 1, 0, s_currentDrawCalls);
-	++s_currentDrawCalls;
+	RenderCommand::DrawIndexedInstanced(indexBuffer->GetCount(), 1, 0, CurrentDrawCalls);
+	++CurrentDrawCalls;
 }

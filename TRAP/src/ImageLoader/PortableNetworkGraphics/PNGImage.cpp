@@ -1240,10 +1240,13 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static constexpr std::array<u32, 7> ADAM7_IX = { 0, 4, 0, 2, 0, 1, 0 }; /*X start values*/
-static constexpr std::array<u32, 7> ADAM7_IY = { 0, 0, 4, 0, 2, 0, 1 }; /*Y start values*/
-static constexpr std::array<u32, 7> ADAM7_DX = { 8, 8, 4, 4, 2, 2, 1 }; /*X delta values*/
-static constexpr std::array<u32, 7> ADAM7_DY = { 8, 8, 8, 4, 4, 2, 2 }; /*Y delta values*/
+namespace
+{
+	constexpr std::array<u32, 7> ADAM7_IX = { 0, 4, 0, 2, 0, 1, 0 }; /*X start values*/
+	constexpr std::array<u32, 7> ADAM7_IY = { 0, 0, 4, 0, 2, 0, 1 }; /*Y start values*/
+	constexpr std::array<u32, 7> ADAM7_DX = { 8, 8, 4, 4, 2, 2, 1 }; /*X delta values*/
+	constexpr std::array<u32, 7> ADAM7_DY = { 8, 8, 8, 4, 4, 2, 2 }; /*Y delta values*/
+}
 
 void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<u32, 7>& passW,
 	                                              std::array<u32, 7>& passH,

@@ -38,25 +38,28 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Utils/String/String.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
 
-//Action for EWMH client messages
-static constexpr i32 _NET_WM_STATE_REMOVE = 0;
-static constexpr i32 _NET_WM_STATE_ADD = 1;
+namespace
+{
+	//Action for EWMH client messages
+	constexpr i32 _NET_WM_STATE_REMOVE = 0;
+	constexpr i32 _NET_WM_STATE_ADD = 1;
 
-//Additional mouse button names for XButtonEvent
-static constexpr i32 Button6 = 6;
-static constexpr i32 Button7 = 7;
+	//Additional mouse button names for XButtonEvent
+	constexpr i32 Button6 = 6;
+	constexpr i32 Button7 = 7;
 
-//Motif WM hints flags
-static constexpr i32 MWM_HINTS_DECORATIONS = 2;
-static constexpr i32 MWM_DECOR_ALL = 1;
+	//Motif WM hints flags
+	constexpr i32 MWM_HINTS_DECORATIONS = 2;
+	constexpr i32 MWM_DECOR_ALL = 1;
 
-static constexpr i32 TRAP_XDND_VERSION = 5;
+	constexpr i32 TRAP_XDND_VERSION = 5;
 
-//Atom values
-static constexpr i32 None = 0;
+	//Atom values
+	constexpr i32 None = 0;
 
-static constexpr i32 KeyPress = 2;
-static constexpr i32 KeyRelease = 3;
+	constexpr i32 KeyPress = 2;
+	constexpr i32 KeyRelease = 3;
+}
 
 //Sends an EWMH or ICCCM event to the window manager
 void TRAP::INTERNAL::WindowingAPI::SendEventToWM(const InternalWindow& window, const Atom type, const i64 a,

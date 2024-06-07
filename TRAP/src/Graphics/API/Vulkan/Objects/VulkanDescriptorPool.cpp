@@ -9,9 +9,31 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
+namespace
+{
+	const std::vector<VkDescriptorPoolSize> DefaultDescriptorPoolSizes
+	{
+		{
+			{VK_DESCRIPTOR_TYPE_SAMPLER, 1024},
+			{VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1},
+			{VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 8192},
+			{VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1024},
+			{VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1024},
+			{VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1024},
+			{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 8192},
+			{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1024},
+			{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1024},
+			{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1},
+			{VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1}
+		}
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const u32 numDescriptorSets,
                                                                 [[maybe_unused]] const std::string_view name)
-	: DescriptorPool(numDescriptorSets)
+	: DescriptorPool(numDescriptorSets), m_descriptorPoolSizes(DefaultDescriptorPoolSizes)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 

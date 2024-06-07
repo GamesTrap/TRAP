@@ -45,9 +45,7 @@ namespace TRAP::Graphics::API
 		VkImageView m_vkDescriptor = VK_NULL_HANDLE;
 		std::vector<VkImageView> m_vkSliceDescriptors{};
 
-		u64 m_ID = s_RenderTargetIDs++;
-
-		inline constinit static std::atomic<u64> s_RenderTargetIDs = 1;
+		u64 m_ID;
 	};
 }
 

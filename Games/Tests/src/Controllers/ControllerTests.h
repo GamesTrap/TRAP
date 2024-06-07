@@ -19,9 +19,6 @@ private:
 
 	static constexpr std::string GetDPadDirection(const TRAP::Input::ControllerDPad& dpad);
 	static std::string GetBatteryStatus(TRAP::Input::Controller controller);
-
-	inline static std::vector<TRAP::Input::Controller> s_controllers{};
-	inline constinit static bool s_dpadButtons = false;
 };
 
 //-------------------------------------------------------------------------------------------------------------------//

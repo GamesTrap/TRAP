@@ -117,6 +117,16 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+namespace
+{
+	constexpr u32 MinEncodingLength = 8; //Minimum scanline length for encoding
+	constexpr u32 MaxEncodingLength = 0x7FFF; //Maximum scanline length for encoding
+	constexpr u32 R = 0;
+	constexpr u32 G = 1;
+	constexpr u32 B = 2;
+	constexpr u32 E = 3;
+}
+
 [[nodiscard]] bool TRAP::INTERNAL::RadianceImage::Decrunch(std::vector<RGBE>& scanline, const u32 length,
                                                            std::ifstream& file)
 {

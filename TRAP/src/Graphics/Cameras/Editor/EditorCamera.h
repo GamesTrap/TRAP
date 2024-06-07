@@ -210,9 +210,6 @@ namespace TRAP::Graphics
         f32 m_viewportWidth = 1280.0f;
         f32 m_viewportHeight = 720.0f;
 
-        constexpr static f32 MinSpeed = 0.002f;
-        constexpr static f32 MaxSpeed = 2.5f;
-
         friend class ::TRAPEditorLayer;
     };
 }

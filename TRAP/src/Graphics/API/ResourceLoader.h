@@ -142,7 +142,6 @@ namespace TRAP::Graphics::API
 		};
 		struct UpdateRequest;
 
-		static RendererAPI::ResourceLoaderDesc DefaultResourceLoaderDesc;
 		/// @brief Resource loader thread.
 		/// Used to async load and update queued resources.
 		/// @param stopToken Token to use for stop request of the thread.

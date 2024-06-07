@@ -73,9 +73,6 @@ namespace TRAP::Graphics
 
 		RendererAPI::SamplerDesc m_samplerDesc{};
 		bool m_usesEngineAnisotropyLevel = false;
-
-	private:
-		static std::unordered_map<RendererAPI::SamplerDesc, TRAP::Ref<Sampler>> s_cachedSamplers;
 	};
 }
 

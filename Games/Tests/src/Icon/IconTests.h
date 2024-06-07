@@ -15,8 +15,6 @@ public:
 private:
 	static void SetIcon(const TRAP::Window& window, u32 iconColor);
 	static bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
-
-	inline constinit static u32 s_cursorIconColor = 0;
 };
 
 //-------------------------------------------------------------------------------------------------------------------//

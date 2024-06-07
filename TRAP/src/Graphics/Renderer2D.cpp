@@ -206,6 +206,9 @@ namespace TRAP::Graphics
 			Math::Mat4 ViewMatrix{ 1.0f };
 		} UniformCamera;
 	};
+
+	std::vector<Renderer2DData> Data{};
+	constinit u32 CurrentDataIndex = 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -220,10 +223,6 @@ TRAP::Graphics::Renderer2DData::Renderer2DData()
 	                                            sizeof(Renderer2DData::UniformCamera),
 		                                        UpdateFrequency::Dynamic);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<TRAP::Graphics::Renderer2DData> TRAP::Graphics::Renderer2D::s_data{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 //QuadData-----------------------------------------------------------------------------------------------------------//
@@ -744,7 +743,7 @@ void TRAP::Graphics::Renderer2D::Init()
 	Renderer2DData::CircleData::Init();
 	Renderer2DData::LineData::Init();
 
-	s_data.emplace_back();
+	Data.emplace_back();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -757,7 +756,7 @@ void TRAP::Graphics::Renderer2D::Shutdown()
 	TP_DEBUG(Log::Renderer2DPrefix, "Shutting down");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
-	s_data.clear();
+	Data.clear();
 
 	Renderer2DData::LineData::Shutdown();
 	Renderer2DData::CircleData::Shutdown();
@@ -770,7 +769,7 @@ void TRAP::Graphics::Renderer2D::Reset() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	s_dataIndex = 0;
+	CurrentDataIndex = 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -780,10 +779,10 @@ void TRAP::Graphics::Renderer2D::BeginScene(const Camera& camera, const Math::Ma
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	//Create new Renderer2DData if needed
-	if(s_dataIndex >= s_data.size())
-		s_data.emplace_back();
+	if(CurrentDataIndex >= Data.size())
+		Data.emplace_back();
 
-	auto& currData = s_data[s_dataIndex];
+	auto& currData = Data[CurrentDataIndex];
 
 	//Update Camera
 	currData.UniformCamera.ProjectionMatrix = camera.GetProjectionMatrix();
@@ -805,10 +804,10 @@ void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	//Create new Renderer2DData if needed
-	if(s_dataIndex >= s_data.size())
-		s_data.emplace_back();
+	if(CurrentDataIndex >= Data.size())
+		Data.emplace_back();
 
-	auto& currData = s_data[s_dataIndex];
+	auto& currData = Data[CurrentDataIndex];
 
 	//Update Camera
 	currData.UniformCamera.ProjectionMatrix = camera.GetProjectionMatrix();
@@ -831,10 +830,10 @@ void TRAP::Graphics::Renderer2D::BeginScene(const EditorCamera& camera)
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	//Create new Renderer2DData if needed
-	if(s_dataIndex >= s_data.size())
-		s_data.emplace_back();
+	if(CurrentDataIndex >= Data.size())
+		Data.emplace_back();
 
-	auto& currData = s_data[s_dataIndex];
+	auto& currData = Data[CurrentDataIndex];
 
 	//Update Camera
 	currData.UniformCamera.ProjectionMatrix = camera.GetProjectionMatrix();
@@ -856,13 +855,13 @@ void TRAP::Graphics::Renderer2D::EndScene()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	auto& currData = s_data[s_dataIndex];
+	auto& currData = Data[CurrentDataIndex];
 
 	Renderer2DData::Stats.DrawCalls += currData.QuadData.DrawBuffers(currData.CameraUniformBuffer.get());
 	Renderer2DData::Stats.DrawCalls += currData.CircleData.DrawBuffers(currData.CameraUniformBuffer.get());
 	Renderer2DData::Stats.DrawCalls += currData.LineData.DrawBuffers(currData.CameraUniformBuffer.get());
 
-	s_dataIndex++;
+	CurrentDataIndex++;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -967,7 +966,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 	if(texture && texture->GetType() != TextureType::Texture2D)
 		return;
 
-	auto& currData = s_data[s_dataIndex];
+	auto& currData = Data[CurrentDataIndex];
 
 	if(std::get<0>(currData.QuadData.DataBuffers).empty())
 		currData.QuadData.InitBuffers();
@@ -1012,7 +1011,7 @@ void TRAP::Graphics::Renderer2D::DrawCircle(const Math::Mat4& transform, const M
 
 	static constexpr u64 circleVertexCount = 4;
 
-	auto& currData = s_data[s_dataIndex];
+	auto& currData = Data[CurrentDataIndex];
 
 	if(std::get<0>(currData.CircleData.DataBuffers).empty())
 		currData.CircleData.InitBuffers();
@@ -1063,7 +1062,7 @@ void TRAP::Graphics::Renderer2D::DrawLine(const TRAP::Math::Vec3& p0, const TRAP
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	auto& currData = s_data[s_dataIndex];
+	auto& currData = Data[CurrentDataIndex];
 
 	if(std::get<0>(currData.LineData.DataBuffers).empty())
 		currData.LineData.InitBuffers();

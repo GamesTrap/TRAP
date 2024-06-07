@@ -1,32 +1,8 @@
 #include "Cube3D.h"
 
-Cube3D::Cube3D()
-    : Layer("Cube3D")
+namespace
 {
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void Cube3D::OnAttach()
-{
-	TRAP::Application::GetWindow()->SetTitle("Cube3D");
-
-	//Load Shader(s)
-    TRAP::Graphics::ShaderManager::LoadFile("Base", "./Assets/Shaders/Base.shader");
-    TRAP::Graphics::ShaderManager::LoadFile("Color", "./Assets/Shaders/Color.shader");
-    TRAP::Graphics::ShaderManager::LoadFile("Texture", "./Assets/Shaders/Texture.shader");
-    TRAP::Graphics::ShaderManager::LoadFile("Diffuse Reflection", "./Assets/Shaders/DiffuseReflection.shader");
-    TRAP::Graphics::ShaderManager::LoadFile("Phong Lightning", "./Assets/Shaders/PhongLightning.shader");
-    TRAP::Graphics::ShaderManager::LoadFile("SkyBox", "./Assets/Shaders/SkyBox.shader");
-
-	//Load Texture(s)
-    TRAP::Graphics::TextureManager::Load("SkyBox", "./Assets/Textures/SkyboxCubic.png",
-                                         TRAP::Graphics::TextureCubeFormat::Cross);
-    TRAP::Graphics::TextureManager::Load("UVGrid", "./Assets/Textures/UVGrid.png");
-
-	//Cube
-	//XYZ
-    static constexpr std::array<f32, 11ull * 24ull> cubeVertices
+    constexpr std::array<f32, 11ull * 24ull> CubeVertices
     {
         //Positions             //Colors             //Textures      //Normals
         -1.0f, -1.0f, -1.0f,    0.0f, 0.0f, 0.0f,    1.0f, 1.0f,     0.0f,  0.0f, -1.0f,
@@ -59,7 +35,8 @@ void Cube3D::OnAttach()
         -1.0f,  1.0f,  1.0f,    0.0f, 1.0f, 1.0f,    0.0f, 1.0f,     0.0f,  1.0f,  0.0f,
          1.0f,  1.0f,  1.0f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f,     0.0f,  1.0f,  0.0f
     };
-    static constexpr std::array<u16, 36> cubeIndices
+
+    constexpr std::array<u16, 36> CubeIndices
     {
          0,  3,  2,
          2,  1,  0,
@@ -79,20 +56,8 @@ void Cube3D::OnAttach()
         20, 21, 22,
         22, 23, 20
     };
-    m_cubeVertexBuffer = TRAP::Graphics::VertexBuffer::Create(cubeVertices,
-                                                              TRAP::Graphics::UpdateFrequency::Static);
-    m_cubeIndexBuffer = TRAP::Graphics::IndexBuffer::Create(cubeIndices,
-                                                            TRAP::Graphics::UpdateFrequency::Static);
-    const TRAP::Graphics::VertexBufferLayout cubeLayout =
-    {
-    	{TRAP::Graphics::ShaderDataType::Float3, "Position"},
-    	{TRAP::Graphics::ShaderDataType::Float3, "Color"},
-    	{TRAP::Graphics::ShaderDataType::Float2, "UV"},
-    	{TRAP::Graphics::ShaderDataType::Float3, "Normal"}
-    };
-    m_cubeVertexBuffer->SetLayout(cubeLayout);
 
-    static constexpr std::array<f32, 3ull * 36ull> skyBoxVertices
+    constexpr std::array<f32, 3ull * 36ull> SkyBoxVertices
     {
         -1.0f,  1.0f, -1.0f,
         -1.0f, -1.0f, -1.0f,
@@ -136,7 +101,48 @@ void Cube3D::OnAttach()
         -1.0f, -1.0f,  1.0f,
          1.0f, -1.0f,  1.0f
     };
-    m_skyBoxVertexBuffer = TRAP::Graphics::VertexBuffer::Create(skyBoxVertices,
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+Cube3D::Cube3D()
+    : Layer("Cube3D")
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void Cube3D::OnAttach()
+{
+	TRAP::Application::GetWindow()->SetTitle("Cube3D");
+
+	//Load Shader(s)
+    TRAP::Graphics::ShaderManager::LoadFile("Base", "./Assets/Shaders/Base.shader");
+    TRAP::Graphics::ShaderManager::LoadFile("Color", "./Assets/Shaders/Color.shader");
+    TRAP::Graphics::ShaderManager::LoadFile("Texture", "./Assets/Shaders/Texture.shader");
+    TRAP::Graphics::ShaderManager::LoadFile("Diffuse Reflection", "./Assets/Shaders/DiffuseReflection.shader");
+    TRAP::Graphics::ShaderManager::LoadFile("Phong Lightning", "./Assets/Shaders/PhongLightning.shader");
+    TRAP::Graphics::ShaderManager::LoadFile("SkyBox", "./Assets/Shaders/SkyBox.shader");
+
+	//Load Texture(s)
+    TRAP::Graphics::TextureManager::Load("SkyBox", "./Assets/Textures/SkyboxCubic.png",
+                                         TRAP::Graphics::TextureCubeFormat::Cross);
+    TRAP::Graphics::TextureManager::Load("UVGrid", "./Assets/Textures/UVGrid.png");
+
+    m_cubeVertexBuffer = TRAP::Graphics::VertexBuffer::Create(CubeVertices,
+                                                              TRAP::Graphics::UpdateFrequency::Static);
+    m_cubeIndexBuffer = TRAP::Graphics::IndexBuffer::Create(CubeIndices,
+                                                            TRAP::Graphics::UpdateFrequency::Static);
+    const TRAP::Graphics::VertexBufferLayout cubeLayout =
+    {
+    	{TRAP::Graphics::ShaderDataType::Float3, "Position"},
+    	{TRAP::Graphics::ShaderDataType::Float3, "Color"},
+    	{TRAP::Graphics::ShaderDataType::Float2, "UV"},
+    	{TRAP::Graphics::ShaderDataType::Float3, "Normal"}
+    };
+    m_cubeVertexBuffer->SetLayout(cubeLayout);
+
+    m_skyBoxVertexBuffer = TRAP::Graphics::VertexBuffer::Create(SkyBoxVertices,
                                                                 TRAP::Graphics::UpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout skyBoxLayout =
     {

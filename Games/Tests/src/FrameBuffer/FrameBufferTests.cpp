@@ -2,6 +2,20 @@
 
 namespace
 {
+    constexpr std::array<f32, 5ull * 4> QuadVerticesIndexed
+	{
+		//XYZ UV
+		-1.0f, -1.0f, 0.0f,    0.0f, 1.0f,
+		 1.0f, -1.0f, 0.0f,    1.0f, 1.0f,
+		 1.0f,  1.0f, 0.0f,    1.0f, 0.0f,
+		-1.0f,  1.0f, 0.0f,    0.0f, 0.0f
+	};
+
+    constexpr std::array<u16, 6> QuadIndices
+	{
+		0, 1, 2, 2, 3, 0
+	};
+
     TRAP::Ref<TRAP::Graphics::RenderTarget> BuildRenderTarget(const u32 width, const u32 height,
                                                               const TRAP::Graphics::SampleCount sampleCount,
                                                               const std::string& name = "")

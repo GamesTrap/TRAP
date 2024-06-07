@@ -47,19 +47,19 @@ namespace std
 {
 	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr static typename TRAP::Math::Mat<3, 3, T>::col_type& get(TRAP::Math::Mat<3, 3, T>& m) noexcept;
+	[[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::col_type& get(TRAP::Math::Mat<3, 3, T>& m) noexcept;
 
 	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr static typename TRAP::Math::Mat<3, 3, T>::col_type&& get(TRAP::Math::Mat<3, 3, T>&& m) noexcept;
+	[[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::col_type&& get(TRAP::Math::Mat<3, 3, T>&& m) noexcept;
 
 	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr static const typename TRAP::Math::Mat<3, 3, T>::col_type& get(const TRAP::Math::Mat<3, 3, T>& m) noexcept;
+	[[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::col_type& get(const TRAP::Math::Mat<3, 3, T>& m) noexcept;
 
 	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr static const typename TRAP::Math::Mat<3, 3, T>::col_type&& get(const TRAP::Math::Mat<3, 3, T>&& m) noexcept;
+	[[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::col_type&& get(const TRAP::Math::Mat<3, 3, T>&& m) noexcept;
 }
 
 namespace TRAP::Math

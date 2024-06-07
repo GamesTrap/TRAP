@@ -375,9 +375,6 @@ namespace TRAP
 		bool m_running = true;
 		Graphics::RenderAPI m_newRenderAPI = Graphics::RenderAPI::NONE;
 
-		//Singleton instance
-		inline constinit static Application* s_Instance = nullptr;
-
 #ifndef TRAP_UNITTESTS
 		friend int ::main(i32 argc, const char* const* argv);
 #endif /*TRAP_UNITTESTS*/

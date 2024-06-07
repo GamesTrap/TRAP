@@ -10,6 +10,8 @@
 
 namespace
 {
+	constinit std::atomic<u64> CurrentRenderTargetID = 1;
+
 	[[nodiscard]] TRAP::Ref<TRAP::Graphics::API::VulkanTexture> CreateRenderTargetTexture(const TRAP::Graphics::RendererAPI::RenderTargetDesc& desc,
 	                                                                                      const TRAP::Graphics::API::VulkanPhysicalDevice& physicalDevice)
 	{
@@ -148,7 +150,7 @@ namespace
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::RenderTargetDesc& desc)
-	: RenderTarget(desc)
+	: RenderTarget(desc), m_ID(CurrentRenderTargetID++)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 

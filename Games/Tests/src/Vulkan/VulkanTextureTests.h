@@ -27,19 +27,6 @@ private:
     bool m_updateTexture = false;
     u32 m_currentTexture = 0;
 
-    static constexpr std::array<f32, 5ull * 4> QuadVerticesIndexed
-	{
-		//XYZ UV
-		-0.5f, -0.5f, 0.0f,    0.0f, 1.0f,
-		 0.5f, -0.5f, 0.0f,    1.0f, 1.0f,
-		 0.5f,  0.5f, 0.0f,    1.0f, 0.0f,
-		-0.5f,  0.5f, 0.0f,    0.0f, 0.0f
-	};
-    static constexpr std::array<u16, 6> QuadIndices
-	{
-		0, 1, 2, 2, 3, 0
-	};
-
     TRAP::Ref<TRAP::Graphics::Shader> m_shader = nullptr;
     TRAP::Ref<TRAP::Graphics::Texture> m_texture = nullptr;
     TRAP::Scope<TRAP::Image> m_vulkanLogo = nullptr;

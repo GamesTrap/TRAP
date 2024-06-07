@@ -57,28 +57,11 @@ namespace TRAP::Graphics::API
 	private:
 		VkDescriptorPool m_currentPool = VK_NULL_HANDLE;
 		std::vector<VkDescriptorPool> m_descriptorPools{};
-		std::vector<VkDescriptorPoolSize> m_descriptorPoolSizes = s_descriptorPoolSizes;
+		std::vector<VkDescriptorPoolSize> m_descriptorPoolSizes{};
 		u32 m_usedDescriptorSetCount = 0;
 		TracyLockable(std::mutex, m_mutex);
 
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
-
-		inline const static std::vector<VkDescriptorPoolSize> s_descriptorPoolSizes
-		{
-			{
-				{VK_DESCRIPTOR_TYPE_SAMPLER, 1024},
-				{VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1},
-				{VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 8192},
-				{VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1024},
-				{VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1024},
-				{VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1024},
-				{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 8192},
-				{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1024},
-				{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1024},
-				{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1},
-				{VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1}
-			}
-		};
 	};
 }
 

@@ -2,6 +2,8 @@
 
 namespace
 {
+	constinit u32 CurrentCursorIconColor = 0;
+
 	//Simple TRAP Logo
 	constexpr std::array<std::array<char, 17>, 16> IconStrings
 	{
@@ -57,7 +59,7 @@ void IconTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Icon");
 
-	SetIcon(*TRAP::Application::GetWindow(), s_cursorIconColor);
+	SetIcon(*TRAP::Application::GetWindow(), CurrentCursorIconColor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -103,8 +105,8 @@ bool IconTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 		break;
 
 	case TRAP::Input::Key::Space:
-		s_cursorIconColor = (s_cursorIconColor + 1) % NumericCast<u32>(IconColors.size());
-		SetIcon(*TRAP::Application::GetWindow(), s_cursorIconColor);
+		CurrentCursorIconColor = (CurrentCursorIconColor + 1) % NumericCast<u32>(IconColors.size());
+		SetIcon(*TRAP::Application::GetWindow(), CurrentCursorIconColor);
 		break;
 
 	case TRAP::Input::Key::X:

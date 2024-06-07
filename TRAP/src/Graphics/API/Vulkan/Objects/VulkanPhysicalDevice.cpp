@@ -13,6 +13,11 @@
 
 namespace
 {
+	//Multiple physical devices can theoretically have the same score, so we use a multimap here.
+	std::multimap<u32, TRAP::Graphics::API::RatedVulkanPhysicalDevice> RatedPhysicalDevices{};
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
 	[[nodiscard]] std::vector<VkExtensionProperties> LoadAllPhysicalDeviceExtensions(VkPhysicalDevice physicalDevice)
 	{
 		std::vector<VkExtensionProperties> deviceExtensions{};
@@ -313,8 +318,8 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::LoadPhysicalDeviceFragmentShader
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	if (!s_ratedPhysicalDevices.empty())
-		return s_ratedPhysicalDevices;
+	if (!RatedPhysicalDevices.empty())
+		return RatedPhysicalDevices;
 
 	const std::vector<VkPhysicalDevice> physicalDevices = GetAllVkPhysicalDevices(instance);
 
@@ -323,7 +328,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::LoadPhysicalDeviceFragmentShader
 	else
 		Utils::DisplayError(Utils::ErrorCode::VulkanNoPhysicalDeviceFound);
 
-	return s_ratedPhysicalDevices;
+	return RatedPhysicalDevices;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -899,6 +904,6 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::s
 	{
 		const auto deviceRating = RatePhysicalDevice(physicalDevice, instance);
 		if(deviceRating)
-			s_ratedPhysicalDevices.emplace(*deviceRating);
+			RatedPhysicalDevices.emplace(*deviceRating);
 	}
 }

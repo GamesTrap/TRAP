@@ -1,5 +1,56 @@
 #include "IcoSphereTests.h"
 
+namespace
+{
+	constexpr std::array<f32, 12ull * 6> IcoSphereVerticesIndexed
+	{
+		//XYZ RGB
+		-1.0f,                                     (1.0f + TRAP::Math::Sqrt(5.0f)) / 2.0f,    0.0f,                                        1.0f, 0.0f, 0.0f,
+		 1.0f,                                     (1.0f + TRAP::Math::Sqrt(5.0f)) / 2.0f,    0.0f,                                        1.0f, 0.0f, 0.0f,
+		-1.0f,                                    -((1.0f + TRAP::Math::Sqrt(5.0f)) / 2.0f),  0.0f,                                        1.0f, 0.0f, 0.0f,
+		 1.0f,                                    -((1.0f + TRAP::Math::Sqrt(5.0f)) / 2.0f),  0.0f,                                        1.0f, 0.0f, 0.0f,
+
+		 0.0f,                                    -1.0f,                                      (1.0f + TRAP::Math::Sqrt(5.0f)) / 2.0f,      0.0f, 1.0f, 0.0f,
+		 0.0f,                                     1.0f,                                      (1.0f + TRAP::Math::Sqrt(5.0f)) / 2.0f,      0.0f, 1.0f, 0.0f,
+		 0.0f,                                    -1.0f,                                     -((1.0f + TRAP::Math::Sqrt(5.0f)) / 2.0f),    0.0f, 1.0f, 0.0f,
+		 0.0f,                                     1.0f,                                     -((1.0f + TRAP::Math::Sqrt(5.0f)) / 2.0f),    0.0f, 1.0f, 0.0f,
+
+		 (1.0f + TRAP::Math::Sqrt(5.0f)) / 2.0f,   0.0f,                                     -1.0f,                                        0.0f, 0.0f, 1.0f,
+		 (1.0f + TRAP::Math::Sqrt(5.0f)) / 2.0f,   0.0f,                                      1.0f,                                        0.0f, 0.0f, 1.0f,
+		-((1.0f + TRAP::Math::Sqrt(5.0f)) / 2.0f), 0.0f,                                     -1.0f,                                        0.0f, 0.0f, 1.0f,
+		-((1.0f + TRAP::Math::Sqrt(5.0f)) / 2.0f), 0.0f,                                      1.0f,                                        0.0f, 0.0f, 1.0f
+	};
+
+	constexpr std::array<u16, 20ull * 3> IcoSphereIndices
+	{
+		0, 11, 5,
+		0, 5, 1,
+		0, 1, 7,
+		0, 7, 10,
+		0, 10, 11,
+
+		1, 5, 9,
+		5, 11, 4,
+		11, 10, 2,
+		10, 7, 6,
+		7, 1, 8,
+
+		3, 9, 4,
+		3, 4, 2,
+		3, 2, 6,
+		3, 6, 8,
+		3, 8, 9,
+
+		4, 9, 5,
+		2, 4, 11,
+		6, 2, 10,
+		8, 6, 7,
+		9, 8, 1
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 IcoSphereTests::IcoSphereTests()
 	: Layer("IcoSphere")
 {
@@ -12,7 +63,7 @@ void IcoSphereTests::OnAttach()
 	TRAP::Application::GetWindow()->SetTitle("IcoSphere");
 
 	//Load Icosphere vertices
-	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_icoSphereVerticesIndexed, TRAP::Graphics::UpdateFrequency::Static);
+	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(IcoSphereVerticesIndexed, TRAP::Graphics::UpdateFrequency::Static);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
@@ -23,7 +74,7 @@ void IcoSphereTests::OnAttach()
 	m_vertexBuffer->Use();
 
 	//Load Icosphere indices
-	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(IcosphereIndices, TRAP::Graphics::UpdateFrequency::Static);
+	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(IcoSphereIndices, TRAP::Graphics::UpdateFrequency::Static);
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();
 
@@ -78,7 +129,7 @@ void IcoSphereTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delt
 	m_vertexBuffer->Use();
 	m_indexBuffer->Use();
 	m_shader->Use();
-	TRAP::Graphics::RenderCommand::DrawIndexed(NumericCast<u32>(IcosphereIndices.size()));
+	TRAP::Graphics::RenderCommand::DrawIndexed(NumericCast<u32>(IcoSphereIndices.size()));
 
 	//Simple performance metrics
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds

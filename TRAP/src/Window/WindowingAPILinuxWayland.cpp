@@ -84,8 +84,11 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 using namespace std::string_view_literals;
 
-static constexpr i32 TRAP_BORDER_SIZE = 4;
-static constexpr i32 TRAP_CAPTION_HEIGHT = 24;
+namespace
+{
+    constexpr i32 TRAP_BORDER_SIZE = 4;
+    constexpr i32 TRAP_CAPTION_HEIGHT = 24;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//

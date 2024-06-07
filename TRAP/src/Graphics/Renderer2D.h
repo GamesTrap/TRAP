@@ -19,7 +19,6 @@ namespace TRAP::Graphics
 	class Texture;
 	class Sampler;
 	class SubTexture2D;
-	struct Renderer2DData;
 
 	class Renderer2D
 	{
@@ -152,10 +151,6 @@ namespace TRAP::Graphics
 		[[nodiscard]] static Statistics GetStats() noexcept;
 		/// @brief Reset the Renderer2D statistics.
 		static void ResetStats() noexcept;
-
-	private:
-		static std::vector<Renderer2DData> s_data;
-		inline constinit static u32 s_dataIndex = 0;
 	};
 }
 

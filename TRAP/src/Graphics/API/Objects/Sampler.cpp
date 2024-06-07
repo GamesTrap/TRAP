@@ -3,7 +3,10 @@
 
 #include "Graphics/API/Vulkan/Objects/VulkanSampler.h"
 
-std::unordered_map<TRAP::Graphics::RendererAPI::SamplerDesc, TRAP::Ref<TRAP::Graphics::Sampler>> TRAP::Graphics::Sampler::s_cachedSamplers;
+namespace
+{
+	std::unordered_map<TRAP::Graphics::RendererAPI::SamplerDesc, TRAP::Ref<TRAP::Graphics::Sampler>> CachedSamplers{};
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -27,14 +30,14 @@ std::unordered_map<TRAP::Graphics::RendererAPI::SamplerDesc, TRAP::Ref<TRAP::Gra
 	}
 
 	//Try to use cached Sampler
-	if(s_cachedSamplers.contains(desc))
-		return s_cachedSamplers[desc];
+	if(CachedSamplers.contains(desc))
+		return CachedSamplers[desc];
 
-	TRAP_ASSERT(s_cachedSamplers.size() != RendererAPI::GPUSettings.MaxSamplerAllocationCount, "Sampler::Create(): Exceeded max simultaneously allowed samplers!");
-	if(s_cachedSamplers.size() == RendererAPI::GPUSettings.MaxSamplerAllocationCount)
+	TRAP_ASSERT(CachedSamplers.size() != RendererAPI::GPUSettings.MaxSamplerAllocationCount, "Sampler::Create(): Exceeded max simultaneously allowed samplers!");
+	if(CachedSamplers.size() == RendererAPI::GPUSettings.MaxSamplerAllocationCount)
 	{
 		TP_ERROR(Log::RendererSamplerPrefix, "Exceeding max simultaneously allowed samplers! Returning first cached sampler");
-		return s_cachedSamplers.begin()->second;
+		return CachedSamplers.begin()->second;
 	}
 
 	TRAP::Ref<Sampler> result = nullptr;
@@ -60,7 +63,7 @@ std::unordered_map<TRAP::Graphics::RendererAPI::SamplerDesc, TRAP::Ref<TRAP::Gra
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererSamplerPrefix, "Caching Sampler");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
-	s_cachedSamplers[desc] = result;
+	CachedSamplers[desc] = result;
 
 	return result;
 }
@@ -91,7 +94,7 @@ void TRAP::Graphics::Sampler::ClearCache() noexcept
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	s_cachedSamplers.clear();
+	CachedSamplers.clear();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -116,7 +119,7 @@ void TRAP::Graphics::Sampler::UpdateSamplers()
 	const f32 usedSamples = NumericCast<f32>(std::to_underlying(RenderCommand::GetAnisotropyLevel()));
 
 	std::vector<Ref<Sampler>> samplersToUpdate{};
-	for(const auto& [desc, sampler] : s_cachedSamplers | std::views::filter(std::bind_front(DoesSamplerNeedUpdate, usedSamples)))
+	for(const auto& [desc, sampler] : CachedSamplers | std::views::filter(std::bind_front(DoesSamplerNeedUpdate, usedSamples)))
 		samplersToUpdate.emplace_back(sampler);
 
 	if(samplersToUpdate.empty()) //Early exit
@@ -127,10 +130,10 @@ void TRAP::Graphics::Sampler::UpdateSamplers()
 
 	for(const auto& sampler : samplersToUpdate)
 	{
-		s_cachedSamplers.erase(sampler->m_samplerDesc);
+		CachedSamplers.erase(sampler->m_samplerDesc);
 
 		sampler->UpdateAnisotropy(usedSamples);
 
-		s_cachedSamplers[sampler->m_samplerDesc] = sampler;
+		CachedSamplers[sampler->m_samplerDesc] = sampler;
 	}
 }

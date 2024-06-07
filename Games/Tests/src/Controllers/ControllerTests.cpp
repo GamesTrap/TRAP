@@ -1,5 +1,13 @@
 #include "ControllerTests.h"
 
+namespace
+{
+	std::vector<TRAP::Input::Controller> Controllers{};
+	constinit bool ShowDpadButtons = false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void ControllerTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Controllers");
@@ -8,7 +16,7 @@ void ControllerTests::OnAttach()
 	    controller <= std::to_underlying(TRAP::Input::Controller::Sixteen); controller++)
 	{
 		if (TRAP::Input::IsControllerConnected(static_cast<TRAP::Input::Controller>(controller)))
-			s_controllers.push_back(static_cast<TRAP::Input::Controller>(controller));
+			Controllers.push_back(static_cast<TRAP::Input::Controller>(controller));
 	}
 }
 
@@ -17,10 +25,10 @@ void ControllerTests::OnAttach()
 void ControllerTests::OnImGuiRender()
 {
 	ImGui::Begin("Controllers", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-	if (!s_controllers.empty())
+	if (!Controllers.empty())
 	{
-		ImGui::Checkbox("DPad Buttons", &s_dpadButtons);
-		for (const TRAP::Input::Controller& controller : s_controllers)
+		ImGui::Checkbox("DPad Buttons", &ShowDpadButtons);
+		for (const TRAP::Input::Controller& controller : Controllers)
 		{
 			const std::string controllerName = fmt::format("{}. {}", (std::to_underlying(controller) + 1),
 			                                               TRAP::Input::GetControllerName(controller));
@@ -33,7 +41,7 @@ void ControllerTests::OnImGuiRender()
 		ImGui::Text("No Controllers Connected!");
 	ImGui::End();
 
-	for(const TRAP::Input::Controller& controller : s_controllers)
+	for(const TRAP::Input::Controller& controller : Controllers)
 	{
 		const std::vector<f32> axes = TRAP::Input::GetAllControllerAxes(controller);
 		const std::vector<bool> buttons = TRAP::Input::GetAllControllerButtons(controller);
@@ -51,7 +59,7 @@ void ControllerTests::OnImGuiRender()
 			f32 axisCpy = axis;
 			ImGui::SliderFloat("##", &axisCpy, -1.0f, 1.0f);
 		}
-		for(usize i = 0; i < (s_dpadButtons ? buttons.size() : buttons.size() - dpads.size() * 4); i++)
+		for(usize i = 0; i < (ShowDpadButtons ? buttons.size() : buttons.size() - dpads.size() * 4); i++)
 		{
 			bool cpy = buttons[i];
 			ImGui::Checkbox(std::to_string(i + 1).c_str(), &cpy);
@@ -158,7 +166,7 @@ void ControllerTests::OnEvent(TRAP::Events::Event& event)
 
 bool ControllerTests::OnControllerConnect(const TRAP::Events::ControllerConnectEvent& event)
 {
-	s_controllers.push_back(event.GetController());
+	Controllers.push_back(event.GetController());
 
 	if (!TRAP::Application::GetWindow()->IsFocused())
 		TRAP::Application::GetWindow()->RequestAttention();
@@ -170,7 +178,7 @@ bool ControllerTests::OnControllerConnect(const TRAP::Events::ControllerConnectE
 
 bool ControllerTests::OnControllerDisconnect(const TRAP::Events::ControllerDisconnectEvent& event)
 {
-	std::erase_if(s_controllers, [&event](const auto& element){return element == event.GetController();});
+	std::erase_if(Controllers, [&event](const auto& element){return element == event.GetController();});
 
 	if (!TRAP::Application::GetWindow()->IsFocused())
 		TRAP::Application::GetWindow()->RequestAttention();

@@ -33,6 +33,8 @@ void AntiAliasingTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& d
 
 	const f32 angle = 22.8f;
 
+	static constexpr TRAP::Graphics::OrthographicCamera s_camera{-(2560.0f / 1440.0f), 2560.0f / 1440.0f, -1.0f, 1.0f, -1.0f, 1.0f};
+
 	TRAP::Graphics::Renderer2D::BeginScene(s_camera);
 	TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, angle}, {1.0f, 1.0f, 1.0f} }, {1.0f, 1.0f, 1.0f, 1.0f});
 	TRAP::Graphics::Renderer2D::DrawQuad({ { 1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, angle}, {1.0f, 1.0f, 1.0f} }, {1.0f, 1.0f, 1.0f, 1.0f});

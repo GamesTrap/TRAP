@@ -982,6 +982,7 @@ namespace TRAP::Graphics::API
 
 		void WaitIdle() const override;
 
+		//TODO Put these into a struct which can be queried from the renderer, this is getting ridiculous...
 		//Instance Extensions
 		inline constinit static bool s_debugUtilsExtension = false;
 		inline constinit static bool s_debugReportExtension = false;
