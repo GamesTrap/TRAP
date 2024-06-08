@@ -40,6 +40,7 @@ namespace
 		}
 
 		TRAP_ASSERT(false, "GetDPadDirection(): Unknown TRAP::Input::ControllerDPad value!");
+		return "Unknown";
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -87,7 +88,7 @@ namespace
 
 	[[nodiscard]] std::string GetBatteryStatus(const TRAP::Input::Controller controller)
 	{
-		TRAP::Input::ControllerBatteryStatus battery = TRAP::Input::GetControllerBatteryStatus(controller);
+		const TRAP::Input::ControllerBatteryStatus battery = TRAP::Input::GetControllerBatteryStatus(controller);
 
 		switch(battery)
 		{
@@ -108,6 +109,7 @@ namespace
 		}
 
 		TRAP_ASSERT(false, "GetBatteryStatus(): Unknown TRAP::Input::ControllerBatteryStatus value!");
+		return "Unknown";
 	}
 }
 

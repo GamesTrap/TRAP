@@ -27,7 +27,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] constexpr std::string FormatMode(const TRAP::Monitor::VideoMode& mode)
+	[[nodiscard]] std::string FormatMode(const TRAP::Monitor::VideoMode& mode)
 	{
 		const u32 gcd = Euclid(mode.Width, mode.Height);
 
