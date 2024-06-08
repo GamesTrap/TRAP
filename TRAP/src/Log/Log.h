@@ -104,7 +104,6 @@ namespace TRAP
 		/// @brief Clears all buffered messages.
 		constexpr void Clear() noexcept;
 
-		inline static constexpr auto WindowVersion =                        "[24w23b2]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -209,6 +208,7 @@ namespace TRAP
 		inline static constexpr auto UtilsDBusPrefix =                      "[Utils][DBus] ";
 		inline static constexpr auto UtilsStringPrefix =                    "[Utils][String] ";
 		inline static constexpr auto UtilsPrefix =                          "[Utils] ";
+		static constexpr auto WindowVersion =                        "[24w23b3]";
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	private:

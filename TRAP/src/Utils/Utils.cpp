@@ -7,6 +7,129 @@
 #include "Utils/DynamicLoading/DynamicLoading.h"
 #include "Application.h"
 
+namespace
+{
+#ifdef TRAP_PLATFORM_WINDOWS
+	using PFN_RtlVerifyVersionInfo = LONG(WINAPI*)(OSVERSIONINFOEXW*, ULONG, ULONGLONG);
+	struct NTDLL
+	{
+		HINSTANCE Instance = nullptr;
+		PFN_RtlVerifyVersionInfo RtlVerifyVersionInfo = nullptr;
+	};
+
+	TRAP::Utils::NTDLL s_ntdll;
+
+	[[nodiscard]] bool InitNTDLL()
+	{
+		if(!s_ntdll.Instance || !s_ntdll.RtlVerifyVersionInfo) //Init s_ntdll if not already done
+		{
+			s_ntdll.Instance = static_cast<HINSTANCE>(DynamicLoading::LoadLibrary("ntdll.dll"));
+			if (s_ntdll.Instance)
+			{
+				s_ntdll.RtlVerifyVersionInfo = DynamicLoading::GetLibrarySymbol<PFN_RtlVerifyVersionInfo>(s_ntdll.Instance,
+																										"RtlVerifyVersionInfo");
+			}
+
+			TRAP_ASSERT(s_ntdll.Instance && s_ntdll.RtlVerifyVersionInfo, "Utils::InitNTDLL(): Failed to load ntdll.dll");
+		}
+
+		return s_ntdll.Instance && s_ntdll.RtlVerifyVersionInfo;
+	}
+#endif /*TRAP_PLATFORM_WINDOWS*/
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+#if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_WINDOWS)
+	[[nodiscard]] bool CheckSingleProcessWindows()
+	{
+		ZoneScoped;
+
+		const HANDLE hMutex = CreateMutex(0, 0, L"TRAP-Engine");
+		if(!hMutex) //Error creating mutex
+		{
+			TP_ERROR(TRAP::Log::ApplicationPrefix, "Failed to create mutex!");
+			TP_ERROR(TRAP::Log::ApplicationPrefix, TRAP::Utils::String::GetStrError());
+			return false;
+		}
+		if(hMutex && GetLastError() == ERROR_ALREADY_EXISTS)
+			return false;
+
+		return true;
+	}
+#endif /*ENABLE_SINGLE_PROCESS_ONLY && TRAP_PLATFORM_WINDOWS*/
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+#if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_LINUX)
+	[[nodiscard]] bool CheckSingleProcessLinux()
+	{
+		ZoneScoped;
+
+		constinit static i32 socketFD = -1;
+		constinit static i32 rc = 1;
+		static constexpr u16 port = 49420; //Just a free (hopefully) random port
+
+		if(socketFD == -1 || (rc != 0))
+		{
+			socketFD = -1;
+			rc = 1;
+
+			socketFD = socket(AF_INET, SOCK_DGRAM, 0);
+			if(socketFD < 0)
+			{
+				TP_ERROR(TRAP::Log::ApplicationPrefix, "Failed to create socket!");
+				TP_ERROR(TRAP::Log::ApplicationPrefix, TRAP::Utils::String::GetStrError());
+				return false;
+			}
+
+			sockaddr_in name{};
+			name.sin_family = AF_INET;
+			name.sin_port = port;
+			name.sin_addr.s_addr = INADDR_ANY;
+
+			if constexpr (Utils::GetEndian() != Utils::Endian::Big)
+			{
+				TRAP::Utils::Memory::SwapBytes(name.sin_port);
+				TRAP::Utils::Memory::SwapBytes(name.sin_addr.s_addr);
+			}
+
+			sockaddr convertedSock = std::bit_cast<sockaddr>(name); //Prevent usage of reinterpret_cast
+			rc = bind(socketFD, &convertedSock, sizeof(name));
+			if(rc < 0)
+			{
+				TP_ERROR(TRAP::Log::ApplicationPrefix, "Failed to bind socket!");
+				TP_ERROR(TRAP::Log::ApplicationPrefix, TRAP::Utils::String::GetStrError());
+			}
+		}
+
+		return (socketFD != -1 && rc == 0);
+	}
+#endif /*ENABLE_SINGLE_PROCESS_ONLY && TRAP_PLATFORM_LINUX*/
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+#if defined(TRAP_PLATFORM_WINDOWS) && defined(TRAP_HEADLESS_MODE)
+	[[nodiscard]] BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
+	{
+		if (dwCtrlType == CTRL_C_EVENT)
+		{
+			TRAP::Application::Shutdown();
+			return TRUE;
+		}
+		else if (dwCtrlType == CTRL_CLOSE_EVENT)
+		{
+			TRAP::Application::Shutdown();
+			Sleep(10000);
+			return TRUE;
+		}
+
+		return FALSE;
+	}
+#endif /*TRAP_PLATFORM_WINDOWS && TRAP_HEADLESS_MODE*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] std::string TRAP::Utils::UUIDToString(const TRAP::Utils::UUID& uuid)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
@@ -65,7 +188,7 @@
 	if(!cpu.Model.empty())
 		return cpu;
 
-	static constexpr auto CPUID = [](const u32 funcID, const u32 subFuncID)
+	static const auto CPUID = [](const u32 funcID, const u32 subFuncID)
 	{
 	#ifdef TRAP_PLATFORM_WINDOWS
 		std::array<i32, 4> regs{};
@@ -267,23 +390,12 @@
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
-static TRAP::Utils::NTDLL s_ntdll;
-
 [[nodiscard]] BOOL TRAP::Utils::IsWindowsVersionOrGreaterWin32(const WORD major, const WORD minor, const WORD sp)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
-	if(!s_ntdll.Instance || !s_ntdll.RtlVerifyVersionInfo) //Init s_ntdll if not already done
-	{
-		s_ntdll.Instance = static_cast<HINSTANCE>(DynamicLoading::LoadLibrary("ntdll.dll"));
-		if (s_ntdll.Instance)
-		{
-			s_ntdll.RtlVerifyVersionInfo = DynamicLoading::GetLibrarySymbol<PFN_RtlVerifyVersionInfo>(s_ntdll.Instance,
-																									  "RtlVerifyVersionInfo");
-		}
-
-		TRAP_ASSERT(s_ntdll.Instance && s_ntdll.RtlVerifyVersionInfo, "Utils::IsWindowsVersionOrGreaterWin32(): Failed to load ntdll.dll");
-	}
+	if(!InitNTDLL())
+		return false;
 
 	OSVERSIONINFOEXW osvi = { sizeof(osvi), major, minor, 0, 0, {0}, sp };
 	const DWORD mask = VER_MAJORVERSION | VER_MINORVERSION | VER_SERVICEPACKMAJOR;
@@ -302,17 +414,8 @@ static TRAP::Utils::NTDLL s_ntdll;
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
-	if(!s_ntdll.Instance || !s_ntdll.RtlVerifyVersionInfo) //Init s_ntdll if not already done
-	{
-		s_ntdll.Instance = static_cast<HINSTANCE>(DynamicLoading::LoadLibrary("ntdll.dll"));
-		if (s_ntdll.Instance)
-		{
-			s_ntdll.RtlVerifyVersionInfo = DynamicLoading::GetLibrarySymbol<PFN_RtlVerifyVersionInfo>(s_ntdll.Instance,
-																									  "RtlVerifyVersionInfo");
-		}
-
-		TRAP_ASSERT(s_ntdll.Instance && s_ntdll.RtlVerifyVersionInfo, "Utils::IsWindows10BuildOrGreaterWin32(): Failed to load ntdll.dll");
-	}
+	if(!InitNTDLL())
+		return false;
 
 	OSVERSIONINFOEXW osvi = { sizeof(osvi), 10, 0, build };
 	const DWORD mask = VER_MAJORVERSION | VER_MINORVERSION | VER_BUILDNUMBER;
@@ -379,75 +482,6 @@ static TRAP::Utils::NTDLL s_ntdll;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_WINDOWS)
-[[nodiscard]] static bool CheckSingleProcessWindows()
-{
-	ZoneScoped;
-
-	const HANDLE hMutex = CreateMutex(0, 0, L"TRAP-Engine");
-	if(!hMutex) //Error creating mutex
-	{
-		TP_ERROR(TRAP::Log::ApplicationPrefix, "Failed to create mutex!");
-		TP_ERROR(TRAP::Log::ApplicationPrefix, TRAP::Utils::String::GetStrError());
-		return false;
-	}
-	if(hMutex && GetLastError() == ERROR_ALREADY_EXISTS)
-		return false;
-
-	return true;
-}
-#endif /*ENABLE_SINGLE_PROCESS_ONLY && TRAP_PLATFORM_WINDOWS*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_LINUX)
-[[nodiscard]] static bool CheckSingleProcessLinux()
-{
-	ZoneScoped;
-
-	constinit static i32 socketFD = -1;
-	constinit static i32 rc = 1;
-	static constexpr u16 port = 49420; //Just a free (hopefully) random port
-
-	if(socketFD == -1 || (rc != 0))
-	{
-		socketFD = -1;
-		rc = 1;
-
-		socketFD = socket(AF_INET, SOCK_DGRAM, 0);
-		if(socketFD < 0)
-		{
-			TP_ERROR(TRAP::Log::ApplicationPrefix, "Failed to create socket!");
-			TP_ERROR(TRAP::Log::ApplicationPrefix, TRAP::Utils::String::GetStrError());
-			return false;
-		}
-
-		sockaddr_in name{};
-		name.sin_family = AF_INET;
-		name.sin_port = port;
-		name.sin_addr.s_addr = INADDR_ANY;
-
-		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
-		{
-			TRAP::Utils::Memory::SwapBytes(name.sin_port);
-			TRAP::Utils::Memory::SwapBytes(name.sin_addr.s_addr);
-		}
-
-		sockaddr convertedSock = std::bit_cast<sockaddr>(name); //Prevent usage of reinterpret_cast
-		rc = bind(socketFD, &convertedSock, sizeof(name));
-		if(rc < 0)
-		{
-			TP_ERROR(TRAP::Log::ApplicationPrefix, "Failed to bind socket!");
-			TP_ERROR(TRAP::Log::ApplicationPrefix, TRAP::Utils::String::GetStrError());
-		}
-	}
-
-	return (socketFD != -1 && rc == 0);
-}
-#endif /*ENABLE_SINGLE_PROCESS_ONLY && TRAP_PLATFORM_LINUX*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Utils::CheckSingleProcess()
 {
 	//Single process mode
@@ -463,27 +497,6 @@ void TRAP::Utils::CheckSingleProcess()
 		Utils::DisplayError(Utils::ErrorCode::ApplicationIsAlreadyRunning);
 #endif /*ENABLE_SINGLE_PROCESS_ONLY*/
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#if defined(TRAP_PLATFORM_WINDOWS) && defined(TRAP_HEADLESS_MODE)
-static BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
-{
-	if (dwCtrlType == CTRL_C_EVENT)
-	{
-		TRAP::Application::Shutdown();
-		return TRUE;
-	}
-	else if (dwCtrlType == CTRL_CLOSE_EVENT)
-	{
-		TRAP::Application::Shutdown();
-		Sleep(10000);
-		return TRUE;
-	}
-
-	return FALSE;
-}
-#endif /*TRAP_PLATFORM_WINDOWS && TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

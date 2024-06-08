@@ -136,13 +136,6 @@ namespace TRAP::Utils
 	//-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef TRAP_PLATFORM_WINDOWS
-	using PFN_RtlVerifyVersionInfo = LONG(WINAPI*)(OSVERSIONINFOEXW*, ULONG, ULONGLONG);
-	struct NTDLL
-	{
-		HINSTANCE Instance = nullptr;
-		PFN_RtlVerifyVersionInfo RtlVerifyVersionInfo = nullptr;
-	};
-
 	/// @brief Replacement for IsWindowsVersionOrGreater, as we cannot rely on the application
 	/// having a correct embedded manifest.
 	/// @param major Major Windows version.
@@ -248,7 +241,7 @@ requires (!std::is_const_v<T>)
 template<>
 struct fmt::formatter<TRAP::Utils::LinuxWindowManager>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }
