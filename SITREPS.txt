@@ -5075,3 +5075,4 @@ SITREP 06/08/2024|24w23b2
 SITREP 06/09/2024|24w23b3
     - Changed TRAP Engine version to 24w23b3(0.10.80)
     - Utils Moved global static and private static members to anonymous namespace ~<15 mins
+    - Log Removed unused members ~<10 mins

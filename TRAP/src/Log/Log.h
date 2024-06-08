@@ -12,6 +12,7 @@
 #include <sstream>
 #include <filesystem>
 
+#include "Core/Backports.h"
 #include "Maths/Types.h"
 
 namespace TRAP
@@ -104,129 +105,113 @@ namespace TRAP
 		/// @brief Clears all buffered messages.
 		constexpr void Clear() noexcept;
 
-		inline static constexpr auto WindowPrefix =                         "[Window] ";
-		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
-		inline static constexpr auto ConfigPrefix =                         "[Config] ";
-		inline static constexpr auto ApplicationPrefix =                    "[Application] ";
-		inline static constexpr auto ShaderManagerPrefix =                  "[ShaderManager] ";
-		inline static constexpr auto ShaderPrefix =                         "[Shader] ";
-		inline static constexpr auto ShaderGLSLPrefix =                     "[Shader][GLSL] ";
-		inline static constexpr auto ShaderSPIRVPrefix =                    "[Shader][SPIR-V] ";
-		inline static constexpr auto TextureManagerPrefix =                 "[TextureManager] ";
-		inline static constexpr auto TextureManagerTexture2DPrefix =        "[TextureManager][Texture2D] ";
-		inline static constexpr auto TextureManagerTextureCubePrefix =      "[TextureManager][TextureCube] ";
-		inline static constexpr auto TexturePrefix =                        "[Texture] ";
-		inline static constexpr auto SpriteManagerPrefix =                  "[SpriteManager] ";
-		inline static constexpr auto SpriteAnimationPrefix =                "[SpriteAnimation] ";
-		inline static constexpr auto EngineLinuxPrefix =                    "[Engine][Linux] ";
-		inline static constexpr auto EngineLinuxX11Prefix =                 "[Engine][Linux][X11] ";
-		inline static constexpr auto EngineLinuxWaylandPrefix =             "[Engine][Linux][Wayland] ";
-		inline static constexpr auto EngineWindowsPrefix =                  "[Engine][Windows] ";
-		inline static constexpr auto FileSystemPrefix =                     "[FileSystem] ";
-		inline static constexpr auto FileWatcherWindowsPrefix =             "[FileWatcher][Windows] ";
-		inline static constexpr auto FileWatcherLinuxPrefix =               "[FileWatcher][Linux] ";
-		inline static constexpr auto FileWatcherPrefix =                    "[FileWatcher] ";
-		inline static constexpr auto InstrumentorPrefix =                   "[Instrumentor] ";
-		inline static constexpr auto LoggerPrefix =                         "[Logger] ";
-		inline static constexpr auto LayerStackPrefix =                     "[LayerStack] ";
-		inline static constexpr auto InputControllerDirectInputPrefix =     "[Input][Controller][Windows][DirectInput] ";
-		inline static constexpr auto InputControllerXInputPrefix =          "[Input][Controller][Windows][XInput] ";
-		inline static constexpr auto InputControllerLinuxPrefix =           "[Input][Controller][Linux] ";
-		inline static constexpr auto InputControllerPrefix =                "[Input][Controller] ";
-		inline static constexpr auto InputWinAPIPrefix =                    "[Input][Windows][WinAPI] ";
-		inline static constexpr auto InputPrefix =                          "[Input] ";
-		inline static constexpr auto ImagePrefix =                          "[Image] ";
-		inline static constexpr auto ImageTGAPrefix =                       "[Image][TGA] ";
-		inline static constexpr auto ImagePNGPrefix =                       "[Image][PNG] ";
-		inline static constexpr auto ImagePPMPrefix =                       "[Image][PPM] ";
-		inline static constexpr auto ImagePNMPrefix =                       "[Image][PNM] ";
-		inline static constexpr auto ImagePGMPrefix =                       "[Image][PGM] ";
-		inline static constexpr auto ImagePFMPrefix =                       "[Image][PFM] ";
-		inline static constexpr auto ImagePAMPrefix =                       "[Image][PAM] ";
-		inline static constexpr auto ImageQOIPrefix =                       "[Image][QOI] ";
-		inline static constexpr auto ImageBMPPrefix =                       "[Image][BMP] ";
-		inline static constexpr auto ImageRadiancePrefix =                  "[Image][Radiance] ";
-		inline static constexpr auto Renderer2DPrefix =                     "[Renderer2D] ";
-		inline static constexpr auto RendererPrefix =                       "[Renderer] ";
-		inline static constexpr auto RendererBufferPrefix =                 "[Renderer][Buffer] ";
-		inline static constexpr auto RendererCommandBufferPrefix =          "[Renderer][CommandBuffer] ";
-		inline static constexpr auto RendererCommandPoolPrefix =            "[Renderer][CommandPool] ";
-		inline static constexpr auto RendererCommandSignaturePrefix =       "[Renderer][CommandSignature] ";
-		inline static constexpr auto RendererDescriptorPoolPrefix =         "[Renderer][DescriptorPool] ";
-		inline static constexpr auto RendererDescriptorSetPrefix =          "[Renderer][DescriptorSet] ";
-		inline static constexpr auto RendererFencePrefix =                  "[Renderer][Fence] ";
-		inline static constexpr auto RendererPipelinePrefix =               "[Renderer][Pipeline] ";
-		inline static constexpr auto RendererPipelineCachePrefix =          "[Renderer][PipelineCache] ";
-		inline static constexpr auto RendererQueuePrefix =                  "[Renderer][Queue] ";
-		inline static constexpr auto RendererQueryPoolPrefix =              "[Renderer][QueryPool] ";
-		inline static constexpr auto RendererRenderTargetPrefix =           "[Renderer][RenderTarget] ";
-		inline static constexpr auto RendererRootSignaturePrefix =          "[Renderer][RootSignature] ";
-		inline static constexpr auto RendererSamplerPrefix =                "[Renderer][Sampler] ";
-		inline static constexpr auto RendererSemaphorePrefix =              "[Renderer][Semaphore] ";
-		inline static constexpr auto RendererSwapChainPrefix =              "[Renderer][SwapChain] ";
-		inline static constexpr auto RendererAftermathTrackerPrefix =       "[Renderer][AftermathTracker] ";
-		inline static constexpr auto RendererVulkanPrefix =                 "[Renderer][Vulkan] ";
-		inline static constexpr auto RendererVulkanReflexPrefix =           "[Renderer][Vulkan][Reflex] ";
-		inline static constexpr auto RendererVulkanDevicePrefix =           "[Renderer][Vulkan][Device] ";
-		inline static constexpr auto RendererVulkanPhysicalDevicePrefix =   "[Renderer][Vulkan][PhysicalDevice] ";
-		inline static constexpr auto RendererVulkanDescriptorPoolPrefix =   "[Renderer][Vulkan][DescriptorPool] ";
-		inline static constexpr auto RendererVulkanDescriptorSetPrefix =    "[Renderer][Vulkan][DescriptorSet] ";
-		inline static constexpr auto RendererVulkanRenderPassPrefix =       "[Renderer][Vulkan][RenderPass] ";
-		inline static constexpr auto RendererVulkanFrameBufferPrefix =      "[Renderer][Vulkan][FrameBuffer] ";
-		inline static constexpr auto RendererVulkanRenderTargetPrefix =     "[Renderer][Vulkan][RenderTarget] ";
-		inline static constexpr auto RendererVulkanCommandSignaturePrefix = "[Renderer][Vulkan][CommandSignature] ";
-		inline static constexpr auto RendererVulkanQueuePrefix =            "[Renderer][Vulkan][Queue] ";
-		inline static constexpr auto RendererVulkanCommandPoolPrefix =      "[Renderer][Vulkan][CommandPool] ";
-		inline static constexpr auto RendererVulkanCommandBufferPrefix =    "[Renderer][Vulkan][CommandBuffer] ";
-		inline static constexpr auto RendererVulkanQueryPoolPrefix =        "[Renderer][Vulkan][QueryPool] ";
-		inline static constexpr auto RendererVulkanPipelinePrefix =         "[Renderer][Vulkan][Pipeline] ";
-		inline static constexpr auto RendererVulkanPipelineCachePrefix =    "[Renderer][Vulkan][PipelineCache] ";
-		inline static constexpr auto RendererVulkanFencePrefix =            "[Renderer][Vulkan][Fence] ";
-		inline static constexpr auto RendererVulkanSemaphorePrefix =        "[Renderer][Vulkan][Semaphore] ";
-		inline static constexpr auto RendererVulkanBufferPrefix =           "[Renderer][Vulkan][Buffer] ";
-		inline static constexpr auto RendererVulkanSamplerPrefix =          "[Renderer][Vulkan][Sampler] ";
-		inline static constexpr auto RendererVulkanTexturePrefix =          "[Renderer][Vulkan][Texture] ";
-		inline static constexpr auto RendererVulkanSwapChainPrefix =        "[Renderer][Vulkan][SwapChain] ";
-		inline static constexpr auto RendererVulkanSurfacePrefix =          "[Renderer][Vulkan][Surface] ";
-		inline static constexpr auto RendererVulkanShaderPrefix =           "[Renderer][Vulkan][Shader] ";
-		inline static constexpr auto RendererVulkanRootSignaturePrefix =    "[Renderer][Vulkan][RootSignature] ";
-		inline static constexpr auto RendererVulkanVMAPrefix =              "[Renderer][Vulkan][VMA] ";
-		inline static constexpr auto RendererVulkanInstancePrefix =         "[Renderer][Vulkan][Instance] ";
-		inline static constexpr auto RendererVulkanDebugPrefix =            "[Renderer][Vulkan][Debug] ";
-		inline static constexpr auto ImGuiPrefix =                          "[ImGui] ";
-		inline static constexpr auto NetworkSocketPrefix =                  "[Network][Socket] ";
-		inline static constexpr auto NetworkFTPPrefix =                     "[Network][FTP] ";
-		inline static constexpr auto NetworkHTTPPrefix =                    "[Network][HTTP] ";
-		inline static constexpr auto NetworkTCPListenerPrefix =             "[Network][TCPListener] ";
-		inline static constexpr auto NetworkTCPSocketPrefix =               "[Network][TCPSocket] ";
-		inline static constexpr auto NetworkUDPSocketPrefix =               "[Network][UDPSocket] ";
-		inline static constexpr auto NetworkSocketUnixPrefix =              "[Network][Socket][Unix] ";
-		inline static constexpr auto SceneSerializerPrefix =                "[SceneSerializer] ";
-		inline static constexpr auto DiscordGameSDKPrefix =                 "[Discord] ";
-		inline static constexpr auto SteamworksSDKPrefix =                  "[Steam] ";
-		inline static constexpr auto HotReloadingPrefix =                   "[HotReloading] ";
-		inline static constexpr auto UtilsDBusPrefix =                      "[Utils][DBus] ";
-		inline static constexpr auto UtilsStringPrefix =                    "[Utils][String] ";
-		inline static constexpr auto UtilsPrefix =                          "[Utils] ";
 		static constexpr auto WindowVersion =                        "[24w23b3]";
+		static constexpr auto WindowPrefix =                         "[Window] ";
+		static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
+		static constexpr auto ConfigPrefix =                         "[Config] ";
+		static constexpr auto ApplicationPrefix =                    "[Application] ";
+		static constexpr auto ShaderManagerPrefix =                  "[ShaderManager] ";
+		static constexpr auto ShaderPrefix =                         "[Shader] ";
+		static constexpr auto ShaderGLSLPrefix =                     "[Shader][GLSL] ";
+		static constexpr auto ShaderSPIRVPrefix =                    "[Shader][SPIR-V] ";
+		static constexpr auto TextureManagerPrefix =                 "[TextureManager] ";
+		static constexpr auto TextureManagerTexture2DPrefix =        "[TextureManager][Texture2D] ";
+		static constexpr auto TextureManagerTextureCubePrefix =      "[TextureManager][TextureCube] ";
+		static constexpr auto TexturePrefix =                        "[Texture] ";
+		static constexpr auto SpriteManagerPrefix =                  "[SpriteManager] ";
+		static constexpr auto SpriteAnimationPrefix =                "[SpriteAnimation] ";
+		static constexpr auto EngineLinuxPrefix =                    "[Engine][Linux] ";
+		static constexpr auto EngineLinuxX11Prefix =                 "[Engine][Linux][X11] ";
+		static constexpr auto EngineLinuxWaylandPrefix =             "[Engine][Linux][Wayland] ";
+		static constexpr auto EngineWindowsPrefix =                  "[Engine][Windows] ";
+		static constexpr auto FileSystemPrefix =                     "[FileSystem] ";
+		static constexpr auto FileWatcherWindowsPrefix =             "[FileWatcher][Windows] ";
+		static constexpr auto FileWatcherLinuxPrefix =               "[FileWatcher][Linux] ";
+		static constexpr auto FileWatcherPrefix =                    "[FileWatcher] ";
+		static constexpr auto InstrumentorPrefix =                   "[Instrumentor] ";
+		static constexpr auto LoggerPrefix =                         "[Logger] ";
+		static constexpr auto LayerStackPrefix =                     "[LayerStack] ";
+		static constexpr auto InputControllerDirectInputPrefix =     "[Input][Controller][Windows][DirectInput] ";
+		static constexpr auto InputControllerXInputPrefix =          "[Input][Controller][Windows][XInput] ";
+		static constexpr auto InputControllerLinuxPrefix =           "[Input][Controller][Linux] ";
+		static constexpr auto InputControllerPrefix =                "[Input][Controller] ";
+		static constexpr auto InputWinAPIPrefix =                    "[Input][Windows][WinAPI] ";
+		static constexpr auto InputPrefix =                          "[Input] ";
+		static constexpr auto ImagePrefix =                          "[Image] ";
+		static constexpr auto ImageTGAPrefix =                       "[Image][TGA] ";
+		static constexpr auto ImagePNGPrefix =                       "[Image][PNG] ";
+		static constexpr auto ImagePPMPrefix =                       "[Image][PPM] ";
+		static constexpr auto ImagePNMPrefix =                       "[Image][PNM] ";
+		static constexpr auto ImagePGMPrefix =                       "[Image][PGM] ";
+		static constexpr auto ImagePFMPrefix =                       "[Image][PFM] ";
+		static constexpr auto ImagePAMPrefix =                       "[Image][PAM] ";
+		static constexpr auto ImageQOIPrefix =                       "[Image][QOI] ";
+		static constexpr auto ImageBMPPrefix =                       "[Image][BMP] ";
+		static constexpr auto ImageRadiancePrefix =                  "[Image][Radiance] ";
+		static constexpr auto Renderer2DPrefix =                     "[Renderer2D] ";
+		static constexpr auto RendererPrefix =                       "[Renderer] ";
+		static constexpr auto RendererBufferPrefix =                 "[Renderer][Buffer] ";
+		static constexpr auto RendererCommandBufferPrefix =          "[Renderer][CommandBuffer] ";
+		static constexpr auto RendererCommandPoolPrefix =            "[Renderer][CommandPool] ";
+		static constexpr auto RendererCommandSignaturePrefix =       "[Renderer][CommandSignature] ";
+		static constexpr auto RendererDescriptorPoolPrefix =         "[Renderer][DescriptorPool] ";
+		static constexpr auto RendererDescriptorSetPrefix =          "[Renderer][DescriptorSet] ";
+		static constexpr auto RendererFencePrefix =                  "[Renderer][Fence] ";
+		static constexpr auto RendererPipelinePrefix =               "[Renderer][Pipeline] ";
+		static constexpr auto RendererPipelineCachePrefix =          "[Renderer][PipelineCache] ";
+		static constexpr auto RendererQueuePrefix =                  "[Renderer][Queue] ";
+		static constexpr auto RendererQueryPoolPrefix =              "[Renderer][QueryPool] ";
+		static constexpr auto RendererRenderTargetPrefix =           "[Renderer][RenderTarget] ";
+		static constexpr auto RendererRootSignaturePrefix =          "[Renderer][RootSignature] ";
+		static constexpr auto RendererSamplerPrefix =                "[Renderer][Sampler] ";
+		static constexpr auto RendererSemaphorePrefix =              "[Renderer][Semaphore] ";
+		static constexpr auto RendererSwapChainPrefix =              "[Renderer][SwapChain] ";
+		static constexpr auto RendererAftermathTrackerPrefix =       "[Renderer][AftermathTracker] ";
+		static constexpr auto RendererVulkanPrefix =                 "[Renderer][Vulkan] ";
+		static constexpr auto RendererVulkanReflexPrefix =           "[Renderer][Vulkan][Reflex] ";
+		static constexpr auto RendererVulkanDevicePrefix =           "[Renderer][Vulkan][Device] ";
+		static constexpr auto RendererVulkanPhysicalDevicePrefix =   "[Renderer][Vulkan][PhysicalDevice] ";
+		static constexpr auto RendererVulkanDescriptorPoolPrefix =   "[Renderer][Vulkan][DescriptorPool] ";
+		static constexpr auto RendererVulkanDescriptorSetPrefix =    "[Renderer][Vulkan][DescriptorSet] ";
+		static constexpr auto RendererVulkanRenderPassPrefix =       "[Renderer][Vulkan][RenderPass] ";
+		static constexpr auto RendererVulkanFrameBufferPrefix =      "[Renderer][Vulkan][FrameBuffer] ";
+		static constexpr auto RendererVulkanRenderTargetPrefix =     "[Renderer][Vulkan][RenderTarget] ";
+		static constexpr auto RendererVulkanCommandSignaturePrefix = "[Renderer][Vulkan][CommandSignature] ";
+		static constexpr auto RendererVulkanQueuePrefix =            "[Renderer][Vulkan][Queue] ";
+		static constexpr auto RendererVulkanCommandPoolPrefix =      "[Renderer][Vulkan][CommandPool] ";
+		static constexpr auto RendererVulkanCommandBufferPrefix =    "[Renderer][Vulkan][CommandBuffer] ";
+		static constexpr auto RendererVulkanQueryPoolPrefix =        "[Renderer][Vulkan][QueryPool] ";
+		static constexpr auto RendererVulkanPipelinePrefix =         "[Renderer][Vulkan][Pipeline] ";
+		static constexpr auto RendererVulkanPipelineCachePrefix =    "[Renderer][Vulkan][PipelineCache] ";
+		static constexpr auto RendererVulkanFencePrefix =            "[Renderer][Vulkan][Fence] ";
+		static constexpr auto RendererVulkanSemaphorePrefix =        "[Renderer][Vulkan][Semaphore] ";
+		static constexpr auto RendererVulkanBufferPrefix =           "[Renderer][Vulkan][Buffer] ";
+		static constexpr auto RendererVulkanSamplerPrefix =          "[Renderer][Vulkan][Sampler] ";
+		static constexpr auto RendererVulkanTexturePrefix =          "[Renderer][Vulkan][Texture] ";
+		static constexpr auto RendererVulkanSwapChainPrefix =        "[Renderer][Vulkan][SwapChain] ";
+		static constexpr auto RendererVulkanSurfacePrefix =          "[Renderer][Vulkan][Surface] ";
+		static constexpr auto RendererVulkanShaderPrefix =           "[Renderer][Vulkan][Shader] ";
+		static constexpr auto RendererVulkanRootSignaturePrefix =    "[Renderer][Vulkan][RootSignature] ";
+		static constexpr auto RendererVulkanVMAPrefix =              "[Renderer][Vulkan][VMA] ";
+		static constexpr auto RendererVulkanInstancePrefix =         "[Renderer][Vulkan][Instance] ";
+		static constexpr auto RendererVulkanDebugPrefix =            "[Renderer][Vulkan][Debug] ";
+		static constexpr auto ImGuiPrefix =                          "[ImGui] ";
+		static constexpr auto NetworkSocketPrefix =                  "[Network][Socket] ";
+		static constexpr auto NetworkFTPPrefix =                     "[Network][FTP] ";
+		static constexpr auto NetworkHTTPPrefix =                    "[Network][HTTP] ";
+		static constexpr auto NetworkTCPListenerPrefix =             "[Network][TCPListener] ";
+		static constexpr auto NetworkTCPSocketPrefix =               "[Network][TCPSocket] ";
+		static constexpr auto NetworkUDPSocketPrefix =               "[Network][UDPSocket] ";
+		static constexpr auto NetworkSocketUnixPrefix =              "[Network][Socket][Unix] ";
+		static constexpr auto SceneSerializerPrefix =                "[SceneSerializer] ";
+		static constexpr auto DiscordGameSDKPrefix =                 "[Discord] ";
+		static constexpr auto SteamworksSDKPrefix =                  "[Steam] ";
+		static constexpr auto HotReloadingPrefix =                   "[HotReloading] ";
+		static constexpr auto UtilsDBusPrefix =                      "[Utils][DBus] ";
+		static constexpr auto UtilsStringPrefix =                    "[Utils][String] ";
+		static constexpr auto UtilsPrefix =                          "[Utils] ";
 
-#ifdef TRAP_PLATFORM_WINDOWS
 	private:
-		/// @brief Retrieves information about the specified console screen buffer.
-		static void GetInfo() noexcept;
-		/// @brief Set the new color for the following console output.
-		/// @param wRGBI New console color.
-		static void SetColor(WORD wRGBI) noexcept;
-		/// @brief Reset the console color to the default for the following output.
-		static void ResetColor() noexcept;
-
-		static HANDLE m_handleConsole;
-		static CONSOLE_SCREEN_BUFFER_INFO m_csbi;
-#else
-	private:
-		/// @brief Check whether the terminal supports ANSI color codes.
-		[[nodiscard]] static bool IsColorTerminal();
-#endif
 		/// @brief Get a time stamp with [HH:MM:SS] format.
 		/// @return Time stamp as a string.
 		[[nodiscard]] static std::string GetTimeStamp();
@@ -269,18 +254,16 @@ constexpr void TRAP::Log::Clear() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static constexpr inline TRAP::Log::Level operator|(const TRAP::Log::Level a, const TRAP::Log::Level b) noexcept
+static constexpr TRAP::Log::Level operator|(const TRAP::Log::Level a, const TRAP::Log::Level b) noexcept
 {
-	return static_cast<TRAP::Log::Level>(static_cast<std::underlying_type<TRAP::Log::Level>::type>(a) |
-		static_cast<std::underlying_type<TRAP::Log::Level>::type>(b));
+	return static_cast<TRAP::Log::Level>(std::to_underlying(a) | std::to_underlying(b));
 }
-static constexpr inline TRAP::Log::Level operator&(const TRAP::Log::Level a, const TRAP::Log::Level b) noexcept
+static constexpr TRAP::Log::Level operator&(const TRAP::Log::Level a, const TRAP::Log::Level b) noexcept
 {
-	return static_cast<TRAP::Log::Level>(static_cast<std::underlying_type<TRAP::Log::Level>::type>(a) &
-		static_cast<std::underlying_type<TRAP::Log::Level>::type>(b));
+	return static_cast<TRAP::Log::Level>(std::to_underlying(a) & std::to_underlying(b));
 }
-static constexpr inline TRAP::Log::Level operator|=(TRAP::Log::Level& a, const TRAP::Log::Level b) noexcept { return a = (a | b); }
-static constexpr inline TRAP::Log::Level operator&=(TRAP::Log::Level& a, const TRAP::Log::Level b) noexcept { return a = (a & b); }
+static constexpr TRAP::Log::Level operator|=(TRAP::Log::Level& a, const TRAP::Log::Level b) noexcept { return a = (a | b); }
+static constexpr TRAP::Log::Level operator&=(TRAP::Log::Level& a, const TRAP::Log::Level b) noexcept { return a = (a & b); }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
