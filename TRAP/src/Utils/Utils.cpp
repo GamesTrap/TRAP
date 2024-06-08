@@ -15,19 +15,17 @@ namespace
 	{
 		HINSTANCE Instance = nullptr;
 		PFN_RtlVerifyVersionInfo RtlVerifyVersionInfo = nullptr;
-	};
-
-	TRAP::Utils::NTDLL s_ntdll;
+	} s_ntdll;
 
 	[[nodiscard]] bool InitNTDLL()
 	{
 		if(!s_ntdll.Instance || !s_ntdll.RtlVerifyVersionInfo) //Init s_ntdll if not already done
 		{
-			s_ntdll.Instance = static_cast<HINSTANCE>(DynamicLoading::LoadLibrary("ntdll.dll"));
+			s_ntdll.Instance = static_cast<HINSTANCE>(TRAP::Utils::DynamicLoading::LoadLibrary("ntdll.dll"));
 			if (s_ntdll.Instance)
 			{
-				s_ntdll.RtlVerifyVersionInfo = DynamicLoading::GetLibrarySymbol<PFN_RtlVerifyVersionInfo>(s_ntdll.Instance,
-																										"RtlVerifyVersionInfo");
+				s_ntdll.RtlVerifyVersionInfo = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_RtlVerifyVersionInfo>(s_ntdll.Instance,
+																										               "RtlVerifyVersionInfo");
 			}
 
 			TRAP_ASSERT(s_ntdll.Instance && s_ntdll.RtlVerifyVersionInfo, "Utils::InitNTDLL(): Failed to load ntdll.dll");
