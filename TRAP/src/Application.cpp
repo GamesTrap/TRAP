@@ -92,10 +92,8 @@ namespace
 	/// @param tickTimerSeconds Out: Tick timer to update in seconds.
 	/// @param timeScale Scaling for time.
 	/// @return Delta time between start of the last frame to the current time.
-	[[nodiscard]] constexpr TRAP::Utils::TimeStep UpdateNewFrameTimeData(const TRAP::Utils::Timer& time,
-	                                                                     f32& lastFrameTime,
-															             f32& tickTimerSeconds,
-																		 const f32 timeScale)
+	[[nodiscard]] TRAP::Utils::TimeStep UpdateNewFrameTimeData(const TRAP::Utils::Timer& time, f32& lastFrameTime,
+															   f32& tickTimerSeconds, const f32 timeScale)
 	{
 		const f32 elapsedTime = time.Elapsed();
 
