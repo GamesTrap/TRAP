@@ -16,6 +16,8 @@ namespace
 	//Multiple physical devices can theoretically have the same score, so we use a multimap here.
 	std::multimap<u32, TRAP::Graphics::API::RatedVulkanPhysicalDevice> RatedPhysicalDevices{};
 
+	[[nodiscard]] TRAP::Optional<std::pair<u32, TRAP::Graphics::API::RatedVulkanPhysicalDevice>> RatePhysicalDevice(VkPhysicalDevice physicalDevice, [[maybe_unused]] VkInstance instance);
+
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	[[nodiscard]] std::vector<VkExtensionProperties> LoadAllPhysicalDeviceExtensions(VkPhysicalDevice physicalDevice)
@@ -172,6 +174,50 @@ namespace
 
 		return nullptr;
 	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// @brief Rate a list of physical devices.
+	///
+	/// Does the following checks for rating the device (some are required, others are optional):
+	///  1. Must be Vulkan API 1.1 capable
+	///  2. Must be iGPU or dGPU (5000 score for dGPU, 2500 score for iGPU).
+	///  3. Must support at least 4 simultaneously bound descriptor sets.
+	///  4. Retrieves all supported extensions (50 score for each supported extension).
+	///  5. Must support swapchain extensions (Disabled for Headless mode).
+	///  6. Must be able to create a Vulkan surface test window (Disabled for Headless mode).
+	///  7. Must be able to create a Vulkan surface (Disabled for Headless mode).
+	///  8. Must have at least one queue family.
+	///  9. Must support at least one graphics queue family.
+	/// 10. Must support at least one queue family with present support (Disabled for Headless mode).
+	/// 11. Must support at least one present mode (Disabled for Headless mode).
+	/// 12. Must support at least one surface format (Disabled for Headless mode).
+	/// 13. Optionally supports a compute queue family (1000 score for each).
+	/// 14. Optionally supports a transfer queue family (1000 score for each).
+	/// 15. Optionally supports RayTracing extensions (2000 score).
+	/// 16. Optionally supports geometry shaders (1000 score).
+	/// 17. Optionally supports tessellation shaders (1000 score).
+	/// 18. Optionally supports Variable Rate Shading extensions and Tier 1/Tier 2 (1000 + 100/200 score).
+	/// 19. Optionally supports fill mode non solid (250 score).
+	/// 20. Optionally does surface has optimal format (B8G8R8A8 Unorm & SRGB Non-linear) (250 score) (Disabled for Headless mode).
+	/// 21. Optionally check VRAM size (size / 1 Gigabyte * 100 score).
+	/// 22. Optionally check max resolution of 2D and cube images. ((Max image resolution / 32) is score).
+	/// 23. Optionally check max sample count for MSAA. (Sample count * 10 score).
+	/// 24. Optionally check if anisotropic filtering is supported (500 score).
+	/// @param physicalDevices Vulkan physical devices to rate.
+	/// @param instance Vulkan instance used to retrieve the physical devices.
+	void RatePhysicalDevices(const std::span<const VkPhysicalDevice> physicalDevices, VkInstance instance)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+		// Score each Physical Device and insert into multimap
+		for (VkPhysicalDevice physicalDevice : physicalDevices)
+		{
+			const auto deviceRating = RatePhysicalDevice(physicalDevice, instance);
+			if(deviceRating)
+				RatedPhysicalDevices.emplace(*deviceRating);
+		}
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -282,6 +328,29 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::LoadDevicePropertiesAndFeatures(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+/// @brief Retrieve a list of all rated physical devices.
+/// Key is the devices score, value is the UUID of the physical device.
+/// @param instance Vulkan instance handle.
+/// @return List of rated physical devices.
+[[nodiscard]] const std::multimap<u32, TRAP::Graphics::API::RatedVulkanPhysicalDevice>& TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(VkInstance instance)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+	if (!RatedPhysicalDevices.empty())
+		return RatedPhysicalDevices;
+
+	const std::vector<VkPhysicalDevice> physicalDevices = GetAllVkPhysicalDevices(instance);
+
+	if (!physicalDevices.empty())
+		RatePhysicalDevices(physicalDevices, instance);
+	else
+		TRAP::Utils::DisplayError(TRAP::Utils::ErrorCode::VulkanNoPhysicalDeviceFound);
+
+	return RatedPhysicalDevices;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanPhysicalDevice::LoadPhysicalDeviceFragmentShaderInterlockFeatures()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -310,25 +379,6 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::LoadPhysicalDeviceFragmentShader
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	return GetAllRatedPhysicalDevices(instance.GetVkInstance());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const std::multimap<u32, TRAP::Graphics::API::RatedVulkanPhysicalDevice>& TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(VkInstance instance)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	if (!RatedPhysicalDevices.empty())
-		return RatedPhysicalDevices;
-
-	const std::vector<VkPhysicalDevice> physicalDevices = GetAllVkPhysicalDevices(instance);
-
-	if (!physicalDevices.empty())
-		RatePhysicalDevices(physicalDevices, instance);
-	else
-		Utils::DisplayError(Utils::ErrorCode::VulkanNoPhysicalDeviceFound);
-
-	return RatedPhysicalDevices;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -892,18 +942,5 @@ namespace
 		};
 
 		return rating;
-	}
-}
-
-void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::span<const VkPhysicalDevice> physicalDevices, VkInstance instance)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	// Score each Physical Device and insert into multimap
-	for (VkPhysicalDevice physicalDevice : physicalDevices)
-	{
-		const auto deviceRating = RatePhysicalDevice(physicalDevice, instance);
-		if(deviceRating)
-			RatedPhysicalDevices.emplace(*deviceRating);
 	}
 }

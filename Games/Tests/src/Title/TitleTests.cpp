@@ -1,5 +1,21 @@
 #include "TitleTests.h"
 
+namespace
+{
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event)
+	{
+		if (event.GetKey() == TRAP::Input::Key::Escape)
+		{
+			TRAP::Application::Shutdown();
+			return true;
+		}
+
+		return true;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TitleTests::OnImGuiRender()
 {
 	ImGui::Begin("Title", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
@@ -21,17 +37,4 @@ void TitleTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(OnKeyPress);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TitleTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
-{
-	if (event.GetKey() == TRAP::Input::Key::Escape)
-	{
-		TRAP::Application::Shutdown();
-		return true;
-	}
-
-	return true;
 }

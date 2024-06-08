@@ -4,6 +4,50 @@
 #include "Utils/String/String.h"
 #include "FileSystem/FileSystem.h"
 
+namespace
+{
+	/// @brief Parse a line from the Config files.
+	/// Splits keys from value(s).
+	/// Ignores lines starting with a '#'.
+	/// @param line Line to parse.
+	/// @return Pair of key and value.
+	[[nodiscard]] constexpr std::pair<std::string, std::string> ParseLine(const std::string_view line)
+	{
+		//If this line is empty or a comment, return an empty pair
+		if(line.empty() || line[0] == '#')
+			return { "", "" };
+
+		usize index = 0;
+		//Trim leading whitespace
+		while (TRAP::Utils::String::IsSpace(line[index]))
+			index++;
+		//Get the key string
+		const usize beginKeyString = index;
+		while (!TRAP::Utils::String::IsSpace(line[index]) && line[index] != '=')
+			index++;
+		const std::string key(line.data() + beginKeyString, index - beginKeyString);
+
+		//Skip the assignment
+		while (TRAP::Utils::String::IsSpace(line[index]) || line[index] == '=')
+		{
+			index++;
+			if(index >= line.size())
+			{
+				//Out of range so line only contains key
+				return { key, "" };
+			}
+		}
+
+		//Get the value string
+		const std::string value(line.data() + index, line.size() - index);
+
+		//Return the key value pair
+		return { key, value };
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::Utils::Config::LoadFromFile(const std::filesystem::path& file)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);

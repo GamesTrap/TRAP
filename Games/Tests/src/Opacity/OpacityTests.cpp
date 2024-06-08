@@ -1,5 +1,21 @@
 #include "OpacityTests.h"
 
+namespace
+{
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event)
+	{
+		if(event.GetKey() == TRAP::Input::Key::Escape)
+		{
+			TRAP::Application::Shutdown();
+			return true;
+		}
+
+		return true;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void OpacityTests::OnImGuiRender()
 {
 	ImGui::Begin("Opacity", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
@@ -23,17 +39,4 @@ void OpacityTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(OnKeyPress);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool OpacityTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
-{
-	if(event.GetKey() == TRAP::Input::Key::Escape)
-	{
-		TRAP::Application::Shutdown();
-		return true;
-	}
-
-	return true;
 }

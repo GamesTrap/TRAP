@@ -17,9 +17,6 @@ public:
 	bool OnMouseMove(const TRAP::Events::MouseMoveEvent& event);
 
 private:
-	static f32 Star(u32 x, u32 y, f32 t);
-	static TRAP::Scope<TRAP::Image> CreateCursorFrame(f32 t);
-
 	f32 m_cursorX = 0.0f;
 	f32 m_cursorY = 0.0f;
 	bool m_animateCursor = false;

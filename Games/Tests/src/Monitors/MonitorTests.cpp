@@ -1,5 +1,43 @@
 #include "MonitorTests.h"
 
+namespace
+{
+	bool OnMonitorConnect(const TRAP::Events::MonitorConnectEvent& event)
+	{
+		TP_TRACE(event);
+
+		return true;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	bool OnMonitorDisconnect(const TRAP::Events::MonitorDisconnectEvent& event)
+	{
+		TP_TRACE(event);
+
+		return true;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr u32 Euclid(const u32 a, const u32 b)
+	{
+		return b != 0 ? Euclid(b, a % b) : a;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr std::string FormatMode(const TRAP::Monitor::VideoMode& mode)
+	{
+		const u32 gcd = Euclid(mode.Width, mode.Height);
+
+		return fmt::format("{}x{}({}:{}) {}Hz", mode.Width, mode.Height, (mode.Width / gcd), (mode.Height / gcd),
+						   mode.RefreshRate);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void MonitorTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Monitor");
@@ -56,39 +94,4 @@ void MonitorTests::OnEvent(TRAP::Events::Event& event)
 	TRAP::Events::EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<TRAP::Events::MonitorConnectEvent>(OnMonitorConnect);
 	dispatcher.Dispatch<TRAP::Events::MonitorDisconnectEvent>(OnMonitorDisconnect);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool MonitorTests::OnMonitorConnect(const TRAP::Events::MonitorConnectEvent& event)
-{
-	TP_TRACE(event);
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool MonitorTests::OnMonitorDisconnect(const TRAP::Events::MonitorDisconnectEvent& event)
-{
-	TP_TRACE(event);
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-u32 MonitorTests::Euclid(const u32 a, const u32 b)
-{
-	return b != 0 ? Euclid(b, a % b) : a;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string MonitorTests::FormatMode(const TRAP::Monitor::VideoMode& mode)
-{
-	const u32 gcd = Euclid(mode.Width, mode.Height);
-
-	return fmt::format("{}x{}({}:{}) {}Hz", mode.Width, mode.Height, (mode.Width / gcd), (mode.Height / gcd),
-	                   mode.RefreshRate);
 }

@@ -11,10 +11,6 @@ public:
 	void OnImGuiRender() override;
 	void OnAttach() override;
 	void OnEvent(TRAP::Events::Event& event) override;
-
-private:
-	static void SetIcon(const TRAP::Window& window, u32 iconColor);
-	static bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 };
 
 //-------------------------------------------------------------------------------------------------------------------//

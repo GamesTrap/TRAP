@@ -288,11 +288,6 @@ namespace TRAP
 			WindowedModeParams windowModeParams{};
 			Window* Win = nullptr;
 		} m_data;
-
-		inline constinit static u32 s_windows = 0;
-
-		static constexpr i32 MinimumSupportedWindowWidth = 2;
-		static constexpr i32 MinimumSupportedWindowHeight = 2;
 	};
 
 	/// @brief Struct containing all Window properties needed to create a new TRAP::Window.
@@ -405,7 +400,7 @@ constexpr TRAP::WindowProps::AdvancedProps::AdvancedProps(const bool resizable,
 template<>
 struct fmt::formatter<TRAP::Window::DisplayMode>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }

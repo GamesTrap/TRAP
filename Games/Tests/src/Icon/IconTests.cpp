@@ -39,6 +39,55 @@ namespace
 			{255, 255, 255, 255}  //White
 		}
 	};
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void SetIcon(const TRAP::Window& window, const u32 iconColor)
+	{
+		std::vector<u8> pixels(16ull * 16ull * 4ull, 0);
+		usize target = 0;
+
+		for(u32 y = 0; y < 16u; y++)
+		{
+			for(u32 x = 0; x < 16u; x++)
+			{
+				if (IconStrings[y][x] == '0')
+					memcpy(&pixels[target], IconColors[iconColor].data(), 4);
+				else
+					memset(&pixels[target], 0, 4u);
+
+				target += 4u;
+			}
+		}
+
+		window.SetIcon(TRAP::Image::LoadFromMemory(16u, 16u, TRAP::Image::ColorFormat::RGBA, pixels).get());
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event)
+	{
+		switch(event.GetKey())
+		{
+		case TRAP::Input::Key::Escape:
+			TRAP::Application::Shutdown();
+			break;
+
+		case TRAP::Input::Key::Space:
+			CurrentCursorIconColor = (CurrentCursorIconColor + 1) % NumericCast<u32>(IconColors.size());
+			SetIcon(*TRAP::Application::GetWindow(), CurrentCursorIconColor);
+			break;
+
+		case TRAP::Input::Key::X:
+			TRAP::Application::GetWindow()->SetIcon();
+			break;
+
+		default:
+			break;
+		}
+
+		return true;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -69,53 +118,4 @@ void IconTests::OnEvent(TRAP::Events::Event& event)
 	TRAP::Events::EventDispatcher dispatcher(event);
 
 	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(OnKeyPress);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void IconTests::SetIcon(const TRAP::Window& window, const u32 iconColor)
-{
-	std::vector<u8> pixels(16ull * 16ull * 4ull, 0);
-	usize target = 0;
-
-	for(u32 y = 0; y < 16u; y++)
-	{
-		for(u32 x = 0; x < 16u; x++)
-		{
-			if (IconStrings[y][x] == '0')
-				memcpy(&pixels[target], IconColors[iconColor].data(), 4);
-			else
-				memset(&pixels[target], 0, 4u);
-
-			target += 4u;
-		}
-	}
-
-	window.SetIcon(TRAP::Image::LoadFromMemory(16u, 16u, TRAP::Image::ColorFormat::RGBA, pixels).get());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool IconTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
-{
-	switch(event.GetKey())
-	{
-	case TRAP::Input::Key::Escape:
-		TRAP::Application::Shutdown();
-		break;
-
-	case TRAP::Input::Key::Space:
-		CurrentCursorIconColor = (CurrentCursorIconColor + 1) % NumericCast<u32>(IconColors.size());
-		SetIcon(*TRAP::Application::GetWindow(), CurrentCursorIconColor);
-		break;
-
-	case TRAP::Input::Key::X:
-		TRAP::Application::GetWindow()->SetIcon();
-		break;
-
-	default:
-		break;
-	}
-
-	return true;
 }

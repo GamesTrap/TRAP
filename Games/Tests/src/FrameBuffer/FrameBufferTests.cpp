@@ -34,7 +34,19 @@ namespace
         desc.Name = name;
         return TRAP::Graphics::RenderTarget::Create(desc);
     }
+
+    //-------------------------------------------------------------------------------------------------------------------//
+
+    bool OnKeyPress(const TRAP::Events::KeyPressEvent& e)
+    {
+        if(e.GetKey() == TRAP::Input::Key::Escape)
+            TRAP::Application::Shutdown();
+
+        return false;
+    }
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
 
 FrameBufferTests::FrameBufferTests()
     : Layer("FrameBuffer")
@@ -209,14 +221,4 @@ void FrameBufferTests::OnEvent(TRAP::Events::Event& event)
 {
     TRAP::Events::EventDispatcher dispatcher(event);
     dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(OnKeyPress);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool FrameBufferTests::OnKeyPress(const TRAP::Events::KeyPressEvent& e)
-{
-    if(e.GetKey() == TRAP::Input::Key::Escape)
-        TRAP::Application::Shutdown();
-
-    return false;
 }

@@ -128,37 +128,6 @@ namespace TRAP::Graphics::API
 		/// @return List of rated physical devices.
 		[[nodiscard]] static const std::multimap<u32, RatedVulkanPhysicalDevice>& GetAllRatedPhysicalDevices(VkInstance instance);
 
-		/// @brief Rate a list of physical devices.
-		///
-		/// Does the following checks for rating the device (some are required, others are optional):
-		///  1. Must be Vulkan API 1.1 capable
-		///  2. Must be iGPU or dGPU (5000 score for dGPU, 2500 score for iGPU).
-		///  3. Must support at least 4 simultaneously bound descriptor sets.
-		///  4. Retrieves all supported extensions (50 score for each supported extension).
-		///  5. Must support swapchain extensions (Disabled for Headless mode).
-		///  6. Must be able to create a Vulkan surface test window (Disabled for Headless mode).
-		///  7. Must be able to create a Vulkan surface (Disabled for Headless mode).
-		///  8. Must have at least one queue family.
-		///  9. Must support at least one graphics queue family.
-		/// 10. Must support at least one queue family with present support (Disabled for Headless mode).
-		/// 11. Must support at least one present mode (Disabled for Headless mode).
-		/// 12. Must support at least one surface format (Disabled for Headless mode).
-		/// 13. Optionally supports a compute queue family (1000 score for each).
-		/// 14. Optionally supports a transfer queue family (1000 score for each).
-		/// 15. Optionally supports RayTracing extensions (2000 score).
-		/// 16. Optionally supports geometry shaders (1000 score).
-		/// 17. Optionally supports tessellation shaders (1000 score).
-		/// 18. Optionally supports Variable Rate Shading extensions and Tier 1/Tier 2 (1000 + 100/200 score).
-		/// 19. Optionally supports fill mode non solid (250 score).
-		/// 20. Optionally does surface has optimal format (B8G8R8A8 Unorm & SRGB Non-linear) (250 score) (Disabled for Headless mode).
-		/// 21. Optionally check VRAM size (size / 1 Gigabyte * 100 score).
-		/// 22. Optionally check max resolution of 2D and cube images. ((Max image resolution / 32) is score).
-		/// 23. Optionally check max sample count for MSAA. (Sample count * 10 score).
-		/// 24. Optionally check if anisotropic filtering is supported (500 score).
-		/// @param physicalDevices Vulkan physical devices to rate.
-		/// @param instance Vulkan instance used to retrieve the physical devices.
-		static void RatePhysicalDevices(std::span<const VkPhysicalDevice> physicalDevices, [[maybe_unused]] VkInstance instance);
-
 		VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
 		VkPhysicalDeviceProperties m_physicalDeviceProperties{};
 		VkPhysicalDeviceSubgroupProperties m_physicalDeviceSubgroupProperties{};

@@ -11,8 +11,6 @@ public:
 	void OnAttach() override;
 	void OnImGuiRender() override;
 	void OnEvent(TRAP::Events::Event& event) override;
-
-	static bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 };
 
 //-------------------------------------------------------------------------------------------------------------------//

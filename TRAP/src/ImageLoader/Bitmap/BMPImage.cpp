@@ -6,6 +6,154 @@
 #include "Utils/Memory.h"
 #include "Utils/Utils.h"
 
+namespace
+{
+	struct BitField
+	{
+		u32 Start;
+		u32 Span;
+	};
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	struct Header
+	{
+		u16 MagicNumber = 0; //Used to check format
+		u32 Size = 0; //File size in bytes
+		u32 DataOffset = 0; //Offset from file start - first pixel data
+	};
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	struct InfoHeader
+	{
+		u32 Size = 0; //Size of this header in bytes
+		u32 Width = 0;
+		i32 Height = 0;
+		//u16 Planes = 0; //Always 1
+		u16 BitsPerPixel = 0; //1, 4, 8, 16, 24, 32
+		u32 Compression = 0; //0 = Uncompressed | 1 = RLE 8BPP | 2 = RLE 4BPP | 3 = BitFields
+		u32 SizeImage = 0; //Size of the image in bytes
+		//i32 XPixelsPerMeter = 0;
+		//i32 YPixelsPerMeter = 0;
+		u32 CLRUsed = 0; //Amount of colors in palette
+		//u32 CLRImportant = 0; //Amount of important colors in palette
+	};
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// @brief Convert given value to 8 bits.
+	/// @param value Value to convert.
+	/// @param bitSpan Bit span.
+	/// @return Value as 8 bits.
+	[[nodiscard]] constexpr u8 Make8Bits(u32 value, const u32 bitSpan) noexcept
+	{
+		u32 output = 0;
+
+		if (bitSpan == 8)
+			return NumericCast<u8>(value);
+		if (bitSpan > 8)
+			return NumericCast<u8>(value >> (bitSpan - 8));
+
+		value <<= (8 - bitSpan); //Shift it up into the most significant bits.
+		while(value != 0u)
+		{
+			output |= value;
+			value >>= bitSpan;
+		}
+
+		return NumericCast<u8>(output);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// @brief Applies a bit field on the given value.
+	/// @param x Value to apply bit field to.
+	/// @param bitField Bit field to apply.
+	/// @return Value with bit field applied.
+	[[nodiscard]] constexpr u32 ApplyBitField(const u32 x, const BitField& bitField) noexcept
+	{
+		return x >> bitField.Start & (BIT(bitField.Span) - 1);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// @brief Applies a bit field on the given value.
+	/// @param x Value to apply bit field to.
+	/// @param bitField Bit field to apply.
+	/// @return Value with bit field applied.
+	[[nodiscard]] constexpr u32 ApplyBitField(const u16 x, const BitField& bitField) noexcept
+	{
+		return x >> bitField.Start & (BIT(bitField.Span) - 1u);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// @brief Parse a bit field.
+	/// @param field Bit field to parse.
+	/// @param mask Mask.
+	/// @return True if the bit field was parsed successfully, false otherwise.
+	[[nodiscard]] constexpr bool ParseBitfield(BitField& field, const u32 mask) noexcept
+	{
+		u32 bit = 0;
+		for (; bit < 32 && ((mask & BIT(bit)) == 0u); bit++);
+
+		if(bit >= 32)
+		{
+			//Absent BitMasks are valid.
+			field.Start = field.Span = 0;
+			return true;
+		}
+
+		field.Start = bit;
+		for (; bit < 32 && ((mask & BIT(bit)) != 0u); bit++);
+		field.Span = bit - field.Start;
+
+		//If there are more set bits, there was a gap, which is invalid
+		return bit >= 32 || ((mask & ~(BIT(bit) - 1u)) == 0u);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// @brief Validate bit fields via the given masks.
+	/// @param bitFields Bit fields to validate.
+	/// @param masks Mask to validate the bit fields against.
+	/// @return True if the bit fields are valid, false otherwise.
+	[[nodiscard]] constexpr bool ValidateBitFields(std::array<BitField, 4>& bitFields, std::array<u32, 4>& masks,
+												   const u32 bitsPerPixel) noexcept
+	{
+		u32 totalMask = 0;
+		BitField totalField{};
+
+		for(usize i = 0; i < bitFields.size(); i++)
+		{
+			//No overlapping masks.
+			if ((totalMask & masks[i]) != 0u)
+				return false;
+
+			totalMask |= masks[i];
+
+			if (!ParseBitfield(bitFields[i], masks[i]))
+				return false;
+
+			//Make sure it fits in bit size
+			if (bitFields[i].Start + bitFields[i].Span > bitsPerPixel)
+				return false;
+		}
+
+		if (totalMask == 0u)
+			return false;
+
+		//Check for contiguous-ity between fields, too.
+		if (!ParseBitfield(totalField, totalMask))
+			return false;
+
+		return true;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	: Image(std::move(filepath))
 {
@@ -322,7 +470,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 		data.resize(m_width * m_height * m_bitsPerPixel / 8);
 		if(m_bitsPerPixel == 32)
 		{
-			if(!ValidateBitFields(bitFields, masks))
+			if(!ValidateBitFields(bitFields, masks, m_bitsPerPixel))
 			{
 				TP_ERROR(Log::ImageBMPPrefix, "Invalid bit fields!");
 				TP_WARN(Log::ImageBMPPrefix, "Using default image!");
@@ -353,7 +501,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 		}
 		else if(m_bitsPerPixel == 16)
 		{
-			if (!ValidateBitFields(bitFields, masks))
+			if (!ValidateBitFields(bitFields, masks, m_bitsPerPixel))
 			{
 				TP_ERROR(Log::ImageBMPPrefix, "Invalid bit fields!");
 				TP_WARN(Log::ImageBMPPrefix, "Using default image!");

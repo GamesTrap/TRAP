@@ -4,6 +4,111 @@ namespace
 {
 	std::vector<TRAP::Input::Controller> Controllers{};
 	constinit bool ShowDpadButtons = false;
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr std::string GetDPadDirection(const TRAP::Input::ControllerDPad& dpad)
+	{
+		switch (dpad)
+		{
+		case TRAP::Input::ControllerDPad::Centered:
+			return "Centered";
+
+		case TRAP::Input::ControllerDPad::Up:
+			return "Up";
+
+		case TRAP::Input::ControllerDPad::Right:
+			return "Right";
+
+		case TRAP::Input::ControllerDPad::Down:
+			return "Down";
+
+		case TRAP::Input::ControllerDPad::Left:
+			return "Left";
+
+		case TRAP::Input::ControllerDPad::Right_Up:
+			return "Right Up";
+
+		case TRAP::Input::ControllerDPad::Right_Down:
+			return "Right Down";
+
+		case TRAP::Input::ControllerDPad::Left_Up:
+			return "Left Up";
+
+		case TRAP::Input::ControllerDPad::Left_Down:
+			return "Left Down";
+		}
+
+		TRAP_ASSERT(false, "GetDPadDirection(): Unknown TRAP::Input::ControllerDPad value!");
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	bool OnControllerConnect(const TRAP::Events::ControllerConnectEvent& event)
+	{
+		Controllers.push_back(event.GetController());
+
+		if (!TRAP::Application::GetWindow()->IsFocused())
+			TRAP::Application::GetWindow()->RequestAttention();
+
+		return true;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	bool OnControllerDisconnect(const TRAP::Events::ControllerDisconnectEvent& event)
+	{
+		std::erase_if(Controllers, [&event](const auto& element){return element == event.GetController();});
+
+		if (!TRAP::Application::GetWindow()->IsFocused())
+			TRAP::Application::GetWindow()->RequestAttention();
+
+		return true;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	bool OnWindowDrop(const TRAP::Events::WindowDropEvent& event)
+	{
+		const std::vector<std::string> paths = event.GetPaths();
+
+		for (const std::string_view path : paths)
+		{
+			const auto data = TRAP::FileSystem::ReadTextFile(path);
+			if(data)
+				TRAP::Input::UpdateControllerMappings(*data);
+		}
+
+		return true;
+	}
+
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] std::string GetBatteryStatus(const TRAP::Input::Controller controller)
+	{
+		TRAP::Input::ControllerBatteryStatus battery = TRAP::Input::GetControllerBatteryStatus(controller);
+
+		switch(battery)
+		{
+		case TRAP::Input::ControllerBatteryStatus::Wired:
+			return "Wired";
+
+		case TRAP::Input::ControllerBatteryStatus::Empty:
+			return "Empty";
+
+		case TRAP::Input::ControllerBatteryStatus::Low:
+			return "Low";
+
+		case TRAP::Input::ControllerBatteryStatus::Medium:
+			return "Medium";
+
+		case TRAP::Input::ControllerBatteryStatus::Full:
+			return "Full";
+		}
+
+		TRAP_ASSERT(false, "GetBatteryStatus(): Unknown TRAP::Input::ControllerBatteryStatus value!");
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -160,73 +265,4 @@ void ControllerTests::OnEvent(TRAP::Events::Event& event)
 	dispatcher.Dispatch<TRAP::Events::ControllerConnectEvent>(OnControllerConnect);
 	dispatcher.Dispatch<TRAP::Events::ControllerDisconnectEvent>(OnControllerDisconnect);
 	dispatcher.Dispatch<TRAP::Events::WindowDropEvent>(OnWindowDrop);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool ControllerTests::OnControllerConnect(const TRAP::Events::ControllerConnectEvent& event)
-{
-	Controllers.push_back(event.GetController());
-
-	if (!TRAP::Application::GetWindow()->IsFocused())
-		TRAP::Application::GetWindow()->RequestAttention();
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool ControllerTests::OnControllerDisconnect(const TRAP::Events::ControllerDisconnectEvent& event)
-{
-	std::erase_if(Controllers, [&event](const auto& element){return element == event.GetController();});
-
-	if (!TRAP::Application::GetWindow()->IsFocused())
-		TRAP::Application::GetWindow()->RequestAttention();
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool ControllerTests::OnWindowDrop(const TRAP::Events::WindowDropEvent& event)
-{
-	const std::vector<std::string> paths = event.GetPaths();
-
-	for (const std::string_view path : paths)
-	{
-		const auto data = TRAP::FileSystem::ReadTextFile(path);
-		if(data)
-			TRAP::Input::UpdateControllerMappings(*data);
-	}
-
-	return true;
-}
-
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string ControllerTests::GetBatteryStatus(const TRAP::Input::Controller controller)
-{
-	TRAP::Input::ControllerBatteryStatus battery = TRAP::Input::GetControllerBatteryStatus(controller);
-
-	switch(battery)
-	{
-	case TRAP::Input::ControllerBatteryStatus::Wired:
-		return "Wired";
-
-	case TRAP::Input::ControllerBatteryStatus::Empty:
-		return "Empty";
-
-	case TRAP::Input::ControllerBatteryStatus::Low:
-		return "Low";
-
-	case TRAP::Input::ControllerBatteryStatus::Medium:
-		return "Medium";
-
-	case TRAP::Input::ControllerBatteryStatus::Full:
-		return "Full";
-
-	default:
-		return "";
-	}
 }

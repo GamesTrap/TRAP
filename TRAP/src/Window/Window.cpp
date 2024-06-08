@@ -17,6 +17,16 @@
 #include "Application.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
+namespace
+{
+	constinit u32 ActiveWindows = 0;
+
+	constexpr i32 MinimumSupportedWindowWidth = 2;
+	constexpr i32 MinimumSupportedWindowHeight = 2;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Window::Window(const WindowProps &props)
 	: m_window(nullptr)
 {
@@ -48,7 +58,7 @@ TRAP::Window::~Window()
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
 		TRAP::Graphics::RendererAPI::GetRenderer()->RemovePerViewportData(this);
 
-	--s_windows;
+	--ActiveWindows;
 
 	TP_DEBUG(Log::WindowPrefix, "Destroying window: \"", m_data.Title, "\"");
 	Shutdown();
@@ -70,7 +80,7 @@ void TRAP::Window::OnUpdate()
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Window) != ProfileSystems::None &&
 	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	return s_windows;
+	return ActiveWindows;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -857,7 +867,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	if (m_window == nullptr)
 		Utils::DisplayError(Utils::ErrorCode::WindowingAPIWindowCreationFailed);
 
-	s_windows++;
+	ActiveWindows++;
 
 	INTERNAL::WindowingAPI::GetWindowSize(*m_window, m_data.windowModeParams.Width, m_data.windowModeParams.Height);
 
@@ -898,7 +908,7 @@ void TRAP::Window::Shutdown()
 
 	INTERNAL::WindowingAPI::DestroyWindow(m_window);
 	m_window = nullptr;
-	if (s_windows == 0u)
+	if (ActiveWindows == 0u)
 		INTERNAL::WindowingAPI::Shutdown();
 }
 

@@ -12,8 +12,6 @@ public:
 	void OnAttach() override;
 	void OnEvent(TRAP::Events::Event& event) override;
 
-	static bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
-
 private:
 	f32 m_opacity = 1.0f;
 };

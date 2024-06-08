@@ -57,6 +57,9 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
+	//Note this will only store info of the CPU we are currently running on.
+	//Its likely that this is broken on multi NUMA systems... //TODO
+
 	static CPUInfo cpu{};
 
 	if(!cpu.Model.empty())

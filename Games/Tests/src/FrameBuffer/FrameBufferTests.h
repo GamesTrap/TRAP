@@ -15,8 +15,6 @@ public:
     void OnEvent(TRAP::Events::Event& event) override;
 
 private:
-    static bool OnKeyPress(const TRAP::Events::KeyPressEvent& e);
-
     TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer = nullptr;
     TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer = nullptr;
     TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler = nullptr;

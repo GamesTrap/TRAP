@@ -1,41 +1,44 @@
 #include "CursorTests.h"
 
-f32 CursorTests::Star(const u32 x, const u32 y, const f32 t)
+namespace
 {
-	static constexpr f32 c = 64.0f / 2.0f;
-
-	const f32 i = (0.25f * TRAP::Math::Sin(2.0f * TRAP::Math::PI<f32>() * t) + 0.75f);
-	const f32 k = 64.0f * 0.046875f * i;
-
-	const f32 dist = TRAP::Math::Sqrt((NumericCast<f32>(x) - c) * (NumericCast<f32>(x) - c) +
-		                              (NumericCast<f32>(y) - c) * (NumericCast<f32>(y) - c));
-
-	const f32 sAlpha = 1.0f - dist / c;
-	const f32 xAlpha = NumericCast<f32>(x) == c ? c : k / TRAP::Math::Abs(NumericCast<f32>(x) - c);
-	const f32 yAlpha = NumericCast<f32>(y) == c ? c : k / TRAP::Math::Abs(NumericCast<f32>(y) - c);
-
-	return TRAP::Math::Max(0.0f, TRAP::Math::Min(1.0f, i * sAlpha * 0.2f + sAlpha * xAlpha * yAlpha));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Scope<TRAP::Image> CursorTests::CreateCursorFrame(const f32 t)
-{
-	u32 i = 0;
-	std::vector<u8> buffer(64ull * 64ull * 4ull, 0);
-
-	for(u32 y = 0; y < 64; y++)
+	[[nodiscard]] constexpr f32 Star(const u32 x, const u32 y, const f32 t)
 	{
-		for(u32 x = 0; x < 64; x++)
-		{
-			buffer[i++] = 255;
-			buffer[i++] = 255;
-			buffer[i++] = 255;
-			buffer[i++] = NumericCast<u8>(255 * Star(x, y, t));
-		}
+		constexpr f32 c = 64.0f / 2.0f;
+
+		const f32 i = (0.25f * TRAP::Math::Sin(2.0f * TRAP::Math::PI<f32>() * t) + 0.75f);
+		const f32 k = 64.0f * 0.046875f * i;
+
+		const f32 dist = TRAP::Math::Sqrt((NumericCast<f32>(x) - c) * (NumericCast<f32>(x) - c) +
+										  (NumericCast<f32>(y) - c) * (NumericCast<f32>(y) - c));
+
+		const f32 sAlpha = 1.0f - dist / c;
+		const f32 xAlpha = NumericCast<f32>(x) == c ? c : k / TRAP::Math::Abs(NumericCast<f32>(x) - c);
+		const f32 yAlpha = NumericCast<f32>(y) == c ? c : k / TRAP::Math::Abs(NumericCast<f32>(y) - c);
+
+		return TRAP::Math::Max(0.0f, TRAP::Math::Min(1.0f, i * sAlpha * 0.2f + sAlpha * xAlpha * yAlpha));
 	}
 
-	return TRAP::Image::LoadFromMemory(64, 64, TRAP::Image::ColorFormat::RGBA, buffer);
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] TRAP::Scope<TRAP::Image> CreateCursorFrame(const f32 t)
+	{
+		u32 i = 0;
+		std::vector<u8> buffer(64ull * 64ull * 4ull, 0);
+
+		for(u32 y = 0; y < 64; y++)
+		{
+			for(u32 x = 0; x < 64; x++)
+			{
+				buffer[i++] = 255;
+				buffer[i++] = 255;
+				buffer[i++] = 255;
+				buffer[i++] = NumericCast<u8>(255 * Star(x, y, t));
+			}
+		}
+
+		return TRAP::Image::LoadFromMemory(64, 64, TRAP::Image::ColorFormat::RGBA, buffer);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -43,7 +46,7 @@ TRAP::Scope<TRAP::Image> CursorTests::CreateCursorFrame(const f32 t)
 void CursorTests::OnImGuiRender()
 {
 	ImGui::Begin("Cursor", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	                                    ImGuiWindowFlags_AlwaysAutoResize);
+	                                ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
 	ImGui::Text("Press A to enable/disable Cursor animation");
 	ImGui::Text("Press N to set Cursor mode to normal");

@@ -5066,3 +5066,7 @@ SITREP 06/04/2024|24w23a1
 SITREP 06/07/2024|24w23b1
     - Changed TRAP Engine version to 24w23b1(0.10.78)
     - Moved global static and private static members to anonymous namespaces ~<20 mins
+
+SITREP 06/08/2024|24w23b2
+    - Changed TRAP Engine version to 24w23b2(0.10.79)
+    - Moved more global static and private static members to anonymous namespaces ~<30 mins
