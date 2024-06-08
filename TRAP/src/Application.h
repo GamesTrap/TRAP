@@ -194,20 +194,6 @@ namespace TRAP
 		/// @remark @headless This function is not available in headless mode.
 		bool OnWindowClose(const Events::WindowCloseEvent& event) noexcept;
 #endif /*TRAP_HEADLESS_MODE*/
-#ifndef TRAP_HEADLESS_MODE
-		/// @brief Handles window framebuffer resizes for the main render window.
-		/// @param event Framebuffer resize event that occurred.
-		/// @return false.
-		/// @remark @headless This function is not available in headless mode.
-		static bool OnFrameBufferResize(const Events::FrameBufferResizeEvent& event);
-#endif /*TRAP_HEADLESS_MODE*/
-#ifndef TRAP_HEADLESS_MODE
-		/// @brief Handles key presses for the main render window.
-		/// @param event Key press event that occurred.
-		/// @return false.
-		/// @remark @headless This function is not available in headless mode.
-		static bool OnKeyPress(const Events::KeyPressEvent& event);
-#endif /*TRAP_HEADLESS_MODE*/
 
 		/// @brief Handles filesystem change events for the application. Used by HotReloading.
 		/// @param event Filesystem change event that occurred.
@@ -217,120 +203,19 @@ namespace TRAP
 		/// @brief Tries to reload every modified shader/texture that was set by the hot reloading file watcher.
 		void UpdateHotReloading();
 
-		/// @brief Update the time data of the run loop for a new frame.
-		/// @param time Timer with elapsed time since start of engine.
-		/// @param lastFrameTime In/Out: Frame time of the last frame.
-		/// @param tickTimerSeconds Out: Tick timer to update in seconds.
-		/// @param timeScale Scaling for time.
-		/// @return Delta time between start of the last frame to the current time.
-		static Utils::TimeStep UpdateNewFrameTimeData(const Utils::Timer& time, f32& lastFrameTime,
-		                                              f32& tickTimerSeconds, f32 timeScale);
-
-		/// @brief Limit the FPS to fpsLimit.
-		/// @param fpsLimit Target FPS to limit to.
-		/// @param limitTimer In/Out: Limiter timer.
-		static void LimitFPS(u32 fpsLimit, Utils::Timer& limitTimer);
-		/// @brief Limit the FPS to fpsLimit. This function is used to limit FPS when the main window is unfocused.
-		/// @param fpsLimit Target FPS to limit to.
-		/// @param limitTimer In/Out: Limiter timer.
-		static void UnfocusedLimitFPS(u32 fpsLimit, Utils::Timer& limitTimer);
-
-		/// @brief Retrieve the filepath of the engine.cfg file.
-		/// @return Path of the engine.cfg config file.
-		static std::filesystem::path GetTRAPConfigPath();
-
-		/// @brief Load the engine.cfg file.
-		/// @return Loaded and parsed config.
-		static Utils::Config LoadTRAPConfig();
-
-#ifndef TRAP_HEADLESS_MODE
-		/// @brief Update the engine.cfg file.
-		/// @param config Config to update.
-		/// @param window Optional: Main Window to query data from.
-		/// @param fpsLimit FPS limit to save.
-		/// @param unfocusedFPSLimit Unfocused FPS limit to save.
-		/// @param renderAPI RenderAPI to save.
-		/// @remark @headless This function is not available in headless mode.
-		static void UpdateTRAPConfig(Utils::Config& config, const Window* window, u32 fpsLimit,
-		                             u32 unfocusedFPSLimit, Graphics::RenderAPI renderAPI);
-#else
-		/// @brief Update the engine.cfg file.
-		/// @param config Config to update.
-		/// @param fpsLimit FPS limit to save.
-		/// @param unfocusedFPSLimit Unfocused FPS limit to save.
-		/// @param renderAPI RenderAPI to save.
-		/// @remark This function is only available in headless mode.
-		static void UpdateTRAPConfig(Utils::Config& config, u32 fpsLimit, u32 unfocusedFPSLimit,
-		                             Graphics::RenderAPI renderAPI);
-#endif /*TRAP_HEADLESS_MODE*/
-
-		/// @brief Save the engine.cfg file.
-		/// @param config Config to save.
-		static void SaveTRAPConfig(Utils::Config& config);
-
-#ifndef TRAP_HEADLESS_MODE
-		/// @brief Load the advanced window properties from the given config.
-		/// @param config Config to load data from.
-		/// @return Advanced Window properties.
-		/// @remark @headless This function is not available in headless mode.
-		static WindowProps::AdvancedProps LoadAdvancedWindowProps(const TRAP::Utils::Config& config);
-#endif /*TRAP_HEADLESS_MODE*/
-#ifndef TRAP_HEADLESS_MODE
-		/// @brief Load the window properties from the given config.
-		/// @param config Config to load data from.
-		/// @return Window properties.
-		/// @remark @headless This function is not available in headless mode.
-		static WindowProps LoadWindowProps(const TRAP::Utils::Config& config);
-#endif /*TRAP_HEADLESS_MODE*/
-
-		/// @brief Select the RenderAPI to be used for rendering.
-		/// @param config Config to load data from.
-		/// @return RenderAPI to use for rendering.
-		static Graphics::RenderAPI SelectRenderAPI(const TRAP::Utils::Config& config);
-
-		/// @brief Initialize the RendererAPI.
-		/// @param gameName Name of the game.
-		/// @param renderAPI RenderAPI to use.
-		/// @param config Config to load data from.
-		static void InitializeRendererAPI(std::string_view gameName, const TRAP::Graphics::RenderAPI& renderAPI, const TRAP::Utils::Config& config);
-
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Create the main window.
 		/// @param winProps Properties for the window.
 		/// @return Created main window or nullptr.
 		/// @remark @linux If no known window manager can be found this function will close the engine.
 		/// @remark @headless This function is not available in headless mode.
-		static std::unique_ptr<TRAP::Window> CreateMainWindow(const TRAP::WindowProps& winProps);
+		[[nodiscard]] static std::unique_ptr<TRAP::Window> CreateMainWindow(const TRAP::WindowProps& winProps);
 #endif /*TRAP_HEADLESS_MODE*/
-#ifdef TRAP_HEADLESS_MODE
-		/// @brief Create the main viewport.
-		/// @param config Config to load data from.
-		/// @remark This function is only available in headless mode.
-		static void CreateMainViewport(const TRAP::Utils::Config& config);
-#endif /*TRAP_HEADLESS_MODE*/
-
-		/// @brief Load fallback shaders.
-		static void LoadFallbackShaders();
-		/// @brief Load fallback textures.
-		static void LoadFallbackTextures();
-		/// @brief Load fallback data.
-		static void LoadFallbackData();
-
-		/// @brief Apply RendererAPI specific settings from config file.
-		/// @param config Config to load data from.
-		static void ApplyRendererAPISettings(const TRAP::Utils::Config& config);
 
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Initialize TRAP::Input.
 		/// @remark @headless This function is not available in headless mode.
 		static void InitializeInput();
-#endif /*TRAP_HEADLESS_MODE*/
-#ifndef TRAP_HEADLESS_MODE
-		/// @brief Initialize ImGui Layer.
-		/// @param layerStack LayerStack to add ImGui to.
-		/// @return ImGui Layer on success, nullptr otherwise.
-		/// @remark @headless This function is not available in headless mode.
-		static TRAP::ImGuiLayer* InitializeImGui(TRAP::LayerStack& layerStack);
 #endif /*TRAP_HEADLESS_MODE*/
 
 		//Hot Reloading
