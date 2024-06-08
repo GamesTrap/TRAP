@@ -53,7 +53,7 @@ namespace TRAP::INTERNAL::Network::SocketImpl
 	/// @param address Target address.
 	/// @param port Target port.
 	/// @return sockaddr_in6 ready to be used by socket functions.
-	[[nodiscard]] sockaddr_in6 CreateAddress(const std::array<u8, 16>& address, u16 port);
+	[[nodiscard]] constexpr sockaddr_in6 CreateAddress(const std::array<u8, 16>& address, u16 port);
 
 	/// @brief Return the value of the invalid socket.
 	/// @return Special value of the invalid socket.
