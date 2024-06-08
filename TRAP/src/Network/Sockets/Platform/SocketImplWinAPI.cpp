@@ -36,46 +36,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
-[[nodiscard]] sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(u32 address, u16 port)
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
-
-	sockaddr_in addr{};
-
-	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
-	{
-		TRAP::Utils::Memory::SwapBytes(address);
-		TRAP::Utils::Memory::SwapBytes(port);
-	}
-
-	addr.sin_addr.s_addr = address;
-	addr.sin_family = AF_INET;
-	addr.sin_port = port;
-
-	return addr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<u8, 16>& address,
-                                                                              u16 port)
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
-
-	sockaddr_in6 addr{};
-	std::ranges::copy(address, addr.sin6_addr.u.Byte);
-	addr.sin6_family = AF_INET6;
-
-	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
-		TRAP::Utils::Memory::SwapBytes(port);
-
-	addr.sin6_port = port;
-
-	return addr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::INTERNAL::Network::SocketImpl::Close(const TRAP::Network::SocketHandle sock)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
@@ -148,10 +108,10 @@ struct SocketInitializer
 		WSACleanup();
 	}
 
-	SocketInitializer(const SocketInitializer&) noexcept = default;
-	SocketInitializer& operator= (const SocketInitializer&) noexcept = default;
-	SocketInitializer(SocketInitializer&&) noexcept = default;
-	SocketInitializer& operator= (SocketInitializer&&) noexcept = default;
+	constexpr SocketInitializer(const SocketInitializer&) noexcept = delete;
+	constexpr SocketInitializer& operator= (const SocketInitializer&) noexcept = delete;
+	constexpr SocketInitializer(SocketInitializer&&) noexcept = delete;
+	constexpr SocketInitializer& operator= (SocketInitializer&&) noexcept = delete;
 };
 
 //-------------------------------------------------------------------------------------------------------------------//

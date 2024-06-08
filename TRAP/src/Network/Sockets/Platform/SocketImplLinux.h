@@ -34,50 +34,86 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Core/PlatformDetection.h"
 
 #include "Network/Sockets/Socket.h"
+#include "Utils/Memory.h"
+#include "Utils/Utils.h"
 
 #ifdef TRAP_PLATFORM_LINUX
 
 #include "Utils/Linux.h"
 
-namespace TRAP::INTERNAL::Network
+/// @brief Helper namespace implementing all the non-portable
+/// socket stuff; this is the Unix version.
+namespace TRAP::INTERNAL::Network::SocketImpl
 {
-	/// @brief Helper class implementing all the non-portable
-	/// socket stuff; this is the Unix version.
-	class SocketImpl
+	/// @brief Types.
+	using AddressLength = socklen_t;
+
+	/// @brief Create an internal sockaddr_in address.
+	/// @param address Target address.
+	/// @param port Target port.
+	/// @return sockaddr_in ready to be used by socket functions.
+	[[nodiscard]] constexpr sockaddr_in CreateAddress(u32 address, u16 port);
+
+	/// @brief Create an internal sockaddr_in6 address.
+	/// @param address Target address.
+	/// @param port Target port.
+	/// @return sockaddr_in6 ready to be used by socket functions.
+	[[nodiscard]] constexpr sockaddr_in6 CreateAddress(const std::array<u8, 16>& address, u16 port);
+
+	/// @brief Return the value of the invalid socket.
+	/// @return Special value of the invalid socket.
+	[[nodiscard]] constexpr TRAP::Network::SocketHandle InvalidSocket() noexcept;
+
+	/// @brief Close and destroy a socket.
+	/// @param sock Handle of the socket to close.
+	void Close(TRAP::Network::SocketHandle sock);
+
+	/// @brief Set a socket as blocking or non-blocking.
+	/// @param sock Handle of the socket.
+	/// @param block New blocking state of the socket.
+	void SetBlocking(TRAP::Network::SocketHandle sock, bool block);
+
+	/// @brief Get the last socket error status.
+	/// @return Status corresponding to the last socket error.
+	[[nodiscard]] TRAP::Network::Socket::Status GetErrorStatus() noexcept;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(u32 address, u16 port)
+{
+	sockaddr_in addr{};
+
+	if constexpr (TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 	{
-	public:
-		/// @brief Types.
-		using AddressLength = socklen_t;
+		TRAP::Utils::Memory::SwapBytes(address);
+		TRAP::Utils::Memory::SwapBytes(port);
+	}
 
-		/// @brief Create an internal sockaddr_in address.
-		/// @param address Target address.
-		/// @param port Target port.
-		/// @return sockaddr_in ready to be used by socket functions.
-		[[nodiscard]] static sockaddr_in CreateAddress(u32 address, u16 port);
+	addr.sin_addr.s_addr = address;
+	addr.sin_family = AF_INET;
+	addr.sin_port = port;
 
-		/// @brief Create an internal sockaddr_in address.
-		/// @param address Target address.
-		/// @param port Target port.
-		/// @return sockaddr_in6 ready to be used by socket functions.
-		[[nodiscard]] static sockaddr_in6 CreateAddress(const std::array<u8, 16>& address, u16 port);
+	return addr;
+}
 
-		/// @brief Return the value of the invalid socket.
-		/// @return Special value of the invalid socket.
-		[[nodiscard]] static constexpr TRAP::Network::SocketHandle InvalidSocket() noexcept;
+//-------------------------------------------------------------------------------------------------------------------//
 
-		/// @brief Close and destroy a socket.
-		/// @param sock Handle of the socket to close.
-		static void Close(TRAP::Network::SocketHandle sock);
+[[nodiscard]] constexpr sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<u8, 16>& address,
+                                                                                        u16 port)
+{
+	sockaddr_in6 addr{};
+	std::ranges::copy(address, addr.sin6_addr.s6_addr);
+	addr.sin6_family = AF_INET6;
 
-		/// @brief Set a socket as blocking or non-blocking.
-		/// @param sock Handle of the socket.
-		/// @param block New blocking state of the socket.
-		static void SetBlocking(TRAP::Network::SocketHandle sock, bool block);
+	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
+	{
+		TRAP::Utils::Memory::SwapBytes(port);
+	}
 
-		/// @brief Get the last socket error status.
-		/// @return Status corresponding to the last socket error.
-		[[nodiscard]] static TRAP::Network::Socket::Status GetErrorStatus() noexcept;
-	};
+	addr.sin6_port = port;
+
+	return addr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
