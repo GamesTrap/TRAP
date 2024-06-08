@@ -627,7 +627,7 @@ template<typename T>
 requires std::floating_point<T>
 struct fmt::formatter<TRAP::Math::Mat<3, 3, T>>
 {
-    [[nodiscard]] static constexpr auto parse(fmt::format_parse_context& ctx)
+    [[nodiscard]] static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }

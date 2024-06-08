@@ -875,7 +875,7 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 struct fmt::formatter<TRAP::Math::Vec<3, T>>
 {
-    [[nodiscard]] static constexpr auto parse(fmt::format_parse_context& ctx)
+    [[nodiscard]] static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }

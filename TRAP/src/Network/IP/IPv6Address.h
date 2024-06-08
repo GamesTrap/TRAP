@@ -146,7 +146,7 @@ constexpr TRAP::Network::IPv6Address::IPv6Address(const std::array<u8, 16>& addr
 template<>
 struct fmt::formatter<TRAP::Network::IPv6Address>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }

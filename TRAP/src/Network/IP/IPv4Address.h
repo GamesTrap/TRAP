@@ -205,7 +205,7 @@ constexpr TRAP::Network::IPv4Address::IPv4Address(const u32 address)
 template<>
 struct fmt::formatter<TRAP::Network::IPv4Address>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }

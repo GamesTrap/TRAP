@@ -413,7 +413,7 @@ namespace TRAP::Network
 template<>
 struct fmt::formatter<TRAP::Network::FTP::Response::Status>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }
@@ -575,7 +575,7 @@ struct fmt::formatter<TRAP::Network::FTP::Response::Status>
 template<typename T>
 struct fmt::formatter<T, std::enable_if_t<std::is_base_of_v<TRAP::Network::FTP::Response, T>, char>>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }

@@ -222,7 +222,7 @@ namespace TRAP
 template<>
 struct fmt::formatter<TRAP::Rigidbody2DComponent::BodyType>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }

@@ -336,7 +336,7 @@ namespace TRAP::Network
 template<>
 struct fmt::formatter<TRAP::Network::HTTP::Request::Method>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }
@@ -379,7 +379,7 @@ struct fmt::formatter<TRAP::Network::HTTP::Request::Method>
 template<>
 struct fmt::formatter<TRAP::Network::HTTP::Response::Status>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }
