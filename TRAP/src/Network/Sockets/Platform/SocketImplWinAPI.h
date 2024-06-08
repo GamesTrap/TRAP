@@ -32,6 +32,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Core/PlatformDetection.h"
 #include "Core/Types.h"
 #include "Network/Sockets/Socket.h"
+#include "Utils/Memory.h"
+#include "Utils/Utils.h"
 #include "Network/Sockets/SocketHandle.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
