@@ -5085,3 +5085,4 @@ SITREP 06/09/2024|24w23b3
 SITREP 06/10/2024|24w24a1
     - Changed TRAP Engine version to 24w24a1(0.10.81)
     - Log Made TP_* functions constexpr compatible ~<5 mins
+    - VulkanRenderer Removed unimplemented shader data types ~<5 mins

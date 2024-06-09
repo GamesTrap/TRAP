@@ -75,7 +75,7 @@ namespace
 	};
 	TRAP::Utils::Safe<RenderPassData> SafeRenderPassData{};
 
-	constexpr TRAP::Graphics::API::ImageFormat ShaderDataTypeToImageFormat(const TRAP::Graphics::ShaderDataType s)
+	[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat ShaderDataTypeToImageFormat(const TRAP::Graphics::ShaderDataType s)
 	{
 		switch(s)
 		{
@@ -114,12 +114,10 @@ namespace
 
 		case TRAP::Graphics::ShaderDataType::UInt4:
 			return TRAP::Graphics::API::ImageFormat::R32G32B32A32_SINT;
-
-		case TRAP::Graphics::ShaderDataType::None:
-			[[fallthrough]];
-		default:
-			return TRAP::Graphics::API::ImageFormat::Undefined;
 		}
+
+		TRAP_ASSERT(false, "ShaderDataTypeToImageFormat(): Unknown ShaderDataType!");
+		return TRAP::Graphics::API::ImageFormat::Undefined;
 	};
 }
 

@@ -5,15 +5,13 @@
 
 namespace TRAP::Graphics
 {
+	//TODO Add support for half, double, u8, u16, u64, i8, i16, i64
 	/// @brief Different data types used by shaders.
 	enum class ShaderDataType
 	{
-		None = 0,
 		Float, Float2, Float3, Float4,
-		Mat3, Mat4,
 		Int, Int2, Int3, Int4,
-		UInt, UInt2, UInt3, UInt4,
-		Bool
+		UInt, UInt2, UInt3, UInt4
 	};
 
 	/// @brief Retrieve the byte size of a given shader data type.
@@ -25,13 +23,11 @@ namespace TRAP::Graphics
 	struct VertexBufferElement
 	{
 		std::string Name;
-		ShaderDataType Type{ShaderDataType::None};
+		ShaderDataType Type;
 		u32 Size{};
 		u32 Offset{};
 		bool Normalized{};
 
-		/// @brief Constructor.
-		constexpr VertexBufferElement() noexcept = default;
 		/// @brief Constructor.
 		/// Initialize the vertex buffer element with the given data.
 		/// @param type Shader data type.
@@ -42,11 +38,11 @@ namespace TRAP::Graphics
 		/// @brief Copy constructor.
 		constexpr VertexBufferElement(const VertexBufferElement&) = default;
 		/// @brief Copy assignment operator.
-		constexpr VertexBufferElement& operator=(const VertexBufferElement&) = default;
+		VertexBufferElement& operator=(const VertexBufferElement&) = default;
 		/// @brief Move constructor
 		constexpr VertexBufferElement(VertexBufferElement&&) noexcept= default;
 		/// @brief Move assignment operator.
-		constexpr VertexBufferElement& operator=(VertexBufferElement&&) noexcept = default;
+		VertexBufferElement& operator=(VertexBufferElement&&) noexcept = default;
 
 		/// @brief Destructor.
 		constexpr ~VertexBufferElement() = default;
