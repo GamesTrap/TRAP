@@ -27,6 +27,8 @@ namespace
 		}
 	}
 
+	//-------------------------------------------------------------------------------------------------------------------//
+
 	void AddPathToHotReloading(const std::filesystem::path& path)
 	{
 		const auto hotReloadingFileSystemWatcher = TRAP::Application::GetHotReloadingFileSystemWatcher();
@@ -41,6 +43,107 @@ namespace
 			return;
 
 		hotReloadingFileSystemWatcher->get().AddFolder(*folderPath);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// @brief Validate texture limits.
+	/// @param desc Texture description.
+	/// @return True if texture is inside limits, false otherwise.
+	[[nodiscard]] bool ValidateLimits(const TRAP::Graphics::RendererAPI::TextureDesc& desc)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+
+		if(desc.SampleCount > TRAP::Graphics::RendererAPI::SampleCount::One && desc.MipLevels > 1)
+		{
+			TP_ERROR(TRAP::Log::TexturePrefix, "Multi-Sampled textures cannot have mip maps!");
+			TRAP_ASSERT(false, "Texture::ValidateLimits(): Multi-Sampled textures cannot have mip maps!");
+			return false;
+		}
+		const bool cubeMapRequired = (desc.Descriptors & TRAP::Graphics::RendererAPI::DescriptorType::TextureCube) ==
+									 TRAP::Graphics::RendererAPI::DescriptorType::TextureCube;
+		if(!cubeMapRequired)
+		{
+			if(desc.Width > TRAP::Graphics::RendererAPI::GPUSettings.MaxImageDimension2D)
+			{
+				TP_ERROR(TRAP::Log::TexturePrefix, "Texture width: ", desc.Width,
+						" is bigger than max allowed size: ", TRAP::Graphics::RendererAPI::GPUSettings.MaxImageDimension2D, "!");
+				TRAP_ASSERT(false, "Texture::ValidateLimits(): Texture width is bigger than max allowed size!");
+				return false;
+			}
+			if(desc.Height > TRAP::Graphics::RendererAPI::GPUSettings.MaxImageDimension2D)
+			{
+				TP_ERROR(TRAP::Log::TexturePrefix, "Texture height: ", desc.Width,
+						" is bigger than max allowed size: ", TRAP::Graphics::RendererAPI::GPUSettings.MaxImageDimension2D, "!");
+				TRAP_ASSERT(false, "Texture::ValidateLimits(): Texture height is bigger than max allowed size!");
+				return false;
+			}
+		}
+		else
+		{
+			if(desc.Width > TRAP::Graphics::RendererAPI::GPUSettings.MaxImageDimensionCube)
+			{
+				TP_ERROR(TRAP::Log::TexturePrefix, "Texture width: ", desc.Width,
+						" is bigger than max allowed size: ", TRAP::Graphics::RendererAPI::GPUSettings.MaxImageDimensionCube, "!");
+				TRAP_ASSERT(false, "Texture::ValidateLimits(): Texture width is bigger than max allowed size!");
+				return false;
+			}
+			if(desc.Height > TRAP::Graphics::RendererAPI::GPUSettings.MaxImageDimensionCube)
+			{
+				TP_ERROR(TRAP::Log::TexturePrefix, "Texture height: ", desc.Width,
+						" is bigger than max allowed size: ", TRAP::Graphics::RendererAPI::GPUSettings.MaxImageDimensionCube, "!");
+				TRAP_ASSERT(false, "Texture::ValidateLimits(): Texture height is bigger than max allowed size!");
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// @brief Convert color format and bits per pixel to image format.
+	/// @param colorFormat Color format.
+	/// @param bpp Bits per pixel.
+	/// @return Image format.
+	[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat ColorFormatBitsPerPixelToImageFormat(const TRAP::Image::ColorFormat colorFormat,
+																						          const u32 bpp)
+	{
+		if(colorFormat == TRAP::Image::ColorFormat::RGBA)
+		{
+			if(bpp == 32)
+				return TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
+			if(bpp == 64)
+				return TRAP::Graphics::API::ImageFormat::R16G16B16A16_UNORM;
+			if(bpp == 128)
+				return TRAP::Graphics::API::ImageFormat::R32G32B32A32_SFLOAT;
+		}
+		else if(colorFormat == TRAP::Image::ColorFormat::GrayScaleAlpha)
+		{
+			if(bpp == 16)
+				return TRAP::Graphics::API::ImageFormat::R8G8_UNORM;
+			if(bpp == 32)
+				return TRAP::Graphics::API::ImageFormat::R16G16_UNORM;
+			if(bpp == 64)
+				return TRAP::Graphics::API::ImageFormat::R32G32_SFLOAT;
+		}
+		else if(colorFormat == TRAP::Image::ColorFormat::GrayScale)
+		{
+			if(bpp == 8)
+				return TRAP::Graphics::API::ImageFormat::R8_UNORM;
+			if(bpp == 16)
+				return TRAP::Graphics::API::ImageFormat::R16_UNORM;
+			if(bpp == 32)
+				return TRAP::Graphics::API::ImageFormat::R32_SFLOAT;
+		}
+		else if(colorFormat == TRAP::Image::ColorFormat::RGB)
+		{
+			TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Color format RGB is not allowed on empty textures as GPU needs an alpha channel!");
+			return TRAP::Graphics::API::ImageFormat::Undefined;
+		}
+
+		TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Invalid bits per pixel & color format combination provided!");
+		return TRAP::Graphics::API::ImageFormat::Undefined;
 	}
 }
 
@@ -683,109 +786,6 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return Math::Max(1u, NumericCast<u32>(Math::Floor(Math::Log2(NumericCast<f32>(Math::Max(width, height))))) + 1u);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Graphics::Texture::ValidateLimits(const RendererAPI::TextureDesc& desc)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-    if(desc.SampleCount > RendererAPI::SampleCount::One && desc.MipLevels > 1)
-	{
-		TP_ERROR(Log::TexturePrefix, "Multi-Sampled textures cannot have mip maps!");
-		TRAP_ASSERT(false, "Texture::ValidateLimits(): Multi-Sampled textures cannot have mip maps!");
-		return false;
-	}
-    const bool cubeMapRequired = (desc.Descriptors & RendererAPI::DescriptorType::TextureCube) ==
-	                              RendererAPI::DescriptorType::TextureCube;
-    if(!cubeMapRequired)
-    {
-        if(desc.Width > RendererAPI::GPUSettings.MaxImageDimension2D)
-        {
-            TP_ERROR(Log::TexturePrefix, "Texture width: ", desc.Width,
-                     " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimension2D, "!");
-            TRAP_ASSERT(false, "Texture::ValidateLimits(): Texture width is bigger than max allowed size!");
-            return false;
-        }
-        if(desc.Height > RendererAPI::GPUSettings.MaxImageDimension2D)
-        {
-            TP_ERROR(Log::TexturePrefix, "Texture height: ", desc.Width,
-                     " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimension2D, "!");
-            TRAP_ASSERT(false, "Texture::ValidateLimits(): Texture height is bigger than max allowed size!");
-            return false;
-        }
-    }
-    else
-    {
-        if(desc.Width > RendererAPI::GPUSettings.MaxImageDimensionCube)
-        {
-            TP_ERROR(Log::TexturePrefix, "Texture width: ", desc.Width,
-                     " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimensionCube, "!");
-            TRAP_ASSERT(false, "Texture::ValidateLimits(): Texture width is bigger than max allowed size!");
-            return false;
-        }
-        if(desc.Height > RendererAPI::GPUSettings.MaxImageDimensionCube)
-        {
-            TP_ERROR(Log::TexturePrefix, "Texture height: ", desc.Width,
-                     " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimensionCube, "!");
-            TRAP_ASSERT(false, "Texture::ValidateLimits(): Texture height is bigger than max allowed size!");
-            return false;
-        }
-    }
-
-    return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatBitsPerPixelToImageFormat(const Image::ColorFormat colorFormat,
-	                             											                                 const u32 bpp)
-{
-	if(colorFormat == Image::ColorFormat::GrayScale)
-	{
-		if(bpp == 8)
-			return API::ImageFormat::R8_UNORM;
-		if(bpp == 16)
-			return API::ImageFormat::R16_UNORM;
-		if(bpp == 32)
-			return API::ImageFormat::R32_SFLOAT;
-
-		TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Invalid bits per pixel & color format combination provided!");
-		return API::ImageFormat::Undefined;
-	}
-	if(colorFormat == Image::ColorFormat::GrayScaleAlpha)
-	{
-		if(bpp == 16)
-			return API::ImageFormat::R8G8_UNORM;
-		if(bpp == 32)
-		    return API::ImageFormat::R16G16_UNORM;
-		if(bpp == 64)
-		    return API::ImageFormat::R32G32_SFLOAT;
-
-		TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Invalid bits per pixel & color format combination provided!");
-		return API::ImageFormat::Undefined;
-	}
-	if(colorFormat == Image::ColorFormat::RGB)
-	{
-		TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Color format RGB is not allowed on empty textures as GPU needs an alpha channel!");
-		return API::ImageFormat::Undefined;
-	}
-	if(colorFormat == Image::ColorFormat::RGBA)
-	{
-		if(bpp == 32)
-			return API::ImageFormat::R8G8B8A8_UNORM;
-		if(bpp == 64)
-			return API::ImageFormat::R16G16B16A16_UNORM;
-		if(bpp == 128)
-			return API::ImageFormat::R32G32B32A32_SFLOAT;
-
-		TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Invalid bits per pixel & color format combination provided!");
-		return API::ImageFormat::Undefined;
-	}
-
-	TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Invalid color format provided!");
-	return API::ImageFormat::Undefined;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

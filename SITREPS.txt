@@ -5078,3 +5078,5 @@ SITREP 06/09/2024|24w23b3
     - Log Removed unused members ~<10 mins
     - SocketImplLinux/SocketImplWinAPI Changed class to namespace and more constexpr ~<15 mins
     - Input Moved global static and private static members to anonymous namespace ~>30 mins
+    - Texture Moved global static and private static members to anonymous namespace ~<30 mins
+    - Shader Moved global static and private static members to anonymous namespace ~<30 mins

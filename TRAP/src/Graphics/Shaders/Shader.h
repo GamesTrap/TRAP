@@ -239,10 +239,6 @@ namespace TRAP::Graphics
 		                                                  const std::vector<Macro>& userMacros = {});
 
 		static constexpr std::array<std::string_view, 3> SupportedShaderFormatSuffixes{".shader", ".glsl", ".tp-spv"};
-		static constexpr u32 SPIRVMagicNumber = 0x07230203u;
-		static constexpr std::string_view ShaderMagicNumber = "TRAP_SPV";
-		static constexpr usize ShaderHeaderOffset = ShaderMagicNumber.size() + sizeof(u32) +
-		                                                         sizeof(u8) + sizeof(usize) + sizeof(u8);
 
 	protected:
 		/// @brief Initialize API dependent shader.
@@ -258,77 +254,6 @@ namespace TRAP::Graphics
 		std::array<TRAP::Scope<DescriptorSet>, RendererAPI::MaxDescriptorSets> m_descriptorSets{};
 		std::vector<Macro> m_macros;
 		bool m_valid{};
-
-	private:
-		/// @brief Check if given file contains the TRAP Shader magic number.
-		/// @param filePath File path of the shader.
-		/// @return True if file has TRAP Shader magic number, false otherwise.
-		[[nodiscard]] static bool CheckTRAPShaderMagicNumber(const std::filesystem::path& filePath);
-
-		/// @brief Pre process GLSL source code.
-		///
-		/// 1. Splits different shader types like vertex, fragment, etc.
-		/// 2. Checks for duplicate shader types.
-		/// 3. Automatically adds #version directive.
-		/// 4. Inject default macros.
-		/// 4. Inject user defined macros.
-		/// @param glslSource GLSL source code.
-		/// @param shaders Output: Splitted shaders.
-		/// @param userMacros Optional: User defined macros.
-		/// @return True if pre processing was successful, false otherwise.
-		[[nodiscard]] static bool PreProcessGLSL(const std::string& glslSource,
-		                                         std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders,
-								                 std::span<const Macro> userMacros);
-		/// @brief Parse a glslang::TShader object.
-		/// @param shader glslang::TShader object.
-		/// @return True if parsing was successful, false otherwise.
-		[[nodiscard]] static bool ParseGLSLang(glslang::TShader& shader);
-		/// @brief Link a glslang::TShader to a glslang::TProgram object.
-		/// @param shader glslang::TShader object.
-		/// @param program glslang::TProgram object to link with.
-		/// @return True if linking was successful, false otherwise.
-		[[nodiscard]] static bool LinkGLSLang(glslang::TShader& shader, glslang::TProgram& program);
-		/// @brief Validate that the given shader stages are a valid combination.
-		///
-		/// 1. Checks if Rasterizer shaders are combined with Compute shader.
-		/// 2. Checks if Rasterizer shaders are combined with RayTracing shaders
-		/// 3. Checks if Compute shader is combined with RayTracing shaders.
-		/// 4. Checks if Vertex and Fragment shaders are combined.
-		/// @param shaders Shader stages to validate.
-		/// @return True if validation was successful, false otherwise.
-		[[nodiscard]] static constexpr bool ValidateShaderStages(const std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders);
-		/// @brief Convert GLSL shaders to SPIRV.
-		/// @param shaders GLSL shader(s) to convert.
-		/// @return RendererAPI::BinaryShaderDesc containing SPIRV binary data.
-		[[nodiscard]] static RendererAPI::BinaryShaderDesc ConvertGLSLToSPIRV(const std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders);
-		/// @brief Convert a glslang::TProgram object to SPIRV binary data.
-		/// @param stage Shader stage to convert.
-		/// @param program glslang::TProgram object to convert.
-		/// @return SPIRV binary data on success, empty vector otherwise.
-		[[nodiscard]] static std::vector<u32> ConvertToSPIRV(RendererAPI::ShaderStage stage,
-		                                                          glslang::TProgram& program);
-		/// @brief Load SPIRV binary data into RendererAPI::BinaryShaderDesc.
-		/// @param SPIRV SPIRV binary data.
-		/// @return RendererAPI::BinaryShaderDesc containing loaded SPIRV binary data.
-		[[nodiscard]] static RendererAPI::BinaryShaderDesc LoadSPIRV(std::vector<u8>& SPIRV);
-		/// @brief Check if the ending of the given path is a supported shader file ending.
-		/// @param filePath File path to check.
-		/// @return True if file ending is supported, false otherwise.
-		[[nodiscard]] static bool IsFileEndingSupported(const std::filesystem::path& filePath);
-		/// @brief Shader pre initialization.
-		///
-		/// 1. Checks if file type is supported shader type.
-		/// 2. Loads shader file from disk.
-		/// 3. If GLSL convert to SPIRV else loads SPIRV code.
-		/// 4. Check for invalid shader stages.
-		/// @param name Name of the shader.
-		/// @param filePath File path of the shader.
-		/// @param userMacros Optional user provided macros.
-		/// @param outShaderDesc Output binary shader description.
-		/// @param outFailShader Optional Output used if pre initialization failed.
-		/// @return True on successful pre initialization, false otherwise.
-		/// If false outFailShader may be filled with a fail shader.
-		[[nodiscard]] static bool PreInit(const std::string& name, const std::filesystem::path& filePath, const std::vector<Macro>& userMacros, RendererAPI::BinaryShaderDesc& outShaderDesc, Ref<Shader>& outFailShader);
 	};
 }
 
@@ -366,72 +291,6 @@ namespace TRAP::Graphics
 [[nodiscard]] constexpr bool TRAP::Graphics::Shader::IsShaderValid() const noexcept
 {
 	return m_valid;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr bool TRAP::Graphics::Shader::ValidateShaderStages(const std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders)
-{
-	RendererAPI::ShaderStage combinedStages = RendererAPI::ShaderStage::None;
-	for(const auto& [glsl, stage] : shaders)
-		combinedStages |= stage;
-
-	//Check if any Shader Stage is set
-	if (RendererAPI::ShaderStage::None == combinedStages)
-	{
-		TP_ERROR(Log::ShaderGLSLPrefix, "No shader stage found!");
-		return false;
-	}
-
-	//Check for "Normal" Shader Stages combined with Compute
-	if((((RendererAPI::ShaderStage::Vertex & combinedStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::Fragment & combinedStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::TessellationControl & combinedStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::TessellationEvaluation & combinedStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::Geometry & combinedStages) != RendererAPI::ShaderStage::None)) &&
-		((RendererAPI::ShaderStage::Compute & combinedStages) != RendererAPI::ShaderStage::None))
-	{
-		TP_ERROR(Log::ShaderGLSLPrefix, "Rasterizer shader stages combined with compute stage!");
-		return false;
-	}
-
-	//Check for "Normal" Shader Stages combined with RayTracing
-	if((((RendererAPI::ShaderStage::Vertex & combinedStages) != RendererAPI::ShaderStage::None) ||
-	    ((RendererAPI::ShaderStage::Fragment & combinedStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::TessellationControl & combinedStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::TessellationEvaluation & combinedStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::Geometry & combinedStages) != RendererAPI::ShaderStage::None)) &&
-		((RendererAPI::ShaderStage::RayTracing & combinedStages) != RendererAPI::ShaderStage::None))
-	{
-		TP_ERROR(Log::ShaderGLSLPrefix, "Rasterizer shader stages combined with ray tracing stage!");
-		return false;
-	}
-
-	//Check for Compute Shader Stage combined with RayTracing
-	if (((RendererAPI::ShaderStage::Compute & combinedStages) != RendererAPI::ShaderStage::None) &&
-		((RendererAPI::ShaderStage::RayTracing & combinedStages) != RendererAPI::ShaderStage::None))
-	{
-		TP_ERROR(Log::ShaderGLSLPrefix, "Compute shader stage combined with ray tracing stage!");
-		return false;
-	}
-
-	//Check for Vertex Shader Stage & required Fragment/Pixel Shader Stage
-	if(((RendererAPI::ShaderStage::Vertex & combinedStages) != RendererAPI::ShaderStage::None) &&
-	   (((RendererAPI::ShaderStage::Fragment & combinedStages)) == RendererAPI::ShaderStage::None))
-	{
-		TP_ERROR(Log::ShaderGLSLPrefix, "Only vertex shader stage provided! Missing fragment/pixel shader stage");
-		return false;
-	}
-	//Check for Fragment/Pixel Shader Stage & required Vertex Shader Stage
-	if(((RendererAPI::ShaderStage::Fragment & combinedStages) != RendererAPI::ShaderStage::None) &&
-	   (((RendererAPI::ShaderStage::Vertex & combinedStages)) == RendererAPI::ShaderStage::None))
-	{
-		TP_ERROR(Log::ShaderGLSLPrefix, "Only fragment/pixel shader stage provided! Missing vertex shader stage");
-		return false;
-	}
-
-	//Shader Stages should be valid
-	return true;
 }
 
 #endif /*TRAP_SHADER_H*/

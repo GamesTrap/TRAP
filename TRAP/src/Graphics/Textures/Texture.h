@@ -227,20 +227,11 @@ namespace TRAP::Graphics
 		/// @brief Shutdown API dependent texture.
 		virtual void Shutdown() = 0;
 
-		/// @brief Validate texture limits.
-		/// @param desc Texture description.
-		/// @return True if texture is inside limits, false otherwise.
-		[[nodiscard]] static bool ValidateLimits(const RendererAPI::TextureDesc& desc);
-
-		/// @brief Convert color format and bits per pixel to image format.
-		/// @param colorFormat Color format.
-		/// @param bpp Bits per pixel.
-		/// @return Image format.
-		[[nodiscard]] static API::ImageFormat ColorFormatBitsPerPixelToImageFormat(Image::ColorFormat colorFormat, u32 bpp);
 		/// @brief Convert image format to color format.
 		/// @param imageFormat Image format.
 		/// @return Color format.
 		[[nodiscard]] static constexpr Image::ColorFormat ImageFormatToColorFormat(API::ImageFormat imageFormat) noexcept;
+
 		/// @brief Retrieve bits per channel from image format.
 		/// @param imageFormat Image format.
 		/// @return Bits per channel.
