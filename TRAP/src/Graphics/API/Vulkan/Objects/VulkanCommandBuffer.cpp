@@ -143,14 +143,14 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindDescriptorSet(const u32 index
 				continue;
 
 			vkCmdBindDescriptorSets(m_vkCommandBuffer,
-									VkPipelineBindPointTranslator[std::to_underlying(rootSignature->GetPipelineType())],
+									VkPipelineBindPointTranslator(rootSignature->GetPipelineType()),
 									rootSignature->GetVkPipelineLayout(), setIndex, 1,
 									&rootSignature->GetVkEmptyDescriptorSets()[setIndex], 0, nullptr);
 		}
 	}
 
 	vkCmdBindDescriptorSets(m_vkCommandBuffer,
-	                        VkPipelineBindPointTranslator[std::to_underlying(rootSignature->GetPipelineType())],
+	                        VkPipelineBindPointTranslator(rootSignature->GetPipelineType()),
 	                        rootSignature->GetVkPipelineLayout(), dSet.GetSet(),
 	                        1, &dSet.GetVkDescriptorSets()[index], dSet.GetDynamicOffsetCount(),
 							dSet.GetDynamicOffsetCount() != 0u ? &dSet.GetDynamicSizeOffsets()[index].Offset : nullptr);
@@ -210,7 +210,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPipeline(const Pipeline& pipe
 	const VulkanPipeline* const vkPipeline = dynamic_cast<const VulkanPipeline*>(&pipeline);
 	TRAP_ASSERT(vkPipeline, "VulkanCommandBuffer::BindPipeline(): Failed to convert Pipeline to VulkanPipeline!");
 
-	const VkPipelineBindPoint pipelineBindPoint = VkPipelineBindPointTranslator[std::to_underlying(vkPipeline->GetPipelineType())];
+	const VkPipelineBindPoint pipelineBindPoint = VkPipelineBindPointTranslator(vkPipeline->GetPipelineType());
 	vkCmdBindPipeline(m_vkCommandBuffer, pipelineBindPoint, vkPipeline->GetVkPipeline());
 }
 

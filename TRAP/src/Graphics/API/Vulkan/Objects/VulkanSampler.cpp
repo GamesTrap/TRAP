@@ -83,7 +83,7 @@ namespace
 																                       minSamplerLod,
 																                       maxSampledLod,
 																                       samplerDesc.EnableAnisotropy ? samplerDesc.OverrideAnisotropyLevel : 0.0f,
-																                       TRAP::Graphics::API::VkComparisonFuncTranslator[std::to_underlying(samplerDesc.CompareFunc)]);
+																                       TRAP::Graphics::API::VkComparisonFuncTranslator(samplerDesc.CompareFunc));
 
 		if(!TRAP::Graphics::API::ImageFormatIsPlanar(samplerDesc.SamplerConversionDesc.Format))
 		{

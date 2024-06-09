@@ -472,7 +472,7 @@ namespace
 			const VkDescriptorUpdateTemplateCreateInfo createInfo = TRAP::Graphics::API::VulkanInits::DescriptorUpdateTemplateCreateInfo
 			(
 				vkDescriptorSetLayouts[setIndex], entries,
-				TRAP::Graphics::API::VkPipelineBindPointTranslator[std::to_underlying(pipelineType)],
+				TRAP::Graphics::API::VkPipelineBindPointTranslator(pipelineType),
 				pipelineLayout, setIndex
 			);
 			VkCall(vkCreateDescriptorUpdateTemplate(device.GetVkDevice(), &createInfo, nullptr,

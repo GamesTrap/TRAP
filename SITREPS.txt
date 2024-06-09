@@ -5080,3 +5080,4 @@ SITREP 06/09/2024|24w23b3
     - Input Moved global static and private static members to anonymous namespace ~>30 mins
     - Texture Moved global static and private static members to anonymous namespace ~<30 mins
     - Shader Moved global static and private static members to anonymous namespace ~<30 mins
+    - VulkanCommon Refactored various functions ~<60 mins

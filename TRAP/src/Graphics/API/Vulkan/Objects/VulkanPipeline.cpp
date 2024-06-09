@@ -229,7 +229,7 @@ namespace
 			}
 
 			currInputBindingDesc->binding = bindingValue;
-			currInputBindingDesc->inputRate = TRAP::Graphics::API::VkVertexInputRateTranslator[std::to_underlying(attribute.Rate)];
+			currInputBindingDesc->inputRate = TRAP::Graphics::API::VkVertexInputRateTranslator(attribute.Rate);
 			currInputBindingDesc->stride += TRAP::Graphics::API::ImageFormatBitSizeOfBlock(attribute.Format) / 8;
 		}
 

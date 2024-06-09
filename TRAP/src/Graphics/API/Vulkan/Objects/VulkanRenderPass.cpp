@@ -25,10 +25,10 @@ namespace
 		{
 			VkAttachmentLoadOp loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 			if(!desc.LoadActionsColor.empty())
-				loadOp = TRAP::Graphics::API::VkAttachmentLoadOpTranslator[std::to_underlying(desc.LoadActionsColor[i])];
+				loadOp = TRAP::Graphics::API::VkAttachmentLoadOpTranslator(desc.LoadActionsColor[i]);
 			VkAttachmentStoreOp storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 			if(!desc.StoreActionsColor.empty())
-				storeOp = TRAP::Graphics::API::VkAttachmentStoreOpTranslator[std::to_underlying(desc.StoreActionsColor[i])];
+				storeOp = TRAP::Graphics::API::VkAttachmentStoreOpTranslator(desc.StoreActionsColor[i]);
 
 			//Descriptions
 			outRenderPassAttachments.Attachments[i] = TRAP::Graphics::API::VulkanInits::AttachmentDescription(ImageFormatToVkFormat(desc.ColorFormats[i]),
@@ -61,10 +61,10 @@ namespace
 		const u32 idx = NumericCast<u32>(outRenderPassAttachments.ColorAttachmentReferences.size());
 		outRenderPassAttachments.Attachments[idx] = TRAP::Graphics::API::VulkanInits::AttachmentDescription(ImageFormatToVkFormat(desc.DepthStencilFormat),
 																											sampleCount,
-																											TRAP::Graphics::API::VkAttachmentLoadOpTranslator[std::to_underlying(desc.LoadActionDepth)],
-																											TRAP::Graphics::API::VkAttachmentStoreOpTranslator[std::to_underlying(desc.StoreActionDepth)],
-																											TRAP::Graphics::API::VkAttachmentLoadOpTranslator[std::to_underlying(desc.LoadActionStencil)],
-																											TRAP::Graphics::API::VkAttachmentStoreOpTranslator[std::to_underlying(desc.StoreActionStencil)],
+																											TRAP::Graphics::API::VkAttachmentLoadOpTranslator(desc.LoadActionDepth),
+																											TRAP::Graphics::API::VkAttachmentStoreOpTranslator(desc.StoreActionDepth),
+																											TRAP::Graphics::API::VkAttachmentLoadOpTranslator(desc.LoadActionStencil),
+																											TRAP::Graphics::API::VkAttachmentStoreOpTranslator(desc.StoreActionStencil),
 																											VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
 																											VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
 		);
@@ -141,10 +141,10 @@ namespace
 		{
 			VkAttachmentLoadOp loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 			if(!desc.LoadActionsColor.empty())
-				loadOp = TRAP::Graphics::API::VkAttachmentLoadOpTranslator[std::to_underlying(desc.LoadActionsColor[i])];
+				loadOp = TRAP::Graphics::API::VkAttachmentLoadOpTranslator(desc.LoadActionsColor[i]);
 			VkAttachmentStoreOp storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 			if(!desc.StoreActionsColor.empty())
-				storeOp = TRAP::Graphics::API::VkAttachmentStoreOpTranslator[std::to_underlying(desc.StoreActionsColor[i])];
+				storeOp = TRAP::Graphics::API::VkAttachmentStoreOpTranslator(desc.StoreActionsColor[i]);
 
 			//Descriptions
 			outRenderPassAttachments.Attachments[i] = TRAP::Graphics::API::VulkanInits::AttachmentDescription2(ImageFormatToVkFormat(desc.ColorFormats[i]),
@@ -180,10 +180,10 @@ namespace
 		const u32 idx = NumericCast<u32>(outRenderPassAttachments.ColorAttachmentReferences.size());
 		outRenderPassAttachments.Attachments[idx] = TRAP::Graphics::API::VulkanInits::AttachmentDescription2(ImageFormatToVkFormat(desc.DepthStencilFormat),
 																											 sampleCount,
-																											 TRAP::Graphics::API::VkAttachmentLoadOpTranslator[std::to_underlying(desc.LoadActionDepth)],
-																											 TRAP::Graphics::API::VkAttachmentStoreOpTranslator[std::to_underlying(desc.StoreActionDepth)],
-																											 TRAP::Graphics::API::VkAttachmentLoadOpTranslator[std::to_underlying(desc.LoadActionStencil)],
-																											 TRAP::Graphics::API::VkAttachmentStoreOpTranslator[std::to_underlying(desc.StoreActionStencil)],
+																											 TRAP::Graphics::API::VkAttachmentLoadOpTranslator(desc.LoadActionDepth),
+																											 TRAP::Graphics::API::VkAttachmentStoreOpTranslator(desc.StoreActionDepth),
+																											 TRAP::Graphics::API::VkAttachmentLoadOpTranslator(desc.LoadActionStencil),
+																											 TRAP::Graphics::API::VkAttachmentStoreOpTranslator(desc.StoreActionStencil),
 																											 VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
 																											 VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
 		);

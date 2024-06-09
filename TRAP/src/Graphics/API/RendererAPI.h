@@ -1247,9 +1247,7 @@ namespace TRAP::Graphics
 		{
 			Graphics = 0,
 			Transfer,
-			Compute,
-
-			MAX_QUEUE_TYPE
+			Compute
 		};
 
 		/// @brief Enum describing queue flags.
@@ -1284,9 +1282,7 @@ namespace TRAP::Graphics
 		{
 			DontCare,
 			Load,
-			Clear,
-
-			MAX_LOAD_ACTION_TYPE
+			Clear
 		};
 
 		/// @brief Enum describing the different types of store actions.
@@ -1295,9 +1291,7 @@ namespace TRAP::Graphics
 			//Store is the most common use case so keep that as default
 			Store,
 			DontCare,
-			None,
-
-			MAX_STORE_ACTION_TYPE
+			None
 		};
 
 		/// @brief Enum describing the different types of cube textures.
@@ -1564,9 +1558,7 @@ namespace TRAP::Graphics
 			Greater,
 			NotEqual,
 			GreaterOrEqual,
-			Always,
-
-			MAX_COMPARE_MODES
+			Always
 		};
 
 		/// @brief Enum describing the different shader stages making up a shader.
@@ -1605,12 +1597,10 @@ namespace TRAP::Graphics
 		/// @brief Enum describing the different pipeline types.
 		enum class PipelineType : u32
 		{
-			Undefined = 0,
+			Undefined = 0, //TODO Get rid of this value
 			Compute,
 			Graphics,
-			RayTracing,
-
-			PIPELINE_TYPE_COUNT
+			RayTracing
 		};
 
 		/// @brief Enum describing the different data types used by index buffers.
@@ -1635,9 +1625,7 @@ namespace TRAP::Graphics
 			OneMinusDstAlpha,
 			SrcAlphaSaturate,
 			BlendFactor,
-			OneMinusBlendFactor,
-
-			MAX_BLEND_CONSTANTS
+			OneMinusBlendFactor
 		};
 
 		/// @brief Enum describing the different blend modes/functions used for blending.
@@ -1647,9 +1635,7 @@ namespace TRAP::Graphics
 			Subtract,
 			ReverseSubtract,
 			Min,
-			Max,
-
-			MAX_BLEND_MODES
+			Max
 		};
 
 		/// @brief Enum describing which render target to affect with the blend state.
@@ -1677,9 +1663,7 @@ namespace TRAP::Graphics
 			Increment,
 			Decrement,
 			IncrementSaturation,
-			DecrementSaturation,
-
-			MAX_STENCIL_OPS
+			DecrementSaturation
 		};
 
 		/// @brief Enum describing the different cull modes.
@@ -1688,9 +1672,7 @@ namespace TRAP::Graphics
 			None = 0,
 			Back,
 			Front,
-			Both,
-
-			MAX_CULL_MODES
+			Both
 		};
 
 		/// @brief Enum describing the different front face winding orders.
@@ -1705,9 +1687,7 @@ namespace TRAP::Graphics
 		{
 			Solid,
 			Line,
-			Point,
-
-			MAX_FILL_MODES
+			Point
 		};
 
 		/// @brief Enum describing flags for pipeline cache creation.
@@ -1725,18 +1705,14 @@ namespace TRAP::Graphics
 			LineStrip,
 			TriangleList,
 			TriangleStrip,
-			PatchList,
-
-			PRIMITIVE_TOPOLOGY_COUNT
+			PatchList
 		};
 
 		/// @brief Enum describing the different vertex attribute rates.
 		enum class VertexAttributeRate
 		{
 			Vertex = 0,
-			Instance = 1,
-
-			VERTEX_ATTRIBUTE_RATE_COUNT
+			Instance = 1
 		};
 
 		/// @brief Enum describing the different types of queries.
@@ -1744,9 +1720,7 @@ namespace TRAP::Graphics
 		{
 			Timestamp = 0,
 			PipelineStatistics,
-			Occlusion,
-
-			QUERY_TYPE_COUNT
+			Occlusion
 		};
 
 		/// @brief Enum describing the different presentation statuses.

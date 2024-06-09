@@ -31,6 +31,7 @@
 
 #include "Core/PlatformDetection.h"
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Vulkan/Objects/VulkanInits.h"
 #include "Utils/ConstexprMap.h"
 
 namespace TRAP::Graphics::API
@@ -57,7 +58,7 @@ namespace TRAP::Graphics::API
 	/// @brief Convert the RendererAPI::QueueType to VkQueueFlags.
 	/// @param queueType QueueType to convert.
 	/// @return Converted VkQueueFlags.
-	[[nodiscard]] VkQueueFlags QueueTypeToVkQueueFlags(RendererAPI::QueueType queueType) noexcept;
+	[[nodiscard]] constexpr VkQueueFlags QueueTypeToVkQueueFlags(RendererAPI::QueueType queueType) noexcept;
 
 	/// @brief Convert the RendererAPI::SampleCount to VkSampleCountFlagBits.
 	/// @param sampleCount SampleCount to convert.
@@ -92,7 +93,7 @@ namespace TRAP::Graphics::API
 	/// @brief Convert the RendererAPI::MipMapMode to VkSamplerMipmapMode.
 	/// @param mipMapMode MipMapMode to convert.
 	/// @return Converted VkSamplerMipmapMode.
-	[[nodiscard]] VkSamplerMipmapMode MipMapModeToVkMipMapMode(RendererAPI::MipMapMode mipMapMode) noexcept;
+	[[nodiscard]] constexpr VkSamplerMipmapMode MipMapModeToVkMipMapMode(RendererAPI::MipMapMode mipMapMode) noexcept;
 	/// @brief Convert the RendererAPI::AddressMode to VkSamplerAddressMode.
 	/// @param addressMode AddressMode to convert.
 	/// @return Converted VkSamplerAddressMode.
@@ -100,17 +101,17 @@ namespace TRAP::Graphics::API
 	/// @brief Convert the RendererAPI::DescriptorType to VkDescriptorType.
 	/// @param type DescriptorType to convert.
 	/// @return Converted VkDescriptorType.
-	[[nodiscard]] VkDescriptorType DescriptorTypeToVkDescriptorType(RendererAPI::DescriptorType type) noexcept;
+	[[nodiscard]] constexpr VkDescriptorType DescriptorTypeToVkDescriptorType(RendererAPI::DescriptorType type) noexcept;
 	/// @brief Convert the RendererAPI::ShaderStage to VkShaderStageFlags.
 	/// @param stages ShaderStage(s) to convert.
 	/// @return Converted VkShaderStageFlags.
 	/// @note This returns all found VkShaderStageFlagBits in stages as a single VkShaderStageFlags value.
-	[[nodiscard]] VkShaderStageFlags ShaderStageToVkShaderStageFlags(RendererAPI::ShaderStage stages) noexcept;
+	[[nodiscard]] constexpr VkShaderStageFlags ShaderStageToVkShaderStageFlags(RendererAPI::ShaderStage stages) noexcept;
 	/// @brief Convert the RendererAPI::ShaderStage to VkShaderStageFlagBits.
 	/// @param stages ShaderStage(s) to convert.
 	/// @return Converted VkShaderStageFlagBits.
 	/// @note This returns the first found VkShaderStageFlagBits.
-	[[nodiscard]] VkShaderStageFlagBits ShaderStageToVkShaderStageFlagBits(RendererAPI::ShaderStage stage) noexcept;
+	[[nodiscard]] constexpr VkShaderStageFlagBits ShaderStageToVkShaderStageFlagBits(RendererAPI::ShaderStage stage) noexcept;
 	/// @brief Convert the RendererAPI::PipelineCacheFlags to VkPipelineCacheCreateFlags.
 	/// @param flags PipelineCacheFlag to convert.
 	/// @return Converted VkPipelineCacheCreateFlags.
@@ -131,7 +132,7 @@ namespace TRAP::Graphics::API
 	/// @brief Convert the RendererAPI::QueryType to VkQueryType.
 	/// @param type QueryType to convert.
 	/// @return Converted VkQueryType.
-	[[nodiscard]] VkQueryType QueryTypeToVkQueryType(RendererAPI::QueryType type) noexcept;
+	[[nodiscard]] constexpr VkQueryType QueryTypeToVkQueryType(RendererAPI::QueryType type) noexcept;
 	/// @brief Convert the RendererAPI::PrimitiveTopology to VkPrimitiveTopology.
 	/// @param primitiveTopology Primitive topology to convert.
 	/// @return Converted VkPrimitiveTopology.
@@ -142,18 +143,18 @@ namespace TRAP::Graphics::API
 	/// @param desc BlendStateDesc.
 	/// @param attachments Color blend attachments.
 	/// @return Created VkPipelineColorBlendStateCreateInfo.
-	[[nodiscard]] VkPipelineColorBlendStateCreateInfo UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
-	                                                                  std::vector<VkPipelineColorBlendAttachmentState>& attachments) ;
+	[[nodiscard]] constexpr VkPipelineColorBlendStateCreateInfo UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
+	                                                                            std::vector<VkPipelineColorBlendAttachmentState>& attachments) ;
 	/// @brief Utility to create the VkPipelineDepthStencilStateCreateInfo struct from
 	/// a RendererAPI::DepthStateDesc.
 	/// @param desc DepthStateDesc.
 	/// @return Created VkPipelineDepthStencilStateCreateInfo.
-	[[nodiscard]] VkPipelineDepthStencilStateCreateInfo UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc);
+	[[nodiscard]] constexpr VkPipelineDepthStencilStateCreateInfo UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc);
 	/// @brief Utility to create the VkPipelineRasterizationStateCreateInfo struct from
 	/// a RendererAPI::RasterizerStateDesc.
 	/// @param desc RasterizerStateDesc.
 	/// @return Created VkPipelineRasterizationStateCreateInfo.
-	[[nodiscard]] VkPipelineRasterizationStateCreateInfo UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc);
+	[[nodiscard]] constexpr VkPipelineRasterizationStateCreateInfo UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc);
 	/// @brief Utility to retrieve the planar image memory requirement for Vulkan.
 	/// @param device Vulkan device.
 	/// @param image Vulkan image.
@@ -166,12 +167,12 @@ namespace TRAP::Graphics::API
 	/// a RendererAPI::ShadingRateCombiner.
 	/// @param combiner ShadingRateCombiner.
 	/// @return Converted VkFragmentShadingRateCombinerOpKHR.
-	[[nodiscard]] VkFragmentShadingRateCombinerOpKHR ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const RendererAPI::ShadingRateCombiner& combiner);
+	[[nodiscard]] constexpr VkFragmentShadingRateCombinerOpKHR ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(RendererAPI::ShadingRateCombiner combiner);
 	/// @brief Utility to create the VkExtent2D (fragment size) from
 	/// a RendererAPI::ShadingRate.
 	/// @param rate ShadingRate.
 	/// @return Converted VkExtent2D.
-	[[nodiscard]] VkExtent2D ShadingRateToVkExtent2D(const RendererAPI::ShadingRate& rate);
+	[[nodiscard]] constexpr VkExtent2D ShadingRateToVkExtent2D(RendererAPI::ShadingRate rate);
 
 	/// @brief Retrieve the recommended swapchain format for Vulkan.
 	/// @param HDR True if HDR is desired.
@@ -200,123 +201,269 @@ namespace TRAP::Graphics::API
 	void VkSetObjectName(VkDevice device, u64 handle, VkObjectType type, std::string_view name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
-	constexpr std::array<VkAttachmentLoadOp,
-	                            std::to_underlying(RendererAPI::LoadActionType::MAX_LOAD_ACTION_TYPE)> VkAttachmentLoadOpTranslator =
+	[[nodiscard]] constexpr VkAttachmentLoadOp VkAttachmentLoadOpTranslator(const RendererAPI::LoadActionType loadActionType)
 	{
-		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-		VK_ATTACHMENT_LOAD_OP_LOAD,
-		VK_ATTACHMENT_LOAD_OP_CLEAR
+		using enum TRAP::Graphics::RendererAPI::LoadActionType;
+
+		switch(loadActionType)
+		{
+		case Load:
+			return VK_ATTACHMENT_LOAD_OP_LOAD;
+		case Clear:
+			return VK_ATTACHMENT_LOAD_OP_CLEAR;
+		case DontCare:
+			return VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		}
+
+		TRAP_ASSERT(false, "VkAttachmentLoadOpTranslator(): Unknown RendererAPI::LoadActionType!");
+		return VK_ATTACHMENT_LOAD_OP_MAX_ENUM;
 	};
 
-	constexpr std::array<VkAttachmentStoreOp,
-	                            std::to_underlying(RendererAPI::StoreActionType::MAX_STORE_ACTION_TYPE)> VkAttachmentStoreOpTranslator =
+
+	[[nodiscard]] constexpr VkAttachmentStoreOp VkAttachmentStoreOpTranslator(const RendererAPI::StoreActionType storeActionType)
 	{
-		VK_ATTACHMENT_STORE_OP_STORE,
-		VK_ATTACHMENT_STORE_OP_DONT_CARE,
-		//Don't care is treated as store op none in most drivers
-		VK_ATTACHMENT_STORE_OP_DONT_CARE
+		using enum TRAP::Graphics::RendererAPI::StoreActionType;
+
+		switch(storeActionType)
+		{
+		case Store:
+			return VK_ATTACHMENT_STORE_OP_STORE;
+		case DontCare:
+			return VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		//Store op none is treated as dont care in most drivers
+		case None:
+			return VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		}
+
+		TRAP_ASSERT(false, "VkAttachmentStoreOpTranslator(): Unknown RendererAPI::StoreActionType!");
+		return VK_ATTACHMENT_STORE_OP_MAX_ENUM;
 	};
 
-	constexpr std::array<VkCompareOp,
-	                            std::to_underlying(RendererAPI::CompareMode::MAX_COMPARE_MODES)> VkComparisonFuncTranslator =
+	[[nodiscard]] constexpr VkCompareOp VkComparisonFuncTranslator(const RendererAPI::CompareMode compareMode)
 	{
-		VK_COMPARE_OP_NEVER,
-		VK_COMPARE_OP_LESS,
-		VK_COMPARE_OP_EQUAL,
-		VK_COMPARE_OP_LESS_OR_EQUAL,
-		VK_COMPARE_OP_GREATER,
-		VK_COMPARE_OP_NOT_EQUAL,
-		VK_COMPARE_OP_GREATER_OR_EQUAL,
-		VK_COMPARE_OP_ALWAYS
-	};
+		using enum TRAP::Graphics::RendererAPI::CompareMode;
 
-	constexpr std::array<VkPipelineBindPoint,
-	                            std::to_underlying(RendererAPI::PipelineType::PIPELINE_TYPE_COUNT)> VkPipelineBindPointTranslator =
-	{
-		VK_PIPELINE_BIND_POINT_MAX_ENUM,
-		VK_PIPELINE_BIND_POINT_COMPUTE,
-		VK_PIPELINE_BIND_POINT_GRAPHICS,
-		VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR
-	};
+		switch(compareMode)
+		{
+		case Never:
+			return VK_COMPARE_OP_NEVER;
+		case Less:
+			return VK_COMPARE_OP_LESS;
+		case Equal:
+			return VK_COMPARE_OP_EQUAL;
+		case LessOrEqual:
+			return VK_COMPARE_OP_LESS_OR_EQUAL;
+		case Greater:
+			return VK_COMPARE_OP_GREATER;
+		case NotEqual:
+			return VK_COMPARE_OP_NOT_EQUAL;
+		case GreaterOrEqual:
+			return VK_COMPARE_OP_GREATER_OR_EQUAL;
+		case Always:
+			return VK_COMPARE_OP_ALWAYS;
+		}
 
-	constexpr std::array<VkBlendFactor,
-	                            std::to_underlying(RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS)> VkBlendConstantTranslator =
-	{
-		VK_BLEND_FACTOR_ZERO,
-		VK_BLEND_FACTOR_ONE,
-		VK_BLEND_FACTOR_SRC_COLOR,
-		VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR,
-		VK_BLEND_FACTOR_DST_COLOR,
-		VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR,
-		VK_BLEND_FACTOR_SRC_ALPHA,
-		VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
-		VK_BLEND_FACTOR_DST_ALPHA,
-		VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA,
-		VK_BLEND_FACTOR_SRC_ALPHA_SATURATE,
-		VK_BLEND_FACTOR_CONSTANT_COLOR,
-		VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR
-	};
+		TRAP_ASSERT(false, "VkComparisonFuncTranslator(): Unknown RendererAPI::CompareMode!");
+		return VK_COMPARE_OP_MAX_ENUM;
+	}
 
-	constexpr std::array<VkBlendOp,
-	                            std::to_underlying(RendererAPI::BlendMode::MAX_BLEND_MODES)> VkBlendOpTranslator =
+	[[nodiscard]] constexpr VkPipelineBindPoint VkPipelineBindPointTranslator(const RendererAPI::PipelineType pipelineType)
 	{
-		VK_BLEND_OP_ADD,
-		VK_BLEND_OP_SUBTRACT,
-		VK_BLEND_OP_REVERSE_SUBTRACT,
-		VK_BLEND_OP_MIN,
-		VK_BLEND_OP_MAX
-	};
+		using enum TRAP::Graphics::RendererAPI::PipelineType;
 
-	constexpr std::array<VkStencilOp,
-	                            std::to_underlying(RendererAPI::StencilOp::MAX_STENCIL_OPS)> VkStencilOpTranslator =
-	{
-		VK_STENCIL_OP_KEEP,
-		VK_STENCIL_OP_ZERO,
-		VK_STENCIL_OP_REPLACE,
-		VK_STENCIL_OP_INVERT,
-		VK_STENCIL_OP_INCREMENT_AND_WRAP,
-		VK_STENCIL_OP_DECREMENT_AND_WRAP,
-		VK_STENCIL_OP_INCREMENT_AND_CLAMP,
-		VK_STENCIL_OP_DECREMENT_AND_CLAMP
-	};
+		switch(pipelineType)
+		{
+		case Compute:
+			return VK_PIPELINE_BIND_POINT_COMPUTE;
+		case Graphics:
+			return VK_PIPELINE_BIND_POINT_GRAPHICS;
+		case RayTracing:
+			return VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR;
 
-	constexpr std::array<VkCullModeFlagBits,
-	                            std::to_underlying(RendererAPI::CullMode::MAX_CULL_MODES)> VkCullModeTranslator =
-	{
-		VK_CULL_MODE_NONE,
-		VK_CULL_MODE_BACK_BIT,
-		VK_CULL_MODE_FRONT_BIT
-	};
+		//TODO Remove
+		case Undefined:
+			TRAP_ASSERT(false, "VkPipelineBindPointTranslator(): Invalid RendererAPI::PipelineType value!");
+			return VK_PIPELINE_BIND_POINT_MAX_ENUM;
+		}
 
-	constexpr std::array<VkPolygonMode,
-	                            std::to_underlying(RendererAPI::FillMode::MAX_FILL_MODES)> VkFillModeTranslator =
-	{
-		VK_POLYGON_MODE_FILL,
-		VK_POLYGON_MODE_LINE
-	};
+		TRAP_ASSERT(false, "VkPipelineBindPointTranslator(): Unknown RendererAPI::PipelineType!");
+		return VK_PIPELINE_BIND_POINT_MAX_ENUM;
+	}
 
-	constexpr std::array<VkFrontFace, 2> VkFrontFaceTranslator =
+	[[nodiscard]] constexpr VkBlendFactor VkBlendConstantTranslator(const RendererAPI::BlendConstant blendConstant)
 	{
-		VK_FRONT_FACE_COUNTER_CLOCKWISE,
-		VK_FRONT_FACE_CLOCKWISE
-	};
+		using enum TRAP::Graphics::RendererAPI::BlendConstant;
 
-	constexpr std::array<VkVertexInputRate, 2> VkVertexInputRateTranslator =
+		switch(blendConstant)
+		{
+		case Zero:
+			return VK_BLEND_FACTOR_ZERO;
+		case One:
+			return VK_BLEND_FACTOR_ONE;
+		case SrcColor:
+			return VK_BLEND_FACTOR_SRC_COLOR;
+		case OneMinusSrcColor:
+			return VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR;
+		case DstColor:
+			return VK_BLEND_FACTOR_DST_COLOR;
+		case OneMinusDstColor:
+			return VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR;
+		case SrcAlpha:
+			return VK_BLEND_FACTOR_SRC_ALPHA;
+		case OneMinusSrcAlpha:
+			return VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+		case DstAlpha:
+			return VK_BLEND_FACTOR_DST_ALPHA;
+		case OneMinusDstAlpha:
+			return VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA;
+		case SrcAlphaSaturate:
+			return VK_BLEND_FACTOR_SRC_ALPHA_SATURATE;
+		case BlendFactor:
+			return VK_BLEND_FACTOR_CONSTANT_COLOR;
+		case OneMinusBlendFactor:
+			return VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR;
+		}
+
+		TRAP_ASSERT(false, "VkBlendConstantTranslator(): Unknown RendererAPI::BlendConstant!");
+		return VK_BLEND_FACTOR_MAX_ENUM;
+	}
+
+	[[nodiscard]] constexpr VkBlendOp VkBlendOpTranslator(const RendererAPI::BlendMode blendMode)
 	{
-		VK_VERTEX_INPUT_RATE_VERTEX,
-		VK_VERTEX_INPUT_RATE_INSTANCE
-	};
+		using enum RendererAPI::BlendMode;
+
+		switch(blendMode)
+		{
+		case Add:
+			return VK_BLEND_OP_ADD;
+		case Subtract:
+			return VK_BLEND_OP_SUBTRACT;
+		case ReverseSubtract:
+			return VK_BLEND_OP_REVERSE_SUBTRACT;
+		case Min:
+			return VK_BLEND_OP_MIN;
+		case Max:
+			return VK_BLEND_OP_MAX;
+		}
+
+		TRAP_ASSERT(false, "VkBlendOpTranslator(): Unknown RendererAPI::BlendMode!");
+		return VK_BLEND_OP_MAX_ENUM;
+	}
+
+	[[nodiscard]] constexpr VkStencilOp VkStencilOpTranslator(const RendererAPI::StencilOp stencilOp)
+	{
+		using enum RendererAPI::StencilOp;
+
+		switch(stencilOp)
+		{
+		case Keep:
+			return VK_STENCIL_OP_KEEP;
+		case SetZero:
+			return VK_STENCIL_OP_ZERO;
+		case Replace:
+			return VK_STENCIL_OP_REPLACE;
+		case Invert:
+			return VK_STENCIL_OP_INVERT;
+		case Increment:
+			return VK_STENCIL_OP_INCREMENT_AND_WRAP;
+		case Decrement:
+			return VK_STENCIL_OP_DECREMENT_AND_WRAP;
+		case IncrementSaturation:
+			return VK_STENCIL_OP_INCREMENT_AND_CLAMP;
+		case DecrementSaturation:
+			return VK_STENCIL_OP_DECREMENT_AND_CLAMP;
+		}
+
+		TRAP_ASSERT(false, "VkStencilOpTranslator(): Unknown RendererAPI::StencilOp!");
+		return VK_STENCIL_OP_MAX_ENUM;
+	}
+
+	[[nodiscard]] constexpr VkCullModeFlagBits VkCullModeTranslator(const RendererAPI::CullMode cullMode)
+	{
+		using enum RendererAPI::CullMode;
+
+		switch(cullMode)
+		{
+		case None:
+			return VK_CULL_MODE_NONE;
+		case Back:
+			return VK_CULL_MODE_BACK_BIT;
+		case Front:
+			return VK_CULL_MODE_FRONT_BIT;
+		case Both:
+			return VK_CULL_MODE_FRONT_AND_BACK;
+		}
+
+		TRAP_ASSERT(false, "VkCullModeTranslator(): Unknown RendererAPI::CullMode!");
+		return VK_CULL_MODE_FLAG_BITS_MAX_ENUM;
+	}
+
+	[[nodiscard]] constexpr VkPolygonMode VkFillModeTranslator(const RendererAPI::FillMode fillMode)
+	{
+		using enum RendererAPI::FillMode;
+
+		switch(fillMode)
+		{
+		case Solid:
+			return VK_POLYGON_MODE_FILL;
+		case Line:
+			return VK_POLYGON_MODE_LINE;
+		case Point:
+			return VK_POLYGON_MODE_POINT;
+		}
+
+		TRAP_ASSERT(false, "VkFillModeTranslator(): Unknown RendererAPI::FillMode!");
+		return VK_POLYGON_MODE_MAX_ENUM;
+	}
+
+	[[nodiscard]] constexpr VkFrontFace VkFrontFaceTranslator(const RendererAPI::FrontFace frontFace)
+	{
+		using enum RendererAPI::FrontFace;
+
+		switch(frontFace)
+		{
+		case CounterClockwise:
+			return VK_FRONT_FACE_COUNTER_CLOCKWISE;
+		case Clockwise:
+			return VK_FRONT_FACE_CLOCKWISE;
+		}
+
+		TRAP_ASSERT(false, "VkFrontFaceTranslator(): Unknown RendererAPI::FrontFace!");
+		return VK_FRONT_FACE_MAX_ENUM;
+	}
+
+	[[nodiscard]] constexpr VkVertexInputRate VkVertexInputRateTranslator(const RendererAPI::VertexAttributeRate vertexAttributeRate)
+	{
+		using enum RendererAPI::VertexAttributeRate;
+
+		switch(vertexAttributeRate)
+		{
+		case Vertex:
+			return VK_VERTEX_INPUT_RATE_VERTEX;
+		case Instance:
+			return VK_VERTEX_INPUT_RATE_INSTANCE;
+		}
+
+		TRAP_ASSERT(false, "VkVertexInputRateTranslator(): Unknown RendererAPI::VertexAttributeRate!");
+		return VK_VERTEX_INPUT_RATE_MAX_ENUM;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef TRAP_DEBUG
  	/// @brief Utility to check VkResult for errors and log them.
- 	#define VkCall(x) { constexpr std::source_location loc = std::source_location::current(); \
- 	                    ::TRAP::Graphics::API::ErrorCheck(x, loc); }
+	/// @param result Vulkan result to check.
+	/// @param loc Source location where VkCall() got called from.
+	constexpr void VkCall(const VkResult result, const std::source_location& loc = std::source_location::current())
+	{
+		::TRAP::Graphics::API::ErrorCheck(result, loc);
+	}
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-	#define VkReflexCall(x) { constexpr std::source_location loc = std::source_location::current(); \
- 	                          ::TRAP::Graphics::API::ReflexErrorCheck(x, loc); }
+	constexpr void VkReflexCall(const NvLL_VK_Status status, const std::source_location& loc = std::source_location::current())
+	{
+		::TRAP::Graphics::API::ReflexErrorCheck(status, loc);
+	}
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 #else
 	/// @brief Utility to check VkResult for errors and log them.
@@ -429,6 +576,26 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr VkQueueFlags TRAP::Graphics::API::QueueTypeToVkQueueFlags(const RendererAPI::QueueType queueType) noexcept
+{
+	switch(queueType)
+	{
+	case RendererAPI::QueueType::Graphics:
+		return VK_QUEUE_GRAPHICS_BIT;
+
+	case RendererAPI::QueueType::Transfer:
+		return VK_QUEUE_TRANSFER_BIT;
+
+	case RendererAPI::QueueType::Compute:
+		return VK_QUEUE_COMPUTE_BIT;
+	}
+
+	TRAP_ASSERT(false, "QueueTypeToVkQueueFlags(): Unknown RendererAPI::QueueType!");
+	return VK_QUEUE_FLAG_BITS_MAX_ENUM;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr VkSampleCountFlagBits TRAP::Graphics::API::SampleCountToVkSampleCount(const RendererAPI::SampleCount sampleCount) noexcept
 {
 	switch(sampleCount)
@@ -447,10 +614,10 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 
 	case RendererAPI::SampleCount::Sixteen:
 		return VK_SAMPLE_COUNT_16_BIT;
-
-	default:
-		return VK_SAMPLE_COUNT_1_BIT;
 	}
+
+	TRAP_ASSERT(false, "SampleCountToVkSampleCount(): Unknown RendererAPI::SampleCount!");
+	return VK_SAMPLE_COUNT_FLAG_BITS_MAX_ENUM;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -779,10 +946,27 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 
 	case RendererAPI::FilterType::Linear:
 		return VK_FILTER_LINEAR;
-
-	default:
-		return VK_FILTER_LINEAR;
 	}
+
+	TRAP_ASSERT(false, "FilterTypeToVkFilter(): Unknown RendererAPI::FilterType!");
+	return VK_FILTER_MAX_ENUM;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkSamplerMipmapMode TRAP::Graphics::API::MipMapModeToVkMipMapMode(const RendererAPI::MipMapMode mipMapMode) noexcept
+{
+	switch (mipMapMode)
+	{
+	case RendererAPI::MipMapMode::Nearest:
+		return VK_SAMPLER_MIPMAP_MODE_NEAREST;
+
+	case RendererAPI::MipMapMode::Linear:
+		return VK_SAMPLER_MIPMAP_MODE_LINEAR;
+	}
+
+	TRAP_ASSERT(false, "MipMapModeToVkMipMapMode(): Unknown RendererAPI::MipMapMode!");
+	return VK_SAMPLER_MIPMAP_MODE_MAX_ENUM;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -802,10 +986,124 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 
 	case RendererAPI::AddressMode::ClampToBorder:
 		return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
+	}
+
+	TRAP_ASSERT(false, "AddressModeToVkAddressMode(): Unknown RendererAPI::AddressMode!");
+	return VK_SAMPLER_ADDRESS_MODE_MAX_ENUM;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType(const RendererAPI::DescriptorType type) noexcept
+{
+	switch(type)
+	{
+	case RendererAPI::DescriptorType::Undefined:
+		TRAP_ASSERT(false, "DescriptorTypeToVkDescriptorType(): Invalid DescriptorInfo Type");
+		return VK_DESCRIPTOR_TYPE_MAX_ENUM;
+
+	case RendererAPI::DescriptorType::Sampler:
+		return VK_DESCRIPTOR_TYPE_SAMPLER;
+
+	case RendererAPI::DescriptorType::Texture:
+		return VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+
+	case RendererAPI::DescriptorType::UniformBuffer:
+		return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+
+	case RendererAPI::DescriptorType::RWTexture:
+		return VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+
+	case RendererAPI::DescriptorType::Buffer:
+		[[fallthrough]];
+	case RendererAPI::DescriptorType::RWBuffer:
+		return VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+
+	case RendererAPI::DescriptorType::InputAttachment:
+		return VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
+
+	case RendererAPI::DescriptorType::TexelBuffer:
+		return VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
+
+	case RendererAPI::DescriptorType::RWTexelBuffer:
+		return VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
+
+	case RendererAPI::DescriptorType::CombinedImageSampler:
+		return VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+
+	//RayTracing
+	case RendererAPI::DescriptorType::RayTracing:
+		return VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR;
 
 	default:
-		return VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		TRAP_ASSERT(false, "DescriptorTypeToVkDescriptorType(): Invalid DescriptorInfo Type");
+		return VK_DESCRIPTOR_TYPE_MAX_ENUM;
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlags(const RendererAPI::ShaderStage stages) noexcept
+{
+	VkShaderStageFlags res = 0;
+
+	if ((stages & RendererAPI::ShaderStage::AllGraphics) != RendererAPI::ShaderStage::None)
+		return VK_SHADER_STAGE_ALL_GRAPHICS;
+
+	if ((stages & RendererAPI::ShaderStage::Vertex) != RendererAPI::ShaderStage::None)
+		res |= VK_SHADER_STAGE_VERTEX_BIT;
+	if ((stages & RendererAPI::ShaderStage::Geometry) != RendererAPI::ShaderStage::None)
+		res |= VK_SHADER_STAGE_GEOMETRY_BIT;
+	if ((stages & RendererAPI::ShaderStage::TessellationEvaluation) != RendererAPI::ShaderStage::None)
+		res |= VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
+	if ((stages & RendererAPI::ShaderStage::TessellationControl) != RendererAPI::ShaderStage::None)
+		res |= VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
+	if ((stages & RendererAPI::ShaderStage::Fragment) != RendererAPI::ShaderStage::None)
+		res |= VK_SHADER_STAGE_FRAGMENT_BIT;
+	if ((stages & RendererAPI::ShaderStage::Compute) != RendererAPI::ShaderStage::None)
+		res |= VK_SHADER_STAGE_COMPUTE_BIT;
+	//RayTracing
+	if ((stages & RendererAPI::ShaderStage::RayTracing) != RendererAPI::ShaderStage::None)
+		res |= (VK_SHADER_STAGE_RAYGEN_BIT_KHR | VK_SHADER_STAGE_ANY_HIT_BIT_KHR |
+			    VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_MISS_BIT_KHR |
+			    VK_SHADER_STAGE_INTERSECTION_BIT_KHR | VK_SHADER_STAGE_CALLABLE_BIT_KHR);
+
+	TRAP_ASSERT(res != 0, "ShaderStageToVkShaderStageFlags(): Invalid ShaderStage combination");
+	return res;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkShaderStageFlagBits TRAP::Graphics::API::ShaderStageToVkShaderStageFlagBits(const RendererAPI::ShaderStage stage) noexcept
+{
+	VkShaderStageFlagBits res{};
+
+	//Graphics
+	if (stage == RendererAPI::ShaderStage::Vertex)
+		return VK_SHADER_STAGE_VERTEX_BIT;
+	if (stage == RendererAPI::ShaderStage::Geometry)
+		return VK_SHADER_STAGE_GEOMETRY_BIT;
+	if (stage == RendererAPI::ShaderStage::TessellationEvaluation)
+		return VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
+	if (stage == RendererAPI::ShaderStage::TessellationControl)
+		return VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
+	if (stage == RendererAPI::ShaderStage::Fragment)
+		return VK_SHADER_STAGE_FRAGMENT_BIT;
+
+	//Compute
+	if (stage == RendererAPI::ShaderStage::Compute)
+		return VK_SHADER_STAGE_COMPUTE_BIT;
+
+	//RayTracing
+	// if (stage == RendererAPI::ShaderStage::RayTracing)
+	// {
+	// 	return (VK_SHADER_STAGE_RAYGEN_BIT_KHR | VK_SHADER_STAGE_ANY_HIT_BIT_KHR |
+	// 		    VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_MISS_BIT_KHR |
+	// 		    VK_SHADER_STAGE_INTERSECTION_BIT_KHR | VK_SHADER_STAGE_CALLABLE_BIT_KHR);
+	// }
+
+	TRAP_ASSERT(false, "ShaderStageToVkShaderStageFlagBits(): Invalid ShaderStage provided!");
+	return res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -888,23 +1186,147 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(const RendererAPI::QueryType type) noexcept
+{
+	switch(type)
+	{
+	case RendererAPI::QueryType::Timestamp:
+		return VK_QUERY_TYPE_TIMESTAMP;
+
+	case RendererAPI::QueryType::PipelineStatistics:
+		return VK_QUERY_TYPE_PIPELINE_STATISTICS;
+
+	case RendererAPI::QueryType::Occlusion:
+		return VK_QUERY_TYPE_OCCLUSION;
+	}
+
+	TRAP_ASSERT(false, "QueryTypeToVkQueryType(): Unknown RendererAPI::QueryType!");
+	return VK_QUERY_TYPE_MAX_ENUM;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr VkPrimitiveTopology TRAP::Graphics::API::PrimitiveTopologyToVkPrimitiveTopology(const TRAP::Graphics::RendererAPI::PrimitiveTopology primitiveToplogy) noexcept
 {
-	if(primitiveToplogy == TRAP::Graphics::RendererAPI::PrimitiveTopology::PointList)
-		return VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
-	if(primitiveToplogy == TRAP::Graphics::RendererAPI::PrimitiveTopology::LineList)
-		return VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
-	if(primitiveToplogy == TRAP::Graphics::RendererAPI::PrimitiveTopology::LineStrip)
-		return VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
-	if(primitiveToplogy == TRAP::Graphics::RendererAPI::PrimitiveTopology::TriangleList)
-		return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-	if(primitiveToplogy == TRAP::Graphics::RendererAPI::PrimitiveTopology::TriangleStrip)
-		return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
-	if(primitiveToplogy == TRAP::Graphics::RendererAPI::PrimitiveTopology::PatchList)
-		return VK_PRIMITIVE_TOPOLOGY_PATCH_LIST;
+	using enum RendererAPI::PrimitiveTopology;
 
-	TRAP_ASSERT(false, "PrimitiveTopologyToVkPrimitiveTopology(): Unknown primitive topology!");
-	return {};
+	switch(primitiveToplogy)
+	{
+	case PointList:
+		return VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+	case LineList:
+		return VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+	case LineStrip:
+		return VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
+	case TriangleList:
+		return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+	case TriangleStrip:
+		return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+	case PatchList:
+		return VK_PRIMITIVE_TOPOLOGY_PATCH_LIST;
+	}
+
+	TRAP_ASSERT(false, "PrimitiveTopologyToVkPrimitiveTopology(): Unknown RendererAPI::PrimitiveTopology!");
+	return VK_PRIMITIVE_TOPOLOGY_MAX_ENUM;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
+	                                                                                             std::vector<VkPipelineColorBlendAttachmentState>& attachments)
+{
+	u32 blendDescIndex = 0;
+
+	attachments.resize(8);
+	for(u32 i = 0; i < 8; ++i)
+	{
+		const VkBool32 blendEnable = VkBool32
+		(
+			VkBlendConstantTranslator(desc.SrcFactors[blendDescIndex]) != VK_BLEND_FACTOR_ONE ||
+			VkBlendConstantTranslator(desc.DstFactors[blendDescIndex]) != VK_BLEND_FACTOR_ZERO ||
+			VkBlendConstantTranslator(desc.SrcAlphaFactors[blendDescIndex]) != VK_BLEND_FACTOR_ONE ||
+			VkBlendConstantTranslator(desc.DstAlphaFactors[blendDescIndex]) != VK_BLEND_FACTOR_ZERO
+		);
+
+		attachments[i].blendEnable = static_cast<VkBool32>((blendEnable != VK_FALSE) && ((std::to_underlying(desc.RenderTargetMask) & BIT(i)) != 0u));
+		attachments[i].colorWriteMask = static_cast<VkColorComponentFlags>(desc.Masks[blendDescIndex]);
+		attachments[i].srcColorBlendFactor = VkBlendConstantTranslator(desc.SrcFactors[blendDescIndex]);
+		attachments[i].dstColorBlendFactor = VkBlendConstantTranslator(desc.DstFactors[blendDescIndex]);
+		attachments[i].colorBlendOp = VkBlendOpTranslator(desc.BlendModes[blendDescIndex]);
+		attachments[i].srcAlphaBlendFactor = VkBlendConstantTranslator(desc.SrcAlphaFactors[blendDescIndex]);
+		attachments[i].dstAlphaBlendFactor = VkBlendConstantTranslator(desc.DstAlphaFactors[blendDescIndex]);
+		attachments[i].alphaBlendOp = VkBlendOpTranslator(desc.BlendAlphaModes[blendDescIndex]);
+
+		if (desc.IndependentBlend)
+			++blendDescIndex;
+	}
+
+	return VulkanInits::PipelineColorBlendStateCreateInfo(attachments);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc)
+{
+	const VkStencilOpState frontStencilState
+	{
+		.failOp = VkStencilOpTranslator(desc.StencilFrontFail),
+		.passOp = VkStencilOpTranslator(desc.StencilFrontPass),
+		.depthFailOp = VkStencilOpTranslator(desc.DepthFrontFail),
+		.compareOp = VkComparisonFuncTranslator(desc.StencilFrontFunc),
+		.compareMask = desc.StencilReadMask,
+		.writeMask = desc.StencilWriteMask,
+		.reference = 0
+	};
+
+	const VkStencilOpState backStencilState
+	{
+		.failOp = VkStencilOpTranslator(desc.StencilBackFail),
+		.passOp = VkStencilOpTranslator(desc.StencilBackPass),
+		.depthFailOp = VkStencilOpTranslator(desc.DepthBackFail),
+		.compareOp = VkComparisonFuncTranslator(desc.StencilBackFunc),
+		.compareMask = desc.StencilReadMask,
+		.writeMask = desc.StencilWriteMask,
+		.reference = 0
+	};
+
+	return VkPipelineDepthStencilStateCreateInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+		.pNext = nullptr,
+		.flags = 0,
+		.depthTestEnable = NumericCast<VkBool32>(desc.DepthTest),
+		.depthWriteEnable = NumericCast<VkBool32>(desc.DepthWrite),
+		.depthCompareOp = VkComparisonFuncTranslator(desc.DepthFunc),
+		.depthBoundsTestEnable = VK_FALSE,
+		.stencilTestEnable = NumericCast<VkBool32>(desc.StencilTest),
+		.front = frontStencilState,
+		.back = backStencilState,
+		.minDepthBounds = 0.0f,
+		.maxDepthBounds = 1.0f
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc)
+{
+	return VkPipelineRasterizationStateCreateInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
+		.pNext = nullptr,
+		.flags = 0,
+		.depthClampEnable = desc.DepthClampEnable ? VK_TRUE : VK_FALSE,
+		.rasterizerDiscardEnable = VK_FALSE,
+		.polygonMode = VkFillModeTranslator(desc.FillMode),
+		.cullMode = VkCullModeTranslator(desc.CullMode),
+		.frontFace = VkFrontFaceTranslator(desc.FrontFace),
+		.depthBiasEnable = (desc.DepthBias != 0) ? VK_TRUE : VK_FALSE,
+		.depthBiasConstantFactor = NumericCast<f32>(desc.DepthBias),
+		.depthBiasClamp = 0.0f,
+		.depthBiasSlopeFactor = desc.SlopeScaledDepthBias,
+		.lineWidth = 1.0f
+	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1164,6 +1586,60 @@ constexpr void TRAP::Graphics::API::LinkVulkanStruct(VkBaseOutStructure*& base, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr VkFragmentShadingRateCombinerOpKHR TRAP::Graphics::API::ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const RendererAPI::ShadingRateCombiner combiner)
+{
+	switch(combiner)
+	{
+	case RendererAPI::ShadingRateCombiner::Passthrough:
+		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_KEEP_KHR;
+	case RendererAPI::ShadingRateCombiner::Override:
+		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_REPLACE_KHR;
+	case RendererAPI::ShadingRateCombiner::Min:
+		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MIN_KHR;
+	case RendererAPI::ShadingRateCombiner::Max:
+		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MAX_KHR;
+	case RendererAPI::ShadingRateCombiner::Sum:
+		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MUL_KHR;
+	}
+
+	TRAP_ASSERT(false, "ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(): Unknown RendererAPI::ShadingRateCombiner!");
+	return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MAX_ENUM_KHR;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkExtent2D TRAP::Graphics::API::ShadingRateToVkExtent2D(const RendererAPI::ShadingRate rate)
+{
+	switch(rate)
+	{
+	case RendererAPI::ShadingRate::Full:
+		[[fallthrough]];
+	case RendererAPI::ShadingRate::NotSupported:
+		return VkExtent2D{ 1, 1 };
+
+	case RendererAPI::ShadingRate::Half:
+		return VkExtent2D{ 2, 2 };
+	case RendererAPI::ShadingRate::Quarter:
+		return VkExtent2D{ 4, 4 };
+	case RendererAPI::ShadingRate::Eighth:
+		return VkExtent2D{ 8, 8 };
+	case RendererAPI::ShadingRate::OneXTwo:
+		return VkExtent2D{ 1, 2 };
+	case RendererAPI::ShadingRate::TwoXOne:
+		return VkExtent2D{ 2, 1 };
+	case RendererAPI::ShadingRate::TwoXFour:
+		return VkExtent2D{ 2, 4 };
+	case RendererAPI::ShadingRate::FourXTwo:
+		return VkExtent2D{ 4, 2 };
+	}
+
+	TRAP_ASSERT(false, "ShadingRateToVkExtent2D(): Unknown RendererAPI::ShadingRate!");
+	return VkExtent2D{ 1, 1 };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//TODO HDR
 [[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanGetRecommendedSwapchainFormat([[maybe_unused]] const bool HDR,
 																						                          const bool SRGB) noexcept
 {
