@@ -5081,3 +5081,7 @@ SITREP 06/09/2024|24w23b3
     - Texture Moved global static and private static members to anonymous namespace ~<30 mins
     - Shader Moved global static and private static members to anonymous namespace ~<30 mins
     - VulkanCommon Refactored various functions ~<60 mins
+
+SITREP 06/10/2024|24w24a1
+    - Changed TRAP Engine version to 24w24a1(0.10.81)
+    - Log Made TP_* functions constexpr compatible ~<5 mins

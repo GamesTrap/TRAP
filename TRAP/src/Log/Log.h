@@ -105,7 +105,7 @@ namespace TRAP
 		/// @brief Clears all buffered messages.
 		constexpr void Clear() noexcept;
 
-		static constexpr auto WindowVersion =                        "[24w23b3]";
+		static constexpr auto WindowVersion =                        "[24w24a1]";
 		static constexpr auto WindowPrefix =                         "[Window] ";
 		static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -254,16 +254,16 @@ constexpr void TRAP::Log::Clear() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static constexpr TRAP::Log::Level operator|(const TRAP::Log::Level a, const TRAP::Log::Level b) noexcept
+constexpr TRAP::Log::Level operator|(const TRAP::Log::Level a, const TRAP::Log::Level b) noexcept
 {
 	return static_cast<TRAP::Log::Level>(std::to_underlying(a) | std::to_underlying(b));
 }
-static constexpr TRAP::Log::Level operator&(const TRAP::Log::Level a, const TRAP::Log::Level b) noexcept
+constexpr TRAP::Log::Level operator&(const TRAP::Log::Level a, const TRAP::Log::Level b) noexcept
 {
 	return static_cast<TRAP::Log::Level>(std::to_underlying(a) & std::to_underlying(b));
 }
-static constexpr TRAP::Log::Level operator|=(TRAP::Log::Level& a, const TRAP::Log::Level b) noexcept { return a = (a | b); }
-static constexpr TRAP::Log::Level operator&=(TRAP::Log::Level& a, const TRAP::Log::Level b) noexcept { return a = (a & b); }
+constexpr TRAP::Log::Level operator|=(TRAP::Log::Level& a, const TRAP::Log::Level b) noexcept { return a = (a | b); }
+constexpr TRAP::Log::Level operator&=(TRAP::Log::Level& a, const TRAP::Log::Level b) noexcept { return a = (a & b); }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -274,9 +274,12 @@ static constexpr TRAP::Log::Level operator&=(TRAP::Log::Level& a, const TRAP::Lo
 /// @brief Log a trace message.
 /// @tparam Args Message to log.
 template<typename... Args>
-void TP_TRACE(const Args& ... args)
+constexpr void TP_TRACE(const Args& ... args)
 {
-	TRAP::TRAPLog.Trace(args...);
+	if(!std::is_constant_evaluated())
+	{
+		TRAP::TRAPLog.Trace(args...);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -286,9 +289,12 @@ void TP_TRACE(const Args& ... args)
 /// @brief Log a debug message.
 /// @tparam Args Message to log.
 template<typename... Args>
-void TP_DEBUG(const Args& ... args)
+constexpr void TP_DEBUG(const Args& ... args)
 {
-	TRAP::TRAPLog.Debug(args...);
+	if(!std::is_constant_evaluated())
+	{
+		TRAP::TRAPLog.Debug(args...);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -297,7 +303,7 @@ void TP_DEBUG(const Args& ... args)
 /// @brief Log a debug message.
 /// @tparam Args Message to log.
 template<typename... Args>
-void TP_DEBUG([[maybe_unused]] const Args& ... args)
+constexpr void TP_DEBUG([[maybe_unused]] const Args& ... args)
 {
 }
 #endif
@@ -307,9 +313,12 @@ void TP_DEBUG([[maybe_unused]] const Args& ... args)
 /// @brief Log a info message.
 /// @tparam Args Message to log.
 template<typename... Args>
-void TP_INFO(const Args& ... args)
+constexpr void TP_INFO(const Args& ... args)
 {
-	TRAP::TRAPLog.Info(args...);
+	if(!std::is_constant_evaluated())
+	{
+		TRAP::TRAPLog.Info(args...);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -317,9 +326,12 @@ void TP_INFO(const Args& ... args)
 /// @brief Log a warn message.
 /// @tparam Args Message to log.
 template<typename... Args>
-void TP_WARN(const Args& ... args)
+constexpr void TP_WARN(const Args& ... args)
 {
-	TRAP::TRAPLog.Warn(args...);
+	if(!std::is_constant_evaluated())
+	{
+		TRAP::TRAPLog.Warn(args...);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -327,9 +339,12 @@ void TP_WARN(const Args& ... args)
 /// @brief Log a error message.
 /// @tparam Args Message to log.
 template<typename... Args>
-void TP_ERROR(const Args& ... args)
+constexpr void TP_ERROR(const Args& ... args)
 {
-	TRAP::TRAPLog.Error(args...);
+	if(!std::is_constant_evaluated())
+	{
+		TRAP::TRAPLog.Error(args...);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -337,9 +352,12 @@ void TP_ERROR(const Args& ... args)
 /// @brief Log a critical message.
 /// @tparam Args Message to log.
 template<typename... Args>
-void TP_CRITICAL(const Args& ... args)
+constexpr void TP_CRITICAL(const Args& ... args)
 {
-	TRAP::TRAPLog.Critical(args...);
+	if(!std::is_constant_evaluated())
+	{
+		TRAP::TRAPLog.Critical(args...);
+	}
 }
 
 #endif /*TRAP_LOG_H*/
