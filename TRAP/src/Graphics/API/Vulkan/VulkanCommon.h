@@ -378,7 +378,7 @@ namespace TRAP::Graphics::API
 		return VK_STENCIL_OP_MAX_ENUM;
 	}
 
-	[[nodiscard]] constexpr VkCullModeFlagBits VkCullModeTranslator(const RendererAPI::CullMode cullMode)
+	[[nodiscard]] constexpr VkCullModeFlags VkCullModeTranslator(const RendererAPI::CullMode cullMode)
 	{
 		using enum RendererAPI::CullMode;
 
