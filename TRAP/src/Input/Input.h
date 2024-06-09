@@ -551,201 +551,13 @@ namespace TRAP
 		/// @param guid New GUID.
 		static void UpdateControllerGUID(std::string& guid);
 
-#ifdef TRAP_PLATFORM_WINDOWS
-#define TRAP_BUILD_WIN32_MAPPINGS
-		static constexpr std::string_view MappingName = "Windows";
-		///////////////
-		//DirectInput//
-		///////////////
-		//dinput8.dll function pointer typedefs
-		static constexpr u32 TRAP_TYPE_AXIS = 0;
-		static constexpr u32 TRAP_TYPE_SLIDER = 1;
-		static constexpr u32 TRAP_TYPE_BUTTON = 2;
-		static constexpr u32 TRAP_TYPE_DPAD = 3;
-		//Define local copies of the necessary GUIDs
-		static constexpr GUID TRAP_IID_IDirectInput8W =
-		{ 0xbf798031,0x483a,0x4da2,{0xaa,0x99,0x5d,0x64,0xed,0x36,0x97,0x00} };
-		static constexpr GUID TRAP_GUID_XAxis =
-		{ 0xa36d02e0,0xc9f3,0x11cf,{0xbf,0xc7,0x44,0x45,0x53,0x54,0x00,0x00} };
-		static constexpr GUID TRAP_GUID_YAxis =
-		{ 0xa36d02e1,0xc9f3,0x11cf,{0xbf,0xc7,0x44,0x45,0x53,0x54,0x00,0x00} };
-		static constexpr GUID TRAP_GUID_ZAxis =
-		{ 0xa36d02e2,0xc9f3,0x11cf,{0xbf,0xc7,0x44,0x45,0x53,0x54,0x00,0x00} };
-		static constexpr GUID TRAP_GUID_RxAxis =
-		{ 0xa36d02f4,0xc9f3,0x11cf,{0xbf,0xc7,0x44,0x45,0x53,0x54,0x00,0x00} };
-		static constexpr GUID TRAP_GUID_RyAxis =
-		{ 0xa36d02f5,0xc9f3,0x11cf,{0xbf,0xc7,0x44,0x45,0x53,0x54,0x00,0x00} };
-		static constexpr GUID TRAP_GUID_RzAxis =
-		{ 0xa36d02e3,0xc9f3,0x11cf,{0xbf,0xc7,0x44,0x45,0x53,0x54,0x00,0x00} };
-		static constexpr GUID TRAP_GUID_Slider =
-		{ 0xa36d02e4,0xc9f3,0x11cf,{0xbf,0xc7,0x44,0x45,0x53,0x54,0x00,0x00} };
-		static constexpr GUID TRAP_GUID_DPad =
-		{ 0xa36d02f2,0xc9f3,0x11cf,{0xbf,0xc7,0x44,0x45,0x53,0x54,0x00,0x00} };
-		static constexpr GUID TRAP_GUID_IID_IDirectInputDevice2W =
-		{ 0x5944E683,0xC92E,0x11CF,{0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00} };
-		//Object data array for our clone of c_dfDIJoystick
-		inline static std::array<DIOBJECTDATAFORMAT, 44> TRAPObjectDataFormats =
-		{
-			{
-				{ &TRAP_GUID_XAxis,DIJOFS_X,DIDFT_AXIS | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,DIDOI_ASPECTPOSITION },
-				{ &TRAP_GUID_YAxis,DIJOFS_Y,DIDFT_AXIS | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,DIDOI_ASPECTPOSITION },
-				{ &TRAP_GUID_ZAxis,DIJOFS_Z,DIDFT_AXIS | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,DIDOI_ASPECTPOSITION },
-				{ &TRAP_GUID_RxAxis,DIJOFS_RX,DIDFT_AXIS | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,DIDOI_ASPECTPOSITION },
-				{ &TRAP_GUID_RyAxis,DIJOFS_RY,DIDFT_AXIS | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,DIDOI_ASPECTPOSITION },
-				{ &TRAP_GUID_RzAxis,DIJOFS_RZ,DIDFT_AXIS | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,DIDOI_ASPECTPOSITION },
-				{ &TRAP_GUID_Slider,DIJOFS_SLIDER(0),DIDFT_AXIS | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,DIDOI_ASPECTPOSITION },
-				{ &TRAP_GUID_Slider,DIJOFS_SLIDER(1),DIDFT_AXIS | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,DIDOI_ASPECTPOSITION },
-				{ &TRAP_GUID_DPad,DIJOFS_POV(0),DIDFT_POV | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ &TRAP_GUID_DPad,DIJOFS_POV(1),DIDFT_POV | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ &TRAP_GUID_DPad,DIJOFS_POV(2),DIDFT_POV | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ &TRAP_GUID_DPad,DIJOFS_POV(3),DIDFT_POV | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(0),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(1),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(2),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(3),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(4),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(5),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(6),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(7),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(8),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(9),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(10),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(11),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(12),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(13),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(14),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(15),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(16),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(17),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(18),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(19),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(20),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(21),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(22),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(23),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(24),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(25),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(26),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(27),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(28),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(29),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(30),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 },
-				{ nullptr,DIJOFS_BUTTON(31),DIDFT_BUTTON | DIDFT_OPTIONAL | DIDFT_ANYINSTANCE,0 }
-			}
-		};
-		//Our clone of c_dfDIJoystick
-		inline static const DIDATAFORMAT TRAPDataFormat =
-		{
-			sizeof(DIDATAFORMAT),
-			sizeof(DIOBJECTDATAFORMAT),
-			DIDFT_ABSAXIS,
-			sizeof(DIJOYSTATE2),
-			TRAPObjectDataFormats.size(),
-			TRAPObjectDataFormats.data()
-		};
-		using PFN_DirectInput8Create = HRESULT(WINAPI*)(HINSTANCE, DWORD, REFIID, LPVOID*, LPUNKNOWN);
-		struct DInput8
-		{
-			HINSTANCE Instance{};
-			PFN_DirectInput8Create Create{};
-			IDirectInput8W* API = nullptr;
-		} inline static s_dinput8{};
-
-		struct Object;
-
-		//////////
-		//XInput//
-		//////////
-		//xinput.dll function pointer typedefs
-		static constexpr u32 TRAP_XINPUT_CAPS_WIRELESS = 0x0002;
-		static constexpr u32 TRAP_XINPUT_DEVSUBTYPE_GAMEPAD = 0x01;
-		static constexpr u32 TRAP_XINPUT_DEVSUBTYPE_WHEEL = 0x02;
-		static constexpr u32 TRAP_XINPUT_DEVSUBTYPE_ARCADE_STICK = 0x03;
-		static constexpr u32 TRAP_XINPUT_DEVSUBTYPE_FLIGHT_STICK = 0x04;
-		static constexpr u32 TRAP_XINPUT_DEVSUBTYPE_DANCE_PAD = 0x05;
-		static constexpr u32 TRAP_XINPUT_DEVSUBTYPE_GUITAR = 0x06;
-		static constexpr u32 TRAP_XINPUT_DEVSUBTYPE_DRUM_KIT = 0x08;
-		static constexpr u32 TRAP_XINPUT_DEVSUBTYPE_ARCADE_PAD = 0x13;
-		static constexpr u32 TRAP_XUSER_MAX_COUNT = 4;
-		static constexpr u32 TRAP_XINPUT_GAMEPAD_DPAD_UP = 0x0001;
-		static constexpr u32 TRAP_XINPUT_GAMEPAD_DPAD_DOWN = 0x0002;
-		static constexpr u32 TRAP_XINPUT_GAMEPAD_DPAD_LEFT = 0x0004;
-		static constexpr u32 TRAP_XINPUT_GAMEPAD_DPAD_RIGHT = 0x0008;
-		static constexpr u32 TRAP_XINPUT_GAMEPAD_START = 0x0010;
-		static constexpr u32 TRAP_XINPUT_GAMEPAD_BACK = 0x0020;
-		static constexpr u32 TRAP_XINPUT_GAMEPAD_LEFT_THUMB = 0x0040;
-		static constexpr u32 TRAP_XINPUT_GAMEPAD_RIGHT_THUMB = 0x0080;
-		static constexpr u32 TRAP_XINPUT_GAMEPAD_LEFT_SHOULDER = 0x0100;
-		static constexpr u32 TRAP_XINPUT_GAMEPAD_RIGHT_SHOULDER = 0x0200;
-		static constexpr u32 TRAP_XINPUT_GAMEPAD_A = 0x1000;
-		static constexpr u32 TRAP_XINPUT_GAMEPAD_B = 0x2000;
-		static constexpr u32 TRAP_XINPUT_GAMEPAD_X = 0x4000;
-		static constexpr u32 TRAP_XINPUT_GAMEPAD_Y = 0x8000;
-		static constexpr u32 TRAP_XINPUT_GAMEPAD_GUIDE = 0x0400;
-		static constexpr u32 TRAP_XINPUT_DEVTYPE_GAMEPAD = 0x00;
-		static constexpr u32 TRAP_XINPUT_BATTERY_TYPE_DISCONNECTED = 0x00;
-		static constexpr u32 TRAP_XINPUT_BATTERY_TYPE_WIRED = 0x01;
-		static constexpr u32 TRAP_XINPUT_BATTERY_TYPE_ALKALINE = 0x02;
-		static constexpr u32 TRAP_XINPUT_BATTERY_TYPE_NIMH = 0x03;
-		static constexpr u32 TRAP_XINPUT_BATTERY_TYPE_UNKNOWN = 0xFF;
-		static constexpr u32 TRAP_XINPUT_BATTERY_LEVEL_EMPTY = 0x00;
-		static constexpr u32 TRAP_XINPUT_BATTERY_LEVEL_LOW = 0x01;
-		static constexpr u32 TRAP_XINPUT_BATTERY_LEVEL_MEDIUM = 0x02;
-		static constexpr u32 TRAP_XINPUT_BATTERY_LEVEL_FULL = 0x03;
-		using PFN_XInputGetCapabilities = DWORD(WINAPI*)(DWORD, DWORD, XINPUT_CAPABILITIES*);
-		using PFN_XInputGetState = DWORD(WINAPI*)(DWORD, XINPUT_STATE*);
-		using PFN_XInputGetStateSecret = DWORD(WINAPI*)(DWORD, XINPUT_STATE*);
-		using PFN_XInputSetState = DWORD(WINAPI*)(DWORD, XINPUT_VIBRATION*);
-		using PFN_XInputGetBatteryInformation = DWORD(WINAPI*)(DWORD, BYTE, XINPUT_BATTERY_INFORMATION*);
-		/// @brief DirectInput device object enumeration callback.
-		/// @param doi DirectInput device object instance.
-		/// @param user User data.
-		/// @return True to continue enumeration, false to stop.
-		static BOOL CALLBACK DeviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* doi, void* user);
-		/// @brief Lexically compare DirectInput device objects.
-		/// @param first First object.
-		/// @param second Second object.
-		/// @return Difference between the two objects.
-		[[nodiscard]] static bool CompareControllerObjects(const Object& first, const Object& second);
-		/// @brief DirectInput device enumeration callback.
-		/// @param deviceInstance DirectInput device instance.
-		/// @param user User data.
-		/// @return True to continue enumeration, false to stop.
-		static BOOL CALLBACK DeviceCallback(const DIDEVICEINSTANCE* deviceInstance, void* user);
-		/// @brief Checks whether the specified device supports XInput.
-		/// @brief @param guid Device GUID to test.
-		/// @return True if the device supports XInput, false otherwise.
-		[[nodiscard]] static bool SupportsXInput(const GUID* guid);
-		/// @brief Retrieve a description fitting to the specified XInput capabilities.
-		/// @param xic XInput controller capabilities.
-		/// @return Device description.
-		[[nodiscard]] static std::string GetDeviceDescription(const XINPUT_CAPABILITIES* xic);
-		struct XInput
-		{
-			HINSTANCE Instance{};
-			PFN_XInputGetCapabilities GetCapabilities{};
-			PFN_XInputGetState GetState{};
-			PFN_XInputGetStateSecret GetStateSecret{};
-			PFN_XInputSetState SetState{};
-			PFN_XInputGetBatteryInformation GetBatteryInformation{};
-			bool HasGuideButton = false;
-		} inline static s_xinput{};
-
+#if defined(TRAP_PLATFORM_WINDOWS)
 		struct Object
 		{
 			i32 Offset = 0;
 			i32 Type = 0;
 		};
-		struct ControllerWindows
-		{
-			std::vector<Object> Objects{};
-			i32 ObjectCount = 0;
-			IDirectInputDevice8W* Device = nullptr;
-			DWORD Index = 0;
-			GUID guid{};
-			bool XInput = false;
-			bool ForceFeedback = false;
-		};
+
 		struct ObjectEnum
 		{
 			IDirectInputDevice8W* Device = nullptr;
@@ -756,9 +568,36 @@ namespace TRAP
 			i32 ButtonCount = 0;
 			i32 PoVCount = 0;
 		};
+
+		/// @brief Lexically compare DirectInput device objects.
+		/// @param first First object.
+		/// @param second Second object.
+		/// @return Difference between the two objects.
+		[[nodiscard]] static bool CompareControllerObjects(const Object& first, const Object& second);
+
+		/// @brief DirectInput device object enumeration callback.
+		/// @param doi DirectInput device object instance.
+		/// @param user User data.
+		/// @return True to continue enumeration, false to stop.
+		static BOOL CALLBACK DeviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* doi, void* user);
+
+		/// @brief DirectInput device enumeration callback.
+		/// @param deviceInstance DirectInput device instance.
+		/// @param user User data.
+		/// @return True to continue enumeration, false to stop.
+		static BOOL CALLBACK DeviceCallback(const DIDEVICEINSTANCE* const deviceInstance, void* const);
+
+		struct ControllerWindows
+		{
+			std::vector<Object> Objects{};
+			i32 ObjectCount = 0;
+			IDirectInputDevice8W* Device = nullptr;
+			DWORD Index = 0;
+			GUID guid{};
+			bool XInput = false;
+			bool ForceFeedback = false;
+		};
 #elif defined(TRAP_PLATFORM_LINUX)
-#define TRAP_BUILD_LINUX_MAPPINGS
-		static constexpr std::string_view MappingName = "Linux";
 		struct ControllerInternal;
 		/// @brief Attempt to open the specified controller device.
 		/// @param path Path to the controller file.
@@ -1045,7 +884,7 @@ constexpr void TRAP::Input::InternalInputControllerButton(ControllerInternal* co
 template<>
 struct fmt::formatter<TRAP::Input::MouseButton>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }
@@ -1083,7 +922,7 @@ struct fmt::formatter<TRAP::Input::MouseButton>
 template<>
 struct fmt::formatter<TRAP::Input::KeyState>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }

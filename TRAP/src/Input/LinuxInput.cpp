@@ -34,8 +34,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include <regex>
 
-#define TRAP_BUILD_LINUX_MAPPINGS
-
 #include "Events/ControllerEvent.h"
 #include "Window/WindowingAPI.h"
 #include "Utils/String/String.h"
