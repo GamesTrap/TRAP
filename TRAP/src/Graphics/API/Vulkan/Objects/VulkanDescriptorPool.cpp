@@ -39,7 +39,6 @@ namespace
 		{
 			TP_CRITICAL(TRAP::Log::ImGuiPrefix, "VulkanDescriptorPool::DefaultDescriptorPoolSizes(): std::vector constructor threw an exception!");
 			throw std::runtime_error("VulkanDescriptorPool::DefaultDescriptorPoolSizes(): std::vector constructor threw an exception!");
-			std::terminate();
 		}
 	}
 }
