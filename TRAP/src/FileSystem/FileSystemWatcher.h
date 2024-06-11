@@ -118,7 +118,7 @@ namespace TRAP::FileSystem
         /// @param stopToken Token to use for stop request.
         /// @param pathsToWatch Folders to watch.
         /// @param optPromise Optional promise to signal after watcher thread initialization has finished
-        void Watch(const std::stop_token& stopToken, std::vector<std::filesystem::path> pathsToWatch,
+        void Watch(const std::stop_token& stopToken, const std::vector<std::filesystem::path>& pathsToWatch,
                    TRAP::Optional<std::promise<void>> optPromise);
 
         /// @brief Callback to stop the running file watcher thread.

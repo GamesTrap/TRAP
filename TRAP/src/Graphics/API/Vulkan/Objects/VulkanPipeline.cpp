@@ -86,24 +86,21 @@ void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI:
 
 	m_type = RendererAPI::PipelineType::Compute;
 
-	//Pipeline
-	{
-		const VkPipelineShaderStageCreateInfo stage = VulkanInits::PipelineShaderStageCreateInfo
-		(
-			 VK_SHADER_STAGE_COMPUTE_BIT,
-			 vShader->GetVkShaderModules()[0],
-			 vShader->GetReflection()->StageReflections[0].EntryPoint
-		);
+	const VkPipelineShaderStageCreateInfo stage = VulkanInits::PipelineShaderStageCreateInfo
+	(
+			VK_SHADER_STAGE_COMPUTE_BIT,
+			vShader->GetVkShaderModules()[0],
+			vShader->GetReflection()->StageReflections[0].EntryPoint
+	);
 
-		const VkComputePipelineCreateInfo info = VulkanInits::ComputePipelineCreateInfo
-		(
-			stage,
-			std::dynamic_pointer_cast<VulkanRootSignature>(computeDesc.RootSignature)->GetVkPipelineLayout()
-		);
+	const VkComputePipelineCreateInfo info = VulkanInits::ComputePipelineCreateInfo
+	(
+		stage,
+		std::dynamic_pointer_cast<VulkanRootSignature>(computeDesc.RootSignature)->GetVkPipelineLayout()
+	);
 
-		VkCall(vkCreateComputePipelines(m_device->GetVkDevice(), psoCache, 1, &info, nullptr, &m_vkPipeline));
-		TRAP_ASSERT(m_vkPipeline, "VulkanPipeline::InitComputePipeline(): Vulkan Pipeline is nullptr!");
-	}
+	VkCall(vkCreateComputePipelines(m_device->GetVkDevice(), psoCache, 1, &info, nullptr, &m_vkPipeline));
+	TRAP_ASSERT(m_vkPipeline, "VulkanPipeline::InitComputePipeline(): Vulkan Pipeline is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -360,57 +357,54 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 
 	m_type = RendererAPI::PipelineType::Graphics;
 
-	//Pipeline
-	{
-		const std::vector<VkPipelineShaderStageCreateInfo> stages = GetGraphicsShaderStageCreateInfos(*vShader);
-		const std::vector<VkVertexInputBindingDescription> inputBindings = GetVertexInputBindingDescriptions(graphicsDesc.VertexLayout.get());
-		const std::vector<VkVertexInputAttributeDescription> inputAttributes = GetVertexInputAttributeDescriptions(graphicsDesc.VertexLayout.get());
+	const std::vector<VkPipelineShaderStageCreateInfo> stages = GetGraphicsShaderStageCreateInfos(*vShader);
+	const std::vector<VkVertexInputBindingDescription> inputBindings = GetVertexInputBindingDescriptions(graphicsDesc.VertexLayout.get());
+	const std::vector<VkVertexInputAttributeDescription> inputAttributes = GetVertexInputAttributeDescriptions(graphicsDesc.VertexLayout.get());
 
-		const VkPipelineVertexInputStateCreateInfo vi = VulkanInits::PipelineVertexInputStateCreateInfo(inputBindings, inputAttributes);
+	const VkPipelineVertexInputStateCreateInfo vi = VulkanInits::PipelineVertexInputStateCreateInfo(inputBindings, inputAttributes);
 
-		const VkPrimitiveTopology topology = TRAP::Graphics::API::PrimitiveTopologyToVkPrimitiveTopology(graphicsDesc.PrimitiveTopology);
-		const VkPipelineInputAssemblyStateCreateInfo ia = VulkanInits::PipelineInputAssemblyStateCreateInfo(topology, VK_FALSE);
+	const VkPrimitiveTopology topology = TRAP::Graphics::API::PrimitiveTopologyToVkPrimitiveTopology(graphicsDesc.PrimitiveTopology);
+	const VkPipelineInputAssemblyStateCreateInfo ia = VulkanInits::PipelineInputAssemblyStateCreateInfo(topology, VK_FALSE);
 
-		const TRAP::Optional<VkPipelineTessellationStateCreateInfo> ts = GetVkPipelineTessellationStateCreateInfo(*vShader);
+	const TRAP::Optional<VkPipelineTessellationStateCreateInfo> ts = GetVkPipelineTessellationStateCreateInfo(*vShader);
 
-		const VkPipelineViewportStateCreateInfo vs = VulkanInits::PipelineViewportStateCreateInfo();
+	const VkPipelineViewportStateCreateInfo vs = VulkanInits::PipelineViewportStateCreateInfo();
 
-		const VkPipelineMultisampleStateCreateInfo ms = VulkanInits::PipelineMultisampleStateCreateInfo
-		(
-			SampleCountToVkSampleCount(graphicsDesc.SampleCount),
-			graphicsDesc.SampleCount != RendererAPI::SampleCount::One ? RendererAPI::GPUSettings.SampleRateShadingSupported : false,
-			graphicsDesc.SampleCount != RendererAPI::SampleCount::One ? 0.25f : 0.0f
-		);
+	const VkPipelineMultisampleStateCreateInfo ms = VulkanInits::PipelineMultisampleStateCreateInfo
+	(
+		SampleCountToVkSampleCount(graphicsDesc.SampleCount),
+		graphicsDesc.SampleCount != RendererAPI::SampleCount::One ? RendererAPI::GPUSettings.SampleRateShadingSupported : false,
+		graphicsDesc.SampleCount != RendererAPI::SampleCount::One ? 0.25f : 0.0f
+	);
 
-		const VkPipelineRasterizationStateCreateInfo rs = graphicsDesc.RasterizerState ?
-		                                                  UtilToRasterizerDesc(*graphicsDesc.RasterizerState) :
-													      VulkanRenderer::DefaultRasterizerDesc;
+	const VkPipelineRasterizationStateCreateInfo rs = graphicsDesc.RasterizerState ?
+														UtilToRasterizerDesc(*graphicsDesc.RasterizerState) :
+														VulkanRenderer::DefaultRasterizerDesc;
 
-		const VkPipelineDepthStencilStateCreateInfo ds = graphicsDesc.DepthState ?
-		                                                 UtilToDepthDesc(*graphicsDesc.DepthState) :
-												         VulkanRenderer::DefaultDepthDesc;
+	const VkPipelineDepthStencilStateCreateInfo ds = graphicsDesc.DepthState ?
+														UtilToDepthDesc(*graphicsDesc.DepthState) :
+														VulkanRenderer::DefaultDepthDesc;
 
-		SetupBlendStateRenderTargetMasking(graphicsDesc, m_device->GetPhysicalDevice());
+	SetupBlendStateRenderTargetMasking(graphicsDesc, m_device->GetPhysicalDevice());
 
-		std::vector<VkPipelineColorBlendAttachmentState> cbAttachments{};
-		const VkPipelineColorBlendStateCreateInfo cb = GetVkPipelineColorBlendStateCreateInfo(graphicsDesc, cbAttachments);
+	std::vector<VkPipelineColorBlendAttachmentState> cbAttachments{};
+	const VkPipelineColorBlendStateCreateInfo cb = GetVkPipelineColorBlendStateCreateInfo(graphicsDesc, cbAttachments);
 
-		const TRAP::Optional<VkPipelineFragmentShadingRateStateCreateInfoKHR> fsr = GetVkPipelineFragmentShadingRateStateCreateInfoKHR(graphicsDesc);
+	const TRAP::Optional<VkPipelineFragmentShadingRateStateCreateInfoKHR> fsr = GetVkPipelineFragmentShadingRateStateCreateInfoKHR(graphicsDesc);
 
-		const auto [dy, dynamicState] = GetVkPipelineDynamicStateCreateInfo();
+	const auto [dy, dynamicState] = GetVkPipelineDynamicStateCreateInfo();
 
-		const TRAP::Scope<VulkanRenderPass> renderPass = CreateTemporaryRenderPass(m_device, graphicsDesc);
-		VkGraphicsPipelineCreateInfo info = VulkanInits::GraphicsPipelineCreateInfo(stages,
-																					vi, ia, vs, rs, ms, ds, cb, dy,
-																					std::dynamic_pointer_cast<VulkanRootSignature>(graphicsDesc.RootSignature)->GetVkPipelineLayout(),
-																					renderPass->GetVkRenderPass()
-		);
-		if(ts)
-			info.pTessellationState = &ts.Value();
-		if(fsr) //Only use shading rate extension if supported
-			info.pNext = &fsr.Value();
+	const TRAP::Scope<VulkanRenderPass> renderPass = CreateTemporaryRenderPass(m_device, graphicsDesc);
+	VkGraphicsPipelineCreateInfo info = VulkanInits::GraphicsPipelineCreateInfo(stages,
+																				vi, ia, vs, rs, ms, ds, cb, dy,
+																				std::dynamic_pointer_cast<VulkanRootSignature>(graphicsDesc.RootSignature)->GetVkPipelineLayout(),
+																				renderPass->GetVkRenderPass()
+	);
+	if(ts)
+		info.pTessellationState = &ts.Value();
+	if(fsr) //Only use shading rate extension if supported
+		info.pNext = &fsr.Value();
 
-		VkCall(vkCreateGraphicsPipelines(m_device->GetVkDevice(), psoCache, 1, &info, nullptr, &m_vkPipeline));
-		TRAP_ASSERT(m_vkPipeline, "VulkanPipeline::InitGraphicsPipeline(): Vulkan Pipeline is nullptr!");
-	}
+	VkCall(vkCreateGraphicsPipelines(m_device->GetVkDevice(), psoCache, 1, &info, nullptr, &m_vkPipeline));
+	TRAP_ASSERT(m_vkPipeline, "VulkanPipeline::InitGraphicsPipeline(): Vulkan Pipeline is nullptr!");
 }

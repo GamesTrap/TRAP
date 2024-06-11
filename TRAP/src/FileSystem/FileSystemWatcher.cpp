@@ -865,7 +865,7 @@ namespace
     }
 }
 
-void TRAP::FileSystem::FileSystemWatcher::Watch(const std::stop_token& stopToken, const std::vector<std::filesystem::path> pathsToWatch,
+void TRAP::FileSystem::FileSystemWatcher::Watch(const std::stop_token& stopToken, const std::vector<std::filesystem::path>& pathsToWatch,
                                                 TRAP::Optional<std::promise<void>> optPromise)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);

@@ -142,7 +142,7 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 	const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath();
 	if(tempFolder)
 	{
-		for(auto& [hash, cache] : s_pipelineCaches)
+		for(const auto& [hash, cache] : s_pipelineCaches)
 		{
 			if(!cache)
 				continue;

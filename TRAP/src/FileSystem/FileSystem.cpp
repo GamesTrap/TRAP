@@ -1223,7 +1223,7 @@ namespace
                 bufSize = 16384;
             std::vector<char> buffer(NumericCast<usize>(bufSize), '\0');
             const i32 errorCode = getpwuid_r(uid, &pwd, buffer.data(), buffer.size(), &pw);
-            if(errorCode != 0)
+            if(errorCode != 0 || (pw == nullptr))
             {
                 TP_ERROR(TRAP::Log::FileSystemPrefix, "Failed to get home folder path (", errorCode, ")!");
                 return TRAP::NullOpt;
