@@ -441,7 +441,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	const std::string swapChainName = fmt::format("SwapChain ({}x{}, Window: {})", desc.Width, desc.Height, desc.Window->GetTitle());
-	TRAP::Graphics::API::VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_swapChain), VK_OBJECT_TYPE_SWAPCHAIN_KHR, swapChainName);
+	TRAP::Graphics::API::VkSetObjectName(*m_device, std::bit_cast<u64>(m_swapChain), VK_OBJECT_TYPE_SWAPCHAIN_KHR, swapChainName);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 

@@ -39,26 +39,29 @@
 
 TRAP::Scope<TRAP::Graphics::API::VulkanRenderer::NullDescriptors> TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors = nullptr;
 
-std::vector<VkPipelineColorBlendAttachmentState> TRAP::Graphics::API::VulkanRenderer::DefaultBlendAttachments(8);
-VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultRasterizerDesc = UtilToRasterizerDesc
-(
-	{CullMode::Back, {}, {}, {}, {}, {}}
-);
-VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultDepthDesc = UtilToDepthDesc
-(
-	{ false, false, CompareMode::GreaterOrEqual, {}, 0xFF, 0xFF, CompareMode::Always, {}, {}, {}, CompareMode::Always,
-	  {}, {}, {} }
-);
+namespace
+{
+	std::unordered_map<u64, TRAP::Ref<TRAP::Graphics::Pipeline>> Pipelines{};
+	std::unordered_map<u64, TRAP::Ref<TRAP::Graphics::PipelineCache>> PipelineCaches{};
+
+	std::vector<VkPipelineColorBlendAttachmentState> DefaultBlendAttachments(8);
+}
+
 VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultBlendDesc = UtilToBlendDesc
 (
-	{ {BlendConstant::One}, {BlendConstant::Zero}, {BlendConstant::One}, {BlendConstant::Zero}, {}, {},
-	  {(BIT(0u) | BIT(1u) | BIT(2u) | BIT(3u)) }, BlendStateTargets::BlendStateTargetAll, false
+	RendererAPI::BlendStateDesc
+	{
+		.SrcFactors = {BlendConstant::One},
+		.DstFactors = {BlendConstant::Zero},
+		.SrcAlphaFactors = {BlendConstant::One},
+		.DstAlphaFactors = {BlendConstant::Zero},
+		.BlendModes = {BlendMode::Add},
+		.BlendAlphaModes = {BlendMode::Add},
+		.Masks = {BIT(0u) | BIT(1u) | BIT(2u) | BIT(3u)},
+		.RenderTargetMask = BlendStateTargets::BlendStateTargetAll,
+		.IndependentBlend = false
 	}, DefaultBlendAttachments
 );
-
-std::unordered_map<u64, TRAP::Ref<TRAP::Graphics::Pipeline>> TRAP::Graphics::API::VulkanRenderer::s_pipelines{};
-std::unordered_map<u64,
-                   TRAP::Ref<TRAP::Graphics::PipelineCache>> TRAP::Graphics::API::VulkanRenderer::s_pipelineCaches{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -137,12 +140,12 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 	renderPassData->ThreadFrameBufferMap.clear();
 	renderPassData->ThreadRenderPassMap.clear();
 
-	s_pipelines.clear();
+	Pipelines.clear();
 
 	const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath();
 	if(tempFolder)
 	{
-		for(const auto& [hash, cache] : s_pipelineCaches)
+		for(const auto& [hash, cache] : PipelineCaches)
 		{
 			if(!cache)
 				continue;
@@ -151,7 +154,7 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 		}
 	}
 
-	s_pipelineCaches.clear();
+	PipelineCaches.clear();
 
 	//Free everything in order
 	//Should happen automagically through Scope destructors
@@ -3218,22 +3221,13 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 #ifdef ENABLE_GRAPHICS_DEBUG
 
 	if(VulkanInstance::IsExtensionSupported(VK_EXT_DEBUG_UTILS_EXTENSION_NAME))
-	{
 		extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-		s_debugUtilsExtension = true;
-	}
 	if(VulkanInstance::IsExtensionSupported(VK_EXT_DEBUG_REPORT_EXTENSION_NAME))
-	{
 		extensions.emplace_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
-		s_debugReportExtension = true;
-	}
 
 #ifdef ENABLE_GPU_BASED_VALIDATION
 	if(VulkanInstance::IsExtensionSupported(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME))
-	{
 		extensions.emplace_back(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME);
-		s_validationFeaturesExtension = true;
-	}
 #endif /*ENABLE_GPU_BASED_VALIDATION*/
 
 #endif /*ENABLE_GRAPHICS_DEBUG*/
@@ -3244,7 +3238,6 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 	    VulkanInstance::IsExtensionSupported(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME))
 	{
 		extensions.emplace_back(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME);
-		s_swapchainColorSpaceExtension = true;
 	}
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -3259,9 +3252,9 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 
 	std::vector<std::string> extensions{};
 
-#ifndef TRAP_HEADLESS_MODE
 	if(physicalDevice->IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME))
 		extensions.emplace_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+#ifndef TRAP_HEADLESS_MODE
 	else
 		Utils::DisplayError(Utils::ErrorCode::VulkanSwapchainExtensionsUnsupported);
 #endif /*TRAP_HEADLESS_MODE*/
@@ -3281,75 +3274,43 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 	//VK_KHR_multiview
 
 	//Debug marker extension in case debug utils is not supported
-#ifndef ENABLE_GRAPHICS_DEBUG
-	if (physicalDevice->IsExtensionSupported(VK_EXT_DEBUG_MARKER_EXTENSION_NAME))
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if (VulkanInstance::IsExtensionSupported(VK_EXT_DEBUG_REPORT_EXTENSION_NAME) &&
+		physicalDevice->IsExtensionSupported(VK_EXT_DEBUG_MARKER_EXTENSION_NAME))
 	{
 		extensions.emplace_back(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
-		s_debugMarkerSupport = true;
 	}
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
 	if (physicalDevice->IsExtensionSupported(VK_KHR_DRAW_INDIRECT_COUNT_EXTENSION_NAME))
-	{
 		extensions.emplace_back(VK_KHR_DRAW_INDIRECT_COUNT_EXTENSION_NAME);
-		s_drawIndirectCountExtension = true;
-	}
 
 	if (physicalDevice->IsExtensionSupported(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME))
-	{
 		extensions.emplace_back(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME);
-		s_descriptorIndexingExtension = true;
-	}
 
 	if (physicalDevice->IsExtensionSupported(VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME))
-	{
 		extensions.emplace_back(VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME);
-		s_fragmentShaderInterlockExtension = true;
-	}
 
 	if (physicalDevice->IsExtensionSupported(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME))
-	{
 		extensions.emplace_back(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME);
-		s_bufferDeviceAddressExtension = true;
-	}
 
 	if (physicalDevice->IsExtensionSupported(VK_KHR_MAINTENANCE_4_EXTENSION_NAME))
-	{
 		extensions.emplace_back(VK_KHR_MAINTENANCE_4_EXTENSION_NAME);
-		s_maintenance4Extension = true;
-	}
 
 	if (physicalDevice->IsExtensionSupported(VK_EXT_MEMORY_BUDGET_EXTENSION_NAME))
-	{
 		extensions.emplace_back(VK_EXT_MEMORY_BUDGET_EXTENSION_NAME);
-		s_memoryBudgetExtension = true;
-	}
+
+	if (physicalDevice->IsExtensionSupported(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME))
+		extensions.emplace_back(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME);
 
 	if (physicalDevice->IsExtensionSupported(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME) &&
 	    physicalDevice->IsExtensionSupported(VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME))
 	{
-		extensions.emplace_back(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME);
 		extensions.emplace_back(VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME);
-		s_shadingRate = true;
 	}
 
 	if (physicalDevice->IsExtensionSupported(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME))
-	{
 		extensions.emplace_back(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME);
-		s_timelineSemaphore = true;
-	}
-
-	if (physicalDevice->IsExtensionSupported(VK_KHR_MULTIVIEW_EXTENSION_NAME))
-	{
-		extensions.emplace_back(VK_KHR_MULTIVIEW_EXTENSION_NAME);
-		s_multiView = true;
-	}
-
-	if (s_multiView && physicalDevice->IsExtensionSupported(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME))
-	{
-		extensions.emplace_back(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME);
-		s_renderPass2 = true;
-	}
 
 	if(physicalDevice->IsExtensionSupported(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME))
 		extensions.emplace_back(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME);
@@ -3358,34 +3319,13 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 	   physicalDevice->IsExtensionSupported(VK_KHR_SPIRV_1_4_EXTENSION_NAME))
 	{
 		extensions.emplace_back(VK_KHR_SPIRV_1_4_EXTENSION_NAME);
-		s_SPIRV1_4 = true;
 	}
-
-#ifdef TRAP_PLATFORM_WINDOWS
-	if (physicalDevice->IsExtensionSupported(VK_KHR_EXTERNAL_MEMORY_WIN32_EXTENSION_NAME))
-	{
-		extensions.emplace_back(VK_KHR_EXTERNAL_MEMORY_WIN32_EXTENSION_NAME);
-		s_externalMemoryWin32Extension = true;
-	}
-	if (physicalDevice->IsExtensionSupported(VK_KHR_EXTERNAL_FENCE_WIN32_EXTENSION_NAME))
-	{
-		extensions.emplace_back(VK_KHR_EXTERNAL_FENCE_WIN32_EXTENSION_NAME);
-		s_externalFenceWin32Extension = true;
-	}
-	if (physicalDevice->IsExtensionSupported(VK_KHR_EXTERNAL_SEMAPHORE_WIN32_EXTENSION_NAME))
-	{
-		extensions.emplace_back(VK_KHR_EXTERNAL_SEMAPHORE_WIN32_EXTENSION_NAME);
-		s_externalSemaphoreWin32Extension = true;
-	}
-	s_externalMemory = s_externalMemoryWin32Extension && s_externalFenceWin32Extension &&
-	                   s_externalSemaphoreWin32Extension;
-#endif /*TRAP_PLATFORM_WINDOWS*/
 
 	//RayTracing
-	if(s_descriptorIndexingExtension &&
+	if(physicalDevice->IsExtensionSupported(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME) &&
 	   physicalDevice->IsExtensionSupported(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME) &&
-	   s_bufferDeviceAddressExtension &&
-	   s_SPIRV1_4 &&
+	   physicalDevice->IsExtensionSupported(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME) &&
+	   physicalDevice->IsExtensionSupported(VK_KHR_SPIRV_1_4_EXTENSION_NAME) &&
 	   physicalDevice->IsExtensionSupported(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME) &&
 	   physicalDevice->IsExtensionSupported(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME) &&
 	   physicalDevice->IsExtensionSupported(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME) &&
@@ -3395,21 +3335,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 		extensions.emplace_back(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
 		extensions.emplace_back(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);
 		extensions.emplace_back(VK_KHR_RAY_QUERY_EXTENSION_NAME);
-		s_rayTracingExtension = true;
 	}
-
-#ifdef ENABLE_NSIGHT_AFTERMATH
-	if(physicalDevice->IsExtensionSupported(VK_NV_DEVICE_DIAGNOSTICS_CONFIG_EXTENSION_NAME))
-	{
-		extensions.emplace_back(VK_NV_DEVICE_DIAGNOSTICS_CONFIG_EXTENSION_NAME);
-		s_diagnosticsConfigSupport = true;
-	}
-	if(physicalDevice->IsExtensionSupported(VK_NV_DEVICE_DIAGNOSTIC_CHECKPOINTS_EXTENSION_NAME))
-	{
-		extensions.emplace_back(VK_NV_DEVICE_DIAGNOSTIC_CHECKPOINTS_EXTENSION_NAME);
-		s_diagnosticCheckPointsSupport = true;
-	}
-#endif /*ENABLE_NSIGHT_AFTERMATH*/
 
 	return extensions;
 }
@@ -3539,30 +3465,6 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	samplerDesc.EnableAnisotropy = false;
 	samplerDesc.Name = "Default Sampler";
 	s_NullDescriptors->DefaultSampler = TRAP::MakeRef<VulkanSampler>(samplerDesc);
-
-	BlendStateDesc blendStateDesc{};
-	std::get<0>(blendStateDesc.DstAlphaFactors) = BlendConstant::Zero;
-	std::get<0>(blendStateDesc.DstFactors) = BlendConstant::Zero;
-	std::get<0>(blendStateDesc.SrcAlphaFactors) = BlendConstant::One;
-	std::get<0>(blendStateDesc.SrcFactors) = BlendConstant::One;
-	std::get<0>(blendStateDesc.Masks) = (BIT(0u) | BIT(1u) | BIT(2u) | BIT(3u));
-	blendStateDesc.RenderTargetMask = BlendStateTargets::BlendStateTargetAll;
-	blendStateDesc.IndependentBlend = false;
-	DefaultBlendDesc = UtilToBlendDesc(blendStateDesc, DefaultBlendAttachments);
-
-	DepthStateDesc depthStateDesc{};
-	depthStateDesc.DepthFunc = CompareMode::GreaterOrEqual; //Using GreaterOrEqual instead because of reversed Z depth range
-	depthStateDesc.DepthTest = false;
-	depthStateDesc.DepthWrite = false;
-	depthStateDesc.StencilBackFunc = CompareMode::Always;
-	depthStateDesc.StencilFrontFunc = CompareMode::Always;
-	depthStateDesc.StencilReadMask = 0xFF;
-	depthStateDesc.StencilWriteMask = 0xFF;
-	DefaultDepthDesc = UtilToDepthDesc(depthStateDesc);
-
-	RasterizerStateDesc rasterizerStateDesc{};
-	rasterizerStateDesc.CullMode = CullMode::Back;
-	DefaultRasterizerDesc = UtilToRasterizerDesc(rasterizerStateDesc);
 
 	//Create Command Buffer to transition resources to the correct state
 	QueueDesc queueDesc{};
@@ -3731,21 +3633,21 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	const usize hash = std::hash<PipelineDesc>{}(desc);
-	const auto pipelineIt = s_pipelines.find(hash);
+	const auto pipelineIt = Pipelines.find(hash);
 
-	if(pipelineIt != s_pipelines.end())
+	if(pipelineIt != Pipelines.end())
 		return pipelineIt->second;
 
 	const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath();
 	if(tempFolder)
 	{
 		std::pair<std::unordered_map<u64, TRAP::Ref<PipelineCache>>::iterator, bool> res;
-		if (!s_pipelineCaches.contains(hash))
+		if (!PipelineCaches.contains(hash))
 		{
 			PipelineCacheLoadDesc cacheDesc{};
 			cacheDesc.Path = *tempFolder / fmt::format("{}.cache", hash);
 			cacheDesc.Name = fmt::format("Pipeline cache (Pipeline: \"{}\")", desc.Name);
-			res = s_pipelineCaches.try_emplace(hash, PipelineCache::Create(cacheDesc));
+			res = PipelineCaches.try_emplace(hash, PipelineCache::Create(cacheDesc));
 		}
 
 		if(res.second) //Got inserted
@@ -3756,7 +3658,7 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 	TP_TRACE(Log::RendererVulkanPipelinePrefix, "Recreating Graphics Pipeline...");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 	const TRAP::Ref<TRAP::Graphics::Pipeline> pipeline = Pipeline::Create(desc);
-	const auto pipeRes = s_pipelines.try_emplace(hash, pipeline);
+	const auto pipeRes = Pipelines.try_emplace(hash, pipeline);
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_TRACE(Log::RendererVulkanPipelinePrefix, "Cached Graphics Pipeline");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/

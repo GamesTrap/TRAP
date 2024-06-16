@@ -20,7 +20,7 @@ TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore([[maybe_unused]] const std
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if(!name.empty())
-		TRAP::Graphics::API::VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_semaphore), VK_OBJECT_TYPE_SEMAPHORE, name);
+		TRAP::Graphics::API::VkSetObjectName(*m_device, std::bit_cast<u64>(m_semaphore), VK_OBJECT_TYPE_SEMAPHORE, name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 

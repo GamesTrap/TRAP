@@ -4,6 +4,7 @@
 #include <thread>
 
 #include "Graphics/API/ShaderReflection.h"
+#include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Objects/VulkanDebug.h"
 #include "Utils/Concurrency/Safe.h"
 
@@ -982,36 +983,6 @@ namespace TRAP::Graphics::API
 
 		void WaitIdle() const override;
 
-		//TODO Put these into a struct which can be queried from the renderer, this is getting ridiculous...
-		//Instance Extensions
-		inline constinit static bool s_debugUtilsExtension = false;
-		inline constinit static bool s_debugReportExtension = false;
-		inline constinit static bool s_validationFeaturesExtension = false;
-		inline constinit static bool s_swapchainColorSpaceExtension = false;
-
-		//Device Extensions
-		inline constinit static bool s_shaderDrawParameters = false;
-		inline constinit static bool s_fragmentShaderInterlockExtension = false;
-		inline constinit static bool s_drawIndirectCountExtension = false;
-		inline constinit static bool s_descriptorIndexingExtension = false;
-		inline constinit static bool s_rayTracingExtension = false;
-		inline constinit static bool s_samplerYcbcrConversionExtension = false;
-		inline constinit static bool s_bufferDeviceAddressExtension = false;
-		inline constinit static bool s_memoryBudgetExtension = false;
-		inline constinit static bool s_maintenance4Extension = false;
-		inline constinit static bool s_externalMemory = false;
-		inline constinit static bool s_shadingRate = false;
-		inline constinit static bool s_timelineSemaphore = false;
-		inline constinit static bool s_multiView = false;
-		inline constinit static bool s_renderPass2 = false;
-		inline constinit static bool s_SPIRV1_4 = false;
-
-		inline constinit static bool s_debugMarkerSupport = false;
-
-		inline constinit static bool s_externalMemoryWin32Extension = false;
-		inline constinit static bool s_externalFenceWin32Extension = false;
-		inline constinit static bool s_externalSemaphoreWin32Extension = false;
-
 		inline constinit static struct GPUCapBits
 		{
 			std::array<bool, std::to_underlying(ImageFormat::IMAGE_FORMAT_COUNT)> CanShaderReadFrom{};
@@ -1107,9 +1078,38 @@ namespace TRAP::Graphics::API
 			Utils::Safe<NullDescriptorsObjs> SafeNullDescriptorsObjs{};
 		};
 		static TRAP::Scope<NullDescriptors> s_NullDescriptors;
-		static std::vector<VkPipelineColorBlendAttachmentState> DefaultBlendAttachments;
-		static VkPipelineRasterizationStateCreateInfo DefaultRasterizerDesc;
-		static VkPipelineDepthStencilStateCreateInfo DefaultDepthDesc;
+		static constexpr VkPipelineRasterizationStateCreateInfo DefaultRasterizerDesc = UtilToRasterizerDesc
+		(
+			RendererAPI::RasterizerStateDesc
+			{
+				.CullMode = CullMode::Back,
+				.DepthBias = 0,
+				.SlopeScaledDepthBias = 0.0f,
+				.FillMode = FillMode::Solid,
+				.FrontFace = FrontFace::CounterClockwise,
+				.DepthClampEnable = false
+			}
+		);
+		static constexpr VkPipelineDepthStencilStateCreateInfo DefaultDepthDesc= UtilToDepthDesc
+		(
+			RendererAPI::DepthStateDesc
+			{
+				.DepthTest = false,
+				.DepthWrite = false,
+				.DepthFunc = CompareMode::GreaterOrEqual, //Using GreaterOrEqual instead because of reversed Z depth range
+				.StencilTest = false,
+				.StencilReadMask = 0xFF,
+				.StencilWriteMask = 0xFF,
+				.StencilFrontFunc = CompareMode::Always,
+				.StencilFrontFail = StencilOp::Keep,
+				.DepthFrontFail = StencilOp::Keep,
+				.StencilFrontPass = StencilOp::Keep,
+				.StencilBackFunc = CompareMode::Always,
+				.StencilBackFail = StencilOp::Keep,
+				.DepthBackFail = StencilOp::Keep,
+				.StencilBackPass = StencilOp::Keep
+			}
+		);
 		static VkPipelineColorBlendStateCreateInfo DefaultBlendDesc;
 
 		/// @brief Transition the given texture from undefined resource state to the given resource state.
@@ -1227,10 +1227,10 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanMemoryAllocator> m_vma = nullptr;
 
 		inline static std::vector<std::pair<std::string, TRAP::Utils::UUID>> s_usableGPUs{};
-		static std::unordered_map<u64, TRAP::Ref<Pipeline>> s_pipelines;
-		static std::unordered_map<u64, TRAP::Ref<PipelineCache>> s_pipelineCaches;
 
 		inline constinit static VulkanRenderer* s_renderer = nullptr;
+
+		friend VulkanDevice;
 	};
 }
 

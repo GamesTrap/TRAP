@@ -13,6 +13,32 @@ namespace TRAP::Graphics::API
 	class VulkanSurface;
 #endif /*TRAP_HEADLESS_MODE*/
 
+	enum class VulkanPhysicalDeviceExtension
+	{
+		Swapchain,
+		FragmentShaderInterlock,
+		DrawIndirectCount,
+		DescriptorIndexing,
+		RayTracing,
+		BufferDeviceAddress,
+		MemoryBudget,
+		Maintenance4,
+		ShadingRate,
+		TimelineSemaphore,
+		RenderPass2,
+		SPIRV1_4,
+		DebugMarker
+	};
+
+	enum class VulkanPhysicalDeviceFeature
+	{
+		SamplerYcbcrConversion,
+		ShaderDrawParameters,
+		BufferDeviceAddress,
+		TimelineSemaphore,
+		NsightAftermath
+	};
+
 	struct RatedVulkanPhysicalDevice
 	{
 		TRAP::Utils::UUID PhysicalDeviceUUID{};
@@ -79,6 +105,15 @@ namespace TRAP::Graphics::API
 		/// @param extension Extension to check.
 		/// @return True if extension is supported, false otherwise.
 		[[nodiscard]] constexpr bool IsExtensionSupported(std::string_view extension) const;
+		/// @brief Check whether an extension is supported by the physical device or not.
+		/// @param extension Extension to check.
+		/// @return True if extension is supported, false otherwise.
+		[[nodiscard]] constexpr bool IsExtensionSupported(VulkanPhysicalDeviceExtension extension) const;
+
+		/// @brief Check whether a feature is supported and enabled by the physical device or not.
+		/// @param feature Feature to check.
+		/// @return True if feature is supported and enabled, false otherwise.
+		[[nodiscard]] constexpr bool IsFeatureEnabled(VulkanPhysicalDeviceFeature feature) const;
 
 		/// @brief Retrieve the properties for the given physical device extension.
 		/// @param physicalDeviceExtension Physical device extension to get properties from.
@@ -96,11 +131,6 @@ namespace TRAP::Graphics::API
 		/// @brief Retrieve the physical device's UUID.
 		/// @return Physical device UUID.
 		[[nodiscard]] constexpr TRAP::Utils::UUID GetUUID() const noexcept;
-
-		/// @brief Load the physical device fragment shader interlock features.
-		/// Value is saved in RendererAPI::GPUSettings.ROVsSupported.
-		/// @note Only call this function when VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION is enabled.
-		void LoadPhysicalDeviceFragmentShaderInterlockFeatures();
 
 		/// @brief Retrieve the vendor of the physical device.
 		/// @return Vendor.
@@ -141,6 +171,16 @@ namespace TRAP::Graphics::API
 		std::vector<VkExtensionProperties> m_availablePhysicalDeviceExtensions{};
 
 		TRAP::Ref<VulkanInstance> m_instance = nullptr; //Take ownership of VulkanInstance because we rely on it being around.
+
+		struct VulkanPhysicalDeviceFeatures
+		{
+			bool ShaderDrawParameters;
+			bool SamplerYcbcrConversion;
+			bool BufferDeviceAddress;
+			bool TimelineSemaphore;
+			bool NsightAftermath;
+		};
+		VulkanPhysicalDeviceFeatures m_deviceFeatures{};
 	};
 }
 
@@ -187,6 +227,87 @@ namespace TRAP::Graphics::API
 	}
 
 	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Graphics::API::VulkanPhysicalDevice::IsExtensionSupported(const VulkanPhysicalDeviceExtension extension) const
+{
+	switch(extension)
+	{
+	case VulkanPhysicalDeviceExtension::Swapchain:
+		return IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+
+	case VulkanPhysicalDeviceExtension::FragmentShaderInterlock:
+		return IsExtensionSupported(VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME);
+
+	case VulkanPhysicalDeviceExtension::DrawIndirectCount:
+		return IsExtensionSupported(VK_KHR_DRAW_INDIRECT_COUNT_EXTENSION_NAME);
+
+	case VulkanPhysicalDeviceExtension::DescriptorIndexing:
+		return IsExtensionSupported(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME);
+
+	case VulkanPhysicalDeviceExtension::RayTracing:
+		return IsExtensionSupported(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME) &&
+		       IsExtensionSupported(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME) &&
+ 		       IsExtensionSupported(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME) &&
+		       IsExtensionSupported(VK_KHR_SPIRV_1_4_EXTENSION_NAME) &&
+		       IsExtensionSupported(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME) &&
+			   IsExtensionSupported(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME) &&
+			   IsExtensionSupported(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME) &&
+			   IsExtensionSupported(VK_KHR_RAY_QUERY_EXTENSION_NAME);
+
+	case VulkanPhysicalDeviceExtension::BufferDeviceAddress:
+		return IsExtensionSupported(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME);
+
+	case VulkanPhysicalDeviceExtension::MemoryBudget:
+		return IsExtensionSupported(VK_EXT_MEMORY_BUDGET_EXTENSION_NAME);
+
+	case VulkanPhysicalDeviceExtension::Maintenance4:
+		return IsExtensionSupported(VK_KHR_MAINTENANCE_4_EXTENSION_NAME);
+
+	case VulkanPhysicalDeviceExtension::ShadingRate:
+		return IsExtensionSupported(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME) &&
+		       IsExtensionSupported(VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME);
+
+	case VulkanPhysicalDeviceExtension::TimelineSemaphore:
+		return IsExtensionSupported(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME);
+
+	case VulkanPhysicalDeviceExtension::RenderPass2:
+		return IsExtensionSupported(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME);
+
+	case VulkanPhysicalDeviceExtension::SPIRV1_4:
+		return IsExtensionSupported(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME) &&
+		       IsExtensionSupported(VK_KHR_SPIRV_1_4_EXTENSION_NAME);
+
+	case VulkanPhysicalDeviceExtension::DebugMarker:
+		return IsExtensionSupported(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
+	}
+
+	TRAP_ASSERT(false, "VulkanPhysicalDevice::IsExtensionSupported(): Unknown Vulkan extension!");
+	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Graphics::API::VulkanPhysicalDevice::IsFeatureEnabled(const VulkanPhysicalDeviceFeature feature) const
+{
+	switch(feature)
+	{
+	case VulkanPhysicalDeviceFeature::SamplerYcbcrConversion:
+		return m_deviceFeatures.SamplerYcbcrConversion;
+	case VulkanPhysicalDeviceFeature::ShaderDrawParameters:
+		return m_deviceFeatures.ShaderDrawParameters;
+	case VulkanPhysicalDeviceFeature::BufferDeviceAddress:
+		return m_deviceFeatures.BufferDeviceAddress;
+	case VulkanPhysicalDeviceFeature::TimelineSemaphore:
+		return m_deviceFeatures.TimelineSemaphore;
+	case VulkanPhysicalDeviceFeature::NsightAftermath:
+		return m_deviceFeatures.NsightAftermath;
+	}
+
+	TRAP_ASSERT(false, "VulkanPhysicalDevice::IsFeatureEnabled(): Unknown Vulkan feature!");
+	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

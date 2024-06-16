@@ -48,7 +48,7 @@ TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineD
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if(!desc.Name.empty() && m_vkPipeline != VK_NULL_HANDLE)
-		TRAP::Graphics::API::VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkPipeline), VK_OBJECT_TYPE_PIPELINE, desc.Name);
+		TRAP::Graphics::API::VkSetObjectName(*m_device, std::bit_cast<u64>(m_vkPipeline), VK_OBJECT_TYPE_PIPELINE, desc.Name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
@@ -305,7 +305,7 @@ namespace
 
 	[[nodiscard]] TRAP::Optional<VkPipelineFragmentShadingRateStateCreateInfoKHR> GetVkPipelineFragmentShadingRateStateCreateInfoKHR(const TRAP::Graphics::RendererAPI::GraphicsPipelineDesc& gpd)
 	{
-		if(!TRAP::Graphics::API::VulkanRenderer::s_shadingRate)
+		if(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps == TRAP::Graphics::RendererAPI::ShadingRateCaps::NotSupported)
 			return TRAP::NullOpt;
 
 		const std::array<VkFragmentShadingRateCombinerOpKHR, 2> rateCombiners

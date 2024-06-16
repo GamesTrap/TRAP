@@ -36,7 +36,7 @@ TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::Com
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if(!desc.Name.empty())
-		TRAP::Graphics::API::VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkCommandPool), VK_OBJECT_TYPE_COMMAND_POOL, desc.Name);
+		TRAP::Graphics::API::VkSetObjectName(*m_device, std::bit_cast<u64>(m_vkCommandPool), VK_OBJECT_TYPE_COMMAND_POOL, desc.Name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 

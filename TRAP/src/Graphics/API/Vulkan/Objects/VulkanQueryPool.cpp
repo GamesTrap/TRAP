@@ -24,8 +24,8 @@ TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const RendererAPI::QueryPo
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if(!desc.Name.empty())
-		TRAP::Graphics::API::VkSetObjectName(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()->GetVkDevice(),
-	                                         std::bit_cast<u64>(m_vkQueryPool), VK_OBJECT_TYPE_QUERY_POOL, desc.Name);
+		TRAP::Graphics::API::VkSetObjectName(*device, std::bit_cast<u64>(m_vkQueryPool), VK_OBJECT_TYPE_QUERY_POOL,
+	                                         desc.Name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 

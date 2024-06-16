@@ -67,7 +67,7 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 	TP_DEBUG(Log::RendererVulkanDebugPrefix, "Registering Debug Callback");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	if(VulkanRenderer::s_debugUtilsExtension)
+	if(VulkanInstance::IsExtensionSupported(VulkanInstanceExtension::DebugUtils))
 	{
 		const VkDebugUtilsMessengerCreateInfoEXT info = VulkanInits::DebugUtilsMessengerCreateInfo(VulkanDebugUtilsCallback);
 		const VkResult res = vkCreateDebugUtilsMessengerEXT(m_instance->GetVkInstance(), &info, nullptr, &m_debugUtils);
@@ -78,7 +78,7 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 			VkCall(res);
 		}
 	}
-	else if(VulkanRenderer::s_debugReportExtension)
+	else if(VulkanInstance::IsExtensionSupported(VulkanInstanceExtension::DebugReport))
 	{
 		const VkDebugReportCallbackCreateInfoEXT info = VulkanInits::DebugReportCallbackCreateInfo(VulkanDebugReportCallback);
 		const VkResult res = vkCreateDebugReportCallbackEXT(m_instance->GetVkInstance(), &info, nullptr, &m_debugReport);

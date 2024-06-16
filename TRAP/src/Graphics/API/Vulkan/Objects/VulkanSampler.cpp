@@ -12,7 +12,7 @@ namespace
 	void CheckFormatProperties(const TRAP::Graphics::RendererAPI::SamplerDesc& samplerDesc,
 	                           const TRAP::Graphics::API::VulkanDevice& device)
 	{
-		TRAP_ASSERT(TRAP::Graphics::API::VulkanRenderer::s_samplerYcbcrConversionExtension,
+		TRAP_ASSERT(device.GetPhysicalDevice().IsFeatureEnabled(TRAP::Graphics::API::VulkanPhysicalDeviceFeature::SamplerYcbcrConversion),
 		            "VulkanSampler::CheckFormatProperties(): Sampler YCbCr Conversion Extension is not supported by this device!");
 
 		const VkFormatProperties formatProps = device.GetPhysicalDevice().GetVkPhysicalDeviceFormatProperties(samplerDesc.SamplerConversionDesc.Format);
@@ -96,7 +96,7 @@ namespace
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if(!samplerDesc.Name.empty())
-		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(sampler), VK_OBJECT_TYPE_SAMPLER, samplerDesc.Name);
+		TRAP::Graphics::API::VkSetObjectName(device, std::bit_cast<u64>(sampler), VK_OBJECT_TYPE_SAMPLER, samplerDesc.Name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 	}
 

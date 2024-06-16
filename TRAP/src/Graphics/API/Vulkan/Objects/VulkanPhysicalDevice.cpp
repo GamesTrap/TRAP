@@ -218,6 +218,73 @@ namespace
 				RatedPhysicalDevices.emplace(*deviceRating);
 		}
 	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void UpdateShadingRateCaps(const VkPhysicalDeviceFragmentShadingRateFeaturesKHR& shadingRateFeatures,
+	                           VkPhysicalDevice physicalDevice)
+	{
+		using namespace TRAP::Graphics::API;
+		using RendererAPI = TRAP::Graphics::RendererAPI;
+
+		if(shadingRateFeatures.pipelineFragmentShadingRate != 0u)
+			RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerDraw;
+		if(shadingRateFeatures.primitiveFragmentShadingRate != 0u)
+			RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerPrimitive;
+		if(shadingRateFeatures.attachmentFragmentShadingRate != 0u)
+			RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerTile;
+
+		if(RendererAPI::GPUSettings.ShadingRateCaps == RendererAPI::ShadingRateCaps::NotSupported)
+			return;
+
+		VkPhysicalDeviceFragmentShadingRatePropertiesKHR fragmentShadingRateProperties{};
+		fragmentShadingRateProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR;
+		VkPhysicalDeviceProperties2 deviceProperties2{};
+		deviceProperties2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+		deviceProperties2.pNext = &fragmentShadingRateProperties;
+		vkGetPhysicalDeviceProperties2(physicalDevice, &deviceProperties2);
+
+		RendererAPI::GPUSettings.ShadingRateTexelWidth = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.width;
+		RendererAPI::GPUSettings.ShadingRateTexelHeight = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.height;
+
+		RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Passthrough;
+		RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Override;
+		if(fragmentShadingRateProperties.fragmentShadingRateNonTrivialCombinerOps != 0u)
+		{
+			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Min;
+			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Max;
+			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Sum;
+		}
+
+		u32 fragmentShadingRatesCount = 0;
+		VkCall(vkGetPhysicalDeviceFragmentShadingRatesKHR(physicalDevice, &fragmentShadingRatesCount, nullptr));
+		std::vector<VkPhysicalDeviceFragmentShadingRateKHR> fragmentShadingRates(fragmentShadingRatesCount);
+		for(auto& rate : fragmentShadingRates)
+		{
+			rate.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_KHR;
+			rate.pNext = nullptr;
+		}
+		VkCall(vkGetPhysicalDeviceFragmentShadingRatesKHR(physicalDevice, &fragmentShadingRatesCount, fragmentShadingRates.data()));
+		for(const auto& rate : fragmentShadingRates)
+		{
+			if(rate.fragmentSize.width == 1 && rate.fragmentSize.height == 2)
+				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::OneXTwo;
+			if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 1)
+				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::TwoXOne;
+			if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 4)
+				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::TwoXFour;
+			if(rate.fragmentSize.width == 4 && rate.fragmentSize.height == 2)
+				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::FourXTwo;
+			if(rate.fragmentSize.width == 4 && rate.fragmentSize.height == 4)
+				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Quarter;
+			if(rate.fragmentSize.width == 8 && rate.fragmentSize.height == 8)
+				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Eighth;
+			if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 2)
+				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Half;
+			if(rate.fragmentSize.width == 1 && rate.fragmentSize.height == 1)
+				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Full;
+		}
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -240,11 +307,10 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(TRAP::Ref<Vulkan
 	TP_DEBUG(Log::RendererVulkanPhysicalDevicePrefix, "Creating PhysicalDevice");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	LoadDevicePropertiesAndFeatures();
-
-	SetupRendererAPIGPUSettings(*this);
-
 	m_availablePhysicalDeviceExtensions = LoadAllPhysicalDeviceExtensions(m_physicalDevice);
+
+	LoadDevicePropertiesAndFeatures();
+	SetupRendererAPIGPUSettings(*this);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -303,10 +369,10 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::LoadDevicePropertiesAndFeatures(
 	m_physicalDeviceSubgroupProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_PROPERTIES;
 	m_physicalDeviceDriverProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES;
 
-	VkBaseOutStructure* base = reinterpret_cast<VkBaseOutStructure*>(&props2);
-	TRAP::Graphics::API::LinkVulkanStruct(base, m_physicalDeviceIDProperties);
-	TRAP::Graphics::API::LinkVulkanStruct(base, m_physicalDeviceSubgroupProperties);
-	TRAP::Graphics::API::LinkVulkanStruct(base, m_physicalDeviceDriverProperties);
+	VkBaseOutStructure* baseProps = reinterpret_cast<VkBaseOutStructure*>(&props2);
+	TRAP::Graphics::API::LinkVulkanStruct(baseProps, m_physicalDeviceIDProperties);
+	TRAP::Graphics::API::LinkVulkanStruct(baseProps, m_physicalDeviceSubgroupProperties);
+	TRAP::Graphics::API::LinkVulkanStruct(baseProps, m_physicalDeviceDriverProperties);
 
 	vkGetPhysicalDeviceProperties2(m_physicalDevice, &props2);
 
@@ -324,6 +390,50 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::LoadDevicePropertiesAndFeatures(
 
 		vkGetPhysicalDeviceFormatProperties(m_physicalDevice, fmt, &m_physicalDeviceFormatProperties[i]);
 	}
+
+	VkPhysicalDeviceFeatures2 devFeatures2{};
+	devFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+
+	VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT fragmentShaderInterlockFeatures{};
+	fragmentShaderInterlockFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT;
+	VkPhysicalDeviceSamplerYcbcrConversionFeatures ycbcrFeatures{};
+	ycbcrFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES;
+	VkPhysicalDeviceShaderDrawParametersFeatures shaderDrawParametersFeatures{};
+	shaderDrawParametersFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES;
+	VkPhysicalDeviceBufferDeviceAddressFeaturesKHR bufferDeviceAddressFeatures{};
+	bufferDeviceAddressFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_KHR;
+	VkPhysicalDeviceFragmentShadingRateFeaturesKHR shadingRateFeatures{};
+	shadingRateFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR;
+	VkPhysicalDeviceTimelineSemaphoreFeaturesKHR timelineSemaphoreFeatures{};
+	timelineSemaphoreFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR;
+
+	VkBaseOutStructure* baseFeatures = reinterpret_cast<VkBaseOutStructure*>(&devFeatures2);
+
+	if(IsExtensionSupported(VulkanPhysicalDeviceExtension::FragmentShaderInterlock))
+		TRAP::Graphics::API::LinkVulkanStruct(baseFeatures, fragmentShaderInterlockFeatures);
+	TRAP::Graphics::API::LinkVulkanStruct(baseFeatures, ycbcrFeatures);
+	TRAP::Graphics::API::LinkVulkanStruct(baseFeatures, shaderDrawParametersFeatures);
+	//RayTracing
+	if (IsExtensionSupported(VulkanPhysicalDeviceExtension::BufferDeviceAddress))
+		TRAP::Graphics::API::LinkVulkanStruct(baseFeatures, bufferDeviceAddressFeatures);
+	//Shading rate
+	if(IsExtensionSupported(VulkanPhysicalDeviceExtension::ShadingRate))
+		TRAP::Graphics::API::LinkVulkanStruct(baseFeatures, shadingRateFeatures);
+	//Timeline semaphore
+	if(IsExtensionSupported(VulkanPhysicalDeviceExtension::TimelineSemaphore))
+		TRAP::Graphics::API::LinkVulkanStruct(baseFeatures, timelineSemaphoreFeatures);
+
+	vkGetPhysicalDeviceFeatures2(m_physicalDevice, &devFeatures2);
+
+	RendererAPI::GPUSettings.ROVsSupported = fragmentShaderInterlockFeatures.fragmentShaderPixelInterlock;
+	m_deviceFeatures.SamplerYcbcrConversion = (ycbcrFeatures.samplerYcbcrConversion != 0u);
+	m_deviceFeatures.ShaderDrawParameters = (shaderDrawParametersFeatures.shaderDrawParameters != 0u);
+	m_deviceFeatures.BufferDeviceAddress = (bufferDeviceAddressFeatures.bufferDeviceAddress != 0u);
+	m_deviceFeatures.TimelineSemaphore = (timelineSemaphoreFeatures.timelineSemaphore != 0u);
+	m_deviceFeatures.NsightAftermath =  IsExtensionSupported(VK_NV_DEVICE_DIAGNOSTICS_CONFIG_EXTENSION_NAME) &&
+		                                IsExtensionSupported(VK_NV_DEVICE_DIAGNOSTIC_CHECKPOINTS_EXTENSION_NAME);
+
+	UpdateShadingRateCaps(shadingRateFeatures, m_physicalDevice);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -347,29 +457,6 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::LoadDevicePropertiesAndFeatures(
 		TRAP::Utils::DisplayError(TRAP::Utils::ErrorCode::VulkanNoPhysicalDeviceFound);
 
 	return RatedPhysicalDevices;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanPhysicalDevice::LoadPhysicalDeviceFragmentShaderInterlockFeatures()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	if(VulkanRenderer::s_fragmentShaderInterlockExtension)
-	{
-		VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT fragShaderInterlock{};
-		fragShaderInterlock.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT;
-
-		VkPhysicalDeviceFeatures2 features2{};
-		features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-		features2.pNext = &fragShaderInterlock;
-
-		vkGetPhysicalDeviceFeatures2(m_physicalDevice, &features2);
-
-		RendererAPI::GPUSettings.ROVsSupported = fragShaderInterlock.fragmentShaderPixelInterlock;
-	}
-	else
-		RendererAPI::GPUSettings.ROVsSupported = 0u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

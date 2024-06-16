@@ -102,7 +102,7 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appNa
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	std::erase_if(m_instanceLayers, std::not_fn(IsLayerSupported));
-	std::erase_if(m_instanceExtensions, std::not_fn(IsExtensionSupported));
+	std::erase_if(m_instanceExtensions, std::not_fn<bool(std::string_view)>(IsExtensionSupported));
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanInstancePrefix, "Creating Instance");
@@ -243,4 +243,26 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 	}
 
 	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] bool TRAP::Graphics::API::VulkanInstance::IsExtensionSupported(const VulkanInstanceExtension extension)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+	switch(extension)
+	{
+	case TRAP::Graphics::API::VulkanInstanceExtension::DebugUtils:
+		return IsExtensionSupported(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+	case TRAP::Graphics::API::VulkanInstanceExtension::DebugReport:
+		return IsExtensionSupported(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+	case TRAP::Graphics::API::VulkanInstanceExtension::ValidationFeatures:
+		return IsExtensionSupported(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME);
+	case TRAP::Graphics::API::VulkanInstanceExtension::SwapchainColorSpace:
+		return IsExtensionSupported(VK_KHR_SURFACE_EXTENSION_NAME) && IsExtensionSupported(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME);
+	}
+
+	TRAP_ASSERT(false, "VulkanInstance::IsExtensionSupported(): Unknown Vulkan extension!");
+	return false;
 }

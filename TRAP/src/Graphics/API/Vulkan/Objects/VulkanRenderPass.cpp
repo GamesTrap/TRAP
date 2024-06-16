@@ -1,3 +1,4 @@
+#include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
 #include "TRAPPCH.h"
 #include "VulkanRenderPass.h"
 
@@ -306,7 +307,7 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 	TP_DEBUG(Log::RendererVulkanRenderPassPrefix, "Creating RenderPass");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	if(VulkanRenderer::s_renderPass2)
+	if(m_device->GetPhysicalDevice().IsExtensionSupported(VulkanPhysicalDeviceExtension::RenderPass2))
 		m_renderPass = CreateRenderPass2(*m_device, desc);
 	else
 		m_renderPass = CreateRenderPass(*m_device, desc);

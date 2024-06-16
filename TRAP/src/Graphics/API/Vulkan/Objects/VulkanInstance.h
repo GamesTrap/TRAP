@@ -10,6 +10,14 @@
 
 namespace TRAP::Graphics::API
 {
+	enum class VulkanInstanceExtension
+	{
+		DebugUtils,
+		DebugReport,
+		ValidationFeatures,
+		SwapchainColorSpace
+	};
+
 	class VulkanInstance final
 	{
 	public:
@@ -61,6 +69,10 @@ namespace TRAP::Graphics::API
 		/// @param extension Instance extension to check.
 		/// @return True if the instance extension is supported, false otherwise.
 		[[nodiscard]] static bool IsExtensionSupported(std::string_view extension);
+		/// @brief Check whether an instance extension is supported or not.
+		/// @param extension Instance extension to check.
+		/// @return True if the instance extension is supported, false otherwise.
+		[[nodiscard]] static bool IsExtensionSupported(VulkanInstanceExtension extension);
 
 	private:
 		VkInstance m_instance = VK_NULL_HANDLE;

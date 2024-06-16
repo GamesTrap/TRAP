@@ -12,8 +12,9 @@
 namespace
 {
 #ifdef ENABLE_GRAPHICS_DEBUG
-	void SetTextureName(const VkDevice& device, const std::string_view name, VkImage image, VkImageView imageSRV,
-	                    VkImageView imageSRVStencil, const std::span<const VkImageView> imageUAV)
+	void SetTextureName(const TRAP::Graphics::API::VulkanDevice& device, const std::string_view name,
+	                    VkImage image, VkImageView imageSRV, VkImageView imageSRVStencil,
+						const std::span<const VkImageView> imageUAV)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -360,7 +361,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc& de
 		m_name = desc.Name;
 
 #if defined(ENABLE_GRAPHICS_DEBUG)
-	SetTextureName(m_device->GetVkDevice(), m_name, m_vkImage, m_vkSRVDescriptor, m_vkSRVStencilDescriptor,
+	SetTextureName(*m_device, m_name, m_vkImage, m_vkSRVDescriptor, m_vkSRVStencilDescriptor,
 	               m_vkUAVDescriptors);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }

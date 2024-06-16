@@ -181,7 +181,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if (!desc.Name.empty())
-		TRAP::Graphics::API::VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkBuffer), VK_OBJECT_TYPE_BUFFER, desc.Name);
+		TRAP::Graphics::API::VkSetObjectName(*m_device, std::bit_cast<u64>(m_vkBuffer), VK_OBJECT_TYPE_BUFFER, desc.Name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 

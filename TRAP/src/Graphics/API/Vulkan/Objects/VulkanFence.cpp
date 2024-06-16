@@ -10,13 +10,12 @@
 
 namespace
 {
-	void CheckAftermathError([[maybe_unused]] VkResult result)
+	void CheckAftermathError([[maybe_unused]] const TRAP::Graphics::API::VulkanPhysicalDevice& physicalDevice,
+	                         [[maybe_unused]] VkResult result)
 	{
 #ifdef ENABLE_NSIGHT_AFTERMATH
-		if(!TRAP::Graphics::RendererAPI::s_aftermathSupport)
-			return;
-
-		if(result == VK_ERROR_DEVICE_LOST)
+		if(result == VK_ERROR_DEVICE_LOST &&
+		   physicalDevice.IsFeatureEnabled(TRAP::Graphics::API::VulkanPhysicalDeviceFeature::NsightAftermath))
 		{
 			//Device lost notification is async to the NVIDIA display driver's GPU crash handling.
 
@@ -64,7 +63,7 @@ TRAP::Graphics::API::VulkanFence::VulkanFence(const bool signalled, [[maybe_unus
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if(!name.empty())
-		TRAP::Graphics::API::VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_fence), VK_OBJECT_TYPE_FENCE, name);
+		TRAP::Graphics::API::VkSetObjectName(*m_device, std::bit_cast<u64>(m_fence), VK_OBJECT_TYPE_FENCE, name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
@@ -106,7 +105,7 @@ void TRAP::Graphics::API::VulkanFence::Wait()
 	if(m_submitted)
 	{
 		const VkResult result = vkWaitForFences(m_device->GetVkDevice(), 1, &m_fence, VK_TRUE, std::numeric_limits<u32>::max());
-		CheckAftermathError(result);
+		CheckAftermathError(m_device->GetPhysicalDevice(), result);
 		VkCall(result);
 	}
 

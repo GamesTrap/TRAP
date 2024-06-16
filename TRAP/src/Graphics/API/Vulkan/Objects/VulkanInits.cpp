@@ -1,3 +1,5 @@
+#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
+#include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
 #include "TRAPPCH.h"
 #include "VulkanInits.h"
 
@@ -84,22 +86,23 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VmaAllocatorCreateInfo TRAP::Graphics::API::VulkanInits::VMAAllocatorCreateInfo(VkDevice device,
-	                                                                                          VkPhysicalDevice physicalDevice,
+[[nodiscard]] VmaAllocatorCreateInfo TRAP::Graphics::API::VulkanInits::VMAAllocatorCreateInfo(const VulkanDevice& device,
 	                                                                                          VkInstance instance,
 	                                                                                          const VmaVulkanFunctions& vulkanFunctions)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	TRAP_ASSERT(device != VK_NULL_HANDLE, "VulkanInits::VMAAllocatorCreateInfo(): Device can't be VK_NULL_HANDLE!");
-	TRAP_ASSERT(physicalDevice != VK_NULL_HANDLE, "VulkanInits::VMAAllocatorCreateInfo(): PhysicalDevice can't be VK_NULL_HANDLE!");
+	const auto& physicalDevice = device.GetPhysicalDevice();
+
+	TRAP_ASSERT(device.GetVkDevice() != VK_NULL_HANDLE, "VulkanInits::VMAAllocatorCreateInfo(): Device can't be VK_NULL_HANDLE!");
+	TRAP_ASSERT(physicalDevice.GetVkPhysicalDevice() != VK_NULL_HANDLE, "VulkanInits::VMAAllocatorCreateInfo(): PhysicalDevice can't be VK_NULL_HANDLE!");
 	TRAP_ASSERT(instance != VK_NULL_HANDLE, "VulkanInits::VMAAllocatorCreateInfo(): Instance can't be VK_NULL_HANDLE!");
 
 	VmaAllocatorCreateInfo info
 	{
 		.flags = VMA_ALLOCATOR_CREATE_KHR_DEDICATED_ALLOCATION_BIT,
-		.physicalDevice = physicalDevice,
-		.device = device,
+		.physicalDevice = physicalDevice.GetVkPhysicalDevice(),
+		.device = device.GetVkDevice(),
 		.preferredLargeHeapBlockSize = 0,
 		.pAllocationCallbacks = nullptr,
 		.pDeviceMemoryCallbacks = nullptr,
@@ -112,7 +115,7 @@
 #endif
 	};
 
-	if(VulkanRenderer::s_bufferDeviceAddressExtension)
+	if(device.GetPhysicalDevice().IsFeatureEnabled(VulkanPhysicalDeviceFeature::BufferDeviceAddress))
 		info.flags |= VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT;
 
 	return info;

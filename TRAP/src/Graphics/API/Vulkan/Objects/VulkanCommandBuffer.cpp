@@ -1,3 +1,4 @@
+#include "Graphics/API/Vulkan/Objects/VulkanInstance.h"
 #include "TRAPPCH.h"
 #include "VulkanCommandBuffer.h"
 
@@ -56,7 +57,7 @@ TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDe
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if (!name.empty())
-		TRAP::Graphics::API::VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkCommandBuffer), VK_OBJECT_TYPE_COMMAND_BUFFER, name);
+		TRAP::Graphics::API::VkSetObjectName(*m_device, std::bit_cast<u64>(m_vkCommandBuffer), VK_OBJECT_TYPE_COMMAND_BUFFER, name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
@@ -614,19 +615,20 @@ void TRAP::Graphics::API::VulkanCommandBuffer::AddDebugMarker(const TRAP::Math::
 
 	TRAP_ASSERT(name.empty(), "VulkanCommandBuffer::AddDebugMarker(): Name is empty!");
 
-	if(VulkanRenderer::s_debugUtilsExtension)
+	if(VulkanInstance::IsExtensionSupported(VulkanInstanceExtension::DebugUtils))
 	{
 		const VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x(), color.y(), color.z(), name);
 		vkCmdInsertDebugUtilsLabelEXT(m_vkCommandBuffer, &markerInfo);
 	}
-	else if(VulkanRenderer::s_debugReportExtension)
+	else if(VulkanInstance::IsExtensionSupported(VulkanInstanceExtension::DebugReport) &&
+	        m_device->GetPhysicalDevice().IsExtensionSupported(VulkanPhysicalDeviceExtension::DebugMarker))
 	{
 		const VkDebugMarkerMarkerInfoEXT markerInfo = VulkanInits::DebugMarkerMarkerInfo(color.x(), color.y(), color.z(), name);
 		vkCmdDebugMarkerInsertEXT(m_vkCommandBuffer, &markerInfo);
 	}
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
-	if(RendererAPI::s_aftermathSupport)
+	if(m_device->GetPhysicalDevice().IsFeatureEnabled(VulkanPhysicalDeviceFeature::NsightAftermath))
 		vkCmdSetCheckpointNV(m_vkCommandBuffer, name.data());
 #endif /*ENABLE_NSIGHT_AFTERMATH*/
 }
@@ -639,12 +641,13 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BeginDebugMarker(const TRAP::Math
 
 	TRAP_ASSERT(name.empty(), "VulkanCommandBuffer::BeginDebugMarker(): Name is empty!");
 
-	if(VulkanRenderer::s_debugUtilsExtension)
+	if(VulkanInstance::IsExtensionSupported(VulkanInstanceExtension::DebugUtils))
 	{
 		const VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x(), color.y(), color.z(), name);
 		vkCmdBeginDebugUtilsLabelEXT(m_vkCommandBuffer, &markerInfo);
 	}
-	else if(VulkanRenderer::s_debugReportExtension)
+	else if(VulkanInstance::IsExtensionSupported(VulkanInstanceExtension::DebugReport) &&
+	        m_device->GetPhysicalDevice().IsExtensionSupported(VulkanPhysicalDeviceExtension::DebugMarker))
 	{
 		const VkDebugMarkerMarkerInfoEXT markerInfo = VulkanInits::DebugMarkerMarkerInfo(color.x(), color.y(), color.z(), name);
 		vkCmdDebugMarkerBeginEXT(m_vkCommandBuffer, &markerInfo);
@@ -657,10 +660,13 @@ void TRAP::Graphics::API::VulkanCommandBuffer::EndDebugMarker() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	if(VulkanRenderer::s_debugUtilsExtension)
+	if(VulkanInstance::IsExtensionSupported(VulkanInstanceExtension::DebugUtils))
 		vkCmdEndDebugUtilsLabelEXT(m_vkCommandBuffer);
-	else if(VulkanRenderer::s_debugReportExtension)
+	else if(VulkanInstance::IsExtensionSupported(VulkanInstanceExtension::DebugReport) &&
+	        m_device->GetPhysicalDevice().IsExtensionSupported(VulkanPhysicalDeviceExtension::DebugMarker))
+	{
 		vkCmdDebugMarkerEndEXT(m_vkCommandBuffer);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1309,8 +1315,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 			iBarriers[i] = GetVkImageMemoryBarrierFromRenderTargetBarrier((*renderTargetBarriers)[rTIdx], srcAccessFlags, dstAccessFlags, *m_device, *queue);
 	}
 
-	const VkPipelineStageFlags srcStageMask = DetermineVkPipelineStageFlags(srcAccessFlags, queue->GetQueueType());
-	const VkPipelineStageFlags dstStageMask = DetermineVkPipelineStageFlags(dstAccessFlags, queue->GetQueueType());
+	const VkPipelineStageFlags srcStageMask = DetermineVkPipelineStageFlags(m_device->GetPhysicalDevice(), srcAccessFlags, queue->GetQueueType());
+	const VkPipelineStageFlags dstStageMask = DetermineVkPipelineStageFlags(m_device->GetPhysicalDevice(), dstAccessFlags, queue->GetQueueType());
 
 	if((!bBarriers.empty()) || (!iBarriers.empty()))
 	{
@@ -1350,8 +1356,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const RendererAPI
 	if(renderTargetBarrier != nullptr)
 		iBarriers.push_back(GetVkImageMemoryBarrierFromRenderTargetBarrier(*renderTargetBarrier, srcAccessFlags, dstAccessFlags, *m_device, *queue));
 
-	const VkPipelineStageFlags srcStageMask = DetermineVkPipelineStageFlags(srcAccessFlags, queue->GetQueueType());
-	const VkPipelineStageFlags dstStageMask = DetermineVkPipelineStageFlags(dstAccessFlags, queue->GetQueueType());
+	const VkPipelineStageFlags srcStageMask = DetermineVkPipelineStageFlags(m_device->GetPhysicalDevice(), srcAccessFlags, queue->GetQueueType());
+	const VkPipelineStageFlags dstStageMask = DetermineVkPipelineStageFlags(m_device->GetPhysicalDevice(), dstAccessFlags, queue->GetQueueType());
 
 	if((bufferBarrier != nullptr) || (!iBarriers.empty()))
 	{

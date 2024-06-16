@@ -125,10 +125,11 @@ namespace TRAP::Graphics::API
 	/// @return Converted VkImageLayout.
 	[[nodiscard]] constexpr VkImageLayout ResourceStateToVkImageLayout(RendererAPI::ResourceState usage) noexcept;
 	/// @brief Determine the VkPipelineStageFlags from VkAccessFlags and RendererAPI::QueueType.
+	/// @param physicalDevice Vulkan physical device.
 	/// @param accessFlags VkAccessFlags.
 	/// @param queueType QueueType.
 	/// @return Determined VkPipelineStageFlags.
-	[[nodiscard]] VkPipelineStageFlags DetermineVkPipelineStageFlags(VkAccessFlags accessFlags, RendererAPI::QueueType queueType) noexcept;
+	[[nodiscard]] VkPipelineStageFlags DetermineVkPipelineStageFlags(const VulkanPhysicalDevice& physicalDevice, VkAccessFlags accessFlags, RendererAPI::QueueType queueType) noexcept;
 	/// @brief Convert the RendererAPI::QueryType to VkQueryType.
 	/// @param type QueryType to convert.
 	/// @return Converted VkQueryType.
@@ -198,7 +199,7 @@ namespace TRAP::Graphics::API
 	/// @param handle Vulkan object.
 	/// @param type Vulkan object type.
 	/// @param name Name to set.
-	void VkSetObjectName(VkDevice device, u64 handle, VkObjectType type, std::string_view name);
+	void VkSetObjectName(const VulkanDevice& device, u64 handle, VkObjectType type, std::string_view name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
 	[[nodiscard]] constexpr VkAttachmentLoadOp VkAttachmentLoadOpTranslator(const RendererAPI::LoadActionType loadActionType)

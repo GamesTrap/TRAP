@@ -1,3 +1,6 @@
+#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
+#include "Graphics/API/Vulkan/Objects/VulkanInstance.h"
+#include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
 #include "TRAPPCH.h"
 #include "VulkanCommon.h"
 
@@ -71,21 +74,22 @@ namespace
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-void TRAP::Graphics::API::VkSetObjectName(VkDevice device, const u64 handle, const VkObjectType type,
+void TRAP::Graphics::API::VkSetObjectName(const VulkanDevice& device, const u64 handle, const VkObjectType type,
                                           const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	if (VulkanRenderer::s_debugUtilsExtension)
+	if (VulkanInstance::IsExtensionSupported(VulkanInstanceExtension::DebugUtils))
 	{
 		const VkDebugUtilsObjectNameInfoEXT nameInfo = VulkanInits::DebugUtilsObjectNameInfo(type, handle, name);
-		VkCall(vkSetDebugUtilsObjectNameEXT(device, &nameInfo));
+		VkCall(vkSetDebugUtilsObjectNameEXT(device.GetVkDevice(), &nameInfo));
 	}
-	else if (VulkanRenderer::s_debugMarkerSupport)
+	else if (VulkanInstance::IsExtensionSupported(VulkanInstanceExtension::DebugReport) &&
+	         device.GetPhysicalDevice().IsExtensionSupported(VulkanPhysicalDeviceExtension::DebugMarker))
 	{
 		const VkDebugMarkerObjectNameInfoEXT nameInfo = VulkanInits::DebugMarkerObjectNameInfo(VkObjectTypeToVkDebugReportObjectTypeEXT[type], handle, name);
-		VkCall(vkDebugMarkerSetObjectNameEXT(device, &nameInfo));
+		VkCall(vkDebugMarkerSetObjectNameEXT(device.GetVkDevice(), &nameInfo));
 	}
 }
 #endif /*ENABLE_GRAPHICS_DEBUG*/
@@ -93,7 +97,8 @@ void TRAP::Graphics::API::VkSetObjectName(VkDevice device, const u64 handle, con
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Determines pipeline stages involved for given accesses
-[[nodiscard]] VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const VkAccessFlags accessFlags,
+[[nodiscard]] VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const VulkanPhysicalDevice& physicalDevice,
+                                                                                      const VkAccessFlags accessFlags,
                                                                                       const RendererAPI::QueueType queueType) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
@@ -121,7 +126,7 @@ void TRAP::Graphics::API::VkSetObjectName(VkDevice device, const u64 handle, con
 			}
 			flags |= VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
 			//RayTracing
-			if (VulkanRenderer::s_rayTracingExtension)
+			if (physicalDevice.IsExtensionSupported(VulkanPhysicalDeviceExtension::RayTracing))
 				flags |= VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_KHR;
 		}
 

@@ -40,7 +40,7 @@ TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if(!desc.Name.empty())
-		VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkQueue), VK_OBJECT_TYPE_QUEUE, fmt::format("{} (QueueType: \"{}\")", desc.Name, m_type));
+		VkSetObjectName(*m_device, std::bit_cast<u64>(m_vkQueue), VK_OBJECT_TYPE_QUEUE, fmt::format("{} (QueueType: \"{}\")", desc.Name, m_type));
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 

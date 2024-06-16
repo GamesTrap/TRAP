@@ -34,12 +34,11 @@ namespace
 	}
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	void EnableNsightAftermath(VkBaseOutStructure*& base, VkDeviceDiagnosticsConfigCreateInfoNV& diagnosticsCreateInfoNV)
+	void EnableNsightAftermath(const TRAP::Graphics::API::VulkanPhysicalDevice& physicaldevice,
+	                           VkBaseOutStructure*& base,
+							   VkDeviceDiagnosticsConfigCreateInfoNV& diagnosticsCreateInfoNV)
 	{
-		if(TRAP::Graphics::RendererAPI::s_diagnosticCheckPointsSupport && TRAP::Graphics::RendererAPI::s_diagnosticsConfigSupport)
-			TRAP::Graphics::RendererAPI::s_aftermathSupport = true;
-
-		if(!TRAP::Graphics::RendererAPI::s_aftermathSupport)
+		if(!physicaldevice.IsFeatureEnabled(TRAP::Graphics::API::VulkanPhysicalDeviceFeature::NsightAftermath))
 			return;
 
 		TRAP::Graphics::API::LinkVulkanStruct(base, diagnosticsCreateInfoNV);
@@ -48,94 +47,11 @@ namespace
 		TRAP::Graphics::AftermathTracker::Initialize();
 	}
 
-	void LoadShadingRateCaps(const VkPhysicalDeviceFragmentShadingRateFeaturesKHR& shadingRateFeatures, VkPhysicalDevice physicalDevice)
-	{
-		using namespace TRAP::Graphics::API;
-		using RendererAPI = TRAP::Graphics::RendererAPI;
-
-		if(!VulkanRenderer::s_shadingRate)
-			return;
-
-		if(shadingRateFeatures.pipelineFragmentShadingRate != 0u)
-			RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerDraw;
-		if(shadingRateFeatures.primitiveFragmentShadingRate != 0u)
-			RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerPrimitive;
-		if(shadingRateFeatures.attachmentFragmentShadingRate != 0u)
-			RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerTile;
-
-		if(RendererAPI::GPUSettings.ShadingRateCaps == RendererAPI::ShadingRateCaps::NotSupported)
-			return;
-
-		VkPhysicalDeviceFragmentShadingRatePropertiesKHR fragmentShadingRateProperties{};
-		fragmentShadingRateProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR;
-		VkPhysicalDeviceProperties2 deviceProperties2{};
-		deviceProperties2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
-		deviceProperties2.pNext = &fragmentShadingRateProperties;
-		vkGetPhysicalDeviceProperties2(physicalDevice, &deviceProperties2);
-
-		RendererAPI::GPUSettings.ShadingRateTexelWidth = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.width;
-		RendererAPI::GPUSettings.ShadingRateTexelHeight = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.height;
-
-		RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Passthrough;
-		RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Override;
-		if(fragmentShadingRateProperties.fragmentShadingRateNonTrivialCombinerOps != 0u)
-		{
-			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Min;
-			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Max;
-			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Sum;
-		}
-
-		u32 fragmentShadingRatesCount = 0;
-		VkCall(vkGetPhysicalDeviceFragmentShadingRatesKHR(physicalDevice, &fragmentShadingRatesCount, nullptr));
-		std::vector<VkPhysicalDeviceFragmentShadingRateKHR> fragmentShadingRates(fragmentShadingRatesCount);
-		for(auto& rate : fragmentShadingRates)
-		{
-			rate.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_KHR;
-			rate.pNext = nullptr;
-		}
-		VkCall(vkGetPhysicalDeviceFragmentShadingRatesKHR(physicalDevice, &fragmentShadingRatesCount, fragmentShadingRates.data()));
-		for(const auto& rate : fragmentShadingRates)
-		{
-			if(rate.fragmentSize.width == 1 && rate.fragmentSize.height == 2)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::OneXTwo;
-			if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 1)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::TwoXOne;
-			if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 4)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::TwoXFour;
-			if(rate.fragmentSize.width == 4 && rate.fragmentSize.height == 2)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::FourXTwo;
-			if(rate.fragmentSize.width == 4 && rate.fragmentSize.height == 4)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Quarter;
-			if(rate.fragmentSize.width == 8 && rate.fragmentSize.height == 8)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Eighth;
-			if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 2)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Half;
-			if(rate.fragmentSize.width == 1 && rate.fragmentSize.height == 1)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Full;
-		}
-	}
-
-	void SetVulkanRendererFeatures(VkPhysicalDevice physicalDevice,
-		                           const VkPhysicalDeviceBufferDeviceAddressFeaturesKHR& bufferDeviceAddressFeatures,
-								   const VkPhysicalDeviceSamplerYcbcrConversionFeatures& ycbcrFeatures,
-								   const VkPhysicalDeviceShaderDrawParametersFeatures& shaderDrawParametersFeatures,
-								   const VkPhysicalDeviceFragmentShadingRateFeaturesKHR& shadingRateFeatures,
-								   const VkPhysicalDeviceTimelineSemaphoreFeaturesKHR& timelineSemaphoreFeatures)
-	{
-		TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport = ((vkCmdBeginDebugUtilsLabelEXT) != nullptr) && ((vkCmdEndDebugUtilsLabelEXT) != nullptr) &&
-											                        ((vkCmdInsertDebugUtilsLabelEXT) != nullptr) && ((vkSetDebugUtilsObjectNameEXT) != nullptr);
-		TRAP::Graphics::API::VulkanRenderer::s_bufferDeviceAddressExtension = (bufferDeviceAddressFeatures.bufferDeviceAddress != 0u);
-		TRAP::Graphics::API::VulkanRenderer::s_samplerYcbcrConversionExtension = (ycbcrFeatures.samplerYcbcrConversion != 0u);
-		TRAP::Graphics::API::VulkanRenderer::s_shaderDrawParameters = (shaderDrawParametersFeatures.shaderDrawParameters != 0u);
-		TRAP::Graphics::API::VulkanRenderer::s_timelineSemaphore = (timelineSemaphoreFeatures.timelineSemaphore != 0u);
-		LoadShadingRateCaps(shadingRateFeatures, physicalDevice);
-	}
-
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	void InitNVIDIAReflex(VkSemaphore& reflexSemaphore, const TRAP::Graphics::RendererAPI::GPUVendor gpuVendor, VkDevice device)
 	{
 		if (gpuVendor == TRAP::Graphics::RendererAPI::GPUVendor::NVIDIA &&
-			TRAP::Graphics::API::VulkanRenderer::s_timelineSemaphore &&
+			TRAP::Graphics::API::VulkanPhysicalDevice::m_deviceExtensions.TimelineSemaphore &&
 			TRAP::Utils::IsWindows10BuildOrGreaterWin32(10240))
 		{
 			const NvLL_VK_Status status = NvLL_VK_InitLowLatencyDevice(device, reinterpret_cast<HANDLE*>(&reflexSemaphore));
@@ -167,9 +83,6 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	DebugPrintActiveDeviceExtensions(m_deviceExtensions, *m_physicalDevice);
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
-
-	if(std::ranges::contains(m_deviceExtensions, VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME))
-		m_physicalDevice->LoadPhysicalDeviceFragmentShaderInterlockFeatures();
 
 	//Enable features of the device extensions
 	VkPhysicalDeviceFeatures2 devFeatures2{};
@@ -203,27 +116,26 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 
 	VkBaseOutStructure* base = reinterpret_cast<VkBaseOutStructure*>(&devFeatures2);
 
-	if(VulkanRenderer::s_fragmentShaderInterlockExtension)
+	if(m_physicalDevice->IsExtensionSupported(VulkanPhysicalDeviceExtension::FragmentShaderInterlock))
 		TRAP::Graphics::API::LinkVulkanStruct(base, fragmentShaderInterlockFeatures);
-	if (VulkanRenderer::s_descriptorIndexingExtension)
+	if (m_physicalDevice->IsExtensionSupported(VulkanPhysicalDeviceExtension::DescriptorIndexing))
 		TRAP::Graphics::API::LinkVulkanStruct(base, descriptorIndexingFeatures);
-	if (VulkanRenderer::s_samplerYcbcrConversionExtension)
-		TRAP::Graphics::API::LinkVulkanStruct(base, ycbcrFeatures);
+	TRAP::Graphics::API::LinkVulkanStruct(base, ycbcrFeatures);
 	TRAP::Graphics::API::LinkVulkanStruct(base, shaderDrawParametersFeatures);
 	//RayTracing
-	if (VulkanRenderer::s_bufferDeviceAddressExtension)
+	if (m_physicalDevice->IsExtensionSupported(VulkanPhysicalDeviceExtension::BufferDeviceAddress))
 		TRAP::Graphics::API::LinkVulkanStruct(base, bufferDeviceAddressFeatures);
-	if (VulkanRenderer::s_rayTracingExtension)
+	if (m_physicalDevice->IsExtensionSupported(VulkanPhysicalDeviceExtension::RayTracing))
+	{
 		TRAP::Graphics::API::LinkVulkanStruct(base, rayTracingPipelineFeatures);
-	if (VulkanRenderer::s_rayTracingExtension)
 		TRAP::Graphics::API::LinkVulkanStruct(base, accelerationStructureFeatures);
-	if (VulkanRenderer::s_rayTracingExtension)
 		TRAP::Graphics::API::LinkVulkanStruct(base, rayQueryFeatures);
+	}
 	//Shading rate
-	if(VulkanRenderer::s_shadingRate)
+	if(m_physicalDevice->IsExtensionSupported(VulkanPhysicalDeviceExtension::ShadingRate))
 		TRAP::Graphics::API::LinkVulkanStruct(base, shadingRateFeatures);
 	//Timeline semaphore
-	if(VulkanRenderer::s_timelineSemaphore)
+	if(m_physicalDevice->IsExtensionSupported(VulkanPhysicalDeviceExtension::TimelineSemaphore))
 		TRAP::Graphics::API::LinkVulkanStruct(base, timelineSemaphoreFeatures);
 
 	vkGetPhysicalDeviceFeatures2(m_physicalDevice->GetVkPhysicalDevice(), &devFeatures2);
@@ -253,7 +165,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 		m_availableQueueCount[queueFamilyProps.queueFlags] = queueFamilyProps.queueCount;
 	}
 
-	EnableNsightAftermath(base, diagnosticsCreateInfoNV);
+	EnableNsightAftermath(*m_physicalDevice, base, diagnosticsCreateInfoNV);
 
 	std::vector<const char*> extensions(m_deviceExtensions.size());
 	std::ranges::transform(m_deviceExtensions, extensions.begin(), [](const std::string_view ext){return ext.data();});
@@ -266,15 +178,11 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 
 	VkLoadDevice(m_device);
 
-	SetVulkanRendererFeatures(m_physicalDevice->GetVkPhysicalDevice(), bufferDeviceAddressFeatures,
-	                          ycbcrFeatures, shaderDrawParametersFeatures, shadingRateFeatures,
-							  timelineSemaphoreFeatures);
-
 	FindQueueFamilyIndices();
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if (m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName[0] != '\0')
-		TRAP::Graphics::API::VkSetObjectName(m_device, std::bit_cast<u64>(m_device), VK_OBJECT_TYPE_DEVICE, m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName);
+		TRAP::Graphics::API::VkSetObjectName(*this, std::bit_cast<u64>(m_device), VK_OBJECT_TYPE_DEVICE, m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
@@ -301,7 +209,7 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 		vkDestroyDevice(m_device, nullptr);
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
-	if(RendererAPI::s_aftermathSupport)
+	if(m_physicalDevice->IsFeatureEnabled(VulkanPhysicalDeviceFeature::NsightAftermath))
 		TRAP::Graphics::AftermathTracker::Shutdown();
 #endif /*ENABLE_NSIGHT_AFTERMATH*/
 }

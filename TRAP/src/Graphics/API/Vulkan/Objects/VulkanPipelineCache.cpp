@@ -22,7 +22,7 @@ TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI:
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if(!desc.Name.empty())
-		TRAP::Graphics::API::VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_cache), VK_OBJECT_TYPE_PIPELINE_CACHE, desc.Name);
+		TRAP::Graphics::API::VkSetObjectName(*m_device, std::bit_cast<u64>(m_cache), VK_OBJECT_TYPE_PIPELINE_CACHE, desc.Name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 

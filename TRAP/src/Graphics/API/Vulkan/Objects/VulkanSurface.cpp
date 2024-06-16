@@ -65,7 +65,7 @@ TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> inst
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if(!window.GetTitle().empty())
-		TRAP::Graphics::API::VkSetObjectName(device.GetVkDevice(), std::bit_cast<u64>(m_surface), VK_OBJECT_TYPE_SURFACE_KHR, window.GetTitle());
+		TRAP::Graphics::API::VkSetObjectName(device, std::bit_cast<u64>(m_surface), VK_OBJECT_TYPE_SURFACE_KHR, window.GetTitle());
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 

@@ -19,7 +19,7 @@
 
 namespace
 {
-	[[nodiscard]] VmaVulkanFunctions SetupVmaVulkanFunctions()
+	[[nodiscard]] VmaVulkanFunctions SetupVmaVulkanFunctions(const TRAP::Graphics::API::VulkanPhysicalDevice& physicalDevice)
 	{
 		VmaVulkanFunctions vulkanFunctions;
 
@@ -57,12 +57,12 @@ namespace
 
 		//Memory Budget
 #if VMA_MEMORY_BUDGET || VMA_VULKAN_VERSION >= 1001000
-		if(TRAP::Graphics::API::VulkanRenderer::s_memoryBudgetExtension)
+		if(physicalDevice.IsExtensionSupported(TRAP::Graphics::API::VulkanPhysicalDeviceExtension::MemoryBudget))
 			vulkanFunctions.vkGetPhysicalDeviceMemoryProperties2KHR = vkGetPhysicalDeviceMemoryProperties2KHR;
 #endif /*VMA_MEMORY_BUDGET || VMA_VULKAN_VERSION >= 1001000*/
 
 #if VMA_KHR_MAINTENANCE4 || VMA_VULKAN_VERSION >= 1003000
-		if(TRAP::Graphics::API::VulkanRenderer::s_maintenance4Extension)
+		if(physicalDevice.IsExtensionSupported(TRAP::Graphics::API::VulkanPhysicalDeviceExtension::Maintenance4))
 		{
 			vulkanFunctions.vkGetDeviceBufferMemoryRequirements = vkGetDeviceBufferMemoryRequirementsKHR;
 			vulkanFunctions.vkGetDeviceImageMemoryRequirements = vkGetDeviceImageMemoryRequirementsKHR;
@@ -88,11 +88,10 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(TRAP::Ref<Vulk
 	TP_DEBUG(Log::RendererVulkanVMAPrefix, "Creating Allocator");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	VmaVulkanFunctions vulkanFunctions = SetupVmaVulkanFunctions();
+	VmaVulkanFunctions vulkanFunctions = SetupVmaVulkanFunctions(m_device->GetPhysicalDevice());
 
-	const VmaAllocatorCreateInfo info = VulkanInits::VMAAllocatorCreateInfo(m_device->GetVkDevice(),
-		                                                                    m_device->GetPhysicalDevice().GetVkPhysicalDevice(),
-		                                                                    m_instance->GetVkInstance(), vulkanFunctions);
+	const VmaAllocatorCreateInfo info = VulkanInits::VMAAllocatorCreateInfo(*m_device, m_instance->GetVkInstance(),
+	                                                                        vulkanFunctions);
 
 	VkCall(vmaCreateAllocator(&info, &m_allocator));
 	TRAP_ASSERT(m_allocator, "VulkanMemoryAllocator(): Vulkan Allocator is nullptr");

@@ -30,7 +30,8 @@ namespace
 	//-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-	void SetShaderStageName(const VkDevice& device, const std::string_view name, VkShaderModule stage)
+	void SetShaderStageName(const TRAP::Graphics::API::VulkanDevice& device, const std::string_view name,
+	                        VkShaderModule stage)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -152,7 +153,7 @@ namespace
 		VkCall(vkCreateShaderModule(device.GetVkDevice(), &createInfo, nullptr, &shaderModule));
 
 	#ifdef ENABLE_GRAPHICS_DEBUG
-		SetShaderStageName(device.GetVkDevice(), fmt::format("{}_{}", name, stage), shaderModule);
+		SetShaderStageName(device, fmt::format("{}_{}", name, stage), shaderModule);
 	#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 		return std::make_pair(shaderModule, reflection);

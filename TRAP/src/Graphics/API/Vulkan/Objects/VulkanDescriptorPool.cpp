@@ -1,3 +1,4 @@
+#include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
 #include "TRAPPCH.h"
 #include "VulkanDescriptorPool.h"
 
@@ -57,7 +58,7 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const u32 numDes
 	TP_DEBUG(Log::RendererVulkanDescriptorPoolPrefix, "Creating DescriptorPool");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	if (VulkanRenderer::s_rayTracingExtension)
+	if (m_device->GetPhysicalDevice().IsExtensionSupported(VulkanPhysicalDeviceExtension::RayTracing))
 		m_descriptorPoolSizes.emplace_back(VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR, 1024);
 
 	const VkDescriptorPoolCreateInfo info = VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
@@ -70,7 +71,7 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const u32 numDes
 		m_descriptorPools.emplace_back(m_currentPool);
 #ifdef ENABLE_GRAPHICS_DEBUG
 		if(!name.empty())
-			TRAP::Graphics::API::VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_currentPool), VK_OBJECT_TYPE_DESCRIPTOR_POOL, name);
+			TRAP::Graphics::API::VkSetObjectName(*m_device, std::bit_cast<u64>(m_currentPool), VK_OBJECT_TYPE_DESCRIPTOR_POOL, name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 	}
 }
