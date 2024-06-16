@@ -1,12 +1,12 @@
-#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
-#include "Graphics/API/Vulkan/Objects/VulkanInstance.h"
-#include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
 #include "TRAPPCH.h"
 #include "VulkanCommon.h"
 
 #include "Core/Base.h"
 
 #include "VulkanRenderer.h"
+#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
+#include "Graphics/API/Vulkan/Objects/VulkanInstance.h"
+#include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
 #include "Objects/VulkanInits.h"
 
 #ifdef ENABLE_GRAPHICS_DEBUG

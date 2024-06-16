@@ -1,4 +1,3 @@
-#include "Graphics/API/Vulkan/Objects/VulkanInstance.h"
 #include "TRAPPCH.h"
 #include "VulkanCommandBuffer.h"
 
@@ -16,6 +15,7 @@
 #include "VulkanRootSignature.h"
 #include "VulkanQueue.h"
 #include "VulkanDevice.h"
+#include "VulkanInstance.h"
 #include "VulkanInits.h"
 #include "VulkanTexture.h"
 

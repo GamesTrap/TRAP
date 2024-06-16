@@ -48,13 +48,13 @@ namespace
 	}
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-	void InitNVIDIAReflex(VkSemaphore& reflexSemaphore, const TRAP::Graphics::RendererAPI::GPUVendor gpuVendor, VkDevice device)
+	void InitNVIDIAReflex(VkSemaphore& reflexSemaphore, const TRAP::Graphics::RendererAPI::GPUVendor gpuVendor, const TRAP::Graphics::API::VulkanDevice& device)
 	{
 		if (gpuVendor == TRAP::Graphics::RendererAPI::GPUVendor::NVIDIA &&
-			TRAP::Graphics::API::VulkanPhysicalDevice::m_deviceExtensions.TimelineSemaphore &&
+			device.GetPhysicalDevice().IsFeatureEnabled(TRAP::Graphics::API::VulkanPhysicalDeviceFeature::TimelineSemaphore) &&
 			TRAP::Utils::IsWindows10BuildOrGreaterWin32(10240))
 		{
-			const NvLL_VK_Status status = NvLL_VK_InitLowLatencyDevice(device, reinterpret_cast<HANDLE*>(&reflexSemaphore));
+			const NvLL_VK_Status status = NvLL_VK_InitLowLatencyDevice(device.GetVkDevice(), reinterpret_cast<HANDLE*>(&reflexSemaphore));
 			VkReflexCall(status);
 			if(status == NVLL_VK_OK)
 				TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported = true;
@@ -186,7 +186,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-	InitNVIDIAReflex(m_reflexSemaphore, m_physicalDevice->GetVendor(), m_device);
+	InitNVIDIAReflex(m_reflexSemaphore, m_physicalDevice->GetVendor(), *this);
 #endif /*defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)*/
 }
 
