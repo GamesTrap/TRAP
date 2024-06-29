@@ -56,18 +56,18 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::VertexBuffer::Use(const Window* const window) const
+void TRAP::Graphics::VertexBuffer::Use(const Window& window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	RendererAPI::GetRenderer()->BindVertexBuffer(m_vertexBuffer, m_bufferLayout, window);
+	RendererAPI::GetRenderer()->BindVertexBuffer(*m_vertexBuffer, m_bufferLayout, window);
 }
 #else
 void TRAP::Graphics::VertexBuffer::Use() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	RendererAPI::GetRenderer()->BindVertexBuffer(m_vertexBuffer, m_bufferLayout);
+	RendererAPI::GetRenderer()->BindVertexBuffer(*m_vertexBuffer, m_bufferLayout);
 }
 #endif /*TRAP_HEADLESS_MODE*/
 

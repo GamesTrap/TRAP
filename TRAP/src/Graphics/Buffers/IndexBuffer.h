@@ -42,7 +42,7 @@ namespace TRAP::Graphics
 		/// @brief Use this buffer for rendering on the given window.
 		/// @param window Window to use index buffer on. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void Use(const Window* window = TRAP::Application::GetWindow()) const;
+		void Use(const Window& window = *TRAP::Application::GetWindow()) const;
 #else
 		/// @brief Use this buffer for rendering.
 		/// @remark This function is only available in headless mode.

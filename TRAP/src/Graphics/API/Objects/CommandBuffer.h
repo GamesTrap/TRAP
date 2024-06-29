@@ -61,7 +61,7 @@ namespace TRAP::Graphics
 		/// @param buffers Vertex buffer(s) to bind.
 		/// @param strides Stride in bytes of each vertex buffer.
 		/// @param offsets Starting offsets in bytes to use for each vertex buffer.
-		virtual void BindVertexBuffer(const std::vector<std::reference_wrapper<Buffer>>& buffers,
+		virtual void BindVertexBuffer(const std::vector<std::reference_wrapper<const Buffer>>& buffers,
 		                              const std::vector<u32>& strides,
 									  const std::vector<u64>& offsets) const = 0;
 		/// @brief Bind a pipeline to the command buffer.
@@ -77,13 +77,13 @@ namespace TRAP::Graphics
 		/// @param depthMipSlice Optional depth mip slice for the depth stencil target.
 		/// @param shadingRate Optional shading rate texture to use.
 		/// @note This functions ends the currently running render pass and starts a new one.
-		virtual void BindRenderTargets(const std::vector<TRAP::Ref<RenderTarget>>& renderTargets,
-			                           const TRAP::Ref<RenderTarget>& depthStencil,
+		virtual void BindRenderTargets(const std::vector<std::reference_wrapper<const RenderTarget>>& renderTargets,
+			                           const RenderTarget* depthStencil,
 			                           RendererAPI::LoadActionsDesc* loadActions,
 			                           const std::vector<u32>* colorArraySlices,
 			                           const std::vector<u32>* colorMipSlices,
 			                           u32 depthArraySlice, u32 depthMipSlice,
-									   const TRAP::Ref<RenderTarget>& shadingRate = nullptr) = 0;
+									   const RenderTarget* shadingRate = nullptr) = 0;
 
 		/// @brief Add a debug marker to the command buffer.
 		/// @param color Color for the debug marker.

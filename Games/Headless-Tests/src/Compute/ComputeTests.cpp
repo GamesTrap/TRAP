@@ -118,12 +118,14 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
         TRAP::Graphics::RenderCommand::Dispatch({m_compTex->GetWidth(), m_compTex->GetHeight(), 1});
 
         //Transition textures (to use as sampled images)
-        TRAP::Graphics::RendererAPI::TextureBarrier barrier = {};
-        barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
-        barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
-        barrier.Texture = m_colTex.get();
+        TRAP::Graphics::RendererAPI::TextureBarrier barrier
+        {
+            .Texture = *m_colTex,
+            .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess,
+            .NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource
+        };
         TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
-        barrier.Texture = m_compTex.get();
+        barrier.Texture = *m_compTex;
         TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
     }
 

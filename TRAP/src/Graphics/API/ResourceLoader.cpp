@@ -297,10 +297,12 @@ namespace
 			return;
 		}
 
-		TRAP::Graphics::RendererAPI::TextureBarrier barrier{};
-		barrier.Texture = texture;
-		barrier.ArrayLayer = 0;
-		barrier.SubresourceBarrier = true;
+		TRAP::Graphics::RendererAPI::TextureBarrier barrier
+		{
+			.Texture = *texture,
+			.SubresourceBarrier = true,
+			.ArrayLayer = 0
+		};
 
 		i32 mipWidth = NumericCast<i32>(texture->GetWidth());
 		i32 mipHeight = NumericCast<i32>(texture->GetHeight());
@@ -330,11 +332,7 @@ namespace
 			const auto* const vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture);
 			const auto* const vkCmd = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(&cmd);
 
-			vkCmdBlitImage(vkCmd->GetVkCommandBuffer(),
-						vkTexture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-						vkTexture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-						1, &blit,
-						VK_FILTER_LINEAR);
+			vkCmd->BlitImage(*vkTexture, *vkTexture, blit, TRAP::Graphics::RendererAPI::FilterType::Linear);
 
 			barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::CopySource;
 			barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination;
@@ -871,7 +869,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueBufferBarrier(const TRAP::Ref<Buf
 
 		t = m_tokenCounter.fetch_add(1) + 1;
 
-		m_requestQueue.emplace_back(RendererAPI::BufferBarrier{buffer, RendererAPI::ResourceState::Undefined, state} );
+		m_requestQueue.emplace_back(RendererAPI::BufferBarrier{*buffer, RendererAPI::ResourceState::Undefined, state} );
 		UpdateRequest& lastRequest = m_requestQueue.back();
 		lastRequest.WaitIndex = t;
 	}
@@ -1000,7 +998,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(TRAP::Graphics::Te
 
 		t = m_tokenCounter.fetch_add(1) + 1;
 
-		m_requestQueue.emplace_back( RendererAPI::TextureBarrier{texture, RendererAPI::ResourceState::Undefined, state} );
+		m_requestQueue.emplace_back( RendererAPI::TextureBarrier{*texture, RendererAPI::ResourceState::Undefined, state} );
 		UpdateRequest& lastRequest = m_requestQueue.back();
 		lastRequest.WaitIndex = t;
 	}
@@ -1246,7 +1244,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const usize activeSet)
 
 	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
 	{
-		const RendererAPI::TextureBarrier barrier{texture, RendererAPI::ResourceState::Undefined,
+		const RendererAPI::TextureBarrier barrier{*texture, RendererAPI::ResourceState::Undefined,
 		                                    RendererAPI::ResourceState::CopyDestination};
 		cmd.ResourceBarrier(nullptr, &barrier, nullptr);
 	}
@@ -1340,7 +1338,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const usize activeSet)
 	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
 	{
 		const RendererAPI::ResourceState finalLayout = UtilDetermineResourceStartState((texture->GetDescriptorTypes() & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined);
-		const RendererAPI::TextureBarrier barrier{texture, RendererAPI::ResourceState::CopyDestination,
+		const RendererAPI::TextureBarrier barrier{*texture, RendererAPI::ResourceState::CopyDestination,
 		                                          finalLayout};
 		cmd.ResourceBarrier(nullptr, &barrier, nullptr);
 	}
@@ -1683,10 +1681,12 @@ void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const usize activeSet)
 
 	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
 	{
-		RendererAPI::TextureBarrier barrier{};
-		barrier.Texture = texture.get();
-		barrier.CurrentState = textureCopy.TextureState;
-		barrier.NewState = RendererAPI::ResourceState::CopySource;
+		const RendererAPI::TextureBarrier barrier
+		{
+			.Texture = *texture,
+			.CurrentState = textureCopy.TextureState,
+			.NewState = RendererAPI::ResourceState::CopySource
+		};
 		cmd.ResourceBarrier(nullptr, &barrier, nullptr);
 	}
 

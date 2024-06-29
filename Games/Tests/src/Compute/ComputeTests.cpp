@@ -102,12 +102,14 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
             shader = TRAP::Graphics::ShaderManager::Get("ComputeEdgeDetect");
 
         //Transition textures (to use as storage images)
-        TRAP::Graphics::RendererAPI::TextureBarrier barrier{};
-        barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
-        barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
-        barrier.Texture = m_colTex.get();
+        TRAP::Graphics::RendererAPI::TextureBarrier barrier
+        {
+            .Texture = *m_colTex,
+            .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource,
+            .NewState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess
+        };
         TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
-        barrier.Texture = m_compTex.get();
+        barrier.Texture = *m_compTex;
         TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
 
         //ALWAYS Bind descriptors (textures, buffers, etc) before binding the shader (pipeline)!
@@ -125,12 +127,11 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
         TRAP::Graphics::RenderCommand::Dispatch({m_compTex->GetWidth(), m_compTex->GetHeight(), 1});
 
         //Transition textures (to use as sampled images)
-        barrier = {};
         barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
         barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
-        barrier.Texture = m_colTex.get();
+        barrier.Texture = *m_colTex;
         TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
-        barrier.Texture = m_compTex.get();
+        barrier.Texture = *m_compTex;
         TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
     }
 

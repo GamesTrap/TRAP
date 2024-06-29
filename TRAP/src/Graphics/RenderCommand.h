@@ -64,7 +64,7 @@ namespace TRAP::Graphics
 		/// @param window Window to flush renderer. Default: Main Window.
 		/// @note TRAP::Application automatically flushes for the main window.
 		/// @remark @headless This function is not available in headless mode.
-		void Flush(const Window* window = TRAP::Application::GetWindow());
+		void Flush(const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Flush renderer.
 		///
@@ -75,21 +75,6 @@ namespace TRAP::Graphics
 		void Flush();
 #endif /*TRAP_HEADLESS_MODE*/
 
-		//VSync functions
-
-#ifndef TRAP_HEADLESS_MODE
-		/// @brief Set VSync for the given window.
-		/// @param vsync Enable or disable VSync.
-		/// @param window Window to set VSync for. Default: Main Window.
-		/// @remark @headless This function is not available in headless mode.
-		void SetVSync(bool vsync, const Window* window = TRAP::Application::GetWindow());
-		/// @brief Retrieve VSync state of the given window.
-		/// @param window Window to get VSync state from. Default: Main Window.
-		/// @return True if VSync is enabled, false otherwise.
-		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] bool GetVSync(const Window* window = TRAP::Application::GetWindow());
-#endif /*TRAP_HEADLESS_MODE*/
-
 		//Clear functions
 
 #ifndef TRAP_HEADLESS_MODE
@@ -97,7 +82,7 @@ namespace TRAP::Graphics
 		/// @param clearType Type of buffer to clear.
 		/// @param window Window to clear RenderTarget for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void Clear(ClearBuffer clearType, const Window* window = TRAP::Application::GetWindow());
+		void Clear(ClearBuffer clearType, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Clear the given render target.
 		/// @param clearType Type of buffer to clear.
@@ -109,7 +94,7 @@ namespace TRAP::Graphics
 		/// @param color New clear color. Default: Very dark gray.
 		/// @param window Window to set clear color for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetClearColor(const RendererAPI::Color& color = { 0.1, 0.1, 0.1, 1.0 }, const Window* window = TRAP::Application::GetWindow());
+		void SetClearColor(const RendererAPI::Color& color = { 0.1, 0.1, 0.1, 1.0 }, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the clear color.
 		/// @param color New clear color.
@@ -121,7 +106,7 @@ namespace TRAP::Graphics
 		/// @param depth New clear depth value (range [0,1]). Default: 1.
 		/// @param window Window to set clear depth value for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetClearDepth(f32 depth = 0.0f, const Window* window = TRAP::Application::GetWindow());
+		void SetClearDepth(f32 depth = 0.0f, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the clear depth value.
 		/// @param depth New clear depth value. Must be between 0.0f and 1.0f
@@ -133,7 +118,7 @@ namespace TRAP::Graphics
 		/// @param stencil New clear stencil value. Default: 0.
 		/// @param window Window to set clear stencil value for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetClearStencil(u32 stencil = 0, const Window* window = TRAP::Application::GetWindow());
+		void SetClearStencil(u32 stencil = 0, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the clear stencil value.
 		/// @param stencil New clear stencil value.
@@ -148,7 +133,7 @@ namespace TRAP::Graphics
 		/// @param enabled Enable or disable depth testing.
 		/// @param window Window to set depth testing for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetDepthTesting(bool enabled, const Window* window = TRAP::Application::GetWindow());
+		void SetDepthTesting(bool enabled, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Enable or disable depth testing.
 		/// @param enabled Enable or disable depth testing.
@@ -160,7 +145,7 @@ namespace TRAP::Graphics
 		/// @param enabled Enable or disable depth writing.
 		/// @param window Window to set depth writing for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetDepthWriting(bool enabled, const Window* window = TRAP::Application::GetWindow());
+		void SetDepthWriting(bool enabled, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Enable or disable depth writing.
 		/// @param enabled Enable or disable depth writing.
@@ -172,7 +157,7 @@ namespace TRAP::Graphics
 		/// @param compareMode Depth compare mode. Default: CompareMode::Less.
 		/// @param window Window to set depth function for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetDepthFunction(CompareMode compareMode = CompareMode::Less, const Window* window = TRAP::Application::GetWindow());
+		void SetDepthFunction(CompareMode compareMode = CompareMode::Less, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the depth function.
 		/// @param compareMode Depth compare mode. Default: CompareMode::Less.
@@ -185,7 +170,7 @@ namespace TRAP::Graphics
 		/// @param back Depth/Stencil operation.
 		/// @param window Window to set depth fail operation for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetDepthFail(StencilOperation front, StencilOperation back, const Window* window = TRAP::Application::GetWindow());
+		void SetDepthFail(StencilOperation front, StencilOperation back, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the depth action to perform when depth testing fails.
 		/// @param front Depth action to perform when depth testing fails.
@@ -198,7 +183,7 @@ namespace TRAP::Graphics
 		/// @param bias Depth bias constant factor.
 		/// @param window Window to set depth bias for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetDepthBias(i32 bias, const Window* window = TRAP::Application::GetWindow());
+		void SetDepthBias(i32 bias, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the depth bias (scalar factor to add to each fragments depth value).
 		/// @param bias Depth bias constant factor.
@@ -210,7 +195,7 @@ namespace TRAP::Graphics
 		/// @param slopeFactor Depth bias slope factor.
 		/// @param window Window to set depth bias for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetDepthBiasSlopeFactor(f32 slopeFactor, const Window* window = TRAP::Application::GetWindow());
+		void SetDepthBiasSlopeFactor(f32 slopeFactor, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the depth bias slope factor (scalar factor applied to fragment's slope in depth bias calculation).
 		/// @param slopeFactor Depth bias slope factor.
@@ -225,7 +210,7 @@ namespace TRAP::Graphics
 		/// @param enabled Enable or disable stencil testing.
 		/// @param window Window to set stencil testing for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetStencilTesting(bool enabled, const Window* window = TRAP::Application::GetWindow());
+		void SetStencilTesting(bool enabled, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Enable or disable stencil testing.
 		/// @param enabled Enable or disable stencil testing.
@@ -238,7 +223,7 @@ namespace TRAP::Graphics
 		/// @param back Stencil operation.
 		/// @param window Window to set stencil fail operation for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetStencilFail(StencilOperation front, StencilOperation back, const Window* window = TRAP::Application::GetWindow());
+		void SetStencilFail(StencilOperation front, StencilOperation back, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the stencil action to perform when stencil testing fails.
 		/// @param front Stencil action to perform when stencil testing fails.
@@ -252,7 +237,7 @@ namespace TRAP::Graphics
 		/// @param back Stencil operation.
 		/// @param window Window to set stencil pass operation for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetStencilPass(StencilOperation front, StencilOperation back, const Window* window = TRAP::Application::GetWindow());
+		void SetStencilPass(StencilOperation front, StencilOperation back, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set operation for when stencil testing passes.
 		/// @param front Stencil action to perform when passed.
@@ -266,7 +251,7 @@ namespace TRAP::Graphics
 		/// @param back Compare mode.
 		/// @param window Window to set stencil function for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetStencilFunction(CompareMode front, CompareMode back, const Window* window = TRAP::Application::GetWindow());
+		void SetStencilFunction(CompareMode front, CompareMode back, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the stencil functions.
 		/// @param front Function to use on the front for stencil testing.
@@ -280,7 +265,7 @@ namespace TRAP::Graphics
 		/// @param write Bits to write/update.
 		/// @param window Window to set stencil mask for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetStencilMask(u8 read, u8 write, const Window* window = TRAP::Application::GetWindow());
+		void SetStencilMask(u8 read, u8 write, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the stencil mask.
 		/// @param read Select the bits of the stencil values to test.
@@ -296,7 +281,7 @@ namespace TRAP::Graphics
 		/// @param cullMode Cull mode.
 		/// @param window Window to set cull mode for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetCullMode(CullMode cullMode, const Window* window = TRAP::Application::GetWindow());
+		void SetCullMode(CullMode cullMode, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the cull mode.
 		/// @param cullMode Cull mode to use.
@@ -308,7 +293,7 @@ namespace TRAP::Graphics
 		/// @param fillMode Fill mode.
 		/// @param window Window to set fill mode for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetFillMode(FillMode fillMode, const Window* window = TRAP::Application::GetWindow());
+		void SetFillMode(FillMode fillMode, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the fill mode.
 		/// @param fillMode Fill mode to use.
@@ -320,7 +305,7 @@ namespace TRAP::Graphics
 		/// @param topology Primitive topology.
 		/// @param window Window to set primitive topology for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetPrimitiveTopology(PrimitiveTopology topology, const Window* window = TRAP::Application::GetWindow());
+		void SetPrimitiveTopology(PrimitiveTopology topology, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the primitive topology.
 		/// @param topology Primitive topology to use.
@@ -332,7 +317,7 @@ namespace TRAP::Graphics
 		/// @param face Front face.
 		/// @param window Window to set front face for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetFrontFace(FrontFace face, const Window* window = TRAP::Application::GetWindow());
+		void SetFrontFace(FrontFace face, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the front face winding order.
 		/// @param face Front face winding order to use.
@@ -348,7 +333,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		void SetShadingRate(ShadingRate shadingRate,
 		                    ShadingRateCombiner postRasterizerRate,
-							ShadingRateCombiner finalRate, const Window* window = TRAP::Application::GetWindow());
+							ShadingRateCombiner finalRate, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the pipeline fragment shading rate and combiner operation for the command buffer.
 		/// @param shadingRate Shading rate to use.
@@ -365,7 +350,7 @@ namespace TRAP::Graphics
 		/// @param window Window to set shading rate for. Default: Main Window.
 		/// @note The texture must be in ResourceState::ShadingRateSource resource state.
 		/// @remark @headless This function is not available in headless mode.
-		void SetShadingRate(Ref<RenderTarget> texture, const Window* window = TRAP::Application::GetWindow());
+		void SetShadingRate(Ref<RenderTarget> texture, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the pipeline fragment shading rate via texture.
 		/// @param texture Shading rate texture to use.
@@ -385,7 +370,7 @@ namespace TRAP::Graphics
 		/// @param outSampleCount Output: Used sample count.
 		/// @param window Window to get anti aliasing from. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount, const Window* window = TRAP::Application::GetWindow()) noexcept;
+		void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount, const Window& window = *TRAP::Application::GetWindow()) noexcept;
 #else
 		/// @brief Retrieve the currently used anti aliasing method and the sample count.
 		/// @param outAntiAliasing Output: Used anti aliasing method.
@@ -410,7 +395,7 @@ namespace TRAP::Graphics
 		/// @param modeAlpha Blend mode for alpha.
 		/// @param window Window to set blend mode for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetBlendMode(BlendMode modeRGB, BlendMode modeAlpha, const Window* window = TRAP::Application::GetWindow());
+		void SetBlendMode(BlendMode modeRGB, BlendMode modeAlpha, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the blend mode.
 		/// @param modeRGB Blend mode to use for the RGB channels.
@@ -425,7 +410,7 @@ namespace TRAP::Graphics
 		/// @param window Window to set blend constant for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
 		void SetBlendConstant(BlendConstant sourceRGBA, BlendConstant destinationRGBA,
-							  const Window* window = TRAP::Application::GetWindow());
+							  const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set combined blend constant.
 		/// @param sourceRGBA Blend constant for source RGBA.
@@ -444,7 +429,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		void SetBlendConstant(BlendConstant sourceRGB, BlendConstant sourceAlpha,
 							  BlendConstant destinationRGB, BlendConstant destinationAlpha,
-							  const Window* window = TRAP::Application::GetWindow());
+							  const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the blend constants/factors.
 		/// @param sourceRGB Specifies how the red, green, and blue blending factors are computed.
@@ -466,7 +451,7 @@ namespace TRAP::Graphics
 		/// @param height Viewport height.
 		/// @param window Window to set viewport size for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetViewport(u32 x, u32 y, u32 width, u32 height, const Window* window = TRAP::Application::GetWindow());
+		void SetViewport(u32 x, u32 y, u32 width, u32 height, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set viewport size.
 		/// @param x X coordinate of the top left corner of the viewport. Default: 0.
@@ -484,7 +469,7 @@ namespace TRAP::Graphics
 		/// @param height Scissor height.
 		/// @param window Window to set scissor size for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetScissor(u32 x, u32 y, u32 width, u32 height, const Window* window = TRAP::Application::GetWindow());
+		void SetScissor(u32 x, u32 y, u32 width, u32 height, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set scissor size.
 		/// @param x Upper left corner. Default: 0.
@@ -503,10 +488,9 @@ namespace TRAP::Graphics
 #endif /*TRAP_HEADLESS_MODE*/
 #ifdef TRAP_HEADLESS_MODE
 		/// @brief Get RenderTarget resolution.
-		/// @param width Output: Width.
-		/// @param height Output: Height.
+		/// @return RenderTarget resolution.
 		/// @remark This function is only available in headless mode.
-		void GetResolution(u32& width, u32& height);
+		[[nodiscard]] TRAP::Math::Vec2ui GetResolution();
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -515,7 +499,7 @@ namespace TRAP::Graphics
 		/// @param window Window to set render scale for. Default: Main Window.
 		/// @note This functon takes effect on the next frame onwards.
 		/// @remark @headless This function is not available in headless mode.
-		void SetRenderScale(f32 scale, const Window* window = TRAP::Application::GetWindow());
+		void SetRenderScale(f32 scale, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the render scale.
 		/// @param scale Render scale value (valid range: 0.5f-1.0f inclusive).
@@ -528,7 +512,7 @@ namespace TRAP::Graphics
 		/// @param window Window to retrieve render scale from. Default: Main Window.
 		/// @return Render scale (between 0.5f and 2.0f inclusive).
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] f32 GetRenderScale(const Window* window = TRAP::Application::GetWindow());
+		[[nodiscard]] f32 GetRenderScale(const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Retrieve the used render scale value.
 		/// @return Render scale (between 0.5f and 2.0f inclusive).
@@ -544,7 +528,7 @@ namespace TRAP::Graphics
 		/// @param firstVertex Index of the first vertex to draw.
 		/// @param window Window to draw for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void Draw(u32 vertexCount, u32 firstVertex = 0, const Window* window = TRAP::Application::GetWindow());
+		void Draw(u32 vertexCount, u32 firstVertex = 0, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Draw non-indexed, non-instanced geometry.
 		/// @param vertexCount Number of vertices to draw.
@@ -560,7 +544,7 @@ namespace TRAP::Graphics
 		/// @param window Window to draw for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
 		void DrawIndexed(u32 indexCount, u32 firstIndex = 0, i32 vertexOffset = 0,
-		                 const Window* window = TRAP::Application::GetWindow());
+		                 const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Draw indexed, non-instanced geometry.
 		/// @param indexCount Number of indices to draw.
@@ -578,7 +562,7 @@ namespace TRAP::Graphics
 		/// @param window Window to draw for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
 		void DrawInstanced(u32 vertexCount, u32 instanceCount, u32 firstVertex = 0,
-		                          u32 firstInstance = 0, const Window* window = TRAP::Application::GetWindow());
+		                          u32 firstInstance = 0, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Draw non-indexed, instanced geometry.
 		/// @param vertexCount Number of vertices to draw.
@@ -600,7 +584,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		void DrawIndexedInstanced(u32 indexCount, u32 instanceCount, u32 firstIndex = 0,
 		                          u32 firstInstance = 0, i32 vertexOffset = 0,
-								  const Window* window = TRAP::Application::GetWindow());
+								  const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Draw indexed, instanced geometry.
 		/// @param indexCount Number of indices to draw.
@@ -622,7 +606,7 @@ namespace TRAP::Graphics
 		/// The elements are automatically divided by the number of threads in the work group and rounded up.
 		/// @param window Window to draw for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void Dispatch(const std::array<u32, 3>& workGroupElementSizes, const Window* window = TRAP::Application::GetWindow());
+		void Dispatch(const std::array<u32, 3>& workGroupElementSizes, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Dispatch.
 		/// @param workGroupElements Number of elements to dispatch for each dimension.
@@ -644,7 +628,7 @@ namespace TRAP::Graphics
 		/// @warning: The minimum guaranteed size from the specification is 128 bytes, everything beyond is hardware dependent.
 		/// @remark @headless This function is not available in headless mode.
 		void SetPushConstants(std::string_view name, std::span<const u8> data,
-		                      QueueType queueType = QueueType::Graphics, const Window* window = TRAP::Application::GetWindow());
+		                      QueueType queueType = QueueType::Graphics, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set push constant.
 		/// @param name Name of the push constant.
@@ -667,7 +651,7 @@ namespace TRAP::Graphics
 		template<typename T>
 		requires (!TRAP::Utils::IsStdSpan<T>::value && !std::is_pointer_v<T>)
 		void SetPushConstants(std::string_view name, const T& data,
-		                      QueueType queueType = QueueType::Graphics, const Window* window = TRAP::Application::GetWindow());
+		                      QueueType queueType = QueueType::Graphics, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set push constant.
 		/// @param name Name of the push constant.
@@ -688,18 +672,18 @@ namespace TRAP::Graphics
 		/// @param loadActions Load actions.
 		/// @param window Window to set render target for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
-		                      const TRAP::Ref<Graphics::RenderTarget>& depthStencil = nullptr,
+		void BindRenderTarget(const Graphics::RenderTarget* colorTarget,
+		                      const Graphics::RenderTarget* depthStencil = nullptr,
 							  RendererAPI::LoadActionsDesc* loadActions = nullptr,
-							  const Window* window = TRAP::Application::GetWindow());
+							  const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set render target.
 		/// @param colorTarget Color target to set.
 		/// @param depthStencil Depth stencil target to set.
 		/// @param loadActions Load actions.
 		/// @remark This function is only available in headless mode.
-		void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
-		                      const TRAP::Ref<Graphics::RenderTarget>& depthStencil = nullptr,
+		void BindRenderTarget(const Graphics::RenderTarget* colorTarget,
+		                      const Graphics::RenderTarget* depthStencil = nullptr,
 							  RendererAPI::LoadActionsDesc* loadActions = nullptr);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
@@ -709,18 +693,18 @@ namespace TRAP::Graphics
 		/// @param loadActions Load actions.
 		/// @param window Window to set render target for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
-		                       const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+		void BindRenderTargets(const std::vector<std::reference_wrapper<const Graphics::RenderTarget>>& colorTargets,
+		                       const Graphics::RenderTarget* depthStencil,
 							   RendererAPI::LoadActionsDesc* loadActions = nullptr,
-							   const Window* window = TRAP::Application::GetWindow());
+							   const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set multiple render targets.
 		/// @param colorTargets Color targets to set.
 		/// @param depthStencil Depth stencil target to set.
 		/// @param loadActions Load actions.
 		/// @remark This function is only available in headless mode.
-		void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
-		                       const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+		void BindRenderTargets(const std::vector<std::reference_wrapper<const Graphics::RenderTarget>>& colorTargets,
+		                       const Graphics::RenderTarget* depthStencil,
 							   RendererAPI::LoadActionsDesc* loadActions = nullptr);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
@@ -728,7 +712,7 @@ namespace TRAP::Graphics
 		/// @param window Window to start render pass for. Default: Main Window.
 		/// @note This will rebind the render target for the current frame.
 		/// @remark @headless This function is not available in headless mode.
-		void StartRenderPass(const Window* window = TRAP::Application::GetWindow());
+		void StartRenderPass(const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Start a render pass.
 		/// @note This will rebind the render target for the current frame.
@@ -739,7 +723,7 @@ namespace TRAP::Graphics
 		/// @brief Stop the running render pass for the given window.
 		/// @param window Window to stop render pass for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void StopRenderPass(const Window* window = TRAP::Application::GetWindow());
+		void StopRenderPass(const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Stop running render pass.
 		/// @remark This function is only available in headless mode.
@@ -752,7 +736,7 @@ namespace TRAP::Graphics
 		/// @param window Window to sync and transition buffer for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
 		void BufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
-		                   QueueType queueType = QueueType::Graphics, const Window* window = TRAP::Application::GetWindow());
+		                   QueueType queueType = QueueType::Graphics, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Buffer barrier used to synchronize and transition the buffer.
 		/// @param bufferBarrier Buffer barrier to use.
@@ -768,7 +752,7 @@ namespace TRAP::Graphics
 		/// @param window Window to sync and transition buffers for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
 		void BufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
-							QueueType queueType = QueueType::Graphics, const Window* window = TRAP::Application::GetWindow());
+							QueueType queueType = QueueType::Graphics, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Buffer barrier used to synchronize and transition multiple buffers.
 		/// @param bufferBarriers Buffer barriers to use.
@@ -784,7 +768,7 @@ namespace TRAP::Graphics
 		/// @param window Window to sync and transition texture for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
 		void TextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
-		                    QueueType queueType = QueueType::Graphics, const Window* window = TRAP::Application::GetWindow());
+		                    QueueType queueType = QueueType::Graphics, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Texture barrier used to synchronize and transition the texture.
 		/// @param textureBarrier Texture barrier to use.
@@ -800,7 +784,7 @@ namespace TRAP::Graphics
 		/// @param window Window to sync and transition textures for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
 		void TextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
-		                     QueueType queueType = QueueType::Graphics, const Window* window = TRAP::Application::GetWindow());
+		                     QueueType queueType = QueueType::Graphics, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Texture barrier used to synchronize and transition multiple textures.
 		/// @param textureBarriers Texture barriers to use.
@@ -814,7 +798,7 @@ namespace TRAP::Graphics
 		/// @param renderTargetBarrier RenderTarget barrier to use.
 		/// @param window Window to sync and transition RenderTarget for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void RenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier, const Window* window = TRAP::Application::GetWindow());
+		void RenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief RenderTarget barrier used to synchronize and transition the RenderTarget.
 		/// @param renderTargetBarrier RenderTarget barrier to use.
@@ -826,7 +810,7 @@ namespace TRAP::Graphics
 		/// @param renderTargetBarriers RenderTarget barriers to use.
 		/// @param window Window to sync and transition RenderTargets for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void RenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers, const Window* window = TRAP::Application::GetWindow());
+		void RenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief RenderTarget barrier used to synchronize and transition multiple RenderTargets.
 		/// @param renderTargetBarriers RenderTarget barriers to use.
@@ -841,7 +825,7 @@ namespace TRAP::Graphics
 		/// @param window Window to take screenshot from. Default: Main Window.
 		/// @return Captured screenshot as TRAP::Image on success, nullptr otherwise.
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] TRAP::Scope<TRAP::Image> CaptureScreenshot(const Window* window = TRAP::Application::GetWindow());
+		[[nodiscard]] TRAP::Scope<TRAP::Image> CaptureScreenshot(const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Capture a screenshot of the last presented frame.
 		/// @return Captured screenshot as TRAP::Image on success, nullptr otherwise.
@@ -867,8 +851,8 @@ namespace TRAP::Graphics
 		/// @param window Window to do the resolve pass on.
 		/// @note source and destination must be in ResourceState::RenderTarget resource state.
 		/// @remark @headless This function is not available in headless mode.
-		void MSAAResolvePass(TRAP::Ref<RenderTarget> source, TRAP::Ref<RenderTarget> destination,
-		                     const Window* window = TRAP::Application::GetWindow());
+		void MSAAResolvePass(const RenderTarget& source, const RenderTarget& destination,
+		                     const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Resolve an MSAA render target to a non MSAA render target.
 		/// Needed to transfer MSAA rendered image data to a presentable non-MSAA target.
@@ -876,7 +860,7 @@ namespace TRAP::Graphics
 		/// @param destination Destination non MSAA render target to resolve into.
 		/// @note source and destination must be in ResourceState::RenderTarget resource state.
 		/// @remark This function is only available in headless mode.
-		void MSAAResolvePass(TRAP::Ref<RenderTarget> source, TRAP::Ref<RenderTarget> destination);
+		void MSAAResolvePass(const RenderTarget& source, const RenderTarget& destination);
 #endif /*TRAP_HEADLESS_MODE*/
 
 		/// @brief Retrieve the CPU side frames per second.
@@ -887,7 +871,7 @@ namespace TRAP::Graphics
 		/// @param window Window to get frames per second from.
 		/// @return GPU frames per second.
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] u32 GetGPUFPS(const Window* window = TRAP::Application::GetWindow());
+		[[nodiscard]] u32 GetGPUFPS(const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Retrieve the GPU side frames per second.
 		/// @return GPU frames per second.
@@ -902,7 +886,7 @@ namespace TRAP::Graphics
 		/// @param window Window to get frame time from.
 		/// @return GPU Graphics frame time in milliseconds.
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] f32 GetGPUGraphicsFrameTime(const Window* window = TRAP::Application::GetWindow());
+		[[nodiscard]] f32 GetGPUGraphicsFrameTime(const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Retrieve the GPU side frame time for the graphics queue.
 		/// @return GPU Graphics frame time in milliseconds.
@@ -914,7 +898,7 @@ namespace TRAP::Graphics
 		/// @param window Window to get frame time from.
 		/// @return GPU Compute frame time in milliseconds.
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] f32 GetGPUComputeFrameTime(const Window* window = TRAP::Application::GetWindow());
+		[[nodiscard]] f32 GetGPUComputeFrameTime(const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Retrieve the GPU side frame time for the compute queue.
 		/// @return GPU Compute frame time in milliseconds.
@@ -932,13 +916,13 @@ namespace TRAP::Graphics
 		/// @remark Only LatencyMode::Disabled is supported everywhere.
 		/// @remark @win32 Other LatencyModes are only available on Windows 10 or newer with NVIDIA hardware.
 		/// @remark @headless This function is not available in headless mode.
-		void SetLatencyMode(LatencyMode mode, const Window* window = TRAP::Application::GetWindow());
+		void SetLatencyMode(LatencyMode mode, const Window& window = *TRAP::Application::GetWindow());
 		/// @brief Retrieve the currently used latency mode.
 		/// @param window Window to retrieve latency mode for.
 		/// @return Used latency mode.
 		/// @note The returned value may differ from the requested mode set with SetLatencyMode().
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] LatencyMode GetLatencyMode(const Window* window = TRAP::Application::GetWindow());
+		[[nodiscard]] LatencyMode GetLatencyMode(const Window& window = *TRAP::Application::GetWindow());
 #endif /*TRAP_HEADLESS_MODE*/
 	};
 }
@@ -949,7 +933,7 @@ namespace TRAP::Graphics
 template<typename T>
 requires (!TRAP::Utils::IsStdSpan<T>::value && !std::is_pointer_v<T>)
 void TRAP::Graphics::RenderCommand::SetPushConstants(const std::string_view name, const T& data,
-                                                     const QueueType queueType, const Window* const window)
+                                                     const QueueType queueType, const Window& window)
 {
 	const auto byteSpan = TRAP::Utils::AsBytes(std::span<const T, 1>(&data, 1));
 	RendererAPI::GetRenderer()->BindPushConstants(name, byteSpan, queueType, window);

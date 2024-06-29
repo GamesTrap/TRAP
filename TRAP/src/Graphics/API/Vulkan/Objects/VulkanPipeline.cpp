@@ -107,6 +107,40 @@ void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI:
 
 namespace
 {
+	constexpr VkPipelineRasterizationStateCreateInfo DefaultRasterizerDesc = TRAP::Graphics::API::UtilToRasterizerDesc
+	(
+		TRAP::Graphics::RendererAPI::RasterizerStateDesc
+		{
+			.CullMode = TRAP::Graphics::RendererAPI::CullMode::Back,
+			.DepthBias = 0,
+			.SlopeScaledDepthBias = 0.0f,
+			.FillMode = TRAP::Graphics::RendererAPI::FillMode::Solid,
+			.FrontFace = TRAP::Graphics::RendererAPI::FrontFace::CounterClockwise,
+			.DepthClampEnable = false
+		}
+	);
+
+	constexpr VkPipelineDepthStencilStateCreateInfo DefaultDepthDesc = TRAP::Graphics::API::UtilToDepthDesc
+	(
+		TRAP::Graphics::RendererAPI::DepthStateDesc
+		{
+			.DepthTest = false,
+			.DepthWrite = false,
+			.DepthFunc = TRAP::Graphics::RendererAPI::CompareMode::GreaterOrEqual, //Using GreaterOrEqual instead because of reversed Z depth range
+			.StencilTest = false,
+			.StencilReadMask = 0xFF,
+			.StencilWriteMask = 0xFF,
+			.StencilFrontFunc = TRAP::Graphics::RendererAPI::CompareMode::Always,
+			.StencilFrontFail = TRAP::Graphics::RendererAPI::StencilOp::Keep,
+			.DepthFrontFail = TRAP::Graphics::RendererAPI::StencilOp::Keep,
+			.StencilFrontPass = TRAP::Graphics::RendererAPI::StencilOp::Keep,
+			.StencilBackFunc = TRAP::Graphics::RendererAPI::CompareMode::Always,
+			.StencilBackFail = TRAP::Graphics::RendererAPI::StencilOp::Keep,
+			.DepthBackFail = TRAP::Graphics::RendererAPI::StencilOp::Keep,
+			.StencilBackPass = TRAP::Graphics::RendererAPI::StencilOp::Keep
+		}
+	);
+
 	[[nodiscard]] TRAP::Scope<TRAP::Graphics::API::VulkanRenderPass> CreateTemporaryRenderPass(const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device,
 	                                                                                           const TRAP::Graphics::RendererAPI::GraphicsPipelineDesc& gpd)
 	{
@@ -295,7 +329,23 @@ namespace
 	                                                                                         std::vector<VkPipelineColorBlendAttachmentState>& cbAttachments)
 	{
 		if(gpd.BlendState == nullptr)
-			return TRAP::Graphics::API::VulkanRenderer::DefaultBlendDesc;
+		{
+			return TRAP::Graphics::API::UtilToBlendDesc
+			(
+				TRAP::Graphics::RendererAPI::BlendStateDesc
+				{
+					.SrcFactors = {TRAP::Graphics::RendererAPI::BlendConstant::One},
+					.DstFactors = {TRAP::Graphics::RendererAPI::BlendConstant::Zero},
+					.SrcAlphaFactors = {TRAP::Graphics::RendererAPI::BlendConstant::One},
+					.DstAlphaFactors = {TRAP::Graphics::RendererAPI::BlendConstant::Zero},
+					.BlendModes = {TRAP::Graphics::RendererAPI::BlendMode::Add},
+					.BlendAlphaModes = {TRAP::Graphics::RendererAPI::BlendMode::Add},
+					.Masks = {BIT(0u) | BIT(1u) | BIT(2u) | BIT(3u)},
+					.RenderTargetMask = TRAP::Graphics::RendererAPI::BlendStateTargets::BlendStateTargetAll,
+					.IndependentBlend = false
+				}, cbAttachments
+			);
+		}
 
 		VkPipelineColorBlendStateCreateInfo cb = TRAP::Graphics::API::UtilToBlendDesc(*gpd.BlendState, cbAttachments);
 		cb.attachmentCount = gpd.RenderTargetCount;
@@ -379,11 +429,11 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 
 	const VkPipelineRasterizationStateCreateInfo rs = graphicsDesc.RasterizerState ?
 														UtilToRasterizerDesc(*graphicsDesc.RasterizerState) :
-														VulkanRenderer::DefaultRasterizerDesc;
+														DefaultRasterizerDesc;
 
 	const VkPipelineDepthStencilStateCreateInfo ds = graphicsDesc.DepthState ?
 														UtilToDepthDesc(*graphicsDesc.DepthState) :
-														VulkanRenderer::DefaultDepthDesc;
+														DefaultDepthDesc;
 
 	SetupBlendStateRenderTargetMasking(graphicsDesc, m_device->GetPhysicalDevice());
 

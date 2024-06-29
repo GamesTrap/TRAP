@@ -175,7 +175,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindIndexBuffer(const Buffer& buf
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::BindVertexBuffer(const std::vector<std::reference_wrapper<Buffer>>& buffers,
+void TRAP::Graphics::API::VulkanCommandBuffer::BindVertexBuffer(const std::vector<std::reference_wrapper<const Buffer>>& buffers,
                                                                 const std::vector<u32>& strides,
                                                                 const std::vector<u64>& offsets) const
 {
@@ -266,7 +266,7 @@ namespace
 	//RenderPass does not care about underlying VkImageView.
 	//It only cares about the format and sample count of the attachments.
 	//We hash those two values to generate the RenderPass Hash.
-	[[nodiscard]] usize CalculateRenderPassHash(const std::vector<TRAP::Ref<TRAP::Graphics::RenderTarget>>& renderTargets,
+	[[nodiscard]] usize CalculateRenderPassHash(const std::vector<std::reference_wrapper<const TRAP::Graphics::RenderTarget>>& renderTargets,
 												const TRAP::Graphics::RendererAPI::LoadActionsDesc* const loadActions,
 												const TRAP::Graphics::RenderTarget* const depthStencil,
 												const TRAP::Graphics::RenderTarget* const shadingRate,
@@ -284,7 +284,7 @@ namespace
 
 		for(usize i = 0; i < clampedRenderTargets; ++i)
 		{
-			const TRAP::Ref<API::VulkanTexture> vkTex = std::dynamic_pointer_cast<API::VulkanTexture>(renderTargets[i]->GetTexture());
+			const TRAP::Ref<API::VulkanTexture> vkTex = std::dynamic_pointer_cast<API::VulkanTexture>(renderTargets[i].get().GetTexture());
 			if(vkTex->IsLazilyAllocated())
 				outColorStoreActions[i] = RendererAPI::StoreActionType::DontCare;
 			else if(loadActions != nullptr && loadActions->StoreActionsColor.size() > i)
@@ -294,8 +294,8 @@ namespace
 
 			const std::array<u32, 4> hashValues =
 			{
-				std::to_underlying(renderTargets[i]->GetImageFormat()),
-				NumericCast<u32>(std::to_underlying(renderTargets[i]->GetSampleCount())),
+				std::to_underlying(renderTargets[i].get().GetImageFormat()),
+				NumericCast<u32>(std::to_underlying(renderTargets[i].get().GetSampleCount())),
 				loadActions != nullptr && loadActions->StoreActionsColor.size() > i ? std::to_underlying(loadActions->LoadActionsColor[i]) : 0u,
 				std::to_underlying(outColorStoreActions[i])
 			};
@@ -340,7 +340,7 @@ namespace
 	//NOTE:
 	//FrameBuffer is the actual array of all the VkImageViews
 	//We hash the texture id associated with the RenderTarget to generate the FrameBuffer Hash.
-	[[nodiscard]] usize CalculateFrameBufferHash(const std::vector<TRAP::Ref<TRAP::Graphics::RenderTarget>>& renderTargets,
+	[[nodiscard]] usize CalculateFrameBufferHash(const std::vector<std::reference_wrapper<const TRAP::Graphics::RenderTarget>>& renderTargets,
 												 const TRAP::Graphics::RenderTarget* const depthStencil,
 												 const std::vector<u32>* const colorArraySlices,
 												 const std::vector<u32>* const colorMipSlices,
@@ -357,7 +357,7 @@ namespace
 
 		for(u32 i = 0; i < clampedRenderTargets; ++i)
 		{
-			const u64 id = dynamic_cast<const VulkanRenderTarget*>(renderTargets[i].get())->GetID();
+			const u64 id = dynamic_cast<const VulkanRenderTarget*>(&renderTargets[i].get())->GetID();
 			frameBufferHash = HashAlg(id, frameBufferHash);
 		}
 
@@ -388,13 +388,13 @@ namespace
 		return frameBufferHash;
 	}
 
-	[[nodiscard]] TRAP::Ref<TRAP::Graphics::API::VulkanFrameBuffer> GetCachedVulkanFrameBuffer(const std::vector<TRAP::Ref<TRAP::Graphics::RenderTarget>>& renderTargets,
-	                                                                                           const TRAP::Ref<TRAP::Graphics::RenderTarget>& depthStencil,
+	[[nodiscard]] TRAP::Ref<TRAP::Graphics::API::VulkanFrameBuffer> GetCachedVulkanFrameBuffer(const std::vector<std::reference_wrapper<const TRAP::Graphics::RenderTarget>>& renderTargets,
+	                                                                                           const TRAP::Graphics::RenderTarget* const depthStencil,
 																							   const std::vector<u32>* const colorArraySlices,
 																                               const std::vector<u32>* const colorMipSlices,
 																							   const u32 depthArraySlice,
 																                               const u32 depthMipSlice,
-																							   const TRAP::Ref<TRAP::Graphics::RenderTarget>& shadingRate,
+																							   const TRAP::Graphics::RenderTarget* const shadingRate,
 																							   const TRAP::Ref<TRAP::Graphics::API::VulkanRenderPass>& renderPass,
 																							   const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device)
 	{
@@ -403,10 +403,10 @@ namespace
 
 		const u32 clampedRenderTargets = TRAP::Math::Min(NumericCast<u32>(renderTargets.size()), RendererAPI::GPUSettings.MaxColorRenderTargets);
 
-		const usize frameBufferHash = CalculateFrameBufferHash(renderTargets, depthStencil.get(),
+		const usize frameBufferHash = CalculateFrameBufferHash(renderTargets, depthStencil,
 														       colorArraySlices, colorMipSlices,
 														       depthArraySlice, depthMipSlice,
-														       shadingRate.get());
+														       shadingRate);
 
 		VulkanRenderer::FrameBufferMap& frameBufferMap = VulkanRenderer::GetFrameBufferMap();
 		TRAP::Ref<VulkanFrameBuffer> frameBuffer = nullptr;
@@ -419,7 +419,7 @@ namespace
 			const VulkanRenderer::FrameBufferDesc desc
 			{
 				.RenderPass = renderPass,
-				.RenderTargets = std::vector<TRAP::Ref<RenderTarget>>(renderTargets.begin(), renderTargets.begin() + clampedRenderTargets),
+				.RenderTargets = std::vector<std::reference_wrapper<const RenderTarget>>(renderTargets.begin(), renderTargets.begin() + clampedRenderTargets),
 				.DepthStencil = depthStencil,
 				.ShadingRate = shadingRate,
 				.ColorArraySlices = colorArraySlices != nullptr ? *colorArraySlices : std::vector<u32>{},
@@ -436,7 +436,7 @@ namespace
 		return frameBuffer;
 	}
 
-	[[nodiscard]] TRAP::Ref<TRAP::Graphics::API::VulkanRenderPass> GetCachedVulkanRenderPass(const std::vector<TRAP::Ref<TRAP::Graphics::RenderTarget>>& renderTargets,
+	[[nodiscard]] TRAP::Ref<TRAP::Graphics::API::VulkanRenderPass> GetCachedVulkanRenderPass(const std::vector<std::reference_wrapper<const TRAP::Graphics::RenderTarget>>& renderTargets,
 	                                                                                         const TRAP::Graphics::RendererAPI::LoadActionsDesc* const loadActions,
 																							 const TRAP::Graphics::RenderTarget* const depthStencil,
 																							 const TRAP::Graphics::RenderTarget* const shadingRate,
@@ -464,7 +464,7 @@ namespace
 		{
 			std::vector<ImageFormat> colorFormats(clampedRenderTargets);
 			for (u32 i = 0; i < clampedRenderTargets; ++i)
-				colorFormats[i] = renderTargets[i]->GetImageFormat();
+				colorFormats[i] = renderTargets[i].get().GetImageFormat();
 
 			const ImageFormat depthStencilFormat = depthStencil != nullptr ? depthStencil->GetImageFormat() : ImageFormat::Undefined;
 
@@ -472,7 +472,7 @@ namespace
 			if (depthStencil != nullptr)
 				sampleCount = depthStencil->GetSampleCount();
 			else if (!renderTargets.empty())
-				sampleCount = renderTargets.front()->GetSampleCount();
+				sampleCount = renderTargets.front().get().GetSampleCount();
 
 			const ImageFormat shadingRateFormat = shadingRate != nullptr ? shadingRate->GetImageFormat() : ImageFormat::Undefined;
 
@@ -509,7 +509,7 @@ namespace
 		return renderPass;
 	}
 
-	[[nodiscard]] std::vector<VkClearValue> GetClearValues(const std::vector<TRAP::Ref<TRAP::Graphics::RenderTarget>>& renderTargets,
+	[[nodiscard]] std::vector<VkClearValue> GetClearValues(const std::vector<std::reference_wrapper<const TRAP::Graphics::RenderTarget>>& renderTargets,
 	                                                       const TRAP::Graphics::RenderTarget* const depthStencil,
 														   const TRAP::Graphics::RendererAPI::LoadActionsDesc* const loadActions)
 	{
@@ -524,7 +524,7 @@ namespace
 		{
 			const VkClearValue val
 			{
-				.color = TRAP::Graphics::API::VulkanInits::ClearColorValue(loadActions->ClearColorValues[i], renderTargets[i]->GetImageFormat())
+				.color = TRAP::Graphics::API::VulkanInits::ClearColorValue(loadActions->ClearColorValues[i], renderTargets[i].get().GetImageFormat())
 			};
 
 			clearValues[i] = val;
@@ -548,14 +548,14 @@ namespace
 	}
 }
 
-void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vector<TRAP::Ref<RenderTarget>>& renderTargets,
-																 const TRAP::Ref<RenderTarget>& depthStencil,
+void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vector<std::reference_wrapper<const RenderTarget>>& renderTargets,
+																 const RenderTarget* const depthStencil,
 																 RendererAPI::LoadActionsDesc* const loadActions,
 																 const std::vector<u32>* const colorArraySlices,
 																 const std::vector<u32>* const colorMipSlices,
 																 const u32 depthArraySlice,
 																 const u32 depthMipSlice,
-																 const TRAP::Ref<RenderTarget>& shadingRate)
+																 const RenderTarget* const shadingRate)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -567,7 +567,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 
 	EndActiveRenderPass(m_activeRenderPass, m_vkCommandBuffer);
 
-	if (renderTargets.empty() && !depthStencil)
+	if (renderTargets.empty() && depthStencil == nullptr)
 		return;
 
 	const u32 clampedColorRenderTargets = TRAP::Math::Min(NumericCast<u32>(renderTargets.size()), RendererAPI::GPUSettings.MaxColorRenderTargets);
@@ -587,7 +587,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	RendererAPI::StoreActionType stencilStoreAction{};
 
 	const TRAP::Ref<VulkanRenderPass> renderPass = GetCachedVulkanRenderPass(renderTargets, loadActions,
-	                                                                         depthStencil.get(), shadingRate.get(),
+	                                                                         depthStencil, shadingRate,
 																			 colorStoreActions, depthStoreAction,
 																			 stencilStoreAction, m_device);
 
@@ -601,7 +601,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		.extent = {.width = frameBuffer->GetWidth(), .height = frameBuffer->GetHeight()}
 	};
 
-	const std::vector<VkClearValue> clearValues = GetClearValues(renderTargets, depthStencil.get(), loadActions);
+	const std::vector<VkClearValue> clearValues = GetClearValues(renderTargets, depthStencil, loadActions);
 
 	m_activeRenderPass = BeginRenderPass(renderPass->GetVkRenderPass(), frameBuffer->GetVkFrameBuffer(),
 	                                     renderArea, clearValues, m_vkCommandBuffer);
@@ -1110,8 +1110,6 @@ namespace
 	                                                                              const TRAP::Graphics::API::VulkanDevice& device,
 																				  const TRAP::Graphics::API::VulkanQueue& queue)
 	{
-		TRAP_ASSERT(bufferBarrier.Buffer, "VulkanCommandBuffer::GetVkBufferMemoryBarrierFromBufferBarrier(): BufferBarrier.Buffer is nullptr!");
-
 		VkBufferMemoryBarrier bufferMemoryBarrier{};
 		bufferMemoryBarrier.sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
 		bufferMemoryBarrier.pNext = nullptr;
@@ -1144,7 +1142,7 @@ namespace
 			bufferMemoryBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		}
 
-		bufferMemoryBarrier.buffer = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanBuffer>(bufferBarrier.Buffer)->GetVkBuffer();
+		bufferMemoryBarrier.buffer = dynamic_cast<const TRAP::Graphics::API::VulkanBuffer*>(&bufferBarrier.Buffer.get())->GetVkBuffer();
 		bufferMemoryBarrier.size = VK_WHOLE_SIZE;
 		bufferMemoryBarrier.offset = 0;
 
@@ -1160,8 +1158,6 @@ namespace
 	                                                                             const TRAP::Graphics::API::VulkanDevice& device,
 																				 const TRAP::Graphics::API::VulkanQueue& queue)
 	{
-		TRAP_ASSERT(textureBarrier.Texture, "VulkanCommandBuffer::GetVkImageMemoryBarrierFromTextureBarrier(): TextureBarrier.Texture is nullptr!");
-
 		VkImageMemoryBarrier imageMemoryBarrier{};
 		imageMemoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
 		imageMemoryBarrier.pNext = nullptr;
@@ -1198,7 +1194,7 @@ namespace
 			imageMemoryBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		}
 
-		const auto* const vkTexture = dynamic_cast<const TRAP::Graphics::API::VulkanTexture*>(textureBarrier.Texture);
+		const auto* const vkTexture = dynamic_cast<const TRAP::Graphics::API::VulkanTexture*>(&textureBarrier.Texture.get());
 
 		imageMemoryBarrier.image = vkTexture->GetVkImage();
 		imageMemoryBarrier.subresourceRange.aspectMask = vkTexture->GetAspectMask();
@@ -1219,8 +1215,6 @@ namespace
 	                                                                                  const TRAP::Graphics::API::VulkanDevice& device,
 																				      const TRAP::Graphics::API::VulkanQueue& queue)
 	{
-		TRAP_ASSERT(renderTargetBarrier.RenderTarget, "VulkanCommandBuffer::GetVkImageMemoryBarrierFromRenderTargetBarrier(): RenderTargetBarrier.RenderTarget is nullptr!");
-
 		VkImageMemoryBarrier imageMemoryBarrier{};
 		imageMemoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
 		imageMemoryBarrier.pNext = nullptr;
@@ -1257,7 +1251,7 @@ namespace
 			imageMemoryBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		}
 
-		const auto vkTexture = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(renderTargetBarrier.RenderTarget->GetTexture());
+		const auto* const vkTexture = dynamic_cast<const TRAP::Graphics::API::VulkanTexture*>(renderTargetBarrier.RenderTarget.get().GetTexture().get());
 
 		imageMemoryBarrier.image = vkTexture->GetVkImage();
 		imageMemoryBarrier.subresourceRange.aspectMask = vkTexture->GetAspectMask();
@@ -1538,4 +1532,17 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResolveImage(const TRAP::Graphics
 
 	vkCmdResolveImage(m_vkCommandBuffer, srcImage.GetVkImage(), ResourceStateToVkImageLayout(srcState),
 	                  dstImage.GetVkImage(), ResourceStateToVkImageLayout(dstState), 1, &imageResolve);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanCommandBuffer::BlitImage(const VulkanTexture& source,
+                                                         const VulkanTexture& destination,
+														 const VkImageBlit& region,
+														 const RendererAPI::FilterType filter) const
+{
+	const VkFilter vulkanFilter = TRAP::Graphics::API::FilterTypeToVkFilter(filter);
+
+	vkCmdBlitImage(m_vkCommandBuffer, source.GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+	               destination.GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region, vulkanFilter);
 }

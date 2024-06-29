@@ -5090,3 +5090,7 @@ SITREP 06/10/2024|24w24a1
 SITREP 06/17/2024|24w25a1
     - Changed TRAP Engine version to 24w25a1(0.10.82)
     - Vulkan Reworked querying of instance and device extensions ~>120 mins
+
+SITREP 06/30/2024|24w26a1
+    - Changed TRAP Engine version to 24w26a1(0.10.83)
+    - VulkanRenderer Refactored various functions ~>240 mins

@@ -83,18 +83,18 @@ void TRAP::Graphics::IndexBuffer::SetData(const std::span<const u32> indices, co
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::IndexBuffer::Use(const Window* const window) const
+void TRAP::Graphics::IndexBuffer::Use(const Window& window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	RendererAPI::GetRenderer()->BindIndexBuffer(m_indexBuffer, m_indexType, window);
+	RendererAPI::GetRenderer()->BindIndexBuffer(*m_indexBuffer, m_indexType, window);
 }
 #else
 void TRAP::Graphics::IndexBuffer::Use() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	RendererAPI::GetRenderer()->BindIndexBuffer(m_indexBuffer, m_indexType);
+	RendererAPI::GetRenderer()->BindIndexBuffer(*m_indexBuffer, m_indexType);
 }
 #endif /*TRAP_HEADLESS_MODE*/
 

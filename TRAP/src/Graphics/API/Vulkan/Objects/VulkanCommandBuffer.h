@@ -77,7 +77,7 @@ namespace TRAP::Graphics::API
 		/// @param buffers Vertex buffer(s) to bind.
 		/// @param strides Stride in bytes of each vertex buffer.
 		/// @param offsets Starting offsets in bytes to use for each vertex buffer.
-		void BindVertexBuffer(const std::vector<std::reference_wrapper<Buffer>>& buffers,
+		void BindVertexBuffer(const std::vector<std::reference_wrapper<const Buffer>>& buffers,
 		                      const std::vector<u32>& strides,
 		                      const std::vector<u64>& offsets) const override;
 		/// @brief Bind a pipeline to the command buffer.
@@ -93,14 +93,14 @@ namespace TRAP::Graphics::API
 		/// @param depthMipSlice Optional depth mip slice for the depth stencil target.
 		/// @param shadingRate Optional shading rate texture.
 		/// @note This functions ends the currently running render pass and starts a new one.
-		void BindRenderTargets(const std::vector<TRAP::Ref<RenderTarget>>& renderTargets,
-		                       const TRAP::Ref<RenderTarget>& depthStencil,
+		void BindRenderTargets(const std::vector<std::reference_wrapper<const RenderTarget>>& renderTargets,
+		                       const RenderTarget* depthStencil,
 							   RendererAPI::LoadActionsDesc* loadActions,
 							   const std::vector<u32>* colorArraySlices,
 		                       const std::vector<u32>* colorMipSlices,
 							   u32 depthArraySlice,
 							   u32 depthMipSlice,
-							   const TRAP::Ref<RenderTarget>& shadingRate = nullptr) override;
+							   const RenderTarget* shadingRate = nullptr) override;
 
 		/// @brief Add a debug marker to the command buffer.
 		/// @param color Color for the debug marker.
@@ -280,6 +280,14 @@ namespace TRAP::Graphics::API
 		/// @param dstState Destination texture state.
 		void ResolveImage(const API::VulkanTexture& srcImage, RendererAPI::ResourceState srcState,
 		                  const API::VulkanTexture& dstImage, RendererAPI::ResourceState dstState) const;
+
+		/// @brief Blit an image from source to destination using the specified region and filtering options.
+		/// @param source Source texture to blit from.
+		/// @param destination Destination texture to blit to.
+		/// @param region Region to blit.
+		/// @param filter Filter mode to use for the blit operation.
+		void BlitImage(const VulkanTexture& source, const VulkanTexture& destination,
+                       const VkImageBlit& region, RendererAPI::FilterType filter) const;
 
 		/// @brief Retrieve the currently active VkRenderPass.
 		/// @return Currently active VkRenderPass.

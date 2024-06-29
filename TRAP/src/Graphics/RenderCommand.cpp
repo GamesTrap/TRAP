@@ -5,7 +5,7 @@
 #include "ImageLoader/Image.h"
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::Flush(const Window* const window)
+void TRAP::Graphics::RenderCommand::Flush(const Window& window)
 {
 	RendererAPI::GetRenderer()->Flush(window);
 }
@@ -19,25 +19,7 @@ void TRAP::Graphics::RenderCommand::Flush()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetVSync(const bool vsync, const Window* const window)
-{
-	RendererAPI::GetRenderer()->SetVSync(vsync, window);
-}
-#endif /*TRAP_HEADLESS_MODE*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#ifndef TRAP_HEADLESS_MODE
-[[nodiscard]] bool TRAP::Graphics::RenderCommand::GetVSync(const Window* const window)
-{
-	return RendererAPI::GetRenderer()->GetVSync(window);
-}
-#endif /*TRAP_HEADLESS_MODE*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::Clear(const ClearBuffer clearType, const Window* const window)
+void TRAP::Graphics::RenderCommand::Clear(const ClearBuffer clearType, const Window& window)
 {
 	RendererAPI::GetRenderer()->Clear(clearType, window);
 }
@@ -51,7 +33,7 @@ void TRAP::Graphics::RenderCommand::Clear(const ClearBuffer clearType)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetClearColor(const RendererAPI::Color& color, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetClearColor(const RendererAPI::Color& color, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetClearColor(color, window);
 }
@@ -65,7 +47,7 @@ void TRAP::Graphics::RenderCommand::SetClearColor(const RendererAPI::Color& colo
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetClearDepth(const f32 depth, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetClearDepth(const f32 depth, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetClearDepth(depth, window);
 }
@@ -79,7 +61,7 @@ void TRAP::Graphics::RenderCommand::SetClearDepth(const f32 depth)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetClearStencil(const u32 stencil, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetClearStencil(const u32 stencil, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetClearStencil(stencil, window);
 }
@@ -93,7 +75,7 @@ void TRAP::Graphics::RenderCommand::SetClearStencil(const u32 stencil)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetDepthTesting(const bool enabled, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetDepthTesting(const bool enabled, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetDepthTesting(enabled, window);
 }
@@ -107,7 +89,7 @@ void TRAP::Graphics::RenderCommand::SetDepthTesting(const bool enabled)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetDepthWriting(const bool enabled, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetDepthWriting(const bool enabled, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetDepthWriting(enabled, window);
 }
@@ -121,7 +103,7 @@ void TRAP::Graphics::RenderCommand::SetDepthWriting(const bool enabled)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetDepthFunction(const CompareMode compareMode, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetDepthFunction(const CompareMode compareMode, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetDepthFunction(compareMode, window);
 }
@@ -136,7 +118,7 @@ void TRAP::Graphics::RenderCommand::SetDepthFunction(const CompareMode compareMo
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::SetDepthFail(const StencilOperation front, const StencilOperation back,
-												 const Window* const window)
+												 const Window& window)
 {
 	RendererAPI::GetRenderer()->SetDepthFail(front, back, window);
 }
@@ -150,7 +132,7 @@ void TRAP::Graphics::RenderCommand::SetDepthFail(const StencilOperation front, c
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetDepthBias(const i32 bias, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetDepthBias(const i32 bias, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetDepthBias(bias, window);
 }
@@ -164,7 +146,7 @@ void TRAP::Graphics::RenderCommand::SetDepthBias(const i32 bias)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetDepthBiasSlopeFactor(const f32 slopeFactor, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetDepthBiasSlopeFactor(const f32 slopeFactor, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetDepthBiasSlopeFactor(slopeFactor, window);
 }
@@ -178,7 +160,7 @@ void TRAP::Graphics::RenderCommand::SetDepthBiasSlopeFactor(const f32 slopeFacto
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetStencilTesting(const bool enabled, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetStencilTesting(const bool enabled, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetStencilTesting(enabled, window);
 }
@@ -193,7 +175,7 @@ void TRAP::Graphics::RenderCommand::SetStencilTesting(const bool enabled)
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::SetStencilFail(const StencilOperation front, const StencilOperation back,
-												   const Window* const window)
+												   const Window& window)
 {
 	RendererAPI::GetRenderer()->SetStencilFail(front, back, window);
 }
@@ -208,7 +190,7 @@ void TRAP::Graphics::RenderCommand::SetStencilFail(const StencilOperation front,
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::SetStencilPass(const StencilOperation front, const StencilOperation back,
-												   const Window* const window)
+												   const Window& window)
 {
 	RendererAPI::GetRenderer()->SetStencilPass(front, back, window);
 }
@@ -223,7 +205,7 @@ void TRAP::Graphics::RenderCommand::SetStencilPass(const StencilOperation front,
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::SetStencilFunction(const CompareMode front, const CompareMode back,
-													   const Window* const window)
+													   const Window& window)
 {
 	RendererAPI::GetRenderer()->SetStencilFunction(front, back, window);
 }
@@ -237,7 +219,7 @@ void TRAP::Graphics::RenderCommand::SetStencilFunction(const CompareMode front, 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetStencilMask(const u8 read, const u8 write, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetStencilMask(const u8 read, const u8 write, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetStencilMask(read, write, window);
 }
@@ -251,7 +233,7 @@ void TRAP::Graphics::RenderCommand::SetStencilMask(const u8 read, const u8 write
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetCullMode(const CullMode cullMode, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetCullMode(const CullMode cullMode, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetCullMode(cullMode, window);
 }
@@ -265,7 +247,7 @@ void TRAP::Graphics::RenderCommand::SetCullMode(const CullMode cullMode)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetFillMode(const FillMode fillMode, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetFillMode(const FillMode fillMode, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetFillMode(fillMode, window);
 }
@@ -279,7 +261,7 @@ void TRAP::Graphics::RenderCommand::SetFillMode(const FillMode fillMode)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetPrimitiveTopology(const PrimitiveTopology topology, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetPrimitiveTopology(const PrimitiveTopology topology, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetPrimitiveTopology(topology, window);
 }
@@ -293,7 +275,7 @@ void TRAP::Graphics::RenderCommand::SetPrimitiveTopology(const PrimitiveTopology
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetFrontFace(const FrontFace face, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetFrontFace(const FrontFace face, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetFrontFace(face, window);
 }
@@ -309,7 +291,7 @@ void TRAP::Graphics::RenderCommand::SetFrontFace(const FrontFace face)
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::SetShadingRate(const ShadingRate shadingRate,
 												   const ShadingRateCombiner postRasterizerRate,
-												   const ShadingRateCombiner finalRate, const Window* const window)
+												   const ShadingRateCombiner finalRate, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetShadingRate(shadingRate, postRasterizerRate, finalRate, window);
 }
@@ -326,7 +308,7 @@ void TRAP::Graphics::RenderCommand::SetShadingRate(const ShadingRate shadingRate
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::SetShadingRate(TRAP::Ref<TRAP::Graphics::RenderTarget> texture,
-                                                   const Window* const window)
+                                                   const Window& window)
 {
 	RendererAPI::GetRenderer()->SetShadingRate(std::move(texture), window);
 }
@@ -348,9 +330,9 @@ void TRAP::Graphics::RenderCommand::SetAntiAliasing(const AntiAliasing antiAlias
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount,
-                                                    const Window* const window) noexcept
+                                                    const Window& window) noexcept
 {
-	RendererAPI::GetAntiAliasing(outAntiAliasing, outSampleCount, window);
+	RendererAPI::GetAntiAliasing(outAntiAliasing, outSampleCount, &window);
 }
 #else
 void TRAP::Graphics::RenderCommand::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount) noexcept
@@ -376,7 +358,7 @@ void TRAP::Graphics::RenderCommand::SetAnisotropyLevel(const SampleCount anisotr
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetBlendMode(const BlendMode modeRGB, const BlendMode modeAlpha, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetBlendMode(const BlendMode modeRGB, const BlendMode modeAlpha, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetBlendMode(modeRGB, modeAlpha, window);
 }
@@ -391,7 +373,7 @@ void TRAP::Graphics::RenderCommand::SetBlendMode(const BlendMode modeRGB, const 
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::SetBlendConstant(const BlendConstant sourceRGBA,
-                                                     const BlendConstant destinationRGBA, const Window* const window)
+                                                     const BlendConstant destinationRGBA, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetBlendConstant(sourceRGBA, sourceRGBA, destinationRGBA, destinationRGBA, window);
 }
@@ -408,7 +390,7 @@ void TRAP::Graphics::RenderCommand::SetBlendConstant(const BlendConstant sourceR
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::SetBlendConstant(const BlendConstant sourceRGB, const BlendConstant sourceAlpha,
 	  												 const BlendConstant destinationRGB,
-													 const BlendConstant destinationAlpha, const Window* const window)
+													 const BlendConstant destinationAlpha, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetBlendConstant(sourceRGB, sourceAlpha, destinationRGB, destinationAlpha, window);
 }
@@ -425,7 +407,7 @@ void TRAP::Graphics::RenderCommand::SetBlendConstant(const BlendConstant sourceR
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::SetViewport(const u32 x, const u32 y, const u32 width,
-                                                const u32 height, const Window* const window)
+                                                const u32 height, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetViewport(x, y, width, height, 0.0f, 1.0f, window);
 }
@@ -441,7 +423,7 @@ void TRAP::Graphics::RenderCommand::SetViewport(const u32 x, const u32 y, const 
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::SetScissor(const u32 x, const u32 y, const u32 width,
-											   const u32 height, const Window* const window)
+											   const u32 height, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetScissor(x, y, width, height, window);
 }
@@ -465,16 +447,16 @@ void TRAP::Graphics::RenderCommand::SetResolution(const u32 width, const u32 hei
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::GetResolution(u32& width, u32& height)
+[[nodiscard]] TRAP::Math::Vec2ui TRAP::Graphics::RenderCommand::GetResolution()
 {
-	RendererAPI::GetRenderer()->GetResolution(width, height);
+	return RendererAPI::GetRenderer()->GetResolution();
 }
 #endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetRenderScale(const f32 scale, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetRenderScale(const f32 scale, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetRenderScale(scale, window);
 }
@@ -488,7 +470,7 @@ void TRAP::Graphics::RenderCommand::SetRenderScale(const f32 scale)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-[[nodiscard]] f32 TRAP::Graphics::RenderCommand::GetRenderScale(const Window* const window)
+[[nodiscard]] f32 TRAP::Graphics::RenderCommand::GetRenderScale(const Window& window)
 {
 	return RendererAPI::GetRenderer()->GetRenderScale(window);
 }
@@ -502,7 +484,7 @@ void TRAP::Graphics::RenderCommand::SetRenderScale(const f32 scale)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::Draw(const u32 vertexCount, const u32 firstVertex, const Window* const window)
+void TRAP::Graphics::RenderCommand::Draw(const u32 vertexCount, const u32 firstVertex, const Window& window)
 {
 	RendererAPI::GetRenderer()->Draw(vertexCount, firstVertex, window);
 }
@@ -517,7 +499,7 @@ void TRAP::Graphics::RenderCommand::Draw(const u32 vertexCount, const u32 firstV
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::DrawIndexed(const u32 indexCount, const u32 firstIndex,
-												const i32 vertexOffset, const Window* const window)
+												const i32 vertexOffset, const Window& window)
 {
 	RendererAPI::GetRenderer()->DrawIndexed(indexCount, firstIndex, vertexOffset, window);
 }
@@ -534,7 +516,7 @@ void TRAP::Graphics::RenderCommand::DrawIndexed(const u32 indexCount, const u32 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::DrawInstanced(const u32 vertexCount, const u32 instanceCount,
 	                                              const u32 firstVertex, const u32 firstInstance,
-												  const Window* const window)
+												  const Window& window)
 {
 	RendererAPI::GetRenderer()->DrawInstanced(vertexCount, instanceCount, firstVertex, firstInstance, window);
 }
@@ -551,7 +533,7 @@ void TRAP::Graphics::RenderCommand::DrawInstanced(const u32 vertexCount, const u
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::DrawIndexedInstanced(const u32 indexCount, const u32 instanceCount,
 														 const u32 firstIndex, const u32 firstInstance,
-														 const i32 vertexOffset, const Window* const window)
+														 const i32 vertexOffset, const Window& window)
 {
 	RendererAPI::GetRenderer()->DrawIndexedInstanced(indexCount, instanceCount, firstIndex, firstInstance,
 	                                                 vertexOffset, window);
@@ -569,7 +551,7 @@ void TRAP::Graphics::RenderCommand::DrawIndexedInstanced(const u32 indexCount, c
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::Dispatch(const std::array<u32, 3>& workGroupElementSizes, const Window* const window)
+void TRAP::Graphics::RenderCommand::Dispatch(const std::array<u32, 3>& workGroupElementSizes, const Window& window)
 {
 	RendererAPI::GetRenderer()->Dispatch(workGroupElementSizes, window);
 }
@@ -584,7 +566,7 @@ void TRAP::Graphics::RenderCommand::Dispatch(const std::array<u32, 3>& workGroup
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::SetPushConstants(const std::string_view name, const std::span<const u8> data,
-                                                     const QueueType queueType, const Window* const window)
+                                                     const QueueType queueType, const Window& window)
 {
 	RendererAPI::GetRenderer()->BindPushConstants(name, data, queueType, window);
 }
@@ -599,18 +581,18 @@ void TRAP::Graphics::RenderCommand::SetPushConstants(const std::string_view name
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
-		                                             const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+void TRAP::Graphics::RenderCommand::BindRenderTarget(const Graphics::RenderTarget* const colorTarget,
+		                                             const Graphics::RenderTarget* const depthStencil,
 									                 RendererAPI::LoadActionsDesc* const loadActions,
-									                 const Window* const window)
+									                 const Window& window)
 {
 	RendererAPI::GetRenderer()->BindRenderTarget(colorTarget, depthStencil, loadActions, nullptr, nullptr,
 												 std::numeric_limits<u32>::max(),
 												 std::numeric_limits<u32>::max(), window);
 }
 #else
-void TRAP::Graphics::RenderCommand::BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
-		                                             const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+void TRAP::Graphics::RenderCommand::BindRenderTarget(const Graphics::RenderTarget* const colorTarget,
+		                                             const Graphics::RenderTarget* const depthStencil,
 									                 RendererAPI::LoadActionsDesc* const loadActions)
 {
 	RendererAPI::GetRenderer()->BindRenderTarget(colorTarget, depthStencil, loadActions, nullptr, nullptr,
@@ -622,18 +604,18 @@ void TRAP::Graphics::RenderCommand::BindRenderTarget(const TRAP::Ref<Graphics::R
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
-		                                             const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
-									                 RendererAPI::LoadActionsDesc* const loadActions,
-									                 const Window* const window)
+void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<std::reference_wrapper<const Graphics::RenderTarget>>& colorTargets,
+		                                              const Graphics::RenderTarget* const depthStencil,
+									                  RendererAPI::LoadActionsDesc* const loadActions,
+									                  const Window& window)
 {
 	RendererAPI::GetRenderer()->BindRenderTargets(colorTargets, depthStencil, loadActions, nullptr, nullptr,
 												  std::numeric_limits<u32>::max(),
 												  std::numeric_limits<u32>::max(), window);
 }
 #else
-void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
-		                                             const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<std::reference_wrapper<const Graphics::RenderTarget>>& colorTargets,
+		                                             const Graphics::RenderTarget* const depthStencil,
 									                 RendererAPI::LoadActionsDesc* const loadActions)
 {
 	RendererAPI::GetRenderer()->BindRenderTargets(colorTargets, depthStencil, loadActions, nullptr, nullptr,
@@ -645,9 +627,9 @@ void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<TRAP::Re
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::StartRenderPass(const Window* const window)
+void TRAP::Graphics::RenderCommand::StartRenderPass(const Window& window)
 {
-	RendererAPI::StartRenderPass(window);
+	RendererAPI::StartRenderPass(&window);
 }
 #else
 void TRAP::Graphics::RenderCommand::StartRenderPass()
@@ -659,9 +641,9 @@ void TRAP::Graphics::RenderCommand::StartRenderPass()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::StopRenderPass(const Window* const window)
+void TRAP::Graphics::RenderCommand::StopRenderPass(const Window& window)
 {
-	RendererAPI::StopRenderPass(window);
+	RendererAPI::StopRenderPass(&window);
 }
 #else
 void TRAP::Graphics::RenderCommand::StopRenderPass()
@@ -674,7 +656,7 @@ void TRAP::Graphics::RenderCommand::StopRenderPass()
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::BufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
-                                                  const QueueType queueType, const Window* const window)
+                                                  const QueueType queueType, const Window& window)
 {
 	RendererAPI::GetRenderer()->ResourceBufferBarrier(bufferBarrier, queueType, window);
 }
@@ -690,7 +672,7 @@ void TRAP::Graphics::RenderCommand::BufferBarrier(const RendererAPI::BufferBarri
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::BufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
-                                                   const QueueType queueType, const Window* const window)
+                                                   const QueueType queueType, const Window& window)
 {
 	RendererAPI::GetRenderer()->ResourceBufferBarriers(bufferBarriers, queueType, window);
 }
@@ -706,7 +688,7 @@ void TRAP::Graphics::RenderCommand::BufferBarriers(const std::vector<RendererAPI
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::TextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
-                                                   const QueueType queueType, const Window* const window)
+                                                   const QueueType queueType, const Window& window)
 {
 	RendererAPI::GetRenderer()->ResourceTextureBarrier(textureBarrier, queueType, window);
 }
@@ -722,7 +704,7 @@ void TRAP::Graphics::RenderCommand::TextureBarrier(const RendererAPI::TextureBar
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::TextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
-           										    const QueueType queueType, const Window* const window)
+           										    const QueueType queueType, const Window& window)
 {
 	RendererAPI::GetRenderer()->ResourceTextureBarriers(textureBarriers, queueType, window);
 }
@@ -738,7 +720,7 @@ void TRAP::Graphics::RenderCommand::TextureBarriers(const std::vector<RendererAP
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::RenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier,
- 														const Window* const window)
+ 														const Window& window)
 {
 	RendererAPI::GetRenderer()->ResourceRenderTargetBarrier(renderTargetBarrier, window);
 }
@@ -753,7 +735,7 @@ void TRAP::Graphics::RenderCommand::RenderTargetBarrier(const RendererAPI::Rende
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::RenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
- 														 const Window* const window)
+ 														 const Window& window)
 {
 	RendererAPI::GetRenderer()->ResourceRenderTargetBarriers(renderTargetBarriers, window);
 }
@@ -767,7 +749,7 @@ void TRAP::Graphics::RenderCommand::RenderTargetBarriers(const std::vector<Rende
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-[[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Graphics::RenderCommand::CaptureScreenshot(const Window* const window)
+[[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Graphics::RenderCommand::CaptureScreenshot(const Window& window)
 {
 	return RendererAPI::GetRenderer()->CaptureScreenshot(window);
 }
@@ -789,24 +771,22 @@ void TRAP::Graphics::RenderCommand::Transition(const Ref<Texture>& texture, cons
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> source,
-                                                    TRAP::Ref<RenderTarget> destination, const Window* const window)
+void TRAP::Graphics::RenderCommand::MSAAResolvePass(const RenderTarget& source,
+                                                    const RenderTarget& destination, const Window& window)
 {
-	TRAP_ASSERT(window, "RenderCommand::MSAAResolvePass(): Window is nullptr!");
-
-	const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(window);
+	const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(&window);
 	CommandBuffer* const cmd = viewportData.GraphicCommandBuffers[viewportData.ImageIndex];
 
-	RendererAPI::GetRenderer()->MSAAResolvePass(std::move(source), std::move(destination), cmd);
+	RendererAPI::GetRenderer()->MSAAResolvePass(source, destination, cmd);
 }
 #else
-void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> source,
-                                                    TRAP::Ref<RenderTarget> destination)
+void TRAP::Graphics::RenderCommand::MSAAResolvePass(const RenderTarget& source,
+                                                    const RenderTarget& destination)
 {
 	const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData();
 	CommandBuffer* const cmd = viewportData.GraphicCommandBuffers[viewportData.ImageIndex];
 
-	RendererAPI::GetRenderer()->MSAAResolvePass(std::move(source), std::move(destination), cmd);
+	RendererAPI::GetRenderer()->MSAAResolvePass(source, destination, cmd);
 }
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -824,10 +804,10 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> sour
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-[[nodiscard]] u32 TRAP::Graphics::RenderCommand::GetGPUFPS(const Window* const window)
+[[nodiscard]] u32 TRAP::Graphics::RenderCommand::GetGPUFPS(const Window& window)
 {
-	const f32 maxGPUFrameTime = TRAP::Math::Max(RendererAPI::GetGPUGraphicsFrameTime(window),
-	                                              RendererAPI::GetGPUComputeFrameTime(window));
+	const f32 maxGPUFrameTime = TRAP::Math::Max(RendererAPI::GetGPUGraphicsFrameTime(&window),
+	                                              RendererAPI::GetGPUComputeFrameTime(&window));
 	if(maxGPUFrameTime == 0.0f)
 		return 0;
 
@@ -855,9 +835,9 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> sour
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-[[nodiscard]] f32 TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime(const Window* const window)
+[[nodiscard]] f32 TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime(const Window& window)
 {
-	return RendererAPI::GetGPUGraphicsFrameTime(window);
+	return RendererAPI::GetGPUGraphicsFrameTime(&window);
 }
 #else
 [[nodiscard]] f32 TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime()
@@ -869,9 +849,9 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> sour
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-[[nodiscard]] f32 TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime(const Window* const window)
+[[nodiscard]] f32 TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime(const Window& window)
 {
-	return RendererAPI::GetGPUComputeFrameTime(window);
+	return RendererAPI::GetGPUComputeFrameTime(&window);
 }
 #else
 [[nodiscard]] f32 TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime()
@@ -890,7 +870,7 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> sour
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetLatencyMode(const LatencyMode mode, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetLatencyMode(const LatencyMode mode, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetLatencyMode(mode, window);
 }
@@ -899,7 +879,7 @@ void TRAP::Graphics::RenderCommand::SetLatencyMode(const LatencyMode mode, const
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-[[nodiscard]] TRAP::Graphics::LatencyMode TRAP::Graphics::RenderCommand::GetLatencyMode(const Window* const window)
+[[nodiscard]] TRAP::Graphics::LatencyMode TRAP::Graphics::RenderCommand::GetLatencyMode(const Window& window)
 {
 	return RendererAPI::GetRenderer()->GetLatencyMode(window);
 }

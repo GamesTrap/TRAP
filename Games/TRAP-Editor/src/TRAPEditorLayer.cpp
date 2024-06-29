@@ -337,16 +337,18 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	//Stop RenderPass (necessary for transition)
 	TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
 
-	TRAP::Graphics::RendererAPI::RenderTargetBarrier barrier{};
-	barrier.RenderTarget = m_renderTarget;
-	barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
-	barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
+	TRAP::Graphics::RendererAPI::RenderTargetBarrier barrier
+	{
+		.RenderTarget = *m_renderTarget,
+		.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource,
+		.NewState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget
+	};
 	TRAP::Graphics::RendererAPI::RenderTargetBarrier IDBarrier = barrier;
-	IDBarrier.RenderTarget = m_IDRenderTarget;
+	IDBarrier.RenderTarget = *m_IDRenderTarget;
 	TRAP::Graphics::RenderCommand::RenderTargetBarriers({barrier, IDBarrier});
 
 	//Framebuffer bind
-	TRAP::Graphics::RenderCommand::BindRenderTargets({ m_renderTarget, m_IDRenderTarget }, nullptr, &m_renderTargetLoadActions);
+	TRAP::Graphics::RenderCommand::BindRenderTargets({ *m_renderTarget, *m_IDRenderTarget }, nullptr, &m_renderTargetLoadActions);
 	TRAP::Graphics::RenderCommand::SetViewport(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
 	TRAP::Graphics::RenderCommand::SetScissor(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
 
@@ -388,11 +390,11 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
 
 	//Transition from RenderTarget to PixelShaderResource
-	barrier.RenderTarget = m_renderTarget;
+	barrier.RenderTarget = *m_renderTarget;
 	barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
 	barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
 	IDBarrier = barrier;
-	IDBarrier.RenderTarget = m_IDRenderTarget;
+	IDBarrier.RenderTarget = *m_IDRenderTarget;
 	TRAP::Graphics::RenderCommand::RenderTargetBarriers({barrier, IDBarrier});
 
 	MousePicking();

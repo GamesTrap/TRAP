@@ -1504,7 +1504,7 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
         {
             TRAP::Graphics::RendererAPI::TextureBarrier
             {
-                .Texture = dynamic_cast<TRAP::Graphics::Texture*>(bd->FontImage.get()),
+                .Texture = *bd->FontImage,
                 .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
                 .NewState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination,
                 .BeginOnly = false,

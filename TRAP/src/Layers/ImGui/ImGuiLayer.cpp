@@ -309,7 +309,7 @@ void TRAP::ImGuiLayer::Begin()
 			rT = viewportData.SwapChain->GetRenderTargets()[viewportData.CurrentSwapChainImageIndex];
 
 		//Cant use TRAP::Graphics::RenderCommand::StartRenderPass() here, because it would also bind the shading rate image
-		vkCmdBuffer->BindRenderTargets({ rT }, nullptr, nullptr, nullptr, nullptr,
+		vkCmdBuffer->BindRenderTargets({ *rT }, nullptr, nullptr, nullptr, nullptr,
 		                               std::numeric_limits<u32>::max(), std::numeric_limits<u32>::max());
 
 		//Only apply MSAA if no RenderScale is used (else it got already resolved to a non-MSAA texture)

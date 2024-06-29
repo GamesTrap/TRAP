@@ -13,8 +13,8 @@ namespace
 	[[nodiscard]] std::vector<VkImageView> GetImageViews(const TRAP::Graphics::API::VulkanRenderer::FrameBufferDesc& desc)
 	{
 		const u32 colorAttachmentCount = NumericCast<u32>(desc.RenderTargets.size());
-		const u32 depthAttachmentCount = desc.DepthStencil ? 1 : 0;
-		const u32 shadingRateAttachmentCount = desc.ShadingRate ? 1 : 0;
+		const u32 depthAttachmentCount = desc.DepthStencil != nullptr ? 1 : 0;
+		const u32 shadingRateAttachmentCount = desc.ShadingRate != nullptr ? 1 : 0;
 
 		std::vector<VkImageView> imageViews{};
 		imageViews.reserve(colorAttachmentCount + depthAttachmentCount + shadingRateAttachmentCount);
@@ -22,7 +22,7 @@ namespace
 		//Color
 		for(usize i = 0; i < desc.RenderTargets.size(); ++i)
 		{
-			const auto rTarget = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanRenderTarget>(desc.RenderTargets[i]);
+			const auto* const rTarget = dynamic_cast<const TRAP::Graphics::API::VulkanRenderTarget*>(&desc.RenderTargets[i].get());
 
 			if(desc.ColorMipSlices.empty() && desc.ColorArraySlices.empty())
 				imageViews.emplace_back(rTarget->GetVkImageView());
@@ -32,7 +32,7 @@ namespace
 				if (!desc.ColorMipSlices.empty())
 				{
 					if (!desc.ColorArraySlices.empty())
-						handle = desc.ColorMipSlices[i] * desc.RenderTargets[i]->GetArraySize() + desc.ColorArraySlices[i];
+						handle = desc.ColorMipSlices[i] * desc.RenderTargets[i].get().GetArraySize() + desc.ColorArraySlices[i];
 					else
 						handle = desc.ColorMipSlices[i];
 				}
@@ -44,9 +44,9 @@ namespace
 		}
 
 		//Depth/Stencil
-		if(desc.DepthStencil)
+		if(desc.DepthStencil != nullptr)
 		{
-			const auto rTarget = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanRenderTarget>(desc.DepthStencil);
+			const auto* const rTarget = dynamic_cast<const TRAP::Graphics::API::VulkanRenderTarget*>(desc.DepthStencil);
 
 			if(desc.DepthMipSlice == std::numeric_limits<u32>::max() &&
 			   desc.DepthArraySlice == std::numeric_limits<u32>::max())
@@ -69,9 +69,9 @@ namespace
 		}
 
 		//Shading rate
-		if(desc.ShadingRate)
+		if(desc.ShadingRate != nullptr)
 		{
-			const auto rTarget = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanRenderTarget>(desc.ShadingRate);
+			const auto* const rTarget = dynamic_cast<const TRAP::Graphics::API::VulkanRenderTarget*>(desc.ShadingRate);
 
 			imageViews.emplace_back(rTarget->GetVkImageView());
 		}
@@ -96,13 +96,13 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 
 	if(!desc.RenderTargets.empty())
 	{
-		const Ref<RenderTarget> renderTarget = desc.RenderTargets[0];
-		m_width = renderTarget->GetWidth();
-		m_height = renderTarget->GetHeight();
+		const RenderTarget& renderTarget = desc.RenderTargets[0].get();
+		m_width = renderTarget.GetWidth();
+		m_height = renderTarget.GetHeight();
 		if (!desc.ColorArraySlices.empty())
 			m_arraySize = 1;
 		else
-			m_arraySize = renderTarget->GetArraySize();
+			m_arraySize = renderTarget.GetArraySize();
 	}
 	else if(desc.DepthStencil != nullptr)
 	{
@@ -118,13 +118,13 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 		TRAP_ASSERT(false, "VulkanFrameBuffer(): No color or depth/stencil attachments");
 	}
 
-	if (!desc.RenderTargets.empty() && desc.RenderTargets[0]->GetDepth() > 1)
-		m_arraySize = desc.RenderTargets[0]->GetDepth();
+	if (!desc.RenderTargets.empty() && desc.RenderTargets[0].get().GetDepth() > 1)
+		m_arraySize = desc.RenderTargets[0].get().GetDepth();
 
-	if(!desc.RenderTargets.empty() && desc.DepthStencil)
+	if(!desc.RenderTargets.empty() && desc.DepthStencil != nullptr)
 	{
-		TRAP_ASSERT(desc.RenderTargets[0]->GetWidth() == desc.DepthStencil->GetWidth() &&
-		            desc.RenderTargets[0]->GetHeight() == desc.DepthStencil->GetHeight(),
+		TRAP_ASSERT(desc.RenderTargets[0].get().GetWidth() == desc.DepthStencil->GetWidth() &&
+		            desc.RenderTargets[0].get().GetHeight() == desc.DepthStencil->GetHeight(),
 					"VulkanFrameBuffer(): Color RenderTarget size doesn't match that of Depth/Stencil RenderTarget!");
 	}
 

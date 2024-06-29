@@ -56,7 +56,7 @@ TRAP::Window::~Window()
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Window) != ProfileSystems::None);
 
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
-		TRAP::Graphics::RendererAPI::GetRenderer()->RemovePerViewportData(this);
+		TRAP::Graphics::RendererAPI::GetRenderer()->RemovePerViewportData(*this);
 
 	--ActiveWindows;
 
@@ -226,7 +226,7 @@ void TRAP::Window::OnUpdate()
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Window) != ProfileSystems::None &&
 	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	return Graphics::RendererAPI::GetRenderer()->GetVSync(this);
+	return Graphics::RendererAPI::GetRenderer()->GetVSync(*this);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -671,7 +671,7 @@ void TRAP::Window::SetVSync(const bool enabled) const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Window) != ProfileSystems::None);
 
-	TRAP::Graphics::RendererAPI::GetRenderer()->SetVSync(enabled, this);
+	TRAP::Graphics::RendererAPI::GetRenderer()->SetVSync(enabled, *this);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -897,7 +897,7 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	SetupEventCallbacks();
 
-	TRAP::Graphics::RendererAPI::GetRenderer()->InitPerViewportData(this, props.VSync);
+	TRAP::Graphics::RendererAPI::GetRenderer()->InitPerViewportData(*this, props.VSync);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

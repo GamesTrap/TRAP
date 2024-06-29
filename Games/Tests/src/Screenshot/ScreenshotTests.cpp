@@ -41,7 +41,7 @@ void ScreenshotTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	time += deltaTime.GetSeconds();
 	if(time >= 3.0f && !done)
 	{
-		TRAP::Scope<TRAP::Image> renderedImg = TRAP::Graphics::RendererAPI::GetRenderer()->CaptureScreenshot(TRAP::Application::GetWindow());
+		TRAP::Scope<TRAP::Image> renderedImg = TRAP::Graphics::RendererAPI::GetRenderer()->CaptureScreenshot(*TRAP::Application::GetWindow());
 		if(renderedImg)
 			TRAP::INTERNAL::PPMImage::Save(renderedImg.get(), "output.ppm");
 		done = true;

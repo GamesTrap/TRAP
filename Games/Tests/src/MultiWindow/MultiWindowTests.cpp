@@ -48,7 +48,7 @@ void MultiWindowTests::OnAttach()
 	if(m_window)
 	{
 		m_window->SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });
-		TRAP::Graphics::RenderCommand::SetClearColor({1.0f, 0.0f, 1.0f, 1.0f}, m_window.get());
+		TRAP::Graphics::RenderCommand::SetClearColor({1.0f, 0.0f, 1.0f, 1.0f}, *m_window);
 	}
 
 	//Load Triangle vertices
@@ -92,12 +92,12 @@ void MultiWindowTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 	if(m_window)
 	{
 		if(m_wireFrameSecondWindow)
-			TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line, m_window.get());
+			TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line, *m_window);
 		else
-			TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Solid, m_window.get());
+			TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Solid, *m_window);
 
-		m_vertexBuffer->Use(m_window.get());
-		m_indexBuffer->Use(m_window.get());
+		m_vertexBuffer->Use(*m_window);
+		m_indexBuffer->Use(*m_window);
 
 		if(m_useUBO)
 		{
@@ -136,10 +136,10 @@ void MultiWindowTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 		else
 			TRAP::Graphics::ShaderManager::Get("Test")->Use(*m_window);
 
-		TRAP::Graphics::RenderCommand::DrawIndexed(3, 0, 0, m_window.get());
+		TRAP::Graphics::RenderCommand::DrawIndexed(3, 0, 0, *m_window);
 
 		//Secondary Windows need to explicitly present its content
-		TRAP::Graphics::RenderCommand::Flush(m_window.get());
+		TRAP::Graphics::RenderCommand::Flush(*m_window);
 	}
 
 	//Main Window OnUpdate

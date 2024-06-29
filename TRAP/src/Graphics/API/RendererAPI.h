@@ -159,7 +159,7 @@ namespace TRAP::Graphics
 		/// 4. Starts graphics and compute recording for the next frame.
 		/// @param window Window to flush.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void Flush(const Window* window) const = 0;
+		virtual void Flush(const Window& window) const = 0;
 #else
 		/// @brief Flush renderer.
 		///
@@ -176,7 +176,7 @@ namespace TRAP::Graphics
 		/// The elements are automatically divided by the number of threads in the work group and rounded up.
 		/// @param window Window to Dispatch.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void Dispatch(std::array<u32, 3> workGroupElements, const Window* window) const = 0;
+		virtual void Dispatch(std::array<u32, 3> workGroupElements, const Window& window) const = 0;
 #else
 		/// @brief Dispatch.
 		/// @param workGroupElements Number of elements to dispatch for each dimension.
@@ -190,15 +190,15 @@ namespace TRAP::Graphics
 		/// @param vsync Enable or disable VSync.
 		/// @param window Window to set VSync for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetVSync(bool vsync, const Window* window) const = 0;
+		virtual void SetVSync(bool vsync, const Window& window) const = 0;
 		/// @brief Retrieve whether VSync is enabled or not for the given window.
 		/// @param window Window to retrieve VSync for.
 		/// @return True if VSync is enabled, false otherwise.
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] virtual bool GetVSync(const Window* window) const = 0;
+		[[nodiscard]] virtual bool GetVSync(const Window& window) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
-#ifndef TRAP_HEADLESS_MODE
+#if !defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)
 		/// @brief Set the FPS limit for NVIDIA-Reflex.
 		/// @param limit FPS target to limit to.
 		/// @note This function affects all windows.
@@ -207,7 +207,7 @@ namespace TRAP::Graphics
 		///          This function is only used internally for NVIDIA-Reflex.
 		/// @remark @headless This function is not available in headless mode.
 		virtual void SetReflexFPSLimit(u32 limit) = 0;
-#endif /*TRAP_HEADLESS_MODE*/
+#endif /*!defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)*/
 
 		//RenderTarget Stuff
 
@@ -217,7 +217,7 @@ namespace TRAP::Graphics
 		/// @param window Window to set render scale for.
 		/// @note This functon takes effect on the next frame.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetRenderScale(f32 scale, const Window* window) const = 0;
+		virtual void SetRenderScale(f32 scale, const Window& window) const = 0;
 #else
 		/// @brief Set the render scale.
 		/// @param scale Render scale value (valid range: 0.5f-1.0f inclusive).
@@ -230,7 +230,7 @@ namespace TRAP::Graphics
 		/// @param window Window to retrieve render scale from.
 		/// @return Render scale (between 0.5f and 2.0f inclusive).
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] virtual f32 GetRenderScale(const Window* window) const = 0;
+		[[nodiscard]] virtual f32 GetRenderScale(const Window& window) const = 0;
 #else
 		/// @brief Retrieve the used render scale value.
 		/// @return Render scale (between 0.5f and 2.0f inclusive).
@@ -244,7 +244,7 @@ namespace TRAP::Graphics
 		/// @param window Window to set clear color for.
 		/// @remark @headless This function is not available in headless mode.
 		virtual void SetClearColor(const Color& color /*= { 0.1f, 0.1f, 0.1f, 1.0f }*/,
-		                           const Window* window) const = 0;
+		                           const Window& window) const = 0;
 #else
 		/// @brief Set the clear color.
 		/// @param color New clear color.
@@ -256,7 +256,7 @@ namespace TRAP::Graphics
 		/// @param depth New clear depth value. Must be between 0.0f and 1.0f
 		/// @param window Window to set clear depth value for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetClearDepth(f32 depth /*= 0.0f*/, const Window* window) const = 0;
+		virtual void SetClearDepth(f32 depth /*= 0.0f*/, const Window& window) const = 0;
 #else
 		/// @brief Set the clear depth value.
 		/// @param depth New clear depth value. Must be between 0.0f and 1.0f
@@ -268,7 +268,7 @@ namespace TRAP::Graphics
 		/// @param stencil New clear stencil value.
 		/// @param window Window to set clear stencil value for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetClearStencil(u32 stencil /*= 0*/, const Window* window) const = 0;
+		virtual void SetClearStencil(u32 stencil /*= 0*/, const Window& window) const = 0;
 #else
 		/// @brief Set the clear stencil value.
 		/// @param stencil New clear stencil value.
@@ -290,7 +290,7 @@ namespace TRAP::Graphics
 		/// @param enabled Enable or disable depth testing.
 		/// @param window Window to set depth testing for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetDepthTesting(bool enabled, const Window* window) const = 0;
+		virtual void SetDepthTesting(bool enabled, const Window& window) const = 0;
 #else
 		/// @brief Enable or disable depth testing.
 		/// @param enabled Enable or disable depth testing.
@@ -302,7 +302,7 @@ namespace TRAP::Graphics
 		/// @param enabled Enable or disable depth writing.
 		/// @param window Window to set depth writing for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetDepthWriting(bool enabled, const Window* window) const = 0;
+		virtual void SetDepthWriting(bool enabled, const Window& window) const = 0;
 #else
 		/// @brief Enable or disable depth writing.
 		/// @param enabled Enable or disable depth writing.
@@ -314,7 +314,7 @@ namespace TRAP::Graphics
 		/// @param function Function to use for depth testing.
 		/// @param window Window to set depth function for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetDepthFunction(CompareMode function, const Window* window) const = 0;
+		virtual void SetDepthFunction(CompareMode function, const Window& window) const = 0;
 #else
 		/// @brief Set the depth function.
 		/// @param function Function to use for depth testing.
@@ -327,7 +327,7 @@ namespace TRAP::Graphics
 		/// @param back Depth action to perform when depth testing fails.
 		/// @param window Window to set the depth fail action for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetDepthFail(StencilOp front, StencilOp back, const Window* window) const = 0;
+		virtual void SetDepthFail(StencilOp front, StencilOp back, const Window& window) const = 0;
 #else
 		/// @brief Set the depth action to perform when depth testing fails.
 		/// @param front Depth action to perform when depth testing fails.
@@ -340,7 +340,7 @@ namespace TRAP::Graphics
 		/// @param depthBias Depth bias.
 		/// @param window Window to set the depth bias for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetDepthBias(i32 depthBias, const Window* window) const = 0;
+		virtual void SetDepthBias(i32 depthBias, const Window& window) const = 0;
 #else
 		/// @brief Set the depth bias (scalar factor to add to each fragments depth value).
 		/// @param depthBias Depth bias.
@@ -352,7 +352,7 @@ namespace TRAP::Graphics
 		/// @param factor Depth bias slope factor.
 		/// @param window Window to set the depth bias slope factor for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetDepthBiasSlopeFactor(f32 factor, const Window* window) const = 0;
+		virtual void SetDepthBiasSlopeFactor(f32 factor, const Window& window) const = 0;
 #else
 		/// @brief Set the depth bias slope factor (scalar factor applied to fragment's slope in depth bias calculation).
 		/// @param factor Depth bias slope factor.
@@ -364,7 +364,7 @@ namespace TRAP::Graphics
 		/// @param enabled Enable or disable stencil testing.
 		/// @param window Window to set stencil testing for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetStencilTesting(bool enabled, const Window* window) const = 0;
+		virtual void SetStencilTesting(bool enabled, const Window& window) const = 0;
 #else
 		/// @brief Enable or disable stencil testing.
 		/// @param enabled Enable or disable stencil testing.
@@ -377,7 +377,7 @@ namespace TRAP::Graphics
 		/// @param back Stencil action to perform when stencil testing fails.
 		/// @param window Window to set the stencil fail action for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetStencilFail(StencilOp front, StencilOp back, const Window* window) const = 0;
+		virtual void SetStencilFail(StencilOp front, StencilOp back, const Window& window) const = 0;
 #else
 		/// @brief Set the stencil action to perform when stencil testing fails.
 		/// @param front Stencil action to perform when stencil testing fails.
@@ -391,7 +391,7 @@ namespace TRAP::Graphics
 		/// @param back Stencil action to perform when passed.
 		/// @param window Window to set the stencil pass action for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetStencilPass(StencilOp front, StencilOp back, const Window* window) const = 0;
+		virtual void SetStencilPass(StencilOp front, StencilOp back, const Window& window) const = 0;
 #else
 		/// @brief Set the stencil action to perform when stencil testing passes.
 		/// @param front Stencil action to perform when passed.
@@ -405,7 +405,7 @@ namespace TRAP::Graphics
 		/// @param back Function to use on the back for stencil testing.
 		/// @param window Window to set stencil functions for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetStencilFunction(CompareMode front, CompareMode back, const Window* window) const = 0;
+		virtual void SetStencilFunction(CompareMode front, CompareMode back, const Window& window) const = 0;
 #else
 		/// @brief Set the stencil functions.
 		/// @param front Function to use on the front for stencil testing.
@@ -419,7 +419,7 @@ namespace TRAP::Graphics
 		/// @param write Select the bits of the stencil values updated by the stencil test.
 		/// @param window Window to set stencil mask for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetStencilMask(u8 read, u8 write, const Window* window) const = 0;
+		virtual void SetStencilMask(u8 read, u8 write, const Window& window) const = 0;
 #else
 		/// @brief Set the stencil mask.
 		/// @param read Select the bits of the stencil values to test.
@@ -432,7 +432,7 @@ namespace TRAP::Graphics
 		/// @param mode Cull mode to use.
 		/// @param window Window to set cull mode for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetCullMode(CullMode mode, const Window* window) const = 0;
+		virtual void SetCullMode(CullMode mode, const Window& window) const = 0;
 #else
 		/// @brief Set the cull mode.
 		/// @param mode Cull mode to use.
@@ -444,7 +444,7 @@ namespace TRAP::Graphics
 		/// @param mode Fill mode to use.
 		/// @param window Window to set fill mode for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetFillMode(FillMode mode, const Window* window) const = 0;
+		virtual void SetFillMode(FillMode mode, const Window& window) const = 0;
 #else
 		/// @brief Set the fill mode.
 		/// @param mode Fill mode to use.
@@ -456,7 +456,7 @@ namespace TRAP::Graphics
 		/// @param topology Primitive topology to use.
 		/// @param window Window to set primitive topology for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetPrimitiveTopology(PrimitiveTopology topology, const Window* window) const = 0;
+		virtual void SetPrimitiveTopology(PrimitiveTopology topology, const Window& window) const = 0;
 #else
 		/// @brief Set the primitive topology.
 		/// @param topology Primitive topology to use.
@@ -468,7 +468,7 @@ namespace TRAP::Graphics
 		/// @param face Front face winding order to use.
 		/// @param window Window to set front face winding order for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetFrontFace(FrontFace face, const Window* window) const = 0;
+		virtual void SetFrontFace(FrontFace face, const Window& window) const = 0;
 #else
 		/// @brief Set the front face winding order.
 		/// @param face Front face winding order to use.
@@ -481,7 +481,7 @@ namespace TRAP::Graphics
 		/// @param modeAlpha Blend mode to use for the alpha channel.
 		/// @param window Window to set the blend mode for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetBlendMode(BlendMode modeRGB, BlendMode modeAlpha, const Window* window) const = 0;
+		virtual void SetBlendMode(BlendMode modeRGB, BlendMode modeAlpha, const Window& window) const = 0;
 #else
 		/// @brief Set the blend mode.
 		/// @param modeRGB Blend mode to use for the RGB channels.
@@ -499,7 +499,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		virtual void SetBlendConstant(BlendConstant sourceRGB, BlendConstant sourceAlpha,
 			                          BlendConstant destinationRGB, BlendConstant destinationAlpha,
-									  const Window* window) const = 0;
+									  const Window& window) const = 0;
 #else
 		/// @brief Set the blend constants/factors.
 		/// @param sourceRGB Specifies how the red, green, and blue blending factors are computed.
@@ -519,7 +519,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		virtual void SetShadingRate(ShadingRate shadingRate,
 		                            ShadingRateCombiner postRasterizerRate,
-							        ShadingRateCombiner finalRate, const Window* window) const = 0;
+							        ShadingRateCombiner finalRate, const Window& window) const = 0;
 #else
 		/// @brief Set the pipeline fragment shading rate and combiner operation for the command buffer.
 		/// @param shadingRate Shading rate to use.
@@ -536,7 +536,7 @@ namespace TRAP::Graphics
 		/// @param window Window to set shading rate for.
 		/// @note The texture must be in ResourceState::ShadingRateSource resource state.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetShadingRate(Ref<RenderTarget> texture, const Window* window) const = 0;
+		virtual void SetShadingRate(Ref<RenderTarget> texture, const Window& window) const = 0;
 #else
 		/// @brief Set the pipeline fragment shading rate via texture.
 		/// @param texture Shading rate texture to use.
@@ -550,7 +550,7 @@ namespace TRAP::Graphics
 		/// @param clearType Type of buffer to clear.
 		/// @param window Window to clear.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void Clear(ClearBufferType clearType, const Window* window) const = 0;
+		virtual void Clear(ClearBufferType clearType, const Window& window) const = 0;
 #else
 		/// @brief Clear the given render target.
 		/// @param clearType Type of buffer to clear.
@@ -571,7 +571,7 @@ namespace TRAP::Graphics
 		/// @param window Window to set viewport for.
 		/// @remark @headless This function is not available in headless mode.
 		virtual void SetViewport(u32 x, u32 y, u32 width, u32 height, f32 minDepth /*= 0.0f*/,
-		                         f32 maxDepth /*= 1.0f*/, const Window* window) const = 0;
+		                         f32 maxDepth /*= 1.0f*/, const Window& window) const = 0;
 #else
 		/// @brief Set viewport size.
 		/// @param x X coordinate of the top left corner of the viewport.
@@ -593,7 +593,7 @@ namespace TRAP::Graphics
 		/// @param window Window to set scissor size for.
 		/// @remark @headless This function is not available in headless mode.
 		virtual void SetScissor(u32 x, u32 y, u32 width, u32 height,
-		                        const Window* window) const = 0;
+		                        const Window& window) const = 0;
 #else
 		/// @brief Set scissor size.
 		/// @param x Upper left corner.
@@ -610,7 +610,7 @@ namespace TRAP::Graphics
 		/// @param firstVertex Index of the first vertex to draw. Default: 0.
 		/// @param window Window to draw for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void Draw(u32 vertexCount, u32 firstVertex /*= 0*/, const Window* window) const = 0;
+		virtual void Draw(u32 vertexCount, u32 firstVertex /*= 0*/, const Window& window) const = 0;
 #else
 		/// @brief Draw non-indexed, non-instanced geometry.
 		/// @param vertexCount Number of vertices to draw.
@@ -626,7 +626,7 @@ namespace TRAP::Graphics
 		/// @param window Window to draw for.
 		/// @remark @headless This function is not available in headless mode.
 		virtual void DrawIndexed(u32 indexCount, u32 firstIndex /*= 0*/, i32 vertexOffset /*= 0*/,
-		                         const Window* window) const = 0;
+		                         const Window& window) const = 0;
 #else
 		/// @brief Draw indexed, non-instanced geometry.
 		/// @param indexCount Number of indices to draw.
@@ -644,7 +644,7 @@ namespace TRAP::Graphics
 		/// @param window Window to draw for.
 		/// @remark @headless This function is not available in headless mode.
 		virtual void DrawInstanced(u32 vertexCount, u32 instanceCount, u32 firstVertex /*= 0*/,
-		                           u32 firstInstance /*= 0*/, const Window* window) const = 0;
+		                           u32 firstInstance /*= 0*/, const Window& window) const = 0;
 #else
 		/// @brief Draw non-indexed, instanced geometry.
 		/// @param vertexCount Number of vertices to draw.
@@ -666,7 +666,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		virtual void DrawIndexedInstanced(u32 indexCount, u32 instanceCount,
 		                                  u32 firstIndex /*= 0*/, u32 firstInstance /*= 0*/,
-										  i32 vertexOffset /*= 0*/, const Window* window) const = 0;
+										  i32 vertexOffset /*= 0*/, const Window& window) const = 0;
 #else
 		/// @brief Draw indexed, instanced geometry.
 		/// @param indexCount Number of indices to draw.
@@ -686,14 +686,14 @@ namespace TRAP::Graphics
 		/// @param layout Layout of the vertex buffer.
 		/// @param window Window to bind the vertex buffer for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const VertexBufferLayout& layout,
-		                              const Window* window) const = 0;
+		virtual void BindVertexBuffer(const Buffer& vBuffer, const VertexBufferLayout& layout,
+		                              const Window& window) const = 0;
 #else
 		/// @brief Bind vertex buffer.
 		/// @param vBuffer Vertex buffer to bind.
 		/// @param layout Layout of the vertex buffer.
 		/// @remark This function is only available in headless mode.
-		virtual void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const VertexBufferLayout& layout) const = 0;
+		virtual void BindVertexBuffer(const Buffer& vBuffer, const VertexBufferLayout& layout) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Bind an index buffer on the given window.
@@ -701,14 +701,14 @@ namespace TRAP::Graphics
 		/// @param indexType Data type used by the index buffer.
 		/// @param window Window to bind the vertex buffer for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType,
-		                             const Window* window) const = 0;
+		virtual void BindIndexBuffer(const Buffer& iBuffer, IndexType indexType,
+		                             const Window& window) const = 0;
 #else
 		/// @brief Bind an index buffer.
 		/// @param iBuffer Index buffer to bind.
 		/// @param indexType Data type used by the index buffer.
 		/// @remark This function is only available in headless mode.
-		virtual void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType) const = 0;
+		virtual void BindIndexBuffer(const Buffer& iBuffer, IndexType indexType) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Bind a descriptor set on the given window.
@@ -719,7 +719,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		virtual void BindDescriptorSet(DescriptorSet& dSet, u32 index,
 		                               QueueType queueType /*= QueueType::Graphics*/,
-									   const Window* window) const = 0;
+									   const Window& window) const = 0;
 #else
 		/// @brief Bind a descriptor set.
 		/// @param dSet Descriptor set to bind.
@@ -740,7 +740,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		virtual void BindPushConstants(std::string_view name, std::span<const u8> constants,
 							           QueueType queueType /*= QueueType::Graphics*/,
-									   const Window* window) const = 0;
+									   const Window& window) const = 0;
 #else
 		/// @brief Bind push constant buffer data.
 		/// @param name Name of the push constant block.
@@ -761,7 +761,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		virtual void BindPushConstantsByIndex(u32 paramIndex, std::span<const u8> constants,
 										      QueueType queueType /*= QueueType::Graphics*/,
-											  const Window* window) const = 0;
+											  const Window& window) const = 0;
 #else
 		/// @brief Bind push constant buffer data.
 		/// @param paramIndex Index of the push constant block in the RootSignatures descriptors array.
@@ -783,13 +783,13 @@ namespace TRAP::Graphics
 		/// @param window Window to bind the render target(s) for.
 		/// @note This functions ends the currently running render pass and starts a new one.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
-		                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
+		virtual void BindRenderTarget(const Graphics::RenderTarget* colorTarget,
+		                              const Graphics::RenderTarget* depthStencil /*= nullptr*/,
 									  RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
 									  std::vector<u32>* colorArraySlices /*= nullptr*/,
 									  std::vector<u32>* colorMipSlices /*= nullptr*/,
 									  u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/,
-									  const Window* window) const = 0;
+									  const Window& window) const = 0;
 #else
 		/// @brief Bind render target(s).
 		/// @param colorTarget Color render target to bind.
@@ -801,8 +801,8 @@ namespace TRAP::Graphics
 		/// @param depthMipSlice Optional depth mip slice for the depth stencil target. Default: -1.
 		/// @note This functions ends the currently running render pass and starts a new one.
 		/// @remark This function is only available in headless mode.
-		virtual void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
-		                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
+		virtual void BindRenderTarget(const Graphics::RenderTarget* colorTarget,
+		                              const Graphics::RenderTarget* depthStencil /*= nullptr*/,
 									  RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
 									  std::vector<u32>* colorArraySlices /*= nullptr*/,
 									  std::vector<u32>* colorMipSlices /*= nullptr*/,
@@ -820,13 +820,13 @@ namespace TRAP::Graphics
 		/// @param window Window to bind the render target(s) for.
 		/// @note This functions ends the currently running render pass and starts a new one.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
-		                               const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
+		virtual void BindRenderTargets(const std::vector<std::reference_wrapper<const Graphics::RenderTarget>>& colorTargets,
+		                               const Graphics::RenderTarget* depthStencil /*= nullptr*/,
 									   RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
 									   std::vector<u32>* colorArraySlices /*= nullptr*/,
 									   std::vector<u32>* colorMipSlices /*= nullptr*/,
 									   u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/,
-									   const Window* window) const = 0;
+									   const Window& window) const = 0;
 #else
 		/// @brief Bind render target(s).
 		/// @param colorTargets Color render target(s) to bind.
@@ -838,8 +838,8 @@ namespace TRAP::Graphics
 		/// @param depthMipSlice Optional depth mip slice for the depth stencil target. Default: -1.
 		/// @note This functions ends the currently running render pass and starts a new one.
 		/// @remark This function is only available in headless mode.
-		virtual void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
-		                               const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
+		virtual void BindRenderTargets(const std::vector<std::reference_wrapper<const Graphics::RenderTarget>>& colorTargets,
+		                               const Graphics::RenderTarget* depthStencil /*= nullptr*/,
 									   RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
 									   std::vector<u32>* colorArraySlices /*= nullptr*/,
 									   std::vector<u32>* colorMipSlices /*= nullptr*/,
@@ -854,7 +854,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		virtual void ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
 										   QueueType queueType /*= QueueType::Graphics*/,
-								           const Window* window) const = 0;
+								           const Window& window) const = 0;
 #else
 		/// @brief Add a resource barrier (memory dependency).
 		/// @param bufferBarrier Buffer barrier.
@@ -871,7 +871,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		virtual void ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
 											QueueType queueType /*= QueueType::Graphics*/,
-									        const Window* window) const = 0;
+									        const Window& window) const = 0;
 #else
 		/// @brief Add resource barriers (memory dependencies).
 		/// @param bufferBarriers Buffer barriers.
@@ -888,7 +888,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		virtual void ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
 											QueueType queueType /*= QueueType::Graphics*/,
-									        const Window* window) const = 0;
+									        const Window& window) const = 0;
 #else
 		/// @brief Add a resource barrier (memory dependency).
 		/// @param textureBarrier Texture barrier.
@@ -905,7 +905,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		virtual void ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
 											 QueueType queueType /*= QueueType::Graphics*/,
-									         const Window* window) const = 0;
+									         const Window& window) const = 0;
 #else
 		/// @brief Add resource barriers (memory dependencies).
 		/// @param textureBarriers Texture barriers.
@@ -920,7 +920,7 @@ namespace TRAP::Graphics
 		/// @param window Window to add the barrier for.
 		/// @remark @headless This function is not available in headless mode.
 		virtual void ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier,
-									             const Window* window) const = 0;
+									             const Window& window) const = 0;
 #else
 		/// @brief Add a resource barrier (memory dependency).
 		/// @param renderTargetBarrier Render target barrier.
@@ -933,7 +933,7 @@ namespace TRAP::Graphics
 		/// @param window Window to add the barriers for.
 		/// @remark @headless This function is not available in headless mode.
 		virtual void ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
-									              const Window* window) const = 0;
+									              const Window& window) const = 0;
 #else
 		/// @brief Add resource barriers (memory dependencies).
 		/// @param renderTargetBarriers Render target barriers.
@@ -983,7 +983,7 @@ namespace TRAP::Graphics
 		/// @param window Window to capture screenshot on.
 		/// @return Captured screenshot as TRAP::Image on success, nullptr otherwise.
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] virtual TRAP::Scope<TRAP::Image> CaptureScreenshot(const Window* window) const = 0;
+		[[nodiscard]] virtual TRAP::Scope<TRAP::Image> CaptureScreenshot(const Window& window) const = 0;
 #else
 		/// @brief Capture a screenshot of the last presented frame.
 		/// @return Captured screenshot as TRAP::Image on success, nullptr otherwise.
@@ -997,7 +997,7 @@ namespace TRAP::Graphics
 		/// @param destination Destination non MSAA render target to resolve into.
 		/// @param cmd CommadBuffer to resolve on.
 		/// @note source and destination must be in ResourceState::RenderTarget resource state.
-		virtual void MSAAResolvePass(TRAP::Ref<RenderTarget> source, TRAP::Ref<RenderTarget> destination,
+		virtual void MSAAResolvePass(const RenderTarget& source, const RenderTarget& destination,
 		                             CommandBuffer* cmd) const = 0;
 
 #ifndef TRAP_HEADLESS_MODE
@@ -1007,17 +1007,17 @@ namespace TRAP::Graphics
 		/// @param window Window to do the scaling pass on.
 		/// @note source and destination must be in ResourceState::RenderTarget resource state.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void RenderScalePass(TRAP::Ref<RenderTarget> source,
-									 TRAP::Ref<RenderTarget> destination,
-		                             const Window* window) const = 0;
+		virtual void RenderScalePass(const RenderTarget& source,
+									 const RenderTarget& destination,
+		                             const Window& window) const = 0;
 #else
 		/// @brief Scale image from internal resolution to the final output resolution.
 		/// @param source Source render target to resolve.
 		/// @param destination Destination render target to resolve into.
 		/// @note source and destination must be in ResourceState::RenderTarget resource state.
 		/// @remark This function is only available in headless mode.
-		virtual void RenderScalePass(TRAP::Ref<RenderTarget> source,
-									 TRAP::Ref<RenderTarget> destination) const = 0;
+		virtual void RenderScalePass(const RenderTarget& source,
+									 const RenderTarget& destination) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -1029,13 +1029,13 @@ namespace TRAP::Graphics
 		/// @note Only LatencyMode::Disabled is supported everywhere.
 		/// @remark @win32 Other LatencyModes are only available on Windows 10 or newer with NVIDIA hardware.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetLatencyMode(LatencyMode mode, const Window* window) = 0;
+		virtual void SetLatencyMode(LatencyMode mode, const Window& window) = 0;
 		/// @brief Retrieve the currently used latency mode.
 		/// @param window Window to retrieve latency mode for.
 		/// @return Used latency mode.
 		/// @note The returned value may differ from the requested mode set with SetLatencyMode().
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] virtual LatencyMode GetLatencyMode(const Window* window) const = 0;
+		[[nodiscard]] virtual LatencyMode GetLatencyMode(const Window& window) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 		/// @brief Retrieve the used descriptor pool.
@@ -1075,11 +1075,10 @@ namespace TRAP::Graphics
 		[[nodiscard]] static TRAP::Math::Vec2ui GetInternalRenderResolution();
 #endif /*TRAP_HEADLESS_MODE*/
 #ifdef TRAP_HEADLESS_MODE
-		/// @brief Get the resolution of the render targets.
-		/// @param width Output: Width.
-		/// @param height Output: Height.
+		/// @brief Get the current viewport resolution.
+		/// @return Resolution of the viewport.
 		/// @remark This function is only available in headless mode.
-		virtual void GetResolution(u32& width, u32& height) const = 0;
+		[[nodiscard]] virtual TRAP::Math::Vec2ui GetResolution() const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -1198,7 +1197,7 @@ namespace TRAP::Graphics
 		/// @param window Window to initialize the internal rendering data for.
 		/// @param VSyncEnabled Whether to enable or disable VSync.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void InitPerViewportData(Window* window, bool VSyncEnabled) const = 0;
+		virtual void InitPerViewportData(Window& window, bool VSyncEnabled) const = 0;
 #else
 		/// @brief Initialize the internal rendering data.
 		/// @param width Width for the viewport.
@@ -1210,7 +1209,7 @@ namespace TRAP::Graphics
 		/// @brief Remove the internal rendering data of the given window.
 		/// @param window Window to remove the internal rendering data from.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void RemovePerViewportData(const Window* window) const = 0;
+		virtual void RemovePerViewportData(const Window& window) const = 0;
 #else
 		/// @brief Remove the internal rendering data.
 		/// @remark This function is only available in headless mode.
@@ -1480,7 +1479,6 @@ namespace TRAP::Graphics
 		/// @brief Enum describing the different types of buffers for clearing.
 		enum class ClearBufferType : u32
 		{
-			NONE = 0,
 			Color = BIT(0u),
 			Depth = BIT(1u),
 			Stencil = BIT(2u),
@@ -2444,7 +2442,7 @@ namespace TRAP::Graphics
 		struct RenderTargetBarrier
 		{
 			//Render target
-			TRAP::Ref<TRAP::Graphics::RenderTarget> RenderTarget{};
+			std::reference_wrapper<const TRAP::Graphics::RenderTarget> RenderTarget;
 			//Current resource state of the render target
 			ResourceState CurrentState{};
 			//Target resource state of the render target
@@ -2474,7 +2472,7 @@ namespace TRAP::Graphics
 		struct BufferBarrier
 		{
 			//Buffer
-			TRAP::Ref<TRAP::Graphics::Buffer> Buffer{};
+			std::reference_wrapper<const TRAP::Graphics::Buffer> Buffer;
 			//Current resource state of the buffer
 			ResourceState CurrentState{};
 			//Target resource state of the buffer
@@ -2495,7 +2493,7 @@ namespace TRAP::Graphics
 		struct TextureBarrier
 		{
 			//Texture
-			TRAP::Graphics::Texture* Texture{};
+			std::reference_wrapper<const TRAP::Graphics::Texture> Texture;
 			//Current resource state of the texture
 			ResourceState CurrentState{};
 			//Target resource state of the texture

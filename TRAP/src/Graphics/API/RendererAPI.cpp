@@ -193,8 +193,8 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 		{
 			TRAP::Ref<RenderTarget> outputTarget = data->SwapChain->GetRenderTargets()[data->CurrentSwapChainImageIndex];
 
-			GetRenderer()->RenderScalePass(data->InternalRenderTargets[data->CurrentSwapChainImageIndex],
-			                               outputTarget, win);
+			GetRenderer()->RenderScalePass(*data->InternalRenderTargets[data->CurrentSwapChainImageIndex],
+			                               *outputTarget, *win);
 		}
 	}
 #else
@@ -204,8 +204,8 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 	{
 		TRAP::Ref<RenderTarget> outputTarget = s_perViewportData->RenderTargets[s_perViewportData->CurrentSwapChainImageIndex];
 
-		GetRenderer()->RenderScalePass(s_perViewportData->InternalRenderTargets[s_perViewportData->CurrentSwapChainImageIndex],
-										outputTarget);
+		GetRenderer()->RenderScalePass(*s_perViewportData->InternalRenderTargets[s_perViewportData->CurrentSwapChainImageIndex],
+									   *outputTarget);
 	}
 #endif /*TRAP_HEADLESS_MODE*/
 }
@@ -393,9 +393,9 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 	else
 		renderTarget = viewportData->SwapChain->GetRenderTargets()[viewportData->CurrentSwapChainImageIndex];
 
-	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
+	GetRenderer()->BindRenderTarget(renderTarget.get(), nullptr, nullptr,
 									nullptr, nullptr, std::numeric_limits<u32>::max(),
-									std::numeric_limits<u32>::max(), window);
+									std::numeric_limits<u32>::max(), *window);
 }
 #else
 void TRAP::Graphics::RendererAPI::StartRenderPass()
@@ -410,7 +410,7 @@ void TRAP::Graphics::RendererAPI::StartRenderPass()
 	else
 		renderTarget = s_perViewportData->RenderTargets[s_perViewportData->ImageIndex];
 
-	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
+	GetRenderer()->BindRenderTarget(renderTarget.get(), nullptr, nullptr,
 	                                nullptr, nullptr, std::numeric_limits<u32>::max(),
 									std::numeric_limits<u32>::max());
 }
@@ -428,7 +428,7 @@ void TRAP::Graphics::RendererAPI::StopRenderPass(const Window* window)
 
 	GetRenderer()->BindRenderTarget(nullptr, nullptr, nullptr, nullptr, nullptr,
 	                                std::numeric_limits<u32>::max(), std::numeric_limits<u32>::max(),
-									window);
+									*window);
 }
 #else
 void TRAP::Graphics::RendererAPI::StopRenderPass()
@@ -476,10 +476,12 @@ void TRAP::Graphics::RendererAPI::Transition(const Ref<TRAP::Graphics::Texture>&
 	cmd.Begin();
 
 	//Transition the texture to the correct state
-	TextureBarrier texBarrier{};
-	texBarrier.Texture = texture.get();
-	texBarrier.CurrentState = oldLayout;
-	texBarrier.NewState = newLayout;
+	const TextureBarrier texBarrier
+	{
+		.Texture = *texture,
+		.CurrentState = oldLayout,
+		.NewState = newLayout
+	};
 
 	cmd.ResourceBarrier(nullptr, &texBarrier, nullptr);
 

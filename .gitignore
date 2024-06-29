@@ -210,4 +210,5 @@ docs/
 **.ninja
 **.ninja_log
 **.ninja_deps
+**.ninja_lock
 **.cap

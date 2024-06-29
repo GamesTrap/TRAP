@@ -120,19 +120,21 @@ void FrameBufferTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
     //Stop RenderPass (necessary for transition)
     TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
 
-    TRAP::Graphics::RendererAPI::RenderTargetBarrier barrier{};
-    barrier.RenderTarget = m_renderTarget;
-    barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
-    barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
+    TRAP::Graphics::RendererAPI::RenderTargetBarrier barrier
+    {
+        .RenderTarget = *m_renderTarget,
+        .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource,
+        .NewState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget
+    };
     TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
     if(m_MSAAEnabled)
     {
-        barrier.RenderTarget = m_resolveTarget;
+        barrier.RenderTarget = *m_resolveTarget;
         TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
     }
 
     //Bind render target/framebuffer for draw
-    TRAP::Graphics::RenderCommand::BindRenderTarget(m_renderTarget);
+    TRAP::Graphics::RenderCommand::BindRenderTarget(m_renderTarget.get());
     TRAP::Graphics::RenderCommand::SetViewport(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
     TRAP::Graphics::RenderCommand::SetScissor(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
 
@@ -146,19 +148,19 @@ void FrameBufferTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
     TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());
 
     if(m_MSAAEnabled)
-        TRAP::Graphics::RenderCommand::MSAAResolvePass(m_renderTarget, m_resolveTarget);
+        TRAP::Graphics::RenderCommand::MSAAResolvePass(*m_renderTarget, *m_resolveTarget);
 
     //Stop RenderPass (necessary for transition)
     TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
 
     //Transition from RenderTarget to PixelShaderResource
-    barrier.RenderTarget = m_renderTarget;
+    barrier.RenderTarget = *m_renderTarget;
     barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
     barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
     TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
     if(m_MSAAEnabled)
     {
-        barrier.RenderTarget = m_resolveTarget;
+        barrier.RenderTarget = *m_resolveTarget;
         TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
     }
 

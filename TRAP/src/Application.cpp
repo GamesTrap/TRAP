@@ -237,12 +237,10 @@ namespace
 		if (TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
 		{
 #ifdef TRAP_HEADLESS_MODE
-			u32 width = 1920;
-			u32 height = 1080;
-			TRAP::Graphics::RendererAPI::GetRenderer()->GetResolution(width, height);
+			const auto resolution = TRAP::Graphics::RendererAPI::GetRenderer()->GetResolution();
 
-			config.Set("Width", width);
-			config.Set("Height", height);
+			config.Set("Width", resolution.x());
+			config.Set("Height", resolution.y());
 #endif /*TRAP_HEADLESS_MODE*/
 
 			//GPU UUID
@@ -754,7 +752,7 @@ void TRAP::Application::RunWork(const Utils::TimeStep& deltaTime, f32& tickTimer
 	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
 	{
 #ifndef TRAP_HEADLESS_MODE
-		Graphics::RenderCommand::Flush(m_window.get());
+		Graphics::RenderCommand::Flush(*m_window);
 #else
 		Graphics::RenderCommand::Flush();
 #endif /*TRAP_HEADLESS_MODE*/
