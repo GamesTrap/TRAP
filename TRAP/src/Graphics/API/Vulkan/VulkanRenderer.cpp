@@ -1038,11 +1038,11 @@ void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit(const u32 limit)
 			viewportData->SleepModeParams.minimumIntervalUs = NumericCast<u32>((1000.0f / NumericCast<f32>(limit)) * 1000.0f);
 
 		if(viewportData->SleepModeParams.bLowLatencyMode && viewportData->SleepModeParams.bLowLatencyBoost)
-			SetLatencyMode(LatencyMode::EnabledBoost, win);
+			SetLatencyMode(LatencyMode::EnabledBoost, *win);
 		else if(viewportData->SleepModeParams.bLowLatencyMode)
-			SetLatencyMode(LatencyMode::Enabled, win);
+			SetLatencyMode(LatencyMode::Enabled, *win);
 		else
-			SetLatencyMode(LatencyMode::Disabled, win);
+			SetLatencyMode(LatencyMode::Disabled, *win);
 	}
 }
 #endif /*!defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)*/
@@ -2215,7 +2215,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u3
 	if(marker == PCLSTATS_TRIGGER_FLASH) //BUG This gives ERROR_DEVICE_LOST
 		return;
 
-	const NVLL_VK_LATENCY_MARKER_PARAMS params
+	NVLL_VK_LATENCY_MARKER_PARAMS params
 	{
 		.frameID = frame,
 		.markerType = static_cast<NVLL_VK_LATENCY_MARKER_TYPE>(marker)
@@ -3128,7 +3128,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	bufferDesc.Descriptors = DescriptorType::RWBuffer;
 	s_NullDescriptors->DefaultBufferUAV = TRAP::MakeRef<VulkanBuffer>(bufferDesc);
 
-	static constexpr SamplerDesc samplerDesc
+	static const SamplerDesc samplerDesc
 	{
 		.AddressU = AddressMode::ClampToBorder,
 		.AddressV = AddressMode::ClampToBorder,
