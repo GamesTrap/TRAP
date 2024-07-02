@@ -5098,3 +5098,4 @@ SITREP 06/30/2024|24w26a1
 SITREP 07/02/2024|24w27a1
     - Changed TRAP Engine version to 24w27a1(0.10.84)
     - VulkanShaderReflection Refactored various functions ~<60 mins
+    - Changed fmt submodule to tag 11.0.0 ~<15 mins

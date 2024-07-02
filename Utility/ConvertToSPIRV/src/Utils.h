@@ -10,6 +10,7 @@
 
 #include <fmt/format.h>
 #include <fmt/color.h>
+#include <fmt/std.h>
 
 #include "Types.h"
 
@@ -61,7 +62,7 @@
     std::ifstream file(filePath);
     if(!file.is_open() || !file.good())
     {
-        fmt::print(fg(fmt::color::red), "Couldn't open file: {}\n", filePath.string());
+        fmt::print(fg(fmt::color::red), "Couldn't open file: {}\n", filePath);
         return std::nullopt;
     }
 
