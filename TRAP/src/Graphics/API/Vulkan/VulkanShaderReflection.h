@@ -9,7 +9,7 @@ namespace TRAP::Graphics::API
 	/// @param shaderCode SPIRV code.
 	/// @param shaderStage Shader stage of SPIRV code.
 	/// @return Shader reflection.
-	[[nodiscard]] ShaderReflection::ShaderReflection VkCreateShaderReflection(const std::vector<u32>& shaderCode,
+	[[nodiscard]] ShaderReflection::ShaderReflection VkCreateShaderReflection(std::span<const u32> shaderCode,
 	                                                                          RendererAPI::ShaderStage shaderStage);
 }
 

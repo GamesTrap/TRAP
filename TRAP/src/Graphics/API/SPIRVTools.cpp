@@ -3,104 +3,107 @@
 
 #include "RendererAPI.h"
 
-void ReflectBoundResources(spirv_cross::Compiler& compiler,
-	                       const spirv_cross::SmallVector<spirv_cross::Resource>& allResources,
-	                       const std::unordered_set<spirv_cross::VariableID>& usedResources,
-	                       std::vector<TRAP::Graphics::API::SPIRVTools::Resource>& resources,
-	                       usize& currentResource,
-	                       const TRAP::Graphics::API::SPIRVTools::ResourceType SPIRVtype)
+namespace
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	for(const auto& input : allResources)
+	void ReflectBoundResources(const spirv_cross::Compiler& compiler,
+							   const spirv_cross::SmallVector<spirv_cross::Resource>& allResources,
+							   const std::unordered_set<spirv_cross::VariableID>& usedResources,
+							   std::vector<TRAP::Graphics::API::SPIRVTools::Resource>& resources,
+							   usize& currentResource,
+							   const TRAP::Graphics::API::SPIRVTools::ResourceType SPIRVtype)
 	{
-		TRAP::Graphics::API::SPIRVTools::Resource& resource = resources[currentResource++];
+		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-		resource.SPIRVCode.ID = input.id;
-		resource.SPIRVCode.TypeID = input.type_id;
-		resource.SPIRVCode.BaseTypeID = input.base_type_id;
-
-		resource.Type = SPIRVtype;
-
-		resource.IsUsed = (usedResources.contains(resource.SPIRVCode.ID));
-
-		resource.Set = compiler.get_decoration(resource.SPIRVCode.ID, spv::DecorationDescriptorSet);
-		resource.Binding = compiler.get_decoration(resource.SPIRVCode.ID, spv::DecorationBinding);
-
-		const spirv_cross::SPIRType& type = compiler.get_type(resource.SPIRVCode.TypeID);
-
-		//Special case for textureBuffer / imageBuffer
-		//textureBuffer is considered as separate images with dimension buffer in SPIRV but they require a
-		//buffer descriptor of type uniform texel buffer
-		//imageBuffer is considered as storage image with dimension buffer in SPIRV but they require a
-		//buffer descriptor of type storage texel buffer
-		if(type.image.dim == spv::Dim::DimBuffer)
+		for(const auto& input : allResources)
 		{
-			if (SPIRVtype == TRAP::Graphics::API::SPIRVTools::ResourceType::Images)
-				resource.Type = TRAP::Graphics::API::SPIRVTools::ResourceType::UniformTexelBuffers;
-			else if (SPIRVtype == TRAP::Graphics::API::SPIRVTools::ResourceType::StorageImages)
-				resource.Type = TRAP::Graphics::API::SPIRVTools::ResourceType::StorageTexelBuffers;
-		}
+			TRAP::Graphics::API::SPIRVTools::Resource& resource = resources[currentResource++];
 
-		//Set the texture dimensions
-		switch(type.image.dim)
-		{
-		case spv::DimBuffer:
-			resource.Dimension = TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Buffer;
-			break;
+			resource.SPIRVCode.ID = input.id;
+			resource.SPIRVCode.TypeID = input.type_id;
+			resource.SPIRVCode.BaseTypeID = input.base_type_id;
 
-		case spv::Dim1D:
-			resource.Dimension = type.image.arrayed
-				                     ? TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Texture1DArray
-				                     : TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Texture1D;
-			break;
+			resource.Type = SPIRVtype;
 
-		case spv::Dim2D:
-			if (type.image.ms)
+			resource.IsUsed = (usedResources.contains(resource.SPIRVCode.ID));
+
+			resource.Set = compiler.get_decoration(resource.SPIRVCode.ID, spv::DecorationDescriptorSet);
+			resource.Binding = compiler.get_decoration(resource.SPIRVCode.ID, spv::DecorationBinding);
+
+			const spirv_cross::SPIRType& type = compiler.get_type(resource.SPIRVCode.TypeID);
+
+			//Special case for textureBuffer / imageBuffer
+			//textureBuffer is considered as separate images with dimension buffer in SPIRV but they require a
+			//buffer descriptor of type uniform texel buffer
+			//imageBuffer is considered as storage image with dimension buffer in SPIRV but they require a
+			//buffer descriptor of type storage texel buffer
+			if(type.image.dim == spv::Dim::DimBuffer)
+			{
+				if (SPIRVtype == TRAP::Graphics::API::SPIRVTools::ResourceType::Images)
+					resource.Type = TRAP::Graphics::API::SPIRVTools::ResourceType::UniformTexelBuffers;
+				else if (SPIRVtype == TRAP::Graphics::API::SPIRVTools::ResourceType::StorageImages)
+					resource.Type = TRAP::Graphics::API::SPIRVTools::ResourceType::StorageTexelBuffers;
+			}
+
+			//Set the texture dimensions
+			switch(type.image.dim)
+			{
+			case spv::DimBuffer:
+				resource.Dimension = TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Buffer;
+				break;
+
+			case spv::Dim1D:
 				resource.Dimension = type.image.arrayed
-					                     ? TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Texture2DMSArray
-					                     : TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Texture2DMS;
+										? TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Texture1DArray
+										: TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Texture1D;
+				break;
+
+			case spv::Dim2D:
+				if (type.image.ms)
+					resource.Dimension = type.image.arrayed
+											? TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Texture2DMSArray
+											: TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Texture2DMS;
+				else
+					resource.Dimension = type.image.arrayed
+											? TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Texture2DArray
+											: TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Texture2D;
+				break;
+
+			case spv::Dim3D:
+				resource.Dimension = TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Texture3D;
+				break;
+
+			case spv::DimCube:
+				resource.Dimension = type.image.arrayed
+										? TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::TextureCubeArray
+										: TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::TextureCube;
+				break;
+
+			default:
+				resource.Dimension = TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Undefined;
+				break;
+			}
+
+			if (!type.array.empty())
+				resource.Size = type.array[0];
+			//else if(!type.member_types.empty())
+			//	resource.Size = compiler.get_declared_struct_size(type); //Used by UBO creation from Shader
 			else
-				resource.Dimension = type.image.arrayed
-					                     ? TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Texture2DArray
-					                     : TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Texture2D;
-			break;
+				resource.Size = 1;
 
-		case spv::Dim3D:
-			resource.Dimension = TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Texture3D;
-			break;
+			//Use the instance name if there is one
+			std::string name = compiler.get_name(resource.SPIRVCode.ID);
+			if (name.empty())
+				name = input.name;
 
-		case spv::DimCube:
-			resource.Dimension = type.image.arrayed
-				                     ? TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::TextureCubeArray
-				                     : TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::TextureCube;
-			break;
-
-		default:
-			resource.Dimension = TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::Undefined;
-			break;
+			resource.Name = name;
 		}
-
-		if (!type.array.empty())
-			resource.Size = type.array[0];
-		//else if(!type.member_types.empty())
-		//	resource.Size = compiler.get_declared_struct_size(type); //Used by UBO creation from Shader
-		else
-			resource.Size = 1;
-
-		//Use the instance name if there is one
-		std::string name = compiler.get_name(resource.SPIRVCode.ID);
-		if (name.empty())
-			name = input.name;
-
-		resource.Name = name;
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::SPIRVTools::CrossCompiler::CrossCompiler(const u32* const SPIRVBinary, const usize binarySize)
-	: m_compiler(spirv_cross::Compiler(SPIRVBinary, binarySize))
+TRAP::Graphics::API::SPIRVTools::CrossCompiler::CrossCompiler(const std::span<const u32> SPIRVBinary)
+	: m_compiler(spirv_cross::Compiler(SPIRVBinary.data(), SPIRVBinary.size()))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -315,7 +318,7 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderVariables()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::array<u32, 3> TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectComputeShaderWorkGroupSize() const
+[[nodiscard]] std::array<u32, 3> TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetComputeShaderWorkGroupSize() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -326,7 +329,7 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderVariables()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] u32 TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectTessellationControlShaderControlPoint() const
+[[nodiscard]] u32 TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetTessellationControlShaderControlPoint() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 

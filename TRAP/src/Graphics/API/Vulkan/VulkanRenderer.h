@@ -1030,7 +1030,7 @@ namespace TRAP::Graphics::API
 			std::vector<LoadActionType> LoadActionsColor;
 			std::vector<StoreActionType> StoreActionsColor;
 			u32 RenderTargetCount;
-			TRAP::Graphics::RendererAPI::SampleCount SampleCount;
+			TRAP::Graphics::RendererAPI::SampleCount SampleCount = RendererAPI::SampleCount::One;
 			ImageFormat DepthStencilFormat;
 			ImageFormat ShadingRateFormat;
 			LoadActionType LoadActionDepth;

@@ -3,6 +3,7 @@
 
 #include <array>
 #include <cstdint>
+#include <span>
 #include <string>
 #include <vector>
 
@@ -54,9 +55,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 		UniformTexelBuffers,
 		StorageTexelBuffers,
 		AccelerationStructures,
-		CombinedSamplers,
-
-		RESOURCE_TYPE_COUNT
+		CombinedSamplers
 	};
 
 	/// @brief Texture dimension.
@@ -72,9 +71,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 		Texture2DMSArray = 7,
 		Texture3D = 8,
 		TextureCube = 9,
-		TextureCubeArray = 10,
-
-		RESOURCE_TEXTURE_DIMENSION_COUNT = 11
+		TextureCubeArray = 10
 	};
 
 	/// @brief Struct describing a shader resource.
@@ -140,8 +137,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 	public:
 		/// @brief Create a new SPIRV cross compiler instance.
 		/// @param SPIRVBinary SPIRV binary data.
-		/// @param binarySize Size of the SPIRV binary data.
-		CrossCompiler(const u32* SPIRVBinary, usize binarySize);
+		explicit CrossCompiler(std::span<const u32> SPIRVBinary);
 
 		/// @brief Destructor.
 		~CrossCompiler() = default;
@@ -157,12 +153,13 @@ namespace TRAP::Graphics::API::SPIRVTools
 		void ReflectShaderResources();
 		/// @brief Reflect the shaders uniform variables.
 		void ReflectShaderVariables();
-		/// @brief Reflect the compute shader work group size.
+
+		/// @brief Retrieve the compute shader work group size.
 		/// @return Compute shader work group size.
-		[[nodiscard]] std::array<u32, 3> ReflectComputeShaderWorkGroupSize() const;
-		/// @brief Reflect tessellation control shader control point count.
+		[[nodiscard]] std::array<u32, 3> GetComputeShaderWorkGroupSize() const;
+		/// @brief Retrieve tessellation control shader control point count.
 		/// @return Tessellation control shader control point count.
-		[[nodiscard]] u32 ReflectTessellationControlShaderControlPoint() const;
+		[[nodiscard]] u32 GetTessellationControlShaderControlPoint() const;
 
 		/// @brief Retrieve the shader resources.
 		/// @return Shader resources.

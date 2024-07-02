@@ -1844,7 +1844,7 @@ namespace TRAP::Graphics
 			//Number of mip levels
 			u32 MipLevels{};
 			//Multisample anti-aliasing (MSAA)
-			TRAP::Graphics::RendererAPI::SampleCount SampleCount{};
+			TRAP::Graphics::RendererAPI::SampleCount SampleCount = RendererAPI::SampleCount::One;
 			//Internal image format
 			TRAP::Graphics::API::ImageFormat Format{};
 			//What state will the texture get created in
@@ -1880,7 +1880,7 @@ namespace TRAP::Graphics
 			u32 MipLevels = 1;
 			//Number of multisamples per pixel (currently Textures created with Usage TextureUsage::SampledImage
 			//only support One).
-			TRAP::Graphics::RendererAPI::SampleCount SampleCount{};
+			TRAP::Graphics::RendererAPI::SampleCount SampleCount = RendererAPI::SampleCount::One;
 			//The image quality level.
 			//The higher the quality, the lower the performance.
 			//The valid range is between 0 and the value appropriate for SampleCount.
@@ -2293,7 +2293,7 @@ namespace TRAP::Graphics
 			//How many render targets to use
 			u32 RenderTargetCount{};
 			//Sample count to use by render targets
-			TRAP::Graphics::RendererAPI::SampleCount SampleCount{};
+			TRAP::Graphics::RendererAPI::SampleCount SampleCount = RendererAPI::SampleCount::One;
 			//Sample quality to use by render targets (DirectX 12)
 			u32 SampleQuality{};
 			//Depth/Stencil image format to use

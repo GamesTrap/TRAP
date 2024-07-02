@@ -5,86 +5,240 @@
 #include "Graphics/API/ShaderReflection.h"
 #include "Graphics/API/SPIRVTools.h"
 
-constexpr std::array<TRAP::Graphics::RendererAPI::DescriptorType,
-                     std::to_underlying(TRAP::Graphics::API::SPIRVTools::ResourceType::RESOURCE_TYPE_COUNT)> SPIRVToDescriptorType =
+namespace
 {
-	TRAP::Graphics::RendererAPI::DescriptorType::Undefined, TRAP::Graphics::RendererAPI::DescriptorType::Undefined,
-	TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer,
-	TRAP::Graphics::RendererAPI::DescriptorType::RWBuffer, TRAP::Graphics::RendererAPI::DescriptorType::Texture,
-	TRAP::Graphics::RendererAPI::DescriptorType::RWTexture, TRAP::Graphics::RendererAPI::DescriptorType::Sampler,
-	TRAP::Graphics::RendererAPI::DescriptorType::RootConstant,
-	TRAP::Graphics::RendererAPI::DescriptorType::InputAttachment,
-	TRAP::Graphics::RendererAPI::DescriptorType::TexelBuffer,
-	TRAP::Graphics::RendererAPI::DescriptorType::RWTexelBuffer,
-	TRAP::Graphics::RendererAPI::DescriptorType::RayTracing,
-	TRAP::Graphics::RendererAPI::DescriptorType::CombinedImageSampler
-};
+	[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::DescriptorType SPIRVToDescriptorType(const TRAP::Graphics::API::SPIRVTools::ResourceType resourceType)
+	{
+		using namespace TRAP::Graphics;
+		using namespace TRAP::Graphics::API::SPIRVTools;
 
-//-------------------------------------------------------------------------------------------------------------------//
+		switch(resourceType)
+		{
+		case ResourceType::Inputs:
+			return RendererAPI::DescriptorType::Undefined;
 
-constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
-                     std::to_underlying(TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::RESOURCE_TEXTURE_DIMENSION_COUNT)> SPIRVToTextureDimension =
-{
-	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDimUndefined,
-	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDimUndefined,
-	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDim1D,
-	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDim1DArray,
-	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDim2D,
-	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDim2DArray,
-	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDim2DMS,
-	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDim2DMSArray,
-	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDim3D,
-	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDimCube,
-	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDimCubeArray,
-};
+		case ResourceType::Outputs:
+			return RendererAPI::DescriptorType::Undefined;
 
-//-------------------------------------------------------------------------------------------------------------------//
+		case ResourceType::UniformBuffers:
+			return RendererAPI::DescriptorType::UniformBuffer;
 
-[[nodiscard]] constexpr bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& resource,
-                                            const TRAP::Graphics::RendererAPI::ShaderStage currentStage) noexcept
-{
-	bool filter = false;
+		case ResourceType::StorageBuffers:
+			return RendererAPI::DescriptorType::RWBuffer;
 
-	//Check for invalid PushConstant
-	filter = filter || (resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::PushConstant &&
-		                resource.Size > TRAP::Graphics::RendererAPI::GPUSettings.MaxPushConstantSize);
+		case ResourceType::Images:
+			return RendererAPI::DescriptorType::Texture;
 
-	//Remove unused resources
-	filter = filter || (!resource.IsUsed);
+		case ResourceType::StorageImages:
+			return RendererAPI::DescriptorType::RWTexture;
 
-	//Remove stage outputs
-	filter = filter || (resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::Outputs);
+		case ResourceType::Samplers:
+			return RendererAPI::DescriptorType::Sampler;
 
-	//Remove stage inputs that are not on the vertex shader
-	filter = filter || (resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::Inputs &&
-	                    currentStage != TRAP::Graphics::RendererAPI::ShaderStage::Vertex);
+		case ResourceType::PushConstant:
+			return RendererAPI::DescriptorType::RootConstant;
 
-	return filter;
+		case ResourceType::SubpassInputs:
+			return RendererAPI::DescriptorType::InputAttachment;
+
+		case ResourceType::UniformTexelBuffers:
+			return RendererAPI::DescriptorType::TexelBuffer;
+
+		case ResourceType::StorageTexelBuffers:
+			return RendererAPI::DescriptorType::RWTexelBuffer;
+
+		case ResourceType::AccelerationStructures:
+			return RendererAPI::DescriptorType::RayTracing;
+
+		case ResourceType::CombinedSamplers:
+			return RendererAPI::DescriptorType::CombinedImageSampler;
+		}
+
+		TRAP_ASSERT(false, "SPIRVToDescriptorType(): Unknown TRAP::Graphics::API::SPIRVTools::ResourceType!");
+		return RendererAPI::DescriptorType::Undefined;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr TRAP::Graphics::API::ShaderReflection::TextureDimension SPIRVToTextureDimension(const TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension resourceTextureDimension)
+	{
+		using namespace TRAP::Graphics::API::ShaderReflection;
+		using namespace TRAP::Graphics::API::SPIRVTools;
+
+		switch(resourceTextureDimension)
+		{
+		case ResourceTextureDimension::Undefined:
+			return TextureDimension::TextureDimUndefined;
+
+		case ResourceTextureDimension::Buffer:
+			return TextureDimension::TextureDimUndefined;
+
+		case ResourceTextureDimension::Texture1D:
+			return TextureDimension::TextureDim1D;
+
+		case ResourceTextureDimension::Texture1DArray:
+			return TextureDimension::TextureDim1DArray;
+
+		case ResourceTextureDimension::Texture2D:
+			return TextureDimension::TextureDim2D;
+
+		case ResourceTextureDimension::Texture2DArray:
+			return TextureDimension::TextureDim2DArray;
+
+		case ResourceTextureDimension::Texture2DMS:
+			return TextureDimension::TextureDim2DMS;
+
+		case ResourceTextureDimension::Texture2DMSArray:
+			return TextureDimension::TextureDim2DMSArray;
+
+		case ResourceTextureDimension::Texture3D:
+			return TextureDimension::TextureDim3D;
+
+		case ResourceTextureDimension::TextureCube:
+			return TextureDimension::TextureDimCube;
+
+		case ResourceTextureDimension::TextureCubeArray:
+			return TextureDimension::TextureDimCubeArray;
+		}
+
+		TRAP_ASSERT(false, "SPIRVToTextureDimension(): Unknown TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension!");
+		return TextureDimension::TextureDimUndefined;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& resource,
+												const TRAP::Graphics::RendererAPI::ShaderStage currentStage) noexcept
+	{
+		bool filter = false;
+
+		//Check for invalid PushConstant
+		filter |= (resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::PushConstant &&
+				   resource.Size > TRAP::Graphics::RendererAPI::GPUSettings.MaxPushConstantSize);
+
+		//Remove unused resources
+		filter |= !resource.IsUsed;
+
+		//Remove stage outputs
+		filter |= (resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::Outputs);
+
+		//Remove stage inputs that are not on the vertex shader
+		filter |= (resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::Inputs &&
+				   currentStage != TRAP::Graphics::RendererAPI::ShaderStage::Vertex);
+
+		return filter;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr std::vector<TRAP::Graphics::API::ShaderReflection::VertexInput> GetVertexInputs(const std::span<const TRAP::Graphics::API::SPIRVTools::Resource> shaderResources)
+	{
+		std::vector<TRAP::Graphics::API::ShaderReflection::VertexInput> vertexInputs{};
+		vertexInputs.reserve(shaderResources.size());
+
+		for(const auto& resource : shaderResources)
+		{
+			//Filter out what we don't use
+			if(!FilterResource(resource, TRAP::Graphics::RendererAPI::ShaderStage::Vertex) &&
+			   resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::Inputs)
+			{
+				vertexInputs.emplace_back(resource.Size, resource.Name);
+			}
+		}
+
+		vertexInputs.shrink_to_fit();
+
+		return vertexInputs;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr std::vector<TRAP::Graphics::API::ShaderReflection::ShaderResource> GetShaderResources(const TRAP::Graphics::RendererAPI::ShaderStage shaderStage,
+	                                                                                                              const std::span<const TRAP::Graphics::API::SPIRVTools::Resource> shaderResources)
+	{
+		std::vector<TRAP::Graphics::API::ShaderReflection::ShaderResource> resources{};
+		resources.reserve(shaderResources.size());
+
+		for(const TRAP::Graphics::API::SPIRVTools::Resource& resource : shaderResources)
+		{
+			//Filter out what we don't use
+			if(!FilterResource(resource, shaderStage) &&
+			   resource.Type != TRAP::Graphics::API::SPIRVTools::ResourceType::Inputs)
+			{
+				resources.emplace_back(SPIRVToDescriptorType(resource.Type), resource.Set, resource.Binding,
+				                       resource.Size, shaderStage, resource.Name,
+									   SPIRVToTextureDimension(resource.Dimension));
+			}
+		}
+
+		resources.shrink_to_fit();
+
+		return resources;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr std::vector<u32> GetIndexMap(const TRAP::Graphics::RendererAPI::ShaderStage shaderStage,
+	                                                     const std::span<const TRAP::Graphics::API::SPIRVTools::Resource> shaderResources)
+	{
+		std::vector<u32> indexRemap(shaderResources.size(), std::numeric_limits<u32>::max());
+
+		for(usize i = 0, j = 0; i < shaderResources.size(); ++i)
+		{
+			const TRAP::Graphics::API::SPIRVTools::Resource& resource = shaderResources[i];
+
+			//Filter out what we don't use
+			if(!FilterResource(resource, shaderStage) && resource.Type != TRAP::Graphics::API::SPIRVTools::ResourceType::Inputs)
+			{
+				//Set new index
+				indexRemap[i] = NumericCast<u32>(j);
+				++j;
+			}
+		}
+
+		return indexRemap;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr std::vector<TRAP::Graphics::API::ShaderReflection::ShaderVariable> GetShaderVariables(const TRAP::Graphics::RendererAPI::ShaderStage shaderStage,
+	                                                                                                              const std::span<const TRAP::Graphics::API::SPIRVTools::Variable> uniformVariables,
+																												  const std::span<const TRAP::Graphics::API::SPIRVTools::Resource> shaderResources)
+	{
+		const std::vector<u32> indexRemap = GetIndexMap(shaderStage, shaderResources);
+
+		std::vector<TRAP::Graphics::API::ShaderReflection::ShaderVariable> variables{};
+		variables.reserve(uniformVariables.size());
+
+		//Now do variables
+		for(const auto& variable : uniformVariables)
+		{
+			//Check if parent buffer was filtered out
+			const bool parentFiltered = FilterResource(shaderResources[variable.ParentIndex], shaderStage);
+
+			//Filter out what we don't use
+			if(variable.IsUsed && !parentFiltered)
+				variables.emplace_back(indexRemap[variable.ParentIndex], variable.Offset, variable.Size, variable.Name);
+		}
+
+		variables.shrink_to_fit();
+
+		return variables;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkCreateShaderReflection(const std::vector<u32>& shaderCode,
+[[nodiscard]] TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkCreateShaderReflection(const std::span<const u32> shaderCode,
                                                                                                                     const RendererAPI::ShaderStage shaderStage)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	SPIRVTools::CrossCompiler cc(shaderCode.data(), shaderCode.size());
+	SPIRVTools::CrossCompiler cc(shaderCode);
 
 	cc.ReflectEntryPoint();
 	cc.ReflectShaderResources();
 	cc.ReflectShaderVariables();
-
-	ShaderReflection::ShaderReflection out{};
-
-	if (shaderStage == RendererAPI::ShaderStage::Compute)
-		out.NumThreadsPerGroup = cc.ReflectComputeShaderWorkGroupSize();
-	else if (shaderStage == RendererAPI::ShaderStage::TessellationControl)
-		out.NumControlPoint = cc.ReflectTessellationControlShaderControlPoint();
-
-	usize vertexInputCount = 0;
-	usize resourceCount = 0;
-	usize variablesCount = 0;
 
 	for(const auto& resource : cc.GetShaderResources())
 	{
@@ -99,121 +253,22 @@ constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 			TP_ERROR(Log::ShaderSPIRVPrefix, "Found PushConstants with invalid size: ", resource.Size,
 				     " max allowed size: ", RendererAPI::GPUSettings.MaxPushConstantSize, "!");
 		}
-
-		//Filter out what we don't use
-		if(!FilterResource(resource, shaderStage))
-		{
-			if (resource.Type == SPIRVTools::ResourceType::Inputs &&
-			    shaderStage == TRAP::Graphics::RendererAPI::ShaderStage::Vertex)
-				++vertexInputCount;
-			else
-				++resourceCount;
-		}
 	}
 
-	for(const auto& variable : cc.GetUniformVariables())
+	ShaderReflection::ShaderReflection out
 	{
-		//Check if parent buffer was filtered out
-		const bool parentFiltered = FilterResource(cc.GetShaderResources()[variable.ParentIndex], shaderStage);
+		.ShaderStage = shaderStage,
+		.ShaderResources = GetShaderResources(shaderStage, cc.GetShaderResources()),
+		.Variables = GetShaderVariables(shaderStage, cc.GetUniformVariables(), cc.GetShaderResources()),
+		.EntryPoint = cc.GetEntryPoint()
+	};
 
-		//Filter out what we don't use
-		if(variable.IsUsed && !parentFiltered)
-			++variablesCount;
-	}
-
-	out.EntryPoint = cc.GetEntryPoint();
-
-	std::vector<ShaderReflection::VertexInput> vertexInputs{};
-	//Start with the vertex input
-	if(shaderStage == RendererAPI::ShaderStage::Vertex && vertexInputCount > 0)
-	{
-		vertexInputs.resize(vertexInputCount);
-
-		usize j = 0;
-		for(const auto& resource : cc.GetShaderResources())
-		{
-			//Filter out what we don't use
-			if(!FilterResource(resource, shaderStage) &&
-			   resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::Inputs)
-			{
-				vertexInputs[j].Size = resource.Size;
-				vertexInputs[j].Name = resource.Name;
-
-				++j;
-			}
-		}
-	}
-
-	std::vector<u32> indexRemap{};
-	std::vector<ShaderReflection::ShaderResource> resources{};
-	//Continue with resources
-	if(resourceCount != 0u)
-	{
-		indexRemap.resize(cc.GetShaderResources().size());
-		resources.resize(resourceCount);
-
-		usize j = 0;
-		for(usize i = 0; i < cc.GetShaderResources().size(); ++i)
-		{
-			//Set index remap
-			indexRemap[i] = std::numeric_limits<u32>::max();
-
-			const SPIRVTools::Resource& resource = cc.GetShaderResources()[i];
-
-			//Filter out what we don't use
-			if(!FilterResource(resource, shaderStage) && resource.Type != SPIRVTools::ResourceType::Inputs)
-			{
-				//Set new index
-				indexRemap[i] = NumericCast<u32>(j);
-
-				resources[j].Type = SPIRVToDescriptorType[std::to_underlying(resource.Type)];
-				resources[j].Set = resource.Set;
-				resources[j].Reg = resource.Binding;
-				resources[j].Size = resource.Size;
-				resources[j].UsedStages = shaderStage;
-
-				resources[j].Name = resource.Name;
-				resources[j].Dim = SPIRVToTextureDimension[std::to_underlying(resource.Dimension)];
-
-				++j;
-			}
-		}
-	}
-
-	std::vector<ShaderReflection::ShaderVariable> variables{};
-	//Now do variables
-	if(variablesCount != 0u)
-	{
-		variables.resize(variablesCount);
-
-		usize j = 0;
-		for(const auto& variable : cc.GetUniformVariables())
-		{
-			//Check if parent buffer was filtered out
-			const bool parentFiltered = FilterResource(cc.GetShaderResources()[variable.ParentIndex], shaderStage);
-
-			//Filter out what we don't use
-			if(variable.IsUsed && !parentFiltered)
-			{
-				variables[j].Offset = variable.Offset;
-				variables[j].Size = variable.Size;
-				variables[j].ParentIndex = indexRemap[variable.ParentIndex];
-
-				variables[j].Name = variable.Name;
-
-				++j;
-			}
-		}
-	}
-
-	indexRemap.clear();
-
-	//All reflection struct should be built now
-	out.ShaderStage = shaderStage;
-
-	out.VertexInputs = vertexInputs;
-	out.ShaderResources = resources;
-	out.Variables = variables;
+	if(shaderStage == RendererAPI::ShaderStage::Vertex)
+		out.VertexInputs = GetVertexInputs(cc.GetShaderResources());
+	else if (shaderStage == RendererAPI::ShaderStage::Compute)
+		out.NumThreadsPerGroup = cc.GetComputeShaderWorkGroupSize();
+	else if (shaderStage == RendererAPI::ShaderStage::TessellationControl)
+		out.NumControlPoint = cc.GetTessellationControlShaderControlPoint();
 
 	return out;
 }

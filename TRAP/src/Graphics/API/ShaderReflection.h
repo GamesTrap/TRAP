@@ -90,17 +90,17 @@ namespace TRAP::Graphics::API::ShaderReflection
 	{
 		RendererAPI::ShaderStage ShaderStage;
 
-		std::vector<VertexInput> VertexInputs;
+		std::vector<VertexInput> VertexInputs{};
 
-		std::vector<ShaderResource> ShaderResources;
+		std::vector<ShaderResource> ShaderResources{};
 
-		std::vector<ShaderVariable> Variables;
+		std::vector<ShaderVariable> Variables{};
 
 		//Thread group size for compute shader
 		std::array<u32, 3> NumThreadsPerGroup{};
 
 		//Number of tessellation control points
-		u32 NumControlPoint{};
+		u32 NumControlPoint = 0;
 
 		std::string EntryPoint;
 	};
