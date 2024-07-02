@@ -289,8 +289,6 @@ namespace
 				outColorStoreActions[i] = RendererAPI::StoreActionType::DontCare;
 			else if(loadActions != nullptr && loadActions->StoreActionsColor.size() > i)
 				outColorStoreActions[i] = loadActions->StoreActionsColor[i];
-			else
-				outColorStoreActions[i] = RendererAPI::StoreActionType::DontCare;
 
 			const std::array<u32, 4> hashValues =
 			{

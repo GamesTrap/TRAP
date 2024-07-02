@@ -5101,3 +5101,7 @@ SITREP 07/02/2024|24w27a1
     - Changed fmt submodule to tag 11.0.0 ~<15 mins
     - MSVC enabled /utf-8 compiler option ~<5 mins
     - MSVC disabled warnings from /utf-8 compiler option for third party dependencies ~<10 mins
+
+SITREP 07/03/2024|24w27a2
+    - Changed TRAP Engine version to 24w27a2(0.10.85)
+    - VulkanCommandBuffer use store color action when not otherwise specified (fixes regression on NVIDIA GPUs) ~<10 mins
