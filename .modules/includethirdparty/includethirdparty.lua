@@ -43,6 +43,9 @@ function m.IncludeDiscordGameSDK()
             "DiscordGameSDK"
         }
 
+    filter {"toolset:msc-v143"}
+        disablewarnings "4828"
+
     filter {}
 
     defines "USE_DISCORD_GAME_SDK"
@@ -88,6 +91,9 @@ function m.IncludeNsightAftermathSDK()
     filter {"system:linux", "kind:ConsoleApp or WindowedApp"}
         postbuildcommands "{COPYFILE} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/libGFSDK_Aftermath_Lib.x64.so %{cfg.targetdir}"
 
+    filter {"toolset:msc-v143"}
+        disablewarnings "4828"
+
     filter {}
 
     return true
@@ -124,6 +130,9 @@ function m.IncludeSteamworksSDK()
         libdirs "%{IncludeDir.STEAMWORKSSDK}/../../redistributable_bin/linux64"
         postbuildcommands "{COPYFILE} %{IncludeDir.STEAMWORKSSDK}/../../redistributable_bin/linux64/libsteam_api.so %{cfg.targetdir}"
 
+    filter {"toolset:msc-v143"}
+        disablewarnings "4828"
+
     filter {}
     externalincludedirs "%{IncludeDir.STEAMWORKSSDK}"
     defines "USE_STEAMWORKS_SDK"
@@ -157,6 +166,9 @@ function m.IncludeNVIDIAReflexSDK()
         filter {"system:windows", "kind:ConsoleApp or WindowedApp"}
             links "%{IncludeDir.NVIDIAREFLEX}/../lib/NvLowLatencyVk.lib"
             postbuildcommands "{COPYDIR} %{IncludeDir.NVIDIAREFLEX}/../lib/NvLowLatencyVk.dll %{cfg.targetdir}"
+
+        filter {"toolset:msc-v143"}
+            disablewarnings "4828"
 
         filter {}
 

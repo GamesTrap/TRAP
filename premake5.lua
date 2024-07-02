@@ -214,6 +214,9 @@ workspace "TRAP"
 	filter { "toolset:clang"}
 		buildoptions "-fcolor-diagnostics"
 
+	filter { "language:C or C++", "toolset:msc-v143"}
+		buildoptions "/utf-8"
+
 --Include directories relative to root folder(solution folder)
 IncludeDir = {}
 IncludeDir["IMGUI"] = "%{wks.location}/Dependencies/ImGui"
