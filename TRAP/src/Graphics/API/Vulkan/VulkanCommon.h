@@ -1523,51 +1523,6 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 	case VK_FORMAT_G16_B16R16_2PLANE_420_UNORM: return ImageFormat::G16_B16R16_2PLANE_420_UNORM;
 	case VK_FORMAT_G16_B16R16_2PLANE_422_UNORM: return ImageFormat::G16_B16R16_2PLANE_422_UNORM;
 
-	case VK_FORMAT_A8B8G8R8_UNORM_PACK32: [[fallthrough]];
-	case VK_FORMAT_R8_USCALED: [[fallthrough]];
-	case VK_FORMAT_R8_SSCALED: [[fallthrough]];
-	case VK_FORMAT_R8G8_USCALED: [[fallthrough]];
-	case VK_FORMAT_R8G8_SSCALED: [[fallthrough]];
-	case VK_FORMAT_R8G8B8_USCALED: [[fallthrough]];
-	case VK_FORMAT_R8G8B8_SSCALED: [[fallthrough]];
-	case VK_FORMAT_B8G8R8_USCALED: [[fallthrough]];
-	case VK_FORMAT_B8G8R8_SSCALED: [[fallthrough]];
-	case VK_FORMAT_R8G8B8A8_USCALED: [[fallthrough]];
-	case VK_FORMAT_R8G8B8A8_SSCALED: [[fallthrough]];
-	case VK_FORMAT_B8G8R8A8_USCALED: [[fallthrough]];
-	case VK_FORMAT_B8G8R8A8_SSCALED: [[fallthrough]];
-	case VK_FORMAT_A8B8G8R8_SNORM_PACK32: [[fallthrough]];
-	case VK_FORMAT_A8B8G8R8_USCALED_PACK32: [[fallthrough]];
-	case VK_FORMAT_A8B8G8R8_SSCALED_PACK32: [[fallthrough]];
-	case VK_FORMAT_A8B8G8R8_UINT_PACK32: [[fallthrough]];
-	case VK_FORMAT_A8B8G8R8_SINT_PACK32: [[fallthrough]];
-	case VK_FORMAT_A8B8G8R8_SRGB_PACK32: [[fallthrough]];
-	case VK_FORMAT_A2R10G10B10_SNORM_PACK32: [[fallthrough]];
-	case VK_FORMAT_A2R10G10B10_USCALED_PACK32: [[fallthrough]];
-	case VK_FORMAT_A2R10G10B10_SSCALED_PACK32: [[fallthrough]];
-	case VK_FORMAT_A2R10G10B10_SINT_PACK32: [[fallthrough]];
-	case VK_FORMAT_A2B10G10R10_SNORM_PACK32: [[fallthrough]];
-	case VK_FORMAT_A2B10G10R10_USCALED_PACK32: [[fallthrough]];
-	case VK_FORMAT_A2B10G10R10_SSCALED_PACK32: [[fallthrough]];
-	case VK_FORMAT_A2B10G10R10_SINT_PACK32: [[fallthrough]];
-	case VK_FORMAT_R16_USCALED: [[fallthrough]];
-	case VK_FORMAT_R16_SSCALED: [[fallthrough]];
-	case VK_FORMAT_R16G16_USCALED: [[fallthrough]];
-	case VK_FORMAT_R16G16_SSCALED: [[fallthrough]];
-	case VK_FORMAT_R16G16B16_USCALED: [[fallthrough]];
-	case VK_FORMAT_R16G16B16_SSCALED: [[fallthrough]];
-	case VK_FORMAT_R16G16B16A16_USCALED: [[fallthrough]];
-	case VK_FORMAT_R16G16B16A16_SSCALED: [[fallthrough]];
-	case VK_FORMAT_R10X6_UNORM_PACK16: [[fallthrough]];
-	case VK_FORMAT_R10X6G10X6_UNORM_2PACK16: [[fallthrough]];
-	case VK_FORMAT_R12X4_UNORM_PACK16: [[fallthrough]];
-	case VK_FORMAT_R12X4G12X4_UNORM_2PACK16: //[[fallthrough]];
-	// case VK_FORMAT_PVRTC2_2BPP_UNORM_BLOCK_IMG: [[fallthrough]];
-	// case VK_FORMAT_PVRTC2_4BPP_UNORM_BLOCK_IMG: [[fallthrough]];
-	// case VK_FORMAT_PVRTC2_2BPP_SRGB_BLOCK_IMG: [[fallthrough]];
-	// case VK_FORMAT_PVRTC2_4BPP_SRGB_BLOCK_IMG:
-		return ImageFormat::Undefined;
-
 	default:
 		return TRAP::Graphics::API::ImageFormat::Undefined;
 	}

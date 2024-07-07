@@ -43,14 +43,31 @@ namespace
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// @brief Retrieve the subresource alignment for textures used by the GPU.
-	/// @param fmt Format of the texture. Default: ImageFormat::Undefined.
+	/// @param fmt Format of the texture.
 	/// @return Subresource alignment used by the GPU.
-	[[nodiscard]] u32 UtilGetTextureSubresourceAlignment(const TRAP::Graphics::API::ImageFormat fmt = TRAP::Graphics::API::ImageFormat::Undefined) noexcept
+	[[nodiscard]] u32 UtilGetTextureSubresourceAlignment(const TRAP::Graphics::API::ImageFormat fmt) noexcept
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 											   (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 		const u32 blockSize = TRAP::Math::Max(1u, TRAP::Graphics::API::ImageFormatBitSizeOfBlock(fmt) >> 3u);
+		const u32 alignment = ((TRAP::Graphics::RendererAPI::GPUSettings.UploadBufferTextureAlignment + blockSize - 1) /
+							   blockSize) * blockSize;
+
+		const u32 rowAlignment = UtilGetTextureRowAlignment();
+		return ((alignment + rowAlignment - 1) / rowAlignment) * rowAlignment;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// @brief Retrieve the subresource alignment for textures used by the GPU.
+	/// @return Subresource alignment used by the GPU.
+	[[nodiscard]] u32 UtilGetTextureSubresourceAlignment() noexcept
+	{
+		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
+											   (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
+		static constexpr u32 blockSize = 1u;
 		const u32 alignment = ((TRAP::Graphics::RendererAPI::GPUSettings.UploadBufferTextureAlignment + blockSize - 1) /
 							   blockSize) * blockSize;
 
