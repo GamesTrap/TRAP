@@ -24,6 +24,13 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::VertexBuffer::VertexBuffer(const TRAP::Ref<TRAP::Graphics::Buffer>& vertexBuffer, API::SyncToken syncToken) noexcept
+	: m_vertexBuffer(vertexBuffer), m_token(syncToken)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] u64 TRAP::Graphics::VertexBuffer::GetSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
@@ -113,22 +120,26 @@ void TRAP::Graphics::VertexBuffer::AwaitLoading() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	TRAP::Scope<VertexBuffer> buffer = TRAP::Scope<VertexBuffer>(new VertexBuffer());
+	const RendererAPI::BufferDesc bufferDesc
+	{
+		.Size = size,
+		.MemoryUsage = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
+	                                                                  RendererAPI::ResourceMemoryUsage::CPUToGPU,
+		.Flags = (updateFrequency != UpdateFrequency::Static) ? RendererAPI::BufferCreationFlags::PersistentMap :
+	                                                            RendererAPI::BufferCreationFlags::None,
+		.ElementCount = size / sizeof(f32),
+		.StructStride = sizeof(f32),
+		.Descriptors = RendererAPI::DescriptorType::VertexBuffer
+	};
 
-	RendererAPI::BufferLoadDesc desc{};
-	desc.Desc.MemoryUsage = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
-	                                                                       RendererAPI::ResourceMemoryUsage::CPUToGPU;
-	desc.Desc.Descriptors = RendererAPI::DescriptorType::VertexBuffer;
-	desc.Desc.Size = size;
-	desc.Desc.StructStride = sizeof(f32);
-	desc.Desc.ElementCount = size / desc.Desc.StructStride;
-	desc.Desc.Flags = (updateFrequency != UpdateFrequency::Static) ? RendererAPI::BufferCreationFlags::PersistentMap :
-	                                                                 RendererAPI::BufferCreationFlags::None;
-	desc.Data = vertices;
+	RendererAPI::BufferLoadDesc desc
+	{
+		.Data = vertices,
+		.Desc = bufferDesc
+	};
 
-	RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_token);
+	API::SyncToken syncToken{};
+	RendererAPI::GetResourceLoader()->AddResource(desc, &syncToken);
 
-	buffer->m_vertexBuffer = desc.Buffer;
-
-	return buffer;
+	return TRAP::Scope<VertexBuffer>(new VertexBuffer(desc.Buffer, syncToken));
 }

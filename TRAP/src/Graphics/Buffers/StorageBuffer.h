@@ -6,25 +6,21 @@
 #include "Graphics/RenderCommand.h"
 #include "Application.h"
 
-namespace TRAP
-{
-	class Window;
-}
-
 namespace TRAP::Graphics
 {
 	class StorageBuffer
 	{
 	protected:
 		/// @brief Constructor.
-		/// @param updateFrequency Update frequency for the storage buffer.
-		constexpr explicit StorageBuffer(RendererAPI::DescriptorUpdateFrequency updateFrequency);
+		/// @param storageBuffers Internal storage buffer objects.
+		/// @param syncTokens Synchronization tokens.
+		constexpr StorageBuffer(const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& storageBuffers, const std::vector<API::SyncToken>& syncTokens);
+
+	public:
 		/// @brief Move constructor.
 		constexpr StorageBuffer(StorageBuffer&&) noexcept = default;
 		/// @brief Move assignment operator.
 		constexpr StorageBuffer& operator=(StorageBuffer&&) noexcept = default;
-
-	public:
 		/// @brief Copy constructor.
 		consteval StorageBuffer(const StorageBuffer&) noexcept = delete;
 		/// @brief Copy assignment operator.
@@ -56,7 +52,7 @@ namespace TRAP::Graphics
 		/// @param window Window to use for the data retrieval. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
 		void GetData(const auto* data, u64 size, u64 offset = 0,
-		             const Window* window = TRAP::Application::GetWindow());
+		             const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Retrieve data of the SSBO.
 		/// @param data Pointer to store data in.
@@ -106,9 +102,9 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::StorageBuffer::StorageBuffer(const RendererAPI::DescriptorUpdateFrequency updateFrequency)
-	: m_storageBuffers(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount),
-	  m_tokens(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount)
+constexpr TRAP::Graphics::StorageBuffer::StorageBuffer(const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& storageBuffers,
+                                                       const std::vector<API::SyncToken>& syncTokens)
+	: m_storageBuffers(storageBuffers), m_tokens(syncTokens)
 {
 }
 
@@ -122,17 +118,16 @@ constexpr TRAP::Graphics::StorageBuffer::StorageBuffer(const RendererAPI::Descri
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-inline void TRAP::Graphics::StorageBuffer::GetData(const auto* const data, const u64 size, const u64 offset, const Window* const window)
+inline void TRAP::Graphics::StorageBuffer::GetData(const auto* const data, const u64 size, const u64 offset, const Window& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize(), "StorageBuffer::GetData(): Out of bounds!");
-	TRAP_ASSERT(window, "StorageBuffer::GetData(): Window is nullptr");
 
 	RendererAPI::BufferUpdateDesc desc{};
 	const u32 imageIndex = GetUpdateFrequency() ==
 								RendererAPI::DescriptorUpdateFrequency::Static ?
-									0 : RendererAPI::GetCurrentImageIndex(*window);
+									0 : RendererAPI::GetCurrentImageIndex(window);
 	desc.Buffer = m_storageBuffers[imageIndex];
 	desc.DstOffset = offset;
 	API::ResourceLoader::BeginUpdateResource(desc);
@@ -184,25 +179,32 @@ template<typename T>
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	TRAP::Scope<StorageBuffer> buffer = TRAP::Scope<StorageBuffer>(new StorageBuffer(updateFrequency));
-
-	RendererAPI::BufferLoadDesc desc{};
-	desc.Desc.MemoryUsage = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
-	                                                                     RendererAPI::ResourceMemoryUsage::CPUToGPU;
-	desc.Desc.Flags = RendererAPI::BufferCreationFlags::PersistentMap;
-	desc.Desc.Descriptors = RendererAPI::DescriptorType::RWBuffer;
-	desc.Desc.Size = size;
-	desc.Desc.StructStride = sizeof(T);
-	desc.Desc.ElementCount = desc.Desc.Size / desc.Desc.StructStride;
-	desc.Data = data;
-
-	for(usize i = 0; i < buffer->m_storageBuffers.size(); ++i)
+	const RendererAPI::BufferDesc bufferDesc
 	{
-		RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_tokens[i]);
-		buffer->m_storageBuffers[i] = desc.Buffer;
+		.Size = size,
+		.MemoryUsage = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
+	                                                                  RendererAPI::ResourceMemoryUsage::CPUToGPU,
+		.Flags = RendererAPI::BufferCreationFlags::PersistentMap,
+		.ElementCount = size / sizeof(T),
+		.StructStride = sizeof(T),
+		.Descriptors = RendererAPI::DescriptorType::RWBuffer
+	};
+
+	RendererAPI::BufferLoadDesc desc
+	{
+		.Data = data,
+		.Desc = bufferDesc
+	};
+
+	std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> storageBuffers((updateFrequency == UpdateFrequency::Static) ? 1 : RendererAPI::ImageCount);
+	std::vector<API::SyncToken> syncTokens(storageBuffers.size());
+	for(u32 i = 0; i < storageBuffers.size(); ++i)
+	{
+		RendererAPI::GetResourceLoader()->AddResource(desc, &syncTokens[i]);
+		storageBuffers[i] = desc.Buffer;
 	}
 
-	return buffer;
+	return TRAP::Scope<StorageBuffer>(new StorageBuffer(storageBuffers, syncTokens));
 }
 
 #endif /*TRAP_STORAGEBUFFER_H*/

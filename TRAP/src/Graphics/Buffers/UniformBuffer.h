@@ -4,25 +4,21 @@
 #include "Graphics/API/ResourceLoader.h"
 #include "Graphics/RenderCommand.h"
 
-namespace TRAP
-{
-	class Window;
-}
-
 namespace TRAP::Graphics
 {
 	class UniformBuffer
 	{
 	protected:
 		/// @brief Constructor.
-		/// @param updateFrequency Update frequency of the uniform buffer.
-		constexpr explicit UniformBuffer(RendererAPI::DescriptorUpdateFrequency updateFrequency);
+		/// @param storageBuffers Internal uniform buffer objects.
+		/// @param syncTokens Synchronization tokens.
+		constexpr UniformBuffer(const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& uniformBuffers, const std::vector<API::SyncToken>& syncTokens);
+
+	public:
 		/// @brief Move constructor.
 		constexpr UniformBuffer(UniformBuffer&&) noexcept = default;
 		/// @brief Move assignment operator.
 		constexpr UniformBuffer& operator=(UniformBuffer&&) noexcept = default;
-
-	public:
 		/// @brief Copy constructor.
 		consteval UniformBuffer(const UniformBuffer&) noexcept = delete;
 		/// @brief Copy assignment operator.
@@ -87,9 +83,9 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::UniformBuffer::UniformBuffer(const RendererAPI::DescriptorUpdateFrequency updateFrequency)
-	: m_uniformBuffers(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount),
-	  m_tokens(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount)
+constexpr TRAP::Graphics::UniformBuffer::UniformBuffer(const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& uniformBuffers,
+                                                       const std::vector<API::SyncToken>& syncTokens)
+	: m_uniformBuffers(uniformBuffers), m_tokens(syncTokens)
 {
 }
 
@@ -127,26 +123,33 @@ template<typename T>
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer(updateFrequency));
-
-	RendererAPI::BufferLoadDesc desc{};
-	desc.Desc.MemoryUsage = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
-	                                                                     RendererAPI::ResourceMemoryUsage::CPUToGPU;
-	desc.Desc.Flags = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::BufferCreationFlags::None :
-																   RendererAPI::BufferCreationFlags::PersistentMap;
-	desc.Desc.Descriptors = RendererAPI::DescriptorType::UniformBuffer;
-	desc.Desc.Size = size;
-	desc.Desc.StructStride = sizeof(T);
-	desc.Desc.ElementCount = desc.Desc.Size / desc.Desc.StructStride;
-	desc.Data = data;
-
-	for(usize i = 0; i < buffer->m_uniformBuffers.size(); ++i)
+	const RendererAPI::BufferDesc bufferDesc
 	{
-		RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_tokens[i]);
-		buffer->m_uniformBuffers[i] = desc.Buffer;
+		.Size = size,
+		.MemoryUsage = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
+	                                                                  RendererAPI::ResourceMemoryUsage::CPUToGPU,
+		.Flags = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::BufferCreationFlags::None :
+																RendererAPI::BufferCreationFlags::PersistentMap,
+		.ElementCount = size / sizeof(T),
+		.StructStride = sizeof(T),
+		.Descriptors = RendererAPI::DescriptorType::UniformBuffer
+	};
+
+	RendererAPI::BufferLoadDesc desc
+	{
+		.Data = data,
+		.Desc = bufferDesc
+	};
+
+	std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> uniformBuffers((updateFrequency == UpdateFrequency::Static) ? 1 : RendererAPI::ImageCount);
+	std::vector<API::SyncToken> syncTokens(uniformBuffers.size());
+	for(u32 i = 0; i < uniformBuffers.size(); ++i)
+	{
+		RendererAPI::GetResourceLoader()->AddResource(desc, &syncTokens[i]);
+		uniformBuffers[i] = desc.Buffer;
 	}
 
-	return buffer;
+	return TRAP::Scope<UniformBuffer>(new UniformBuffer(uniformBuffers, syncTokens));
 }
 
 #endif /*TRAP_UNIFORMBUFFER_H*/

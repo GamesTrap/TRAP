@@ -14,13 +14,15 @@ namespace TRAP::Graphics
 	{
 	protected:
 		/// @brief Constructor.
-		constexpr VertexBuffer() noexcept = default;
+		/// @param vertexBuffer Internal vertex buffer object.
+		/// @param syncToken Synchronization token.
+		VertexBuffer(const TRAP::Ref<TRAP::Graphics::Buffer>& vertexBuffer, API::SyncToken syncToken) noexcept;
+
+	public:
 		/// @brief Move constructor.
 		VertexBuffer(VertexBuffer&&) noexcept = default;
 		/// @brief Move assignment operator.
 		VertexBuffer& operator=(VertexBuffer&&) noexcept = default;
-
-	public:
 		/// @brief Copy constructor.
 		consteval VertexBuffer(const VertexBuffer&) noexcept = delete;
 		/// @brief Copy assignment operator.

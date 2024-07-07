@@ -2713,14 +2713,14 @@ namespace TRAP::Graphics
 		struct BufferLoadDesc
 		{
 			//Output buffer with uploaded data.
-			TRAP::Ref<TRAP::Graphics::Buffer> Buffer;
+			TRAP::Ref<TRAP::Graphics::Buffer> Buffer = nullptr;
 			//Data to upload
-			const void* Data;
+			const void* Data = nullptr;
 			//Description for the buffer
-			BufferDesc Desc;
+			BufferDesc Desc{};
 
 			//Force Reset Buffer to 0
-			bool ForceReset;
+			bool ForceReset = false;
 		};
 
 		/// @brief Description for a buffer update.

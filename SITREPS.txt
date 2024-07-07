@@ -5109,3 +5109,4 @@ SITREP 07/03/2024|24w27a2
 SITREP 07/03/2024|24w27a3
     - Changed TRAP Engine version to 24w27a2(0.10.86)
     - ShaderReflection Refactored various functions ~<45 mins
+    - VertexBuffer/IndexBuffer/UniformBuffer/StorageBuffer Refactored various functions ~<45 mins

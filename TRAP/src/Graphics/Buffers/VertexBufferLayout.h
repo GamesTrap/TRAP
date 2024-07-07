@@ -17,7 +17,7 @@ namespace TRAP::Graphics
 	/// @brief Retrieve the byte size of a given shader data type.
 	/// @param type Shader data type.
 	/// @return Byte size of the shader data type.
-	[[nodiscard]] u32 ShaderDataTypeSize(ShaderDataType type);
+	[[nodiscard]] constexpr u32 ShaderDataTypeSize(ShaderDataType type);
 
 	/// @brief Struct used to describe a single vertex attribute.
 	struct VertexBufferElement
@@ -33,23 +33,23 @@ namespace TRAP::Graphics
 		/// @param type Shader data type.
 		/// @param name Name of the vertex attribute.
 		/// @param normalized Whether data is normalized.
-		VertexBufferElement(ShaderDataType type, std::string name, bool normalized = false) noexcept;
+		constexpr VertexBufferElement(ShaderDataType type, std::string name, bool normalized = false) noexcept;
 
 		/// @brief Copy constructor.
 		constexpr VertexBufferElement(const VertexBufferElement&) = default;
 		/// @brief Copy assignment operator.
-		VertexBufferElement& operator=(const VertexBufferElement&) = default;
+		constexpr VertexBufferElement& operator=(const VertexBufferElement&) = default;
 		/// @brief Move constructor
 		constexpr VertexBufferElement(VertexBufferElement&&) noexcept= default;
 		/// @brief Move assignment operator.
-		VertexBufferElement& operator=(VertexBufferElement&&) noexcept = default;
+		constexpr VertexBufferElement& operator=(VertexBufferElement&&) noexcept = default;
 
 		/// @brief Destructor.
 		constexpr ~VertexBufferElement() = default;
 
 		/// @brief Retrieve the component count of this vertex attribute.
 		/// @return Component count of this vertex attribute.
-		[[nodiscard]] u32 GetComponentCount() const;
+		[[nodiscard]] constexpr u32 GetComponentCount() const;
 	};
 
 	/// @brief Describes a vertex buffer layout.
@@ -110,6 +110,66 @@ namespace TRAP::Graphics
 		std::vector<VertexBufferElement> m_elements;
 		u32 m_stride = 0;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr u32 TRAP::Graphics::ShaderDataTypeSize(const ShaderDataType type)
+{
+	switch (type)
+	{
+	case ShaderDataType::Float:  return 4;
+	case ShaderDataType::Float2: return 4 * 2;
+	case ShaderDataType::Float3: return 4 * 3;
+	case ShaderDataType::Float4: return 4 * 4;
+
+	case ShaderDataType::Int:    return 4;
+	case ShaderDataType::Int2:   return 4 * 2;
+	case ShaderDataType::Int3:   return 4 * 3;
+	case ShaderDataType::Int4:   return 4 * 4;
+
+	case ShaderDataType::UInt:    return 4;
+	case ShaderDataType::UInt2:   return 4 * 2;
+	case ShaderDataType::UInt3:   return 4 * 3;
+	case ShaderDataType::UInt4:   return 4 * 4;
+	}
+
+	TRAP_ASSERT(false, "ShaderDataTypeSize(): Unknown shader data type!");
+	return 0;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::VertexBufferElement::VertexBufferElement(const ShaderDataType type, std::string name,
+                                                                   const bool normalized) noexcept
+	: Name(std::move(name)), Type(type), Size(ShaderDataTypeSize(type)), Normalized(normalized)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr u32 TRAP::Graphics::VertexBufferElement::GetComponentCount() const
+{
+	switch (Type)
+	{
+	case ShaderDataType::Float:   return 1;
+	case ShaderDataType::Float2:  return 2;
+	case ShaderDataType::Float3:  return 3;
+	case ShaderDataType::Float4:  return 4;
+
+	case ShaderDataType::Int:     return 1;
+	case ShaderDataType::Int2:    return 2;
+	case ShaderDataType::Int3:    return 3;
+	case ShaderDataType::Int4:    return 4;
+
+	case ShaderDataType::UInt:     return 1;
+	case ShaderDataType::UInt2:    return 2;
+	case ShaderDataType::UInt3:    return 3;
+	case ShaderDataType::UInt4:    return 4;
+	}
+
+	TRAP_ASSERT(false, "VertexBufferElement::GetComponentCount(): Unknown/Invalid shader data type!");
+	return 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
