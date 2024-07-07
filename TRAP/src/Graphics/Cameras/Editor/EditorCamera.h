@@ -27,7 +27,6 @@ namespace TRAP::Graphics
         /// @brief Camera modes.
         enum class CameraMode
         {
-            None,
             FlyCam,
             ArcBall
         };

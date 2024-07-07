@@ -10,11 +10,11 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	if (m_useController)
+	if (m_controller)
 	{
-		if (Input::IsControllerConnected(m_controller)) //Controller
+		if (Input::IsControllerConnected(*m_controller)) //Controller
 		{
-			const f32 leftXAxis = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Left_X);
+			const f32 leftXAxis = Input::GetControllerAxis(*m_controller, Input::ControllerAxis::Left_X);
 			if (leftXAxis < -0.1f || leftXAxis > 0.1f) //Dead zone
 			{
 				m_cameraPosition.x() += leftXAxis * Math::Cos(Math::Radians(m_cameraRotation.z())) *
@@ -22,7 +22,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 				m_cameraPosition.y() += leftXAxis * Math::Sin(Math::Radians(m_cameraRotation.z())) *
 				                      m_cameraTranslationSpeed * deltaTime;
 			}
-			const f32 leftYAxis = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Left_Y);
+			const f32 leftYAxis = Input::GetControllerAxis(*m_controller, Input::ControllerAxis::Left_Y);
 			if (leftYAxis < -0.1f || leftYAxis > 0.1f) //Dead zone
 			{
 				m_cameraPosition.x() -= leftYAxis * -Math::Sin(Math::Radians(m_cameraRotation.z())) *
@@ -31,7 +31,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 				                      m_cameraTranslationSpeed * deltaTime;
 			}
 
-			const f32 rightTrigger = (Input::GetControllerAxis(m_controller, Input::ControllerAxis::Right_Trigger) +
+			const f32 rightTrigger = (Input::GetControllerAxis(*m_controller, Input::ControllerAxis::Right_Trigger) +
 			                            1) / 2;
 			if (rightTrigger > 0.0f)
 			{
@@ -41,7 +41,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 				m_camera.SetProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel,
 				                       m_zoomLevel, 1.0f, -1.0f);
 			}
-			const f32 leftTrigger = (Input::GetControllerAxis(m_controller, Input::ControllerAxis::Left_Trigger) +
+			const f32 leftTrigger = (Input::GetControllerAxis(*m_controller, Input::ControllerAxis::Left_Trigger) +
 			                           1) / 2;
 			if (leftTrigger > 0.0f)
 			{
@@ -54,7 +54,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 
 			if (m_rotation)
 			{
-				const f32 rightXAxis = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Right_X);
+				const f32 rightXAxis = Input::GetControllerAxis(*m_controller, Input::ControllerAxis::Right_X);
 				if (rightXAxis < -0.1f || rightXAxis > 0.1f) //Dead zone
 					m_cameraRotation.z() += rightXAxis * m_cameraRotationSpeed * deltaTime;
 			}
@@ -120,7 +120,7 @@ void TRAP::Graphics::OrthographicCameraController::OnEvent(Events::Event& e)
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	Events::EventDispatcher dispatcher(e);
+	const Events::EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<Events::MouseScrollEvent>(std::bind_front(&OrthographicCameraController::OnMouseScroll, this));
 	dispatcher.Dispatch<Events::FrameBufferResizeEvent>(std::bind_front(&OrthographicCameraController::OnFrameBufferResize, this));
 }

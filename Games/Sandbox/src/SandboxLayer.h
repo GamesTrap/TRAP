@@ -241,7 +241,7 @@ private:
 	bool m_wireFrame = false;
 	bool m_indexedDrawing = false;
 
-	TRAP::Graphics::OrthographicCameraController m_cameraController{TRAP::Application::GetWindow()->GetAspectRatio()};
+	TRAP::Graphics::OrthographicCameraController m_cameraController{TRAP::Application::GetWindow()->GetAspectRatio(), false};
 
 	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_indexedVertexBuffer{};
 	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer{};

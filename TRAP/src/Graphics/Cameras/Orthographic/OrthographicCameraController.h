@@ -34,8 +34,13 @@ namespace TRAP::Graphics
 		/// @param rotation Enabled or disable rotation controls.
 		/// @param useController Use the mouse and keyboard to control the camera or a controller.
 		/// @param controller Which controller slot to use when useController is set to true.
-		constexpr explicit OrthographicCameraController(f32 aspectRatio, bool rotation = false, bool useController = false,
-		                                                Input::Controller controller = Input::Controller::One) noexcept; //TODO Could be split into 2 constructors, one containing controller.
+		constexpr explicit OrthographicCameraController(f32 aspectRatio, bool rotation) noexcept;
+		/// @brief Constructor.
+		/// Initializes the Orthographic/2D camera and its controls.
+		/// @param aspectRatio Aspect ratio for the camera.
+		/// @param rotation Enabled or disable rotation controls.
+		/// @param controller Which controller slot to use when useController is set to true.
+		constexpr explicit OrthographicCameraController(f32 aspectRatio, bool rotation, Input::Controller controller) noexcept;
 		/// @brief Destructor.
 		constexpr ~OrthographicCameraController() = default;
 
@@ -119,8 +124,7 @@ namespace TRAP::Graphics
 		OrthographicCamera m_camera;
 
 		bool m_rotation;
-		bool m_useController;
-		Input::Controller m_controller;
+		TRAP::Optional<Input::Controller> m_controller;
 
 		Math::Vec3 m_cameraPosition{ 0.0f };
 		Math::Vec3 m_cameraRotation{ 0.0f };
@@ -145,14 +149,24 @@ namespace TRAP::Graphics
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr TRAP::Graphics::OrthographicCameraController::OrthographicCameraController(const f32 aspectRatio,
+																		             const bool rotation) noexcept
+	: m_aspectRatio(aspectRatio),
+	  m_bounds({ -m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel }),
+	  m_camera(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, 1.0f, -1.0f),
+	  m_rotation(rotation),
+	  m_controller(TRAP::NullOpt)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::OrthographicCameraController::OrthographicCameraController(const f32 aspectRatio,
 																		             const bool rotation,
-																		             const bool useController,
 																		             const Input::Controller controller) noexcept
 	: m_aspectRatio(aspectRatio),
 	  m_bounds({ -m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel }),
 	  m_camera(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, 1.0f, -1.0f),
 	  m_rotation(rotation),
-	  m_useController(useController),
 	  m_controller(controller)
 {
 }

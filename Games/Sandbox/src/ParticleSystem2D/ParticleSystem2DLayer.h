@@ -112,7 +112,7 @@ public:
 	}
 
 private:
-	TRAP::Graphics::OrthographicCameraController m_cameraController{TRAP::Application::GetWindow()->GetAspectRatio()};
+	TRAP::Graphics::OrthographicCameraController m_cameraController{TRAP::Application::GetWindow()->GetAspectRatio(), false};
 	ParticleProps m_particle{};
 	ParticleSystem2D m_particleSystem{};
 	u32 m_maxParticles = 1000;

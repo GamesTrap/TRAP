@@ -43,6 +43,7 @@ namespace TRAP::Graphics
 		/// @brief Begin a Renderer2D scene.
 		/// @param camera Editor camera.
 		/// @remark @headless This function is not available in headless mode.
+		[[deprecated("Use BeginScene(Camear, Mat4) instead!")]]
 		static void BeginScene(const EditorCamera& camera);
 #endif /*TRAP_HEADLESS_MODE*/
 		/// @brief End a running Renderer2D scene.

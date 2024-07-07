@@ -106,7 +106,7 @@ void TRAP::Graphics::EditorCamera::OnEvent(Events::Event& event)
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
                                            (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-    Events::EventDispatcher dispatcher(event);
+    const Events::EventDispatcher dispatcher(event);
     dispatcher.Dispatch<Events::MouseScrollEvent>(std::bind_front(&EditorCamera::OnMouseScroll, this));
 }
 
