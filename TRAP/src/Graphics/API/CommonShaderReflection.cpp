@@ -1,6 +1,132 @@
 #include "TRAPPCH.h"
 #include "ShaderReflection.h"
 
+namespace
+{
+	[[nodiscard]] constexpr TRAP::Optional<TRAP::Graphics::RendererAPI::ShaderStage> CollectShaderStages(const std::span<const TRAP::Graphics::API::ShaderReflection::ShaderReflection> reflection)
+	{
+		//Sanity checks to make sure we don't have repeated stages.
+		TRAP::Graphics::RendererAPI::ShaderStage combinedShaderStages = TRAP::Graphics::RendererAPI::ShaderStage::None;
+
+		for(const TRAP::Graphics::API::ShaderReflection::ShaderReflection& i : reflection)
+		{
+			if((combinedShaderStages & i.ShaderStage) != TRAP::Graphics::RendererAPI::ShaderStage::None)
+			{
+				TP_ERROR(TRAP::Log::ShaderPrefix, "Duplicate shader stage was detected in shader reflection array.");
+				return TRAP::NullOpt;
+			}
+
+			combinedShaderStages |= i.ShaderStage;
+		}
+
+		return combinedShaderStages;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	constexpr void UpdateShaderStageIndices(TRAP::Graphics::API::ShaderReflection::PipelineReflection& pipelineReflection)
+	{
+		for(u32 i = 0; i < pipelineReflection.StageReflections.size(); ++i)
+		{
+			const TRAP::Graphics::API::ShaderReflection::ShaderReflection& srcRef = pipelineReflection.StageReflections[i];
+
+			switch(srcRef.ShaderStage)
+			{
+			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::Vertex:
+				pipelineReflection.VertexStageIndex = i;
+				break;
+			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::TessellationControl:
+				pipelineReflection.TessellationControlStageIndex = i;
+				break;
+			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::TessellationEvaluation:
+				pipelineReflection.TessellationControlStageIndex = i;
+				break;
+			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::Geometry:
+				pipelineReflection.GeometryStageIndex = i;
+				break;
+			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::Fragment:
+				pipelineReflection.FragmentStageIndex = i;
+				break;
+
+			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::Compute: //Compute always has index 0
+				break;
+			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::RayTracing:
+				//TODO
+				break;
+
+			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::None:
+				[[fallthrough]];
+			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::SHADER_STAGE_COUNT:
+				[[fallthrough]];
+			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::AllGraphics:
+				break;
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr std::vector<TRAP::Graphics::API::ShaderReflection::ShaderResource> CollectShaderResources(const std::span<const TRAP::Graphics::API::ShaderReflection::ShaderReflection> reflection)
+	{
+		std::vector<TRAP::Graphics::API::ShaderReflection::ShaderResource> shaderResources{};
+		shaderResources.reserve(512);
+
+		for(const TRAP::Graphics::API::ShaderReflection::ShaderReflection& srcRef : reflection)
+		{
+			//Loop through all shader resources
+			for (const TRAP::Graphics::API::ShaderReflection::ShaderResource& shaderRes : srcRef.ShaderResources)
+			{
+				//Go through all already added shader resources to see if this shader
+				//resource was already added from a different shader stage.
+				//If we find a duplicate shader resource, we add the shader stage
+				//to the shader stage mask of that resource instead.
+				if(const auto it = std::ranges::find(shaderResources, shaderRes); it != shaderResources.end()) //Not unique, Add new shader stage
+					it->UsedStages |= shaderRes.UsedStages;
+				else //Unique, Add it to the list of shader resources
+					shaderResources.emplace_back(shaderRes);
+			}
+		}
+
+		shaderResources.shrink_to_fit();
+
+		return shaderResources;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr std::vector<TRAP::Graphics::API::ShaderReflection::ShaderVariable> CollectShaderVariables(const std::span<const TRAP::Graphics::API::ShaderReflection::ShaderReflection> reflection,
+	                                                                                                                  const std::span<const TRAP::Graphics::API::ShaderReflection::ShaderResource> shaderResources)
+	{
+		std::vector<TRAP::Graphics::API::ShaderReflection::ShaderVariable> uniqueVariable{};
+		uniqueVariable.reserve(512);
+
+		for(const TRAP::Graphics::API::ShaderReflection::ShaderReflection& srcRef : reflection)
+		{
+			//Loop through all shader variables (constant/uniform buffer members)
+			for(const TRAP::Graphics::API::ShaderReflection::ShaderVariable& var : srcRef.Variables)
+			{
+				//Go through all already added shader variables to see if this shader
+				//variable was already added from a different shader stage.
+				//If we find a duplicate shader variable, we don't add it.
+
+				if(std::ranges::find(uniqueVariable, var) != uniqueVariable.end()) //Not unique
+					continue;
+
+				//Add it to the list of shader variables
+
+				const std::ptrdiff_t newParentIndex = std::distance(shaderResources.begin(), std::ranges::find(shaderResources, srcRef.ShaderResources[var.ParentIndex]));
+				uniqueVariable.emplace_back(var).ParentIndex = NumericCast<u64>(newParentIndex);
+			}
+		}
+
+		uniqueVariable.shrink_to_fit();
+
+		return uniqueVariable;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graphics::API::ShaderReflection::CreatePipelineReflection(
 	const std::vector<ShaderReflection>& reflection)
 {
@@ -12,108 +138,17 @@
 		return nullptr;
 	}
 
-	//Sanity checks to make sure we don't have repeated stages.
-	RendererAPI::ShaderStage combinedShaderStages = RendererAPI::ShaderStage::None;
-	for(const ShaderReflection& i : reflection)
-	{
-		if((combinedShaderStages & i.ShaderStage) != RendererAPI::ShaderStage::None)
-		{
-			TP_ERROR(Log::ShaderPrefix, "Duplicate shader stage was detected in shader reflection array.");
-			return nullptr;
-		}
-		combinedShaderStages |= i.ShaderStage;
-	}
+	const auto combinedShaderStages = CollectShaderStages(reflection);
+	if(!combinedShaderStages)
+		return nullptr;
 
 	TRAP::Ref<PipelineReflection> out = TRAP::MakeRef<PipelineReflection>();
 
 	out->StageReflections = reflection;
-	out->ShaderStages = combinedShaderStages;
-
-	//Combine all shaders
-	//This will have a large amount of looping
-	//1. count number of resources
-	std::vector<ShaderResource*> uniqueResources{};
-	std::vector<RendererAPI::ShaderStage> shaderUsage{};
-	std::vector<ShaderVariable*> uniqueVariable{};
-	std::vector<ShaderResource*> uniqueVariableParent{};
-	uniqueResources.reserve(512);
-	shaderUsage.reserve(512);
-	uniqueVariable.reserve(512);
-	uniqueVariableParent.reserve(512);
-
-	for(u32 i = 0; i < out->StageReflections.size(); ++i)
-	{
-		ShaderReflection& srcRef = out->StageReflections[i];
-
-		if (srcRef.ShaderStage == RendererAPI::ShaderStage::Vertex)
-			out->VertexStageIndex = i;
-		else if (srcRef.ShaderStage == RendererAPI::ShaderStage::TessellationControl)
-			out->TessellationControlStageIndex = i;
-		else if (srcRef.ShaderStage == RendererAPI::ShaderStage::TessellationEvaluation)
-			out->TessellationEvaluationStageIndex = i;
-		else if (srcRef.ShaderStage == RendererAPI::ShaderStage::Geometry)
-			out->GeometryStageIndex = i;
-		else if (srcRef.ShaderStage == RendererAPI::ShaderStage::Fragment)
-			out->FragmentStageIndex = i;
-
-		//Loop through all shader resources
-		for (auto& ShaderResource : srcRef.ShaderResources)
-		{
-			//Go through all already added shader resources to see if this shader
-			//resource was already added from a different shader stage.
-			//If we find a duplicate shader resource, we add the shader stage
-			//to the shader stage mask of that resource instead.
-			const auto it = std::ranges::find_if(uniqueResources, [&ShaderResource](const auto* const r){return *r == ShaderResource;});
-			if(it != uniqueResources.end()) //Not unique
-			{
-				const auto sharedIndex = it - uniqueResources.begin();
-				shaderUsage[NumericCast<usize>(sharedIndex)] |= ShaderResource.UsedStages;
-			}
-			else //Unique, Add it to the list of shader resources
-			{
-				shaderUsage.push_back(ShaderResource.UsedStages);
-				uniqueResources.push_back(&ShaderResource);
-			}
-		}
-
-		//Loop through all shader variables (constant/uniform buffer members)
-		for(usize j = 0; j < srcRef.Variables.size(); ++j)
-		{
-			//Go through all already added shader variables to see if this shader
-			//variable was already added from a different shader stage.
-			//If we find a duplicate shader variable, we don't add it.
-
-			const auto it = std::ranges::find_if(uniqueVariable, [&srcRef, j](const ShaderVariable* const v){return *v == srcRef.Variables[j];});
-			if(it == uniqueVariable.end()) //Unique
-			{
-				//Add it to the list of shader variables
-				uniqueVariableParent.push_back(&srcRef.ShaderResources[srcRef.Variables[j].ParentIndex]);
-				uniqueVariable.push_back(&srcRef.Variables[j]);
-			}
-		}
-	}
-
-	//Copy over the shader resources in a dynamic array of the correct size
-	out->ShaderResources.resize(uniqueResources.size());
-	for(usize i = 0; i < uniqueResources.size(); ++i)
-	{
-		out->ShaderResources[i] = *uniqueResources[i];
-		out->ShaderResources[i].UsedStages = shaderUsage[i];
-	}
-
-	//Copy over the shader variables in a dynamic array of the correct size
-	out->Variables.resize(uniqueVariable.size());
-	for(usize i = 0; i < out->Variables.size(); ++i)
-	{
-		out->Variables[i] = *uniqueVariable[i];
-		const ShaderResource* const parentResource = uniqueVariableParent[i];
-		//Look for parent
-		const auto it = std::ranges::find_if(out->ShaderResources, [parentResource](const ShaderResource& r){return r == *parentResource; });
-		if(it != out->ShaderResources.end())
-		{
-			out->Variables[i].ParentIndex = NumericCast<u64>(it - out->ShaderResources.begin());
-		}
-	}
+	out->ShaderStages = *combinedShaderStages;
+	out->ShaderResources = CollectShaderResources(reflection);
+	out->Variables = CollectShaderVariables(reflection, out->ShaderResources);
+	UpdateShaderStageIndices(*out);
 
 	return out;
 }

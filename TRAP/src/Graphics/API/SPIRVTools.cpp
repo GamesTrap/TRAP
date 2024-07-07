@@ -129,11 +129,8 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderResources()
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	//1. Get all shader resources
-	spirv_cross::ShaderResources allResources;
-	std::unordered_set<spirv_cross::VariableID> usedResources;
-
-	allResources = m_compiler.get_shader_resources();
-	usedResources = m_compiler.get_active_interface_variables();
+	const spirv_cross::ShaderResources allResources = m_compiler.get_shader_resources();
+	const std::unordered_set<spirv_cross::VariableID> usedResources = m_compiler.get_active_interface_variables();
 
 	//2. Count number of resources and allocate array
 	usize resourceCount = 0;

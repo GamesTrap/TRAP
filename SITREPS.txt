@@ -5105,3 +5105,7 @@ SITREP 07/02/2024|24w27a1
 SITREP 07/03/2024|24w27a2
     - Changed TRAP Engine version to 24w27a2(0.10.85)
     - VulkanCommandBuffer use store color action when not otherwise specified (fixes regression on NVIDIA GPUs) ~<10 mins
+
+SITREP 07/03/2024|24w27a3
+    - Changed TRAP Engine version to 24w27a2(0.10.86)
+    - ShaderReflection Refactored various functions ~<45 mins
