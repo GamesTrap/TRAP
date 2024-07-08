@@ -49,7 +49,7 @@ namespace
 	{
 		ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-		TRAP::Graphics::RendererAPI::ResizeSwapChain(&event.GetWindow());
+		TRAP::Graphics::RendererAPI::ResizeSwapChain(event.GetWindow());
 
 		return false;
 	}

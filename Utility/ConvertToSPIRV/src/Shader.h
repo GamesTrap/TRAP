@@ -79,9 +79,7 @@ enum class ShaderStage : u32
 	Compute                = BIT(5u),
 	// RayTracing             = BIT(6u),
 
-	AllGraphics = (static_cast<u32>(Vertex) | static_cast<u32>(TessellationControl) |
-	               static_cast<u32>(TessellationEvaluation) | static_cast<u32>(Geometry) |
-		           static_cast<u32>(Fragment)),
+	AllGraphics = (Vertex | TessellationControl | TessellationEvaluation | Geometry | Fragment),
 
 	//DirectX 12 name aliases
 	Hull = TessellationControl,

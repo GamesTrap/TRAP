@@ -18,7 +18,7 @@ void RenderScaleTests::OnImGuiRender()
     if(ImGui::SliderFloat("Render Scale", &renderScale, 0.5f, 2.0f, "%.2f", ImGuiSliderFlags_NoInput))
         TRAP::Graphics::RenderCommand::SetRenderScale(renderScale);
 
-    const auto internalRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(TRAP::Application::GetWindow());
+    const auto internalRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(*TRAP::Application::GetWindow());
     ImGui::Text("Render Resolution: %ux%u", internalRes.x(), internalRes.y());
 
     const auto outputSize = TRAP::Application::GetWindow()->GetFrameBufferSize();

@@ -69,7 +69,7 @@ void VRSTests::OnAttach()
 
     if(m_supportsPerTileVRS)
     {
-        const auto texRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(TRAP::Application::GetWindow());
+        const auto texRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(*TRAP::Application::GetWindow());
         m_shadingRateTexture = CreateShadingRateTexture(texRes.x(), texRes.y());
     }
 
@@ -110,7 +110,7 @@ void VRSTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
     {
         m_currRenderScale = TRAP::Graphics::RenderCommand::GetRenderScale();
 
-        const auto texRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(TRAP::Application::GetWindow());
+        const auto texRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(*TRAP::Application::GetWindow());
         m_shadingRateTexture = CreateShadingRateTexture(texRes.x(), texRes.y());
     }
 
@@ -170,7 +170,7 @@ bool VRSTests::OnFrameBufferResize([[maybe_unused]] const TRAP::Events::FrameBuf
 {
     if(m_supportsPerTileVRS)
     {
-        const auto texRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(TRAP::Application::GetWindow());
+        const auto texRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(*TRAP::Application::GetWindow());
         m_shadingRateTexture = CreateShadingRateTexture(texRes.x(), texRes.y());
     }
 

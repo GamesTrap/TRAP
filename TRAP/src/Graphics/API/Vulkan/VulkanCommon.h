@@ -280,11 +280,6 @@ namespace TRAP::Graphics::API
 			return VK_PIPELINE_BIND_POINT_GRAPHICS;
 		case RayTracing:
 			return VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR;
-
-		//TODO Remove
-		case Undefined:
-			TRAP_ASSERT(false, "VkPipelineBindPointTranslator(): Invalid RendererAPI::PipelineType value!");
-			return VK_PIPELINE_BIND_POINT_MAX_ENUM;
 		}
 
 		TRAP_ASSERT(false, "VkPipelineBindPointTranslator(): Unknown RendererAPI::PipelineType!");

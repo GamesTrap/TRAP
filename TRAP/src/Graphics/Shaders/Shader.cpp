@@ -33,35 +33,52 @@ namespace
 		EShLanguage StageGLSLang;
 	};
 
-	constexpr std::array<ShaderStageData, std::to_underlying(TRAP::Graphics::RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> ShaderStages
+	[[nodiscard]] constexpr TRAP::Optional<ShaderStageData> ShaderStages(const TRAP::Graphics::RendererAPI::ShaderStage shaderStage)
 	{
+		switch(shaderStage)
 		{
-			{TRAP::Graphics::RendererAPI::ShaderStage::Vertex, "Vertex", EShLanguage::EShLangVertex},
-			{TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl, "TessellationControl", EShLanguage::EShLangTessControl},
-			{TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation, "TessellationEvaluation", EShLanguage::EShLangTessEvaluation},
-			{TRAP::Graphics::RendererAPI::ShaderStage::Geometry, "Geometry", EShLanguage::EShLangGeometry},
-			{TRAP::Graphics::RendererAPI::ShaderStage::Fragment, "Fragment", EShLanguage::EShLangFragment},
-			{TRAP::Graphics::RendererAPI::ShaderStage::Compute, "Compute", EShLanguage::EShLangCompute},
-			{TRAP::Graphics::RendererAPI::ShaderStage::RayTracing, "RayTracing", EShLanguage::EShLangCount} //TODO RayTracing Shader support
+		case TRAP::Graphics::RendererAPI::ShaderStage::None:
+			[[fallthrough]];
+		case TRAP::Graphics::RendererAPI::ShaderStage::AllGraphics:
+			break;
+
+		case TRAP::Graphics::RendererAPI::ShaderStage::Vertex:
+			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::RendererAPI::ShaderStage::Vertex, "Vertex", EShLanguage::EShLangVertex);
+		case TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl:
+			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl, "TessellationControl", EShLanguage::EShLangTessControl);
+		case TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation:
+			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation, "TessellationEvaluation", EShLanguage::EShLangTessEvaluation);
+		case TRAP::Graphics::RendererAPI::ShaderStage::Geometry:
+			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::RendererAPI::ShaderStage::Geometry, "Geometry", EShLanguage::EShLangGeometry);
+		case TRAP::Graphics::RendererAPI::ShaderStage::Fragment:
+			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::RendererAPI::ShaderStage::Fragment, "Fragment", EShLanguage::EShLangFragment);
+		case TRAP::Graphics::RendererAPI::ShaderStage::Compute:
+			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::RendererAPI::ShaderStage::Compute, "Compute", EShLanguage::EShLangCompute);
+		case TRAP::Graphics::RendererAPI::ShaderStage::RayTracing:
+			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::RendererAPI::ShaderStage::RayTracing, "RayTracing", EShLanguage::EShLangCount); //TODO RayTracing Shader support
 		}
-	};
 
-	//-------------------------------------------------------------------------------------------------------------------//
-
-	constexpr std::string_view ShaderStageToString(const TRAP::Graphics::RendererAPI::ShaderStage stage)
-	{
-		const auto it = std::ranges::find_if(ShaderStages,
-									         [stage](const ShaderStageData& element){return stage == element.Stage;});
-		return it->StageString;
+		return TRAP::NullOpt;
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	constexpr EShLanguage ShaderStageToEShLanguage(const TRAP::Graphics::RendererAPI::ShaderStage stage)
+	[[nodiscard]] constexpr std::string_view ShaderStageToString(const TRAP::Graphics::RendererAPI::ShaderStage stage)
 	{
-		const auto it = std::ranges::find_if(ShaderStages,
-									         [stage](const auto& element){return stage == element.Stage;});
-		return it->StageGLSLang;
+		if(const auto data = ShaderStages(stage))
+			return data->StageString;
+
+		return "";
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr EShLanguage ShaderStageToEShLanguage(const TRAP::Graphics::RendererAPI::ShaderStage stage)
+	{
+		if(const auto data = ShaderStages(stage))
+			return data->StageGLSLang;
+
+		return EShLanguage::EShLangCount;
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -507,8 +524,6 @@ namespace
 				//TODO RayTracing
 
 			case TRAP::Graphics::RendererAPI::ShaderStage::None:
-				[[fallthrough]];
-			case TRAP::Graphics::RendererAPI::ShaderStage::SHADER_STAGE_COUNT:
 				[[fallthrough]];
 			default:
 				break;

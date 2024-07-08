@@ -1055,7 +1055,7 @@ namespace TRAP::Graphics
 		/// @param window Window to retrieve the graphics root signature from.
 		/// @return Graphics root signature.
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(const Window* window);
+		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(const Window& window);
 #else
 		/// @brief Retrieve the currently used graphics root signature.
 		/// @return Graphics root signature.
@@ -1067,7 +1067,7 @@ namespace TRAP::Graphics
 		/// @param window Window to get internal render resolution from.
 		/// @return Internal render resolution.
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] static TRAP::Math::Vec2ui GetInternalRenderResolution(const Window* window);
+		[[nodiscard]] static TRAP::Math::Vec2ui GetInternalRenderResolution(const Window& window);
 #else
 		/// @brief Retrieve the currently used internal render resolution.
 		/// @return Internal render resolution.
@@ -1086,7 +1086,7 @@ namespace TRAP::Graphics
 		/// @param window Window to start render pass for.
 		/// @note This will rebind the render target for the current frame.
 		/// @remark @headless This function is not available in headless mode.
-		static void StartRenderPass(const Window* window);
+		static void StartRenderPass(const Window& window);
 #else
 		/// @brief Start a render pass.
 		/// @note This will rebind the render target for the current frame again.
@@ -1097,7 +1097,7 @@ namespace TRAP::Graphics
 		/// @brief Stop running render pass of the given window.
 		/// @param window Window to stop render pass on.
 		/// @remark @headless This function is not available in headless mode.
-		static void StopRenderPass(const Window* window);
+		static void StopRenderPass(const Window& window);
 #else
 		/// @brief Stop running render pass.
 		/// @remark This function is only available in headless mode.
@@ -1120,7 +1120,7 @@ namespace TRAP::Graphics
 		/// @param outSampleCount Output: Used sample count.
 		/// @param window Window to get anti aliasing from.
 		/// @remark @headless This function is not available in headless mode.
-		static void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount, const Window* window) noexcept;
+		static void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount, const Window& window) noexcept;
 #else
 		/// @brief Retrieve the currently used anti aliasing method and the sample count.
 		/// @param outAntiAliasing Output: Used anti aliasing method.
@@ -1152,7 +1152,7 @@ namespace TRAP::Graphics
 		/// This function should be called inside FrameBufferResizeEvent callbacks.
 		/// @param window Window that needs an updated SwapChain.
 		/// @remark @headless This function is not available in headless mode.
-		static void ResizeSwapChain(const Window* window);
+		static void ResizeSwapChain(const Window& window);
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -1160,7 +1160,7 @@ namespace TRAP::Graphics
 		/// @param window Window to get frame time from.
 		/// @return GPU Graphics frame time in milliseconds.
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] static f32 GetGPUGraphicsFrameTime(const Window* window);
+		[[nodiscard]] static f32 GetGPUGraphicsFrameTime(const Window& window);
 #else
 		/// @brief Retrieve the GPU side frame time for the graphics queue.
 		/// @return GPU Graphics frame time in milliseconds.
@@ -1172,7 +1172,7 @@ namespace TRAP::Graphics
 		/// @param window Window to get frame time from.
 		/// @return GPU Compute frame time in milliseconds.
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] static f32 GetGPUComputeFrameTime(const Window* window);
+		[[nodiscard]] static f32 GetGPUComputeFrameTime(const Window& window);
 #else
 		/// @brief Retrieve the GPU side frame time for the compute queue.
 		/// @return GPU Compute frame time in milliseconds.
@@ -1184,7 +1184,7 @@ namespace TRAP::Graphics
 		/// @brief Retrieve internal rendering data.
 		/// @return Windows internal rendering data.
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] static PerViewportData& GetViewportData(const Window* window);
+		[[nodiscard]] static PerViewportData& GetViewportData(const Window& window);
 #else
 		/// @brief Retrieve internal rendering data.
 		/// @return Internal rendering data.
@@ -1236,9 +1236,7 @@ namespace TRAP::Graphics
 			ShuffleRelative = BIT(5u),
 			Clustered = BIT(6u),
 			Quad = BIT(7u),
-			PartitionedNV = BIT(8u),
-
-			WAVE_OPS_SUPPORT_FLAG_ALL = 0x7FFFFFFF
+			PartitionedNV = BIT(8u)
 		};
 
 		/// @brief Enum describing the different types of queues.
@@ -1254,8 +1252,6 @@ namespace TRAP::Graphics
 		{
 			None = 0x0,
 			DisableGPUTimeout = BIT(0u), //Disable the GPU timeout for this command queue (DirectX 12)
-
-			MAX_QUEUE_FLAG = 0xFFFFFFFF
 		};
 
 		/// @brief Enum describing the different priorities for a queue (DirectX 12).
@@ -1263,9 +1259,7 @@ namespace TRAP::Graphics
 		{
 			Normal,
 			High,
-			GlobalRealtime,
-
-			MAX_QUEUE_PRIORITY
+			GlobalRealtime
 		};
 
 		/// @brief Enum describing the status of a fence.
@@ -1450,10 +1444,7 @@ namespace TRAP::Graphics
 			//Memory will be used for frequent (dynamic) updates from host and reads on device.
 			CPUToGPU = 3,
 			//Memory will be used for writing on device and readback on host.
-			GPUToCPU = 4,
-
-			RESOURCE_MEMORY_USAGE_COUNT,
-			RESOURCE_MEMORY_USAGE_MAX_ENUM = 0x7FFFFFFF
+			GPUToCPU = 4
 		};
 
 		/// @brief Enum describing flags for the buffer creation.
@@ -1571,16 +1562,12 @@ namespace TRAP::Graphics
 			Compute = BIT(5u),
 			RayTracing = BIT(6u),
 
-			AllGraphics = (static_cast<u32>(Vertex) | static_cast<u32>(TessellationControl) |
-			               static_cast<u32>(TessellationEvaluation) | static_cast<u32>(Geometry) |
-				           static_cast<u32>(Fragment)),
+			AllGraphics = (Vertex | TessellationControl | TessellationEvaluation | Geometry | Fragment),
 
 			//DirectX 12 name aliases
 			Hull = TessellationControl,
 			Domain = TessellationEvaluation,
-			Pixel = Fragment,
-
-			SHADER_STAGE_COUNT = 7
+			Pixel = Fragment
 		};
 
 		/// @brief Enum describing the different flags for root signature creation.
@@ -1595,7 +1582,6 @@ namespace TRAP::Graphics
 		/// @brief Enum describing the different pipeline types.
 		enum class PipelineType : u32
 		{
-			Undefined = 0, //TODO Get rid of this value
 			Compute,
 			Graphics,
 			RayTracing
@@ -2311,6 +2297,7 @@ namespace TRAP::Graphics
 		/// @brief Description of a RayTracing pipeline.
 		struct RayTracingPipelineDesc
 		{
+			//TODO
 		};
 
 		/// @brief Description of a pipeline.
@@ -2961,7 +2948,7 @@ constexpr void TRAP::Graphics::RendererAPI::SetNewGPU(const TRAP::Utils::UUID& G
 template<>
 struct fmt::formatter<TRAP::Graphics::RenderAPI>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }
@@ -2978,11 +2965,6 @@ struct fmt::formatter<TRAP::Graphics::RenderAPI>
         case TRAP::Graphics::RenderAPI::NONE:
             enumStr = "NONE";
             break;
-
-        default:
-            TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RenderAPI>: Missing enum value!");
-            enumStr = "<MISSING ENUM VALUE>";
-            break;
         }
 
         return fmt::format_to(ctx.out(), "{}", enumStr);
@@ -2994,7 +2976,7 @@ struct fmt::formatter<TRAP::Graphics::RenderAPI>
 template<>
 struct fmt::formatter<TRAP::Graphics::RendererAPI::AntiAliasing>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }
@@ -3011,11 +2993,6 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::AntiAliasing>
         case TRAP::Graphics::RendererAPI::AntiAliasing::MSAA:
             enumStr = "MSAA";
             break;
-
-        default:
-            TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RendererAPI::AntiAliasing>: Missing enum value!");
-            enumStr = "<MISSING ENUM VALUE>";
-            break;
         }
 
         return fmt::format_to(ctx.out(), "{}", enumStr);
@@ -3027,7 +3004,7 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::AntiAliasing>
 template<>
 struct fmt::formatter<TRAP::Graphics::RendererAPI::SampleCount>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }
@@ -3035,6 +3012,8 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::SampleCount>
     static fmt::format_context::iterator format(const TRAP::Graphics::RendererAPI::SampleCount sampleCount,
 	                                            fmt::format_context& ctx)
     {
+		u32 samples = 1;
+
         switch(sampleCount)
         {
         case TRAP::Graphics::RendererAPI::SampleCount::One:
@@ -3046,12 +3025,11 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::SampleCount>
         case TRAP::Graphics::RendererAPI::SampleCount::Eight:
 			[[fallthrough]];
         case TRAP::Graphics::RendererAPI::SampleCount::Sixteen:
-            return fmt::format_to(ctx.out(), "{}", std::to_underlying(sampleCount));
-
-        default:
-            TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RendererAPI::SampleCount>: Missing enum value!");
-            return fmt::format_to(ctx.out(), "<MISSING ENUM VALUE>");
+			samples = std::to_underlying(sampleCount);
+			break;
         }
+
+		return fmt::format_to(ctx.out(), "{}", samples);
     }
 };
 
@@ -3060,7 +3038,7 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::SampleCount>
 template<>
 struct fmt::formatter<TRAP::Graphics::RendererAPI::GPUVendor>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }
@@ -3113,11 +3091,6 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::GPUVendor>
 		case TRAP::Graphics::RendererAPI::GPUVendor::Mesa:
             enumStr = "Mesa";
             break;
-
-        default:
-            TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RendererAPI::GPUVendor>: Missing enum value!");
-            enumStr = "<MISSING ENUM VALUE>";
-            break;
         }
 
         return fmt::format_to(ctx.out(), "{}", enumStr);
@@ -3130,7 +3103,7 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::GPUVendor>
 template<>
 struct fmt::formatter<TRAP::Graphics::RendererAPI::LatencyMode>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }
@@ -3150,11 +3123,6 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::LatencyMode>
         case TRAP::Graphics::RendererAPI::LatencyMode::EnabledBoost:
             enumStr = "Enabled+Boost";
             break;
-
-        default:
-            TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RendererAPI::LatencyMode>: Missing enum value!");
-            enumStr = "<MISSING ENUM VALUE>";
-            break;
         }
 
         return fmt::format_to(ctx.out(), "{}", enumStr);
@@ -3167,7 +3135,7 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::LatencyMode>
 template<>
 struct fmt::formatter<TRAP::Graphics::RendererAPI::ResourceState>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }
@@ -3235,11 +3203,6 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::ResourceState>
         case TRAP::Graphics::RendererAPI::ResourceState::ShadingRateSource:
             enumStr = "ShadingRateSource";
             break;
-
-        default:
-            TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RendererAPI::ResourceState>: Missing enum value!");
-            enumStr = "<MISSING ENUM VALUE>";
-            break;
         }
 
         return fmt::format_to(ctx.out(), "{}", enumStr);
@@ -3251,7 +3214,7 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::ResourceState>
 template<>
 struct fmt::formatter<TRAP::Graphics::RendererAPI::QueueType>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }
@@ -3271,11 +3234,6 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::QueueType>
         case TRAP::Graphics::RendererAPI::QueueType::Compute:
             enumStr = "Compute";
             break;
-
-        default:
-            TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RendererAPI::QueueType>: Missing enum value!");
-            enumStr = "<MISSING ENUM VALUE>";
-            break;
         }
 
         return fmt::format_to(ctx.out(), "{}", enumStr);
@@ -3287,7 +3245,7 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::QueueType>
 template<>
 struct fmt::formatter<TRAP::Graphics::RendererAPI::ShaderStage>
 {
-    static constexpr auto parse(fmt::format_parse_context& ctx)
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }

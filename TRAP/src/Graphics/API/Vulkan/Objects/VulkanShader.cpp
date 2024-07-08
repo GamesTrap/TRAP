@@ -493,7 +493,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 
 	std::vector<ShaderReflection::ShaderReflection> stageReflections{};
 
-	for(usize i = 0; i < std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT); i++)
+	for(u32 i = 0; i < 7u; i++) //Iterate through all shader stages
 	{
 		const RendererAPI::ShaderStage stageMask = static_cast<RendererAPI::ShaderStage>(BIT(i));
 

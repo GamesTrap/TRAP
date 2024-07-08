@@ -155,7 +155,7 @@ namespace
 		//Get Shading rate texture (check if texture is big enough, else it would create errors so just deactivate it)
 
 #ifndef TRAP_HEADLESS_MODE
-		const auto internalRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(p.Window);
+		const auto internalRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(*p.Window);
 #else
 		const auto internalRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution();
 #endif /*TRAP_HEADLESS_MODE*/
@@ -2426,7 +2426,7 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 	bool rebuildColor = false;
 	bool rebuildDepthStencil = false;
 #ifndef TRAP_HEADLESS_MODE
-	const auto newInternalRes = GetInternalRenderResolution(viewportData.Window);
+	const auto newInternalRes = GetInternalRenderResolution(*viewportData.Window);
 #else
 	const auto newInternalRes = GetInternalRenderResolution();
 #endif /*TRAP_HEADLESS_MODE*/

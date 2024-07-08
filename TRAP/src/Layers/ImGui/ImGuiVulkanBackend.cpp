@@ -1959,7 +1959,7 @@ void ImGui::INTERNAL::Vulkan::SetMSAASamples(const VkSampleCountFlagBits sampleC
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-	const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(TRAP::Application::GetWindow());
+	const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(*TRAP::Application::GetWindow());
     ImGui_ImplVulkan_Data* const bd = GetBackendData();
     InitInfo& v = bd->VulkanInitInfo;
 

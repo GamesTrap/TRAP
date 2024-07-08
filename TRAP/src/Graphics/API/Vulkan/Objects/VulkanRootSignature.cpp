@@ -27,16 +27,16 @@ namespace
 		return staticSamplerMap;
 	}
 
-	[[nodiscard]] TRAP::Graphics::RendererAPI::PipelineType GetReflectionPipelineType(const TRAP::Graphics::Shader& shader)
+	[[nodiscard]] TRAP::Optional<TRAP::Graphics::RendererAPI::PipelineType> GetReflectionPipelineType(const TRAP::Graphics::Shader& shader)
 	{
 		using RendererAPI = TRAP::Graphics::RendererAPI;
 
 		const TRAP::Graphics::API::VulkanShader* const vkShader = dynamic_cast<const TRAP::Graphics::API::VulkanShader* const>(&shader);
 		if(vkShader == nullptr)
-			return RendererAPI::PipelineType::Undefined;
+			return TRAP::NullOpt;
 		const auto reflection = vkShader->GetReflection();
 		if(reflection == nullptr)
-			return RendererAPI::PipelineType::Undefined;
+			return TRAP::NullOpt;
 
 		if ((reflection->ShaderStages & RendererAPI::ShaderStage::Compute) != RendererAPI::ShaderStage::None)
 			return RendererAPI::PipelineType::Compute;
@@ -45,7 +45,7 @@ namespace
 		if ((reflection->ShaderStages & RendererAPI::ShaderStage::AllGraphics) != RendererAPI::ShaderStage::None)
 			return RendererAPI::PipelineType::Graphics;
 
-		return RendererAPI::PipelineType::Undefined;
+		return TRAP::NullOpt;
 	}
 
 	[[nodiscard]] bool CollectUniqueShaderResourcesFromReflection(const TRAP::Graphics::API::ShaderReflection::PipelineReflection& reflection,
@@ -181,7 +181,6 @@ namespace
 
 		//Fill the descriptor array to be stored in the root signature
 		outDescriptors.reserve(shaderResources.size());
-		outPushConstants.reserve(std::to_underlying(TRAP::Graphics::RendererAPI::ShaderStage::SHADER_STAGE_COUNT));
 
 		for(usize i = 0; i < shaderResources.size(); ++i)
 		{
@@ -527,8 +526,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 	//This determines the pipeline type from the first shader in the reflection
 	if(!desc.Shaders.empty() && desc.Shaders.front() != nullptr)
-		m_pipelineType = GetReflectionPipelineType(*desc.Shaders.front());
-	TRAP_ASSERT(m_pipelineType != RendererAPI::PipelineType::Undefined, "VulkanRootSignature::VulkanRootSignature(): Pipeline type is undefined!");
+		m_pipelineType = GetReflectionPipelineType(*desc.Shaders.front()).Value();
 
 	auto [shaderResources, indexMap] = CollectUniqueShaderResources(desc);
 	m_descriptorNameToIndexMap = indexMap;

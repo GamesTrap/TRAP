@@ -40,7 +40,7 @@ namespace TRAP::Graphics
 		RootSignature();
 
 		//Graphics or Compute
-		RendererAPI::PipelineType m_pipelineType = RendererAPI::PipelineType::Undefined;
+		RendererAPI::PipelineType m_pipelineType;
 		//Array of all descriptors declared in the root signature layout
 		std::vector<RendererAPI::DescriptorInfo> m_descriptors{};
 		//Translates hash of descriptor name to descriptor index in m_descriptors array

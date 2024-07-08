@@ -56,8 +56,6 @@ namespace
 
 			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::None:
 				[[fallthrough]];
-			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::SHADER_STAGE_COUNT:
-				[[fallthrough]];
 			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::AllGraphics:
 				break;
 			}

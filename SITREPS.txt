@@ -5112,3 +5112,7 @@ SITREP 07/07/2024|24w27a3
     - VertexBuffer/IndexBuffer/UniformBuffer/StorageBuffer Refactored various functions ~<45 mins
     - Camera/EditorCamera/OrthographicCamera Refactored various functions ~<15 mins
     - PipelineDescHash Changed std::holds_alternative and std::get calls to std::get_if ~<10 mins
+
+SITREP 07/09/2024|24w28a1
+    - Changed TRAP Engine version to 24w28a1(0.10.87)
+    - RendererAPI Refactored various functions ~<30 mins

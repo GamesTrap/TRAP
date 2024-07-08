@@ -332,7 +332,7 @@ void TRAP::Graphics::RenderCommand::SetAntiAliasing(const AntiAliasing antiAlias
 void TRAP::Graphics::RenderCommand::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount,
                                                     const Window& window) noexcept
 {
-	RendererAPI::GetAntiAliasing(outAntiAliasing, outSampleCount, &window);
+	RendererAPI::GetAntiAliasing(outAntiAliasing, outSampleCount, window);
 }
 #else
 void TRAP::Graphics::RenderCommand::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount) noexcept
@@ -629,7 +629,7 @@ void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<std::ref
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::StartRenderPass(const Window& window)
 {
-	RendererAPI::StartRenderPass(&window);
+	RendererAPI::StartRenderPass(window);
 }
 #else
 void TRAP::Graphics::RenderCommand::StartRenderPass()
@@ -643,7 +643,7 @@ void TRAP::Graphics::RenderCommand::StartRenderPass()
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::StopRenderPass(const Window& window)
 {
-	RendererAPI::StopRenderPass(&window);
+	RendererAPI::StopRenderPass(window);
 }
 #else
 void TRAP::Graphics::RenderCommand::StopRenderPass()
@@ -774,7 +774,7 @@ void TRAP::Graphics::RenderCommand::Transition(const Ref<Texture>& texture, cons
 void TRAP::Graphics::RenderCommand::MSAAResolvePass(const RenderTarget& source,
                                                     const RenderTarget& destination, const Window& window)
 {
-	const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(&window);
+	const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(window);
 	CommandBuffer* const cmd = viewportData.GraphicCommandBuffers[viewportData.ImageIndex];
 
 	RendererAPI::GetRenderer()->MSAAResolvePass(source, destination, cmd);
@@ -806,8 +806,8 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(const RenderTarget& source,
 #ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] u32 TRAP::Graphics::RenderCommand::GetGPUFPS(const Window& window)
 {
-	const f32 maxGPUFrameTime = TRAP::Math::Max(RendererAPI::GetGPUGraphicsFrameTime(&window),
-	                                              RendererAPI::GetGPUComputeFrameTime(&window));
+	const f32 maxGPUFrameTime = TRAP::Math::Max(RendererAPI::GetGPUGraphicsFrameTime(window),
+	                                              RendererAPI::GetGPUComputeFrameTime(window));
 	if(maxGPUFrameTime == 0.0f)
 		return 0;
 
@@ -837,7 +837,7 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(const RenderTarget& source,
 #ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] f32 TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime(const Window& window)
 {
-	return RendererAPI::GetGPUGraphicsFrameTime(&window);
+	return RendererAPI::GetGPUGraphicsFrameTime(window);
 }
 #else
 [[nodiscard]] f32 TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime()
@@ -851,7 +851,7 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(const RenderTarget& source,
 #ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] f32 TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime(const Window& window)
 {
-	return RendererAPI::GetGPUComputeFrameTime(&window);
+	return RendererAPI::GetGPUComputeFrameTime(window);
 }
 #else
 [[nodiscard]] f32 TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime()
