@@ -27,7 +27,7 @@ namespace TRAP::Graphics::API
 	public:
 		/// @brief Instantiate the resource loader.
 		/// @param desc Optional settings.
-		explicit ResourceLoader(const RendererAPI::ResourceLoaderDesc* desc = nullptr);
+		explicit ResourceLoader(const RendererAPI::ResourceLoaderDesc& desc = {8ull << 20u, 2u});
 		/// @brief Destructor.
 		~ResourceLoader() = default;
 
@@ -84,7 +84,7 @@ namespace TRAP::Graphics::API
 		/// @param token
 		/// If token is nullptr, the resource will be available when AllResourceLoadsCompleted() returns true.
 		/// If token is not nullptr, the resource will be available after IsTokenCompleted(token) return true.
-		void CopyResource(RendererAPI::TextureCopyDesc& textureDesc, SyncToken* token);
+		void CopyResource(const RendererAPI::TextureCopyDesc& textureDesc, SyncToken* token);
 
 		/// @brief Retrieve whether all submitted resource loads and updates have been completed.
 		/// @return True if all loads and updates have finished, false otherwise.
@@ -104,10 +104,10 @@ namespace TRAP::Graphics::API
 		/// @brief Retrieve whether a sync token has finished loading or updating.
 		/// @param token Token to check.
 		/// @return True if the token has finished, false otherwise.
-		[[nodiscard]] bool IsTokenCompleted(const SyncToken* token) const;
+		[[nodiscard]] bool IsTokenCompleted(const SyncToken& token) const;
 		/// @brief Block the calling thread until IsTokenCompleted(token) for the provided token returns true.
 		/// @param token Token to wait for completion.
-		void WaitForToken(const SyncToken* token);
+		void WaitForToken(const SyncToken& token);
 
 		//Allows clients to synchronize with the submission of copy commands (as opposed to their completion).
 		//This can reduce the wait time for client but requires using the Semaphore from GetLastSemaphoreCompleted()
@@ -119,10 +119,10 @@ namespace TRAP::Graphics::API
 		/// @brief Retrieve whether a sync token has been submitted for copying.
 		/// @param token Token to check.
 		/// @return True if the token has been submitted for copying, false otherwise.
-		[[nodiscard]] bool IsTokenSubmitted(const SyncToken* token) const;
+		[[nodiscard]] bool IsTokenSubmitted(const SyncToken& token) const;
 		/// @brief Block the calling thread until IsTokenSubmitted(token) for the provided token returns true.
 		/// @param token Token to wait for submission.
-		void WaitForTokenSubmitted(const SyncToken* token);
+		void WaitForTokenSubmitted(const SyncToken& token);
 
 		/// @brief Retrieve the semaphore for the last copy operation that has been submitted.
 		/// @return Semaphore for the last copy operation that has been submitted.
@@ -146,7 +146,7 @@ namespace TRAP::Graphics::API
 		/// Used to async load and update queued resources.
 		/// @param stopToken Token to use for stop request of the thread.
 		/// @param loader Pointer to the ResourceLoader instance.
-		static void StreamerThreadFunc(const std::stop_token& stopToken, TRAP::Graphics::API::ResourceLoader* loader);
+		static void StreamerThreadFunc(const std::stop_token& stopToken, TRAP::Graphics::API::ResourceLoader& loader);
 
 		/// @brief Queue a buffer barrier.
 		/// @param buffer Buffer to queue a barrier on.
@@ -173,7 +173,7 @@ namespace TRAP::Graphics::API
 		/// @param texture Texture to queue a barrier on.
 		/// @param state State to transition the texture to.
 		/// @param token Optional output sync token.
-		void QueueTextureBarrier(TRAP::Graphics::Texture* texture,
+		void QueueTextureBarrier(const TRAP::Graphics::Texture& texture,
 		                         RendererAPI::ResourceState state, SyncToken* token);
 
 		/// @brief Retrieve memory from pre-allocated staging buffer or create a
@@ -241,7 +241,7 @@ namespace TRAP::Graphics::API
 		/// @param activeSet Resource set to use.
 		/// @param textureCopy Texture copy request.
 		/// @return Result of copy.
-		[[nodiscard]] UploadFunctionResult CopyTexture(usize activeSet, RendererAPI::TextureCopyDesc& textureCopy);
+		[[nodiscard]] UploadFunctionResult CopyTexture(usize activeSet, const RendererAPI::TextureCopyDesc& textureCopy);
 
 		RendererAPI::ResourceLoaderDesc m_desc;
 

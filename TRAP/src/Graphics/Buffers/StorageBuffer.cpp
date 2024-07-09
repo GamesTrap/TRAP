@@ -52,7 +52,7 @@ void TRAP::Graphics::StorageBuffer::SetData(const void* const data, const u64 si
 
 	return std::ranges::all_of(m_tokens, [](const API::SyncToken syncToken)
 	{
-		return RendererAPI::GetResourceLoader()->IsTokenCompleted(&syncToken);
+		return RendererAPI::GetResourceLoader()->IsTokenCompleted(syncToken);
 	});
 }
 
@@ -63,7 +63,7 @@ void TRAP::Graphics::StorageBuffer::AwaitLoading() const
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	for(const API::SyncToken syncToken : m_tokens)
-		RendererAPI::GetResourceLoader()->WaitForToken(&syncToken);
+		RendererAPI::GetResourceLoader()->WaitForToken(syncToken);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

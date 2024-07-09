@@ -763,7 +763,7 @@ void TRAP::Graphics::Texture::Update(const void* const data, const u32 sizeInByt
 	if(m_syncToken == std::numeric_limits<API::SyncToken>::max())
 		return true; //We don't have a valid sync token, so we assume the texture is loaded
 
-	return RendererAPI::GetResourceLoader()->IsTokenCompleted(&m_syncToken);
+	return RendererAPI::GetResourceLoader()->IsTokenCompleted(m_syncToken);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -775,7 +775,7 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 	if(m_syncToken == std::numeric_limits<API::SyncToken>::max())
 		return; //We don't have a valid sync token, so we assume the texture is loaded
 
-	RendererAPI::GetResourceLoader()->WaitForToken(&m_syncToken);
+	RendererAPI::GetResourceLoader()->WaitForToken(m_syncToken);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

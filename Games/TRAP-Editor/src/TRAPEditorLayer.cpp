@@ -681,7 +681,7 @@ void TRAPEditorLayer::MousePicking()
 		copyDesc.TextureState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
 		copyDesc.QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics;
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->CopyResource(copyDesc, &sync);
-		TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForToken(&sync);
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForToken(sync);
 
 		//Bring the RenderTarget back into its original state
 		TRAP::Graphics::RenderCommand::Transition(m_IDRenderTarget->GetTexture(),

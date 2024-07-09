@@ -101,7 +101,7 @@ void TRAP::Graphics::VertexBuffer::SetData(const std::span<const f32> data, cons
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	return RendererAPI::GetResourceLoader()->IsTokenCompleted(&m_token);
+	return RendererAPI::GetResourceLoader()->IsTokenCompleted(m_token);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -110,7 +110,7 @@ void TRAP::Graphics::VertexBuffer::AwaitLoading() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	RendererAPI::GetResourceLoader()->WaitForToken(&m_token);
+	RendererAPI::GetResourceLoader()->WaitForToken(m_token);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
