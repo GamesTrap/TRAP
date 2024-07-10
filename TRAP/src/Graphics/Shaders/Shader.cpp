@@ -16,7 +16,7 @@ namespace
 	constinit bool GlslangInitialized = false;
 
 	//Macros which are always provided by default.
-	std::array<TRAP::Graphics::Shader::Macro, 2> DefaultShaderMacrosVulkan
+	const std::array<TRAP::Graphics::Shader::Macro, 2> DefaultShaderMacrosVulkan
 	{
 		{
 			{"UpdateFreqStatic", "set = 0"},
@@ -111,6 +111,125 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	struct GLSLSourceStages
+	{
+		std::string GLSLSource{};
+		TRAP::Graphics::RendererAPI::ShaderStage Stage = TRAP::Graphics::RendererAPI::ShaderStage::None;
+	};
+
+
+	[[nodiscard]] constexpr TRAP::Optional<std::vector<GLSLSourceStages>> ParseGLSLSource(const std::string_view glslSource)
+	{
+		std::vector<GLSLSourceStages> shaders{};
+
+		const std::vector<std::string_view> glslLines = TRAP::Utils::String::GetLinesStringView(glslSource);
+		TRAP::Graphics::RendererAPI::ShaderStage currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::None;
+		std::string lowerLine{}; //Used for lines starting with '#'
+
+		//Go through every line of the shader source
+		for(usize i = 0; i < glslLines.size(); ++i)
+		{
+			if(glslLines[i].starts_with('#'))
+				lowerLine = TRAP::Utils::String::ToLower(std::string(glslLines[i]));
+
+			//Search for a shader type tag
+			if(lowerLine.starts_with("#shader"))
+			{
+				//Detect shader type
+				if (TRAP::Utils::String::Contains(lowerLine, "vertex"))
+					currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::Vertex;
+				else if (TRAP::Utils::String::Contains(lowerLine, "fragment") ||
+						 TRAP::Utils::String::Contains(lowerLine, "pixel"))
+				{
+					currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::Fragment;
+				}
+				else if (TRAP::Utils::String::Contains(lowerLine, "geometry"))
+					currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::Geometry;
+				else if (TRAP::Utils::String::Contains(lowerLine, "tessellation"))
+				{
+					//Either Control or Evaluation
+					if (TRAP::Utils::String::Contains(lowerLine, "control"))
+						currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl;
+					else if (TRAP::Utils::String::Contains(lowerLine, "evaluation"))
+						currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation;
+				}
+				else if(TRAP::Utils::String::Contains(lowerLine, "hull"))
+					currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::Hull;
+				else if(TRAP::Utils::String::Contains(lowerLine, "domain"))
+					currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::Domain;
+				else if (TRAP::Utils::String::Contains(lowerLine, "compute"))
+					currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::Compute;
+				//TODO RayTracing Shaders i.e. "RayGen" "AnyHit" "ClosestHit" "Miss" "Intersection" ("Callable")
+
+				//Check for duplicate "#shader XXX" defines
+				if (std::ranges::any_of(shaders,
+					[currentShaderStage](const auto& element){return (element.Stage & currentShaderStage) != TRAP::Graphics::RendererAPI::ShaderStage::None;}))
+				{
+					TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Found duplicate \"#shader\" define: \"", glslLines[i], '\"');
+					return TRAP::NullOpt;
+				}
+
+				shaders.emplace_back("", currentShaderStage);
+				lowerLine.clear();
+			}
+			else if(lowerLine.starts_with("#version")) //Check for unnecessary "#version" define
+			{
+				TP_WARN(TRAP::Log::ShaderGLSLPrefix, "Found unnecessary \"#version\" tag! Skipping line: ", i);
+				lowerLine.clear();
+			}
+			else if(currentShaderStage != TRAP::Graphics::RendererAPI::ShaderStage::None) //Add shader code to detected shader stage
+			{
+				if(currentShaderStage == TRAP::Graphics::RendererAPI::ShaderStage::RayTracing)
+				{
+					TP_WARN(TRAP::Log::ShaderGLSLPrefix, "RayTracing shader support is WIP!");
+					return TRAP::NullOpt;
+				}
+				if(currentShaderStage == TRAP::Graphics::RendererAPI::ShaderStage::None)
+				{
+					TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Unsupported shader type!");
+					return TRAP::NullOpt;
+				}
+
+				shaders.back().GLSLSource.append(fmt::format("{}\n", glslLines[i]));
+			}
+		}
+
+		return shaders;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void AddPreprocessorMacros(const std::span<GLSLSourceStages> shaders,
+	                           const std::span<const TRAP::Graphics::Shader::Macro> userMacros)
+	{
+		for(auto& [shaderCode, shaderStage] : shaders)
+		{
+			switch(TRAP::Graphics::RendererAPI::GetRenderAPI())
+			{
+			case TRAP::Graphics::RenderAPI::Vulkan:
+			{
+				//Add GLSL version before any shader code
+				//Add default macros
+				std::string preprocessed = "#version 460 core\n";
+				for(const TRAP::Graphics::Shader::Macro& macro : DefaultShaderMacrosVulkan)
+					preprocessed += fmt::format("#define {} {}\n", macro.Definition, macro.Value);
+
+				for(const TRAP::Graphics::Shader::Macro& macro : userMacros)
+					preprocessed += fmt::format("#define {} {}\n", macro.Definition, macro.Value);
+
+				//Prepend preprocessed macros to shader
+				shaderCode.insert(0, preprocessed);
+				break;
+			}
+
+			case TRAP::Graphics::RenderAPI::NONE:
+				break;
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
 	/// @brief Pre process GLSL source code.
 	///
 	/// 1. Splits different shader types like vertex, fragment, etc.
@@ -122,104 +241,19 @@ namespace
 	/// @param shaders Output: Splitted shaders.
 	/// @param userMacros Optional: User defined macros.
 	/// @return True if pre processing was successful, false otherwise.
-	[[nodiscard]] bool PreProcessGLSL(const std::string& glslSource,
-	                                  std::vector<std::pair<std::string, TRAP::Graphics::RendererAPI::ShaderStage>>& shaders,
+	[[nodiscard]] bool PreProcessGLSL(const std::string_view glslSource,
+	                                  std::vector<GLSLSourceStages>& shaders,
 									  const std::span<const TRAP::Graphics::Shader::Macro> userMacros)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-		TRAP::Graphics::RendererAPI::ShaderStage currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::None;
-		const std::vector<std::string> lines = TRAP::Utils::String::GetLines(glslSource);
+		const auto parsedData = ParseGLSLSource(glslSource);
+		if(!parsedData)
+			return false;
 
-		//Go through every line of the shader source
-		for(usize i = 0; i < lines.size(); ++i)
-		{
-			//Optimization lines converted to lower case
-			const std::string lowerLine = TRAP::Utils::String::ToLower(lines[i]);
+		shaders = *parsedData;
 
-			//Search for a shader type tag
-			if(lowerLine.starts_with("#shader"))
-			{
-				//Detect shader type
-				if (TRAP::Utils::String::Contains(lowerLine, "vertex"))
-					currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::Vertex;
-				else if (TRAP::Utils::String::Contains(lowerLine, "fragment") ||
-						TRAP::Utils::String::Contains(lowerLine, "pixel"))
-					currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::Fragment;
-				else if (TRAP::Utils::String::Contains(lowerLine, "geometry"))
-					currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::Geometry;
-				else if (TRAP::Utils::String::Contains(lowerLine, "tessellation"))
-				{
-					//Either Control or Evaluation
-					if (TRAP::Utils::String::Contains(lowerLine, "control"))
-						currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl;
-					else if (TRAP::Utils::String::Contains(lowerLine, "evaluation"))
-						currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation;
-				}
-				else if (TRAP::Utils::String::Contains(lowerLine, "compute"))
-					currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::Compute;
-				//TODO RayTracing Shaders i.e. "RayGen" "AnyHit" "ClosestHit" "Miss" "Intersection" ("Callable")
-
-				//Check for duplicate "#shader XXX" defines
-				if (std::ranges::any_of(shaders,
-					[currentShaderStage](const auto& element){return (element.second & currentShaderStage) != TRAP::Graphics::RendererAPI::ShaderStage::None;}))
-				{
-					TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Found duplicate \"#shader\" define: ", lines[i]);
-					return false;
-				}
-
-				shaders.emplace_back("", currentShaderStage);
-			}
-			else if(TRAP::Utils::String::Contains(lowerLine, "#version")) //Check for unnecessary "#version" define
-				TP_WARN(TRAP::Log::ShaderGLSLPrefix, "Found tag: \"", lines[i], "\" this is unnecessary! Skipping line: ", i);
-			else if(currentShaderStage != TRAP::Graphics::RendererAPI::ShaderStage::None) //Add shader code to detected shader stage
-			{
-				if(currentShaderStage == TRAP::Graphics::RendererAPI::ShaderStage::RayTracing)
-				{
-					TP_WARN(TRAP::Log::ShaderGLSLPrefix, "RayTracing shader support is WIP!");
-					return false;
-				}
-				if(currentShaderStage == TRAP::Graphics::RendererAPI::ShaderStage::None)
-				{
-					TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Unsupported shader type!");
-					return false;
-				}
-
-				shaders.back().first.append(lines[i] + '\n');
-			}
-		}
-
-		for(auto& [shaderCode, shaderStage] : shaders)
-		{
-			if (!TRAP::Utils::String::Contains(TRAP::Utils::String::ToLower(shaderCode), "main"))
-			{
-				TP_ERROR(TRAP::Log::ShaderGLSLPrefix, ShaderStageToString(shaderStage), " shader couldn't find \"main\" function!");
-				return false;
-			}
-
-			std::string preprocessed;
-			if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
-			{
-				//Found main function
-				//Add GLSL version before any shader code &
-				//Add Descriptor defines
-				preprocessed = "#version 460 core\n";
-				for(const TRAP::Graphics::Shader::Macro& macro : DefaultShaderMacrosVulkan)
-					preprocessed += fmt::format("#define {} {}\n", macro.Definition, macro.Value);
-			}
-			else if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::Vulkan)
-			{
-				//Found main function
-				//Add GLSL version before any shader code
-				preprocessed = "#version 460 core\n";
-			}
-
-			for(const TRAP::Graphics::Shader::Macro& macro : userMacros)
-				preprocessed += fmt::format("#define {} {}\n", macro.Definition, macro.Value);
-
-			//Add preprocessed macros to shader
-			shaderCode = preprocessed + shaderCode;
-		}
+		AddPreprocessorMacros(shaders, userMacros);
 
 		return true;
 	}
@@ -239,8 +273,10 @@ namespace
 						static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
 		{
 			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Parsing failed: ");
-			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, shader.getInfoLog());
-			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, shader.getInfoDebugLog());
+			if(const std::string_view info = shader.getInfoLog(); !info.empty())
+				TP_ERROR(TRAP::Log::ShaderGLSLPrefix, info);
+			if(const std::string_view infoDebug = shader.getInfoDebugLog(); !infoDebug.empty())
+				TP_ERROR(TRAP::Log::ShaderGLSLPrefix, infoDebug);
 
 			return false;
 		}
@@ -263,13 +299,40 @@ namespace
 		if(!program.link(static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
 		{
 			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Linking failed: ");
-			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, program.getInfoLog());
-			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, program.getInfoDebugLog());
+			if(const std::string_view info = program.getInfoLog(); !info.empty())
+				TP_ERROR(TRAP::Log::ShaderGLSLPrefix, info);
+			if(const std::string_view infoDebug = program.getInfoDebugLog(); !infoDebug.empty())
+				TP_ERROR(TRAP::Log::ShaderGLSLPrefix, infoDebug);
 
 			return false;
 		}
 
 		return true;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr bool ContainsGraphicsShaderStage(const TRAP::Graphics::RendererAPI::ShaderStage stages)
+	{
+		return ((TRAP::Graphics::RendererAPI::ShaderStage::Vertex & stages) != TRAP::Graphics::RendererAPI::ShaderStage::None) ||
+			   ((TRAP::Graphics::RendererAPI::ShaderStage::Fragment & stages) != TRAP::Graphics::RendererAPI::ShaderStage::None) ||
+			   ((TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl & stages) != TRAP::Graphics::RendererAPI::ShaderStage::None) ||
+			   ((TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation & stages) != TRAP::Graphics::RendererAPI::ShaderStage::None) ||
+			   ((TRAP::Graphics::RendererAPI::ShaderStage::Geometry & stages) != TRAP::Graphics::RendererAPI::ShaderStage::None);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr bool ContainsComputeShaderStage(const TRAP::Graphics::RendererAPI::ShaderStage stages)
+	{
+		return (TRAP::Graphics::RendererAPI::ShaderStage::Compute & stages) != TRAP::Graphics::RendererAPI::ShaderStage::None;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr bool ContainsRayTracingShaderStage(const TRAP::Graphics::RendererAPI::ShaderStage stages)
+	{
+		return (TRAP::Graphics::RendererAPI::ShaderStage::RayTracing & stages) != TRAP::Graphics::RendererAPI::ShaderStage::None;
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -282,48 +345,38 @@ namespace
 	/// 4. Checks if Vertex and Fragment shaders are combined.
 	/// @param shaders Shader stages to validate.
 	/// @return True if validation was successful, false otherwise.
-	[[nodiscard]] constexpr bool ValidateShaderStages(const std::vector<std::pair<std::string, TRAP::Graphics::RendererAPI::ShaderStage>>& shaders)
+	[[nodiscard]] constexpr bool ValidateShaderStages(const std::span<const GLSLSourceStages> shaders)
 	{
 		TRAP::Graphics::RendererAPI::ShaderStage combinedStages = TRAP::Graphics::RendererAPI::ShaderStage::None;
 		for(const auto& [glsl, stage] : shaders)
 			combinedStages |= stage;
 
 		//Check if any Shader Stage is set
-		if (TRAP::Graphics::RendererAPI::ShaderStage::None == combinedStages)
+		if (combinedStages == TRAP::Graphics::RendererAPI::ShaderStage::None)
 		{
 			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "No shader stage found!");
 			return false;
 		}
 
-		//Check for "Normal" Shader Stages combined with Compute
-		if((((TRAP::Graphics::RendererAPI::ShaderStage::Vertex & combinedStages) != TRAP::Graphics::RendererAPI::ShaderStage::None) ||
-			((TRAP::Graphics::RendererAPI::ShaderStage::Fragment & combinedStages) != TRAP::Graphics::RendererAPI::ShaderStage::None) ||
-			((TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl & combinedStages) != TRAP::Graphics::RendererAPI::ShaderStage::None) ||
-			((TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation & combinedStages) != TRAP::Graphics::RendererAPI::ShaderStage::None) ||
-			((TRAP::Graphics::RendererAPI::ShaderStage::Geometry & combinedStages) != TRAP::Graphics::RendererAPI::ShaderStage::None)) &&
-			((TRAP::Graphics::RendererAPI::ShaderStage::Compute & combinedStages) != TRAP::Graphics::RendererAPI::ShaderStage::None))
+		const bool graphics = ContainsGraphicsShaderStage(combinedStages);
+		const bool compute = ContainsComputeShaderStage(combinedStages);
+		const bool rayTracing = ContainsRayTracingShaderStage(combinedStages);
+
+		if(graphics && compute)
 		{
-			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Rasterizer shader stages combined with compute stage!");
+			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Rasterizer shader stages can't be combined with compute stage!");
 			return false;
 		}
 
-		//Check for "Normal" Shader Stages combined with RayTracing
-		if((((TRAP::Graphics::RendererAPI::ShaderStage::Vertex & combinedStages) != TRAP::Graphics::RendererAPI::ShaderStage::None) ||
-			((TRAP::Graphics::RendererAPI::ShaderStage::Fragment & combinedStages) != TRAP::Graphics::RendererAPI::ShaderStage::None) ||
-			((TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl & combinedStages) != TRAP::Graphics::RendererAPI::ShaderStage::None) ||
-			((TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation & combinedStages) != TRAP::Graphics::RendererAPI::ShaderStage::None) ||
-			((TRAP::Graphics::RendererAPI::ShaderStage::Geometry & combinedStages) != TRAP::Graphics::RendererAPI::ShaderStage::None)) &&
-			((TRAP::Graphics::RendererAPI::ShaderStage::RayTracing & combinedStages) != TRAP::Graphics::RendererAPI::ShaderStage::None))
+		if(graphics && rayTracing)
 		{
-			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Rasterizer shader stages combined with ray tracing stage!");
+			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Rasterizer shader stages can't be combined with ray tracing stage!");
 			return false;
 		}
 
-		//Check for Compute Shader Stage combined with RayTracing
-		if (((TRAP::Graphics::RendererAPI::ShaderStage::Compute & combinedStages) != TRAP::Graphics::RendererAPI::ShaderStage::None) &&
-			((TRAP::Graphics::RendererAPI::ShaderStage::RayTracing & combinedStages) != TRAP::Graphics::RendererAPI::ShaderStage::None))
+		if(compute && rayTracing)
 		{
-			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Compute shader stage combined with ray tracing stage!");
+			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Compute shader stage can't be combined with ray tracing stage!");
 			return false;
 		}
 
@@ -367,8 +420,8 @@ namespace
 	#endif /*TRAP_DEBUG*/
 
 		glslang::GlslangToSpv(*program.getIntermediate(ShaderStageToEShLanguage(stage)), SPIRV, &logger, &spvOptions);
-		if (logger.getAllMessages().length() > 0)
-			TP_ERROR(TRAP::Log::ShaderSPIRVPrefix, ShaderStageToString(stage), " shader: ", logger.getAllMessages());
+		if (const std::string log = logger.getAllMessages(); !log.empty())
+			TP_ERROR(TRAP::Log::ShaderSPIRVPrefix, ShaderStageToString(stage), " shader: ", log);
 
 		//TODO RayTracing shaders
 
@@ -380,7 +433,7 @@ namespace
 	/// @brief Convert GLSL shaders to SPIRV.
 	/// @param shaders GLSL shader(s) to convert.
 	/// @return RendererAPI::BinaryShaderDesc containing SPIRV binary data.
-	[[nodiscard]] TRAP::Graphics::RendererAPI::BinaryShaderDesc ConvertGLSLToSPIRV(const std::vector<std::pair<std::string, TRAP::Graphics::RendererAPI::ShaderStage>>& shaders)
+	[[nodiscard]] TRAP::Graphics::RendererAPI::BinaryShaderDesc ConvertGLSLToSPIRV(const std::span<const GLSLSourceStages> shaders)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -425,18 +478,38 @@ namespace
 	#endif /*ENABLE_GRAPHICS_DEBUG*/
 			const std::vector<u32> SPIRV = ConvertToSPIRV(stage, program);
 
-			if((stage & TRAP::Graphics::RendererAPI::ShaderStage::Vertex) != TRAP::Graphics::RendererAPI::ShaderStage::None)
-				desc.Vertex = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
-			else if((stage & TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl) != TRAP::Graphics::RendererAPI::ShaderStage::None)
-				desc.TessellationControl = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
-			else if((stage & TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation) != TRAP::Graphics::RendererAPI::ShaderStage::None)
-				desc.TessellationEvaluation = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
-			else if((stage & TRAP::Graphics::RendererAPI::ShaderStage::Geometry) != TRAP::Graphics::RendererAPI::ShaderStage::None)
-				desc.Geometry = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
-			else if((stage & TRAP::Graphics::RendererAPI::ShaderStage::Fragment) != TRAP::Graphics::RendererAPI::ShaderStage::None)
-				desc.Fragment = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
-			else if((stage & TRAP::Graphics::RendererAPI::ShaderStage::Compute) != TRAP::Graphics::RendererAPI::ShaderStage::None)
-				desc.Compute = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
+			switch(stage)
+			{
+			case TRAP::Graphics::RendererAPI::ShaderStage::Vertex:
+				desc.Vertex = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV };
+				break;
+			case TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl:
+				desc.TessellationControl = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV };
+				break;
+			case TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation:
+				desc.TessellationEvaluation = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV };
+				break;
+			case TRAP::Graphics::RendererAPI::ShaderStage::Geometry:
+				desc.Geometry = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV };
+				break;
+			case TRAP::Graphics::RendererAPI::ShaderStage::Fragment:
+				desc.Fragment = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV };
+				break;
+
+			case TRAP::Graphics::RendererAPI::ShaderStage::Compute:
+				desc.Compute = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV };
+				break;
+
+			case TRAP::Graphics::RendererAPI::ShaderStage::RayTracing:
+				//TODO
+				return {};
+
+			case TRAP::Graphics::RendererAPI::ShaderStage::AllGraphics:
+				[[fallthrough]];
+			case TRAP::Graphics::RendererAPI::ShaderStage::None:
+				TRAP_ASSERT(false, "Shader::ConvertGLSLToSPIRV: Invalid shader stage!");
+				return {};
+			}
 		}
 
 		return desc;
@@ -447,21 +520,24 @@ namespace
 	/// @brief Load SPIRV binary data into RendererAPI::BinaryShaderDesc.
 	/// @param SPIRV SPIRV binary data.
 	/// @return RendererAPI::BinaryShaderDesc containing loaded SPIRV binary data.
-	[[nodiscard]] TRAP::Graphics::RendererAPI::BinaryShaderDesc LoadSPIRV(std::vector<u8>& SPIRV)
+	[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::BinaryShaderDesc LoadSPIRV(const std::span<u8> SPIRV)
 	{
 	#ifdef ENABLE_GRAPHICS_DEBUG
 		TP_DEBUG(TRAP::Log::ShaderSPIRVPrefix, "Loading SPIRV");
 	#endif /*ENABLE_GRAPHICS_DEBUG*/
 
-		if(SPIRV.empty() || SPIRV.size() < (ShaderHeaderOffset + sizeof(SPIRVMagicNumber)))
+		if(SPIRV.size() < (ShaderHeaderOffset + sizeof(SPIRVMagicNumber)))
 			return {};
 
-		const u32 magicNumber = TRAP::Utils::Memory::ConvertByte<u32>(SPIRV.data() + ShaderHeaderOffset);
+		u32 magicNumber = TRAP::Utils::Memory::ConvertByte<u32>(SPIRV.subspan(ShaderHeaderOffset).data());
 
 		//Check endianness of byte stream
 		if (magicNumber != SPIRVMagicNumber)
 		{
 			TRAP::Utils::Memory::SwapBytes(SPIRV.begin(), SPIRV.end()); //Convert endianness if needed
+
+			magicNumber = TRAP::Utils::Memory::ConvertByte<u32>(SPIRV.subspan(ShaderHeaderOffset).data());
+
 			if (magicNumber != SPIRVMagicNumber) //Recheck if SPIRV Magic Number is present
 				return {};
 		}
@@ -472,7 +548,7 @@ namespace
 
 		for(u32 i = 0; i < SPIRVSubShaderCount; ++i)
 		{
-			usize SPIRVSize = TRAP::Utils::Memory::ConvertByte<usize>(SPIRV.data() + NumericCast<isize>(index));
+			const usize SPIRVSize = TRAP::Utils::Memory::ConvertByte<usize>(SPIRV.data() + NumericCast<isize>(index));
 			index += sizeof(usize);
 
 			const TRAP::Graphics::RendererAPI::ShaderStage stage = static_cast<TRAP::Graphics::RendererAPI::ShaderStage>(SPIRV[index++]);
@@ -482,52 +558,52 @@ namespace
 			if(spvMagicNumber != SPIRVMagicNumber || (SPIRV.size() - index) < SPIRVSize)
 				return {};
 
+			std::vector<u32>* outputSPIRV = nullptr;
+
 			switch(stage)
 			{
 			case TRAP::Graphics::RendererAPI::ShaderStage::Vertex:
-				desc.Vertex.ByteCode.resize(SPIRVSize);
-				TRAP::Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<isize>(index), SPIRV.begin() + NumericCast<isize>(index) + NumericCast<isize>(SPIRVSize * sizeof(u32)), desc.Vertex.ByteCode.begin());
-				index += SPIRVSize * sizeof(u32);
+				outputSPIRV = &desc.Vertex.ByteCode;
 				break;
 
 			case TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl:
-				desc.TessellationControl.ByteCode.resize(SPIRVSize);
-				TRAP::Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<isize>(index), SPIRV.begin() + NumericCast<isize>(index) + NumericCast<isize>(SPIRVSize * sizeof(u32)), desc.TessellationControl.ByteCode.begin());
-				index += SPIRVSize * sizeof(u32);
+				outputSPIRV = &desc.TessellationControl.ByteCode;
 				break;
 
 			case TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation:
-				desc.TessellationEvaluation.ByteCode.resize(SPIRVSize);
-				TRAP::Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<isize>(index), SPIRV.begin() + NumericCast<isize>(index) + NumericCast<isize>(SPIRVSize * sizeof(u32)), desc.TessellationEvaluation.ByteCode.begin());
-				index += SPIRVSize * sizeof(u32);
+				outputSPIRV = &desc.TessellationEvaluation.ByteCode;
 				break;
 
 			case TRAP::Graphics::RendererAPI::ShaderStage::Geometry:
-				desc.Geometry.ByteCode.resize(SPIRVSize);
-				TRAP::Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<isize>(index), SPIRV.begin() + NumericCast<isize>(index) + NumericCast<isize>(SPIRVSize * sizeof(u32)), desc.Geometry.ByteCode.begin());
-				index += SPIRVSize * sizeof(u32);
+				outputSPIRV = &desc.Geometry.ByteCode;
 				break;
 
 			case TRAP::Graphics::RendererAPI::ShaderStage::Fragment:
-				desc.Fragment.ByteCode.resize(SPIRVSize);
-				TRAP::Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<isize>(index), SPIRV.begin() + NumericCast<isize>(index) + NumericCast<isize>(SPIRVSize * sizeof(u32)), desc.Fragment.ByteCode.begin());
-				index += SPIRVSize * sizeof(u32);
+				outputSPIRV = &desc.Fragment.ByteCode;
 				break;
 
 			case TRAP::Graphics::RendererAPI::ShaderStage::Compute:
-				desc.Compute.ByteCode.resize(SPIRVSize);
-				TRAP::Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<isize>(index), SPIRV.begin() + NumericCast<isize>(index) + NumericCast<isize>(SPIRVSize * sizeof(u32)), desc.Compute.ByteCode.begin());
-				index += SPIRVSize * sizeof(u32);
+				outputSPIRV = &desc.Compute.ByteCode;
 				break;
 
-			//case TRAP::Graphics::RendererAPI::ShaderStage::RayTracing:
-				//TODO RayTracing
+			case TRAP::Graphics::RendererAPI::ShaderStage::RayTracing:
+				// TODO RayTracing
+				return {};
 
-			case TRAP::Graphics::RendererAPI::ShaderStage::None:
+			case TRAP::Graphics::RendererAPI::ShaderStage::AllGraphics:
 				[[fallthrough]];
-			default:
-				break;
+			case TRAP::Graphics::RendererAPI::ShaderStage::None:
+				TRAP_ASSERT(false, "Shader::LoadSPIRV: Invalid shader stage!");
+				return {};
 			}
+
+			if(outputSPIRV != nullptr)
+			{
+				outputSPIRV->resize(SPIRVSize);
+				TRAP::Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<isize>(index), SPIRV.begin() + NumericCast<isize>(index) + NumericCast<isize>(SPIRVSize * sizeof(u32)), outputSPIRV->begin());
+			}
+
+			index += SPIRVSize * sizeof(u32);
 		}
 
 		return desc;
@@ -581,7 +657,7 @@ namespace
 	/// @param outShaderDesc Output binary shader description.
 	/// @param outFailShader Optional Output used if pre initialization failed.
 	/// @return True on successful pre initialization, false otherwise.
-	/// If false outFailShader may be filled with a fail shader.
+	///         If false outFailShader may be filled with a fail shader.
 	[[nodiscard]] bool PreInit(const std::string& name, const std::filesystem::path& filePath,
 	                           const std::vector<TRAP::Graphics::Shader::Macro>& userMacros,
 							   TRAP::Graphics::RendererAPI::BinaryShaderDesc& outShaderDesc,
@@ -613,18 +689,12 @@ namespace
 			}
 		}
 
-		if(isSPIRV)
-		{
-			if(!filePath.empty() && SPIRVSource.empty())
-				TP_ERROR(TRAP::Log::ShaderSPIRVPrefix, "Couldn't load shader: \"", name, "\"!");
-		}
-		else
-		{
-			if (!filePath.empty() && glslSource.empty())
-				TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Couldn't load shader: \"", name, "\"!");
-		}
+		if(isSPIRV && SPIRVSource.empty())
+			TP_ERROR(TRAP::Log::ShaderSPIRVPrefix, "Couldn't load shader: \"", name, "\"!");
+		else if(glslSource.empty())
+			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Couldn't load shader: \"", name, "\"!");
 
-		if ((glslSource.empty() && !isSPIRV) || (SPIRVSource.empty() && isSPIRV))
+		if (glslSource.empty() && SPIRVSource.empty())
 		{
 			TP_WARN(TRAP::Log::ShaderPrefix, "Skipping unrecognized file ", filePath);
 			return false;
@@ -632,7 +702,7 @@ namespace
 
 		if (!isSPIRV)
 		{
-			std::vector<std::pair<std::string, TRAP::Graphics::RendererAPI::ShaderStage>> shaders{};
+			std::vector<GLSLSourceStages> shaders{};
 			if (!PreProcessGLSL(glslSource, shaders, userMacros))
 			{
 				TP_WARN(TRAP::Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader");
@@ -665,6 +735,20 @@ namespace
 
 		return true;
 	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void AddPathToHotReloading(const std::filesystem::path& filePath)
+	{
+		const auto hotReloadingFileSystemWatcher = TRAP::Application::GetHotReloadingFileSystemWatcher();
+
+		if(hotReloadingFileSystemWatcher && !filePath.empty())
+		{
+			const auto folderPath = TRAP::FileSystem::GetFolderPath(filePath);
+			if(folderPath)
+				hotReloadingFileSystemWatcher->get().AddFolder(*folderPath);
+		}
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -673,6 +757,7 @@ bool TRAP::Graphics::Shader::Reload()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
+	//Early exit, we can't reload without a filepath.
 	if(m_filepath.empty())
 		return false;
 
@@ -681,16 +766,14 @@ bool TRAP::Graphics::Shader::Reload()
 
 	//Try to load shader from file and fill the BinaryShaderDesc
 	//Basically does more or less the same as PreInit does
-	std::string glslSource;
-	bool isSPIRV = false;
-	RendererAPI::BinaryShaderDesc desc;
-	std::vector<u8> SPIRVSource{};
 
 	if(!IsFileEndingSupported(m_filepath))
 		return false;
 
-	isSPIRV = CheckTRAPShaderMagicNumber(m_filepath);
+	const bool isSPIRV = CheckTRAPShaderMagicNumber(m_filepath);
 
+	std::string glslSource;
+	std::vector<u8> SPIRVSource{};
 	if (!isSPIRV)
 	{
 		const auto loadedData = FileSystem::ReadTextFile(m_filepath);
@@ -709,16 +792,17 @@ bool TRAP::Graphics::Shader::Reload()
 	else if (glslSource.empty())
 		TP_ERROR(Log::ShaderGLSLPrefix, "Couldn't load shader: \"", m_name, "\"!");
 
-	if ((glslSource.empty() && !isSPIRV) || (SPIRVSource.empty() && isSPIRV))
+	if (glslSource.empty() && SPIRVSource.empty())
 	{
 		TP_WARN(Log::ShaderPrefix, "Skipping unrecognized file ", m_filepath);
 		return false;
 	}
 
+	RendererAPI::BinaryShaderDesc desc;
 	m_shaderStages = RendererAPI::ShaderStage::None;
 	if (!isSPIRV)
 	{
-		std::vector<std::pair<std::string, RendererAPI::ShaderStage>> shaders{};
+		std::vector<GLSLSourceStages> shaders{};
 		if (!PreProcessGLSL(glslSource, shaders, m_macros) || !ValidateShaderStages(shaders))
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", m_name, "\" using fallback shader");
@@ -790,15 +874,7 @@ bool TRAP::Graphics::Shader::Reload()
 	{
 		Ref<API::VulkanShader> result = MakeRef<API::VulkanShader>(name, filePath, desc, userMacros);
 
-		//Hot reloading
-		const auto hotReloadingFileSystemWatcher = TRAP::Application::GetHotReloadingFileSystemWatcher();
-
-		if(hotReloadingFileSystemWatcher && !filePath.empty())
-		{
-			const auto folderPath = FileSystem::GetFolderPath(filePath);
-			if(folderPath)
-				hotReloadingFileSystemWatcher->get().AddFolder(*folderPath);
-		}
+		AddPathToHotReloading(filePath);
 
 		return result;
 	}
@@ -838,15 +914,7 @@ bool TRAP::Graphics::Shader::Reload()
 	{
 		Ref<API::VulkanShader> result = MakeRef<API::VulkanShader>(*name, filePath, desc, userMacros);
 
-		//Hot reloading
-		const auto hotReloadingFileSystemWatcher = TRAP::Application::GetHotReloadingFileSystemWatcher();
-
-		if(hotReloadingFileSystemWatcher && !filePath.empty())
-		{
-			const auto folderPath = FileSystem::GetFolderPath(filePath);
-			if(folderPath)
-				hotReloadingFileSystemWatcher->get().AddFolder(*folderPath);
-		}
+		AddPathToHotReloading(filePath);
 
 		return result;
 	}
@@ -868,7 +936,7 @@ bool TRAP::Graphics::Shader::Reload()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	std::vector<std::pair<std::string, RendererAPI::ShaderStage>> shaders{};
+	std::vector<GLSLSourceStages> shaders{};
 	if(!PreProcessGLSL(glslSource, shaders, userMacros) || !ValidateShaderStages(shaders))
 	{
 		TP_WARN(Log::ShaderPrefix, "Shader: \"", name, "\" using fallback shader");
@@ -896,7 +964,7 @@ bool TRAP::Graphics::Shader::Reload()
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const RendererAPI::ShaderStage stages,
-                               const std::vector<Macro>& userMacros, const std::filesystem::path& filepath)
-	: m_name(std::move(name)), m_filepath(filepath), m_shaderStages(stages), m_macros(userMacros), m_valid(valid)
+                               const std::vector<Macro>& userMacros, std::filesystem::path filepath)
+	: m_name(std::move(name)), m_filepath(std::move(filepath)), m_shaderStages(stages), m_macros(userMacros), m_valid(valid)
 {
 }

@@ -2006,8 +2006,6 @@ namespace TRAP::Graphics
 		{
 			//Shader data
 			std::vector<u32> ByteCode{};
-			//Entry point of shader
-			std::string EntryPoint{};
 		};
 
 		/// @brief Description of a binary shader.

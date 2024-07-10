@@ -331,7 +331,7 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const u32 set, const u32 bin
 
 	TRAP_ASSERT(!textures.empty(), "VulkanShader::UseTextures(): Textures are empty!");
 
-	if(!m_valid)
+	if(!m_valid || textures.empty())
 		return;
 
 	//OPTIMIZE Use index into root signature instead of name
