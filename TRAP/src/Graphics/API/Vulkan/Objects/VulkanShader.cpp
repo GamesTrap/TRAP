@@ -164,43 +164,39 @@ namespace
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::filesystem::path& filepath,
+TRAP::Graphics::API::VulkanShader::VulkanShader(const RendererAPI::ShaderType shaderType, std::string name,
+                                                const std::filesystem::path& filepath,
 												const RendererAPI::BinaryShaderDesc& desc,
-                                                const std::vector<Macro>& userMacros, const bool valid)
-	: Shader(std::move(name), valid, desc.Stages, userMacros, filepath)
+                                                const std::vector<Macro>& userMacros)
+	: Shader(shaderType, std::move(name), true, desc.Stages, userMacros, filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_device, "VulkanShader(): Vulkan Device is nullptr");
-
-	if(!m_valid)
-		return;
 
 	Init(desc);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const RendererAPI::BinaryShaderDesc& desc,
-                                                const std::vector<Macro>& userMacros, const bool valid)
-	: Shader(std::move(name), valid, desc.Stages, userMacros)
+TRAP::Graphics::API::VulkanShader::VulkanShader(const RendererAPI::ShaderType shaderType, std::string name,
+                                                const RendererAPI::BinaryShaderDesc& desc,
+                                                const std::vector<Macro>& userMacros)
+	: Shader(shaderType, std::move(name), true, desc.Stages, userMacros)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_device, "VulkanShader(): Vulkan Device is nullptr");
-
-	if(!m_valid)
-		return;
 
 	Init(desc);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::filesystem::path& filepath,
-                                                const std::vector<Macro>& userMacros,
-												const RendererAPI::ShaderStage stages)
-	: Shader(std::move(name), false, stages, userMacros, filepath)
+TRAP::Graphics::API::VulkanShader::VulkanShader(const RendererAPI::ShaderType shaderType, std::string name,
+                                                const std::filesystem::path& filepath,
+                                                const std::vector<Macro>& userMacros)
+	: Shader(shaderType, std::move(name), false, RendererAPI::ShaderStage::None, userMacros, filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -575,6 +571,8 @@ void TRAP::Graphics::API::VulkanShader::Shutdown()
 	m_shaderModules.clear();
 	m_shaderStages = RendererAPI::ShaderStage::None;
 	m_reflection.reset();
+
+	m_valid = false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

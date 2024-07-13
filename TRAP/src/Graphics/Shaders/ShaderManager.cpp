@@ -6,73 +6,110 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::UnorderedStringMap<TRAP::Ref<TRAP::Graphics::Shader>> Shaders{};
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const std::filesystem::path& filepath,
-    																      const std::vector<Shader::Macro>& userMacros)
+namespace
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	Ref<Shader> shader = Shader::CreateFromFile(filepath, userMacros);
-
-	if(!shader)
-		return Get("FallbackGraphics");
-
-	const std::string name = shader->GetName();
-
-	Add(std::move(shader));
-
-	return Get(name);
+	TRAP::Utils::UnorderedStringMap<TRAP::Ref<TRAP::Graphics::Shader>> Shaders{};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const std::string& name,
+TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const RendererAPI::ShaderType shaderType,
+                                                                          const std::filesystem::path& filepath,
+    																      const std::vector<Shader::Macro>& userMacros)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+
+	Ref<Shader> shader = Shader::CreateFromFile(shaderType, filepath, userMacros);
+
+	if(!shader)
+	{
+		switch(shaderType)
+		{
+		case RendererAPI::ShaderType::Graphics:
+			return Get(RendererAPI::ShaderType::Graphics, "FallbackGraphics");
+
+		case RendererAPI::ShaderType::Compute:
+			return Get(RendererAPI::ShaderType::Compute, "FallbackCompute");
+		}
+	}
+
+	const std::string name = shader->GetName();
+
+	Add(shader);
+
+	return shader;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const RendererAPI::ShaderType shaderType,
+                                                                          const std::string& name,
 																          const std::filesystem::path& filepath,
 																          const std::vector<Shader::Macro>& userMacros)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Ref<Shader> shader = Shader::CreateFromFile(name, filepath, userMacros);
+	Ref<Shader> shader = Shader::CreateFromFile(shaderType, name, filepath, userMacros);
 
 	if(!shader)
-		return Get("FallbackGraphics");
+	{
+		switch(shaderType)
+		{
+		case RendererAPI::ShaderType::Graphics:
+			return Get(RendererAPI::ShaderType::Graphics, "FallbackGraphics");
 
-	Add(std::move(shader));
+		case RendererAPI::ShaderType::Compute:
+			return Get(RendererAPI::ShaderType::Compute, "FallbackCompute");
+		}
+	}
 
-	return Get(name);
+	Add(shader);
+
+	return shader;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadSource(const std::string& name,
+TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadSource(const RendererAPI::ShaderType shaderType,
+	                                                                        const std::string& name,
 														              		const std::string& glslSource,
 																      		const std::vector<Shader::Macro>& userMacros)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Ref<Shader> shader = Shader::CreateFromSource(name, glslSource, userMacros);
+	Ref<Shader> shader = Shader::CreateFromSource(shaderType, name, glslSource, userMacros);
 
 	if(!shader)
-		return Get("FallbackGraphics");
+	{
+		switch(shaderType)
+		{
+		case RendererAPI::ShaderType::Graphics:
+			return Get(RendererAPI::ShaderType::Graphics, "FallbackGraphics");
 
-	Add(std::move(shader));
+		case RendererAPI::ShaderType::Compute:
+			return Get(RendererAPI::ShaderType::Compute, "FallbackCompute");
+		}
+	}
 
-	return Get(name);
+	Add(shader);
+
+	return shader;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::ShaderManager::Add(Ref<Shader> shader)
+void TRAP::Graphics::ShaderManager::Add(const Ref<Shader>& shader)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	TRAP_ASSERT(shader, "ShaderManager::Add(): Provided shader is nullptr!");
+	if(shader == nullptr)
+	{
+		TRAP_ASSERT(false, "ShaderManager::Add(): Provided shader is nullptr!");
+		return;
+	}
 
-	if(!Exists(shader->GetName()))
-		Shaders[shader->GetName()] = std::move(shader);
+	if(!Contains(shader->GetName()))
+		Shaders[shader->GetName()] = shader;
 	else
 		TP_ERROR(Log::ShaderManagerPrefix, "Shader with name: \"", shader->GetName(), "\" already exists! Ignoring new shader");
 }
@@ -83,14 +120,14 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(const Re
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	TRAP_ASSERT(shader, "ShaderManager::Remove(): Provided shader is nullptr!");
-
-	if (Exists(shader->GetName()))
+	if(shader == nullptr)
 	{
-		Ref<Shader> revShader = std::move(Shaders[shader->GetName()]);
-		Shaders.erase(shader->GetName());
-		return revShader;
+		TRAP_ASSERT(false, "ShaderManager::Remove(): Provided shader is nullptr!");
+		return nullptr;
 	}
+
+	if(Shaders.erase(shader->GetName()) > 0)
+		return shader;
 
 	TP_ERROR(Log::ShaderManagerPrefix, "Couldn't find shader with name: \"", shader->GetName(), "\"!");
 
@@ -103,10 +140,10 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(const st
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	if (Exists(name))
+	if(const auto it = Shaders.find(name); it != Shaders.end())
 	{
-		Ref<Shader> shader = std::move(Shaders[name]);
-		Shaders.erase(name);
+		Ref<Shader> shader = it->second;
+		Shaders.erase(it);
 		return shader;
 	}
 
@@ -117,18 +154,67 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(const st
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Get(const std::string& name)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Get(const RendererAPI::ShaderType shaderType,
+                                                                                   const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	if(Exists(name))
-		return Shaders[name];
+	if(const auto it = Shaders.find(name); it != Shaders.end())
+		return it->second;
 
 	TP_ERROR(Log::ShaderManagerPrefix, "Couldn't find shader with name: ", name, "!");
 	TP_WARN(Log::ShaderManagerPrefix, "Using fallback shader!");
 
 	//Should always be available as a fallback
-	return Get("FallbackGraphics");
+	switch(shaderType)
+	{
+	case RendererAPI::ShaderType::Graphics:
+		return Get(RendererAPI::ShaderType::Graphics, "FallbackGraphics");
+
+	case RendererAPI::ShaderType::Compute:
+		return Get(RendererAPI::ShaderType::Compute, "FallbackCompute");
+	}
+
+	TRAP_ASSERT(false, "ShaderManager::Get(): Failed to retrieve Fallback Shader, unknown ShaderType provided!");
+	return nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::GetGraphics(const std::string_view name)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+
+	return Get(RendererAPI::ShaderType::Graphics, name);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::GetCompute(const std::string_view name)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+
+	return Get(RendererAPI::ShaderType::Compute, name);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::GetByPath(const std::filesystem::path& path)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+
+	const auto it = std::ranges::find_if(Shaders, [&path](const auto& e)
+	{
+		const auto& [name, shader] = e;
+		return !shader->GetFilePath().empty() && FileSystem::IsEquivalent(path, shader->GetFilePath());
+	});
+
+	if(it != Shaders.end())
+		return it->second;
+
+	TP_ERROR(Log::ShaderManagerPrefix, "Couldn't find shader with path: ", path, "!");
+
+	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -150,81 +236,13 @@ void TRAP::Graphics::ShaderManager::Clean()
 	Shaders.clear();
 
 	//Make sure that fallback shaders are always available
-	Graphics::ShaderManager::LoadSource("FallbackGraphics", std::string(Embed::FallbackGraphicsShader));
-	Graphics::ShaderManager::LoadSource("FallbackCompute", std::string(Embed::FallbackComputeShader));
+	Graphics::ShaderManager::LoadSource(TRAP::Graphics::RendererAPI::ShaderType::Graphics, "FallbackGraphics", std::string(Embed::FallbackGraphicsShader));
+	Graphics::ShaderManager::LoadSource(TRAP::Graphics::RendererAPI::ShaderType::Compute,"FallbackCompute", std::string(Embed::FallbackComputeShader));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrPath)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	if(!TRAP::FileSystem::Exists(nameOrPath))
-	{
-		//Name
-		if(Exists(nameOrPath))
-		{
-			auto shader = Shaders[nameOrPath];
-			if(shader->Reload())
-				TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
-
-			return shader;
-		}
-
-		TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"", nameOrPath, "\" to reload.");
-	}
-	else //Path
-	{
-		for (const auto& [name, shader] : Shaders)
-		{
-			if (!shader->GetFilePath().empty() && FileSystem::IsEquivalent(nameOrPath, shader->GetFilePath()))
-			{
-				if(shader->Reload())
-					TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
-
-				return shader;
-			}
-		}
-
-		TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: ", std::filesystem::path(nameOrPath), " to reload.");
-	}
-
-	return nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(Ref<Shader> shader)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	if(!Exists(shader->GetName()))
-	{
-		TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"", shader->GetName(), "\" to reload.");
-		return nullptr;
-	}
-
-	if(shader->Reload())
-		TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", shader->GetName(), "\"");
-
-	return shader;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::ShaderManager::ReloadAll()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	TP_INFO(Log::ShaderManagerPrefix, "Reloading all may take a while...");
-	for (auto& [name, shader] : Shaders)
-		Reload(shader);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Graphics::ShaderManager::Exists(const std::string& name)
+[[nodiscard]] bool TRAP::Graphics::ShaderManager::Contains(const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -233,7 +251,7 @@ void TRAP::Graphics::ShaderManager::ReloadAll()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::Graphics::ShaderManager::ExistsPath(const std::filesystem::path& path)
+[[nodiscard]] bool TRAP::Graphics::ShaderManager::ContainsByPath(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 

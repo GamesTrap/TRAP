@@ -80,10 +80,10 @@ void RendererAPITests::OnAttach()
 	m_sizeMultiplicatorUniformBuffer->AwaitLoading();
 	m_colorUniformBuffer->AwaitLoading();
 
-	TRAP::Graphics::ShaderManager::LoadFile("Test", "./Assets/Shaders/test.shader");
-	TRAP::Graphics::ShaderManager::LoadFile("TestPushConstant", "./Assets/Shaders/testpushconstant.shader");
+	TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "Test", "./Assets/Shaders/test.shader");
+	TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "TestPushConstant", "./Assets/Shaders/testpushconstant.shader");
 	const std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
-	TRAP::Graphics::ShaderManager::LoadFile("TestUBO", "./Assets/Shaders/testubo.shader", macros);
+	TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "TestUBO", "./Assets/Shaders/testubo.shader", macros);
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -144,7 +144,7 @@ void RendererAPITests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 			m_colorTimer.Reset();
 		}
 
-		TRAP::Graphics::ShaderManager::Get("TestPushConstant")->Use();
+		TRAP::Graphics::ShaderManager::GetGraphics("TestPushConstant")->Use();
 
 		TRAP::Graphics::RenderCommand::SetPushConstants("ColorRootConstant", m_colorData);
 	}
@@ -175,7 +175,7 @@ void RendererAPITests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 		m_sizeMultiplicatorUniformBuffer->SetData(&m_sizeMultiplicatorData, sizeof(SizeMultiplicatorData));
 		m_colorUniformBuffer->SetData(&m_colorData, sizeof(ColorData));
 
-		const auto& shader = TRAP::Graphics::ShaderManager::Get("TestUBO");
+		const auto& shader = TRAP::Graphics::ShaderManager::GetGraphics("TestUBO");
 		//Use UBOs
 		shader->UseUBO(1, 0, *m_sizeMultiplicatorUniformBuffer);
 		shader->UseUBO(1, 1, *m_colorUniformBuffer);
@@ -183,7 +183,7 @@ void RendererAPITests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 		shader->Use();
 	}
 	else
-		TRAP::Graphics::ShaderManager::Get("Test")->Use();
+		TRAP::Graphics::ShaderManager::GetGraphics("Test")->Use();
 
 	if(!m_indexed)
 		TRAP::Graphics::RenderCommand::Draw(m_quad ? 6 : 3);

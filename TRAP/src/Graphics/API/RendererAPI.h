@@ -1570,6 +1570,14 @@ namespace TRAP::Graphics
 			Pixel = Fragment
 		};
 
+		/// @brief Enum describing the overall type of a shader.
+		enum class ShaderType
+		{
+			Graphics,
+			Compute,
+			// RayTracing //TODO
+		};
+
 		/// @brief Enum describing the different flags for root signature creation.
 		enum class RootSignatureFlags : u32
 		{
@@ -3302,6 +3310,42 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::ShaderStage>
 		if(enumStr.empty())
 		{
 			TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RendererAPI::ShaderStage>: Missing enum value!");
+			enumStr = "<MISSING ENUM VALUE>";
+		}
+
+        return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::Graphics::RendererAPI::ShaderType>
+{
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Graphics::RendererAPI::ShaderType shaderType,
+	                                            fmt::format_context& ctx)
+    {
+        std::string enumStr{};
+
+		switch(shaderType)
+		{
+		case TRAP::Graphics::RendererAPI::ShaderType::Graphics:
+			enumStr = "Graphics";
+			break;
+
+		case TRAP::Graphics::RendererAPI::ShaderType::Compute:
+			enumStr = "Compute";
+			break;
+		}
+
+		if(enumStr.empty())
+		{
+			TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RendererAPI::ShaderType>: Missing enum value!");
 			enumStr = "<MISSING ENUM VALUE>";
 		}
 

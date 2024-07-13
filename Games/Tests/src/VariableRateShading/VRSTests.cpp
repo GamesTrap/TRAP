@@ -90,7 +90,7 @@ void VRSTests::OnAttach()
 
     //Load Shader
     if(m_supportsPerDrawVRS || m_supportsPerTileVRS)
-        TRAP::Graphics::ShaderManager::LoadFile("ShadingRateVisualizer", "./Assets/Shaders/shadingratevisualizer.shader");
+        TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "ShadingRateVisualizer", "./Assets/Shaders/shadingratevisualizer.shader");
 
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -138,7 +138,7 @@ void VRSTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
     if((m_supportsPerDrawVRS || m_supportsPerTileVRS) && m_visualizeShadingRate)
     {
         //Fullscreen pass
-        TRAP::Graphics::ShaderManager::Get("ShadingRateVisualizer")->Use();
+        TRAP::Graphics::ShaderManager::GetGraphics("ShadingRateVisualizer")->Use();
         TRAP::Graphics::RenderCommand::Draw(3);
     }
 }

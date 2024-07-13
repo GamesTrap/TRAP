@@ -48,6 +48,8 @@ namespace TRAP::Graphics
 	using MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode;
 	/// @brief Different update frequencies.
 	using UpdateFrequency = RendererAPI::DescriptorUpdateFrequency;
+	/// @brief Different shader types.
+	using ShaderType = RendererAPI::ShaderType;
 
 	/// @brief Utility class for high level rendering commands.
 	/// User with knowledge about OpenGL should be familiar with most of these commands.

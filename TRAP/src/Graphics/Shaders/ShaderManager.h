@@ -7,30 +7,37 @@ namespace TRAP::Graphics::ShaderManager
 {
 	/// @brief Load a shader from file.
 	/// File name will be used as the shader name.
+	/// @param shaderType Type of the shader.
 	/// @param filepath File path of shader to load.
 	/// @param userMacros Optional user defined macros. Default: nullptr.
 	/// @return Loaded shader.
-	Ref<Shader> LoadFile(const std::filesystem::path& filepath,
+	Ref<Shader> LoadFile(RendererAPI::ShaderType shaderType,
+	                     const std::filesystem::path& filepath,
 					     const std::vector<Shader::Macro>& userMacros = {});
 	/// @brief Load a shader from file.
+	/// @param shaderType Type of the shader.
 	/// @param name Name for the shader.
 	/// @param filepath File path of shader to load.
 	/// @param userMacros Optional user defined macros. Default: nullptr.
 	/// @return Loaded shader.
-	Ref<Shader> LoadFile(const std::string& name, const std::filesystem::path& filepath,
+	Ref<Shader> LoadFile(RendererAPI::ShaderType shaderType,
+	                     const std::string& name,
+	                     const std::filesystem::path& filepath,
 					     const std::vector<Shader::Macro>& userMacros = {});
 	/// @brief Load a shader from GLSL source.
+	/// @param shaderType Type of the shader.
 	/// @param name Name for the shader.
 	/// @param glslSource GLSL source code.
 	/// @param userMacros Optional user defined macros. Default: nullptr.
 	/// @return Loaded shader.
-	Ref<Shader> LoadSource(const std::string& name,
+	Ref<Shader> LoadSource(RendererAPI::ShaderType shaderType,
+		                   const std::string& name,
 					       const std::string& glslSource,
 					       const std::vector<Shader::Macro>& userMacros = {});
 
 	/// @brief Add a shader to the ShaderManager.
 	/// @param shader Shader to add.
-	void Add(Ref<Shader> shader);
+	void Add(const Ref<Shader>& shader);
 	/// @brief Remove a shader from the ShaderManager.
 	/// @param shader Shader to remove.
 	/// @return Removed shader on success, nullptr otherwise.
@@ -40,37 +47,37 @@ namespace TRAP::Graphics::ShaderManager
 	/// @return Removed shader on success, nullptr otherwise.
 	[[maybe_unused]] Ref<Shader> Remove(const std::string& name);
 	/// @brief Retrieve a shader from the ShaderManager.
+	/// @param shaderType Type of the shader to retrieve.
 	/// @param name Name of the shader to retrieve.
 	/// @return Shader, Fallback shader if not found.
-	[[nodiscard]] Ref<Shader> Get(const std::string& name);
-	/// @brief Retrieve all loaded shader from the ShaderManager.
+	[[nodiscard]] Ref<Shader> Get(RendererAPI::ShaderType shaderType, std::string_view name);
+	/// @brief Retrieve a graphics shader from the ShaderManager.
+	/// @param name Name of the shader to retrieve.
+	/// @return Shader, Fallback shader if not found.
+	[[nodiscard]] Ref<Shader> GetGraphics(std::string_view name);
+	/// @brief Retrieve a compute shader from the ShaderManager.
+	/// @param name Name of the shader to retrieve.
+	/// @return Shader, Fallback shader if not found.
+	[[nodiscard]] Ref<Shader> GetCompute(std::string_view name);
+	/// @brief Retrieve a shader from the ShaderManager.
+	/// @param path Path of the shader to retrieve.
+	/// @return Shader, nullptr if not found.
+	[[nodiscard]] Ref<Shader> GetByPath(const std::filesystem::path& path);
+	/// @brief Retrieve all loaded shaders from the ShaderManager.
 	/// @return Map of all loaded shaders.
 	[[nodiscard]] const TRAP::Utils::UnorderedStringMap<Ref<Shader>>& GetShaders() noexcept;
 	/// @brief Clear all shaders from the ShaderManager.
 	/// Except fallback shaders.
 	void Clean();
 
-	/// @brief Reload a shader via its name or path.
-	/// @param nameOrPath Name or path of a shader.
-	/// @return Shader if found (even on unsucessful reload), nullptr otherwise.
-	/// Should only return nullptr if the shader was not found.
-	Ref<Shader> Reload(const std::string& nameOrPath);
-	/// @brief Reload a shader.
-	/// @param shader Shader to reload.
-	/// @return Shader if found (even on unsuccessful reload), nullptr otherwise.
-	/// Should only return nullptr if the shader was not found.
-	Ref<Shader> Reload(Ref<Shader> shader);
-	/// @brief Reload all currently loaded shaders.
-	void ReloadAll();
-
-	/// @brief Check whether a shader exists.
+	/// @brief Check whether a shader is in the ShaderManager.
 	/// @param name Name of shader to check.
-	/// @return True if shader exists, false otherwise.
-	[[nodiscard]] bool Exists(const std::string& name);
-	/// @brief Check whether a shader exists by path.
+	/// @return True if shader is in ShaderManager, false otherwise.
+	[[nodiscard]] bool Contains(std::string_view name);
+	/// @brief Check whether a shader is in the ShaderManager by path.
 	/// @param path Path of shader to check.
-	/// @return True if shader exists, false otherwise.
-	[[nodiscard]] bool ExistsPath(const std::filesystem::path& path);
+	/// @return True if shader is in ShaderManager, false otherwise.
+	[[nodiscard]] bool ContainsByPath(const std::filesystem::path& path);
 
 	/// @brief Shutdown the ShaderManager.
 	void Shutdown() noexcept;

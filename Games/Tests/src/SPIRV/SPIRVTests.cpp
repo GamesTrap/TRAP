@@ -53,8 +53,8 @@ void SPIRVTests::OnAttach()
 		{"COLOR", "vec3(1.0f, 0.0f, 0.0f)"}
 	};
 
-    // TRAP::Graphics::ShaderManager::LoadFile("Test", "./Assets/Shaders/testspirv.shader", macros);
-    TRAP::Graphics::ShaderManager::LoadFile("Test", "./Assets/Shaders/testspirv.tp-spv", macros);
+    // TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "Test", "./Assets/Shaders/testspirv.shader", macros);
+    TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "Test", "./Assets/Shaders/testspirv.tp-spv", macros);
 
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -68,7 +68,7 @@ void SPIRVTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTim
     m_indexBuffer->Use();
 
     //Use shader
-    TRAP::Graphics::ShaderManager::Get("Test")->Use();
+    TRAP::Graphics::ShaderManager::GetGraphics("Test")->Use();
 
     //Render Quad
     TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());

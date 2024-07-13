@@ -194,6 +194,9 @@ namespace
 			}
 		}
 
+		if(shaders.empty())
+			return TRAP::NullOpt;
+
 		return shaders;
 	}
 
@@ -345,7 +348,8 @@ namespace
 	/// 4. Checks if Vertex and Fragment shaders are combined.
 	/// @param shaders Shader stages to validate.
 	/// @return True if validation was successful, false otherwise.
-	[[nodiscard]] constexpr bool ValidateShaderStages(const std::span<const GLSLSourceStages> shaders)
+	[[nodiscard]] constexpr bool ValidateShaderStages(const TRAP::Graphics::RendererAPI::ShaderType shaderType,
+	                                                  const std::span<const GLSLSourceStages> shaders)
 	{
 		TRAP::Graphics::RendererAPI::ShaderStage combinedStages = TRAP::Graphics::RendererAPI::ShaderStage::None;
 		for(const auto& [glsl, stage] : shaders)
@@ -393,6 +397,20 @@ namespace
 		{
 			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Only fragment/pixel shader stage provided! Missing vertex shader stage");
 			return false;
+		}
+
+		//Validate that given ShaderType matches with ShaderStages
+		switch(shaderType)
+		{
+		case TRAP::Graphics::RendererAPI::ShaderType::Graphics:
+			if(!graphics)
+				return false;
+			break;
+
+		case TRAP::Graphics::RendererAPI::ShaderType::Compute:
+			if(!compute)
+				return false;
+			break;
 		}
 
 		//Shader Stages should be valid
@@ -651,17 +669,16 @@ namespace
 	/// 2. Loads shader file from disk.
 	/// 3. If GLSL convert to SPIRV else loads SPIRV code.
 	/// 4. Check for invalid shader stages.
+	/// @param shaderType Type of the shader.
 	/// @param name Name of the shader.
 	/// @param filePath File path of the shader.
 	/// @param userMacros Optional user provided macros.
 	/// @param outShaderDesc Output binary shader description.
-	/// @param outFailShader Optional Output used if pre initialization failed.
 	/// @return True on successful pre initialization, false otherwise.
-	///         If false outFailShader may be filled with a fail shader.
-	[[nodiscard]] bool PreInit(const std::string& name, const std::filesystem::path& filePath,
+	[[nodiscard]] bool PreInit(const TRAP::Graphics::RendererAPI::ShaderType shaderType, const std::string& name,
+	                           const std::filesystem::path& filePath,
 	                           const std::vector<TRAP::Graphics::Shader::Macro>& userMacros,
-							   TRAP::Graphics::RendererAPI::BinaryShaderDesc& outShaderDesc,
-							   TRAP::Ref<TRAP::Graphics::Shader>& outFailShader)
+							   TRAP::Graphics::RendererAPI::BinaryShaderDesc& outShaderDesc)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -703,22 +720,8 @@ namespace
 		if (!isSPIRV)
 		{
 			std::vector<GLSLSourceStages> shaders{};
-			if (!PreProcessGLSL(glslSource, shaders, userMacros))
-			{
-				TP_WARN(TRAP::Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader");
-				if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
-					outFailShader = TRAP::MakeRef<TRAP::Graphics::API::VulkanShader>(name, filePath, userMacros);
-
+			if (!PreProcessGLSL(glslSource, shaders, userMacros) || !ValidateShaderStages(shaderType, shaders))
 				return false;
-			}
-			if (!ValidateShaderStages(shaders))
-			{
-				TP_WARN(TRAP::Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader");
-				if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
-					outFailShader = TRAP::MakeRef<TRAP::Graphics::API::VulkanShader>(name, filePath, userMacros);
-
-				return false;
-			}
 
 			outShaderDesc = ConvertGLSLToSPIRV(shaders);
 		}
@@ -726,12 +729,7 @@ namespace
 			outShaderDesc = LoadSPIRV(SPIRVSource);
 
 		if (outShaderDesc.Stages == TRAP::Graphics::RendererAPI::ShaderStage::None)
-		{
-			if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
-				outFailShader = TRAP::MakeRef<TRAP::Graphics::API::VulkanShader>(name, filePath, userMacros);
-
 			return false;
-		}
 
 		return true;
 	}
@@ -795,6 +793,8 @@ bool TRAP::Graphics::Shader::Reload()
 	if (glslSource.empty() && SPIRVSource.empty())
 	{
 		TP_WARN(Log::ShaderPrefix, "Skipping unrecognized file ", m_filepath);
+		TP_WARN(Log::ShaderPrefix, "Shader: \"", m_name, "\" using fallback shader");
+		m_valid = false;
 		return false;
 	}
 
@@ -803,7 +803,7 @@ bool TRAP::Graphics::Shader::Reload()
 	if (!isSPIRV)
 	{
 		std::vector<GLSLSourceStages> shaders{};
-		if (!PreProcessGLSL(glslSource, shaders, m_macros) || !ValidateShaderStages(shaders))
+		if (!PreProcessGLSL(glslSource, shaders, m_macros) || !ValidateShaderStages(m_shaderType, shaders))
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", m_name, "\" using fallback shader");
 			m_valid = false;
@@ -851,7 +851,8 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name,
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const RendererAPI::ShaderType shaderType,
+                                                                                       const std::string& name,
                                                                                        const std::filesystem::path& filePath,
 																		               const std::vector<Macro>& userMacros)
 {
@@ -860,19 +861,24 @@ bool TRAP::Graphics::Shader::Reload()
 	if(name.empty())
 	{
 		TP_WARN(Log::ShaderPrefix, "Name is empty! Using filename as mame!");
-		return CreateFromFile(filePath, userMacros);
+		return CreateFromFile(shaderType, filePath, userMacros);
 	}
 
 	RendererAPI::BinaryShaderDesc desc{};
-	Ref<Shader> failShader = nullptr;
-	if(!PreInit(name, filePath, userMacros, desc, failShader))
-		return failShader;
+	const bool failed = !PreInit(shaderType, name, filePath, userMacros, desc);
 
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		Ref<API::VulkanShader> result = MakeRef<API::VulkanShader>(name, filePath, desc, userMacros);
+		Ref<API::VulkanShader> result = nullptr;
+		if(!failed)
+			result = MakeRef<API::VulkanShader>(shaderType, name, filePath, desc, userMacros);
+		else
+		{
+			TP_WARN(TRAP::Log::ShaderPrefix, "Shader: \"", name, "\" using fallback shader");
+			result = MakeRef<API::VulkanShader>(shaderType, name, filePath, userMacros);
+		}
 
 		AddPathToHotReloading(filePath);
 
@@ -890,13 +896,13 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::filesystem::path& filePath,
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const RendererAPI::ShaderType shaderType,
+                                                                                       const std::filesystem::path& filePath,
                                                                                        const std::vector<Macro>& userMacros)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	RendererAPI::BinaryShaderDesc desc{};
-	Ref<Shader> failShader = nullptr;
 	const auto name = FileSystem::GetFileNameWithoutEnding(filePath);
 	if(!name)
 	{
@@ -905,14 +911,21 @@ bool TRAP::Graphics::Shader::Reload()
 		return nullptr;
 	}
 
-	if(!PreInit(*name, filePath, userMacros, desc, failShader))
-		return failShader;
+	const bool failed = !PreInit(shaderType, *name, filePath, userMacros, desc);
 
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		Ref<API::VulkanShader> result = MakeRef<API::VulkanShader>(*name, filePath, desc, userMacros);
+		Ref<API::VulkanShader> result = nullptr;
+
+		if(!failed)
+			result = MakeRef<API::VulkanShader>(shaderType, *name, filePath, desc, userMacros);
+		else
+		{
+			TP_WARN(TRAP::Log::ShaderPrefix, "Shader: \"", *name, "\" using fallback shader");
+			result = MakeRef<API::VulkanShader>(shaderType, *name, filePath, userMacros);
+		}
 
 		AddPathToHotReloading(filePath);
 
@@ -930,27 +943,36 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const std::string& name,
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const RendererAPI::ShaderType shaderType,
+                                                                                         const std::string& name,
                                                                                          const std::string& glslSource,
 																		                 const std::vector<Macro>& userMacros)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	std::vector<GLSLSourceStages> shaders{};
-	if(!PreProcessGLSL(glslSource, shaders, userMacros) || !ValidateShaderStages(shaders))
-	{
-		TP_WARN(Log::ShaderPrefix, "Shader: \"", name, "\" using fallback shader");
-		return nullptr;
-	}
 
-	const RendererAPI::BinaryShaderDesc desc = ConvertGLSLToSPIRV(shaders);
-	if (desc.Stages == RendererAPI::ShaderStage::None)
-		return nullptr;
+	std::vector<GLSLSourceStages> shaders{};
+
+	bool failed = !PreProcessGLSL(glslSource, shaders, userMacros) || !ValidateShaderStages(shaderType, shaders);
+
+	RendererAPI::BinaryShaderDesc desc{};
+	if(!failed)
+	{
+		desc = ConvertGLSLToSPIRV(shaders);
+		if (desc.Stages == RendererAPI::ShaderStage::None)
+			failed = true;
+	}
 
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
-		return MakeRef<API::VulkanShader>(name, desc, userMacros);
+	{
+		if(!failed)
+			return MakeRef<API::VulkanShader>(shaderType, name, desc, userMacros);
+
+		TP_WARN(Log::ShaderPrefix, "Shader: \"", name, "\" using fallback shader");
+		return MakeRef<API::VulkanShader>(shaderType, name, "", userMacros);
+	}
 
 	case RenderAPI::NONE:
 		return nullptr;
@@ -963,8 +985,10 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const RendererAPI::ShaderStage stages,
-                               const std::vector<Macro>& userMacros, std::filesystem::path filepath)
-	: m_name(std::move(name)), m_filepath(std::move(filepath)), m_shaderStages(stages), m_macros(userMacros), m_valid(valid)
+TRAP::Graphics::Shader::Shader(const RendererAPI::ShaderType shaderType, std::string name, const bool valid,
+                               const RendererAPI::ShaderStage stages, const std::vector<Macro>& userMacros,
+							   std::filesystem::path filepath)
+	: m_name(std::move(name)), m_filepath(std::move(filepath)), m_shaderStages(stages), m_macros(userMacros),
+	  m_valid(valid), m_shaderType(shaderType)
 {
 }

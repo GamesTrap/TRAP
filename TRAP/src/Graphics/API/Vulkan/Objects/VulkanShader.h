@@ -14,29 +14,32 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		/// @brief Constructor.
+		/// @param shaderType Type of the shader.
 		/// @param name Name for the shader.
 		/// @param filepath Filepath of the shader.
 		/// @param desc Binary shader description.
 		/// @param userMacros Optional user defined macros. Default: nullptr.
-		/// @param valid Whether the shader is valid or not. Default: true.
-		VulkanShader(std::string name, const std::filesystem::path& filepath, const RendererAPI::BinaryShaderDesc& desc,
-		             const std::vector<Macro>& userMacros = {}, bool valid = true);
+		VulkanShader(RendererAPI::ShaderType shaderType, std::string name,
+		             const std::filesystem::path& filepath, const RendererAPI::BinaryShaderDesc& desc,
+		             const std::vector<Macro>& userMacros = {});
 		/// @brief Constructor.
+		/// @param shaderType Type of the shader.
 		/// @param name Name for the shader.
 		/// @param desc Binary shader description.
 		/// @param userMacros Optional user defined macros. Default: nullptr.
-		/// @param valid Whether the shader is valid or not. Default: true.
-		VulkanShader(std::string name, const RendererAPI::BinaryShaderDesc& desc,
-		             const std::vector<Macro>& userMacros = {}, bool valid = true);
+		VulkanShader(RendererAPI::ShaderType shaderType, std::string name,
+		             const RendererAPI::BinaryShaderDesc& desc,
+		             const std::vector<Macro>& userMacros = {});
 		/// @brief Constructor. Creates an invalid placeholder shader.
+		/// @param shaderType Type of the shader.
 		/// @param name Name for the shader.
 		/// @param filepath Filepath of the shader.
 		/// @param userMacros Optional user defined macros. Default: nullptr.
 		/// @param stages Optional Stages of the shader. Default: None.
 		/// @note Used for invalid shaders, this doesn't create a usable shader.
-		VulkanShader(std::string name, const std::filesystem::path& filepath,
-		             const std::vector<Macro>& userMacros = {},
-					 RendererAPI::ShaderStage stages = RendererAPI::ShaderStage::None);
+		VulkanShader(RendererAPI::ShaderType shaderType, std::string name,
+		             const std::filesystem::path& filepath,
+		             const std::vector<Macro>& userMacros = {});
 		/// @brief Destructor.
 		~VulkanShader() override;
 

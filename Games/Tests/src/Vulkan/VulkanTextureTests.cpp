@@ -48,7 +48,7 @@ void VulkanTextureTests::OnAttach()
     m_maxMipLevel = m_texture->GetMipLevels();
 
     //Load Shader
-    m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKTextureTest", "./Assets/Shaders/testtextureseperatelod.shader");
+    m_shader = TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "VKTextureTest", "./Assets/Shaders/testtextureseperatelod.shader");
 
     TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
@@ -101,7 +101,7 @@ void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     }
 
 	//Use shader
-    TRAP::Graphics::ShaderManager::Get("VKTextureTest")->Use(); //Always bind shader before settings push constants
+    TRAP::Graphics::ShaderManager::GetGraphics("VKTextureTest")->Use(); //Always bind shader before settings push constants
 
     //Use Push Constants
     //Upload mip level index

@@ -5121,3 +5121,7 @@ SITREP 07/09/2024|24w28a1
 SITREP 07/11/2024|24w28a2
     - Changed TRAP Engine version to 24w28a2(0.10.88)
     - Shader Refactored various functions ~<30 mins
+
+SITREP 07/13/2024|24w28b1
+    - Changed TRAP Engine version to 24w28b1(0.10.89)
+    - Reworked handling of Shader loading failures ~>60 mins

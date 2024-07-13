@@ -35,7 +35,9 @@ namespace TRAP::Graphics
 
 	protected:
 		/// @brief Constructor.
-		Shader(std::string name, bool valid, RendererAPI::ShaderStage stages, const std::vector<Macro>& userMacros = {}, std::filesystem::path filepath = "");
+		Shader(RendererAPI::ShaderType shaderType, std::string name, bool valid,
+		       RendererAPI::ShaderStage stages, const std::vector<Macro>& userMacros = {},
+			   std::filesystem::path filepath = "");
 	public:
 		/// @brief Copy constructor.
 		consteval Shader(const Shader&) = delete;
@@ -82,6 +84,10 @@ namespace TRAP::Graphics
 		/// @brief Retrieve whether the shader is valid (i.e. loaded and compiled) or not.
 		/// @return True if shader is valid, false otherwise.
 		[[nodiscard]] constexpr bool IsShaderValid() const noexcept;
+
+		/// @brief Retrieve the type of the shader.
+		/// @return ShaderType.
+		[[nodiscard]] constexpr RendererAPI::ShaderType GetShaderType() const noexcept;
 
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Use shader for rendering on the given window.
@@ -217,25 +223,32 @@ namespace TRAP::Graphics
 		[[nodiscard]] virtual constexpr std::array<u32, 3> GetNumThreadsPerGroup() const noexcept = 0;
 
 		/// @brief Create a shader from file.
+		/// @param shaderType Type of the shader.
 		/// @param name Name for the shader.
 		/// @param filePath File path of the shader.
 		/// @param userMacros Optional user defined macros. Default: nullptr.
 		/// @return Loaded Shader on success, Fallback Shader otherwise.
-		[[nodiscard]] static Ref<Shader> CreateFromFile(const std::string& name, const std::filesystem::path& filePath,
+		[[nodiscard]] static Ref<Shader> CreateFromFile(RendererAPI::ShaderType shaderType,
+		                                                const std::string& name,
+														const std::filesystem::path& filePath,
 		                                                const std::vector<Macro>& userMacros = {});
 		/// @brief Create a shader from file.
 		/// File name will be used as the shader name.
+		/// @param shaderType Type of the shader.
 		/// @param filePath File path of the shader.
 		/// @param userMacros Optional user defined macros. Default: nullptr.
 		/// @return Loaded Shader on success, Fallback Shader otherwise.
-		[[nodiscard]] static Ref<Shader> CreateFromFile(const std::filesystem::path& filePath,
+		[[nodiscard]] static Ref<Shader> CreateFromFile(RendererAPI::ShaderType shaderType,
+		                                                const std::filesystem::path& filePath,
 		                                                const std::vector<Macro>& userMacros = {});
 		/// @brief Create a shader from GLSL source.
+		/// @param shaderType Type of the shader.
 		/// @param name Name for the shader.
 		/// @param glslSource GLSL Source code.
 		/// @param userMacros Optional user defined macros. Default: nullptr.
 		/// @return Loaded Shader on success, Fallback Shader otherwise.
-		[[nodiscard]] static Ref<Shader> CreateFromSource(const std::string& name, const std::string& glslSource,
+		[[nodiscard]] static Ref<Shader> CreateFromSource(RendererAPI::ShaderType shaderType,
+		                                                  const std::string& name, const std::string& glslSource,
 		                                                  const std::vector<Macro>& userMacros = {});
 
 		static constexpr std::array<std::string_view, 3> SupportedShaderFormatSuffixes{".shader", ".glsl", ".tp-spv"};
@@ -254,6 +267,7 @@ namespace TRAP::Graphics
 		std::array<TRAP::Scope<DescriptorSet>, RendererAPI::MaxDescriptorSets> m_descriptorSets{};
 		std::vector<Macro> m_macros;
 		bool m_valid{};
+		RendererAPI::ShaderType m_shaderType;
 	};
 }
 
@@ -291,6 +305,13 @@ namespace TRAP::Graphics
 [[nodiscard]] constexpr bool TRAP::Graphics::Shader::IsShaderValid() const noexcept
 {
 	return m_valid;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::ShaderType TRAP::Graphics::Shader::GetShaderType() const noexcept
+{
+	return m_shaderType;
 }
 
 #endif /*TRAP_SHADER_H*/

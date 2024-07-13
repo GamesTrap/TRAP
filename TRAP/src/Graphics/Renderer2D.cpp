@@ -232,7 +232,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::Init()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Shader = Shader::CreateFromSource("Renderer2D_Quad", std::string(Embed::Renderer2DQuadShader));
+	Shader = Shader::CreateFromSource(RendererAPI::ShaderType::Graphics, "Renderer2D_Quad", std::string(Embed::Renderer2DQuadShader));
 
 	const Scope<Image> whiteImage = Image::LoadFromMemory(2, 2, Image::ColorFormat::RGBA,
 														  std::vector<u8>{255, 255, 255, 255,
@@ -441,7 +441,7 @@ void TRAP::Graphics::Renderer2DData::CircleData::Init()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Shader = Shader::CreateFromSource("Renderer2D_Circle", std::string(Embed::Renderer2DCircleShader));
+	Shader = Shader::CreateFromSource(RendererAPI::ShaderType::Graphics, "Renderer2D_Circle", std::string(Embed::Renderer2DCircleShader));
 
 	//Initialize circle indices (actually quad indices)
 	const auto IndicesData = MakeScope<std::array<u32, MaxCircleIndices>>();
@@ -597,7 +597,7 @@ void TRAP::Graphics::Renderer2DData::LineData::Init()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Shader = Shader::CreateFromSource("Renderer2D_Line", std::string(Embed::Renderer2DLineShader));
+	Shader = Shader::CreateFromSource(RendererAPI::ShaderType::Graphics, "Renderer2D_Line", std::string(Embed::Renderer2DLineShader));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

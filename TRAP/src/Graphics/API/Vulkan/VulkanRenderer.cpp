@@ -996,9 +996,9 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<u32, 3> workGroupE
 	{
 		//Bind fallback shader
 #ifndef TRAP_HEADLESS_MODE
-		this->BindShader(*TRAP::Graphics::ShaderManager::Get("FallbackCompute"), *p.Window);
+		this->BindShader(*TRAP::Graphics::ShaderManager::Get(RendererAPI::ShaderType::Compute, "FallbackCompute"), *p.Window);
 #else
-		this->BindShader(*TRAP::Graphics::ShaderManager::Get("FallbackCompute"));
+		this->BindShader(*TRAP::Graphics::ShaderManager::Get(RendererAPI::ShaderType::Compute, "FallbackCompute"));
 #endif /*TRAP_HEADLESS_MODE*/
 	}
 
@@ -1708,24 +1708,46 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader& shader) const
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	std::reference_wrapper<Shader> actualShader = shader;
-	const ShaderStage stages = actualShader.get().GetShaderStages();
+	const ShaderType type = actualShader.get().GetShaderType();
 
 	PerViewportData& p = *GETPERVIEWPORTDATA;
 	CommandBuffer* cmdBuffer = nullptr;
 
-	if (stages == ShaderStage::RayTracing)
+	switch(type)
 	{
-		//TODO RayTracingPipelineDesc.Pipeline.ShaderProgram = shader;
-		//Bind pipeline
+	case ShaderType::Graphics:
+	{
+		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p.GraphicsPipelineDesc.Pipeline);
+
+		if(!actualShader.get().IsShaderValid())
+		{
+			//Overwrite invalid shader with fallback
+			actualShader = *TRAP::Graphics::ShaderManager::Get(RendererAPI::ShaderType::Graphics, "FallbackGraphics").get();
+
+			gpd.ShaderProgram = &actualShader.get();
+			gpd.RootSignature = actualShader.get().GetRootSignature();
+		}
+		else if(actualShader.get().IsShaderValid() && gpd.ShaderProgram != &actualShader.get())
+		{
+			gpd.ShaderProgram = &actualShader.get();
+			gpd.RootSignature = actualShader.get().GetRootSignature();
+		}
+
+		p.CurrentGraphicsPipeline = GetPipeline(p.GraphicsPipelineDesc);
+
+		cmdBuffer = p.GraphicCommandBuffers[p.ImageIndex];
+		cmdBuffer->BindPipeline(*(p.CurrentGraphicsPipeline));
+		break;
 	}
-	else if (stages == ShaderStage::Compute)
+
+	case ShaderType::Compute:
 	{
 		ComputePipelineDesc& cpd = std::get<ComputePipelineDesc>(p.ComputePipelineDesc.Pipeline);
 
 		if(!actualShader.get().IsShaderValid())
 		{
 			//Overwrite invalid shader with fallback
-			actualShader = *TRAP::Graphics::ShaderManager::Get("FallbackCompute").get();
+			actualShader = *TRAP::Graphics::ShaderManager::Get(RendererAPI::ShaderType::Compute,"FallbackCompute").get();
 
 			cpd.ShaderProgram = &actualShader.get();
 			cpd.RootSignature = actualShader.get().GetRootSignature();
@@ -1744,29 +1766,10 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader& shader) const
 
 		cmdBuffer = p.ComputeCommandBuffers[p.ImageIndex];
 		cmdBuffer->BindPipeline(*(p.CurrentComputePipeline));
+		break;
 	}
-	else if ((stages & ShaderStage::AllGraphics) != ShaderStage::None)
-	{
-		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p.GraphicsPipelineDesc.Pipeline);
 
-		if(!actualShader.get().IsShaderValid())
-		{
-			//Overwrite invalid shader with fallback
-			actualShader = *TRAP::Graphics::ShaderManager::Get("FallbackGraphics").get();
-
-			gpd.ShaderProgram = &actualShader.get();
-			gpd.RootSignature = actualShader.get().GetRootSignature();
-		}
-		else if(actualShader.get().IsShaderValid() && gpd.ShaderProgram != &actualShader.get())
-		{
-			gpd.ShaderProgram = &actualShader.get();
-			gpd.RootSignature = actualShader.get().GetRootSignature();
-		}
-
-		p.CurrentGraphicsPipeline = GetPipeline(p.GraphicsPipelineDesc);
-
-		cmdBuffer = p.GraphicCommandBuffers[p.ImageIndex];
-		cmdBuffer->BindPipeline(*(p.CurrentGraphicsPipeline));
+	//TODO RayTracing
 	}
 
 	if(cmdBuffer != nullptr)

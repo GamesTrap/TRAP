@@ -60,10 +60,10 @@ void ComputeTests::OnAttach()
     TRAP::Graphics::RenderCommand::Transition(m_compTex, TRAP::Graphics::ResourceState::UnorderedAccess, TRAP::Graphics::ResourceState::ShaderResource);
 
     //Load Shader
-    TRAP::Graphics::ShaderManager::LoadFile("Texture", "./Assets/Shaders/testtextureseperate.shader");
-    TRAP::Graphics::ShaderManager::LoadFile("ComputeSharpen", "./Assets/Shaders/sharpen.compute.shader");
-    TRAP::Graphics::ShaderManager::LoadFile("ComputeEmboss", "./Assets/Shaders/emboss.compute.shader");
-    TRAP::Graphics::ShaderManager::LoadFile("ComputeEdgeDetect", "./Assets/Shaders/edgedetect.compute.shader");
+    TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "Texture", "./Assets/Shaders/testtextureseperate.shader");
+    TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Compute, "ComputeSharpen", "./Assets/Shaders/sharpen.compute.shader");
+    TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Compute, "ComputeEmboss", "./Assets/Shaders/emboss.compute.shader");
+    TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Compute, "ComputeEdgeDetect", "./Assets/Shaders/edgedetect.compute.shader");
 
     TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
@@ -83,7 +83,7 @@ void ComputeTests::OnAttach()
 
 void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
-    TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, *m_textureSampler);
+    TRAP::Graphics::ShaderManager::GetGraphics("Texture")->UseSampler(0, 1, *m_textureSampler);
 
     //-------------------------------------------------------------------------------------------------------------------//
     //Async compute Stuff------------------------------------------------------------------------------------------------//
@@ -95,11 +95,11 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
 
         TRAP::Ref<TRAP::Graphics::Shader> shader = nullptr;
         if(m_sharpen)
-            shader = TRAP::Graphics::ShaderManager::Get("ComputeSharpen");
+            shader = TRAP::Graphics::ShaderManager::GetCompute("ComputeSharpen");
         else if(m_emboss)
-            shader = TRAP::Graphics::ShaderManager::Get("ComputeEmboss");
+            shader = TRAP::Graphics::ShaderManager::GetCompute("ComputeEmboss");
         else if(m_edgedetect)
-            shader = TRAP::Graphics::ShaderManager::Get("ComputeEdgeDetect");
+            shader = TRAP::Graphics::ShaderManager::GetCompute("ComputeEdgeDetect");
 
         //Transition textures (to use as storage images)
         TRAP::Graphics::RendererAPI::TextureBarrier barrier
@@ -143,7 +143,7 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
     m_indexBuffer->Use();
 
     //Use shader
-    const auto texShader = TRAP::Graphics::ShaderManager::Get("Texture");
+    const auto texShader = TRAP::Graphics::ShaderManager::GetGraphics("Texture");
     if(m_disabled)
         texShader->UseTexture(1, 0, *m_colTex);
     else

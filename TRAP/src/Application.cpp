@@ -418,8 +418,8 @@ namespace
 		if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
 			return;
 
-		TRAP::Graphics::ShaderManager::LoadSource("FallbackGraphics", std::string(TRAP::Embed::FallbackGraphicsShader))->Use();
-		TRAP::Graphics::ShaderManager::LoadSource("FallbackCompute", std::string(TRAP::Embed::FallbackComputeShader))->Use();
+		TRAP::Graphics::ShaderManager::LoadSource(TRAP::Graphics::RendererAPI::ShaderType::Graphics, "FallbackGraphics", std::string(TRAP::Embed::FallbackGraphicsShader))->Use();
+		TRAP::Graphics::ShaderManager::LoadSource(TRAP::Graphics::RendererAPI::ShaderType::Compute, "FallbackCompute", std::string(TRAP::Embed::FallbackComputeShader))->Use();
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1141,19 +1141,29 @@ void TRAP::Application::UpdateHotReloading()
 	//Shader reloading
 	for(const auto& path : shaderPaths)
 	{
-		if(!Graphics::ShaderManager::ExistsPath(path))
+		if(!Graphics::ShaderManager::ContainsByPath(path))
 			continue;
 
 		TP_INFO(Log::HotReloadingPrefix, "Shader modified reloading...");
 		Graphics::RendererAPI::GetRenderer()->WaitIdle();
-		Ref<TRAP::Graphics::Shader> shader = Graphics::ShaderManager::Reload(path.string());
+		const Ref<TRAP::Graphics::Shader> shader = Graphics::ShaderManager::GetByPath(path);
+		if(!shader)
+			continue;
+
+		shader->Reload();
 
 		//By binding the fallback shader, we can make sure that the
 		//new shader will trigger a pipeline rebuild.
-		if((shader->GetShaderStages() & Graphics::RendererAPI::ShaderStage::Compute) != Graphics::RendererAPI::ShaderStage::None)
-			TRAP::Graphics::ShaderManager::Get("FallbackCompute")->Use();
-		else
-			TRAP::Graphics::ShaderManager::Get("FallbackGraphics")->Use();
+		switch(shader->GetShaderType())
+		{
+		case Graphics::RendererAPI::ShaderType::Graphics:
+			TRAP::Graphics::ShaderManager::Get(TRAP::Graphics::RendererAPI::ShaderType::Graphics, "FallbackGraphics")->Use();
+			break;
+
+		case Graphics::RendererAPI::ShaderType::Compute:
+			TRAP::Graphics::ShaderManager::Get(TRAP::Graphics::RendererAPI::ShaderType::Compute, "FallbackCompute")->Use();
+			break;
+		}
 
 		//Send event
 		TRAP::Events::ShaderReloadEvent event(shader);

@@ -54,8 +54,8 @@ void ComputeTests::OnAttach()
     m_compTex->AwaitLoading();
 
     //Load Shader
-    TRAP::Graphics::ShaderManager::LoadFile("Texture", "./Assets/Shaders/testtextureseperate.shader");
-    TRAP::Graphics::ShaderManager::LoadFile("ComputeEmboss", "./Assets/Shaders/emboss.compute.shader");
+    TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "Texture", "./Assets/Shaders/testtextureseperate.shader");
+    TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Compute, "ComputeEmboss", "./Assets/Shaders/emboss.compute.shader");
 
     TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
@@ -78,7 +78,7 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
     if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
         return;
 
-    TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, *m_textureSampler);
+    TRAP::Graphics::ShaderManager::GetGraphics("Texture")->UseSampler(0, 1, *m_textureSampler);
 
     constinit static u32 frames = 0;
     if(frames == 3)
@@ -102,7 +102,7 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
     {
         once = false;
 
-        const auto shader = TRAP::Graphics::ShaderManager::Get("ComputeEmboss");
+        const auto shader = TRAP::Graphics::ShaderManager::GetCompute("ComputeEmboss");
 
         //Set shader descriptors
         shader->UseTexture(1, 0, *m_colTex);
@@ -137,7 +137,7 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
     m_indexBuffer->Use();
 
     //Use shader
-    const auto texShader = TRAP::Graphics::ShaderManager::Get("Texture");
+    const auto texShader = TRAP::Graphics::ShaderManager::GetGraphics("Texture");
     texShader->UseTexture(1, 0, *m_compTex);
     texShader->Use();
 
