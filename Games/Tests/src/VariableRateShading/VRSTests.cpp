@@ -90,7 +90,7 @@ void VRSTests::OnAttach()
 
     //Load Shader
     if(m_supportsPerDrawVRS || m_supportsPerTileVRS)
-        TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "ShadingRateVisualizer", "./Assets/Shaders/shadingratevisualizer.shader");
+        TRAP::Graphics::ShaderManager::LoadFile("ShadingRateVisualizer", "./Assets/Shaders/shadingratevisualizer.shader", TRAP::Graphics::ShaderType::Graphics);
 
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();

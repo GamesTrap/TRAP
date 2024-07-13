@@ -60,10 +60,10 @@ void ComputeTests::OnAttach()
     TRAP::Graphics::RenderCommand::Transition(m_compTex, TRAP::Graphics::ResourceState::UnorderedAccess, TRAP::Graphics::ResourceState::ShaderResource);
 
     //Load Shader
-    TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "Texture", "./Assets/Shaders/testtextureseperate.shader");
-    TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Compute, "ComputeSharpen", "./Assets/Shaders/sharpen.compute.shader");
-    TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Compute, "ComputeEmboss", "./Assets/Shaders/emboss.compute.shader");
-    TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Compute, "ComputeEdgeDetect", "./Assets/Shaders/edgedetect.compute.shader");
+    TRAP::Graphics::ShaderManager::LoadFile("Texture", "./Assets/Shaders/testtextureseperate.shader", TRAP::Graphics::ShaderType::Graphics);
+    TRAP::Graphics::ShaderManager::LoadFile("ComputeSharpen", "./Assets/Shaders/sharpen.compute.shader", TRAP::Graphics::ShaderType::Compute);
+    TRAP::Graphics::ShaderManager::LoadFile("ComputeEmboss", "./Assets/Shaders/emboss.compute.shader", TRAP::Graphics::ShaderType::Compute);
+    TRAP::Graphics::ShaderManager::LoadFile("ComputeEdgeDetect", "./Assets/Shaders/edgedetect.compute.shader", TRAP::Graphics::ShaderType::Compute);
 
     TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;

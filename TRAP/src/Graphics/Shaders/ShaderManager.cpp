@@ -13,8 +13,8 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const RendererAPI::ShaderType shaderType,
-                                                                          const std::filesystem::path& filepath,
+TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const std::filesystem::path& filepath,
+                                                                          const RendererAPI::ShaderType shaderType,
     																      const std::vector<Shader::Macro>& userMacros)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
@@ -26,10 +26,10 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const 
 		switch(shaderType)
 		{
 		case RendererAPI::ShaderType::Graphics:
-			return Get(RendererAPI::ShaderType::Graphics, "FallbackGraphics");
+			return Get("FallbackGraphics", RendererAPI::ShaderType::Graphics);
 
 		case RendererAPI::ShaderType::Compute:
-			return Get(RendererAPI::ShaderType::Compute, "FallbackCompute");
+			return Get("FallbackCompute", RendererAPI::ShaderType::Compute);
 		}
 	}
 
@@ -42,9 +42,9 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const RendererAPI::ShaderType shaderType,
-                                                                          const std::string& name,
+TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const std::string& name,
 																          const std::filesystem::path& filepath,
+																		  const RendererAPI::ShaderType shaderType,
 																          const std::vector<Shader::Macro>& userMacros)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
@@ -56,10 +56,10 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const 
 		switch(shaderType)
 		{
 		case RendererAPI::ShaderType::Graphics:
-			return Get(RendererAPI::ShaderType::Graphics, "FallbackGraphics");
+			return Get("FallbackGraphics", RendererAPI::ShaderType::Graphics);
 
 		case RendererAPI::ShaderType::Compute:
-			return Get(RendererAPI::ShaderType::Compute, "FallbackCompute");
+			return Get("FallbackCompute", RendererAPI::ShaderType::Compute);
 		}
 	}
 
@@ -70,9 +70,9 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadSource(const RendererAPI::ShaderType shaderType,
-	                                                                        const std::string& name,
+TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadSource(const std::string& name,
 														              		const std::string& glslSource,
+																			const RendererAPI::ShaderType shaderType,
 																      		const std::vector<Shader::Macro>& userMacros)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
@@ -84,10 +84,10 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadSource(cons
 		switch(shaderType)
 		{
 		case RendererAPI::ShaderType::Graphics:
-			return Get(RendererAPI::ShaderType::Graphics, "FallbackGraphics");
+			return Get("FallbackGraphics", RendererAPI::ShaderType::Graphics);
 
 		case RendererAPI::ShaderType::Compute:
-			return Get(RendererAPI::ShaderType::Compute, "FallbackCompute");
+			return Get("FallbackCompute", RendererAPI::ShaderType::Compute);
 		}
 	}
 
@@ -154,8 +154,8 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(const st
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Get(const RendererAPI::ShaderType shaderType,
-                                                                                   const std::string_view name)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Get(const std::string_view name,
+                                                                                   const RendererAPI::ShaderType shaderType)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -169,10 +169,10 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(const st
 	switch(shaderType)
 	{
 	case RendererAPI::ShaderType::Graphics:
-		return Get(RendererAPI::ShaderType::Graphics, "FallbackGraphics");
+		return Get("FallbackGraphics", RendererAPI::ShaderType::Graphics);
 
 	case RendererAPI::ShaderType::Compute:
-		return Get(RendererAPI::ShaderType::Compute, "FallbackCompute");
+		return Get("FallbackCompute", RendererAPI::ShaderType::Compute);
 	}
 
 	TRAP_ASSERT(false, "ShaderManager::Get(): Failed to retrieve Fallback Shader, unknown ShaderType provided!");
@@ -185,7 +185,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(const st
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	return Get(RendererAPI::ShaderType::Graphics, name);
+	return Get(name, RendererAPI::ShaderType::Graphics);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -194,7 +194,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(const st
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	return Get(RendererAPI::ShaderType::Compute, name);
+	return Get(name, RendererAPI::ShaderType::Compute);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -236,8 +236,8 @@ void TRAP::Graphics::ShaderManager::Clean()
 	Shaders.clear();
 
 	//Make sure that fallback shaders are always available
-	Graphics::ShaderManager::LoadSource(TRAP::Graphics::RendererAPI::ShaderType::Graphics, "FallbackGraphics", std::string(Embed::FallbackGraphicsShader));
-	Graphics::ShaderManager::LoadSource(TRAP::Graphics::RendererAPI::ShaderType::Compute,"FallbackCompute", std::string(Embed::FallbackComputeShader));
+	Graphics::ShaderManager::LoadSource("FallbackGraphics", std::string(Embed::FallbackGraphicsShader), TRAP::Graphics::RendererAPI::ShaderType::Graphics);
+	Graphics::ShaderManager::LoadSource("FallbackCompute", std::string(Embed::FallbackComputeShader), TRAP::Graphics::RendererAPI::ShaderType::Compute);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

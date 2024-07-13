@@ -53,8 +53,8 @@ void SPIRVTests::OnAttach()
 		{"COLOR", "vec3(1.0f, 0.0f, 0.0f)"}
 	};
 
-    // TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "Test", "./Assets/Shaders/testspirv.shader", macros);
-    TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "Test", "./Assets/Shaders/testspirv.tp-spv", macros);
+    // TRAP::Graphics::ShaderManager::LoadFile("Test", "./Assets/Shaders/testspirv.shader", TRAP::Graphics::ShaderType::Graphics, macros);
+    TRAP::Graphics::ShaderManager::LoadFile("Test", "./Assets/Shaders/testspirv.tp-spv", TRAP::Graphics::ShaderType::Graphics, macros);
 
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();

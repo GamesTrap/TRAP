@@ -996,9 +996,9 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<u32, 3> workGroupE
 	{
 		//Bind fallback shader
 #ifndef TRAP_HEADLESS_MODE
-		this->BindShader(*TRAP::Graphics::ShaderManager::Get(RendererAPI::ShaderType::Compute, "FallbackCompute"), *p.Window);
+		this->BindShader(*TRAP::Graphics::ShaderManager::Get("FallbackCompute", RendererAPI::ShaderType::Compute), *p.Window);
 #else
-		this->BindShader(*TRAP::Graphics::ShaderManager::Get(RendererAPI::ShaderType::Compute, "FallbackCompute"));
+		this->BindShader(*TRAP::Graphics::ShaderManager::Get("FallbackCompute", RendererAPI::ShaderType::Compute));
 #endif /*TRAP_HEADLESS_MODE*/
 	}
 
@@ -1722,7 +1722,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader& shader) const
 		if(!actualShader.get().IsShaderValid())
 		{
 			//Overwrite invalid shader with fallback
-			actualShader = *TRAP::Graphics::ShaderManager::Get(RendererAPI::ShaderType::Graphics, "FallbackGraphics").get();
+			actualShader = *TRAP::Graphics::ShaderManager::Get("FallbackGraphics", RendererAPI::ShaderType::Graphics).get();
 
 			gpd.ShaderProgram = &actualShader.get();
 			gpd.RootSignature = actualShader.get().GetRootSignature();
@@ -1747,7 +1747,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader& shader) const
 		if(!actualShader.get().IsShaderValid())
 		{
 			//Overwrite invalid shader with fallback
-			actualShader = *TRAP::Graphics::ShaderManager::Get(RendererAPI::ShaderType::Compute,"FallbackCompute").get();
+			actualShader = *TRAP::Graphics::ShaderManager::Get("FallbackCompute", RendererAPI::ShaderType::Compute).get();
 
 			cpd.ShaderProgram = &actualShader.get();
 			cpd.RootSignature = actualShader.get().GetRootSignature();

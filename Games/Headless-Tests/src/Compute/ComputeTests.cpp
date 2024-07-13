@@ -54,8 +54,8 @@ void ComputeTests::OnAttach()
     m_compTex->AwaitLoading();
 
     //Load Shader
-    TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "Texture", "./Assets/Shaders/testtextureseperate.shader");
-    TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Compute, "ComputeEmboss", "./Assets/Shaders/emboss.compute.shader");
+    TRAP::Graphics::ShaderManager::LoadFile("Texture", "./Assets/Shaders/testtextureseperate.shader", TRAP::Graphics::ShaderType::Graphics);
+    TRAP::Graphics::ShaderManager::LoadFile("ComputeEmboss", "./Assets/Shaders/emboss.compute.shader", TRAP::Graphics::ShaderType::Compute);
 
     TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;

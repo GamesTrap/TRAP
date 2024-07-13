@@ -76,9 +76,9 @@ void MultiWindowTests::OnAttach()
 	m_colorUniformBuffer->AwaitLoading();
 
 	//Load Shaders
-	TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "Test", "./Assets/Shaders/test.shader");
+	TRAP::Graphics::ShaderManager::LoadFile("Test", "./Assets/Shaders/test.shader", TRAP::Graphics::ShaderType::Graphics);
 	const std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
-	TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "TestUBO", "./Assets/Shaders/testubo.shader", macros);
+	TRAP::Graphics::ShaderManager::LoadFile("TestUBO", "./Assets/Shaders/testubo.shader", TRAP::Graphics::ShaderType::Graphics, macros);
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();

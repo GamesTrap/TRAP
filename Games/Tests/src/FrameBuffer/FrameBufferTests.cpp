@@ -78,7 +78,7 @@ void FrameBufferTests::OnAttach()
     m_texture->AwaitLoading();
 
     //Load Shader
-    m_shader = TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "TextureTest", "./Assets/Shaders/testtextureseperate.shader");
+    m_shader = TRAP::Graphics::ShaderManager::LoadFile("TextureTest", "./Assets/Shaders/testtextureseperate.shader", TRAP::Graphics::ShaderType::Graphics);
 
     TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;

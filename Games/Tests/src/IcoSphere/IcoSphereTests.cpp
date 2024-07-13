@@ -84,7 +84,7 @@ void IcoSphereTests::OnAttach()
 	m_cameraUBO->AwaitLoading();
 
 	//Load Shader
-	m_shader = TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "IcoSphereTest", "./Assets/Shaders/icosphere.shader");
+	m_shader = TRAP::Graphics::ShaderManager::LoadFile("IcoSphereTest", "./Assets/Shaders/icosphere.shader", TRAP::Graphics::ShaderType::Graphics);
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();

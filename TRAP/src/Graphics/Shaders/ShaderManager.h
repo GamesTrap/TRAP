@@ -7,32 +7,32 @@ namespace TRAP::Graphics::ShaderManager
 {
 	/// @brief Load a shader from file.
 	/// File name will be used as the shader name.
-	/// @param shaderType Type of the shader.
 	/// @param filepath File path of shader to load.
+	/// @param shaderType Type of the shader.
 	/// @param userMacros Optional user defined macros. Default: nullptr.
 	/// @return Loaded shader.
-	Ref<Shader> LoadFile(RendererAPI::ShaderType shaderType,
-	                     const std::filesystem::path& filepath,
+	Ref<Shader> LoadFile(const std::filesystem::path& filepath,
+	                     RendererAPI::ShaderType shaderType,
 					     const std::vector<Shader::Macro>& userMacros = {});
 	/// @brief Load a shader from file.
-	/// @param shaderType Type of the shader.
 	/// @param name Name for the shader.
 	/// @param filepath File path of shader to load.
+	/// @param shaderType Type of the shader.
 	/// @param userMacros Optional user defined macros. Default: nullptr.
 	/// @return Loaded shader.
-	Ref<Shader> LoadFile(RendererAPI::ShaderType shaderType,
-	                     const std::string& name,
+	Ref<Shader> LoadFile(const std::string& name,
 	                     const std::filesystem::path& filepath,
+						 RendererAPI::ShaderType shaderType,
 					     const std::vector<Shader::Macro>& userMacros = {});
 	/// @brief Load a shader from GLSL source.
-	/// @param shaderType Type of the shader.
 	/// @param name Name for the shader.
 	/// @param glslSource GLSL source code.
+	/// @param shaderType Type of the shader.
 	/// @param userMacros Optional user defined macros. Default: nullptr.
 	/// @return Loaded shader.
-	Ref<Shader> LoadSource(RendererAPI::ShaderType shaderType,
-		                   const std::string& name,
+	Ref<Shader> LoadSource(const std::string& name,
 					       const std::string& glslSource,
+						   RendererAPI::ShaderType shaderType,
 					       const std::vector<Shader::Macro>& userMacros = {});
 
 	/// @brief Add a shader to the ShaderManager.
@@ -47,10 +47,10 @@ namespace TRAP::Graphics::ShaderManager
 	/// @return Removed shader on success, nullptr otherwise.
 	[[maybe_unused]] Ref<Shader> Remove(const std::string& name);
 	/// @brief Retrieve a shader from the ShaderManager.
-	/// @param shaderType Type of the shader to retrieve.
 	/// @param name Name of the shader to retrieve.
+	/// @param shaderType Type of the shader to retrieve.
 	/// @return Shader, Fallback shader if not found.
-	[[nodiscard]] Ref<Shader> Get(RendererAPI::ShaderType shaderType, std::string_view name);
+	[[nodiscard]] Ref<Shader> Get(std::string_view name, RendererAPI::ShaderType shaderType);
 	/// @brief Retrieve a graphics shader from the ShaderManager.
 	/// @param name Name of the shader to retrieve.
 	/// @return Shader, Fallback shader if not found.

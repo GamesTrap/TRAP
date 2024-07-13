@@ -45,7 +45,7 @@ public:
 		TRAP::Application::GetWindow()->SetTitle("Sandbox");
 
 		//Load Shader
-		m_shader = TRAP::Graphics::ShaderManager::LoadFile(TRAP::Graphics::ShaderType::Graphics, "./Assets/Shaders/TextureColor.shader");
+		m_shader = TRAP::Graphics::ShaderManager::LoadFile("./Assets/Shaders/TextureColor.shader", TRAP::Graphics::ShaderType::Graphics);
 
 		//Load Texture
 		m_texture = TRAP::Graphics::TextureManager::Load("./Assets/Textures/TRAPWhiteLogo2048x2048.png");

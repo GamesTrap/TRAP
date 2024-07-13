@@ -418,8 +418,8 @@ namespace
 		if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
 			return;
 
-		TRAP::Graphics::ShaderManager::LoadSource(TRAP::Graphics::RendererAPI::ShaderType::Graphics, "FallbackGraphics", std::string(TRAP::Embed::FallbackGraphicsShader))->Use();
-		TRAP::Graphics::ShaderManager::LoadSource(TRAP::Graphics::RendererAPI::ShaderType::Compute, "FallbackCompute", std::string(TRAP::Embed::FallbackComputeShader))->Use();
+		TRAP::Graphics::ShaderManager::LoadSource("FallbackGraphics", std::string(TRAP::Embed::FallbackGraphicsShader), TRAP::Graphics::RendererAPI::ShaderType::Graphics)->Use();
+		TRAP::Graphics::ShaderManager::LoadSource("FallbackCompute", std::string(TRAP::Embed::FallbackComputeShader), TRAP::Graphics::RendererAPI::ShaderType::Compute)->Use();
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1157,11 +1157,11 @@ void TRAP::Application::UpdateHotReloading()
 		switch(shader->GetShaderType())
 		{
 		case Graphics::RendererAPI::ShaderType::Graphics:
-			TRAP::Graphics::ShaderManager::Get(TRAP::Graphics::RendererAPI::ShaderType::Graphics, "FallbackGraphics")->Use();
+			TRAP::Graphics::ShaderManager::Get("FallbackGraphics", TRAP::Graphics::RendererAPI::ShaderType::Graphics)->Use();
 			break;
 
 		case Graphics::RendererAPI::ShaderType::Compute:
-			TRAP::Graphics::ShaderManager::Get(TRAP::Graphics::RendererAPI::ShaderType::Compute, "FallbackCompute")->Use();
+			TRAP::Graphics::ShaderManager::Get("FallbackCompute", TRAP::Graphics::RendererAPI::ShaderType::Compute)->Use();
 			break;
 		}
 
