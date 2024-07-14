@@ -70,7 +70,7 @@ void TRAP::Graphics::SpriteManager::Add(Ref<SubTexture2D> sprite)
     if(!sprite)
         return;
 
-    if (!Exists(sprite->GetName()))
+    if (!Contains(sprite->GetName()))
         Sprites[sprite->GetName()] = std::move(sprite);
     else
         TP_ERROR(Log::SpriteManagerPrefix, "Sprite with name: \"", sprite->GetName(),
@@ -86,7 +86,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(co
     if(!sprite)
         return nullptr;
 
-    if (Exists(sprite->GetName()))
+    if (Contains(sprite->GetName()))
     {
         Ref<SubTexture2D> spr = std::move(Sprites[sprite->GetName()]);
         Sprites.erase(sprite->GetName());
@@ -100,14 +100,14 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(const std::string& name)
+TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	if (Exists(name))
+	if(const auto it = Sprites.find(name); it != Sprites.end())
 	{
-		Ref<SubTexture2D> spr = std::move(Sprites[name]);
-		Sprites.erase(name);
+		Ref<SubTexture2D> spr = it->second;
+		Sprites.erase(it);
 		return spr;
 	}
 
@@ -118,14 +118,12 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Get(const std::string& name)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Get(const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	if(Exists(name))
-	{
-        return Sprites[name];
-	}
+	if(const auto it = Sprites.find(name); it != Sprites.end())
+		return it->second;
 
     TP_ERROR(Log::SpriteManagerPrefix, "Couldn't find sprite with name: \"", name, "\"!");
     return nullptr;
@@ -152,75 +150,7 @@ void TRAP::Graphics::SpriteManager::Clean() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Reload(const std::string& nameOrPath)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	if(!TRAP::FileSystem::Exists(nameOrPath))
-	{
-		//Name
-		if(Exists(nameOrPath))
-		{
-			auto sprite = Sprites[nameOrPath];
-			if(sprite->GetTexture()->Reload())
-				TP_INFO(Log::SpriteManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
-
-			return sprite;
-		}
-
-		TP_WARN(Log::SpriteManagerPrefix, "Couldn't find sprite: \"", nameOrPath, "\" to reload.");
-	}
-	else //Path
-	{
-		for (const auto& [name, sprite] : Sprites)
-		{
-            if (!sprite->GetTexture()->GetFilePaths().empty() && FileSystem::IsEquivalent(nameOrPath, sprite->GetTexture()->GetFilePaths()[0]))
-            {
-                if(sprite->GetTexture()->Reload())
-                    TP_INFO(Log::SpriteManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
-
-                return sprite;
-            }
-		}
-
-		TP_WARN(Log::SpriteManagerPrefix, "Couldn't find sprite: ", std::filesystem::path(nameOrPath), " to reload.");
-	}
-
-	return nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Reload(Ref<SubTexture2D> sprite)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	if(!Exists(sprite->GetName()))
-	{
-		TP_WARN(Log::SpriteManagerPrefix, "Couldn't find sprite: \"", sprite->GetName(), "\" to reload.");
-		return nullptr;
-	}
-
-	if(sprite->GetTexture()->Reload())
-		TP_INFO(Log::SpriteManagerPrefix, "Reloaded: \"", sprite->GetName(), "\"");
-
-	return sprite;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::SpriteManager::ReloadAll()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	TP_INFO(Log::SpriteManagerPrefix, "Reloading all may take a while...");
-	for (auto& [name, sprite] : Sprites)
-		Reload(sprite);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Graphics::SpriteManager::Exists(const std::string& name)
+[[nodiscard]] bool TRAP::Graphics::SpriteManager::Contains(const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -229,12 +159,12 @@ void TRAP::Graphics::SpriteManager::ReloadAll()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::Graphics::SpriteManager::ExistsPath(const std::filesystem::path& path)
+[[nodiscard]] bool TRAP::Graphics::SpriteManager::ContainsByPath(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	return std::ranges::any_of(Sprites, [&path](const auto& element)
 	{
-		return !element.second->GetTexture()->GetFilePaths().empty() && FileSystem::IsEquivalent(element.second->GetTexture()->GetFilePaths()[0], path);
+		return !element.second->GetTexture()->GetFilePaths().empty() && FileSystem::IsEquivalent(element.second->GetTexture()->GetFilePaths().front(), path);
 	});
 }

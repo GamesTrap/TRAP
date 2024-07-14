@@ -51,40 +51,25 @@ namespace TRAP::Graphics::SpriteManager
 	/// @brief Remove a sprite from the SpriteManager via its name.
 	/// @param name Name of sprite to remove.
 	/// @return Removed sprite on success, nullptr otherwise.
-	[[maybe_unused]] Ref<SubTexture2D> Remove(const std::string& name);
+	[[maybe_unused]] Ref<SubTexture2D> Remove(std::string_view name);
 	/// @brief Retrieve a sprite from the SpriteManager.
 	/// @param name Name of sprite to retrieve.
 	/// @return Sprite, nullptr if not found.
-	[[nodiscard]] Ref<SubTexture2D> Get(const std::string& name);
+	[[nodiscard]] Ref<SubTexture2D> Get(std::string_view name);
 	/// @brief Retrieve all loaded sprites from the SpriteManager.
 	/// @return Map of all loaded sprites.
 	[[nodiscard]] const TRAP::Utils::UnorderedStringMap<Ref<SubTexture2D>>& GetSprites() noexcept;
 	/// @brief Clear all sprites from the SpriteManager.
 	void Clean() noexcept;
 
-	/// @brief Reload a sprite via its name or path.
-	/// @param nameOrPath Name or path of a sprite.
-	/// @return Sprite if found (even on unsuccessful reload), nullptr otherwise.
-	/// Should only return nullptr if the sprite was not found.
-	/// @note This will also affects other sprites using the same sprite sheet texture.
-	Ref<SubTexture2D> Reload(const std::string& nameOrPath);
-	/// @brief Reload a sprite.
-	/// @param sprite Sprite to reload.
-	/// @return Sprite if found (even on unsuccessful reload), nullptr otherwise.
-	/// Should only return nullptr if the sprite was not found.
-	/// @note This will also affects other sprites using the same sprite sheet texture.
-	Ref<SubTexture2D> Reload(Ref<SubTexture2D> sprite);
-	/// @brief Reload all currently loaded sprites.
-	void ReloadAll();
-
 	/// @brief Check whether a sprite exists.
 	/// @param name Name of sprite to check.
 	/// @return True if sprite exists, false otherwise.
-	[[nodiscard]] bool Exists(const std::string& name);
+	[[nodiscard]] bool Contains(std::string_view name);
 	/// @brief Check whether a sprite exists by path.
 	/// @param path Path of sprite to check.
 	/// @return True if sprite exists, false otherwise.
-	[[nodiscard]] bool ExistsPath(const std::filesystem::path& path);
+	[[nodiscard]] bool ContainsByPath(const std::filesystem::path& path);
 }
 
 #endif /*TRAP_SPRITEMANAGER_H*/
