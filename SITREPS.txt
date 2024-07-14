@@ -5132,3 +5132,7 @@ SITREP 07/14/2024|24w28b2
     - Texture Refactored various functions ~>60 mins
     - TextureManager Refactored various functions ~<30 mins
     - SpriteManager Refactored various functions ~<15 mins
+
+SITREP 07/15/2024|24w29a1
+    - Changed TRAP Engine version to 24w29a1(0.10.91)
+    - Renderer Refactored various functions ~<15 mins

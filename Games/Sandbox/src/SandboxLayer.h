@@ -143,12 +143,12 @@ public:
 			if (m_indexedDrawing)
 			{
 				TRAP::Graphics::RenderCommand::SetPushConstants("TimeRootConstant", time);
-				TRAP::Graphics::Renderer::Submit(m_shader, m_indexedVertexBuffer.get(), m_indexBuffer.get());
+				TRAP::Graphics::Renderer::Submit(*m_shader, *m_indexedVertexBuffer, *m_indexBuffer);
 			}
 			else
 			{
 				TRAP::Graphics::RenderCommand::SetPushConstants("TimeRootConstant", time);
-				TRAP::Graphics::Renderer::Submit(m_shader, m_vertexBuffer.get());
+				TRAP::Graphics::Renderer::Submit(*m_shader, *m_vertexBuffer);
 			}
 		}
 		TRAP::Graphics::Renderer::EndScene();

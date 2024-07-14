@@ -95,11 +95,9 @@ void TRAP::Graphics::Renderer::EndScene()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuffer* const vertexBuffer, const Math::Mat4& transform)
+void TRAP::Graphics::Renderer::Submit(Shader& shader, const VertexBuffer& vertexBuffer, const Math::Mat4& transform)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	TRAP_ASSERT(vertexBuffer, "Renderer::Submit(): VertexBuffer is nullptr!");
 
 	if(CurrentDrawCalls >= MaxDrawCalls)
 		return;
@@ -107,27 +105,21 @@ void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuf
 	ModelStorageBuffer->SetData(&transform, sizeof(Math::Mat4),
 	                            NumericCast<u64>(CurrentDrawCalls) * StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
 
-	vertexBuffer->Use();
-	if(shader)
-	{
-		shader->UseSSBO(1, 1, *ModelStorageBuffer, MaxDrawCalls * sizeof(Math::Mat4));
-		shader->UseSSBO(1, 0, *SceneStorageBuffer);
-		shader->Use();
-	}
+	vertexBuffer.Use();
+	shader.UseSSBO(1, 1, *ModelStorageBuffer, MaxDrawCalls * sizeof(Math::Mat4));
+	shader.UseSSBO(1, 0, *SceneStorageBuffer);
+	shader.Use();
 
-	RenderCommand::DrawInstanced(vertexBuffer->GetCount(), 1, 0, CurrentDrawCalls);
+	RenderCommand::DrawInstanced(vertexBuffer.GetCount(), 1, 0, CurrentDrawCalls);
 	++CurrentDrawCalls;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuffer* const vertexBuffer, const IndexBuffer* const indexBuffer,
-									  const Math::Mat4& transform)
+void TRAP::Graphics::Renderer::Submit(Shader& shader, const VertexBuffer& vertexBuffer,
+                                      const IndexBuffer& indexBuffer, const Math::Mat4& transform)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	TRAP_ASSERT(vertexBuffer, "Renderer::Submit(): VertexBuffer is nullptr!");
-	TRAP_ASSERT(indexBuffer, "Renderer::Submit(): IndexBuffer is nullptr!");
 
 	if(CurrentDrawCalls >= MaxDrawCalls)
 		return;
@@ -135,15 +127,12 @@ void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuf
 	ModelStorageBuffer->SetData(&transform, sizeof(Math::Mat4),
 	                            NumericCast<u64>(CurrentDrawCalls) * StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
 
-	vertexBuffer->Use();
-	indexBuffer->Use();
-	if(shader)
-	{
-		shader->UseSSBO(1, 1, *ModelStorageBuffer, MaxDrawCalls * sizeof(Math::Mat4));
-		shader->UseSSBO(1, 0, *SceneStorageBuffer);
-		shader->Use();
-	}
+	vertexBuffer.Use();
+	indexBuffer.Use();
+	shader.UseSSBO(1, 1, *ModelStorageBuffer, MaxDrawCalls * sizeof(Math::Mat4));
+	shader.UseSSBO(1, 0, *SceneStorageBuffer);
+	shader.Use();
 
-	RenderCommand::DrawIndexedInstanced(indexBuffer->GetCount(), 1, 0, CurrentDrawCalls);
+	RenderCommand::DrawIndexedInstanced(indexBuffer.GetCount(), 1, 0, CurrentDrawCalls);
 	++CurrentDrawCalls;
 }

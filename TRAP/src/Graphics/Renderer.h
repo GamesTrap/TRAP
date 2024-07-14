@@ -37,14 +37,14 @@ namespace TRAP::Graphics
 		/// @param shader Shader to use.
 		/// @param vertexBuffer Vertex buffer to use.
 		/// @param transform Model transform. Default is identity.
-		static void Submit(const Ref<Shader>& shader, const VertexBuffer* vertexBuffer,
+		static void Submit(Shader& shader, const VertexBuffer& vertexBuffer,
 						   const Math::Mat4& transform = Math::Mat4(1.0f));
 		/// @brief Submit an indexed draw call.
 		/// @param shader Shader to use.
 		/// @param vertexBuffer Vertex buffer to use.
 		/// @param indexBuffer Index buffer to use.
 		/// @param transform Model transform. Default is identity.
-		static void Submit(const Ref<Shader>& shader, const VertexBuffer* vertexBuffer, const IndexBuffer* indexBuffer,
+		static void Submit(Shader& shader, const VertexBuffer& vertexBuffer, const IndexBuffer& indexBuffer,
 						   const Math::Mat4& transform = Math::Mat4(1.0f));
 	};
 }
