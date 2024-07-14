@@ -23,11 +23,8 @@ namespace TRAP::INTERNAL
 		~PPMImage() override = default;
 
 		/// @brief Retrieve the raw pixel data of the image.
-		/// @return Constant pointer to the raw pixel data.
-		[[nodiscard]] constexpr const void* GetPixelData() const noexcept override;
-		/// @brief Retrieve the size of the raw pixel data of the image.
-		/// @return Size of the raw pixel data in bytes.
-		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
+		/// @return Raw pixel data.
+		[[nodiscard]] constexpr std::span<const u8> GetPixelData() const noexcept override;
 
 		/// @brief Save an TRAP::Image as a Portable Pixmap (PPM) file.
 		/// @param img Image to save.
@@ -50,22 +47,15 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr const void* TRAP::INTERNAL::PPMImage::GetPixelData() const noexcept
+[[nodiscard]] constexpr std::span<const u8> TRAP::INTERNAL::PPMImage::GetPixelData() const noexcept
 {
 	if (!m_data2Byte.empty())
-		return m_data2Byte.data();
+	{
+		const std::span data(m_data2Byte);
+		return TRAP::Utils::AsBytes(data);
+	}
 
-	return m_data.data();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr u64 TRAP::INTERNAL::PPMImage::GetPixelDataSize() const noexcept
-{
-	if (!m_data2Byte.empty())
-		return m_data2Byte.size() * sizeof(u16);
-
-	return m_data.size();
+	return m_data;
 }
 
 #endif /*TRAP_PPMIMAGE_H*/

@@ -268,11 +268,11 @@ TRAP::Ref<TRAP::Graphics::RenderTarget> VRSTests::CreateShadingRateTexture(const
         }
     }
 
-    shadingRateTex->GetTexture()->Update(pixels.data(), NumericCast<u32>(pixels.size()) * sizeof(u8));
+    shadingRateTex->GetTexture()->Update(pixels);
     shadingRateTex->GetTexture()->AwaitLoading();
 	TRAP::Graphics::RenderCommand::Transition(shadingRateTex->GetTexture(), TRAP::Graphics::ResourceState::ShaderResource, TRAP::Graphics::ResourceState::ShadingRateSource);
 
-	// shadingRateTex->Update(pixels.data(), NumericCast<u32>(pixels.size()) * sizeof(u8));
+	// shadingRateTex->Update(pixels);
 	// shadingRateTex->AwaitLoading();
 	// TRAP::Graphics::RenderCommand::Transition(shadingRateTex, TRAP::Graphics::ResourceState::ShaderResource, TRAP::Graphics::ResourceState::ShadingRateSource);
 

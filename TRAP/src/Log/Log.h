@@ -105,7 +105,7 @@ namespace TRAP
 		/// @brief Clears all buffered messages.
 		constexpr void Clear() noexcept;
 
-		static constexpr auto WindowVersion =                        "[24w28b1]";
+		static constexpr auto WindowVersion =                        "[24w28b2]";
 		static constexpr auto WindowPrefix =                         "[Window] ";
 		static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		static constexpr auto ConfigPrefix =                         "[Config] ";

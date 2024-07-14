@@ -36,7 +36,7 @@ namespace TRAP::Graphics
 		/// @return Loaded texture on success, Fallback texture if texture loading failed, nullptr otherwise.
 		/// @note The images must be valid till IsLoaded() returns true.
 		[[nodiscard]] static Ref<Texture> CreateCube(std::string name, std::span<const Image*, 6> images,
-		                                             TextureCreationFlags flags = TextureCreationFlags::None);
+		                                             TextureCreationFlags flags = TextureCreationFlags::None); //TODO Function missing in TextureManager?
 		/// @brief Create a cube texture from 1 file.
 		/// @param name Name for the texture.
 		/// @param filePath File path of the texture file.
@@ -195,11 +195,22 @@ namespace TRAP::Graphics
 
 		/// @brief Update the texture with raw pixel data.
 		/// @param data Raw pixel data.
-		/// @param sizeInBytes Size of the data array in bytes.
 		/// @param mipLevel Mip level to update. Default: 0
 		/// @param arrayLayer Array layer to update. Default: 0
 		/// @note Data array length and sizeInBytes must match the textures current size or it won't update
-		void Update(const void* data, u32 sizeInBytes, u32 mipLevel = 0, u32 arrayLayer = 0);
+		void Update(std::span<const u8>, u32 mipLevel = 0, u32 arrayLayer = 0);
+		/// @brief Update the texture with raw pixel data.
+		/// @param data Raw pixel data.
+		/// @param mipLevel Mip level to update. Default: 0
+		/// @param arrayLayer Array layer to update. Default: 0
+		/// @note Data array length and sizeInBytes must match the textures current size or it won't update
+		void Update(std::span<const u16>, u32 mipLevel = 0, u32 arrayLayer = 0);
+		/// @brief Update the texture with raw pixel data.
+		/// @param data Raw pixel data.
+		/// @param mipLevel Mip level to update. Default: 0
+		/// @param arrayLayer Array layer to update. Default: 0
+		/// @note Data array length and sizeInBytes must match the textures current size or it won't update
+		void Update(std::span<const f32>, u32 mipLevel = 0, u32 arrayLayer = 0);
 
 		/// @brief Retrieve whether the texture owns the image data.
 		/// @return True if texture owns the image data, false otherwise.
@@ -215,13 +226,13 @@ namespace TRAP::Graphics
 		/// @param width Width of the texture.
 		/// @param height Height of the texture.
 		/// @return Size of the mip level.
-		[[nodiscard]] static u32 CalculateMipLevels(u32 width, u32 height);
+		[[nodiscard]] static constexpr u32 CalculateMipLevels(u32 width, u32 height);
 		/// @brief Split a horizontal or vertical cross texture into multiple textures.
 		/// @param image Image to split.
 		/// @return Array of splitted textures.
 		template<typename T>
 		requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
-		[[nodiscard]] static std::array<TRAP::Scope<TRAP::Image>, 6> SplitImageFromCross(const TRAP::Image* image);
+		[[nodiscard]] static std::array<TRAP::Scope<TRAP::Image>, 6> SplitImageFromCross(const TRAP::Image& image);
 
 	protected:
 		/// @brief Shutdown API dependent texture.
@@ -238,7 +249,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] static constexpr u32 GetBitsPerChannelFromImageFormat(API::ImageFormat imageFormat) noexcept;
 
 		/// @brief Constructor.
-		explicit Texture(std::string name);
+		constexpr explicit Texture(std::string name);
 		/// @brief Constructor.
 		Texture(std::string name, std::vector<std::filesystem::path> filePaths);
 		/// @brief Constructor.
@@ -272,7 +283,6 @@ namespace TRAP::Graphics
 
 [[nodiscard]] constexpr TRAP::Graphics::TextureType TRAP::Graphics::Texture::GetType() const noexcept
 {
-	[[maybe_unused]] const auto test = std::to_underlying(m_descriptorTypes);
 	if((m_descriptorTypes & RendererAPI::DescriptorType::TextureCube) == RendererAPI::DescriptorType::TextureCube)
 		return TextureType::TextureCube;
 
@@ -427,15 +437,22 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr u32 TRAP::Graphics::Texture::CalculateMipLevels(const u32 width, const u32 height)
+{
+	return Math::Max(1u, NumericCast<u32>(Math::Floor(Math::Log2(NumericCast<f32>(Math::Max(width, height))))) + 1u);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 template<typename T>
 requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
-[[nodiscard]] std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::Texture::SplitImageFromCross(const TRAP::Image* const image)
+[[nodiscard]] std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::Texture::SplitImageFromCross(const TRAP::Image& image)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	const bool isHorizontal = image->GetWidth() > image->GetHeight();
+	const bool isHorizontal = image.GetWidth() > image.GetHeight();
 
-	const u32 stride = image->GetBytesPerPixel();
+	const u32 stride = image.GetBytesPerPixel();
 	u32 face = 0;
 	u32 cxLimit = 4, cyLimit = 3;
 	if(!isHorizontal)
@@ -443,12 +460,14 @@ requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 		cxLimit = 3;
 		cyLimit = 4;
 	}
-	const u32 faceWidth = image->GetWidth() / cxLimit;
-	const u32 faceHeight = image->GetHeight() / cyLimit;
+	const u32 faceWidth = image.GetWidth() / cxLimit;
+	const u32 faceHeight = image.GetHeight() / cyLimit;
 
 	std::array<std::vector<T>, 6> cubeTextureData;
 	for(auto& i : cubeTextureData)
 		i.resize(faceWidth * faceHeight * stride);
+
+	const std::span<const T> pixelData{reinterpret_cast<const T*>(image.GetPixelData().data()), image.GetPixelData().size() / sizeof(T)};
 
 	for(u32 cy = 0; cy < cyLimit; ++cy)
 	{
@@ -473,55 +492,25 @@ requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 
 					if(stride == 1)
 					{
-						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 0];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = pixelData[(xp + yp * image.GetWidth()) * stride + 0];
 					}
 					else if(stride == 2)
 					{
-						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 0];
-						cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 1];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = pixelData[(xp + yp * image.GetWidth()) * stride + 0];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 1] = pixelData[(xp + yp * image.GetWidth()) * stride + 1];
 					}
 					else if(stride == 3)
 					{
-						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 0];
-						cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 1];
-						cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 2];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = pixelData[(xp + yp * image.GetWidth()) * stride + 0];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 1] = pixelData[(xp + yp * image.GetWidth()) * stride + 1];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 2] = pixelData[(xp + yp * image.GetWidth()) * stride + 2];
 					}
 					else if(stride == 4)
 					{
-						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 0];
-						cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 1];
-						cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 2];
-						cubeTextureData[face][(x + y * faceWidth) * stride + 3] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 3];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = pixelData[(xp + yp * image.GetWidth()) * stride + 0];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 1] = pixelData[(xp + yp * image.GetWidth()) * stride + 1];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 2] = pixelData[(xp + yp * image.GetWidth()) * stride + 2];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 3] = pixelData[(xp + yp * image.GetWidth()) * stride + 3];
 					}
 				}
 			}
@@ -534,23 +523,21 @@ requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 	//Load Images in correct order
 	if(cxLimit == 4 && cyLimit == 3)
 	{
-		std::get<0>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<3>(cubeTextureData)); //+X
-		std::get<1>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<1>(cubeTextureData)); //-X
-		std::get<2>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<0>(cubeTextureData)); //+Y
-		std::get<3>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<5>(cubeTextureData)); //-Y
-		std::get<4>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<2>(cubeTextureData)); //+Z
-		std::get<5>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<4>(cubeTextureData)); //-Z
+		std::get<0>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<3>(cubeTextureData)); //+X
+		std::get<1>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<1>(cubeTextureData)); //-X
+		std::get<2>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<0>(cubeTextureData)); //+Y
+		std::get<3>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<5>(cubeTextureData)); //-Y
+		std::get<4>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<2>(cubeTextureData)); //+Z
+		std::get<5>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<4>(cubeTextureData)); //-Z
 	}
 	else
 	{
-		std::get<0>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<2>(cubeTextureData)); //+X
-		std::get<1>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<5>(cubeTextureData)); //-X
-		// std::get<2>(images) = Rotate90CounterClockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<0>(cubeTextureData)).get()); //+Y
-		// std::get<3>(images) = Rotate90Clockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<4>(cubeTextureData)).get()); //-Y
-		std::get<2>(images) = TRAP::Image::Rotate90CounterClockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<0>(cubeTextureData)).get()); //+Y
-		std::get<3>(images) = TRAP::Image::Rotate90Clockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<4>(cubeTextureData)).get()); //-Y
-		std::get<4>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<1>(cubeTextureData)); //+Z
-		std::get<5>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<3>(cubeTextureData)); //-Z
+		std::get<0>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<2>(cubeTextureData)); //+X
+		std::get<1>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<5>(cubeTextureData)); //-X
+		std::get<2>(images) = TRAP::Image::Rotate90CounterClockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<0>(cubeTextureData)).get()); //+Y
+		std::get<3>(images) = TRAP::Image::Rotate90Clockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<4>(cubeTextureData)).get()); //-Y
+		std::get<4>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<1>(cubeTextureData)); //+Z
+		std::get<5>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<3>(cubeTextureData)); //-Z
 	}
 
 	return images;
@@ -748,6 +735,13 @@ requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 	default:
 		return 0;
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::Texture::Texture(std::string name)
+	: m_name(std::move(name))
+{
 }
 
 #endif /*TRAP_TEXTURE_H*/

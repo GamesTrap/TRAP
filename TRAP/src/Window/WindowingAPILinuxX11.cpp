@@ -1457,7 +1457,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 	native->xhot = xHotSpot;
 	native->yhot = yHotSpot;
 
-	const u8* source = static_cast<const u8*>(image.GetPixelData());
+	const u8* source = image.GetPixelData().data();
 	XcursorPixel* target = native->pixels;
 
 	for(u64 i = 0; i < NumericCast<u64>(image.GetWidth()) * NumericCast<u64>(image.GetHeight()); i++, target++, source += 4)
@@ -2533,9 +2533,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIconX11(InternalWindow& wind
 		std::vector<u64> icon{};
 		icon.resize(longCount);
 		auto targetIt = icon.begin();
-		const std::vector<u8> imgData(static_cast<const u8*>(image->GetPixelData()),
-		                                   static_cast<const u8*>(image->GetPixelData()) +
-									       image->GetPixelDataSize());
+		const std::span imgData = image->GetPixelData();
 
 		*targetIt++ = image->GetWidth();
 		*targetIt++ = image->GetHeight();

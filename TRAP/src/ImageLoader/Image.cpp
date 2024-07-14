@@ -76,7 +76,7 @@
 	}
 
 	//Test for Errors
-	if (result->GetPixelDataSize() == 0 || result->GetColorFormat() == ColorFormat::NONE)
+	if (result->GetPixelData().empty() || result->GetColorFormat() == ColorFormat::NONE)
 		result = MakeScope<INTERNAL::CustomImage>(filepath, 32, 32, ColorFormat::RGBA, std::vector<u8>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 
 	return result;
@@ -163,23 +163,21 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 
 	if (img->IsHDR() && img->GetBytesPerChannel() == 4)
 	{
-		const std::vector<f32> flipped = FlipX(img->GetWidth(), img->GetHeight(),
-		                                         img->GetColorFormat(),
-												 static_cast<const f32*>(img->GetPixelData()));
+		const std::span<const f32> data{reinterpret_cast<const f32*>(img->GetPixelData().data()), img->GetPixelData().size() / sizeof(f32)};
+		const std::vector<f32> flipped = FlipX(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), data);
 
 		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
 	}
 	else if (img->IsLDR() && img->GetBytesPerChannel() == 2)
 	{
-		const std::vector<u16> flipped = FlipX(img->GetWidth(), img->GetHeight(), img->GetColorFormat(),
-		                                            static_cast<const u16*>(img->GetPixelData()));
+		const std::span<const u16> data{reinterpret_cast<const u16*>(img->GetPixelData().data()), img->GetPixelData().size() / sizeof(u16)};
+		const std::vector<u16> flipped = FlipX(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), data);
 
 		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
 	}
 	else /*if(img->IsLDR() && img->GetBytesPerChannel() == 1)*/
 	{
-		const std::vector<u8> flipped = FlipX(img->GetWidth(), img->GetHeight(), img->GetColorFormat(),
-		                                           static_cast<const u8*>(img->GetPixelData()));
+		const std::vector<u8> flipped = FlipX(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), img->GetPixelData());
 
 		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
 	}
@@ -200,22 +198,22 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 
 	if (img->IsHDR() && img->GetBytesPerChannel() == 4)
 	{
-		const std::vector<f32> flipped = FlipY(img->GetWidth(), img->GetHeight(), img->GetColorFormat(),
-		                                         static_cast<const f32*>(img->GetPixelData()));
+		const std::span<const f32> data{reinterpret_cast<const f32*>(img->GetPixelData().data()), img->GetPixelData().size() / sizeof(f32)};
+		const std::vector<f32> flipped = FlipY(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), data);
 
 		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
 	}
 	else if (img->IsLDR() && img->GetBytesPerChannel() == 2)
 	{
-		const std::vector<u16> flipped = FlipY(img->GetWidth(), img->GetHeight(), img->GetColorFormat(),
-		                                            static_cast<const u16*>(img->GetPixelData()));
+		const std::span<const u16> data{reinterpret_cast<const u16*>(img->GetPixelData().data()), img->GetPixelData().size() / sizeof(u16)};
+		const std::vector<u16> flipped = FlipY(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), data);
 
 		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
 	}
 	else /*if(img->IsLDR() && img->GetBytesPerChannel() == 1)*/
 	{
 		const std::vector<u8> flipped = FlipY(img->GetWidth(), img->GetHeight(), img->GetColorFormat(),
-		                                           static_cast<const u8*>(img->GetPixelData()));
+		                                      img->GetPixelData());
 
 		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
 	}
@@ -236,25 +234,24 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 
 	if (img->IsHDR() && img->GetBytesPerChannel() == 4)
 	{
+		const std::span<const f32> data{reinterpret_cast<const f32*>(img->GetPixelData().data()), img->GetPixelData().size() / sizeof(f32)};
 		const std::vector<f32> rotated = Rotate90Clockwise(img->GetWidth(), img->GetHeight(),
-		                                                     img->GetColorFormat(),
-		                                                     static_cast<const f32*>(img->GetPixelData()));
+		                                                   img->GetColorFormat(), data);
 
 		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
 	}
 	else if (img->IsLDR() && img->GetBytesPerChannel() == 2)
 	{
+		const std::span<const u16> data{reinterpret_cast<const u16*>(img->GetPixelData().data()), img->GetPixelData().size() / sizeof(u16)};
 		const std::vector<u16> rotated = Rotate90Clockwise(img->GetWidth(), img->GetHeight(),
-		                                                        img->GetColorFormat(),
-		                                                        static_cast<const u16*>(img->GetPixelData()));
+		                                                   img->GetColorFormat(), data);
 
 		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
 	}
 	else /*if(img->IsLDR() && img->GetBytesPerChannel() == 1)*/
 	{
 		const std::vector<u8> rotated = Rotate90Clockwise(img->GetWidth(), img->GetHeight(),
-		                                                       img->GetColorFormat(),
-		                                                       static_cast<const u8*>(img->GetPixelData()));
+		                                                  img->GetColorFormat(), img->GetPixelData());
 
 		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
 	}
@@ -275,25 +272,24 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 
 	if (img->IsHDR() && img->GetBytesPerChannel() == 4)
 	{
+		const std::span<const f32> data{reinterpret_cast<const f32*>(img->GetPixelData().data()), img->GetPixelData().size() / sizeof(f32)};
 		const std::vector<f32> rotated = Rotate90CounterClockwise(img->GetWidth(), img->GetHeight(),
-		                                                            img->GetColorFormat(),
-		                                                            static_cast<const f32*>(img->GetPixelData()));
+		                                                          img->GetColorFormat(), data);
 
 		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
 	}
 	else if (img->IsLDR() && img->GetBytesPerChannel() == 2)
 	{
+		const std::span<const u16> data{reinterpret_cast<const u16*>(img->GetPixelData().data()), img->GetPixelData().size() / sizeof(u16)};
 		const std::vector<u16> rotated = Rotate90CounterClockwise(img->GetWidth(), img->GetHeight(),
-		                                                               img->GetColorFormat(),
-		                                                               static_cast<const u16*>(img->GetPixelData()));
+		                                                          img->GetColorFormat(), data);
 
 		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
 	}
 	else /*if(img->IsLDR() && img->GetBytesPerChannel() == 1)*/
 	{
 		const std::vector<u8> rotated = Rotate90CounterClockwise(img->GetWidth(), img->GetHeight(),
-		                                                              img->GetColorFormat(),
-																	  static_cast<const u8*>(img->GetPixelData()));
+		                                                         img->GetColorFormat(), img->GetPixelData());
 
 		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
 	}
@@ -314,24 +310,22 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 
 	if(img->IsHDR() && img->GetBytesPerChannel() == 4)
 	{
-		const std::vector<f32> converted = ConvertRGBToRGBA(img->GetWidth(), img->GetHeight(),
-															  img->GetColorFormat(),
-															  static_cast<const f32*>(img->GetPixelData()));
+		const std::span<const f32> data{reinterpret_cast<const f32*>(img->GetPixelData().data()), img->GetPixelData().size() / sizeof(f32)};
+		const std::vector<f32> converted = ConvertRGBToRGBA(img->GetWidth(), img->GetHeight(), data);
+
 		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), ColorFormat::RGBA, converted);
 	}
 	else if (img->IsLDR() && img->GetBytesPerChannel() == 2)
 	{
-		const std::vector<u16> converted = ConvertRGBToRGBA(img->GetWidth(), img->GetHeight(),
-		                                                         img->GetColorFormat(),
-		                                                         static_cast<const u16*>(img->GetPixelData()));
+		const std::span<const u16> data{reinterpret_cast<const u16*>(img->GetPixelData().data()), img->GetPixelData().size() / sizeof(u16)};
+		const std::vector<u16> converted = ConvertRGBToRGBA(img->GetWidth(), img->GetHeight(), data);
 
 		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), ColorFormat::RGBA, converted);
 	}
 	else /*if(img->IsLDR() && img->GetBytesPerChannel() == 1)*/
 	{
 		const std::vector<u8> flipped = ConvertRGBToRGBA(img->GetWidth(), img->GetHeight(),
-		                                                      img->GetColorFormat(),
-		                                                      static_cast<const u8*>(img->GetPixelData()));
+		                                                 img->GetPixelData());
 
 		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), ColorFormat::RGBA, flipped);
 	}

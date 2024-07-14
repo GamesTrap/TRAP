@@ -45,11 +45,8 @@ namespace TRAP
 		virtual ~Image() = default;
 
 		/// @brief Retrieve the raw pixel data of the image.
-		/// @return Constant pointer to the raw pixel data.
-		[[nodiscard]] virtual constexpr const void* GetPixelData() const noexcept = 0;
-		/// @brief Retrieve the size of the raw pixel data of the image.
-		/// @return Size of the raw pixel data in bytes.
-		[[nodiscard]] virtual constexpr u64 GetPixelDataSize() const noexcept = 0;
+		/// @return Raw pixel data.
+		[[nodiscard]] virtual constexpr std::span<const u8> GetPixelData() const noexcept = 0;
 		/// @brief Retrieve the amount of bits used for a single pixel in the image.
 		/// @return Amount of bits.
 		[[nodiscard]] constexpr u32 GetBitsPerPixel() const noexcept;
@@ -180,7 +177,7 @@ namespace TRAP
 		/// @return Flipped raw pixel data
 		template<typename T>
 		requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
-		[[nodiscard]] static std::vector<T> FlipX(u32 width, u32 height, ColorFormat format, const T* data);
+		[[nodiscard]] static std::vector<T> FlipX(u32 width, u32 height, ColorFormat format, std::span<const T> data);
 		/// @brief Flip raw pixel data on Y axis.
 		/// @tparam T u8, u16 or f32.
 		/// @param width Width of image in pixels.
@@ -190,7 +187,7 @@ namespace TRAP
 		/// @return Flipped raw pixel data
 		template<typename T>
 		requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
-		[[nodiscard]] static std::vector<T> FlipY(u32 width, u32 height, ColorFormat format, const T* data);
+		[[nodiscard]] static std::vector<T> FlipY(u32 width, u32 height, ColorFormat format, std::span<const T> data);
 		/// @brief Rotate raw pixel data by 90 degrees clockwise.
 		/// @tparam T u8, u16 or f32.
 		/// @param width Width of image in pixels.
@@ -200,7 +197,7 @@ namespace TRAP
 		/// @return Rotated raw pixel data
 		template<typename T>
 		requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
-		[[nodiscard]] static std::vector<T> Rotate90Clockwise(u32 width, u32 height, ColorFormat format, const T* data);
+		[[nodiscard]] static std::vector<T> Rotate90Clockwise(u32 width, u32 height, ColorFormat format, std::span<const T> data);
 		/// @brief Rotate raw pixel data by 90 degrees counter clockwise.
 		/// @tparam T u8, u16 or f32.
 		/// @param width Width of image in pixels.
@@ -210,27 +207,25 @@ namespace TRAP
 		/// @return Rotate raw pixel data
 		template<typename T>
 		requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
-		[[nodiscard]] static std::vector<T> Rotate90CounterClockwise(u32 width, u32 height, ColorFormat format, const T* data);
+		[[nodiscard]] static std::vector<T> Rotate90CounterClockwise(u32 width, u32 height, ColorFormat format, std::span<const T> data);
 		/// @brief Converts raw RGB pixel data to RGBA.
 		/// @tparam T u8, u16 or f32.
 		/// @param width Width of image in pixels.
 		/// @param height Height of image in pixels.
-		/// @param format Color format of the image data.
 		/// @param data Raw pixel data.
 		/// @return Converted RGBA raw pixel data
 		template<typename T>
 		requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
-		[[nodiscard]] static std::vector<T> ConvertRGBToRGBA(u32 width, u32 height, ColorFormat format, const T* data);
+		[[nodiscard]] static std::vector<T> ConvertRGBToRGBA(u32 width, u32 height, std::span<const T> data);
 		/// @brief Converts raw RGBA pixel data to RGB.
 		/// @tparam T u8, u16 or f32.
 		/// @param width Width of image in pixels.
 		/// @param height Height of image in pixels.
-		/// @param format Color format of the image data.
 		/// @param data Raw pixel data.
 		/// @return Converted RGB raw pixel data
 		template<typename T>
 		requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
-		[[nodiscard]] static std::vector<T> ConvertRGBAToRGB(u32 width, u32 height, ColorFormat format, const T* data);
+		[[nodiscard]] static std::vector<T> ConvertRGBAToRGB(u32 width, u32 height, std::span<const T> data);
 
 		/// @brief Converts BGR16 pixel data to RGB24.
 		/// @param source BGR16 pixel data.
@@ -369,16 +364,16 @@ namespace TRAP
 template <typename T>
 requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 [[nodiscard]] std::vector<T> TRAP::Image::FlipX(const u32 width, const u32 height, const ColorFormat format,
-                                                const T* data)
+                                                const std::span<const T> data)
 {
 	if (format == ColorFormat::NONE)
 	{
 		TRAP_ASSERT(false, "Image::FlipX(): Invalid color format!");
 		return std::vector<T>();
 	}
-	if(!data)
+	if(data.size() < (width * height * std::to_underlying(format)))
 	{
-		TRAP_ASSERT(false, "Image::FlipX(): Raw pixel data is nullptr!");
+		TRAP_ASSERT(false, "Image::FlipX(): Raw pixel data is too small!");
 		return std::vector<T>();
 	}
 
@@ -386,7 +381,7 @@ requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 	u32 stride = 0;
 	const u32 multiplier = std::to_underlying(format);
 
-	newData.assign(data, data + NumericCast<u64>(width) * height * multiplier);
+	newData.assign(data.begin(), data.begin() + NumericCast<u64>(width) * height * multiplier);
 	stride = height * multiplier;
 
 	std::vector<T> row{};
@@ -408,16 +403,16 @@ requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 template <typename T>
 requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 [[nodiscard]] std::vector<T> TRAP::Image::FlipY(const u32 width, const u32 height, const ColorFormat format,
-                                                const T* data)
+                                                const std::span<const T> data)
 {
 	if (format == ColorFormat::NONE)
 	{
 		TRAP_ASSERT(false, "Image::FlipY(): Invalid color format!");
 		return std::vector<T>();
 	}
-	if(!data)
+	if(data.size() < (width * height * std::to_underlying(format)))
 	{
-		TRAP_ASSERT(false, "Image::FlipY(): Raw pixel data is nullptr!");
+		TRAP_ASSERT(false, "Image::FlipY(): Raw pixel data is too small!");
 		return std::vector<T>();
 	}
 
@@ -425,7 +420,7 @@ requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 	u32 stride = 0;
 	const u32 multiplier = std::to_underlying(format);
 
-	newData.assign(data, data + NumericCast<u64>(width) * height * multiplier);
+	newData.assign(data.begin(), data.begin() + NumericCast<u64>(width) * height * multiplier);
 	stride = width * multiplier;
 
 	std::vector<T> row{};
@@ -447,16 +442,17 @@ requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 template<typename T>
 requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 [[nodiscard]] std::vector<T> TRAP::Image::Rotate90Clockwise(const u32 width, const u32 height,
-                                                            const ColorFormat format, const T* const data)
+                                                            const ColorFormat format,
+															const std::span<const T> data)
 {
 	if (format == ColorFormat::NONE)
 	{
 		TRAP_ASSERT(false, "Image::Rotate90Clockwise(): Invalid color format!");
 		return std::vector<T>();
 	}
-	if(!data)
+	if(data.size() < (width * height * std::to_underlying(format)))
 	{
-		TRAP_ASSERT(false, "Image::Rotate90Clockwise: Raw pixel data is nullptr!");
+		TRAP_ASSERT(false, "Image::Rotate90Clockwise: Raw pixel data is too small!");
 		return std::vector<T>();
 	}
 
@@ -484,21 +480,22 @@ requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 template<typename T>
 requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 [[nodiscard]] std::vector<T> TRAP::Image::Rotate90CounterClockwise(const u32 width, const u32 height,
-                                                                   const ColorFormat format, const T* const data)
+                                                                   const ColorFormat format,
+																   const std::span<const T> data)
 {
 	if (format == ColorFormat::NONE)
 	{
 		TRAP_ASSERT(false, "Image::Rotate90CounterClockwise(): Invalid color format!");
 		return std::vector<T>();
 	}
-	if(!data)
+	if(data.size() < (width * height * std::to_underlying(format)))
 	{
-		TRAP_ASSERT(false, "Image::Rotate90CounterClockwise: Raw pixel data is nullptr!");
+		TRAP_ASSERT(false, "Image::Rotate90CounterClockwise: Raw pixel data is too small!");
 		return std::vector<T>();
 	}
 
 	std::vector<T> rotated(NumericCast<usize>(width) * height * std::to_underlying(format));
-	std::ranges::copy_n(data, static_cast<std::iter_difference_t<decltype(data)>>(rotated.size()), rotated.begin());
+	std::ranges::copy_n(data.begin(), static_cast<std::iter_difference_t<decltype(data)>>(rotated.size()), rotated.begin());
 	for(u32 x = 0; x < width; ++x)
 	{
 		for(u32 y = 0; y < height; ++y)
@@ -526,17 +523,12 @@ requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 
 template <typename T>
 requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
-[[nodiscard]] std::vector<T> TRAP::Image::ConvertRGBToRGBA(const u32 width, const u32 height, const ColorFormat format,
-									                       const T* data)
+[[nodiscard]] std::vector<T> TRAP::Image::ConvertRGBToRGBA(const u32 width, const u32 height,
+                                                           const std::span<const T> data)
 {
-	if(format != ColorFormat::RGB)
+	if(data.size() < (width * height * std::to_underlying(ColorFormat::RGB)))
 	{
-		TRAP_ASSERT(false, "Image::ConvertRGBToRGBA(): Invalid color format!");
-		return std::vector<T>();
-	}
-	if(!data)
-	{
-		TRAP_ASSERT(false, "Image::ConvertRGBToRGBA(): Raw pixel data is nullptr!");
+		TRAP_ASSERT(false, "Image::ConvertRGBToRGBA(): Raw pixel data is too small!");
 		return std::vector<T>();
 	}
 
@@ -565,17 +557,12 @@ requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 
 template <typename T>
 requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
-[[nodiscard]] std::vector<T> TRAP::Image::ConvertRGBAToRGB(const u32 width, const u32 height, const ColorFormat format,
-									                       const T* data)
+[[nodiscard]] std::vector<T> TRAP::Image::ConvertRGBAToRGB(const u32 width, const u32 height,
+									                       const std::span<const T> data)
 {
-	if(format != ColorFormat::RGBA)
+	if(data.size() < (width * height * std::to_underlying(ColorFormat::RGBA)))
 	{
-		TRAP_ASSERT(false, "Image::ConvertRGBAToRGB(): Invalid color format!");
-		return std::vector<T>();
-	}
-	if(!data)
-	{
-		TRAP_ASSERT(false, "Image::ConvertRGBAToRGB(): Raw pixel data is nullptr!");
+		TRAP_ASSERT(false, "Image::ConvertRGBAToRGB(): Raw pixel data is too small!");
 		return std::vector<T>();
 	}
 

@@ -23,11 +23,8 @@ namespace TRAP::INTERNAL
 		~TGAImage() override = default;
 
 		/// @brief Retrieve the raw pixel data of the image.
-		/// @return Constant pointer to the raw pixel data.
-		[[nodiscard]] constexpr const void* GetPixelData() const noexcept override;
-		/// @brief Retrieve the size of the raw pixel data of the image.
-		/// @return Size of the raw pixel data in bytes.
-		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
+		/// @return Raw pixel data.
+		[[nodiscard]] constexpr std::span<const u8> GetPixelData() const noexcept override;
 	private:
 		std::vector<u8> m_data;
 	};
@@ -35,16 +32,9 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr const void* TRAP::INTERNAL::TGAImage::GetPixelData() const noexcept
+[[nodiscard]] constexpr std::span<const u8> TRAP::INTERNAL::TGAImage::GetPixelData() const noexcept
 {
-	return m_data.data();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr u64 TRAP::INTERNAL::TGAImage::GetPixelDataSize() const noexcept
-{
-	return m_data.size();
+	return m_data;
 }
 
 #endif /*TRAP_TGAIMAGE_H*/

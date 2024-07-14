@@ -109,25 +109,9 @@ namespace
 	[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat ColorFormatBitsPerPixelToImageFormat(const TRAP::Image::ColorFormat colorFormat,
 																						          const u32 bpp)
 	{
-		if(colorFormat == TRAP::Image::ColorFormat::RGBA)
+		switch(colorFormat)
 		{
-			if(bpp == 32)
-				return TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
-			if(bpp == 64)
-				return TRAP::Graphics::API::ImageFormat::R16G16B16A16_UNORM;
-			if(bpp == 128)
-				return TRAP::Graphics::API::ImageFormat::R32G32B32A32_SFLOAT;
-		}
-		else if(colorFormat == TRAP::Image::ColorFormat::GrayScaleAlpha)
-		{
-			if(bpp == 16)
-				return TRAP::Graphics::API::ImageFormat::R8G8_UNORM;
-			if(bpp == 32)
-				return TRAP::Graphics::API::ImageFormat::R16G16_UNORM;
-			if(bpp == 64)
-				return TRAP::Graphics::API::ImageFormat::R32G32_SFLOAT;
-		}
-		else if(colorFormat == TRAP::Image::ColorFormat::GrayScale)
+		case TRAP::Image::ColorFormat::GrayScale:
 		{
 			if(bpp == 8)
 				return TRAP::Graphics::API::ImageFormat::R8_UNORM;
@@ -135,15 +119,89 @@ namespace
 				return TRAP::Graphics::API::ImageFormat::R16_UNORM;
 			if(bpp == 32)
 				return TRAP::Graphics::API::ImageFormat::R32_SFLOAT;
+
+			break;
 		}
-		else if(colorFormat == TRAP::Image::ColorFormat::RGB)
+
+		case TRAP::Image::ColorFormat::GrayScaleAlpha:
+		{
+			if(bpp == 16)
+				return TRAP::Graphics::API::ImageFormat::R8G8_UNORM;
+			if(bpp == 32)
+				return TRAP::Graphics::API::ImageFormat::R16G16_UNORM;
+			if(bpp == 64)
+				return TRAP::Graphics::API::ImageFormat::R32G32_SFLOAT;
+
+			break;
+		}
+
+		case TRAP::Image::ColorFormat::RGB:
 		{
 			TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Color format RGB is not allowed on empty textures as GPU needs an alpha channel!");
 			return TRAP::Graphics::API::ImageFormat::Undefined;
 		}
 
+		case TRAP::Image::ColorFormat::RGBA:
+		{
+			if(bpp == 32)
+				return TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
+			if(bpp == 64)
+				return TRAP::Graphics::API::ImageFormat::R16G16B16A16_UNORM;
+			if(bpp == 128)
+				return TRAP::Graphics::API::ImageFormat::R32G32B32A32_SFLOAT;
+
+			break;
+		}
+
+		case TRAP::Image::ColorFormat::NONE:
+			break;
+		}
+
 		TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Invalid bits per pixel & color format combination provided!");
 		return TRAP::Graphics::API::ImageFormat::Undefined;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void UpdateTextureData(TRAP::Graphics::Texture& texture, TRAP::Graphics::API::SyncToken& syncToken,
+	                       const std::span<const u8> data, const u32 mipLevel, const u32 arrayLayer)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+
+		TRAP_ASSERT(arrayLayer < texture.GetArraySize(), "Texture::Update(): Invalid array layer provided!");
+		TRAP_ASSERT(mipLevel < texture.GetMipLevels(), "Texture::Update(): Invalid mip level provided!");
+		TRAP_ASSERT(data.size() >= (texture.GetWidth() >> mipLevel) * (texture.GetHeight() >> mipLevel) * texture.GetBytesPerPixel(),
+					"Texture::Update(): Texture update size is too small");
+
+		if(mipLevel >= texture.GetMipLevels())
+		{
+			TP_ERROR(TRAP::Log::TexturePrefix, "Update: Invalid mip level provided!");
+			return;
+		}
+		if(data.size() < (texture.GetWidth() >> mipLevel) * (texture.GetHeight() >> mipLevel) * texture.GetBytesPerPixel())
+		{
+			TP_ERROR(TRAP::Log::TexturePrefix, "Update: Texture update size is too small!");
+			return;
+		}
+
+		TRAP::Graphics::RendererAPI::TextureUpdateDesc updateDesc{};
+		updateDesc.Texture = &texture;
+		updateDesc.MipLevel = mipLevel;
+		updateDesc.ArrayLayer = arrayLayer;
+		TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(updateDesc);
+		if(updateDesc.DstRowStride == updateDesc.SrcRowStride) //Single copy is enough
+			std::copy_n(data.begin(), updateDesc.RowCount * updateDesc.SrcRowStride,
+						updateDesc.MappedData.begin());
+		else //Needs row by row copy
+		{
+			for(usize r = 0; r < updateDesc.RowCount; ++r)
+			{
+				std::copy_n(data.begin() + r * updateDesc.SrcRowStride,
+							updateDesc.SrcRowStride,
+							updateDesc.MappedData.subspan(r * updateDesc.DstRowStride).begin());
+			}
+		}
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(updateDesc, &syncToken);
 	}
 }
 
@@ -185,11 +243,13 @@ namespace
 		AddPathsToHotReloading(filepaths);
 
 		//Load Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
-		desc.Filepaths = texture->m_filepaths;
-		desc.IsCubemap = true;
-		desc.CreationFlag = flags;
-		desc.Texture = texture.get();
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+		{
+			.Texture = texture.get(),
+			.Filepaths = texture->m_filepaths,
+			.CreationFlag = flags,
+			.IsCubemap = true
+		};
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
 	}
@@ -215,9 +275,12 @@ namespace
 		return nullptr;
 	}
 
-	std::vector<std::filesystem::path> imagePaths{};
-	for(const auto* const img : images)
-		imagePaths.push_back(img->GetFilePath());
+	std::vector<std::filesystem::path> imagePaths(images.size());
+	for(usize i = 0; i < images.size(); ++i)
+	{
+		if(images[i] != nullptr)
+			imagePaths[i] = images[i]->GetFilePath();
+	}
 
 	TRAP::Ref<Texture> texture = nullptr;
 
@@ -242,11 +305,14 @@ namespace
 		AddPathsToHotReloading(texture->m_filepaths);
 
 		//Load Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
-		desc.Images = {images.begin(), images.end()};
-		desc.IsCubemap = true;
-		desc.CreationFlag = flags;
-		desc.Texture = texture.get();
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+		{
+			.Texture = texture.get(),
+			.Filepaths = {},
+			.Images =  {images.begin(), images.end()},
+			.CreationFlag = flags,
+			.IsCubemap = true
+		};
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
 	}
@@ -293,12 +359,14 @@ namespace
 		AddPathToHotReloading(filepath);
 
 		//Load Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
-		desc.Filepaths = texture->m_filepaths;
-		desc.IsCubemap = true;
-		desc.Type = cubeFormat;
-		desc.CreationFlag = flags;
-		desc.Texture = texture.get();
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+		{
+			.Texture = texture.get(),
+			.Filepaths = texture->m_filepaths,
+			.CreationFlag = flags,
+			.IsCubemap = true,
+			.Type = cubeFormat
+		};
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
 	}
@@ -345,12 +413,15 @@ namespace
 		AddPathToHotReloading(image.GetFilePath());
 
 		//Load Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
-		desc.Images = {&image};
-		desc.IsCubemap = true;
-		desc.Type = cubeFormat;
-		desc.CreationFlag = flags;
-		desc.Texture = texture.get();
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+		{
+			.Texture = texture.get(),
+			.Filepaths = {},
+			.Images = {&image},
+			.CreationFlag = flags,
+			.IsCubemap = true,
+			.Type = cubeFormat
+		};
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
 	}
@@ -400,21 +471,26 @@ namespace
 
 	if(texture)
 	{
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
-		desc.Texture = texture.get();
+		RendererAPI::TextureDesc texDesc
+		{
+			.Width = width,
+			.Height = height,
+			.ArraySize = 6,
+			.Format = imageFormat,
+			.StartState = RendererAPI::ResourceState::Common,
+			.Descriptors = (RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::TextureCube),
+			.Name = std::move(name)
+		};
 
-		RendererAPI::TextureDesc texDesc{};
-		texDesc.Width = width;
-		texDesc.Height = height;
-		texDesc.Format = imageFormat;
-		texDesc.ArraySize = 6;
-		texDesc.Name = std::move(name);
-		texDesc.Descriptors = (RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::TextureCube);
-		texDesc.StartState = RendererAPI::ResourceState::Common;
 		if((flags & TextureCreationFlags::Storage) != TextureCreationFlags::None)
 			texDesc.Descriptors |= RendererAPI::DescriptorType::RWTexture;
 
-		desc.Desc = &texDesc;
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+		{
+			.Texture = texture.get(),
+			.Desc = &texDesc,
+			.Filepaths = {},
+		};
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
 	}
@@ -460,12 +536,13 @@ namespace
 		AddPathToHotReloading(filepath);
 
 		//Load Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
-		desc.Filepaths = texture->m_filepaths;
-		desc.IsCubemap = false;
-		desc.Type = TRAP::NullOpt;
-		desc.CreationFlag = flags;
-		desc.Texture = texture.get();
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+		{
+			.Texture = texture.get(),
+			.Filepaths = texture->m_filepaths,
+			.CreationFlag = flags,
+			.IsCubemap = false,
+		};
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
 	}
@@ -511,12 +588,14 @@ namespace
 		AddPathToHotReloading(image.GetFilePath());
 
 		//Load Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
-		desc.Images = {&image};
-		desc.IsCubemap = false;
-		desc.Type = TRAP::NullOpt;
-		desc.CreationFlag = flags;
-		desc.Texture = texture.get();
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+		{
+			.Texture = texture.get(),
+			.Filepaths = {},
+			.Images = {&image},
+			.CreationFlag = flags,
+			.IsCubemap = false
+		};
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
 	}
@@ -566,21 +645,26 @@ namespace
 
 	if(texture)
 	{
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
-		desc.Texture = texture.get();
+		RendererAPI::TextureDesc texDesc
+		{
+			.Width = width,
+			.Height = height,
+			.ArraySize = 1,
+			.Format = imageFormat,
+			.StartState = RendererAPI::ResourceState::Common,
+			.Descriptors = RendererAPI::DescriptorType::Texture,
+			.Name = std::move(name)
+		};
 
-		RendererAPI::TextureDesc texDesc{};
-		texDesc.Width = width;
-		texDesc.Height = height;
-		texDesc.Format = imageFormat;
-		texDesc.ArraySize = 1;
-		texDesc.Name = std::move(name);
-		texDesc.Descriptors = RendererAPI::DescriptorType::Texture;
-		texDesc.StartState = RendererAPI::ResourceState::Common;
 		if((flags & TextureCreationFlags::Storage) != TextureCreationFlags::None)
 			texDesc.Descriptors |= RendererAPI::DescriptorType::RWTexture;
 
-		desc.Desc = &texDesc;
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+		{
+			.Texture = texture.get(),
+			.Desc = &texDesc,
+			.Filepaths = {}
+		};
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
 	}
@@ -693,12 +777,13 @@ bool TRAP::Graphics::Texture::Reload()
 	Shutdown();
 
 	//Load texture
-	TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
-	desc.Filepaths = m_filepaths;
-	desc.IsCubemap = GetType() == TextureType::TextureCube;
-	desc.Type = m_textureCubeFormat;
-	desc.CreationFlag = RendererAPI::TextureCreationFlags::None;
-	desc.Texture = this;
+	TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+	{
+		.Texture = this,
+		.Filepaths = m_filepaths,
+		.IsCubemap = GetType() == TextureType::TextureCube,
+		.Type = m_textureCubeFormat
+	};
 
 	if((m_descriptorTypes & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined)
 		desc.CreationFlag |= RendererAPI::TextureCreationFlags::Storage;
@@ -712,46 +797,23 @@ bool TRAP::Graphics::Texture::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Texture::Update(const void* const data, const u32 sizeInBytes, const u32 mipLevel,
-                                     const u32 arrayLayer)
+void TRAP::Graphics::Texture::Update(const std::span<const u8> data, const u32 mipLevel, const u32 arrayLayer)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+	UpdateTextureData(*this, m_syncToken, data, mipLevel, arrayLayer);
+}
 
-	TRAP_ASSERT(data, "Texture::Update(): Data is nullptr!");
-	TRAP_ASSERT(arrayLayer < m_arraySize, "Texture::Update(): Invalid array layer provided!");
-	TRAP_ASSERT(mipLevel < m_mipLevels, "Texture::Update(): Invalid mip level provided!");
-	TRAP_ASSERT(sizeInBytes >= (m_width >> mipLevel) * (m_height >> mipLevel) * GetBytesPerPixel(),
-	            "Texture::Update(): Texture update size is too small");
+//-------------------------------------------------------------------------------------------------------------------//
 
-	if(mipLevel >= m_mipLevels)
-	{
-		TP_ERROR(Log::TexturePrefix, "Update: Invalid mip level provided!");
-		return;
-	}
-	if(sizeInBytes < (m_width >> mipLevel) * (m_height >> mipLevel) * GetBytesPerPixel())
-	{
-		TP_ERROR(Log::TexturePrefix, "Update: Texture update size is too small!");
-		return;
-	}
+void TRAP::Graphics::Texture::Update(const std::span<const u16> data, const u32 mipLevel, const u32 arrayLayer)
+{
+	UpdateTextureData(*this, m_syncToken, TRAP::Utils::AsBytes(data), mipLevel, arrayLayer);
+}
 
-	RendererAPI::TextureUpdateDesc updateDesc{};
-	updateDesc.Texture = this;
-	updateDesc.MipLevel = mipLevel;
-	updateDesc.ArrayLayer = arrayLayer;
-	TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(updateDesc);
-	if(updateDesc.DstRowStride == updateDesc.SrcRowStride) //Single copy is enough
-		std::copy_n(static_cast<const u8*>(data), updateDesc.RowCount * updateDesc.SrcRowStride,
-		            updateDesc.MappedData.begin());
-	else //Needs row by row copy
-	{
-		for(usize r = 0; r < updateDesc.RowCount; ++r)
-		{
-			std::copy_n(static_cast<const u8*>(data) + r * updateDesc.SrcRowStride,
-			            updateDesc.SrcRowStride,
-						updateDesc.MappedData.subspan(r * updateDesc.DstRowStride).begin());
-		}
-	}
-	TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(updateDesc, &m_syncToken);
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Texture::Update(const std::span<const f32> data, const u32 mipLevel, const u32 arrayLayer)
+{
+	UpdateTextureData(*this, m_syncToken, TRAP::Utils::AsBytes(data), mipLevel, arrayLayer);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -776,24 +838,6 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 		return; //We don't have a valid sync token, so we assume the texture is loaded
 
 	RendererAPI::GetResourceLoader()->WaitForToken(m_syncToken);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] u32 TRAP::Graphics::Texture::CalculateMipLevels(const u32 width, const u32 height)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
-	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
-	return Math::Max(1u, NumericCast<u32>(Math::Floor(Math::Log2(NumericCast<f32>(Math::Max(width, height))))) + 1u);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::Texture::Texture(std::string name)
-	: m_name(std::move(name))
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -23,11 +23,8 @@ namespace TRAP::INTERNAL
 		~BMPImage() override = default;
 
 		/// @brief Retrieve the raw pixel data of the image.
-		/// @return Constant pointer to the raw pixel data.
-		[[nodiscard]] constexpr const void* GetPixelData() const noexcept override;
-		/// @brief Retrieve the size of the raw pixel data of the image.
-		/// @return Size of the raw pixel data in bytes.
-		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
+		/// @return Raw pixel data.
+		[[nodiscard]] constexpr std::span<const u8> GetPixelData() const noexcept override;
 
 	private:
 		/// @brief Decode run length encoded 8-bit BMP data.
@@ -41,18 +38,10 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr const void* TRAP::INTERNAL::BMPImage::GetPixelData() const noexcept
+[[nodiscard]] constexpr std::span<const u8> TRAP::INTERNAL::BMPImage::GetPixelData() const noexcept
 {
-	return m_data.data();
+	return m_data;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr u64 TRAP::INTERNAL::BMPImage::GetPixelDataSize() const noexcept
-{
-	return m_data.size();
-}
-
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr void TRAP::INTERNAL::BMPImage::DecodeRLE8(std::vector<u8>& compressedImageData,

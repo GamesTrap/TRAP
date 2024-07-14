@@ -117,14 +117,16 @@ void TRAP::INTERNAL::PPMImage::Save(const Image* const img, const std::filesyste
 	file << fmt::format("P6\n{}\n{}\n255\n", img->GetWidth(), img->GetHeight());
 
 	//PPM Data
-	std::vector<u8> pixelData;
 	if(img->GetColorFormat() == ColorFormat::RGBA)
 	{
-		pixelData = ConvertRGBAToRGB<u8>(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), static_cast<const u8*>(img->GetPixelData()));
+		const std::vector<u8> pixelData = ConvertRGBAToRGB<u8>(img->GetWidth(), img->GetHeight(), img->GetPixelData());
 		file.write(reinterpret_cast<const char*>(pixelData.data()), NumericCast<std::streamsize>(pixelData.size()));
 	}
 	else
-		file.write(static_cast<const char*>(img->GetPixelData()), NumericCast<std::streamsize>(img->GetPixelDataSize()));
+	{
+		const std::span pixelData = img->GetPixelData();
+		file.write(reinterpret_cast<const char*>(pixelData.data()), NumericCast<std::streamsize>(pixelData.size()));
+	}
 
 	file.close();
 }

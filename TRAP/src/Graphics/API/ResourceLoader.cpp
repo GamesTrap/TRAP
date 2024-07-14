@@ -1319,10 +1319,10 @@ void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const usize activeSet)
 					if((*images)[layer]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //Convert RGB to RGBA
 					{
 						RGBAImage = TRAP::Image::ConvertRGBToRGBA((*images)[layer]);
-						pixelData = std::span<const u8>(static_cast<const u8*>(RGBAImage->GetPixelData()), RGBAImage->GetPixelDataSize());
+						pixelData = RGBAImage->GetPixelData();
 					}
 					else
-						pixelData = std::span<const u8>(static_cast<const u8*>((*images)[layer]->GetPixelData()), (*images)[layer]->GetPixelDataSize());
+						pixelData = (*images)[layer]->GetPixelData();
 
 					const std::span<u8> dstData = data.subspan(NumericCast<usize>(subSlicePitch) * z);
 					for(u64 r = 0; r < subNumRows; ++r)
@@ -1560,11 +1560,11 @@ void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const usize activeSet)
 			if(valid)
 			{
 				if(baseImgPtr->IsHDR() && baseImgPtr->GetBytesPerChannel() == 4)
-				    ownedImages = TRAP::Graphics::Texture::SplitImageFromCross<f32>(baseImgPtr);
+				    ownedImages = TRAP::Graphics::Texture::SplitImageFromCross<f32>(*baseImgPtr);
 				else if (baseImgPtr->IsLDR() && baseImgPtr->GetBytesPerChannel() == 2)
-					ownedImages = TRAP::Graphics::Texture::SplitImageFromCross<u16>(baseImgPtr);
+					ownedImages = TRAP::Graphics::Texture::SplitImageFromCross<u16>(*baseImgPtr);
 				else /*if (baseImgPtr->IsLDR() && baseImgPtr->GetBytesPerChannel() == 1)*/
-					ownedImages = TRAP::Graphics::Texture::SplitImageFromCross<u8>(baseImgPtr);
+					ownedImages = TRAP::Graphics::Texture::SplitImageFromCross<u8>(*baseImgPtr);
 			}
 			else //Use FallbackCube
 			{

@@ -1803,7 +1803,7 @@ void CALLBACK TRAP::INTERNAL::WindowingAPI::MessageFiberProc([[maybe_unused]] LP
 		return nullptr;
 	}
 
-	const u8* source = static_cast<const u8*>(image.GetPixelData());
+	const u8* source = image.GetPixelData().data();
 	for (u32 i = 0; i < image.GetWidth() * image.GetHeight(); i++)
 	{
 		target[0] = source[2];

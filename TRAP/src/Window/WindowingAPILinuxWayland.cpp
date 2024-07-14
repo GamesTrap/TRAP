@@ -2106,7 +2106,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateFallbackDecorationsWayland(InternalWind
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-    const std::vector<u8> data{224, 244, 244, 255};
+    static const std::vector<u8> data{224, 244, 244, 255};
     const Scope<Image> img = Image::LoadFromMemory(1, 1, Image::ColorFormat::RGBA, data);
 
     if((s_Data.Wayland.Viewporter == nullptr) || !img)
@@ -2140,6 +2140,8 @@ wl_buffer* TRAP::INTERNAL::WindowingAPI::CreateShmBufferWayland(const Image& ima
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
+    TRAP_ASSERT(image.GetColorFormat() == TRAP::Image::ColorFormat::RGBA, "WindowingAPI::CreateShmBufferWayland: image must have RGBA format!");
+
     const i32 stride = NumericCast<i32>(image.GetWidth()) * 4;
     const i32 length = NumericCast<i32>(image.GetWidth() * image.GetHeight() * 4u);
 
@@ -2163,15 +2165,16 @@ wl_buffer* TRAP::INTERNAL::WindowingAPI::CreateShmBufferWayland(const Image& ima
 
     close(*fd);
 
-    const u8* source = static_cast<const u8*>(image.GetPixelData());
+    const std::span<const u8> pixelData = image.GetPixelData();
+    usize sourceIndex = 0;
     u8* target = static_cast<u8*>(data);
-    for(u32 i = 0; i < image.GetWidth() * image.GetHeight(); ++i, source += 4)
+    for(u32 i = 0; i < image.GetWidth() * image.GetHeight(); ++i, sourceIndex += 4)
     {
-        u32 alpha = source[3];
+        u32 alpha = pixelData[sourceIndex + 3];
 
-        *target++ = NumericCast<u8>((source[2] * alpha) / 255u);
-        *target++ = NumericCast<u8>((source[1] * alpha) / 255u);
-        *target++ = NumericCast<u8>((source[0] * alpha) / 255u);
+        *target++ = NumericCast<u8>((pixelData[sourceIndex + 2] * alpha) / 255u);
+        *target++ = NumericCast<u8>((pixelData[sourceIndex + 1] * alpha) / 255u);
+        *target++ = NumericCast<u8>((pixelData[sourceIndex + 0] * alpha) / 255u);
         *target++ = NumericCast<u8>(alpha);
     }
 

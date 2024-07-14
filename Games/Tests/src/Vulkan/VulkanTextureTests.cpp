@@ -95,9 +95,9 @@ void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
         m_currentTexture = (m_currentTexture + 1) % 2;
 
         if(m_currentTexture == 0)
-            m_texture->Update(m_vulkanLogo->GetPixelData(), NumericCast<u32>(m_vulkanLogo->GetPixelDataSize()));
+            m_texture->Update(m_vulkanLogo->GetPixelData());
         else if(m_currentTexture == 1)
-            m_texture->Update(m_vulkanLogoTransparent->GetPixelData(), NumericCast<u32>(m_vulkanLogoTransparent->GetPixelDataSize()));
+            m_texture->Update(m_vulkanLogoTransparent->GetPixelData());
     }
 
 	//Use shader

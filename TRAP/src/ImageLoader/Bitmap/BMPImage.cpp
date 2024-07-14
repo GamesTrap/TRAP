@@ -541,5 +541,5 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	}
 
 	if (needYFlip)
-		m_data = FlipY(m_width, m_height, m_colorFormat, m_data.data());
+		m_data = FlipY<u8>(m_width, m_height, m_colorFormat, m_data);
 }

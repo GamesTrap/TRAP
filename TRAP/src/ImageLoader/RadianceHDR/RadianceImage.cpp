@@ -409,12 +409,12 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 	file.close();
 
 	if (needXFlip)
-		m_data = FlipX(m_width, m_height, m_colorFormat, m_data.data());
+		m_data = FlipX<f32>(m_width, m_height, m_colorFormat, m_data);
 	if (needYFlip)
-		m_data = FlipY(m_width, m_height, m_colorFormat, m_data.data());
+		m_data = FlipY<f32>(m_width, m_height, m_colorFormat, m_data);
 
 	if(need90RotateCW)
-		m_data = Rotate90Clockwise(m_width, m_height, m_colorFormat, m_data.data());
+		m_data = Rotate90Clockwise<f32>(m_width, m_height, m_colorFormat, m_data);
 	if(need90RotateCCW)
-		m_data = Rotate90CounterClockwise(m_width, m_height, m_colorFormat, m_data.data());
+		m_data = Rotate90CounterClockwise<f32>(m_width, m_height, m_colorFormat, m_data);
 }
