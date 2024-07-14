@@ -4,7 +4,10 @@
 #include "Texture.h"
 #include "FileSystem/FileSystem.h"
 
-TRAP::Utils::UnorderedStringMap<TRAP::Ref<TRAP::Graphics::Texture>> Textures;
+namespace
+{
+	TRAP::Utils::UnorderedStringMap<TRAP::Ref<TRAP::Graphics::Texture>> Textures;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -16,11 +19,9 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 	Ref<Texture> texture = Texture::Create2D(filepath.filename().generic_string(), filepath, flags);
 	if(texture)
 	{
-		const std::string name = texture->GetName();
+		Add(texture);
 
-		Add(std::move(texture));
-
-		return Get2D(name);
+		return texture;
 	}
 
 	return Get2D("Fallback2D");
@@ -38,9 +39,9 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 
 	if(texture)
 	{
-		Add(std::move(texture));
+		Add(texture);
 
-		return Get2D(name);
+		return texture;
 	}
 
 	return Get2D("Fallback2D");
@@ -49,18 +50,18 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const std::string& name,
-	                                                                    const Image* const img,
+	                                                                    const Image& img,
                                                                         const TextureCreationFlags flags)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Ref<Texture> texture = Texture::Create2D(name, *img, flags);
+	Ref<Texture> texture = Texture::Create2D(name, img, flags);
 
 	if (texture)
 	{
-		Add(std::move(texture));
+		Add(texture);
 
-		return Get2D(name);
+		return texture;
 	}
 
 	return Get2D("Fallback2D");
@@ -79,9 +80,9 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 
 	if(texture)
 	{
-		Add(std::move(texture));
+		Add(texture);
 
-		return GetCube(name);
+		return texture;
 	}
 
 	return GetCube("FallbackCube");
@@ -99,11 +100,9 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 
 	if(texture)
 	{
-		const std::string name = texture->GetName();
+		Add(texture);
 
-		Add(std::move(texture));
-
-		return GetCube(name);
+		return texture;
 	}
 
 	return GetCube("FallbackCube");
@@ -121,9 +120,9 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 
 	if(texture)
 	{
-		Add(std::move(texture));
+		Add(texture);
 
-		return GetCube(name);
+		return texture;
 	}
 
 	return GetCube("FallbackCube");
@@ -132,19 +131,19 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const std::string& name,
-	                                                                    const Image* const img,
+	                                                                    const Image& img,
 															            const TextureCubeFormat format,
 															            const TextureCreationFlags flags)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Ref<Texture> texture = Texture::CreateCube(name, *img, format, flags);
+	Ref<Texture> texture = Texture::CreateCube(name, img, format, flags);
 
 	if(texture)
 	{
-		Add(std::move(texture));
+		Add(texture);
 
-		return GetCube(name);
+		return texture;
 	}
 
 	return GetCube("FallbackCube");
@@ -152,18 +151,41 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::TextureManager::Add(Ref<Texture> texture)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const std::string& name,
+	                                                                    const std::span<const Image*, 6> imgs,
+                                                                        const TextureCreationFlags flags)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	if(texture)
+	Ref<Texture> texture = Texture::CreateCube(name, imgs, flags);
+
+	if (texture)
 	{
-		if (!Exists(texture->GetName()))
-			Textures[texture->GetName()] = std::move(texture);
-		else
-			TP_ERROR(Log::TextureManagerPrefix, "Texture with name: \"", texture->GetName(),
-			         "\" already exists! Ignoring new texture");
+		Add(texture);
+
+		return texture;
 	}
+
+	return GetCube("FallbackCube");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::TextureManager::Add(const Ref<Texture>& texture)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+
+	if(texture == nullptr)
+	{
+		TRAP_ASSERT(false, "TextureManager::Add(): Provided texture is nullptr!");
+		return;
+	}
+
+	if (!Contains(texture->GetName()))
+		Textures[texture->GetName()] = texture;
+	else
+		TP_ERROR(Log::TextureManagerPrefix, "Texture with name: \"", texture->GetName(),
+					"\" already exists! Ignoring new texture");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -172,31 +194,30 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(const 
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	if(texture)
+	if(texture == nullptr)
 	{
-		if (Exists(texture->GetName()))
-		{
-			Ref<Texture> tex = std::move(Textures[texture->GetName()]);
-			Textures.erase(texture->GetName());
-			return tex;
-		}
-
-		TP_ERROR(Log::TextureManagerPrefix, "Couldn't find texture with name: \"", texture->GetName(), "\"!");
+		TRAP_ASSERT(false, "TextureManager::Remove(): Provided texture is nullptr!");
+		return nullptr;
 	}
+
+	if(Textures.erase(texture->GetName()) > 0)
+		return texture;
+
+	TP_ERROR(Log::TextureManagerPrefix, "Couldn't find texture with name: \"", texture->GetName(), "\"!");
 
 	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(const std::string& name)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	if (Exists(name))
+	if(const auto it = Textures.find(name); it != Textures.end())
 	{
-		Ref<Texture> tex = std::move(Textures[name]);
-		Textures.erase(name);
+		Ref<Texture> tex = it->second;
+		Textures.erase(it);
 		return tex;
 	}
 
@@ -207,26 +228,33 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Get(const std::string& name,
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Get(const std::string_view name,
                                                                                      const TextureType textureType)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	if(Exists(name))
-	{
-		if (Textures[name]->GetType() == textureType)
-				return Textures[name];
-	}
+	if(const auto it = Textures.find(name); it != Textures.end())
+		return it->second;
 
-	if (textureType == TextureType::Texture2D)
+	TP_ERROR(Log::TextureManagerPrefix, "Couldn't find texture with name: ", name, "!");
+	TP_WARN(Log::TextureManagerPrefix, "Using fallback texture!");
+
+	switch(textureType)
+	{
+	case TextureType::Texture2D:
 		return Get("Fallback2D", TextureType::Texture2D);
 
-	return Get("FallbackCube", TextureType::TextureCube);
+	case TextureType::TextureCube:
+		return Get("FallbackCube", TextureType::TextureCube);
+	}
+
+	TRAP_ASSERT(false, "TextureManager::Get(): Failed to retrieve Fallback Texture, unknown TextureType provided!");
+	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Get2D(const std::string& name)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Get2D(const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -236,12 +264,55 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::GetCube(const std::string& name)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::GetCube(const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return Get(name, TextureType::TextureCube);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::vector<TRAP::Ref<TRAP::Graphics::Texture>> TRAP::Graphics::TextureManager::GetByPath(const std::filesystem::path& path)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+
+	std::vector<Ref<Texture>> foundTextures{};
+
+	for(const auto& [name, texture] : Textures)
+	{
+		switch(texture->GetType())
+		{
+		case TextureType::Texture2D:
+		{
+			if(!texture->GetFilePaths().empty() && FileSystem::IsEquivalent(path, texture->GetFilePaths().front()))
+				foundTextures.push_back(texture);
+			break;
+		}
+
+		case TextureType::TextureCube:
+		{
+			for(const auto& texPath : texture->GetFilePaths())
+			{
+				if(texPath.empty())
+					continue;
+
+				if(FileSystem::IsEquivalent(path, texPath))
+				{
+					foundTextures.push_back(texture);
+					break;
+				}
+			}
+			break;
+		}
+		}
+	}
+
+	if(foundTextures.empty())
+		TP_ERROR(Log::TextureManagerPrefix, "Couldn't find texture with path: ", path, "!");
+
+	return foundTextures;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -269,94 +340,7 @@ void TRAP::Graphics::TextureManager::Clean()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Reload(const std::string& nameOrPath)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	if(!TRAP::FileSystem::Exists(nameOrPath))
-	{
-		//Name
-		if(Exists(nameOrPath))
-		{
-			auto texture = Textures[nameOrPath];
-			if(texture->Reload())
-				TP_INFO(Log::TextureManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
-
-			return texture;
-		}
-
-		TP_WARN(Log::TextureManagerPrefix, "Couldn't find texture: \"", nameOrPath, "\" to reload.");
-	}
-	else //Path
-	{
-		for (const auto& [name, texture] : Textures)
-		{
-			if (texture->GetType() == TextureType::Texture2D)
-			{
-				if (!texture->GetFilePaths().empty() && FileSystem::IsEquivalent(nameOrPath, texture->GetFilePaths()[0]))
-				{
-					if(texture->Reload())
-						TP_INFO(Log::TextureManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
-
-					return texture;
-				}
-			}
-			else if (texture->GetType() == TextureType::TextureCube)
-			{
-				for (u32 i = 0; i < texture->GetFilePaths().size(); i++)
-				{
-					if (texture->GetFilePaths()[i].empty())
-						continue;
-
-					if (FileSystem::IsEquivalent(nameOrPath, texture->GetFilePaths()[i]))
-					{
-						if(texture->Reload())
-							TP_INFO(Log::TextureManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
-
-						return texture;
-					}
-				}
-			}
-		}
-
-		TP_WARN(Log::TextureManagerPrefix, "Couldn't find texture: ", std::filesystem::path(nameOrPath), " to reload.");
-	}
-
-	return nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Reload(Ref<Texture> texture)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	if(!Exists(texture->GetName()))
-	{
-		TP_WARN(Log::TextureManagerPrefix, "Couldn't find texture: \"", texture->GetName(), "\" to reload.");
-		return nullptr;
-	}
-
-	if(texture->Reload())
-		TP_INFO(Log::TextureManagerPrefix, "Reloaded: \"", texture->GetName(), "\"");
-
-	return texture;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::TextureManager::ReloadAll()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	TP_INFO(Log::TextureManagerPrefix, "Reloading all may take a while...");
-	for (auto& [name, texture] : Textures)
-		Reload(texture);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Graphics::TextureManager::Exists(const std::string& name)
+[[nodiscard]] bool TRAP::Graphics::TextureManager::Contains(const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -365,29 +349,37 @@ void TRAP::Graphics::TextureManager::ReloadAll()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::Graphics::TextureManager::ExistsPath(const std::filesystem::path& path)
+[[nodiscard]] bool TRAP::Graphics::TextureManager::ContainsByPath(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	for (const auto& [name, texture] : Textures)
+	const auto it = std::ranges::find_if(Textures, [&path](const auto& e)
 	{
-		if (texture->GetType() == TextureType::Texture2D)
+		const auto& [name, texture] = e;
+
+		switch(texture->GetType())
 		{
-			if (!texture->GetFilePaths().empty() && FileSystem::IsEquivalent(texture->GetFilePaths()[0], path))
+		case TextureType::Texture2D:
+		{
+			if(!texture->GetFilePaths().empty() && FileSystem::IsEquivalent(texture->GetFilePaths().front(), path))
 				return true;
+			break;
 		}
-		else if(texture->GetType() == TextureType::TextureCube)
+
+		case TextureType::TextureCube:
 		{
-			const std::vector<std::filesystem::path> imageFilePaths = texture->GetFilePaths();
-			for(const auto& filePath : imageFilePaths)
+			for(const auto& filePath : texture->GetFilePaths())
 			{
 				if (!filePath.empty() && FileSystem::IsEquivalent(filePath, path))
 					return true;
 			}
 		}
-	}
+		}
 
-	return false;
+		return false;
+	});
+
+	return it != Textures.end();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

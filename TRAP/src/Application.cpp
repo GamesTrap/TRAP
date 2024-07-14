@@ -1173,16 +1173,24 @@ void TRAP::Application::UpdateHotReloading()
 	//Texture reloading
 	for(const auto& path : texturePaths)
 	{
-		if(!Graphics::TextureManager::ExistsPath(path))
+		if(!Graphics::TextureManager::ContainsByPath(path))
 			continue;
 
 		TP_INFO(Log::HotReloadingPrefix, "Texture modified reloading...");
 		Graphics::RendererAPI::GetRenderer()->WaitIdle();
-		TRAP::Ref<TRAP::Graphics::Texture> texture = Graphics::TextureManager::Reload(path.string());
+		const auto textures = Graphics::TextureManager::GetByPath(path);
 
-		//Send event
-		TRAP::Events::TextureReloadEvent event(texture);
-		OnEvent(event);
+		for(const auto& texture : textures)
+		{
+			if(!texture)
+				continue;
+
+			texture->Reload();
+
+			//Send event
+			TRAP::Events::TextureReloadEvent event(texture);
+			OnEvent(event);
+		}
 	}
 }
 

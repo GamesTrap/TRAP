@@ -5130,3 +5130,4 @@ SITREP 07/13/2024|24w28b1
 SITREP 07/14/2024|24w28b2
     - Changed TRAP Engine version to 24w28b2(0.10.90)
     - Texture Refactored various functions ~>60 mins
+    - TextureManager Refactored various functions ~<30 mins

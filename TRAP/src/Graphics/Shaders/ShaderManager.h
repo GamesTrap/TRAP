@@ -45,7 +45,7 @@ namespace TRAP::Graphics::ShaderManager
 	/// @brief Remove a shader from the ShaderManager via its name.
 	/// @param name Name of shader to remove.
 	/// @return Removed shader on success, nullptr otherwise.
-	[[maybe_unused]] Ref<Shader> Remove(const std::string& name);
+	[[maybe_unused]] Ref<Shader> Remove(std::string_view name);
 	/// @brief Retrieve a shader from the ShaderManager.
 	/// @param name Name of the shader to retrieve.
 	/// @param shaderType Type of the shader to retrieve.
