@@ -471,9 +471,9 @@ namespace
 
 		std::vector<std::string> extensions{};
 
+	#ifndef TRAP_HEADLESS_MODE
 		if(physicalDevice.IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME))
 			extensions.emplace_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-	#ifndef TRAP_HEADLESS_MODE
 		else
 			TRAP::Utils::DisplayError(TRAP::Utils::ErrorCode::VulkanSwapchainExtensionsUnsupported);
 	#endif /*TRAP_HEADLESS_MODE*/
