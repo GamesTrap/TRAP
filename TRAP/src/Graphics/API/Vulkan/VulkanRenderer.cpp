@@ -216,16 +216,11 @@ namespace
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void CreateOrUpdateDepthStencilTarget(TRAP::Graphics::RendererAPI::PerViewportData& p,
-	                                      const TRAP::Graphics::API::VulkanDevice& device)
+	                                      const TRAP::Graphics::API::VulkanDevice& device,
+										  const TRAP::Math::Vec2ui& newFbSize)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
 	                                           (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
-#ifndef TRAP_HEADLESS_MODE
-		const TRAP::Math::Vec2ui newFbSize = p.Window->GetFrameBufferSize();
-#elif defined(TRAP_HEADLESS_MODE)
-		const TRAP::Math::Vec2ui newFbSize = {p.NewWidth, p.NewHeight};
-#endif
 
 		if (newFbSize.x() == 0 || newFbSize.y() == 0) //0x0 is an invalid framebuffer size
 			return;
@@ -241,7 +236,8 @@ namespace
 		if(p.DepthStencilTarget != nullptr && p.DepthStencilTarget->GetWidth() == newFbSize.x() &&
 		   p.DepthStencilTarget->GetHeight() == newFbSize.y() &&
 		   p.DepthStencilTarget->GetImageFormat() == gpd.DepthStencilFormat &&
-		   TRAP::Graphics::API::ImageFormatHasStencil(gpd.DepthStencilFormat) == depthState->StencilTest)
+		   TRAP::Graphics::API::ImageFormatHasStencil(gpd.DepthStencilFormat) == depthState->StencilTest &&
+		   p.DepthStencilTarget->GetSampleCount() == p.CurrentSampleCount)
 		{
 			return;
 		}
@@ -254,7 +250,7 @@ namespace
 			.Depth = 1,
 			.ArraySize = 1,
 			.MipLevels = 1,
-			.SampleCount = TRAP::Graphics::RendererAPI::SampleCount::One,
+			.SampleCount = p.CurrentSampleCount,
 			.Format = PickDepthStencilFormat(depthState->DepthTest, depthState->StencilTest, device),
 			.StartState = TRAP::Graphics::RendererAPI::ResourceState::DepthRead | TRAP::Graphics::RendererAPI::ResourceState::DepthWrite,
 			.ClearValue = TRAP::Graphics::RendererAPI::DepthStencil{0.0f, 0},
@@ -267,6 +263,25 @@ namespace
 		p.DepthStencilTarget = TRAP::Graphics::RenderTarget::Create(depthStencilRTDesc);
 	}
 
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void CreateOrUpdateDepthStencilTarget(TRAP::Graphics::RendererAPI::PerViewportData& p,
+	                                      const TRAP::Graphics::API::VulkanDevice& device)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
+	                                           (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
+#ifndef TRAP_HEADLESS_MODE
+		const TRAP::Math::Vec2ui newFbSize = p.Window->GetFrameBufferSize();
+#elif defined(TRAP_HEADLESS_MODE)
+		const TRAP::Math::Vec2ui newFbSize = {p.NewWidth, p.NewHeight};
+#endif
+
+		CreateOrUpdateDepthStencilTarget(p, device, newFbSize);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
 	[[nodiscard]] HEADLESS_CONSTEXPR u32 RetrieveNextSwapchainImageIndex(const TRAP::Graphics::RendererAPI::PerViewportData& p)
 	{
 #ifndef TRAP_HEADLESS_MODE
@@ -275,6 +290,8 @@ namespace
 		return (p.CurrentSwapChainImageIndex + 1) % TRAP::Graphics::RendererAPI::ImageCount;
 #endif
 	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
 
 	[[nodiscard]] TRAP::Ref<TRAP::Graphics::RenderTarget> GetCurrentSwapchainRenderTarget(const TRAP::Graphics::RendererAPI::PerViewportData& p)
 	{
@@ -2460,6 +2477,7 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 			std::get<GraphicsPipelineDesc>(viewportData.GraphicsPipelineDesc.Pipeline).SampleCount = SampleCount::One;
 
 		rebuildColor = true;
+		rebuildDepthStencil = true;
 	}
 
 	if(rebuildColor || rebuildDepthStencil)
@@ -2495,27 +2513,7 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 	}
 
 	if(rebuildDepthStencil)
-	{
-		const TRAP::Graphics::RendererAPI::RenderTargetDesc depthStencilRTDesc
-		{
-			.Flags{},
-			.Width = newInternalRes.x(),
-			.Height = newInternalRes.y(),
-			.Depth = 1,
-			.ArraySize = 1,
-			.MipLevels = 1,
-			.SampleCount = TRAP::Graphics::RendererAPI::SampleCount::One,
-			.Format = std::get<GraphicsPipelineDesc>(viewportData.GraphicsPipelineDesc.Pipeline).DepthStencilFormat,
-			.StartState = TRAP::Graphics::RendererAPI::ResourceState::DepthRead | TRAP::Graphics::RendererAPI::ResourceState::DepthWrite,
-			.ClearValue = TRAP::Graphics::RendererAPI::DepthStencil{0.0f, 0},
-			.SampleQuality = 0,
-			.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture,
-			.Name = "Swapchain Depth/Stencil RenderTarget",
-			.NativeHandle = nullptr
-		};
-
-		viewportData.DepthStencilTarget = RenderTarget::Create(depthStencilRTDesc);
-	}
+		CreateOrUpdateDepthStencilTarget(viewportData, *m_device, newInternalRes);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

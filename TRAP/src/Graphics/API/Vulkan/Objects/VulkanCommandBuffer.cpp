@@ -434,6 +434,23 @@ namespace
 		return frameBuffer;
 	}
 
+	[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::SampleCount GetSampleCountForRenderPass(const std::span<const std::reference_wrapper<const TRAP::Graphics::RenderTarget>> renderTargets,
+	                                                                                             const TRAP::Graphics::RenderTarget* const depthStencil)
+	{
+		TRAP::Graphics::RendererAPI::SampleCount sampleCount = TRAP::Graphics::RendererAPI::SampleCount::One;
+
+		if (depthStencil != nullptr)
+			sampleCount = depthStencil->GetSampleCount();
+		else if (!renderTargets.empty())
+			sampleCount = renderTargets.front().get().GetSampleCount();
+
+		TRAP_ASSERT(std::ranges::all_of(renderTargets, [sampleCount](const TRAP::Graphics::RenderTarget& rT){return rT.GetSampleCount() == sampleCount;}) &&
+		            sampleCount == (depthStencil ? depthStencil->GetSampleCount() : sampleCount),
+					"VulkanRenderPass::GetSampleCountForRenderPass(): Mismatching sample counts for render targets. All render targets used for the render pass must have the same sample count!");
+
+		return sampleCount;
+	}
+
 	[[nodiscard]] TRAP::Ref<TRAP::Graphics::API::VulkanRenderPass> GetCachedVulkanRenderPass(const std::vector<std::reference_wrapper<const TRAP::Graphics::RenderTarget>>& renderTargets,
 	                                                                                         const TRAP::Graphics::RendererAPI::LoadActionsDesc* const loadActions,
 																							 const TRAP::Graphics::RenderTarget* const depthStencil,
@@ -465,13 +482,7 @@ namespace
 				colorFormats[i] = renderTargets[i].get().GetImageFormat();
 
 			const ImageFormat depthStencilFormat = depthStencil != nullptr ? depthStencil->GetImageFormat() : ImageFormat::Undefined;
-
-			RendererAPI::SampleCount sampleCount = RendererAPI::SampleCount::One;
-			if (depthStencil != nullptr)
-				sampleCount = depthStencil->GetSampleCount();
-			else if (!renderTargets.empty())
-				sampleCount = renderTargets.front().get().GetSampleCount();
-
+			const RendererAPI::SampleCount sampleCount = GetSampleCountForRenderPass(renderTargets, depthStencil);
 			const ImageFormat shadingRateFormat = shadingRate != nullptr ? shadingRate->GetImageFormat() : ImageFormat::Undefined;
 
 			std::vector<RendererAPI::LoadActionType> loadActionsColor(clampedRenderTargets);
