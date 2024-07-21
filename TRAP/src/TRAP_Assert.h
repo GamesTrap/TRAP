@@ -44,10 +44,7 @@ constexpr void TRAP_ASSERT_IMPL_LOG(const std::string_view expressionStr,
 			{                                                                         \
 				constexpr std::source_location loc = std::source_location::current(); \
 				TRAP_ASSERT_IMPL_LOG(TRAP_STRINGIFY_MACRO(check), loc, __VA_ARGS__);  \
-				if (std::is_constant_evaluated())                                     \
-				{                                                                     \
-					std::breakpoint_if_debugging();                                   \
-				}                                                                     \
+				std::breakpoint_if_debugging();                                       \
 			}                                                                         \
 		}                                                                             \
 	}

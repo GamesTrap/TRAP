@@ -5137,6 +5137,10 @@ SITREP 07/15/2024|24w29a1
     - Changed TRAP Engine version to 24w29a1(0.10.91)
     - Renderer Refactored various functions ~<15 mins
 
-SITREP 07/19/2024|24w29a1
+SITREP 07/19/2024|24w29a2
     - Changed TRAP Engine version to 24w29a2(0.10.92)
     - VulkanRenderer Fixed missing instance extension error in headless mode ~<5 mins
+
+SITREP 07/21/2024|24w29b1
+    - Changed TRAP Engine version to 24w29b1(0.10.93)
+    - TRAP_ASSERT Fixed assertion failures didnt trigger debug break ~<5 mins
