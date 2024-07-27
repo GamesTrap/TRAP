@@ -99,8 +99,6 @@ namespace
                                                                                                             const TRAP::Graphics::RendererAPI::DescriptorType type,
 																	                                        const u64 size)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
 		for(const auto& resource : shaderResources)
 		{
 			if((resource.Type & type) != TRAP::Graphics::RendererAPI::DescriptorType::Undefined &&
@@ -121,8 +119,6 @@ namespace
                                                                                                                                    const TRAP::Graphics::RendererAPI::DescriptorType type,
 																	                                                               const u64 size)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
 		if(const auto* const exactMatch = RetrieveDescriptor(shaderResources, set, binding, type, size))
 			return std::make_pair(exactMatch, false);
 		if(const auto* const dynamicBufferMatch = RetrieveDescriptor(shaderResources, set, binding, type, 1))
