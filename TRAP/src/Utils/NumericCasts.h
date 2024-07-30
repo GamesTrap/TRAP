@@ -107,7 +107,7 @@ requires std::is_arithmetic_v<To> && std::is_arithmetic_v<From>
         if(value > static_cast<From>(std::numeric_limits<To>::max()) ||
             value < static_cast<From>(std::numeric_limits<To>::lowest()))
         {
-            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}() to type {}!", INTERNAL::TypeNameToString<From>(), value, INTERNAL::TypeNameToString<To>()));
+            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}({}) to type {}!", INTERNAL::TypeNameToString<From>(), value, INTERNAL::TypeNameToString<To>()));
         }
 
         return static_cast<To>(value);
@@ -117,7 +117,7 @@ requires std::is_arithmetic_v<To> && std::is_arithmetic_v<From>
         //Casting integral -> unsigned integral with increased byte size is considered unsafe
         if(value < static_cast<From>(0))
         {
-            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}() to type {}!", INTERNAL::TypeNameToString<From>(), value, INTERNAL::TypeNameToString<To>()));
+            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}({}) to type {}!", INTERNAL::TypeNameToString<From>(), value, INTERNAL::TypeNameToString<To>()));
         }
 
         return static_cast<To>(value);
@@ -127,7 +127,7 @@ requires std::is_arithmetic_v<To> && std::is_arithmetic_v<From>
         //Casting unsigned integral -> signed integral with decreased byte size is considered unsafe
         if(value > static_cast<From>(std::numeric_limits<To>::max()))
         {
-            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}() to type {}!", INTERNAL::TypeNameToString<From>(), value, INTERNAL::TypeNameToString<To>()));
+            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}({}) to type {}!", INTERNAL::TypeNameToString<From>(), value, INTERNAL::TypeNameToString<To>()));
         }
 
         return static_cast<To>(value);
@@ -138,7 +138,7 @@ requires std::is_arithmetic_v<To> && std::is_arithmetic_v<From>
         if(value < static_cast<From>(0) ||
             static_cast<To>(value) > static_cast<To>(std::numeric_limits<From>::max()))
         {
-            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}() to type {}!", INTERNAL::TypeNameToString<From>(), value, INTERNAL::TypeNameToString<To>()));
+            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}({}) to type {}!", INTERNAL::TypeNameToString<From>(), value, INTERNAL::TypeNameToString<To>()));
         }
 
         return static_cast<To>(value);

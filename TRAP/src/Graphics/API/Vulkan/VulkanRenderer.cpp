@@ -236,10 +236,17 @@ namespace
 		if(p.DepthStencilTarget != nullptr && p.DepthStencilTarget->GetWidth() == newFbSize.x() &&
 		   p.DepthStencilTarget->GetHeight() == newFbSize.y() &&
 		   p.DepthStencilTarget->GetImageFormat() == gpd.DepthStencilFormat &&
-		   TRAP::Graphics::API::ImageFormatHasStencil(gpd.DepthStencilFormat) == depthState->StencilTest &&
-		   p.DepthStencilTarget->GetSampleCount() == p.CurrentSampleCount)
+		   TRAP::Graphics::API::ImageFormatHasStencil(gpd.DepthStencilFormat) == depthState->StencilTest)
 		{
 			return;
+		}
+
+		//Check for sample count match
+		if(p.DepthStencilTarget != nullptr &&
+		   p.CurrentAntiAliasing == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA &&
+		   p.DepthStencilTarget->GetSampleCount() == p.CurrentSampleCount)
+		{
+		   return;
 		}
 
 		const TRAP::Graphics::RendererAPI::RenderTargetDesc depthStencilRTDesc
@@ -250,7 +257,7 @@ namespace
 			.Depth = 1,
 			.ArraySize = 1,
 			.MipLevels = 1,
-			.SampleCount = p.CurrentSampleCount,
+			.SampleCount = p.CurrentAntiAliasing == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA ? p.CurrentSampleCount : TRAP::Graphics::RendererAPI::SampleCount::One,
 			.Format = PickDepthStencilFormat(depthState->DepthTest, depthState->StencilTest, device),
 			.StartState = TRAP::Graphics::RendererAPI::ResourceState::DepthRead | TRAP::Graphics::RendererAPI::ResourceState::DepthWrite,
 			.ClearValue = TRAP::Graphics::RendererAPI::DepthStencil{0.0f, 0},

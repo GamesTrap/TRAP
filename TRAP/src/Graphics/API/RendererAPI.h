@@ -2807,7 +2807,7 @@ namespace TRAP::Graphics
 		static TRAP::Ref<Queue> s_computeQueue;
 		static TRAP::Ref<Queue> s_transferQueue;
 
-		inline constinit static RendererAPI::SampleCount s_newSampleCount = RendererAPI::SampleCount::Two;
+		inline constinit static RendererAPI::SampleCount s_newSampleCount = RendererAPI::SampleCount::One;
 		inline constinit static RendererAPI::AntiAliasing s_newAntiAliasing = RendererAPI::AntiAliasing::Off;
 		inline constinit static RendererAPI::SampleCount s_Anisotropy = RendererAPI::SampleCount::Sixteen;
 

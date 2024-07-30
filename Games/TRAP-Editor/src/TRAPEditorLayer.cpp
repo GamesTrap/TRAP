@@ -123,11 +123,10 @@ void TRAPEditorLayer::OnImGuiRender()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 0.0f });
 	ImGui::Begin("Viewport");
 
-	const ImVec2 viewportMinRegion = ImGui::GetWindowContentRegionMin();
-	const ImVec2 viewportMaxRegion = ImGui::GetWindowContentRegionMax();
-	const ImVec2 viewportOffset = ImGui::GetWindowPos(); //Includes menu bar
-	std::get<0>(m_viewportBounds) = {viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y};
-	std::get<1>(m_viewportBounds) = {viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y};
+	const ImVec2 viewportMinRegion = ImGui::GetCursorScreenPos();
+	const ImVec2 viewportMaxRegion = ImGui::GetContentRegionAvail();
+	std::get<0>(m_viewportBounds) = {viewportMinRegion.x, viewportMinRegion.y};
+	std::get<1>(m_viewportBounds) = {viewportMaxRegion.x, viewportMaxRegion.y};
 
 	m_viewportFocused = ImGui::IsWindowFocused();
 	m_viewportHovered = ImGui::IsWindowHovered();
@@ -171,8 +170,7 @@ void TRAPEditorLayer::OnImGuiRender()
 		ImGuizmo::SetDrawlist();
 
 		ImGuizmo::SetRect(std::get<0>(m_viewportBounds).x(), std::get<0>(m_viewportBounds).y(),
-							std::get<1>(m_viewportBounds).x() - std::get<0>(m_viewportBounds).x(),
-							std::get<1>(m_viewportBounds).y() - std::get<0>(m_viewportBounds).y());
+						  std::get<1>(m_viewportBounds).x(), std::get<1>(m_viewportBounds).y());
 
 		//Snapping
 		const bool snap = TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Control) ||
@@ -665,7 +663,7 @@ void TRAPEditorLayer::MousePicking()
 		ImVec2 mousePos = ImGui::GetMousePos();
 		mousePos.x -= std::get<0>(m_viewportBounds).x();
 		mousePos.y -= std::get<0>(m_viewportBounds).y();
-		const TRAP::Math::Vec2 viewportSize = std::get<1>(m_viewportBounds) - std::get<0>(m_viewportBounds);
+		const TRAP::Math::Vec2 viewportSize = std::get<1>(m_viewportBounds);
 		u32 mouseX = NumericCast<u32>(mousePos.x);
 		u32 mouseY = NumericCast<u32>(mousePos.y);
 
@@ -768,7 +766,7 @@ void TRAPEditorLayer::UIToolbar()
 	{
 		const f32 size = ImGui::GetWindowHeight() - 4.0f;
 		TRAP::Ref<TRAP::Graphics::Texture> icon = m_sceneState == SceneState::Edit ? m_iconPlay : m_iconStop;
-		ImGui::SameLine((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+		ImGui::SameLine((ImGui::GetContentRegionAvail().x * 0.5f) - (size * 0.5f));
 		if(ImGui::ImageButton(icon, ImVec2(size, size), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f)))
 		{
 			if(m_sceneState == SceneState::Edit)
