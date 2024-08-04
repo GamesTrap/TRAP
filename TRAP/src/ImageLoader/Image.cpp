@@ -76,7 +76,7 @@
 	}
 
 	//Test for Errors
-	if (result->GetPixelData().empty() || result->GetColorFormat() == ColorFormat::NONE)
+	if (result->GetPixelData().empty())
 		result = MakeScope<INTERNAL::CustomImage>(filepath, 32, 32, ColorFormat::RGBA, std::vector<u8>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 
 	return result;

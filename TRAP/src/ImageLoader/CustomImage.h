@@ -48,11 +48,6 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const u
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
-	if (m_colorFormat == ColorFormat::NONE)
-	{
-		TRAP_ASSERT(false, "CustomImage(): Invalid color format!");
-		return;
-	}
 	if (pixelData.empty())
 	{
 		TRAP_ASSERT(false, "CustomImage(): Invalid pixel data provided!");

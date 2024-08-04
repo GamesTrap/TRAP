@@ -637,7 +637,8 @@ requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 		return Image::ColorFormat::RGBA;
 
 	default:
-		return Image::ColorFormat::NONE;
+		TRAP_ASSERT(false, "Texture::ImageFormatToColorFormat(): Unsupported image format provided!");
+		return Image::ColorFormat::RGBA;
 	}
 }
 

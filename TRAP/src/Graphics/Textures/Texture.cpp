@@ -152,9 +152,6 @@ namespace
 
 			break;
 		}
-
-		case TRAP::Image::ColorFormat::NONE:
-			break;
 		}
 
 		TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Invalid bits per pixel & color format combination provided!");

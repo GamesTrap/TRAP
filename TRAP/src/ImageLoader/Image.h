@@ -20,7 +20,6 @@ namespace TRAP
 		/// @brief Color formats.
 		enum class ColorFormat : u32
 		{
-			NONE = 0,
 			GrayScale = 1,
 			GrayScaleAlpha = 2,
 			RGB = 3,
@@ -262,7 +261,7 @@ namespace TRAP
 		u32 m_width = 0;
 		u32 m_height = 0;
 		bool m_isHDR = false;
-		ColorFormat m_colorFormat = ColorFormat::NONE;
+		ColorFormat m_colorFormat = ColorFormat::RGBA;
 		std::filesystem::path m_filepath{};
 		u32 m_bitsPerPixel = 0;
 	};
@@ -366,11 +365,6 @@ requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 [[nodiscard]] std::vector<T> TRAP::Image::FlipX(const u32 width, const u32 height, const ColorFormat format,
                                                 const std::span<const T> data)
 {
-	if (format == ColorFormat::NONE)
-	{
-		TRAP_ASSERT(false, "Image::FlipX(): Invalid color format!");
-		return std::vector<T>();
-	}
 	if(data.size() < (width * height * std::to_underlying(format)))
 	{
 		TRAP_ASSERT(false, "Image::FlipX(): Raw pixel data is too small!");
@@ -405,11 +399,6 @@ requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 [[nodiscard]] std::vector<T> TRAP::Image::FlipY(const u32 width, const u32 height, const ColorFormat format,
                                                 const std::span<const T> data)
 {
-	if (format == ColorFormat::NONE)
-	{
-		TRAP_ASSERT(false, "Image::FlipY(): Invalid color format!");
-		return std::vector<T>();
-	}
 	if(data.size() < (width * height * std::to_underlying(format)))
 	{
 		TRAP_ASSERT(false, "Image::FlipY(): Raw pixel data is too small!");
@@ -445,11 +434,6 @@ requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
                                                             const ColorFormat format,
 															const std::span<const T> data)
 {
-	if (format == ColorFormat::NONE)
-	{
-		TRAP_ASSERT(false, "Image::Rotate90Clockwise(): Invalid color format!");
-		return std::vector<T>();
-	}
 	if(data.size() < (width * height * std::to_underlying(format)))
 	{
 		TRAP_ASSERT(false, "Image::Rotate90Clockwise: Raw pixel data is too small!");
@@ -483,11 +467,6 @@ requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
                                                                    const ColorFormat format,
 																   const std::span<const T> data)
 {
-	if (format == ColorFormat::NONE)
-	{
-		TRAP_ASSERT(false, "Image::Rotate90CounterClockwise(): Invalid color format!");
-		return std::vector<T>();
-	}
 	if(data.size() < (width * height * std::to_underlying(format)))
 	{
 		TRAP_ASSERT(false, "Image::Rotate90CounterClockwise: Raw pixel data is too small!");

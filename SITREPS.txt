@@ -5145,3 +5145,7 @@ SITREP 07/21/2024|24w29b1
     - Changed TRAP Engine version to 24w29b1(0.10.93)
     - TRAP_ASSERT Fixed assertion failures didnt trigger debug break ~<5 mins
     - VulkanRenderer Depth/Stencil RenderTarget now uses the same MSAA sample count as color RenderTargets ~<15 mins
+
+SITREP 08/04/2024|24w31a1
+    - Changed TRAP Engine version to 24w31a1(0.11.0)
+    - Image Removed ColorFormat::NONE from enum ~<10 mins
