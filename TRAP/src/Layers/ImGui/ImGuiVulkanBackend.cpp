@@ -1170,9 +1170,11 @@ namespace
         if (err == VK_ERROR_OUT_OF_DATE_KHR || err == VK_SUBOPTIMAL_KHR)
         {
             vd->SwapChainNeedsRebuild = true;
-            return;
+            if(err == VK_ERROR_OUT_OF_DATE_KHR)
+                return;
         }
-        CheckVkResult(err);
+        else
+            CheckVkResult(err);
 
         wd.FrameIndex = (wd.FrameIndex + 1) % wd.ImageCount;         // This is for the next vkWaitForFences()
         wd.SemaphoreIndex = (wd.SemaphoreIndex + 1u) % NumericCast<u32>(wd.FrameSemaphores.size()); // Now we can use the next set of semaphores
