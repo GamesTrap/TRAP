@@ -16,6 +16,7 @@
 #include "QuiteOKImage/QOIImage.h"
 #include "CustomImage.h"
 #include "Embed.h"
+#include "Utils/ImageUtils.h"
 
 namespace
 {
@@ -176,20 +177,20 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 	if (img.IsHDR())
 	{
 		const std::span<const f32> data{reinterpret_cast<const f32*>(img.GetPixelData().data()), img.GetPixelData().size() / sizeof(f32)};
-		const std::vector<f32> flipped = FlipPixelDataX(img.GetWidth(), img.GetHeight(), img.GetChannelsPerPixel(), data);
+		const std::vector<f32> flipped = TRAP::Utils::FlipPixelDataX(img.GetWidth(), img.GetHeight(), img.GetChannelsPerPixel(), data);
 
 		result = LoadFromMemory(img.GetWidth(), img.GetHeight(), img.GetColorFormat(), flipped);
 	}
 	else if (img.IsLDR() && img.GetBytesPerChannel() == 2)
 	{
 		const std::span<const u16> data{reinterpret_cast<const u16*>(img.GetPixelData().data()), img.GetPixelData().size() / sizeof(u16)};
-		const std::vector<u16> flipped = FlipPixelDataX(img.GetWidth(), img.GetHeight(), img.GetChannelsPerPixel(), data);
+		const std::vector<u16> flipped = TRAP::Utils::FlipPixelDataX(img.GetWidth(), img.GetHeight(), img.GetChannelsPerPixel(), data);
 
 		result = LoadFromMemory(img.GetWidth(), img.GetHeight(), img.GetColorFormat(), flipped);
 	}
 	else /*if(img->IsLDR() && img->GetBytesPerChannel() == 1)*/
 	{
-		const std::vector<u8> flipped = FlipPixelDataX(img.GetWidth(), img.GetHeight(), img.GetChannelsPerPixel(), img.GetPixelData());
+		const std::vector<u8> flipped = TRAP::Utils::FlipPixelDataX(img.GetWidth(), img.GetHeight(), img.GetChannelsPerPixel(), img.GetPixelData());
 
 		result = LoadFromMemory(img.GetWidth(), img.GetHeight(), img.GetColorFormat(), flipped);
 	}
@@ -208,20 +209,20 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 	if (img.IsHDR())
 	{
 		const std::span<const f32> data{reinterpret_cast<const f32*>(img.GetPixelData().data()), img.GetPixelData().size() / sizeof(f32)};
-		const std::vector<f32> flipped = FlipPixelDataY(img.GetWidth(), img.GetHeight(), img.GetChannelsPerPixel(), data);
+		const std::vector<f32> flipped = TRAP::Utils::FlipPixelDataY(img.GetWidth(), img.GetHeight(), img.GetChannelsPerPixel(), data);
 
 		result = LoadFromMemory(img.GetWidth(), img.GetHeight(), img.GetColorFormat(), flipped);
 	}
 	else if (img.IsLDR() && img.GetBytesPerChannel() == 2)
 	{
 		const std::span<const u16> data{reinterpret_cast<const u16*>(img.GetPixelData().data()), img.GetPixelData().size() / sizeof(u16)};
-		const std::vector<u16> flipped = FlipPixelDataY(img.GetWidth(), img.GetHeight(), img.GetChannelsPerPixel(), data);
+		const std::vector<u16> flipped = TRAP::Utils::FlipPixelDataY(img.GetWidth(), img.GetHeight(), img.GetChannelsPerPixel(), data);
 
 		result = LoadFromMemory(img.GetWidth(), img.GetHeight(), img.GetColorFormat(), flipped);
 	}
 	else /*if(img.IsLDR() && img.GetBytesPerChannel() == 1)*/
 	{
-		const std::vector<u8> flipped = FlipPixelDataY(img.GetWidth(), img.GetHeight(), img.GetChannelsPerPixel(),
+		const std::vector<u8> flipped = TRAP::Utils::FlipPixelDataY(img.GetWidth(), img.GetHeight(), img.GetChannelsPerPixel(),
 		                                      img.GetPixelData());
 
 		result = LoadFromMemory(img.GetWidth(), img.GetHeight(), img.GetColorFormat(), flipped);
@@ -241,7 +242,7 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 	if (img.IsHDR())
 	{
 		const std::span<const f32> data{reinterpret_cast<const f32*>(img.GetPixelData().data()), img.GetPixelData().size() / sizeof(f32)};
-		const std::vector<f32> rotated = RotatePixelData90Clockwise(img.GetWidth(), img.GetHeight(),
+		const std::vector<f32> rotated = TRAP::Utils::RotatePixelData90Clockwise(img.GetWidth(), img.GetHeight(),
 		                                                            img.GetChannelsPerPixel(), data);
 
 		result = LoadFromMemory(img.GetWidth(), img.GetHeight(), img.GetColorFormat(), rotated);
@@ -249,14 +250,14 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 	else if (img.IsLDR() && img.GetBytesPerChannel() == 2)
 	{
 		const std::span<const u16> data{reinterpret_cast<const u16*>(img.GetPixelData().data()), img.GetPixelData().size() / sizeof(u16)};
-		const std::vector<u16> rotated = RotatePixelData90Clockwise(img.GetWidth(), img.GetHeight(),
+		const std::vector<u16> rotated = TRAP::Utils::RotatePixelData90Clockwise(img.GetWidth(), img.GetHeight(),
 		                                                            img.GetChannelsPerPixel(), data);
 
 		result = LoadFromMemory(img.GetWidth(), img.GetHeight(), img.GetColorFormat(), rotated);
 	}
 	else /*if(img.IsLDR() && img.GetBytesPerChannel() == 1)*/
 	{
-		const std::vector<u8> rotated = RotatePixelData90Clockwise(img.GetWidth(), img.GetHeight(),
+		const std::vector<u8> rotated = TRAP::Utils::RotatePixelData90Clockwise(img.GetWidth(), img.GetHeight(),
 		                                                           img.GetChannelsPerPixel(), img.GetPixelData());
 
 		result = LoadFromMemory(img.GetWidth(), img.GetHeight(), img.GetColorFormat(), rotated);
@@ -276,7 +277,7 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 	if (img.IsHDR())
 	{
 		const std::span<const f32> data{reinterpret_cast<const f32*>(img.GetPixelData().data()), img.GetPixelData().size() / sizeof(f32)};
-		const std::vector<f32> rotated = RotatePixelData90CounterClockwise(img.GetWidth(), img.GetHeight(),
+		const std::vector<f32> rotated = TRAP::Utils::RotatePixelData90CounterClockwise(img.GetWidth(), img.GetHeight(),
 		                                                                   img.GetChannelsPerPixel(), data);
 
 		result = LoadFromMemory(img.GetWidth(), img.GetHeight(), img.GetColorFormat(), rotated);
@@ -284,14 +285,14 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 	else if (img.IsLDR() && img.GetBytesPerChannel() == 2)
 	{
 		const std::span<const u16> data{reinterpret_cast<const u16*>(img.GetPixelData().data()), img.GetPixelData().size() / sizeof(u16)};
-		const std::vector<u16> rotated = RotatePixelData90CounterClockwise(img.GetWidth(), img.GetHeight(),
+		const std::vector<u16> rotated = TRAP::Utils::RotatePixelData90CounterClockwise(img.GetWidth(), img.GetHeight(),
 		                                                                   img.GetChannelsPerPixel(), data);
 
 		result = LoadFromMemory(img.GetWidth(), img.GetHeight(), img.GetColorFormat(), rotated);
 	}
 	else /*if(img.IsLDR() && img.GetBytesPerChannel() == 1)*/
 	{
-		const std::vector<u8> rotated = RotatePixelData90CounterClockwise(img.GetWidth(), img.GetHeight(),
+		const std::vector<u8> rotated = TRAP::Utils::RotatePixelData90CounterClockwise(img.GetWidth(), img.GetHeight(),
 		                                                                  img.GetChannelsPerPixel(), img.GetPixelData());
 
 		result = LoadFromMemory(img.GetWidth(), img.GetHeight(), img.GetColorFormat(), rotated);
@@ -311,20 +312,20 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 	if(img.IsHDR())
 	{
 		const std::span<const f32> data{reinterpret_cast<const f32*>(img.GetPixelData().data()), img.GetPixelData().size() / sizeof(f32)};
-		const std::vector<f32> converted = ConvertRGBToRGBA(img.GetWidth(), img.GetHeight(), data);
+		const std::vector<f32> converted = TRAP::Utils::ConvertRGBPixelDataToRGBA(img.GetWidth(), img.GetHeight(), data);
 
 		result = LoadFromMemory(img.GetWidth(), img.GetHeight(), ColorFormat::RGBA, converted);
 	}
 	else if (img.IsLDR() && img.GetBytesPerChannel() == 2)
 	{
 		const std::span<const u16> data{reinterpret_cast<const u16*>(img.GetPixelData().data()), img.GetPixelData().size() / sizeof(u16)};
-		const std::vector<u16> converted = ConvertRGBToRGBA(img.GetWidth(), img.GetHeight(), data);
+		const std::vector<u16> converted = TRAP::Utils::ConvertRGBPixelDataToRGBA(img.GetWidth(), img.GetHeight(), data);
 
 		result = LoadFromMemory(img.GetWidth(), img.GetHeight(), ColorFormat::RGBA, converted);
 	}
 	else /*if(img->IsLDR() && img->GetBytesPerChannel() == 1)*/
 	{
-		const std::vector<u8> flipped = ConvertRGBToRGBA(img.GetWidth(), img.GetHeight(),
+		const std::vector<u8> flipped = TRAP::Utils::ConvertRGBPixelDataToRGBA(img.GetWidth(), img.GetHeight(),
 		                                                 img.GetPixelData());
 
 		result = LoadFromMemory(img.GetWidth(), img.GetHeight(), ColorFormat::RGBA, flipped);

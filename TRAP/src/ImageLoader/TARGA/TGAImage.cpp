@@ -2,6 +2,7 @@
 #include "TGAImage.h"
 
 #include "FileSystem/FileSystem.h"
+#include "Utils/ImageUtils.h"
 #include "Utils/Memory.h"
 #include "Utils/Utils.h"
 
@@ -451,7 +452,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 		}
 		if (header.BitsPerPixel == 8)
 		{
-			m_data = DecodeBGRAMap(colorMapData.ImageData, m_width, m_height,
+			m_data = TRAP::Utils::DecodeBGRAMappedPixelData(colorMapData.ImageData, m_width, m_height,
 			                       header.ColorMapDepth / 8, colorMapData.ColorMap);
 			m_bitsPerPixel = header.ColorMapDepth;
 			if(m_bitsPerPixel == 16)
@@ -530,21 +531,21 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 		{
 			m_colorFormat = ColorFormat::RGB;
 			m_bitsPerPixel = 24;
-			m_data = ConvertBGR16ToRGB24(colorMapData.ImageData, m_width, m_height);
+			m_data = TRAP::Utils::ConvertBGR16PixelDataToRGB24(colorMapData.ImageData, m_width, m_height);
 			break;
 		}
 
 		case 24:
 		{
 			m_colorFormat = ColorFormat::RGB;
-			m_data = ConvertBGR24ToRGB24(colorMapData.ImageData, m_width, m_height);
+			m_data = TRAP::Utils::ConvertBGR24PixelDataToRGB24(colorMapData.ImageData, m_width, m_height);
 			break;
 		}
 
 		case 32:
 		{
 			m_colorFormat = ColorFormat::RGBA;
-			m_data = ConvertBGRA32ToRGBA32(colorMapData.ImageData, m_width, m_height);
+			m_data = TRAP::Utils::ConvertBGRA32PixelDataToRGBA32(colorMapData.ImageData, m_width, m_height);
 			break;
 		}
 
@@ -602,7 +603,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	}
 
 	if (needXFlip)
-		m_data = FlipPixelDataX<u8>(m_width, m_height, GetChannelsPerPixel(), m_data);
+		m_data = TRAP::Utils::FlipPixelDataX<u8>(m_width, m_height, GetChannelsPerPixel(), m_data);
 	if (needYFlip)
-		m_data = FlipPixelDataY<u8>(m_width, m_height, GetChannelsPerPixel(), m_data);
+		m_data = TRAP::Utils::FlipPixelDataY<u8>(m_width, m_height, GetChannelsPerPixel(), m_data);
 }

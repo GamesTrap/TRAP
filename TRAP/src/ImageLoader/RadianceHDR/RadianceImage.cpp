@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "RadianceImage.h"
 
+#include "Utils/ImageUtils.h"
 #include "Utils/String/String.h"
 #include "FileSystem/FileSystem.h"
 
@@ -409,12 +410,12 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 	file.close();
 
 	if (needXFlip)
-		m_data = FlipPixelDataX<f32>(m_width, m_height, GetChannelsPerPixel(), m_data);
+		m_data = TRAP::Utils::FlipPixelDataX<f32>(m_width, m_height, GetChannelsPerPixel(), m_data);
 	if (needYFlip)
-		m_data = FlipPixelDataY<f32>(m_width, m_height, GetChannelsPerPixel(), m_data);
+		m_data = TRAP::Utils::FlipPixelDataY<f32>(m_width, m_height, GetChannelsPerPixel(), m_data);
 
 	if(need90RotateCW)
-		m_data = RotatePixelData90Clockwise<f32>(m_width, m_height, GetChannelsPerPixel(), m_data);
+		m_data = TRAP::Utils::RotatePixelData90Clockwise<f32>(m_width, m_height, GetChannelsPerPixel(), m_data);
 	if(need90RotateCCW)
-		m_data = RotatePixelData90CounterClockwise<f32>(m_width, m_height, GetChannelsPerPixel(), m_data);
+		m_data = TRAP::Utils::RotatePixelData90CounterClockwise<f32>(m_width, m_height, GetChannelsPerPixel(), m_data);
 }

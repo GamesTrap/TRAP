@@ -3,6 +3,7 @@
 
 #include "FileSystem/FileSystem.h"
 #include "Maths/Math.h"
+#include "Utils/ImageUtils.h"
 #include "Utils/Memory.h"
 #include "Utils/Utils.h"
 
@@ -386,7 +387,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 			m_colorFormat = ColorFormat::RGBA;
 			m_bitsPerPixel = 32;
 
-			m_data = DecodeBGRAMap(imageData, m_width, m_height, 4, colorTable);
+			m_data = TRAP::Utils::DecodeBGRAMappedPixelData(imageData, m_width, m_height, 4, colorTable);
 		}
 		else if(m_bitsPerPixel == 8 && (infoHeader.CLRUsed == 0u)) //Grayscale
 		{
@@ -399,12 +400,12 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 		{
 			m_colorFormat = ColorFormat::RGB;
 			m_bitsPerPixel = 24;
-			m_data = ConvertBGR16ToRGB24(imageData, m_width, m_height);
+			m_data = TRAP::Utils::ConvertBGR16PixelDataToRGB24(imageData, m_width, m_height);
 		}
 		else if (m_bitsPerPixel == 24) //RGB
 		{
 			m_colorFormat = ColorFormat::RGB;
-			m_data = ConvertBGR24ToRGB24(imageData, m_width, m_height);
+			m_data = TRAP::Utils::ConvertBGR24PixelDataToRGB24(imageData, m_width, m_height);
 		}
 		else if (m_bitsPerPixel == 32) //RGBA
 		{
@@ -428,7 +429,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 					imageData[i] = 255;
 			}
 
-			m_data = ConvertBGRA32ToRGBA32(imageData, m_width, m_height);
+			m_data = TRAP::Utils::ConvertBGRA32PixelDataToRGBA32(imageData, m_width, m_height);
 		}
 	}
 	else if (infoHeader.Compression == 1) //Microsoft RLE 8
@@ -541,5 +542,5 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	}
 
 	if (needYFlip)
-		m_data = FlipPixelDataY<u8>(m_width, m_height, GetChannelsPerPixel(), m_data);
+		m_data = TRAP::Utils::FlipPixelDataY<u8>(m_width, m_height, GetChannelsPerPixel(), m_data);
 }

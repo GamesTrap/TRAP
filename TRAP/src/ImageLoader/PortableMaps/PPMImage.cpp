@@ -2,6 +2,7 @@
 #include "PPMImage.h"
 
 #include "FileSystem/FileSystem.h"
+#include "Utils/ImageUtils.h"
 #include "Utils/Memory.h"
 #include "Utils/Utils.h"
 
@@ -119,7 +120,7 @@ void TRAP::INTERNAL::PPMImage::Save(const Image* const img, const std::filesyste
 	//PPM Data
 	if(img->GetColorFormat() == ColorFormat::RGBA)
 	{
-		const std::vector<u8> pixelData = ConvertRGBAToRGB<u8>(img->GetWidth(), img->GetHeight(), img->GetPixelData());
+		const std::vector<u8> pixelData = TRAP::Utils::ConvertRGBAPixelDataToRGB<u8>(img->GetWidth(), img->GetHeight(), img->GetPixelData());
 		file.write(reinterpret_cast<const char*>(pixelData.data()), NumericCast<std::streamsize>(pixelData.size()));
 	}
 	else
