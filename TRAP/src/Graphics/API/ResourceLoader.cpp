@@ -1318,7 +1318,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const usize activeSet)
 					TRAP::Scope<TRAP::Image> RGBAImage = nullptr;
 					if((*images)[layer]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //Convert RGB to RGBA
 					{
-						RGBAImage = TRAP::Image::ConvertRGBToRGBA((*images)[layer]);
+						RGBAImage = TRAP::Image::ConvertRGBToRGBA(*(*images)[layer]);
 						pixelData = RGBAImage->GetPixelData();
 					}
 					else

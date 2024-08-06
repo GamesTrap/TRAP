@@ -1209,7 +1209,7 @@ bool TRAP::Application::OnFileSystemChangeEvent(const Events::FileSystemChangeEv
 
 	const std::string fEnding = Utils::String::ToLower(*fileEnding);
 
-	if(std::ranges::contains(Image::SupportedImageFormatSuffixes, fEnding))
+	if(Image::IsSupportedImageFile(event.GetPath()))
 	{
 		auto hotReloadData = m_hotReloadingData.WriteLock();
 

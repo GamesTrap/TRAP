@@ -534,8 +534,8 @@ requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 	{
 		std::get<0>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<2>(cubeTextureData)); //+X
 		std::get<1>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<5>(cubeTextureData)); //-X
-		std::get<2>(images) = TRAP::Image::Rotate90CounterClockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<0>(cubeTextureData)).get()); //+Y
-		std::get<3>(images) = TRAP::Image::Rotate90Clockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<4>(cubeTextureData)).get()); //-Y
+		std::get<2>(images) = TRAP::Image::Rotate90CounterClockwise(*TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<0>(cubeTextureData))); //+Y
+		std::get<3>(images) = TRAP::Image::Rotate90Clockwise(*TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<4>(cubeTextureData))); //-Y
 		std::get<4>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<1>(cubeTextureData)); //+Z
 		std::get<5>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image.GetColorFormat(), std::get<3>(cubeTextureData)); //-Z
 	}

@@ -602,7 +602,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	}
 
 	if (needXFlip)
-		m_data = FlipX<u8>(m_width, m_height, m_colorFormat, m_data);
+		m_data = FlipPixelDataX<u8>(m_width, m_height, GetChannelsPerPixel(), m_data);
 	if (needYFlip)
-		m_data = FlipY<u8>(m_width, m_height, m_colorFormat, m_data);
+		m_data = FlipPixelDataY<u8>(m_width, m_height, GetChannelsPerPixel(), m_data);
 }

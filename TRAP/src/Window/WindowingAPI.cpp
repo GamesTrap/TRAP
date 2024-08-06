@@ -608,7 +608,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(InternalCursor* cursor)
 	//Convert to RGBA 32BPP
 	if (image.GetColorFormat() == Image::ColorFormat::RGB)
 	{
-		const Scope<Image> iconImage = Image::ConvertRGBToRGBA(&image);
+		const Scope<Image> iconImage = Image::ConvertRGBToRGBA(image);
 
 		s_Data.CursorList.push_front(MakeScope<InternalCursor>());
 		InternalCursor* cursor = s_Data.CursorList.front().get();
@@ -735,7 +735,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow& window, const I
 	//Convert to RGBA 32BPP
 	if (image->GetColorFormat() == Image::ColorFormat::RGB)
 	{
-		const Scope<Image> imageRGBA = Image::ConvertRGBToRGBA(image);
+		const Scope<Image> imageRGBA = Image::ConvertRGBToRGBA(*image);
 		PlatformSetWindowIcon(window, imageRGBA.get());
 	}
 	else if (image->GetColorFormat() == Image::ColorFormat::RGBA)
