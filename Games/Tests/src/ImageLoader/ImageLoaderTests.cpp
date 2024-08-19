@@ -62,10 +62,12 @@ void ImageLoaderTests::OnImGuiRender()
 		ImGui::Text(" 8. Test8BPPPaletteRLEReversed");
 		ImGui::Text(" 9. Test16BPP");
 		ImGui::Text("10. Test16BPPReversed");
-		ImGui::Text("11. Test24BPP");
-		ImGui::Text("12. Test24BPPReversed");
-		ImGui::Text("13. Test32BPP");
-		ImGui::Text("14. Test32BPPReversed");
+		ImGui::Text("11. Test16BPPBitFields");
+		ImGui::Text("12. Test24BPP");
+		ImGui::Text("13. Test24BPPReversed");
+		ImGui::Text("14. Test32BPP");
+		ImGui::Text("15. Test32BPPReversed");
+		ImGui::Text("16. Test32BPPBitFields");
 	}
 	else if(m_pm)
 	{
@@ -126,10 +128,12 @@ void ImageLoaderTests::OnAttach()
 	                                     "./Assets/Textures/BMP/Test8BPPPaletteRLEReversed.bmp");
 	TRAP::Graphics::TextureManager::Load("BMPTest16BPP", "./Assets/Textures/BMP/Test16BPP.bmp");
 	TRAP::Graphics::TextureManager::Load("BMPTest16BPPReversed", "./Assets/Textures/BMP/Test16BPPReversed.bmp");
+	TRAP::Graphics::TextureManager::Load("BMPTest16BPPBitFields", "./Assets/Textures/BMP/Test16BPPBitFields.bmp");
 	TRAP::Graphics::TextureManager::Load("BMPTest24BPP", "./Assets/Textures/BMP/Test24BPP.bmp");
 	TRAP::Graphics::TextureManager::Load("BMPTest24BPPReversed", "./Assets/Textures/BMP/Test24BPPReversed.bmp");
 	TRAP::Graphics::TextureManager::Load("BMPTest32BPP", "./Assets/Textures/BMP/Test32BPP.bmp");
 	TRAP::Graphics::TextureManager::Load("BMPTest32BPPReversed", "./Assets/Textures/BMP/Test32BPPReversed.bmp");
+	TRAP::Graphics::TextureManager::Load("BMPTest32BPPBitFields", "./Assets/Textures/BMP/Test32BPPBitFields.bmp");
 
 	//PNG
 	TRAP::Graphics::TextureManager::Load("PNGTest8BPPGrayscaleBig", "./Assets/Textures/PNG/Test8BPPGrayscaleBig.png");
@@ -280,13 +284,17 @@ void ImageLoaderTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 
 		//Second Row
 		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
-		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest24BPP"));
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest16BPPBitFields"));
 		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
-		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest24BPPReversed"));
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest24BPP"));
 		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.75f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
-		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest32BPP"));
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest24BPPReversed"));
 		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.5f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest32BPP"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.25f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
 		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest32BPPReversed"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest32BPPBitFields"));
 	}
 	else if(m_pm)
 	{

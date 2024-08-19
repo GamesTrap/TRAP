@@ -160,10 +160,7 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 
 	const std::string fileFormat = Utils::String::ToLower(*fileEnding);
 
-	return std::ranges::any_of(SupportedImageFormatSuffixes, [&fileFormat](const std::string_view suffix)
-	{
-		return fileFormat == suffix;
-	});
+	return std::ranges::contains(SupportedImageFormatSuffixes, fileFormat);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -100,6 +100,7 @@ namespace TRAP
 		///		- Bitmap: BMP, DIB
 		///		- Portable Network Graphics: PNG
 		///		- Radiance: HDR, PIC
+		///     - Quite OK Image: QOI
 		/// @return Loaded image on success, fallback image otherwise.
 		[[nodiscard]] static Scope<Image> LoadFromFile(const std::filesystem::path& filepath);
 		/// @brief Load an image from memory.
@@ -160,12 +161,12 @@ namespace TRAP
 		[[nodiscard]] static Scope<Image> ConvertRGBToRGBA(const Image& img);
 
 	protected:
-		u32 m_width = 0;
-		u32 m_height = 0;
+		u32 m_width = 0u;
+		u32 m_height = 0u;
 		bool m_isHDR = false;
 		ColorFormat m_colorFormat = ColorFormat::RGBA;
 		std::filesystem::path m_filepath{};
-		u32 m_bitsPerPixel = 0;
+		u32 m_bitsPerPixel = 0u;
 	};
 }
 
@@ -176,20 +177,20 @@ namespace TRAP
 	switch(m_colorFormat)
 	{
 	case TRAP::Image::ColorFormat::GrayScale:
-		return 1;
+		return 1u;
 
 	case TRAP::Image::ColorFormat::GrayScaleAlpha:
-		return 2;
+		return 2u;
 
 	case TRAP::Image::ColorFormat::RGB:
-		return 3;
+		return 3u;
 
 	case TRAP::Image::ColorFormat::RGBA:
-		return 4;
+		return 4u;
 	}
 
 	TRAP_ASSERT(false, "GetChannelsPerPixel(): Unknown TRAP::Image::ColorFormat value!");
-	return 0;
+	return 0u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -203,21 +204,21 @@ namespace TRAP
 
 [[nodiscard]] constexpr u32 TRAP::Image::GetBytesPerPixel() const noexcept
 {
-	return m_bitsPerPixel / 8;
+	return m_bitsPerPixel / 8u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr u32 TRAP::Image::GetBitsPerChannel() const noexcept
 {
-	return m_bitsPerPixel / std::to_underlying(m_colorFormat);
+	return m_bitsPerPixel / GetChannelsPerPixel();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr u32 TRAP::Image::GetBytesPerChannel() const noexcept
 {
-	return GetBytesPerPixel() / std::to_underlying(m_colorFormat);
+	return GetBytesPerPixel() / GetChannelsPerPixel();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

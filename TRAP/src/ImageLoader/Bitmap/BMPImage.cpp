@@ -6,9 +6,137 @@
 #include "Utils/ImageUtils.h"
 #include "Utils/Memory.h"
 #include "Utils/Utils.h"
+#include "Utils/Expected.h"
 
 namespace
 {
+	enum class BMPErrorCode
+	{
+		InvalidBitField,
+		InvalidBitFieldMaskParameter,
+		FailedReadingBitmapFileHeader,
+		InvalidMagicNumber,
+		FailedReadingDIBHeader,
+		UnsupportedOS21X,
+		UnsupportedOS22X,
+		InvalidNumberOfPlanes,
+		UnsupportedBPP,
+		InvalidCompression,
+		UnsupportedRLE4,
+		UnsupportedPNG,
+		UnsupportedJPEG,
+		UnsupportedCMYK,
+		InvalidWidth,
+		InvalidHeight,
+		InvalidImageSizeForUncompressed,
+		InvalidBitPerPixelForRLE8,
+		FailedReadingBitFieldMasks,
+		InvalidColorTableSize,
+		FailedReadingColorTable,
+		FailedReadingEncodedPixelData,
+		FailedToOpenFile,
+		FailedRLE8Decompression
+	};
+
+	[[nodiscard]] constexpr std::string BMPErrorCodeToString(const BMPErrorCode errorCode)
+	{
+		switch(errorCode)
+		{
+		case BMPErrorCode::InvalidBitField:
+			return "Invalid bitfield detected!";
+
+		case BMPErrorCode::InvalidBitFieldMaskParameter:
+			return "Invalid masks parameter size, expected 3 or 4!";
+
+		case BMPErrorCode::FailedReadingBitmapFileHeader:
+			return "Failed to read bitmap file header!";
+
+		case BMPErrorCode::InvalidMagicNumber:
+			return "Invalid or unsupported magic number found, expected \"BM\"!";
+
+		case BMPErrorCode::FailedReadingDIBHeader:
+			return "Failed to read DIB header!";
+
+		case BMPErrorCode::UnsupportedOS21X:
+			return "OS/2 1.x BMPs are unsupported!";
+
+		case BMPErrorCode::UnsupportedOS22X:
+			return "OS/2 2.x BMPs are unsupported!";
+
+		case BMPErrorCode::InvalidNumberOfPlanes:
+			return "Invalid number of planes found, expected 1!";
+
+		case BMPErrorCode::UnsupportedBPP:
+			return "Unsupported bits per pixel detected, only 8, 16, 24, 32 bits per pixel images are supported!";
+
+		case BMPErrorCode::InvalidCompression:
+			return "Invalid compressin type!";
+
+		case BMPErrorCode::UnsupportedRLE4:
+			return "RLE4 encoded BMP images are unsupported!";
+
+		case BMPErrorCode::UnsupportedPNG:
+			return "PNG encoded BMP images are unsupported!";
+
+		case BMPErrorCode::UnsupportedJPEG:
+			return "JPEG encoded BMP images are unsupported!";
+
+		case BMPErrorCode::UnsupportedCMYK:
+			return "CMYK/CMYKRLE8/CMYKRLE4 encoded BMP images are unsupported!";
+
+		case BMPErrorCode::InvalidWidth:
+			return "Invalid width detected!";
+
+		case BMPErrorCode::InvalidHeight:
+			return "Invalid height detected!";
+
+		case BMPErrorCode::InvalidImageSizeForUncompressed:
+			return "Image size 0 is invalid for compressed BMP images!";
+
+		case BMPErrorCode::InvalidBitPerPixelForRLE8:
+			return "RLE8 compressed image must have 8 bits per pixel!";
+
+		case BMPErrorCode::FailedReadingBitFieldMasks:
+			return "Failed to read bitfield masks!";
+
+		case BMPErrorCode::InvalidColorTableSize:
+			return "Invalid color table size detected!";
+
+		case BMPErrorCode::FailedReadingColorTable:
+			return "Failed to read color table!";
+
+		case BMPErrorCode::FailedReadingEncodedPixelData:
+			return "Failed to read encoded pixel data!";
+
+		case BMPErrorCode::FailedToOpenFile:
+			return "Failed to open file for reading";
+
+		case BMPErrorCode::FailedRLE8Decompression:
+			return "Failed to decompress RLE8 pixel data!";
+		}
+
+		return "";
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	enum class BMPCompression : u32
+	{
+		Uncompressed = 0u,
+		RLE8 = 1u,
+		RLE4 = 2u,
+		BitFields = 3u,
+		JPEG = 4u,
+		PNG = 5u,
+		AlphaBitFields = 6u,
+		CMYK = 11u,
+		CMYKRLE8 = 12u,
+		CMYKRLE4 = 13u
+	};
+	MAKE_ENUM_FLAG(BMPCompression);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
 	struct BitField
 	{
 		u32 Start;
@@ -19,26 +147,28 @@ namespace
 
 	struct Header
 	{
-		u16 MagicNumber = 0; //Used to check format
-		u32 Size = 0; //File size in bytes
-		u32 DataOffset = 0; //Offset from file start - first pixel data
+		std::array<char, 2u> MagicNumber{}; //Used to check format
+		// u32 Size = 0u; //File size in bytes (unused)
+		// u16 Reserved0 = 0u; //Reserved (unused)
+		// u16 Reserved1 = 0u; //Reserved (unused)
+		u32 DataOffset = 0u; //Offset from file start to first pixel data
 	};
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	struct InfoHeader
 	{
-		u32 Size = 0; //Size of this header in bytes
-		u32 Width = 0;
+		u32 HeaderSize = 0u; //Size of this header in bytes
+		u32 Width = 0u;
 		i32 Height = 0;
-		//u16 Planes = 0; //Always 1
-		u16 BitsPerPixel = 0; //1, 4, 8, 16, 24, 32
-		u32 Compression = 0; //0 = Uncompressed | 1 = RLE 8BPP | 2 = RLE 4BPP | 3 = BitFields
-		u32 SizeImage = 0; //Size of the image in bytes
-		//i32 XPixelsPerMeter = 0;
-		//i32 YPixelsPerMeter = 0;
-		u32 CLRUsed = 0; //Amount of colors in palette
-		//u32 CLRImportant = 0; //Amount of important colors in palette
+		u16 Planes = 0u; //Always 1
+		u16 BitsPerPixel = 0u; //1, 4, 8, 16, 24, 32
+		BMPCompression Compression = BMPCompression::Uncompressed;
+		u32 SizeImage = 0u; //Size of the image in bytes
+		//i32 XPixelsPerMeter = 0; //Unused
+		//i32 YPixelsPerMeter = 0; //Unused
+		u32 CLRUsed = 0u; //Amount of colors in palette
+		//u32 CLRImportant = 0u; //Amount of important colors in palette (Unused)
 	};
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -49,14 +179,14 @@ namespace
 	/// @return Value as 8 bits.
 	[[nodiscard]] constexpr u8 Make8Bits(u32 value, const u32 bitSpan) noexcept
 	{
-		u32 output = 0;
+		u32 output = 0u;
 
-		if (bitSpan == 8)
+		if (bitSpan == 8u)
 			return NumericCast<u8>(value);
-		if (bitSpan > 8)
-			return NumericCast<u8>(value >> (bitSpan - 8));
+		if (bitSpan > 8u)
+			return NumericCast<u8>(value >> (bitSpan - 8u));
 
-		value <<= (8 - bitSpan); //Shift it up into the most significant bits.
+		value <<= (8u - bitSpan); //Shift it up into the most significant bits.
 		while(value != 0u)
 		{
 			output |= value;
@@ -74,82 +204,653 @@ namespace
 	/// @return Value with bit field applied.
 	[[nodiscard]] constexpr u32 ApplyBitField(const u32 x, const BitField& bitField) noexcept
 	{
-		return x >> bitField.Start & (BIT(bitField.Span) - 1);
-	}
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
-	/// @brief Applies a bit field on the given value.
-	/// @param x Value to apply bit field to.
-	/// @param bitField Bit field to apply.
-	/// @return Value with bit field applied.
-	[[nodiscard]] constexpr u32 ApplyBitField(const u16 x, const BitField& bitField) noexcept
-	{
 		return x >> bitField.Start & (BIT(bitField.Span) - 1u);
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// @brief Parse a bit field.
-	/// @param field Bit field to parse.
 	/// @param mask Mask.
-	/// @return True if the bit field was parsed successfully, false otherwise.
-	[[nodiscard]] constexpr bool ParseBitfield(BitField& field, const u32 mask) noexcept
+	/// @return BitField if parsed successfully, error otherwise.
+	[[nodiscard]] constexpr TRAP::Expected<BitField, BMPErrorCode> ParseBitfield(const u32 mask) noexcept
 	{
-		u32 bit = 0;
-		for (; bit < 32 && ((mask & BIT(bit)) == 0u); bit++);
+		u32 bit = 0u;
+		for (; bit < 32u && ((mask & BIT(bit)) == 0u); ++bit);
 
-		if(bit >= 32)
+		if(bit >= 32u)
 		{
 			//Absent BitMasks are valid.
-			field.Start = field.Span = 0;
-			return true;
+			return BitField{};
 		}
 
-		field.Start = bit;
-		for (; bit < 32 && ((mask & BIT(bit)) != 0u); bit++);
-		field.Span = bit - field.Start;
+		BitField result{};
+
+		result.Start = bit;
+		for (; bit < 32u && ((mask & BIT(bit)) != 0u); ++bit);
+		result.Span = bit - result.Start;
 
 		//If there are more set bits, there was a gap, which is invalid
-		return bit >= 32 || ((mask & ~(BIT(bit) - 1u)) == 0u);
+		if(bit >= 32u || ((mask & ~(BIT(bit) - 1u)) == 0u))
+			return result;
+
+		return TRAP::MakeUnexpected(BMPErrorCode::InvalidBitField);
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// @brief Validate bit fields via the given masks.
-	/// @param bitFields Bit fields to validate.
 	/// @param masks Mask to validate the bit fields against.
-	/// @return True if the bit fields are valid, false otherwise.
-	[[nodiscard]] constexpr bool ValidateBitFields(std::array<BitField, 4>& bitFields, std::array<u32, 4>& masks,
-												   const u32 bitsPerPixel) noexcept
+	/// @param bitPerPixel Bits per pixel used by the image.
+	/// @return Validated BitFields on success, error otherwise.
+	[[nodiscard]] constexpr TRAP::Expected<std::vector<BitField>, BMPErrorCode> ValidateBitFields(const std::span<const u32> masks,
+												                                                  const u32 bitsPerPixel) noexcept
 	{
-		u32 totalMask = 0;
+		if(masks.size() != 3u && masks.size() != 4u)
+			return TRAP::MakeUnexpected(BMPErrorCode::InvalidBitFieldMaskParameter);
+
+		std::vector<BitField> outBitFields(masks.size());
+
+		u32 totalMask = 0u;
 		BitField totalField{};
 
-		for(usize i = 0; i < bitFields.size(); i++)
+		for(usize i = 0u; i < outBitFields.size(); ++i)
 		{
 			//No overlapping masks.
 			if ((totalMask & masks[i]) != 0u)
-				return false;
+				return TRAP::MakeUnexpected(BMPErrorCode::InvalidBitField);
 
 			totalMask |= masks[i];
 
-			if (!ParseBitfield(bitFields[i], masks[i]))
-				return false;
+			if (const auto bitField = ParseBitfield(masks[i]))
+				outBitFields[i] = *bitField;
+			else
+				return TRAP::Unexpected(bitField.Error());
 
 			//Make sure it fits in bit size
-			if (bitFields[i].Start + bitFields[i].Span > bitsPerPixel)
-				return false;
+			if (outBitFields[i].Start + outBitFields[i].Span > bitsPerPixel)
+				return TRAP::MakeUnexpected(BMPErrorCode::InvalidBitField);
 		}
 
 		if (totalMask == 0u)
-			return false;
+			return TRAP::MakeUnexpected(BMPErrorCode::InvalidBitField);
 
 		//Check for contiguous-ity between fields, too.
-		if (!ParseBitfield(totalField, totalMask))
-			return false;
+		if (const auto bitField = ParseBitfield(totalMask))
+			totalField = *bitField;
+		else
+			return TRAP::Unexpected(bitField.Error());
 
-		return true;
+		return outBitFields;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// @brief Decode run length encoded 8-bit RGBA BMP data.
+	/// @param width Width of the uncompressed pixel data.
+	/// @param height Height of the uncompressed pixel data.
+	/// @param compressedImageData Compressed image data.
+	/// @param colorTable Color table.
+	[[nodiscard]] constexpr std::vector<u8> DecodeRLE8RGBA(const u32 width, const u32 height,
+	                                                       const std::span<const u8> compressedImageData,
+														   const std::span<const u8> colorTable)
+	{
+		constexpr u32 channels = 4u;
+
+		std::vector<u8> uncompressedPixelData(NumericCast<usize>(width) * height * channels);
+
+		constexpr u8 EndOfScanline = 0u;
+		constexpr u8 EndMarker = 1u;
+		constexpr u8 DeltaMarker = 2u;
+
+		u32 x = 0u, y = 0u;
+
+		u32 dataIndex = 0u;
+
+		//Compressed RGBA
+		while (dataIndex < compressedImageData.size())
+		{
+			const u8 firstByte = compressedImageData[dataIndex++];
+
+			if (firstByte != 0u) //Run mode
+			{
+				const u8 secondByte = compressedImageData[dataIndex++] * channels;
+
+				for (u8 t = 0u; t < firstByte; t++) //Copy pixel data (also converts BGRA to RGBA)
+				{
+					uncompressedPixelData[((y * width + x) * channels) + 0u] = (colorTable)[secondByte + 2u];
+					uncompressedPixelData[((y * width + x) * channels) + 1u] = (colorTable)[secondByte + 1u];
+					uncompressedPixelData[((y * width + x) * channels) + 2u] = (colorTable)[secondByte + 0u];
+					uncompressedPixelData[((y * width + x) * channels) + 3u] = (colorTable)[secondByte + 3u];
+					x++;
+				}
+			}
+			else
+			{
+				const u8 secondByte = compressedImageData[dataIndex++];
+
+				if (secondByte == EndOfScanline)
+				{
+					x = 0u;
+					y++;
+					continue;
+				}
+				if (secondByte == DeltaMarker)
+				{
+					x += compressedImageData[dataIndex++];
+					y += compressedImageData[dataIndex++];
+					continue;
+				}
+
+				if (secondByte == EndMarker)
+					return uncompressedPixelData;
+
+				//Absolute mode (literal pixel values, not encoded)
+				for (u8 t = 0u; t < secondByte; t++) //Copy pixel data (also converts BGRA to RGBA)
+				{
+					const u8 pixel = compressedImageData[dataIndex++] * channels;
+					uncompressedPixelData[((y * width + x) * channels) + 0u] = (colorTable)[pixel + 2u];
+					uncompressedPixelData[((y * width + x) * channels) + 1u] = (colorTable)[pixel + 1u];
+					uncompressedPixelData[((y * width + x) * channels) + 2u] = (colorTable)[pixel + 0u];
+					uncompressedPixelData[((y * width + x) * channels) + 3u] = (colorTable)[pixel + 3u];
+					x++;
+				}
+
+				//Check for padding byte
+				if (secondByte % 2u != 0u)
+					dataIndex++;
+			}
+		}
+
+		return {};
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// @brief Decode run length encoded 8-bit BMP data.
+	/// @param width Width of the uncompressed pixel data.
+	/// @param height Height of the uncompressed pixel data.
+	/// @param compressedImageData Compressed image data.
+	[[nodiscard]] constexpr std::vector<u8> DecodeRLE8GrayScale(const uint32_t width, const uint32_t height,
+	                                                            const std::span<const u8> compressedImageData)
+	{
+		std::vector<u8> uncompressedPixelData(NumericCast<usize>(width) * height * 1u);
+
+		constexpr u8 EndOfScanline = 0u;
+		constexpr u8 EndMarker = 1u;
+		constexpr u8 DeltaMarker = 2u;
+
+		u32 x = 0u, y = 0u;
+
+		u32 dataIndex = 0u;
+
+		//Compressed Grayscale
+		while (dataIndex < compressedImageData.size())
+		{
+			const u8 firstByte = compressedImageData[dataIndex++];
+
+			if (firstByte != 0u) //Run mode
+			{
+				const u8 secondByte = compressedImageData[dataIndex++];
+
+				for (u8 t = 0u; t < firstByte; t++)
+				{
+					uncompressedPixelData[x + (y * width)] = secondByte;
+					x++;
+				}
+			}
+			else
+			{
+				const u8 secondByte = compressedImageData[dataIndex++];
+
+				if (secondByte == EndOfScanline)
+				{
+					x = 0u;
+					y++;
+					continue;
+				}
+				if (secondByte == DeltaMarker)
+				{
+					x += compressedImageData[dataIndex++];
+					y += compressedImageData[dataIndex++];
+					continue;
+				}
+
+				if (secondByte == EndMarker)
+					return uncompressedPixelData;
+
+				//Absolute mode (literal pixel values, not encoded)
+				for (u8 t = 0u; t < secondByte; t++)
+				{
+					const u8 pixel = compressedImageData[dataIndex++];
+					uncompressedPixelData[x + (y * width)] = pixel;
+					x++;
+				}
+
+				//Check for padding byte
+				if (secondByte % 2u != 0u)
+					dataIndex++;
+			}
+		}
+
+		return {};
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	[[nodiscard]] T ReadLittleEndian(std::ifstream& file)
+	{
+		T data{};
+
+		file.read(reinterpret_cast<char*>(&data), sizeof(T));
+
+		if constexpr(!std::same_as<T, u8> && !std::same_as<T, i8> &&
+		             TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Little)
+		{
+			TRAP::Utils::Memory::SwapBytes(data);
+		}
+
+		return data;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] TRAP::Expected<Header, BMPErrorCode> LoadHeader(std::ifstream& file)
+	{
+		Header header{};
+		header.MagicNumber = {ReadLittleEndian<char>(file), ReadLittleEndian<char>(file)};
+		file.ignore(4); //Discard file size
+		file.ignore(2); //Discard reserved
+		file.ignore(2); //Discard reserved
+		header.DataOffset = ReadLittleEndian<u32>(file);
+
+		if(!file.good())
+			return TRAP::MakeUnexpected(BMPErrorCode::FailedReadingBitmapFileHeader);
+
+		if(std::get<0u>(header.MagicNumber) != 'B' || std::get<1u>(header.MagicNumber) != 'M')
+			return TRAP::MakeUnexpected(BMPErrorCode::InvalidMagicNumber);
+
+		return header;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr bool IsValidCompression(const BMPCompression compression)
+	{
+		switch(compression)
+		{
+		case BMPCompression::Uncompressed:
+			[[fallthrough]];
+		case BMPCompression::RLE8:
+			[[fallthrough]];
+		case BMPCompression::RLE4:
+			[[fallthrough]];
+		case BMPCompression::BitFields:
+			[[fallthrough]];
+		case BMPCompression::JPEG:
+			[[fallthrough]];
+		case BMPCompression::PNG:
+			[[fallthrough]];
+		case BMPCompression::AlphaBitFields:
+			[[fallthrough]];
+		case BMPCompression::CMYK:
+			[[fallthrough]];
+		case BMPCompression::CMYKRLE8:
+			[[fallthrough]];
+		case BMPCompression::CMYKRLE4:
+			return true;
+
+		default:
+			return false;
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] TRAP::Expected<InfoHeader, BMPErrorCode> LoadInfoHeader(std::ifstream& file)
+	{
+		InfoHeader infoHeader{};
+
+		infoHeader.HeaderSize = ReadLittleEndian<u32>(file);
+		infoHeader.Width = ReadLittleEndian<u32>(file);
+		infoHeader.Height = ReadLittleEndian<i32>(file);
+		infoHeader.Planes = ReadLittleEndian<u16>(file);
+		infoHeader.BitsPerPixel = ReadLittleEndian<u16>(file);
+		infoHeader.Compression = static_cast<BMPCompression>(ReadLittleEndian<u32>(file));
+		infoHeader.SizeImage = ReadLittleEndian<u32>(file);
+		file.ignore(4); //Discard XPixelsPerMeter
+		file.ignore(4); //Discard YPixelsPerMeter
+		infoHeader.CLRUsed = ReadLittleEndian<u32>(file);
+		file.ignore(4); //Discard CLRImportant
+
+		if(!file.good())
+			return TRAP::MakeUnexpected(BMPErrorCode::FailedReadingDIBHeader);
+
+		if(infoHeader.HeaderSize == 12u)
+			return TRAP::MakeUnexpected(BMPErrorCode::UnsupportedOS21X);
+		if(infoHeader.HeaderSize == 64u || infoHeader.HeaderSize == 16u)
+			return TRAP::MakeUnexpected(BMPErrorCode::UnsupportedOS22X);
+		if(infoHeader.Planes != 1u)
+			return TRAP::MakeUnexpected(BMPErrorCode::InvalidNumberOfPlanes);
+		if(infoHeader.BitsPerPixel < 8u)
+			return TRAP::MakeUnexpected(BMPErrorCode::UnsupportedBPP);
+		if(!IsValidCompression(infoHeader.Compression))
+			return TRAP::MakeUnexpected(BMPErrorCode::InvalidCompression);
+		if(infoHeader.Compression == BMPCompression::RLE4)
+			return TRAP::MakeUnexpected(BMPErrorCode::UnsupportedRLE4);
+		if(infoHeader.Compression == BMPCompression::JPEG)
+			return TRAP::MakeUnexpected(BMPErrorCode::UnsupportedJPEG);
+		if(infoHeader.Compression == BMPCompression::PNG)
+			return TRAP::MakeUnexpected(BMPErrorCode::UnsupportedPNG);
+		if(infoHeader.Compression == BMPCompression::CMYK || infoHeader.Compression == BMPCompression::CMYKRLE8 || infoHeader.Compression == BMPCompression::CMYKRLE4)
+			return TRAP::MakeUnexpected(BMPErrorCode::UnsupportedCMYK);
+		if(infoHeader.Width == 0u)
+			return TRAP::MakeUnexpected(BMPErrorCode::InvalidWidth);
+		if(infoHeader.Height == 0)
+			return TRAP::MakeUnexpected(BMPErrorCode::InvalidHeight);
+		if(infoHeader.SizeImage == 0u && infoHeader.Compression != BMPCompression::Uncompressed)
+			return TRAP::MakeUnexpected(BMPErrorCode::InvalidImageSizeForUncompressed);
+		if(infoHeader.Compression == BMPCompression::RLE8 && infoHeader.BitsPerPixel != 8u)
+			return TRAP::MakeUnexpected(BMPErrorCode::InvalidBitPerPixelForRLE8);
+
+		return infoHeader;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] TRAP::Expected<std::vector<u32>, BMPErrorCode> LoadBitFieldMasks(std::ifstream& file, const BMPCompression compression)
+	{
+		switch(compression)
+		{
+		case BMPCompression::BitFields:
+		{
+			std::vector<u32> masks{ReadLittleEndian<u32>(file), ReadLittleEndian<u32>(file), ReadLittleEndian<u32>(file)};
+
+			if(!file.good())
+				return TRAP::MakeUnexpected(BMPErrorCode::FailedReadingBitFieldMasks);
+
+			return masks;
+		}
+
+		case BMPCompression::AlphaBitFields:
+		{
+			std::vector<u32> masks{ReadLittleEndian<u32>(file), ReadLittleEndian<u32>(file), ReadLittleEndian<u32>(file), ReadLittleEndian<u32>(file)};
+
+			if(!file.good())
+				return TRAP::MakeUnexpected(BMPErrorCode::FailedReadingBitFieldMasks);
+
+			return masks;
+		}
+
+		default:
+			return {};
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	constexpr void FillUnusedAlphaChannel(const std::span<u8> pixelData)
+	{
+		//Check if alpha is used
+		bool alphaUsed = false;
+		for (u32 i = 3u; i < pixelData.size(); i += 4u)
+		{
+			if (pixelData[i] > 0u)
+			{
+				alphaUsed = true;
+				break;
+			}
+		}
+
+		//If alpha is unused set all alpha bytes to 255 (full white)
+		if (!alphaUsed)
+		{
+			for (u32 i = 3u; i < pixelData.size(); i += 4u)
+				pixelData[i] = 255u;
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] TRAP::Expected<std::vector<u8>, BMPErrorCode> LoadColorTable(std::ifstream& file, const InfoHeader& infoHeader)
+	{
+		//Color table is only used by image with <= 8 bits per pixel
+		if(infoHeader.BitsPerPixel > 8u)
+			return {};
+
+		if(infoHeader.CLRUsed > NumericCast<u32>(TRAP::Math::Pow<f32>(2u, infoHeader.BitsPerPixel))) //Max 2^(bits per pixel) entries allowed
+			return TRAP::MakeUnexpected(BMPErrorCode::InvalidColorTableSize);
+
+		std::vector<u8> colorTable(NumericCast<usize>(4u) * infoHeader.CLRUsed);
+		if(colorTable.empty()) //When CLRUsed is 0 then default to 2^n (bits per pixel) entries
+			colorTable.resize(4u * NumericCast<usize>(TRAP::Math::Pow<f32>(2u, infoHeader.BitsPerPixel)));
+
+		if(!file.read(reinterpret_cast<char*>(colorTable.data()), NumericCast<std::streamsize>(colorTable.size())).good())
+			return TRAP::MakeUnexpected(BMPErrorCode::FailedReadingColorTable);
+
+        FillUnusedAlphaChannel(colorTable);
+
+		return colorTable;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] TRAP::Expected<std::vector<u8>, BMPErrorCode> LoadEncodedPixelData(std::ifstream& file,
+	                                                                                 const u32 offsetBeginToPixelData,
+																					 const InfoHeader& infoHeader)
+	{
+		//Jump to pixel data
+		file.seekg(offsetBeginToPixelData, std::ios::beg);
+
+		std::vector<u8> imageData{};
+		if(infoHeader.Compression == BMPCompression::Uncompressed) //infoHeader.SizeImage may be 0 for uncompressed images!
+		{
+			const u32 rowSize = NumericCast<u32>(TRAP::Math::Ceil<f32>(NumericCast<f32>((infoHeader.BitsPerPixel * infoHeader.Width) / 32u)) * 4u);
+			const u32 pixelDataSize = rowSize * TRAP::Math::Abs(infoHeader.Height);
+
+			imageData.resize(pixelDataSize);
+		}
+		else
+			imageData.resize(infoHeader.SizeImage);
+
+		if(!file.read(reinterpret_cast<char*>(imageData.data()), NumericCast<std::streamsize>(imageData.size())))
+			return TRAP::MakeUnexpected(BMPErrorCode::FailedReadingEncodedPixelData);
+
+		if(infoHeader.Compression == BMPCompression::Uncompressed && infoHeader.BitsPerPixel == 32u)
+			FillUnusedAlphaChannel(imageData);
+
+		return imageData;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	struct FileData
+	{
+		InfoHeader Header{};
+		std::vector<u32> BitFieldMasks{};
+		std::vector<u8> ColorTable{};
+		std::vector<u8> EncodedPixelData{};
+	};
+
+	[[nodiscard]] TRAP::Expected<FileData, BMPErrorCode> LoadDataFromFile(const std::filesystem::path& filePath)
+	{
+		std::ifstream file(filePath, std::ios::binary);
+		if (!file.is_open())
+			return TRAP::MakeUnexpected(BMPErrorCode::FailedToOpenFile);
+
+		const auto header = LoadHeader(file);
+		if(!header)
+			return TRAP::Unexpected(header.Error());
+
+		const auto infoHeader = LoadInfoHeader(file);
+		if(!infoHeader)
+			return TRAP::Unexpected(infoHeader.Error());
+
+		const auto bitfieldMasks = LoadBitFieldMasks(file, infoHeader->Compression);
+		if(!bitfieldMasks)
+			return TRAP::Unexpected(bitfieldMasks.Error());
+
+		const auto colorTable = LoadColorTable(file, *infoHeader);
+		if(!colorTable)
+			return TRAP::Unexpected(colorTable.Error());
+
+		const auto encodedPixelData = LoadEncodedPixelData(file, header->DataOffset, *infoHeader);
+		if(!encodedPixelData)
+			return TRAP::Unexpected(encodedPixelData.Error());
+
+		return FileData{*infoHeader, *bitfieldMasks, *colorTable, *encodedPixelData};
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	struct DecodedData
+	{
+		u32 Width{};
+		u32 Height{};
+		u32 BitsPerPixel{};
+		TRAP::Image::ColorFormat Format = TRAP::Image::ColorFormat::RGBA;
+		std::vector<u8> PixelData{};
+	};
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	requires std::same_as<T, u16> || std::same_as<T, u32>
+	[[nodiscard]] constexpr std::vector<u8> DecodeBitFieldPixelData(const std::span<const u8> encodedPixelData,
+	                                                                const std::span<const BitField> bitFields,
+																	const u32 width, const u32 height,
+																	const u32 bitsPerPixel)
+	{
+		std::vector<u8> data(NumericCast<usize>(width) * height * 4u);
+
+		u32 index = 0u;
+		for (u32 i = 0u; i < width * height * bitsPerPixel / 8u - 1u;)
+		{
+			T value{};
+
+			if constexpr(std::same_as<T, u16>)
+			{
+				value = NumericCast<u16>(encodedPixelData[i]) +
+					    NumericCast<u16>(encodedPixelData[i + 1u] << 8u);
+			}
+			else /*if constexpr(std::same_as<T, u32>)*/
+			{
+				value =  NumericCast<u32>(encodedPixelData[i]) +
+						(NumericCast<u32>(encodedPixelData[i + 1u]) << 8u) +
+						(NumericCast<u32>(encodedPixelData[i + 2u]) << 16u) +
+						(NumericCast<u32>(encodedPixelData[i + 3u]) << 24u);
+			}
+
+			data[index++] = Make8Bits(ApplyBitField(value, bitFields[0u]), bitFields[0u].Span);
+			data[index++] = Make8Bits(ApplyBitField(value, bitFields[1u]), bitFields[1u].Span);
+			data[index++] = Make8Bits(ApplyBitField(value, bitFields[2u]), bitFields[2u].Span);
+			if (bitFields.size() == 4u && bitFields[3u].Span != 0u)
+				data[index++] = Make8Bits(ApplyBitField(value, bitFields[3u]), bitFields[3u].Span);
+			else
+				data[index++] = 255u;
+
+			i += sizeof(T);
+		}
+
+		return data;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr TRAP::Expected<DecodedData, BMPErrorCode> DecodePixelData(const FileData& fileData)
+	{
+		const InfoHeader& infoHeader = fileData.Header;
+		const std::vector<u32>& bitfieldMasks = fileData.BitFieldMasks;
+		const std::vector<u8>& colorTable = fileData.ColorTable;
+		const std::vector<u8>& encodedPixelData = fileData.EncodedPixelData;
+
+		DecodedData decodedData
+		{
+			.Width = infoHeader.Width,
+			.Height = NumericCast<u32>(TRAP::Math::Abs<i32>(infoHeader.Height)),
+			.BitsPerPixel = infoHeader.BitsPerPixel
+		};
+
+		if (infoHeader.Compression == BMPCompression::Uncompressed) //Uncompressed
+		{
+			if (infoHeader.BitsPerPixel == 8u && infoHeader.CLRUsed != 0u) //Color Table
+			{
+				decodedData.BitsPerPixel = 32u;
+				decodedData.Format = TRAP::Image::ColorFormat::RGBA;
+				decodedData.PixelData = TRAP::Utils::DecodeBGRAMappedPixelData(encodedPixelData, decodedData.Width, decodedData.Height, 4u, colorTable);
+			}
+			else if(infoHeader.BitsPerPixel == 8u && infoHeader.CLRUsed == 0u) //Grayscale
+			{
+				decodedData.BitsPerPixel = 8u;
+				decodedData.Format = TRAP::Image::ColorFormat::GrayScale;
+				decodedData.PixelData = encodedPixelData;
+			}
+			else if (infoHeader.BitsPerPixel == 16u) //RGB
+			{
+				decodedData.BitsPerPixel = 24u;
+				decodedData.Format = TRAP::Image::ColorFormat::RGB;
+				decodedData.PixelData = TRAP::Utils::ConvertBGR16PixelDataToRGB24(encodedPixelData, decodedData.Width, decodedData.Height);
+			}
+			else if (infoHeader.BitsPerPixel == 24u) //RGB
+			{
+				decodedData.BitsPerPixel = 24u;
+				decodedData.Format = TRAP::Image::ColorFormat::RGB;
+				decodedData.PixelData = TRAP::Utils::ConvertBGR24PixelDataToRGB24(encodedPixelData, decodedData.Width, decodedData.Height);
+			}
+			else if (infoHeader.BitsPerPixel == 32u) //RGBA
+			{
+				decodedData.BitsPerPixel = 32u;
+				decodedData.Format = TRAP::Image::ColorFormat::RGBA;
+				decodedData.PixelData = TRAP::Utils::ConvertBGRA32PixelDataToRGBA32(encodedPixelData, decodedData.Width, decodedData.Height);
+			}
+		}
+		else if (infoHeader.Compression == BMPCompression::RLE8) //Microsoft RLE 8
+		{
+			if(infoHeader.CLRUsed == 0u) //Compressed Grayscale
+			{
+				decodedData.BitsPerPixel = 8u;
+				decodedData.Format = TRAP::Image::ColorFormat::GrayScale;
+				decodedData.PixelData = DecodeRLE8GrayScale(decodedData.Width, decodedData.Height, encodedPixelData); //Decode Single Channel RLE 8
+			}
+			else //Compressed Palette
+			{
+				decodedData.BitsPerPixel = 32u;
+				decodedData.Format = TRAP::Image::ColorFormat::RGBA;
+				decodedData.PixelData = DecodeRLE8RGBA(decodedData.Width, decodedData.Height, encodedPixelData, colorTable); //Decode Multi Channel RLE 8
+			}
+
+			if(decodedData.PixelData.empty())
+				return TRAP::MakeUnexpected(BMPErrorCode::FailedRLE8Decompression);
+		}
+		else if (infoHeader.Compression == BMPCompression::BitFields ||
+				 infoHeader.Compression == BMPCompression::AlphaBitFields) //BitFields
+		{
+			decodedData.Format = TRAP::Image::ColorFormat::RGBA;
+
+			if(decodedData.BitsPerPixel == 32u)
+			{
+				const auto bitFields = ValidateBitFields(bitfieldMasks, decodedData.BitsPerPixel);
+				if(!bitFields)
+					return TRAP::Unexpected(bitFields.Error());
+
+				decodedData.PixelData = DecodeBitFieldPixelData<u32>(encodedPixelData, *bitFields, decodedData.Width, decodedData.Height, decodedData.BitsPerPixel);
+			}
+			else if(decodedData.BitsPerPixel == 16u)
+			{
+				const auto bitFields = ValidateBitFields(bitfieldMasks, decodedData.BitsPerPixel);
+				if(!bitFields)
+					return TRAP::Unexpected(bitFields.Error());
+
+				decodedData.PixelData = DecodeBitFieldPixelData<u16>(encodedPixelData, *bitFields, decodedData.Width, decodedData.Height, decodedData.BitsPerPixel);
+				decodedData.BitsPerPixel = 32u;
+			}
+		}
+
+		const bool needYFlip = infoHeader.Height > 0;
+		if (needYFlip)
+			decodedData.PixelData = TRAP::Utils::FlipPixelDataY<u8>(decodedData.Width, decodedData.Height, decodedData.BitsPerPixel / 8u, decodedData.PixelData);
+
+		return decodedData;
 	}
 }
 
@@ -162,385 +863,17 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 
 	TP_DEBUG(Log::ImageBMPPrefix, "Loading image: ", m_filepath);
 
-	if (!FileSystem::Exists(m_filepath))
-		return;
-
-	std::ifstream file(m_filepath, std::ios::binary);
-	if (!file.is_open())
+	const auto decodedData = LoadDataFromFile(m_filepath).AndThen(DecodePixelData);
+	if(!decodedData)
 	{
-		TP_ERROR(Log::ImageBMPPrefix, "Couldn't open file path: ", m_filepath, "!");
+		TP_ERROR(Log::ImageBMPPrefix, BMPErrorCodeToString(decodedData.Error()));
 		TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 		return;
 	}
 
-	Header header{};
-	file.read(reinterpret_cast<char*>(&header.MagicNumber), sizeof(u16));
-	file.read(reinterpret_cast<char*>(&header.Size), sizeof(u32));
-	file.ignore(4);
-	file.read(reinterpret_cast<char*>(&header.DataOffset), sizeof(u32));
-
-	//File uses little-endian
-	//Convert to machines endian
-	if constexpr (Utils::GetEndian() != Utils::Endian::Little)
-	{
-		Utils::Memory::SwapBytes(header.MagicNumber);
-		Utils::Memory::SwapBytes(header.Size);
-		Utils::Memory::SwapBytes(header.DataOffset);
-	}
-
-	if (header.MagicNumber != 0x4D42)
-	{
-		file.close();
-		TP_ERROR(Log::ImageBMPPrefix, "Magic number ", header.MagicNumber, " is invalid!");
-		TP_WARN(Log::ImageBMPPrefix, "Using default image!");
-		return;
-	}
-
-	InfoHeader infoHeader{};
-	file.read(reinterpret_cast<char*>(&infoHeader.Size), sizeof(u32));
-	file.read(reinterpret_cast<char*>(&infoHeader.Width), sizeof(u32));
-	file.read(reinterpret_cast<char*>(&infoHeader.Height), sizeof(i32));
-	file.ignore(2);
-	file.read(reinterpret_cast<char*>(&infoHeader.BitsPerPixel), sizeof(u16));
-	file.read(reinterpret_cast<char*>(&infoHeader.Compression), sizeof(u32));
-	file.read(reinterpret_cast<char*>(&infoHeader.SizeImage), sizeof(u32));
-	file.ignore(4);
-	file.ignore(4);
-	file.read(reinterpret_cast<char*>(&infoHeader.CLRUsed), sizeof(u32));
-	file.ignore(4);
-
-	if constexpr (Utils::GetEndian() != Utils::Endian::Little)
-	{
-		Utils::Memory::SwapBytes(infoHeader.Size);
-		Utils::Memory::SwapBytes(infoHeader.Width);
-		Utils::Memory::SwapBytes(infoHeader.Height);
-		Utils::Memory::SwapBytes(infoHeader.BitsPerPixel);
-		Utils::Memory::SwapBytes(infoHeader.Compression);
-		Utils::Memory::SwapBytes(infoHeader.SizeImage);
-		Utils::Memory::SwapBytes(infoHeader.CLRUsed);
-	}
-
-	if(infoHeader.Size == 12)
-	{
-		file.close();
-		TP_ERROR(Log::ImageBMPPrefix, "OS/2 1.x BMPs are unsupported!");
-		TP_WARN(Log::ImageBMPPrefix, "Using default image!");
-		return;
-	}
-
-	std::array<u32, 4> masks{};
-	if(infoHeader.Compression == 3) //BitFields
-	{
-		if (infoHeader.Size == 40)
-		{
-			file.close();
-			TP_ERROR(Log::ImageBMPPrefix, "Only BMPV5 images with bit fields are supported!");
-			TP_WARN(Log::ImageBMPPrefix, "Using default image!");
-			return;
-		}
-
-		file.read(reinterpret_cast<char*>(&std::get<0>(masks)), sizeof(u32));
-		file.read(reinterpret_cast<char*>(&std::get<1>(masks)), sizeof(u32));
-		file.read(reinterpret_cast<char*>(&std::get<2>(masks)), sizeof(u32));
-		file.read(reinterpret_cast<char*>(&std::get<3>(masks)), sizeof(u32));
-
-		if constexpr (Utils::GetEndian() != Utils::Endian::Little)
-		{
-			Utils::Memory::SwapBytes(std::get<0>(masks));
-			Utils::Memory::SwapBytes(std::get<1>(masks));
-			Utils::Memory::SwapBytes(std::get<2>(masks));
-			Utils::Memory::SwapBytes(std::get<3>(masks));
-		}
-	}
-
-	if (infoHeader.Width < 1)
-	{
-		file.close();
-		TP_ERROR(Log::ImageBMPPrefix, "Width ", infoHeader.Width, " is invalid!");
-		TP_WARN(Log::ImageBMPPrefix, "Using default image!");
-		return;
-	}
-
-	bool needYFlip = false;
-	if (infoHeader.Height < 0)
-		m_height = NumericCast<u32>(Math::Abs(infoHeader.Height));
-	else if (infoHeader.Height == 0)
-	{
-		file.close();
-		TP_ERROR(Log::ImageBMPPrefix, "Height ", infoHeader.Height, " is invalid!");
-		TP_WARN(Log::ImageBMPPrefix, "Using default image!");
-		return;
-	}
-	else
-	{
-		needYFlip = true;
-		m_height = NumericCast<u32>(infoHeader.Height);
-	}
-	m_width = infoHeader.Width;
-	m_bitsPerPixel = infoHeader.BitsPerPixel;
-
-	if(m_bitsPerPixel <= 4)
-	{
-		file.close();
-		TP_ERROR(Log::ImageBMPPrefix, "Bits per pixel ", m_bitsPerPixel, " is unsupported!");
-		TP_WARN(Log::ImageBMPPrefix, "Using default image!");
-		return;
-	}
-
-	std::vector<u8> colorTable{};
-	if (m_bitsPerPixel <= 8 && (infoHeader.CLRUsed != 0u))
-	{
-		colorTable.resize(NumericCast<usize>(4u) * infoHeader.CLRUsed);
-		if(!file.read(reinterpret_cast<char*>(colorTable.data()), 4 * NumericCast<std::streamsize>(infoHeader.CLRUsed)))
-		{
-			file.close();
-			TP_ERROR(Log::ImageBMPPrefix, "Couldn't load color map data!");
-			TP_WARN(Log::ImageBMPPrefix, "Using default image!");
-			return;
-		}
-
-		//Check if alpha is used
-		bool alphaUsed = false;
-		for (u32 i = 3; i < colorTable.size(); i += 4)
-		{
-			if (colorTable[i] > 0)
-			{
-				alphaUsed = true;
-				break;
-			}
-		}
-
-		//If alpha is unused set all alpha bytes to 255
-		if (!alphaUsed)
-		{
-			for (u32 i = 3; i < colorTable.size(); i += 4)
-				colorTable[i] = 255;
-		}
-	}
-
-	//Load Pixel Data(BGRA) into vector
-	file.seekg(header.DataOffset, std::ios::beg);
-	std::vector<u8> imageData{};
-	if ((m_bitsPerPixel != 32 && infoHeader.Compression == 0) &&
-	    4 - (((m_bitsPerPixel / 8) * m_width) % 4) != 4) //Padding
-	{
-		imageData.resize(NumericCast<usize>(m_width) * m_height * (m_bitsPerPixel / 8));
-		const u32 padding = 4 - (((m_bitsPerPixel / 8) * m_width) % 4);
-		u32 offset = 0;
-		for (u32 j = 0; j < m_height; j++)
-		{
-			if(!file.read(reinterpret_cast<char*>(imageData.data()) + offset,
-			              NumericCast<std::streamsize>(m_width) * (m_bitsPerPixel / 8)))
-			{
-				file.close();
-				TP_ERROR(Log::ImageBMPPrefix, "Couldn't load pixel data!");
-				TP_WARN(Log::ImageBMPPrefix, "Using default image!");
-				return;
-			}
-
-			for (u32 pad = 0; pad < padding; pad++)
-				file.ignore();
-
-			offset += m_width * (m_bitsPerPixel / 8);
-		}
-	}
-	else //No Padding
-	{
-		if (infoHeader.Compression != 1)
-		{
-			imageData.resize(NumericCast<usize>(m_width) * m_height * (m_bitsPerPixel / 8));
-			if(!file.read(reinterpret_cast<char*>(imageData.data()),
-						  NumericCast<std::streamsize>(m_width) * m_height * (m_bitsPerPixel / 8)))
-			{
-				file.close();
-				TP_ERROR(Log::ImageBMPPrefix, "Couldn't load pixel data!");
-				TP_WARN(Log::ImageBMPPrefix, "Using default image!");
-				return;
-			}
-		}
-		else
-		{
-			imageData.resize(infoHeader.SizeImage);
-			if (!file.read(reinterpret_cast<char*>(imageData.data()), infoHeader.SizeImage))
-			{
-				file.close();
-				TP_ERROR(Log::ImageBMPPrefix, "Couldn't load pixel data!");
-				TP_WARN(Log::ImageBMPPrefix, "Using default image!");
-				return;
-			}
-		}
-	}
-
-	file.close();
-
-	if (infoHeader.Compression == 0) //Uncompressed
-	{
-		if (m_bitsPerPixel < 8)
-		{
-			TP_ERROR(Log::ImageBMPPrefix, "Bits per pixel ", m_bitsPerPixel, " is unsupported!");
-			TP_WARN(Log::ImageBMPPrefix, "Using default image!");
-			return;
-		}
-
-		if (m_bitsPerPixel == 8 && (infoHeader.CLRUsed != 0u)) //Color Table
-		{
-			m_colorFormat = ColorFormat::RGBA;
-			m_bitsPerPixel = 32;
-
-			m_data = TRAP::Utils::DecodeBGRAMappedPixelData(imageData, m_width, m_height, 4, colorTable);
-		}
-		else if(m_bitsPerPixel == 8 && (infoHeader.CLRUsed == 0u)) //Grayscale
-		{
-			m_colorFormat = ColorFormat::GrayScale;
-			m_bitsPerPixel = 8;
-
-			m_data = imageData;
-		}
-		else if (m_bitsPerPixel == 16) //RGB
-		{
-			m_colorFormat = ColorFormat::RGB;
-			m_bitsPerPixel = 24;
-			m_data = TRAP::Utils::ConvertBGR16PixelDataToRGB24(imageData, m_width, m_height);
-		}
-		else if (m_bitsPerPixel == 24) //RGB
-		{
-			m_colorFormat = ColorFormat::RGB;
-			m_data = TRAP::Utils::ConvertBGR24PixelDataToRGB24(imageData, m_width, m_height);
-		}
-		else if (m_bitsPerPixel == 32) //RGBA
-		{
-			m_colorFormat = ColorFormat::RGBA;
-
-			//Check if alpha is used
-			bool alphaUsed = false;
-			for (u32 i = 3; i < imageData.size(); i += 4)
-			{
-				if (imageData[i] > 0)
-				{
-					alphaUsed = true;
-					break;
-				}
-			}
-
-			//If alpha is unused set all alpha bytes to 255
-			if (!alphaUsed)
-			{
-				for (u32 i = 3; i < imageData.size(); i += 4)
-					imageData[i] = 255;
-			}
-
-			m_data = TRAP::Utils::ConvertBGRA32PixelDataToRGBA32(imageData, m_width, m_height);
-		}
-	}
-	else if (infoHeader.Compression == 1) //Microsoft RLE 8
-	{
-		if(infoHeader.CLRUsed == 0u)
-		{
-			//Compressed Grayscale
-			m_colorFormat = ColorFormat::GrayScale;
-			m_bitsPerPixel = 8;
-			m_data.resize(NumericCast<usize>(m_width) * m_height);
-
-			//Decode Single Channel RLE 8
-			DecodeRLE8(imageData, nullptr);
-		}
-		else
-		{
-			//Compressed Palette
-			m_colorFormat = ColorFormat::RGBA;
-			m_bitsPerPixel = 32;
-			m_data.resize(NumericCast<usize>(m_width) * m_height * 4);
-
-			//Decode Multi Channel RLE 8
-			DecodeRLE8(imageData, &colorTable);
-		}
-	}
-	else if (infoHeader.Compression == 2) //Microsoft RLE 4
-	{
-		TP_ERROR(Log::ImageBMPPrefix, "RLE 4 is unsupported!");
-		TP_WARN(Log::ImageBMPPrefix, "Using default image!");
-		return;
-	}
-	else if (infoHeader.Compression == 3) //BitFields
-	{
-		m_colorFormat = ColorFormat::RGBA;
-
-		std::array<BitField, 4> bitFields{};
-
-		std::vector<u8> data{};
-		data.resize(m_width * m_height * m_bitsPerPixel / 8);
-		if(m_bitsPerPixel == 32)
-		{
-			if(!ValidateBitFields(bitFields, masks, m_bitsPerPixel))
-			{
-				TP_ERROR(Log::ImageBMPPrefix, "Invalid bit fields!");
-				TP_WARN(Log::ImageBMPPrefix, "Using default image!");
-				return;
-			}
-
-			u32 index = 0;
-			for (u32 i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
-			{
-				const u32 value = NumericCast<u32>(imageData[i]) +
-					                   (NumericCast<u32>(imageData[i + 1]) << 8u) +
-					                   (NumericCast<u32>(imageData[i + 2]) << 16u) +
-					                   (NumericCast<u32>(imageData[i + 3]) << 24u);
-
-				data[index++] = Make8Bits(ApplyBitField(value, std::get<0>(bitFields)), std::get<0>(bitFields).Span);
-				data[index++] = Make8Bits(ApplyBitField(value, std::get<1>(bitFields)), std::get<1>(bitFields).Span);
-				data[index++] = Make8Bits(ApplyBitField(value, std::get<2>(bitFields)), std::get<2>(bitFields).Span);
-				if (GetBytesPerPixel() == 4)
-				{
-					if (std::get<3>(bitFields).Span != 0u)
-						data[index++] = Make8Bits(ApplyBitField(value, std::get<3>(bitFields)), std::get<3>(bitFields).Span);
-					else
-						data[index++] = 255;
-				}
-
-				i += 4;
-			}
-		}
-		else if(m_bitsPerPixel == 16)
-		{
-			if (!ValidateBitFields(bitFields, masks, m_bitsPerPixel))
-			{
-				TP_ERROR(Log::ImageBMPPrefix, "Invalid bit fields!");
-				TP_WARN(Log::ImageBMPPrefix, "Using default image!");
-				return;
-			}
-
-			u32 index = 0;
-			for (u32 i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
-			{
-				const u16 value = NumericCast<u16>(imageData[i]) +
-								       NumericCast<u16>(imageData[i + 1] << 8u);
-
-				data[index++] = Make8Bits(ApplyBitField(value, std::get<0>(bitFields)), std::get<0>(bitFields).Span);
-				data[index++] = Make8Bits(ApplyBitField(value, std::get<1>(bitFields)), std::get<1>(bitFields).Span);
-				data[index++] = Make8Bits(ApplyBitField(value, std::get<2>(bitFields)), std::get<2>(bitFields).Span);
-				if(GetBytesPerPixel() == 4)
-				{
-					if (std::get<3>(bitFields).Span != 0u)
-						data[index++] = Make8Bits(ApplyBitField(value, std::get<3>(bitFields)), std::get<3>(bitFields).Span);
-					else
-						data[index++] = 255;
-				}
-
-				i += 2;
-			}
-
-			m_bitsPerPixel = 32;
-		}
-		else
-		{
-			TP_ERROR(Log::ImageBMPPrefix, "Invalid bits per pixel ", m_bitsPerPixel, " for bit field image!");
-			TP_WARN(Log::ImageBMPPrefix, "Using default image!");
-			return;
-		}
-
-		m_data = std::move(data);
-	}
-
-	if (needYFlip)
-		m_data = TRAP::Utils::FlipPixelDataY<u8>(m_width, m_height, GetChannelsPerPixel(), m_data);
+	m_width = decodedData->Width;
+	m_height = decodedData->Height;
+	m_bitsPerPixel = decodedData->BitsPerPixel;
+	m_colorFormat = decodedData->Format;
+	m_data = decodedData->PixelData;
 }

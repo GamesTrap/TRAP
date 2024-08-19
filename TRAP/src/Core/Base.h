@@ -77,25 +77,25 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 /// @brief TRAP version number created with TRAP_MAKE_VERSION
-inline constexpr TRAP::SemanticVersion<0, 11, 1> TRAP_VERSION{};
+inline constexpr TRAP::SemanticVersion<0, 11, 2> TRAP_VERSION{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef MAKE_ENUM_FLAG
 #define MAKE_ENUM_FLAG(ENUM_TYPE) \
-	[[nodiscard]] constexpr ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
+	[[maybe_unused]] [[nodiscard]] constexpr ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
 	{ \
 		return static_cast<ENUM_TYPE>(std::to_underlying(a) | std::to_underlying(b)); \
 	} \
-	[[nodiscard]] constexpr ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
+	[[maybe_unused]] [[nodiscard]] constexpr ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
 	{ \
 		return static_cast<ENUM_TYPE>(std::to_underlying(a) & std::to_underlying(b)); \
 	} \
-	constexpr ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept \
+	[[maybe_unused]] constexpr ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept \
 	{ \
 	    return a = (a | b); \
 	} \
-	constexpr ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept \
+	[[maybe_unused]] constexpr ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept \
 	{ \
 	    return a = (a & b); \
 	}

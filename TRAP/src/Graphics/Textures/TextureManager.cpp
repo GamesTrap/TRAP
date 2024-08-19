@@ -361,7 +361,7 @@ void TRAP::Graphics::TextureManager::Clean()
 		{
 		case TextureType::Texture2D:
 		{
-			if(!texture->GetFilePaths().empty() && FileSystem::IsEquivalent(texture->GetFilePaths().front(), path))
+			if(!texture->GetFilePaths().empty() && !texture->GetFilePaths().front().empty() && FileSystem::IsEquivalent(texture->GetFilePaths().front(), path))
 				return true;
 			break;
 		}

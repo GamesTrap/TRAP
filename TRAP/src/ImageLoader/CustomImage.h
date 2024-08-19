@@ -54,7 +54,7 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const u
 		return;
 	}
 
-	m_bitsPerPixel = sizeof(T) * 8u * std::to_underlying(m_colorFormat);
+	m_bitsPerPixel = sizeof(T) * 8u * GetChannelsPerPixel();
 
 	if constexpr(std::same_as<T, f32>)
 	{

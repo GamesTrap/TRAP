@@ -5155,3 +5155,8 @@ SITREP 08/06/2024|24w32a1
     - Changed TRAP Engine version to 24w32a1(0.11.1)
     - Image Refactored various functions ~<30 mins
     - Image Moved PixelData conversion utility functions to ImageUtils ~<15 mins
+
+SITREP 08/19/2024|24w34a1
+    - Changed TRAP Engine version to 24w34a1(0.11.2)
+    - BMPImage Reworked implementation ~>120 mins
+    - BMPImage Added test images with bitfield encoding ~<10 mins

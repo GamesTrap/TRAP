@@ -79,7 +79,7 @@ namespace TRAP::Utils
 	///        otherwise it is sizeof(T) * Extent.
 	/// @return Span as bytes.
 	template<typename T, usize Extent>
-	[[nodiscard]] constexpr auto AsBytes(std::span<T, Extent> s) noexcept;
+	[[nodiscard]] constexpr auto AsBytes(std::span<const T, Extent> s) noexcept;
 
 	/// @brief Obtains a view to the object representation of the elements of the span s.
 	///        If Extent is std::dynamic_extent, the extent of the returned span S is also std::dynamic_extent;
@@ -208,7 +208,7 @@ namespace TRAP::Utils
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T, usize Extent>
-[[nodiscard]] constexpr auto TRAP::Utils::AsBytes(const std::span<T, Extent> s) noexcept
+[[nodiscard]] constexpr auto TRAP::Utils::AsBytes(const std::span<const T, Extent> s) noexcept
 {
 	if constexpr(Extent != std::dynamic_extent)
 	{
