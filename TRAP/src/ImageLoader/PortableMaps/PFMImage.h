@@ -28,14 +28,6 @@ namespace TRAP::INTERNAL
 
 	private:
 		std::vector<f32> m_data;
-
-		struct Header
-		{
-			std::string MagicNumber;
-			u32 Width = 0;
-			u32 Height = 0;
-			f32 ByteOrder = 0.0f;
-		};
 	};
 }
 

@@ -87,7 +87,7 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
         //Screenshot
 	    TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();
         if(testImage)
-	        TRAP::INTERNAL::PPMImage::Save(testImage.get(), "compute.ppm");
+	        TRAP::INTERNAL::PPMImage::Save(*testImage, "compute.ppm");
 
         TRAP::Application::Shutdown();
         return;

@@ -72,12 +72,16 @@ void ImageLoaderTests::OnImGuiRender()
 	else if(m_pm)
 	{
 		ImGui::Text("Current: PM");
-		ImGui::Text("1. Test8BPPGrayscale");
-		ImGui::Text("2. Test16BPPGrayscale");
-		ImGui::Text("3. Test24BPP");
-		ImGui::Text("4. Test48BPP");
-		ImGui::Text("5. TestGrayscaleHDR");
-		ImGui::Text("6. TestHDR");
+		ImGui::Text("1. Test8BPPGrayscale (PGM)");
+		ImGui::Text("2. Test8BPPGrayscale (PAM)");
+		ImGui::Text("3. Test16BPPGrayscale (PGM)");
+		ImGui::Text("4. Test16BPPGrayscale (PAM)");
+		ImGui::Text("5. Test24BPP (PPM)");
+		ImGui::Text("6. Test24BPP (PAM)");
+		ImGui::Text("7. Test48BPP (PPM)");
+		ImGui::Text("8. Test48BPP (PAM)");
+		ImGui::Text("9. TestGrayscaleHDR (PFM)");
+		ImGui::Text("10. TestHDR (PFM)");
 	}
 	else if(m_radiance)
 	{
@@ -165,12 +169,16 @@ void ImageLoaderTests::OnAttach()
 	TRAP::Graphics::TextureManager::Load("PNGTestPaletteSmallest", "./Assets/Textures/PNG/TestPaletteSmallest.png");
 
 	//PM
-	TRAP::Graphics::TextureManager::Load("PMTest8BPPGrayscale", "./Assets/Textures/PM/Test8BPPGrayscale.pgm");
-	TRAP::Graphics::TextureManager::Load("PMTest16BPPGrayscale", "./Assets/Textures/PM/Test16BPPGrayscale.pgm");
-	TRAP::Graphics::TextureManager::Load("PMTest24BPP", "./Assets/Textures/PM/Test24BPP.ppm");
-	TRAP::Graphics::TextureManager::Load("PMTest48BPP", "./Assets/Textures/PM/Test48BPP.ppm");
-	TRAP::Graphics::TextureManager::Load("PMTestGrayscaleHDR", "./Assets/Textures/PM/TestGrayscaleHDR.pfm");
-	TRAP::Graphics::TextureManager::Load("PMTestHDR", "./Assets/Textures/PM/TestHDR.pfm");
+	TRAP::Graphics::TextureManager::Load("PMTest8BPPGrayscalePGM", "./Assets/Textures/PM/Test8BPPGrayscale.pgm");
+	TRAP::Graphics::TextureManager::Load("PMTest8BPPGrayscalePAM", "./Assets/Textures/PM/Test8BPPGrayscale.pam");
+	TRAP::Graphics::TextureManager::Load("PMTest16BPPGrayscalePGM", "./Assets/Textures/PM/Test16BPPGrayscale.pgm");
+	TRAP::Graphics::TextureManager::Load("PMTest16BPPGrayscalePAM", "./Assets/Textures/PM/Test16BPPGrayscale.pam");
+	TRAP::Graphics::TextureManager::Load("PMTest24BPPPPM", "./Assets/Textures/PM/Test24BPP.ppm");
+	TRAP::Graphics::TextureManager::Load("PMTest24BPPPAM", "./Assets/Textures/PM/Test24BPP.pam");
+	TRAP::Graphics::TextureManager::Load("PMTest48BPPPPM", "./Assets/Textures/PM/Test48BPP.ppm");
+	TRAP::Graphics::TextureManager::Load("PMTest48BPPPAM", "./Assets/Textures/PM/Test48BPP.pam");
+	TRAP::Graphics::TextureManager::Load("PMTestGrayscaleHDRPFM", "./Assets/Textures/PM/TestGrayscaleHDR.pfm");
+	TRAP::Graphics::TextureManager::Load("PMTestHDRPFM", "./Assets/Textures/PM/TestHDR.pfm");
 
 	//Radiance
 	TRAP::Graphics::TextureManager::Load("RadianceTestHDR", "./Assets/Textures/Radiance/TestHDR.hdr");
@@ -299,17 +307,25 @@ void ImageLoaderTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 	else if(m_pm)
 	{
 		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
-		                                     TRAP::Graphics::TextureManager::Get2D("PMTest8BPPGrayscale"));
+		                                     TRAP::Graphics::TextureManager::Get2D("PMTest8BPPGrayscalePGM"));
 		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
-		                                     TRAP::Graphics::TextureManager::Get2D("PMTest16BPPGrayscale"));
+		                                     TRAP::Graphics::TextureManager::Get2D("PMTest8BPPGrayscalePAM"));
 		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.75f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
-		                                     TRAP::Graphics::TextureManager::Get2D("PMTest24BPP"));
+		                                     TRAP::Graphics::TextureManager::Get2D("PMTest16BPPGrayscalePGM"));
 		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.5f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
-		                                     TRAP::Graphics::TextureManager::Get2D("PMTest48BPP"));
+		                                     TRAP::Graphics::TextureManager::Get2D("PMTest16BPPGrayscalePAM"));
 		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
-		                                     TRAP::Graphics::TextureManager::Get2D("PMTestGrayscaleHDR"));
+		                                     TRAP::Graphics::TextureManager::Get2D("PMTest24BPPPPM"));
 		TRAP::Graphics::Renderer2D::DrawQuad({ {0.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
-		                                     TRAP::Graphics::TextureManager::Get2D("PMTestHDR"));
+		                                     TRAP::Graphics::TextureManager::Get2D("PMTest24BPPPAM"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("PMTest48BPPPPM"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("PMTest48BPPPAM"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.75f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("PMTestGrayscaleHDRPFM"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {1.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("PMTestHDRPFM"));
 	}
 	else if(m_radiance)
 	{

@@ -43,7 +43,7 @@ void ScreenshotTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	{
 		TRAP::Scope<TRAP::Image> renderedImg = TRAP::Graphics::RendererAPI::GetRenderer()->CaptureScreenshot(*TRAP::Application::GetWindow());
 		if(renderedImg)
-			TRAP::INTERNAL::PPMImage::Save(renderedImg.get(), "output.ppm");
+			TRAP::INTERNAL::PPMImage::Save(*renderedImg, "output.ppm");
 		done = true;
 	}
 }

@@ -5160,3 +5160,8 @@ SITREP 08/19/2024|24w34a1
     - Changed TRAP Engine version to 24w34a1(0.11.2)
     - BMPImage Reworked implementation ~>120 mins
     - BMPImage Added test images with bitfield encoding ~<10 mins
+
+SITREP 08/22/2024|24w34a2
+    - Changed TRAP Engine version to 24w34a2(0.11.3)
+    - PAMImage/PFMImage/PGMImage/PNMImage/PPMImage Reworked implementation ~>120 mins
+    - PAMImage Added test images ~<10 mins

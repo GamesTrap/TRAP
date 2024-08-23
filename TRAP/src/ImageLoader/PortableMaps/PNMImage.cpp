@@ -4,6 +4,113 @@
 #include "FileSystem/FileSystem.h"
 #include "Utils/Memory.h"
 #include "Utils/Utils.h"
+#include "Utils/Expected.h"
+
+namespace
+{
+	struct Header
+	{
+		std::string MagicNumber;
+		u32 Width = 0;
+		u32 Height = 0;
+		u32 MaxValue = 255;
+	};
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	enum class PNMErrorCode
+	{
+		InvalidMagicNumber,
+		InvalidWidth,
+		InvalidHeight,
+		InvalidMaxValue,
+		FailedToReadPixelData
+	};
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr std::string PNMErrorCodeToString(const PNMErrorCode errorCode)
+	{
+		switch(errorCode)
+		{
+		case PNMErrorCode::InvalidMagicNumber:
+			return "Invalid magic number detected, expected \"P2\", \"P3\", \"P5\" or \"P6\"!";
+
+		case PNMErrorCode::InvalidWidth:
+			return "Width is invalid!";
+
+		case PNMErrorCode::InvalidHeight:
+			return "Height is invalid!";
+
+		case PNMErrorCode::InvalidMaxValue:
+			return "MaxValue is invalid, expected value between [1, 65535)!";
+
+		case PNMErrorCode::FailedToReadPixelData:
+			return "Failed to read pixel data!";
+		}
+
+		TRAP_ASSERT(false);
+		return "";
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] TRAP::Expected<Header, PNMErrorCode> LoadHeader(std::ifstream& file)
+	{
+		Header header{};
+		file >> header.MagicNumber >> header.Width >> header.Height >> header.MaxValue;
+
+		if (header.MagicNumber != "P2" && header.MagicNumber != "P5" &&
+			header.MagicNumber != "P3" && header.MagicNumber != "P6")
+		{
+			return TRAP::MakeUnexpected(PNMErrorCode::InvalidMagicNumber);
+		}
+		if (header.Width < 1)
+			return TRAP::MakeUnexpected(PNMErrorCode::InvalidWidth);
+		if (header.Height < 1)
+			return TRAP::MakeUnexpected(PNMErrorCode::InvalidHeight);
+		if (header.MaxValue <= 0 || header.MaxValue > std::numeric_limits<u16>::max())
+			return TRAP::MakeUnexpected(PNMErrorCode::InvalidMaxValue);
+
+		return header;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] TRAP::Expected<std::vector<u8>, PNMErrorCode> LoadPixelData8BPP(std::ifstream& file,
+	                                                                              const u32 width, const u32 height,
+																				  const u32 channels)
+	{
+		std::vector<u8> pixelData(NumericCast<usize>(width) * height * channels);
+
+		if (!file.read(reinterpret_cast<char*>(pixelData.data()), NumericCast<std::streamsize>(pixelData.size())))
+			return TRAP::MakeUnexpected(PNMErrorCode::FailedToReadPixelData);
+
+		return pixelData;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] TRAP::Expected<std::vector<u16>, PNMErrorCode> LoadPixelData16BPP(std::ifstream& file,
+	                                                                                const u32 width, const u32 height,
+																					const u32 channels)
+	{
+		std::vector<u16> pixelData(NumericCast<usize>(width) * height * channels);
+		if (!file.read(reinterpret_cast<char*>(pixelData.data()), NumericCast<std::streamsize>(pixelData.size() * sizeof(u16))))
+			return TRAP::MakeUnexpected(PNMErrorCode::FailedToReadPixelData);
+
+		//File uses big-endian
+		//Convert to machines endian
+		if constexpr (TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		{
+			TRAP::Utils::Memory::SwapBytes(pixelData.begin(), pixelData.end());
+		}
+
+		return pixelData;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 	: Image(std::move(filepath))
@@ -23,122 +130,64 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 		return;
 	}
 
-	Header header{};
-	file >> header.MagicNumber >> header.Width >> header.Height >> header.MaxValue;
-
-	if (header.MagicNumber != "P2" && header.MagicNumber != "P5" &&
-	    header.MagicNumber != "P3" && header.MagicNumber != "P6")
+	const auto header = LoadHeader(file);
+	if(!header)
 	{
-		file.close();
-		TP_ERROR(Log::ImagePNMPrefix, "Unsupported format or invalid magic number (", header.MagicNumber, ")!");
-		TP_WARN(Log::ImagePNMPrefix, "Using default image!");
-		return;
-	}
-	if (header.Width < 1)
-	{
-		file.close();
-		TP_ERROR(Log::ImagePNMPrefix, "Width is < 1 (", header.Width, ")!");
-		TP_WARN(Log::ImagePNMPrefix, "Using default image!");
-		return;
-	}
-	if (header.Height < 1)
-	{
-		file.close();
-		TP_ERROR(Log::ImagePNMPrefix, "Height is < 1 (", header.Height, ")!");
-		TP_WARN(Log::ImagePNMPrefix, "Using default image!");
-		return;
-	}
-	if (header.MaxValue < 1 || header.MaxValue > 65535)
-	{
-		file.close();
-		TP_ERROR(Log::ImagePNMPrefix, "MaxValue ", header.MaxValue, " is unsupported or invalid!");
+		TP_ERROR(Log::ImagePNMPrefix, PNMErrorCodeToString(header.Error()));
 		TP_WARN(Log::ImagePNMPrefix, "Using default image!");
 		return;
 	}
 
-	m_width = header.Width;
-	m_height = header.Height;
+	m_width = header->Width;
+	m_height = header->Height;
 
 	file.ignore(256, '\n'); //Skip ahead to the pixel data.
 
-	if(header.MaxValue > 255)
+	if(header->MaxValue > 255)
 	{
-		if (header.MagicNumber == "P2" || header.MagicNumber == "P5")
+		if (header->MagicNumber == "P2" || header->MagicNumber == "P5")
 		{
 			//GrayScale
 			m_colorFormat = ColorFormat::GrayScale;
 			m_bitsPerPixel = 16;
-			m_data2Byte.resize(NumericCast<usize>(m_width) * m_height);
-			if(!file.read(reinterpret_cast<char*>(m_data2Byte.data()),
-			              NumericCast<std::streamsize>(m_width) * m_height *
-						  NumericCast<std::streamsize>(sizeof(u16))))
-			{
-				file.close();
-				TP_ERROR(Log::ImagePNMPrefix, "Couldn't load pixel data!");
-				TP_WARN(Log::ImagePNMPrefix, "Using default image!");
-				return;
-			}
 		}
-		else if (header.MagicNumber == "P3" || header.MagicNumber == "P6")
+		else if (header->MagicNumber == "P3" || header->MagicNumber == "P6")
 		{
-			//RGB
 			m_colorFormat = ColorFormat::RGB;
 			m_bitsPerPixel = 48;
-			m_data2Byte.resize(NumericCast<usize>(m_width) * m_height * 3);
-			if (!file.read(reinterpret_cast<char*>(m_data2Byte.data()),
-						   NumericCast<std::streamsize>(m_width) * m_height * 3 *
-						   NumericCast<std::streamsize>(sizeof(u16))))
-			{
-				file.close();
-				TP_ERROR(Log::ImagePNMPrefix, "Couldn't load pixel data!");
-				TP_WARN(Log::ImagePNMPrefix, "Using default image!");
-				return;
-			}
 		}
 
-		file.close();
-
-		//File uses big-endian
-		//Convert to machines endian
-		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
+		const auto pixelData = LoadPixelData16BPP(file, m_width, m_height, m_bitsPerPixel / 16u);
+		if(!pixelData)
 		{
-			for (u16& element : m_data2Byte)
-				Utils::Memory::SwapBytes(element);
+			TP_ERROR(Log::ImagePNMPrefix, PNMErrorCodeToString(pixelData.Error()));
+			TP_WARN(Log::ImagePNMPrefix, "Using default image!");
+			return;
 		}
+
+		m_data2Byte = *pixelData;
 	}
 	else
 	{
-		if (header.MagicNumber == "P2" || header.MagicNumber == "P5")
+		if (header->MagicNumber == "P2" || header->MagicNumber == "P5")
 		{
-			//GrayScale
 			m_colorFormat = ColorFormat::GrayScale;
 			m_bitsPerPixel = 8;
-			m_data.resize(NumericCast<usize>(m_width) * m_height);
-			if(!file.read(reinterpret_cast<char*>(m_data.data()),
-						  NumericCast<std::streamsize>(m_width) * m_height))
-			{
-				file.close();
-				TP_ERROR(Log::ImagePNMPrefix, "Couldn't load pixel data!");
-				TP_WARN(Log::ImagePNMPrefix, "Using default image!");
-				return;
-			}
 		}
-		else if (header.MagicNumber == "P3" || header.MagicNumber == "P6")
+		else if (header->MagicNumber == "P3" || header->MagicNumber == "P6")
 		{
-			//RGB
 			m_colorFormat = ColorFormat::RGB;
 			m_bitsPerPixel = 24;
-			m_data.resize(NumericCast<usize>(m_width) * m_height * 3);
-			if (!file.read(reinterpret_cast<char*>(m_data.data()),
-						   NumericCast<std::streamsize>(m_width) * m_height * 3))
-			{
-				file.close();
-				TP_ERROR(Log::ImagePNMPrefix, "Couldn't load pixel data!");
-				TP_WARN(Log::ImagePNMPrefix, "Using default image!");
-				return;
-			}
 		}
 
-		file.close();
+		const auto pixelData = LoadPixelData8BPP(file, m_width, m_height, m_bitsPerPixel / 8u);
+		if(!pixelData)
+		{
+			TP_ERROR(Log::ImagePNMPrefix, PNMErrorCodeToString(pixelData.Error()));
+			TP_WARN(Log::ImagePNMPrefix, "Using default image!");
+			return;
+		}
+
+		m_data = *pixelData;
 	}
 }

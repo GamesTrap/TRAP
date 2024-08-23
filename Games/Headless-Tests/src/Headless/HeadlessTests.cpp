@@ -23,7 +23,7 @@ void HeadlessTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delta
 	{
 		TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();
 		if(testImage)
-			TRAP::INTERNAL::PPMImage::Save(testImage.get(), "testAfter.ppm");
+			TRAP::INTERNAL::PPMImage::Save(*testImage, "testAfter.ppm");
 		TRAP::Application::Shutdown();
 	}
 }

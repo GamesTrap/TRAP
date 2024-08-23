@@ -29,19 +29,11 @@ namespace TRAP::INTERNAL
 		/// @brief Save an TRAP::Image as a Portable Pixmap (PPM) file.
 		/// @param img Image to save.
 		/// @param filepath File path to save the image to.
-		static void Save(const Image* img, const std::filesystem::path& filepath);
+		static void Save(const Image& img, const std::filesystem::path& filepath);
 
 	private:
 		std::vector<u8> m_data;
 		std::vector<u16> m_data2Byte;
-
-		struct Header
-		{
-			std::string MagicNumber;
-			u32 Width = 0;
-			u32 Height = 0;
-			u32 MaxValue = 255;
-		};
 	};
 }
 
