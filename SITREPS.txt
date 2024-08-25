@@ -5171,3 +5171,4 @@ SITREP 08/25/2024|24w34b1
     - Added zlib as submodule ~<15 mins
     - Added libpng as submodule ~<15 mins
     - PNGImage Replaced implementation with libpng ~<45 mins
+    - Removed remaining references to LodePNG ~<5 mins
