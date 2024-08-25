@@ -72,6 +72,8 @@ They are provided in the TRAP™ repository.
 - [VulkanMemoryAllocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator)
 - [Vulkan-Headers](https://github.com/KhronosGroup/Vulkan-Headers)
 - [YAMLCpp](https://github.com/jbeder/yaml-cpp)
+- [zlib](https://github.com/madler/zlib/)
+- [libpng](https://github.com/pnggroup/libpng)
 :::
 :::{tab} Additional
 The following libraries add additional features to TRAP™.  

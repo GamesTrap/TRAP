@@ -16,7 +16,9 @@ function LinkTRAPShared()
 		"Box2D",
 		"TracyClient",
 		"fmt",
-		"SPIRV-Cross"
+		"SPIRV-Cross",
+        "zlib",
+        "libpng"
 	}
 
     filter "system:linux"
@@ -68,7 +70,9 @@ function IncludeTRAPShared()
 		"%{IncludeDir.BOX2D}",
 		"%{IncludeDir.TRACY}",
 		"%{IncludeDir.FMT}",
-		"%{IncludeDir.GCEM}"
+		"%{IncludeDir.GCEM}",
+		"%{IncludeDir.ZLIB}",
+		"%{IncludeDir.LIBPNG}",
 	}
 
     filter "system:linux"

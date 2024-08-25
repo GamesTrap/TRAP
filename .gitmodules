@@ -47,3 +47,9 @@
 [submodule ".modules/ninja"]
 	path = .modules/ninja
 	url = https://github.com/GamesTrap/premake-ninja.git
+[submodule "Dependencies/zlib"]
+	path = Dependencies/zlib
+	url = https://github.com/madler/zlib
+[submodule "Dependencies/libpng"]
+	path = Dependencies/libpng
+	url = https://github.com/pnggroup/libpng

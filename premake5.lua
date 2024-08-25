@@ -210,7 +210,9 @@ workspace "TRAP"
 		end
 
 	filter { "toolset:gcc"}
-		buildoptions "-fdiagnostics-color=always -Wno-interference-size -Winvalid-pch"
+		buildoptions "-fdiagnostics-color=always -Winvalid-pch"
+	filter { "toolset:gcc", "language:C++"}
+		buildoptions "-Wno-interference-size"
 	filter { "toolset:clang"}
 		buildoptions "-fcolor-diagnostics"
 
@@ -246,6 +248,8 @@ IncludeDir["TRACY"] = "%{wks.location}/Dependencies/Tracy/public"
 IncludeDir["FMT"] = "%{wks.location}/Dependencies/fmt/include"
 IncludeDir["CATCH2"] = "%{wks.location}/Dependencies/Catch2/src"
 IncludeDir["GCEM"] = "%{wks.location}/Dependencies/GCEM/include"
+IncludeDir["ZLIB"] = "%{wks.location}/Dependencies/zlib"
+IncludeDir["LIBPNG"] = "%{wks.location}/Dependencies/libpng"
 
 include "TRAP"
 include "UnitTests"
@@ -264,6 +268,8 @@ group "Dependencies"
 if os.isfile(path.join(_MAIN_SCRIPT_DIR, "Dependencies/DiscordGameSDK/cpp/discord.h")) then
 	include "Dependencies/DiscordGameSDK.lua"
 end
+	include "Dependencies/zlib.lua"
+	include "Dependencies/libpng.lua"
 
 group "Games"
 	include "Games/Sandbox"

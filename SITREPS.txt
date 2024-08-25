@@ -5165,3 +5165,9 @@ SITREP 08/22/2024|24w34a2
     - Changed TRAP Engine version to 24w34a2(0.11.3)
     - PAMImage/PFMImage/PGMImage/PNMImage/PPMImage Reworked implementation ~>120 mins
     - PAMImage Added test images ~<10 mins
+
+SITREP 08/25/2024|24w34b1
+    - Changed TRAP Engine version to 24w34b1(0.11.4)
+    - Added zlib as submodule ~<15 mins
+    - Added libpng as submodule ~<15 mins
+    - PNGImage Replaced implementation with libpng ~<45 mins

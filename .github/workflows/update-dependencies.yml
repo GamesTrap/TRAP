@@ -196,6 +196,28 @@ jobs:
           pr-branch-name: "spirvcross-update"
           pr-token: ${{steps.generate-token.outputs.token}}
 
+      - name: Update zlib
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
+        with:
+          dependency-path: "Dependencies/zlib"
+          update-method: "latest-tag"
+          tag-regex: '^v[0-9]+(\.[0-9]+)*$' #vX.X.X SemVer
+          pr-title: "zlib"
+          pr-branch-name: "zlib-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
+      - name: Update libpng
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
+        with:
+          dependency-path: "Dependencies/libpng"
+          update-method: "latest-tag"
+          tag-regex: '^v[0-9]+(\.[0-9]+)*$' #vX.X.X SemVer
+          pr-title: "libpng"
+          pr-branch-name: "libpng-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
       - name: Update ImGui
         if: ${{ always() }}
         id: imgui
