@@ -516,10 +516,17 @@ void TRAP::Utils::RegisterSIGINTCallback()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef TRACY_ENABLE
-	/// @brief Set the name of the current thread.
-	/// @param name Name to set
 void TRAP::Utils::SetThreadName(const std::string_view name)
 {
 	tracy::SetThreadName(name.data());
+}
+#endif /*TRACY_ENABLE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRACY_ENABLE
+void TRAP::Utils::SetThreadName(const std::string_view name, const ThreadGroup group)
+{
+	tracy::SetThreadNameWithHint(name.data(), std::to_underlying(group));
 }
 #endif /*TRACY_ENABLE*/

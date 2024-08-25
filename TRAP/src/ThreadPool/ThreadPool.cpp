@@ -17,7 +17,7 @@ TRAP::ThreadPool::ThreadPool(const u32 threads)
 	auto worker = [&](const u32 i)
 	{
 		//Set Thread name for profiler
-		Utils::SetThreadName(fmt::format("Worker {}", i));
+		Utils::SetThreadName(fmt::format("Worker {}", i), Utils::ThreadGroup::ThreadPool);
 
 		while (true)
 		{

@@ -183,17 +183,36 @@ namespace TRAP::Utils
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	enum class ThreadGroup : i32
+	{
+		MainThread = 0,
+		ThreadPool,
+		ResourceLoader,
+		FileSystemWatchers
+	};
+
 #ifdef TRACY_ENABLE
 	/// @brief Set the name of the current thread.
 	/// @param name Name to set
 	/// @note Only used when compiling with profiling configuration, no-op otherwise.
     void SetThreadName(const std::string_view name);
+	/// @brief Set the name of the current thread.
+	/// @param name Name to set
+	/// @param groupHint Number to group threads together with in the profiler UI.
+	/// @note Only used when compiling with profiling configuration, no-op otherwise.
+    void SetThreadName(const std::string_view name, const ThreadGroup group);
 #else
 	/// @brief Set the name of the current thread.
 	/// @param name Name to set
 	/// @note Only used when compiling with profiling configuration, no-op otherwise.
     constexpr void SetThreadName([[maybe_unused]] const std::string_view name)
     {}
+	/// @brief Set the name of the current thread.
+	/// @param name Name to set
+	/// @param groupHint Number to group threads together with in the profiler UI.
+	/// @note Only used when compiling with profiling configuration, no-op otherwise.
+    constexpr void SetThreadName([[maybe_unused]] const std::string_view name, [[maybe_unused]] const ThreadGroup group)
+	{}
 #endif
 }
 

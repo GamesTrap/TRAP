@@ -5172,3 +5172,7 @@ SITREP 08/25/2024|24w34b1
     - Added libpng as submodule ~<15 mins
     - PNGImage Replaced implementation with libpng ~<45 mins
     - Removed remaining references to LodePNG ~<5 mins
+
+SITREP 08/26/2024|24w35a1
+    - Changed TRAP Engine version to 24w35a1(0.11.5)
+    - Tracy Added thread group hints ~<10 mins

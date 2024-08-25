@@ -521,7 +521,7 @@ TRAP::Application::Application(std::string gameName, const std::optional<u32> ap
 #endif /*TRAP_HEADLESS_MODE*/
 
 	//Set Main Thread name for profiler
-	Utils::SetThreadName("Main Thread");
+	Utils::SetThreadName("Main Thread", Utils::ThreadGroup::MainThread);
 
 	Utils::CheckSingleProcess();
 	[[maybe_unused]] const auto _ = Utils::GetLinuxWindowManager(); //On Linux if no known window manager is found this will exit the engine

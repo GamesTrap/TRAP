@@ -558,7 +558,7 @@ void TRAP::FileSystem::FileSystemWatcher::Watch(const std::stop_token& stopToken
 	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
     const std::stop_callback stopCallback(stopToken, [this] { StopCallback(); });
-    TRAP::Utils::SetThreadName(m_debugName.empty() ? "FileSystemWatcher" : fmt::format("{} (FileSystemWatcher)", m_debugName));
+    TRAP::Utils::SetThreadName(m_debugName.empty() ? "FileSystemWatcher" : fmt::format("{} (FileSystemWatcher)", m_debugName), Utils::ThreadGroup::FileSystemWatchers);
 
     //Thread init
     std::vector<std::pair<DirectoryHandle, std::filesystem::path>> dirHandles = CreateDirectoryHandles(pathsToWatch);
@@ -872,7 +872,7 @@ void TRAP::FileSystem::FileSystemWatcher::Watch(const std::stop_token& stopToken
 
     //Thread init
     const std::stop_callback stopCallback(stopToken, [this] { StopCallback(); });
-    TRAP::Utils::SetThreadName(m_debugName.empty() ? "FileSystemWatcher" : fmt::format("{} (FileSystemWatcher)", m_debugName));
+    TRAP::Utils::SetThreadName(m_debugName.empty() ? "FileSystemWatcher" : fmt::format("{} (FileSystemWatcher)", m_debugName), Utils::ThreadGroup::FileSystemWatchers);
 
     auto fileDescriptors = CreateFileDescriptors(m_killEvent.Get());
     if(!fileDescriptors)

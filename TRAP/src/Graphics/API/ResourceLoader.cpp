@@ -715,7 +715,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(const std::stop_tok
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	//Set Thread name for profiler
-	TRAP::Utils::SetThreadName("ResourceLoader");
+	TRAP::Utils::SetThreadName("ResourceLoader", Utils::ThreadGroup::ResourceLoader);
 
 	TRAP::Graphics::API::SyncToken maxToken{};
 
