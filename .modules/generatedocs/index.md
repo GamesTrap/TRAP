@@ -56,6 +56,7 @@ They are provided in the TRAP™ repository.
 - [ImGui](https://github.com/GamesTrap/imgui) (docking branch)
 - [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo)
 - [LibDecor](https://gitlab.freedesktop.org/libdecor/libdecor) - Linux Wayland client-side decorations
+- [libpng](https://github.com/pnggroup/libpng)
 - [ModernDialogs](https://github.com/GamesTrap/ModernDialogs)
 - [PlatformFolders](https://github.com/sago007/PlatformFolders) partially integrated as part of TRAP::FileSystem
 - [Premake](https://github.com/premake/premake-core) as build system
@@ -72,7 +73,6 @@ They are provided in the TRAP™ repository.
 - [Vulkan-Headers](https://github.com/KhronosGroup/Vulkan-Headers)
 - [YAMLCpp](https://github.com/jbeder/yaml-cpp)
 - [zlib](https://github.com/madler/zlib/)
-- [libpng](https://github.com/pnggroup/libpng)
 :::
 :::{tab} Additional
 The following libraries add additional features to TRAP™.  

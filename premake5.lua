@@ -250,6 +250,7 @@ IncludeDir["CATCH2"] = "%{wks.location}/Dependencies/Catch2/src"
 IncludeDir["GCEM"] = "%{wks.location}/Dependencies/GCEM/include"
 IncludeDir["ZLIB"] = "%{wks.location}/Dependencies/zlib"
 IncludeDir["LIBPNG"] = "%{wks.location}/Dependencies/libpng"
+IncludeDir["QUITEOKIMAGE"] = "%{wks.location}/Dependencies/QuiteOKImage"
 
 include "TRAP"
 include "UnitTests"
@@ -270,6 +271,7 @@ if os.isfile(path.join(_MAIN_SCRIPT_DIR, "Dependencies/DiscordGameSDK/cpp/discor
 end
 	include "Dependencies/zlib.lua"
 	include "Dependencies/libpng.lua"
+	include "Dependencies/QuiteOKImage.lua"
 
 group "Games"
 	include "Games/Sandbox"

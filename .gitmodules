@@ -53,3 +53,6 @@
 [submodule "Dependencies/libpng"]
 	path = Dependencies/libpng
 	url = https://github.com/pnggroup/libpng
+[submodule "Dependencies/QuiteOKImage"]
+	path = Dependencies/QuiteOKImage
+	url = https://github.com/phoboslab/qoi

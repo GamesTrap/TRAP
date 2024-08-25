@@ -218,6 +218,16 @@ jobs:
           pr-branch-name: "libpng-update"
           pr-token: ${{steps.generate-token.outputs.token}}
 
+      - name: Update QuiteOKImage
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
+        with:
+          dependency-path: "Dependencies/QuiteOKImage"
+          update-method: "latest-commit"
+          pr-title: "QuiteOKImage"
+          pr-branch-name: "quiteokimage-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
       - name: Update ImGui
         if: ${{ always() }}
         id: imgui

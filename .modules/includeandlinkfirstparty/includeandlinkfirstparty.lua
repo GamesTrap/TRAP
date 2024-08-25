@@ -18,7 +18,8 @@ function LinkTRAPShared()
 		"fmt",
 		"SPIRV-Cross",
         "zlib",
-        "libpng"
+        "libpng",
+        "QuiteOKImage",
 	}
 
     filter "system:linux"
@@ -73,6 +74,7 @@ function IncludeTRAPShared()
 		"%{IncludeDir.GCEM}",
 		"%{IncludeDir.ZLIB}",
 		"%{IncludeDir.LIBPNG}",
+		"%{IncludeDir.QUITEOKIMAGE}",
 	}
 
     filter "system:linux"
