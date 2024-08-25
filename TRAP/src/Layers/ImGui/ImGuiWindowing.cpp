@@ -482,7 +482,7 @@ namespace
 	/// @brief Get clipboard text.
 	/// @param userData Unused.
 	/// @return Clipboard content.
-	[[nodiscard]] const char* GetClipboardText([[maybe_unused]] void* const userData)
+	[[nodiscard]] const char* GetClipboardText([[maybe_unused]] ImGuiContext* const context)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
@@ -495,7 +495,7 @@ namespace
 	/// @brief Set the clipboard text.
 	/// @param userData Unused.
 	/// @param text Text to set on clipboard.
-	void SetClipboardText([[maybe_unused]] void* const userData, const char* const text)
+	void SetClipboardText([[maybe_unused]] ImGuiContext* const context, const char* const text)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
@@ -725,6 +725,8 @@ namespace
 			//which generally needs to be set in the manifest or at runtime.
 			f32 xScale = 0.0f, yScale = 0.0f;
 			TRAP::INTERNAL::WindowingAPI::GetMonitorContentScale(*n, xScale, yScale);
+			if(xScale == 0.0f)
+				continue; //Some accessibility applications are declaring virtual monitors with a DPI of 0, see #7902.
 			monitor.DpiScale = xScale;
 
 			platformIO.Monitors.push_back(monitor);
@@ -1183,9 +1185,9 @@ namespace
 	bd->Time = 0.0;
 	bd->WantUpdateMonitors = true;
 
-	io.SetClipboardTextFn = SetClipboardText;
-	io.GetClipboardTextFn = GetClipboardText;
-	io.ClipboardUserData = bd->Window;
+	ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
+	platformIO.Platform_SetClipboardTextFn = SetClipboardText;
+	platformIO.Platform_GetClipboardTextFn = GetClipboardText;
 
 	//Create mouse cursors
 	std::get<ImGuiMouseCursor_Arrow>(bd->MouseCursors) = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::Arrow);
