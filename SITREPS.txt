@@ -5178,3 +5178,7 @@ SITREP 08/26/2024|24w35a1
     - Tracy Added thread group hints ~<10 mins
     - Added QuiteOKImage as submodule ~<10 mins
     - QOIImage Replaced implementation with QuiteOKImage ~<15 mins
+
+SITREP 08/27/2024|24w35a2
+    - Changed TRAP Engine version to 24w35a2(0.11.6)
+    - RadianceImage Reworked implementation ~<45 mins

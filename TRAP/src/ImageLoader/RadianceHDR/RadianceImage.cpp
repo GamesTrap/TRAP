@@ -3,11 +3,12 @@
 
 #include "Utils/ImageUtils.h"
 #include "Utils/String/String.h"
+#include "Utils/Expected.h"
 #include "FileSystem/FileSystem.h"
 
 namespace
 {
-	using RGBE = std::array<u8, 4>;
+	using RGBE = std::array<u8, 4u>;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -26,12 +27,12 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	constexpr u32 MinEncodingLength = 8; //Minimum scanline length for encoding
-	constexpr u32 MaxEncodingLength = 0x7FFF; //Maximum scanline length for encoding
-	constexpr u32 R = 0;
-	constexpr u32 G = 1;
-	constexpr u32 B = 2;
-	constexpr u32 E = 3;
+	constexpr u32 MinEncodingLength = 8u; //Minimum scanline length for encoding
+	constexpr u32 MaxEncodingLength = 0x7FFFu; //Maximum scanline length for encoding
+	constexpr u32 R = 0u;
+	constexpr u32 G = 1u;
+	constexpr u32 B = 2u;
+	constexpr u32 E = 3u;
 
 	/// @brief Decode the given scanline.
 	/// Used for old RLE encoding.
@@ -48,31 +49,30 @@ namespace
 
 		while (length > 0u)
 		{
-			scanline[scanlineIndex][R] = NumericCast<u8>(file.get());
-			scanline[scanlineIndex][G] = NumericCast<u8>(file.get());
-			scanline[scanlineIndex][B] = NumericCast<u8>(file.get());
-			scanline[scanlineIndex][E] = NumericCast<u8>(file.get());
-			if (file.eof())
+			file.read(reinterpret_cast<char*>(scanline[scanlineIndex].data()), NumericCast<std::streamsize>(scanline[scanlineIndex].size()));
+			if (!file.good() || file.eof())
 				return false;
 
-			if (scanline[scanlineIndex][R] == 1u &&
-				scanline[scanlineIndex][G] == 1u &&
-				scanline[scanlineIndex][B] == 1u)
+			if (std::get<R>(scanline[scanlineIndex]) == 1u &&
+				std::get<G>(scanline[scanlineIndex]) == 1u &&
+				std::get<B>(scanline[scanlineIndex]) == 1u)
 			{
-				for (u32 i = NumericCast<u32>(scanline[scanlineIndex][E] << rshift); i > 0u; i--)
+				for (u32 i = NumericCast<u32>(std::get<E>(scanline[scanlineIndex]) << rshift); i > 0u; i--)
 				{
-					memcpy(scanline[scanlineIndex].data(), scanline[scanlineIndex - 1].data(), 4u * sizeof(u8));
+					std::ranges::copy(scanline[scanlineIndex - 1], scanline[scanlineIndex].begin());
 					scanlineIndex++;
 					length--;
 				}
 				rshift += 8u;
 			}
-			else {
+			else
+			{
 				scanlineIndex++;
 				length--;
 				rshift = 0u;
 			}
 		}
+
 		return true;
 	}
 
@@ -96,21 +96,21 @@ namespace
 			return OldDecrunch(scanline, 0u, length, file);
 		}
 
-		scanline[0u][G] = NumericCast<u8>(file.get());
-		scanline[0u][B] = NumericCast<u8>(file.get());
+		std::get<G>(scanline[0u]) = NumericCast<u8>(file.get());
+		std::get<B>(scanline[0u]) = NumericCast<u8>(file.get());
 		i = file.get();
 
-		if (scanline[0u][G] != 2u || (scanline[0][B] & 128u) != 0u)
+		if (std::get<G>(scanline[0u]) != 2u || (std::get<B>(scanline[0]) & 128u) != 0u)
 		{
-			scanline[0u][R] = 2u;
-			scanline[0u][E] = NumericCast<u8>(i);
+			std::get<R>(scanline[0u]) = 2u;
+			std::get<E>(scanline[0u]) = NumericCast<u8>(i);
 			return OldDecrunch(scanline, 1u, length - 1u, file);
 		}
 
 		// read each component
 		for (i = 0; i < 4; i++)
 		{
-			for (u32 j = 0; j < length; )
+			for (u32 j = 0u; j < length; )
 			{
 				u8 code = NumericCast<u8>(file.get());
 				if (code > 128u) //RLE
@@ -141,15 +141,15 @@ namespace
 	constexpr void WorkOnRGBE(std::vector<RGBE>& scanline, std::vector<f32>& data, u64 dataIndex, const u32 width)
 	{
 		u32 length = width;
-		u32 scanlineIndex = 0;
+		u32 scanlineIndex = 0u;
 
 		while (length-- > 0u)
 		{
-			const i8 exponent = NumericCast<i8>(scanline[scanlineIndex][E] - 128);
-			data[0 + dataIndex] = ConvertComponent(exponent, scanline[scanlineIndex][R]);
-			data[1 + dataIndex] = ConvertComponent(exponent, scanline[scanlineIndex][G]);
-			data[2 + dataIndex] = ConvertComponent(exponent, scanline[scanlineIndex][B]);
-			dataIndex += 3;
+			const i8 exponent = NumericCast<i8>(std::get<E>(scanline[scanlineIndex]) - 128);
+			data[R + dataIndex] = ConvertComponent(exponent, std::get<R>(scanline[scanlineIndex]));
+			data[G + dataIndex] = ConvertComponent(exponent, std::get<G>(scanline[scanlineIndex]));
+			data[B + dataIndex] = ConvertComponent(exponent, std::get<B>(scanline[scanlineIndex]));
+			dataIndex += 3u;
 			scanlineIndex++;
 		}
 	}
@@ -210,29 +210,29 @@ namespace
 		do
 		{
 			std::getline(file, tmp);
-		} while(!tmp.empty());
+		} while(!tmp.empty() && file.good());
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// @brief Retrieve the resolution data from file.
+	struct ImageInfo
+	{
+		u32 Width = 0;
+		u32 Height = 0;
+		bool NeedsXFlip = false;
+		bool NeedsYFlip = false;
+		bool NeedsRotateClockwise = false;
+		bool NeedsRotateCounterClockwise = false;
+	};
+
+	/// @brief Retrieve information about the image.
 	/// @param file File to retrieve data from.
-	/// @param outNeedXFlip True if image needs to be flipped on X axis.
-	/// @param outNeedYFlip True if image needs to be flipped on Y axis.
-	/// @param outNeedRotateClockwise True if image needs to be rotated 90 degrees clockwise.
-	/// @param outNeedRotateCounterClockwise True if image needs to be rotated 90 degrees counter clockwise.
-	/// @return Image resolution on success, empty optional otherwise.
-	[[nodiscard]] std::optional<TRAP::Math::Vec2ui> RetrieveImageResolution(std::ifstream& file, bool& outNeedXFlip,
-																			bool& outNeedYFlip,
-																			bool& outNeedRotateClockwise,
-																			bool& outNeedRotateCounterClockwise)
+	/// @return Image information on success, error otherwise.
+	[[nodiscard]] TRAP::Expected<ImageInfo, std::string> RetrieveImageInfo(std::ifstream& file)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
-		outNeedXFlip = false;
-		outNeedYFlip = false;
-		outNeedRotateClockwise = false;
-		outNeedRotateCounterClockwise = false;
+		ImageInfo imgInfo{};
 
 		std::string resStr{};
 		std::getline(file, resStr);
@@ -241,63 +241,46 @@ namespace
 		usize xIndex = resStr.find("X ");
 
 		if(yIndex == std::string::npos || xIndex == std::string::npos ||
-		NumericCast<i64>(yIndex - 1) < 0 || NumericCast<i64>(xIndex - 1) < 0)
+		   NumericCast<i64>(yIndex) - 1 < 0 || NumericCast<i64>(xIndex) - 1 < 0)
 		{
-			TP_ERROR(TRAP::Log::ImageRadiancePrefix, "Failed to retrieve image resolution!");
-			return std::nullopt;
+			return TRAP::MakeUnexpected("Failed to retrieve image resolution!");
 		}
 
 		if(yIndex < xIndex) //Y is before X
 		{
-			if(resStr[yIndex - 1] == '-')
-				outNeedYFlip = false;
-			else if(resStr[yIndex - 1] == '+')
-				outNeedYFlip = true;
+			if(resStr[yIndex - 1u] == '-')
+				imgInfo.NeedsYFlip = false;
+			else if(resStr[yIndex - 1u] == '+')
+				imgInfo.NeedsYFlip = true;
 			else
-			{
-				TP_ERROR(TRAP::Log::ImageRadiancePrefix, "Failed to retrieve image resolution!");
-				return std::nullopt;
-			}
+				return TRAP::MakeUnexpected("Failed to retrieve image resolution!");
 
-			if(resStr[xIndex - 1] == '-')
-				outNeedXFlip = true;
-			else if(resStr[xIndex - 1] == '+')
-				outNeedXFlip = false;
+			if(resStr[xIndex - 1u] == '-')
+				imgInfo.NeedsXFlip = true;
+			else if(resStr[xIndex - 1u] == '+')
+				imgInfo.NeedsXFlip = false;
 			else
-			{
-				TP_ERROR(TRAP::Log::ImageRadiancePrefix, "Failed to retrieve image resolution!");
-				return std::nullopt;
-			}
+				return TRAP::MakeUnexpected("Failed to retrieve image resolution!");
 		}
 		else //X is before Y
 		{
-			if(resStr[xIndex - 1] == '+' && resStr[yIndex - 1] == '+')
+			if((resStr[xIndex - 1u] == '+' && resStr[yIndex - 1u] == '+') ||
+			   (resStr[xIndex - 1u] == '-' && resStr[yIndex - 1u] == '-'))
 			{
-				outNeedRotateCounterClockwise = true;
+				imgInfo.NeedsRotateClockwise = true;
 			}
-			else if(resStr[xIndex - 1] == '-' && resStr[yIndex - 1] == '+')
+			else if((resStr[xIndex - 1u] == '-' && resStr[yIndex - 1u] == '+') ||
+			        (resStr[xIndex - 1u] == '+' && resStr[yIndex - 1u] == '-'))
 			{
-				outNeedRotateCounterClockwise = true;
-				outNeedYFlip = true;
-			}
-			else if(resStr[xIndex - 1] == '-' && resStr[yIndex - 1] == '-')
-			{
-				outNeedRotateClockwise = true;
-			}
-			else if(resStr[xIndex - 1] == '+' && resStr[yIndex - 1] == '-')
-			{
-				outNeedRotateClockwise = true;
-				outNeedYFlip = true;
+				imgInfo.NeedsRotateCounterClockwise = true;
+				imgInfo.NeedsYFlip = true;
 			}
 			else
-			{
-				TP_ERROR(TRAP::Log::ImageRadiancePrefix, "Failed to retrieve image resolution!");
-				return std::nullopt;
-			}
+				return TRAP::MakeUnexpected("Failed to retrieve image resolution!");
 		}
 
-		yIndex += 2;
-		xIndex += 2;
+		yIndex += 2u;
+		xIndex += 2u;
 
 		usize yEnd = yIndex;
 		while(yEnd < resStr.size() && TRAP::Utils::String::IsDigit(resStr[yEnd]))
@@ -309,14 +292,15 @@ namespace
 
 		try
 		{
-			return TRAP::Math::Vec2ui(std::stoul(std::string(resStr.begin() + NumericCast<isize>(xIndex), resStr.begin() + NumericCast<isize>(xEnd))),
-									  std::stoul(std::string(resStr.begin() + NumericCast<isize>(yIndex), resStr.begin() + NumericCast<isize>(yEnd))));
+			imgInfo.Width = NumericCast<u32>(std::stoul(std::string(resStr.begin() + NumericCast<isize>(xIndex), resStr.begin() + NumericCast<isize>(xEnd))));
+			imgInfo.Height = NumericCast<u32>(std::stoul(std::string(resStr.begin() + NumericCast<isize>(yIndex), resStr.begin() + NumericCast<isize>(yEnd))));
 		}
 		catch(...)
 		{
-			TP_ERROR(TRAP::Log::ImageRadiancePrefix, "Failed to retrieve image resolution!");
-			return std::nullopt;
+			return TRAP::MakeUnexpected("Failed to retrieve image resolution!");
 		}
+
+		return imgInfo;
 	}
 }
 
@@ -328,7 +312,7 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
 	m_isHDR = true;
-	m_bitsPerPixel = 96;
+	m_bitsPerPixel = 96u;
 	m_colorFormat = ColorFormat::RGB;
 
 	TP_DEBUG(Log::ImageRadiancePrefix, "Loading image: ", m_filepath);
@@ -360,38 +344,34 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 
 	SkipUnusedLines(file);
 
-	bool needXFlip = false, needYFlip = false, need90RotateCW = false, need90RotateCCW = false;
-	const std::optional<TRAP::Math::Vec2ui> resolution = RetrieveImageResolution(file, needXFlip, needYFlip,
-	                                                                             need90RotateCW, need90RotateCCW);
-	if(!resolution)
+	const auto imageInfo = RetrieveImageInfo(file);
+	if(!imageInfo)
 	{
+		TP_ERROR(Log::ImageRadiancePrefix, imageInfo.Error());
 		TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
 		return;
 	}
 
-	m_width = resolution->x();
-	m_height = resolution->y();
+	m_width = imageInfo->Width;
+	m_height = imageInfo->Height;
 
-	if(m_width == 0)
+	if(m_width == 0u)
 	{
-		file.close();
 		TP_ERROR(Log::ImageRadiancePrefix, "Invalid width ", m_width, "!");
 		TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
 		return;
 	}
-	if(m_height == 0)
+	if(m_height == 0u)
 	{
-
-		file.close();
 		TP_ERROR(Log::ImageRadiancePrefix, "Invalid height ", m_height, "!");
 		TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
 		return;
 	}
 
-	m_data.resize(NumericCast<usize>(m_width) * m_height * std::to_underlying(m_colorFormat), 0.0f);
-	u64 dataIndex = 0;
+	m_data.resize(NumericCast<usize>(m_width) * m_height * GetChannelsPerPixel(), 0.0f);
+	u64 dataIndex = 0u;
 
-	std::vector<RGBE> scanline(m_width);
+	std::vector<RGBE> scanline(m_height);
 
 	//Convert image
 	for(i64 y = m_height - 1; y >= 0; y--)
@@ -404,18 +384,18 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 			return;
 		}
 		WorkOnRGBE(scanline, m_data, dataIndex, m_width);
-		dataIndex += NumericCast<u64>(m_width) * std::to_underlying(m_colorFormat);
+		dataIndex += NumericCast<u64>(m_width) * GetChannelsPerPixel();
 	}
 
 	file.close();
 
-	if (needXFlip)
+	if (imageInfo->NeedsXFlip)
 		m_data = TRAP::Utils::FlipPixelDataX<f32>(m_width, m_height, GetChannelsPerPixel(), m_data);
-	if (needYFlip)
+	if (imageInfo->NeedsYFlip)
 		m_data = TRAP::Utils::FlipPixelDataY<f32>(m_width, m_height, GetChannelsPerPixel(), m_data);
 
-	if(need90RotateCW)
+	if(imageInfo->NeedsRotateClockwise)
 		m_data = TRAP::Utils::RotatePixelData90Clockwise<f32>(m_width, m_height, GetChannelsPerPixel(), m_data);
-	if(need90RotateCCW)
+	if(imageInfo->NeedsRotateCounterClockwise)
 		m_data = TRAP::Utils::RotatePixelData90CounterClockwise<f32>(m_width, m_height, GetChannelsPerPixel(), m_data);
 }
