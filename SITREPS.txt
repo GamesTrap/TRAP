@@ -5182,3 +5182,7 @@ SITREP 08/26/2024|24w35a1
 SITREP 08/27/2024|24w35a2
     - Changed TRAP Engine version to 24w35a2(0.11.6)
     - RadianceImage Reworked implementation ~<45 mins
+
+SITREP 09/04/2024|24w36a1
+    - Changed TRAP Engine version to 24w36a1(0.11.7)
+    - TGAImage Reworked implementation ~>180 mins
