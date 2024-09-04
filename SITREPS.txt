@@ -5186,3 +5186,7 @@ SITREP 08/27/2024|24w35a2
 SITREP 09/04/2024|24w36a1
     - Changed TRAP Engine version to 24w36a1(0.11.7)
     - TGAImage Reworked implementation ~>180 mins
+
+SITREP 09/05/2024|24w36a2
+    - Changed TRAP Engine version to 24w36a2(0.11.8)
+    - BMP/PAM/PFM/PGM/PNM/PPM/PNG/Radiance/TGAImage Added verbose profiler markers ~<15 mins

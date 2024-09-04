@@ -57,6 +57,9 @@ namespace
 
 	[[nodiscard]] TRAP::Expected<Header, PNMErrorCode> LoadHeader(std::ifstream& file)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		Header header{};
 		file >> header.MagicNumber >> header.Width >> header.Height >> header.MaxValue;
 
@@ -81,6 +84,9 @@ namespace
 	                                                                              const u32 width, const u32 height,
 																				  const u32 channels)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		std::vector<u8> pixelData(NumericCast<usize>(width) * height * channels);
 
 		if (!file.read(reinterpret_cast<char*>(pixelData.data()), NumericCast<std::streamsize>(pixelData.size())))
@@ -95,6 +101,9 @@ namespace
 	                                                                                const u32 width, const u32 height,
 																					const u32 channels)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		std::vector<u16> pixelData(NumericCast<usize>(width) * height * channels);
 		if (!file.read(reinterpret_cast<char*>(pixelData.data()), NumericCast<std::streamsize>(pixelData.size() * sizeof(u16))))
 			return TRAP::MakeUnexpected(PNMErrorCode::FailedToReadPixelData);

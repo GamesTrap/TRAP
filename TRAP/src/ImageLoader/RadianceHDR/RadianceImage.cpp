@@ -43,7 +43,8 @@ namespace
 	/// @return True if successful, false otherwise.
 	[[nodiscard]] bool OldDecrunch(std::vector<RGBE>& scanline, u32 scanlineIndex, u32 length, std::ifstream& file)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 		u32 rshift = 0u;
 
@@ -86,6 +87,9 @@ namespace
 	/// @return True if successful, false otherwise.
 	[[nodiscard]] bool Decrunch(std::vector<RGBE>& scanline, const u32 length, std::ifstream& file)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		if (length < MinEncodingLength || length > MaxEncodingLength)
 			return OldDecrunch(scanline, 0u, length, file);
 
@@ -161,7 +165,8 @@ namespace
 	/// @return True if magic number was found, false otherwise.
 	[[nodiscard]] bool ContainsMagicNumber(std::ifstream& file)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 		//Magic Numbers: "#?RGBE" or "#?RADIANCE"
 		//Some software uses #? and then its own name... so we have to just check for #?
@@ -180,7 +185,8 @@ namespace
 	/// @return True if valid/known format was found, false otherwise.
 	[[nodiscard]] bool ContainsSupportedFormat(std::ifstream& file)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 		//We only support the "32-bit_rle_rgbe" format
 
@@ -201,7 +207,8 @@ namespace
 	/// @param file File to skip lines.
 	void SkipUnusedLines(std::ifstream& file)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 		if(file.eof())
 			return;
@@ -230,7 +237,8 @@ namespace
 	/// @return Image information on success, error otherwise.
 	[[nodiscard]] TRAP::Expected<ImageInfo, std::string> RetrieveImageInfo(std::ifstream& file)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 		ImageInfo imgInfo{};
 

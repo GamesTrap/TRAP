@@ -440,6 +440,9 @@ namespace
 	template<typename T>
 	[[nodiscard]] T ReadLittleEndian(std::ifstream& file)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		T data{};
 
 		file.read(reinterpret_cast<char*>(&data), sizeof(T));
@@ -457,6 +460,9 @@ namespace
 
 	[[nodiscard]] TRAP::Expected<Header, BMPErrorCode> LoadHeader(std::ifstream& file)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		Header header{};
 		header.MagicNumber = {ReadLittleEndian<char>(file), ReadLittleEndian<char>(file)};
 		file.ignore(4); //Discard file size
@@ -509,6 +515,9 @@ namespace
 
 	[[nodiscard]] TRAP::Expected<InfoHeader, BMPErrorCode> LoadInfoHeader(std::ifstream& file)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		InfoHeader infoHeader{};
 
 		infoHeader.HeaderSize = ReadLittleEndian<u32>(file);
@@ -560,6 +569,9 @@ namespace
 
 	[[nodiscard]] TRAP::Expected<std::vector<u32>, BMPErrorCode> LoadBitFieldMasks(std::ifstream& file, const BMPCompression compression)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		switch(compression)
 		{
 		case BMPCompression::BitFields:
@@ -614,6 +626,9 @@ namespace
 
 	[[nodiscard]] TRAP::Expected<std::vector<u8>, BMPErrorCode> LoadColorTable(std::ifstream& file, const InfoHeader& infoHeader)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		//Color table is only used by image with <= 8 bits per pixel
 		if(infoHeader.BitsPerPixel > 8u)
 			return {};
@@ -639,6 +654,9 @@ namespace
 	                                                                                 const u32 offsetBeginToPixelData,
 																					 const InfoHeader& infoHeader)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		//Jump to pixel data
 		file.seekg(offsetBeginToPixelData, std::ios::beg);
 
@@ -674,6 +692,8 @@ namespace
 
 	[[nodiscard]] TRAP::Expected<FileData, BMPErrorCode> LoadDataFromFile(const std::filesystem::path& filePath)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
+
 		std::ifstream file(filePath, std::ios::binary);
 		if (!file.is_open())
 			return TRAP::MakeUnexpected(BMPErrorCode::FailedToOpenFile);

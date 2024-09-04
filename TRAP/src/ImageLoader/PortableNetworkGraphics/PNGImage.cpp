@@ -26,6 +26,9 @@ namespace
 
 	[[nodiscard]] Header GetHeaderData(const png_struct& png, const png_info& info)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		Header header{};
 
 		header.Width = png_get_image_width(&png, &info);
@@ -62,6 +65,9 @@ namespace
 	requires std::same_as<T, u8> || std::same_as<T, u16>
 	[[nodiscard]] std::vector<T> LoadPixelData(png_struct& png, const png_info& info, const u32 height)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		const usize rowBytes = png_get_rowbytes(&png, &info);
 		std::vector<u8*> rowPointers(height);
 
@@ -78,6 +84,9 @@ namespace
 
 	void SetupImageForReading(png_struct& png, png_info& info)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		if(png_get_interlace_type(&png, &info) != PNG_INTERLACE_NONE) //Handle interlacing when needed
 			png_set_interlace_handling(&png);
 

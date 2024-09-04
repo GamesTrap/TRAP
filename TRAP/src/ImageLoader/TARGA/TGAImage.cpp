@@ -338,6 +338,9 @@ namespace
 
 	[[nodiscard]] TRAP::Expected<Header, std::string> ReadHeader(std::ifstream& file)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		Header header{};
 
 		header.IDLength = NumericCast<u8>(file.get());
@@ -399,6 +402,9 @@ namespace
 
 	[[nodiscard]] TRAP::Expected<std::vector<u8>, std::string> ReadColorMap(std::ifstream& file, const Header& header)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		if(header.ColorMapping == ColorMapType::None)
 			return TRAP::MakeUnexpected("Tried to read color map while ColorMapType is None!");
 
@@ -422,6 +428,9 @@ namespace
 
 	[[nodiscard]] TRAP::Optional<Footer> ReadFooter(std::ifstream& file)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		const auto startPos = file.tellg();
 
 		Footer footer{};
@@ -443,6 +452,9 @@ namespace
 
 	[[nodiscard]] std::size_t GetRLEPixelDataEndOffset(std::ifstream& file)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		const auto footer = ReadFooter(file);
 		if(!footer)
 		{
@@ -467,6 +479,9 @@ namespace
 
 	[[nodiscard]] TRAP::Expected<std::vector<u8>, std::string> ReadPixelData(std::ifstream& file, const Header& header)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		std::vector<u8> rawPixelData{};
 
 		if(header.Type == ImageType::RLEColorMapped ||
@@ -498,6 +513,8 @@ namespace
 
 	[[nodiscard]] TRAP::Expected<FileData, std::string> LoadDataFromFile(const std::filesystem::path& filePath)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
+
 		std::ifstream file(filePath, std::ios::binary);
 		if (!file.is_open())
 			return TRAP::MakeUnexpected("Failed to open file for reading");
@@ -538,6 +555,9 @@ namespace
 
 	[[nodiscard]] constexpr TRAP::Expected<DecodedData, std::string> DecodePixelData(const FileData& fileData)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		const auto& header = fileData.FileHeader;
 		const auto& colorMapData = fileData.ColorMap;
 		const auto& encodedPixelData = fileData.EncodedPixelData;

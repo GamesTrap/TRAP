@@ -51,6 +51,9 @@ namespace
 
 	[[nodiscard]] TRAP::Expected<Header, PFMErrorCode> LoadHeader(std::ifstream& file)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		const auto SkipComments = [&file]()
 		{
 			std::string tmp{'#'};
@@ -81,6 +84,9 @@ namespace
 	                                                                           const u32 width, const u32 height,
 																			   const u32 channels)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
+	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
+
 		std::vector<f32> pixelData(NumericCast<usize>(width) * height * channels);
 
 		if (!file.read(reinterpret_cast<char*>(pixelData.data()), NumericCast<std::streamsize>(pixelData.size() * sizeof(f32))))
