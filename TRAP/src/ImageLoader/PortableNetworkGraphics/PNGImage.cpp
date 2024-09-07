@@ -16,6 +16,16 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	[[nodiscard]] bool CheckPNGError(const bool errored, png_struct* png, png_info* info)
+	{
+		if(errored)
+			png_destroy_read_struct(&png, &info, nullptr);
+
+		return errored;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
 	struct Header
 	{
 		u32 Width = 0u;
@@ -24,7 +34,7 @@ namespace
 		u32 BitsPerPixel = 0u;
 	};
 
-	[[nodiscard]] Header GetHeaderData(const png_struct& png, const png_info& info)
+	[[nodiscard]] TRAP::Optional<Header> GetHeaderData(const bool& errored, png_struct& png, png_info& info)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
 	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -32,13 +42,27 @@ namespace
 		Header header{};
 
 		header.Width = png_get_image_width(&png, &info);
+		if(CheckPNGError(errored, &png, &info))
+			return TRAP::NullOpt;
+
 		header.Height = png_get_image_height(&png, &info);
+		if(CheckPNGError(errored, &png, &info))
+			return TRAP::NullOpt;
 
 		const u8 bitDepth = png_get_bit_depth(&png, &info);
+		if(CheckPNGError(errored, &png, &info))
+			return TRAP::NullOpt;
+
 		const u8 channels = png_get_channels(&png, &info);
+		if(CheckPNGError(errored, &png, &info))
+			return TRAP::NullOpt;
+
 		header.BitsPerPixel = bitDepth * channels;
 
 		const u8 colorType = png_get_color_type(&png, &info);
+		if(CheckPNGError(errored, &png, &info))
+			return TRAP::NullOpt;
+
 		if(colorType == PNG_COLOR_TYPE_GRAY)
 			header.Format = TRAP::Image::ColorFormat::GrayScale;
 		else if(colorType == PNG_COLOR_TYPE_GRAY_ALPHA)
@@ -48,7 +72,11 @@ namespace
 		else if(colorType == PNG_COLOR_TYPE_RGBA)
 			header.Format = TRAP::Image::ColorFormat::RGBA;
 
-		if(png_get_valid(&png, &info, PNG_INFO_tRNS) != 0u)
+		const bool hastRNSChunk = png_get_valid(&png, &info, PNG_INFO_tRNS) != 0u;
+		if(CheckPNGError(errored, &png, &info))
+			return TRAP::NullOpt;
+
+		if(hastRNSChunk)
 		{
 			if(header.Format == TRAP::Image::ColorFormat::GrayScale)
 				header.Format = TRAP::Image::ColorFormat::GrayScaleAlpha;
@@ -63,12 +91,15 @@ namespace
 
 	template<typename T>
 	requires std::same_as<T, u8> || std::same_as<T, u16>
-	[[nodiscard]] std::vector<T> LoadPixelData(png_struct& png, const png_info& info, const u32 height)
+	[[nodiscard]] std::vector<T> LoadPixelData(const bool& errored, png_struct& png, png_info& info, const u32 height)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
 	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 		const usize rowBytes = png_get_rowbytes(&png, &info);
+		if(CheckPNGError(errored, &png, &info))
+			return {};
+
 		std::vector<u8*> rowPointers(height);
 
 		std::vector<T> pixelData(height * rowBytes / sizeof(T));
@@ -76,31 +107,80 @@ namespace
 			rowPointers[i] = reinterpret_cast<u8*>(&pixelData[i * rowBytes / sizeof(T)]);
 
 		png_read_image(&png, rowPointers.data());
+		if(CheckPNGError(errored, &png, &info))
+			return {};
 
 		return pixelData;
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	void SetupImageForReading(png_struct& png, png_info& info)
+	void SetupImageForReading(const bool& errored, png_struct& png, png_info& info)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
 	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-		if(png_get_interlace_type(&png, &info) != PNG_INTERLACE_NONE) //Handle interlacing when needed
+		const bool isInterlaced = png_get_interlace_type(&png, &info) != PNG_INTERLACE_NONE;
+		if(CheckPNGError(errored, &png, &info))
+			return;
+
+		if(isInterlaced) //Handle interlacing when needed
+		{
 			png_set_interlace_handling(&png);
+			if(CheckPNGError(errored, &png, &info))
+				return;
+		}
 
 		const u8 bitDepth = png_get_bit_depth(&png, &info);
-		const u8 colorType = png_get_color_type(&png, &info);
-		if(colorType == PNG_COLOR_TYPE_PALETTE) //Indexed -> RGB
-			png_set_palette_to_rgb(&png);
-		if(colorType == PNG_COLOR_TYPE_GRAY && bitDepth < 8u)
-			png_set_expand_gray_1_2_4_to_8(&png);
+		if(CheckPNGError(errored, &png, &info))
+			return;
 
-		if(png_get_valid(&png, &info, PNG_INFO_tRNS) != 0u)
+		const u8 colorType = png_get_color_type(&png, &info);
+		if(CheckPNGError(errored, &png, &info))
+			return;
+
+		if(colorType == PNG_COLOR_TYPE_PALETTE) //Indexed -> RGB
+		{
+			png_set_palette_to_rgb(&png);
+			if(CheckPNGError(errored, &png, &info))
+				return;
+		}
+		if(colorType == PNG_COLOR_TYPE_GRAY && bitDepth < 8u)
+		{
+			png_set_expand_gray_1_2_4_to_8(&png);
+			if(CheckPNGError(errored, &png, &info))
+				return;
+		}
+
+		const bool hastRNS = png_get_valid(&png, &info, PNG_INFO_tRNS) != 0u;
+		if(hastRNS)
+		{
 			png_set_tRNS_to_alpha(&png);
+			if(CheckPNGError(errored, &png, &info))
+				return;
+		}
 
 		png_read_update_info(&png, &info);
+		if(CheckPNGError(errored, &png, &info))
+			return;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void HandlePNGError(const png_structp png, const png_const_charp errorMsg)
+	{
+		bool* errorData = static_cast<bool*>(png_get_error_ptr(png));
+		if(errorData != nullptr)
+			*errorData = true;
+
+		TP_ERROR(TRAP::Log::ImagePNGPrefix, "libpng error: ", errorMsg);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void HandlePNGWarning([[maybe_unused]] const png_structp png, const png_const_charp warnMsg)
+	{
+		TP_WARN(TRAP::Log::ImagePNGPrefix, "libpng warning: ", warnMsg);
 	}
 }
 
@@ -124,7 +204,8 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 		return;
 	}
 
-	png_struct* png = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
+	bool errored = false;
+	png_struct* png = png_create_read_struct(PNG_LIBPNG_VER_STRING, &errored, HandlePNGError, HandlePNGWarning);
 	if(png == nullptr)
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "Failed to create PNG read struct!");
@@ -141,29 +222,28 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 		return;
 	}
 
-	if(setjmp(png_jmpbuf(png)))
-	{
-		png_destroy_read_struct(&png, &info, nullptr);
-		TP_ERROR(Log::ImagePNGPrefix, "Error while decoding PNG detected!");
-		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-		return;
-	}
-
 	png_init_io(png, file.Get());
+	if(CheckPNGError(errored, png, info))
+		return;
 	png_read_info(png, info);
+	if(CheckPNGError(errored, png, info))
+		return;
 
-	const Header header = GetHeaderData(*png, *info);
-	m_width = header.Width;
-	m_height = header.Height;
-	m_bitsPerPixel = header.BitsPerPixel;
-	m_colorFormat = header.Format;
+	const auto header = GetHeaderData(errored, *png, *info);
+	if(!header)
+		return;
 
-	SetupImageForReading(*png, *info);
+	m_width = header->Width;
+	m_height = header->Height;
+	m_bitsPerPixel = header->BitsPerPixel;
+	m_colorFormat = header->Format;
+
+	SetupImageForReading(errored, *png, *info);
 
 	if(GetBitsPerChannel() == 16u)
-		m_data2Byte = LoadPixelData<u16>(*png, *info, m_height);
+		m_data2Byte = LoadPixelData<u16>(errored, *png, *info, m_height);
 	else
-		m_data = LoadPixelData<u8>(*png, *info, m_height);
+		m_data = LoadPixelData<u8>(errored, *png, *info, m_height);
 
 	png_destroy_read_struct(&png, &info, nullptr);
 }

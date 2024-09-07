@@ -5190,3 +5190,7 @@ SITREP 09/04/2024|24w36a1
 SITREP 09/05/2024|24w36a2
     - Changed TRAP Engine version to 24w36a2(0.11.8)
     - BMP/PAM/PFM/PGM/PNM/PPM/PNG/Radiance/TGAImage Added verbose profiler markers ~<15 mins
+
+SITREP 09/07/2024|24w36a3
+    - Changed TRAP Engine version to 24w36a3(0.11.9)
+    - PNGImage Changed error handling from longjmp() to callback based ~<20 mins
