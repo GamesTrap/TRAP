@@ -11,10 +11,10 @@ namespace
 	struct Header
 	{
 		std::string MagicNumber;
-		u32 Width = 0;
-		u32 Height = 0;
-		u32 Depth = 0;
-		u32 MaxValue = 255;
+		u32 Width = 0u;
+		u32 Height = 0u;
+		u32 Depth = 0u;
+		u32 MaxValue = 255u;
 		std::string TuplType;
 	};
 
@@ -85,7 +85,7 @@ namespace
 		const auto SkipComments = [&file]()
 		{
 			std::string tmp{'#'};
-			while(!tmp.empty() && tmp[0] == '#')
+			while(!tmp.empty() && tmp.front() == '#')
 				file >> tmp;
 			return tmp;
 		};
@@ -106,13 +106,13 @@ namespace
 
 		if (header.MagicNumber != "P7")
 			return TRAP::MakeUnexpected(PAMErrorCode::InvalidMagicNumber);
-		if (header.Width < 1)
+		if (header.Width < 1u)
 			return TRAP::MakeUnexpected(PAMErrorCode::InvalidWidth);
-		if (header.Height < 1)
+		if (header.Height < 1u)
 			return TRAP::MakeUnexpected(PAMErrorCode::InvalidHeight);
-		if (header.MaxValue <= 0 || header.MaxValue > std::numeric_limits<u16>::max())
+		if (header.MaxValue <= 0u || header.MaxValue > std::numeric_limits<u16>::max())
 			return TRAP::MakeUnexpected(PAMErrorCode::InvalidMaxValue);
-		if (header.Depth <= 0 || header.Depth > 4)
+		if (header.Depth <= 0u || header.Depth > 4u)
 			return TRAP::MakeUnexpected(PAMErrorCode::InvalidDepth);
 		if(header.TuplType == "BLACKANDWHITE" || header.TuplType == "BLACKANDWHITE_ALPHA")
 			return TRAP::MakeUnexpected(PAMErrorCode::UnsupportedTuplTypeBlackAndWhite);
@@ -121,10 +121,10 @@ namespace
 		{
 			return TRAP::MakeUnexpected(PAMErrorCode::InvalidTuplType);
 		}
-		if((header.TuplType == "GRAYSCALE" && header.Depth != 1) ||
-		   (header.TuplType == "GRAYSCALE_ALPHA" && header.Depth != 2) ||
-		   (header.TuplType == "RGB" && header.Depth != 3) ||
-		   (header.TuplType == "RGB_ALPHA" && header.Depth != 4))
+		if((header.TuplType == "GRAYSCALE" && header.Depth != 1u) ||
+		   (header.TuplType == "GRAYSCALE_ALPHA" && header.Depth != 2u) ||
+		   (header.TuplType == "RGB" && header.Depth != 3u) ||
+		   (header.TuplType == "RGB_ALPHA" && header.Depth != 4u))
 		{
 			return TRAP::MakeUnexpected(PAMErrorCode::InvalidTuplTypeAndDepthCombination);
 		}
@@ -192,34 +192,20 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::filesystem::path filepath)
 	m_width = header->Width;
 	m_height = header->Height;
 
+	if (header->Depth == 1u)
+		m_colorFormat = ColorFormat::GrayScale;
+	else if (header->Depth == 3u)
+		m_colorFormat = ColorFormat::RGB;
+	else if (header->Depth == 2u)
+		m_colorFormat = ColorFormat::GrayScaleAlpha;
+	else if (header->Depth == 4u)
+		m_colorFormat = ColorFormat::RGBA;
+
 	file.ignore(256, '\n'); //Skip ahead to the pixel data.
 
 	if(header->MaxValue > 255)
 	{
-		if (header->TuplType == "GRAYSCALE" && header->Depth == 1)
-		{
-			//GrayScale
-			m_bitsPerPixel = 16;
-			m_colorFormat = ColorFormat::GrayScale;
-		}
-		else if (header->TuplType == "RGB" && header->Depth == 3)
-		{
-			//RGB
-			m_bitsPerPixel = 48;
-			m_colorFormat = ColorFormat::RGB;
-		}
-		else if (header->TuplType == "GRAYSCALE_ALPHA" && header->Depth == 2)
-		{
-			//GrayScaleAlpha
-			m_bitsPerPixel = 32;
-			m_colorFormat = ColorFormat::GrayScaleAlpha;
-		}
-		else if (header->TuplType == "RGB_ALPHA" && header->Depth == 4)
-		{
-			//RGBA
-			m_bitsPerPixel = 64;
-			m_colorFormat = ColorFormat::RGBA;
-		}
+		m_bitsPerPixel = header->Depth * sizeof(u16) * 8u;
 
 		const auto pixelData = LoadPixelData<u16>(file, m_width, m_height, header->Depth);
 		if(!pixelData)
@@ -233,30 +219,7 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::filesystem::path filepath)
 	}
 	else
 	{
-		if (header->TuplType == "GRAYSCALE" && header->Depth == 1)
-		{
-			//GrayScale
-			m_bitsPerPixel = 8;
-			m_colorFormat = ColorFormat::GrayScale;
-		}
-		else if (header->TuplType == "RGB" && header->Depth == 3)
-		{
-			//RGB
-			m_bitsPerPixel = 24;
-			m_colorFormat = ColorFormat::RGB;
-		}
-		else if (header->TuplType == "GRAYSCALE_ALPHA" && header->Depth == 2)
-		{
-			//GrayScaleAlpha
-			m_bitsPerPixel = 16;
-			m_colorFormat = ColorFormat::GrayScaleAlpha;
-		}
-		else if (header->TuplType == "RGB_ALPHA" && header->Depth == 4)
-		{
-			//RGBA
-			m_bitsPerPixel = 32;
-			m_colorFormat = ColorFormat::RGBA;
-		}
+		m_bitsPerPixel = header->Depth * 8u;
 
 		const auto pixelData = LoadPixelData<u8>(file, m_width, m_height, header->Depth);
 		if(!pixelData)

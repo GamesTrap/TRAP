@@ -12,9 +12,9 @@ namespace
 	struct Header
 	{
 		std::string MagicNumber;
-		u32 Width = 0;
-		u32 Height = 0;
-		u32 MaxValue = 255;
+		u32 Width = 0u;
+		u32 Height = 0u;
+		u32 MaxValue = 255u;
 	};
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -64,7 +64,7 @@ namespace
 		const auto SkipComments = [&file]()
 		{
 			std::string tmp{'#'};
-			while(!tmp.empty() && tmp[0] == '#')
+			while(!tmp.empty() && tmp.front() == '#')
 				file >> tmp;
 			return tmp;
 		};
@@ -77,11 +77,11 @@ namespace
 
 		if (!(header.MagicNumber == "P3" || header.MagicNumber == "P6"))
 			return TRAP::MakeUnexpected(PPMErrorCode::InvalidMagicNumber);
-		if (header.Width < 1)
+		if (header.Width < 1u)
 			return TRAP::MakeUnexpected(PPMErrorCode::InvalidWidth);
-		if (header.Height < 1)
+		if (header.Height < 1u)
 			return TRAP::MakeUnexpected(PPMErrorCode::InvalidHeight);
-		if(header.MaxValue <= 0 || header.MaxValue > std::numeric_limits<u16>::max())
+		if(header.MaxValue <= 0u || header.MaxValue > std::numeric_limits<u16>::max())
 			return TRAP::MakeUnexpected(PPMErrorCode::InvalidMaxValue);
 
 		return header;
@@ -162,9 +162,9 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::filesystem::path filepath)
 
 	file.ignore(256, '\n'); //Skip ahead to the pixel data.
 
-	if(header->MaxValue > 255)
+	if(header->MaxValue > 255u)
 	{
-		m_bitsPerPixel = 48;
+		m_bitsPerPixel = 48u;
 
 		const auto pixelData = LoadPixelData48BPP(file, m_width, m_height);
 		if(!pixelData)
@@ -178,7 +178,7 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::filesystem::path filepath)
 	}
 	else
 	{
-		m_bitsPerPixel = 24;
+		m_bitsPerPixel = 24u;
 
 		const auto pixelData = LoadPixelData24BPP(file, m_width, m_height);
 		if(!pixelData)

@@ -5194,3 +5194,7 @@ SITREP 09/05/2024|24w36a2
 SITREP 09/07/2024|24w36a3
     - Changed TRAP Engine version to 24w36a3(0.11.9)
     - PNGImage Changed error handling from longjmp() to callback based ~<20 mins
+
+SITREP 09/08/2024|24w36a4
+    - Changed TRAP Engine version to 24w36a4(0.11.10)
+    - Image/PAMImage/PFMImage Removed a bit of redundancy ~<10 mins

@@ -11,9 +11,9 @@ namespace
 	struct Header
 	{
 		std::string MagicNumber;
-		u32 Width = 0;
-		u32 Height = 0;
-		u32 MaxValue = 255;
+		u32 Width = 0u;
+		u32 Height = 0u;
+		u32 MaxValue = 255u;
 	};
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -68,11 +68,11 @@ namespace
 		{
 			return TRAP::MakeUnexpected(PNMErrorCode::InvalidMagicNumber);
 		}
-		if (header.Width < 1)
+		if (header.Width < 1u)
 			return TRAP::MakeUnexpected(PNMErrorCode::InvalidWidth);
-		if (header.Height < 1)
+		if (header.Height < 1u)
 			return TRAP::MakeUnexpected(PNMErrorCode::InvalidHeight);
-		if (header.MaxValue <= 0 || header.MaxValue > std::numeric_limits<u16>::max())
+		if (header.MaxValue <= 0u || header.MaxValue > std::numeric_limits<u16>::max())
 			return TRAP::MakeUnexpected(PNMErrorCode::InvalidMaxValue);
 
 		return header;
@@ -152,21 +152,21 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 
 	file.ignore(256, '\n'); //Skip ahead to the pixel data.
 
-	if(header->MaxValue > 255)
+	if(header->MaxValue > 255u)
 	{
 		if (header->MagicNumber == "P2" || header->MagicNumber == "P5")
 		{
 			//GrayScale
 			m_colorFormat = ColorFormat::GrayScale;
-			m_bitsPerPixel = 16;
+			m_bitsPerPixel = 16u;
 		}
 		else if (header->MagicNumber == "P3" || header->MagicNumber == "P6")
 		{
 			m_colorFormat = ColorFormat::RGB;
-			m_bitsPerPixel = 48;
+			m_bitsPerPixel = 48u;
 		}
 
-		const auto pixelData = LoadPixelData16BPP(file, m_width, m_height, m_bitsPerPixel / 16u);
+		const auto pixelData = LoadPixelData16BPP(file, m_width, m_height, GetChannelsPerPixel());
 		if(!pixelData)
 		{
 			TP_ERROR(Log::ImagePNMPrefix, PNMErrorCodeToString(pixelData.Error()));
@@ -181,15 +181,15 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 		if (header->MagicNumber == "P2" || header->MagicNumber == "P5")
 		{
 			m_colorFormat = ColorFormat::GrayScale;
-			m_bitsPerPixel = 8;
+			m_bitsPerPixel = 8u;
 		}
 		else if (header->MagicNumber == "P3" || header->MagicNumber == "P6")
 		{
 			m_colorFormat = ColorFormat::RGB;
-			m_bitsPerPixel = 24;
+			m_bitsPerPixel = 24u;
 		}
 
-		const auto pixelData = LoadPixelData8BPP(file, m_width, m_height, m_bitsPerPixel / 8u);
+		const auto pixelData = LoadPixelData8BPP(file, m_width, m_height, GetChannelsPerPixel());
 		if(!pixelData)
 		{
 			TP_ERROR(Log::ImagePNMPrefix, PNMErrorCodeToString(pixelData.Error()));

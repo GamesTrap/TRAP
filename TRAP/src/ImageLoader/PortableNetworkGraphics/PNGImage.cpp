@@ -103,7 +103,7 @@ namespace
 		std::vector<u8*> rowPointers(height);
 
 		std::vector<T> pixelData(height * rowBytes / sizeof(T));
-		for(u32 i = 0; i < rowPointers.size(); ++i)
+		for(u32 i = 0u; i < rowPointers.size(); ++i)
 			rowPointers[i] = reinterpret_cast<u8*>(&pixelData[i * rowBytes / sizeof(T)]);
 
 		png_read_image(&png, rowPointers.data());

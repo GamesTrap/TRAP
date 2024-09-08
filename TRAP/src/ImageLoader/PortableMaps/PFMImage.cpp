@@ -9,8 +9,8 @@ namespace
 	struct Header
 	{
 		std::string MagicNumber;
-		u32 Width = 0;
-		u32 Height = 0;
+		u32 Width = 0u;
+		u32 Height = 0u;
 		f32 ByteOrder = -1.0f;
 	};
 
@@ -57,7 +57,7 @@ namespace
 		const auto SkipComments = [&file]()
 		{
 			std::string tmp{'#'};
-			while(!tmp.empty() && tmp[0] == '#')
+			while(!tmp.empty() && tmp.front() == '#')
 				file >> tmp;
 			return tmp;
 		};
@@ -70,9 +70,9 @@ namespace
 
 		if (header.MagicNumber != "PF" && header.MagicNumber != "Pf" && header.MagicNumber != "PF4")
 			return TRAP::MakeUnexpected(PFMErrorCode::InvalidMagicNumber);
-		if (header.Width < 1)
+		if (header.Width < 1u)
 			return TRAP::MakeUnexpected(PFMErrorCode::InvalidWidth);
-		if (header.Height < 1)
+		if (header.Height < 1u)
 			return TRAP::MakeUnexpected(PFMErrorCode::InvalidHeight);
 
 		return header;
@@ -129,25 +129,18 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 	m_width = header->Width;
 	m_height = header->Height;
 
+	if (header->MagicNumber == "PF")
+		m_colorFormat = ColorFormat::RGB;
+	else if (header->MagicNumber == "PF4")
+		m_colorFormat = ColorFormat::RGBA;
+	else if(header->MagicNumber == "Pf")
+		m_colorFormat = ColorFormat::GrayScale;
+
+	m_bitsPerPixel = GetChannelsPerPixel() * sizeof(f32) * 8u;
+
 	file.ignore(256, '\n'); //Skip ahead to the pixel data
 
-	if (header->MagicNumber == "PF")
-	{
-		m_colorFormat = ColorFormat::RGB;
-		m_bitsPerPixel = 96;
-	}
-	else if (header->MagicNumber == "PF4")
-	{
-		m_colorFormat = ColorFormat::RGBA;
-		m_bitsPerPixel = 128;
-	}
-	else if(header->MagicNumber == "Pf")
-	{
-		m_colorFormat = ColorFormat::GrayScale;
-		m_bitsPerPixel = 32;
-	}
-
-	const auto pixelData = LoadPixelData(file, m_width, m_height, m_bitsPerPixel / 32u);
+	const auto pixelData = LoadPixelData(file, m_width, m_height, GetChannelsPerPixel());
 	if(!pixelData)
 	{
 		TP_ERROR(Log::ImagePFMPrefix, PFMErrorCodeToString(pixelData.Error()));
