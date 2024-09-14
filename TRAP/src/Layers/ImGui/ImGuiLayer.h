@@ -3,14 +3,7 @@
 
 #ifndef TRAP_HEADLESS_MODE
 
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif /*_MSC_VER*/
-//ImGUI
 #include <imgui.h>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif /*_MSC_VER*/
 
 #include "Core/Base.h"
 #include "Layers/Layer.h"
@@ -32,13 +25,13 @@ namespace TRAP
 		constexpr ImGuiLayer();
 
 		/// @brief Copy constructor.
-		consteval ImGuiLayer(const ImGuiLayer &) noexcept = delete;
+		consteval ImGuiLayer(const ImGuiLayer&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		consteval ImGuiLayer &operator=(const ImGuiLayer &) noexcept = delete;
+		consteval ImGuiLayer& operator=(const ImGuiLayer&) noexcept = delete;
 		/// @brief Move constructor.
-		consteval ImGuiLayer(ImGuiLayer &&) noexcept = delete;
+		consteval ImGuiLayer(ImGuiLayer&&) noexcept = delete;
 		/// @brief Move assignment operator.
-		consteval ImGuiLayer &operator=(ImGuiLayer &&) noexcept = delete;
+		consteval ImGuiLayer& operator=(ImGuiLayer&&) noexcept = delete;
 
 		/// @brief Destructor
 		~ImGuiLayer() override = default;
@@ -67,7 +60,7 @@ namespace TRAP
 	private:
 		bool m_blockEvents = true;
 
-		std::string m_imguiIniPath;
+		std::string m_imguiIniPath = "imgui.ini";
 
 		TRAP::Ref<TRAP::Graphics::PipelineCache> m_imguiPipelineCache = nullptr;
 	};
@@ -125,7 +118,7 @@ namespace ImGui
 	/// @param userData Pointer to provide user data.
 	/// @return True if input text changed, false otherwise.
 	/// @remark @headless This function is not available in headless mode.
-	bool InputText(std::string_view label, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
+	bool InputText(std::string_view label, std::string& str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
 	/// @brief Draw an multi-line input text field with ImGui.
 	/// @param label Label for the text field.
 	/// @param str String to store input to.
@@ -135,7 +128,7 @@ namespace ImGui
 	/// @param userData Pointer to provide user data.
 	/// @return True if input text changed, false otherwise.
 	/// @remark @headless This function is not available in headless mode.
-	bool InputTextMultiline(std::string_view label, std::string* str, const ImVec2& size = ImVec2(0.0f, 0.0f), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
+	bool InputTextMultiline(std::string_view label, std::string& str, const ImVec2& size = ImVec2(0.0f, 0.0f), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
 	/// @brief Draw an input text field with an additional hint with ImGui.
 	/// @param label Label for the text field.
 	/// @param hint Hint to display.
@@ -145,7 +138,7 @@ namespace ImGui
 	/// @param userData Pointer to provide user data.
 	/// @return True if input text changed, false otherwise.
 	/// @remark @headless This function is not available in headless mode.
-	bool InputTextWithHint(std::string_view label, std::string_view hint, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
+	bool InputTextWithHint(std::string_view label, std::string_view hint, std::string& str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
 
 	/// @brief Add a TTF font to ImGui from file.
 	/// @param filename Path to TTF file.
@@ -164,7 +157,7 @@ namespace ImGui
 	/// @param glyphRanges Glyph ranges.
 	/// @return Pointer to the new font.
 	/// @remark @headless This function is not available in headless mode.
-	ImFont* AddFontFromMemoryTTF(std::span<const u8> fontData, f32 sizePixels,
+	ImFont* AddFontFromMemoryTTF(std::span<u8> fontData, f32 sizePixels,
 							     const ImFontConfig* fontCfg = nullptr,
 							     const ImWchar* glyphRanges = nullptr);
 

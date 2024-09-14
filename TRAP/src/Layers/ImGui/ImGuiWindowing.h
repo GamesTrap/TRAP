@@ -50,7 +50,7 @@ namespace TRAP::INTERNAL
 		/// @param installCallbacks Whether to set ImGui callbacks or not.
 		/// @param renderAPI RenderAPI to be used by ImGui.
 		/// @return True on successful initialization, false otherwise.
-		[[nodiscard]] static bool Init(WindowingAPI::InternalWindow* window, bool installCallbacks,
+		[[nodiscard]] static bool Init(WindowingAPI::InternalWindow& window, bool installCallbacks,
 		                               Graphics::RenderAPI renderAPI);
 		/// @brief Shutdown the ImGui TRAP::INTERNAL::WindowingAPI interface.
 		static void Shutdown();
@@ -72,15 +72,15 @@ namespace TRAP::INTERNAL
 
 		/// @brief Install ImGui callbacks.
 		/// @param window Window to set callbacks for.
-		static void InstallCallbacks(WindowingAPI::InternalWindow* window);
+		static void InstallCallbacks(WindowingAPI::InternalWindow& window);
 		/// @brief Restore old callbacks.
 		/// @param window Window to restore callbacks for.
-		static void RestoreCallbacks(WindowingAPI::InternalWindow* window);
+		static void RestoreCallbacks(WindowingAPI::InternalWindow& window);
 
 		/// @brief Check if the given window should chain callbacks.
 		/// @param window Window to check for chaining.
 		/// @return True or false.
-		static bool ShouldChainCallback(const WindowingAPI::InternalWindow* window);
+		static bool ShouldChainCallback(const WindowingAPI::InternalWindow& window);
 	};
 }
 

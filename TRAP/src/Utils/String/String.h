@@ -436,21 +436,21 @@ namespace TRAP::Utils::String
 		result.push_back(NumericCast<char>(codePoint));
 	else if (codePoint < 0x800u)
 	{
-		result.push_back(NumericCast<char>((codePoint >> 6u) | 0xC0u));
-		result.push_back(NumericCast<char>((codePoint & 0x3Fu) | 0x80u));
+		result.push_back(static_cast<char>((codePoint >> 6u) | 0xC0u));
+		result.push_back(static_cast<char>((codePoint & 0x3Fu) | 0x80u));
 	}
 	else if (codePoint < 0x10000u)
 	{
-		result.push_back(NumericCast<char>((codePoint >> 12u) | 0xE0u));
-		result.push_back(NumericCast<char>(((codePoint >> 6u) & 0x3Fu) | 0x80u));
-		result.push_back(NumericCast<char>((codePoint & 0x3Fu) | 0x80u));
+		result.push_back(static_cast<char>((codePoint >> 12u) | 0xE0u));
+		result.push_back(static_cast<char>(((codePoint >> 6u) & 0x3Fu) | 0x80u));
+		result.push_back(static_cast<char>((codePoint & 0x3Fu) | 0x80u));
 	}
 	else if (codePoint < 0x110000u)
 	{
-		result.push_back(NumericCast<char>((codePoint >> 18u) | 0xF0u));
-		result.push_back(NumericCast<char>(((codePoint >> 12u) & 0x3Fu) | 0x80u));
-		result.push_back(NumericCast<char>(((codePoint >> 6u) & 0x3Fu) | 0x80u));
-		result.push_back(NumericCast<char>((codePoint & 0x3Fu) | 0x80u));
+		result.push_back(static_cast<char>((codePoint >> 18u) | 0xF0u));
+		result.push_back(static_cast<char>(((codePoint >> 12u) & 0x3Fu) | 0x80u));
+		result.push_back(static_cast<char>(((codePoint >> 6u) & 0x3Fu) | 0x80u));
+		result.push_back(static_cast<char>((codePoint & 0x3Fu) | 0x80u));
 	}
 
 	return result;

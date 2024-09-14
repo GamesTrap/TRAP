@@ -5198,3 +5198,7 @@ SITREP 09/07/2024|24w36a3
 SITREP 09/08/2024|24w36a4
     - Changed TRAP Engine version to 24w36a4(0.11.10)
     - Image/PAMImage/PFMImage Removed a bit of redundancy ~<10 mins
+
+SITREP 09/14/2024|24w37a1
+    - Changed TRAP Engine version to 24w37a1(0.11.11)
+    - ImGuiLayer/ImGuiWindowing/ImGuiVulkanBackend Reworked implementation ~<30 mins

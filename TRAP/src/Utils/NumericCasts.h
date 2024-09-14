@@ -19,7 +19,11 @@ namespace INTERNAL
     requires std::is_arithmetic_v<X>
     constexpr std::string_view TypeNameToString()
     {
-        if constexpr(std::same_as<X, i8>)
+        if constexpr(std::same_as<X, char>)
+        {
+            return "char";
+        }
+        else if constexpr(std::same_as<X, i8>)
         {
             return "i8";
         }

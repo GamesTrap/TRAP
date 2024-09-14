@@ -216,7 +216,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 		const Utils::UID& uid = entity.GetUID();
 
 		std::string buffer = tag;
-		if(ImGui::InputText("##Tag", &buffer))
+		if(ImGui::InputText("##Tag", buffer))
 			tag = buffer;
 		if(ImGui::IsItemHovered(/*ImGuiHoveredFlags_DelayShort*/)) //TODO
 		{

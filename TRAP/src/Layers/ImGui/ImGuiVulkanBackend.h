@@ -53,14 +53,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 //   the backend itself (imgui_impl_vulkan.cpp), but should PROBABLY NOT be used by your own engine/app code.
 // Read comments in imgui_impl_vulkan.h.
 
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif /*_MSC_VER*/
-//ImGUI
 #include <imgui.h>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif /*_MSC_VER*/
 
 #include "Core/Base.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
@@ -92,8 +85,8 @@ namespace ImGui::INTERNAL::Vulkan
         std::vector<VkDescriptorPoolSize> DescriptorPoolSizes{};
         VkDescriptorPool DescriptorPool = VK_NULL_HANDLE; //See requirements in note above
         VkRenderPass RenderPass = VK_NULL_HANDLE; //Ignored if using dynamic rendering
-        u32 MinImageCount = 2;                   // >= 2
-        u32 ImageCount = 2;                      // >= MinImageCount
+        u32 MinImageCount = 2u;                   // >= 2
+        u32 ImageCount = 2u;                      // >= MinImageCount
         VkSampleCountFlagBits MSAASamples = VK_SAMPLE_COUNT_1_BIT; // 0 defaults to VK_SAMPLE_COUNT_1_BIT
 
         //(Optional)

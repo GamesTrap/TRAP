@@ -47,6 +47,7 @@ Modified by Jan "GamesTrap" Schuerkamp
 #include "Graphics/API/Vulkan/Objects/VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/Textures/Texture.h"
+#include "FileSystem/FileSystem.h"
 
 // dear imgui: Renderer Backend for Vulkan
 
@@ -77,7 +78,7 @@ namespace
         gl_Position = vec4(aPos * pc.uScale + pc.uTranslate, 0, 1);
     }
     */
-    constexpr std::array<u32, 324> glsl_shader_vert_spv =
+    constexpr std::array<u32, 324u> glsl_shader_vert_spv =
     {
         0x07230203,0x00010000,0x00080001,0x0000002e,0x00000000,0x00020011,0x00000001,0x0006000b,
         0x00000001,0x4c534c47,0x6474732e,0x3035342e,0x00000000,0x0003000e,0x00000000,0x00000001,
@@ -136,7 +137,7 @@ namespace
         fColor = In.Color * texture(sTexture, In.UV.st);
     }
     */
-    constexpr std::array<u32, 193> glsl_shader_frag_spv =
+    constexpr std::array<u32, 193u> glsl_shader_frag_spv =
     {
         0x07230203,0x00010000,0x00080001,0x0000001e,0x00000000,0x00020011,0x00000001,0x0006000b,
         0x00000001,0x4c534c47,0x6474732e,0x3035342e,0x00000000,0x0003000e,0x00000000,0x00000001,
@@ -178,7 +179,7 @@ namespace
         TRAP::Graphics::API::VulkanCommandBuffer* CommandBuffer = nullptr;
         TRAP::Ref<TRAP::Graphics::API::VulkanFence> Fence = nullptr;
         TRAP::Ref<TRAP::Graphics::API::VulkanRenderTarget> Backbuffer = nullptr;
-        VkFramebuffer       Framebuffer = VK_NULL_HANDLE;
+        VkFramebuffer Framebuffer = VK_NULL_HANDLE;
     };
 
     struct ImGui_ImplVulkanH_FrameSemaphores
@@ -191,21 +192,21 @@ namespace
     // (Used by multi-viewport features.)
     struct ImGui_ImplVulkanH_Window
     {
-        i32             Width{};
-        i32             Height{};
-        VkSwapchainKHR      Swapchain = VK_NULL_HANDLE;
-        VkSurfaceKHR        Surface = VK_NULL_HANDLE;
-        VkSurfaceFormatKHR  SurfaceFormat{};
-        VkPresentModeKHR    PresentMode = VK_PRESENT_MODE_MAX_ENUM_KHR;
-        VkRenderPass        RenderPass = VK_NULL_HANDLE;
-        bool                UseDynamicRendering = false;
-        bool                ClearEnable = true;
-        VkClearValue        ClearValue{};
-        u32            FrameIndex{}; // Current frame being rendered to (0 <= FrameIndex < FrameInFlightCount)
-        u32            ImageCount{}; // Number of simultaneous in-flight frames (returned by vkGetSwapchainImagesKHR, usually derived from min_image_count)
-        u32            SemaphoreIndex{}; // Current set of swapchain wait semaphores we're using (needs to be distinct from per frame data)
-        std::vector<ImGui_ImplVulkanH_Frame>            Frames{};
-        std::vector<ImGui_ImplVulkanH_FrameSemaphores>  FrameSemaphores{};
+        i32 Width{};
+        i32 Height{};
+        VkSwapchainKHR Swapchain = VK_NULL_HANDLE;
+        VkSurfaceKHR Surface = VK_NULL_HANDLE;
+        VkSurfaceFormatKHR SurfaceFormat{};
+        VkPresentModeKHR PresentMode = VK_PRESENT_MODE_MAX_ENUM_KHR;
+        VkRenderPass RenderPass = VK_NULL_HANDLE;
+        bool UseDynamicRendering = false;
+        bool ClearEnable = true;
+        VkClearValue ClearValue{};
+        u32 FrameIndex{}; // Current frame being rendered to (0 <= FrameIndex < FrameInFlightCount)
+        u32 ImageCount{}; // Number of simultaneous in-flight frames (returned by vkGetSwapchainImagesKHR, usually derived from min_image_count)
+        u32 SemaphoreIndex{}; // Current set of swapchain wait semaphores we're using (needs to be distinct from per frame data)
+        std::vector<ImGui_ImplVulkanH_Frame> Frames{};
+        std::vector<ImGui_ImplVulkanH_FrameSemaphores> FrameSemaphores{};
     };
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -236,8 +237,8 @@ namespace
     // Each viewport will hold 1 ImGui_ImplVulkanH_WindowRenderBuffers
     struct ImGui_ImplVulkanH_WindowRenderBuffers
     {
-        u32            Index = 0;
-        u32            Count = 0;
+        u32 Index = 0u;
+        u32 Count = 0u;
         std::vector<ImGui_ImplVulkanH_FrameRenderBuffers> FrameRenderBuffers{};
     };
 
@@ -247,10 +248,10 @@ namespace
     // Helper structure we store in the void* RendererUserData field of each ImGuiViewport to easily retrieve our backend data.
     struct ImGui_ImplVulkan_ViewportData
     {
-        ImGui_ImplVulkanH_Window                Window{};                      // Used by secondary viewports only
-        ImGui_ImplVulkanH_WindowRenderBuffers   RenderBuffers{};               // Used by all viewports
-        bool                                    WindowOwned = false;
-        bool                                    SwapChainNeedsRebuild = false; // Flag when viewport swapchain resized in the middle of processing a frame
+        ImGui_ImplVulkanH_Window Window{}; // Used by secondary viewports only
+        ImGui_ImplVulkanH_WindowRenderBuffers RenderBuffers{}; // Used by all viewports
+        bool WindowOwned = false;
+        bool SwapChainNeedsRebuild = false; // Flag when viewport swapchain resized in the middle of processing a frame
     };
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -258,20 +259,20 @@ namespace
     // Vulkan data
     struct ImGui_ImplVulkan_Data
     {
-        InitInfo                    VulkanInitInfo{};
-        VkPipelineCreateFlags       PipelineCreateFlags{};
-        VkDescriptorSetLayout       DescriptorSetLayout = VK_NULL_HANDLE;
-        VkPipelineLayout            PipelineLayout = VK_NULL_HANDLE;
-        VkDescriptorSet             DescriptorSet = VK_NULL_HANDLE;
-        VkPipeline                  Pipeline = VK_NULL_HANDLE; //Pipeline for main render pass (created by app)
-        VkPipeline                  PipelineForViewports = VK_NULL_HANDLE; //Pipeline for secondary viewports (created by backend)
-        VkShaderModule              ShaderModuleVert = VK_NULL_HANDLE;
-        VkShaderModule              ShaderModuleFrag = VK_NULL_HANDLE;
+        InitInfo VulkanInitInfo{};
+        VkPipelineCreateFlags PipelineCreateFlags{};
+        VkDescriptorSetLayout DescriptorSetLayout = VK_NULL_HANDLE;
+        VkPipelineLayout PipelineLayout = VK_NULL_HANDLE;
+        VkDescriptorSet DescriptorSet = VK_NULL_HANDLE;
+        VkPipeline Pipeline = VK_NULL_HANDLE; //Pipeline for main render pass (created by app)
+        VkPipeline PipelineForViewports = VK_NULL_HANDLE; //Pipeline for secondary viewports (created by backend)
+        VkShaderModule ShaderModuleVert = VK_NULL_HANDLE;
+        VkShaderModule ShaderModuleFrag = VK_NULL_HANDLE;
 
         // Font data
         TRAP::Ref<TRAP::Graphics::API::VulkanSampler> FontSampler = nullptr;
         TRAP::Ref<TRAP::Graphics::API::VulkanTexture> FontImage = nullptr;
-        VkDescriptorSet             FontDescriptorSet = VK_NULL_HANDLE;
+        VkDescriptorSet FontDescriptorSet = VK_NULL_HANDLE;
         TRAP::Ref<TRAP::Graphics::API::VulkanCommandPool> FontCommandPool = nullptr;
         TRAP::Graphics::CommandBuffer* FontCommandBuffer = nullptr;
 
@@ -292,9 +293,9 @@ namespace
                           const ImGui_ImplVulkanH_FrameRenderBuffers& rb, i32 fb_width, i32 fb_height);
     void CreateShaderModules(const TRAP::Graphics::API::VulkanDevice& device,
                              const VkAllocationCallbacks* allocator);
-    void CreatePipeline(const TRAP::Graphics::API::VulkanDevice& device, const VkAllocationCallbacks* allocator,
-                        const TRAP::Graphics::API::VulkanPipelineCache* pipelineCache,
-                        VkRenderPass renderPass, VkSampleCountFlagBits MSAASamples, VkPipeline& pipeline);
+    [[nodiscard]] VkPipeline CreatePipeline(const TRAP::Graphics::API::VulkanDevice& device, const VkAllocationCallbacks* allocator,
+                                            const TRAP::Graphics::API::VulkanPipelineCache* pipelineCache,
+                                            VkRenderPass renderPass, VkSampleCountFlagBits MSAASamples);
     void CreateDeviceObjects();
     void DestroyDeviceObjects();
 
@@ -304,7 +305,7 @@ namespace
     [[nodiscard]] VkPresentModeKHR SelectPresentMode(const TRAP::Graphics::API::VulkanPhysicalDevice& physical_device,
                                                      VkSurfaceKHR surface, std::span<const VkPresentModeKHR> request_modes);
     void CreateWindowCommandBuffers(ImGui_ImplVulkanH_Window& wd, const TRAP::Ref<TRAP::Graphics::API::VulkanQueue>& queue);
-    [[nodiscard]] std::optional<i32> GetMinImageCountFromPresentMode(VkPresentModeKHR present_mode);
+    [[nodiscard]] constexpr TRAP::Optional<u32> GetMinImageCountFromPresentMode(VkPresentModeKHR present_mode);
     void CreateWindowSwapChain(const TRAP::Graphics::API::VulkanDevice& device,
                                ImGui_ImplVulkanH_Window& wd, const VkAllocationCallbacks* allocator,
                                i32 w, i32 h, u32 min_image_count);
@@ -370,6 +371,7 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         const ImGui_ImplVulkan_Data* const bd = GetBackendData();
+        TRAP_ASSERT(bd, "ImGuiVulkanBackend::SetupRenderState(): Backend data is nullptr!");
 
         // Bind pipeline
         {
@@ -380,9 +382,9 @@ namespace
         if (draw_data.TotalVtxCount > 0)
         {
 
-            command_buffer.BindVertexBuffer({*rb.VertexBuffer}, {sizeof(TRAP::Math::Vec2) + sizeof(TRAP::Math::Vec2) + sizeof(TRAP::Math::Vec4)}, {0});
-            const auto indexType = sizeof(ImDrawIdx) == 2 ? TRAP::Graphics::RendererAPI::IndexType::UInt16 : TRAP::Graphics::RendererAPI::IndexType::UInt32;
-            command_buffer.BindIndexBuffer(*rb.IndexBuffer, indexType, 0);
+            command_buffer.BindVertexBuffer({*rb.VertexBuffer}, {sizeof(TRAP::Math::Vec2) + sizeof(TRAP::Math::Vec2) + sizeof(TRAP::Math::Vec4)}, {0u});
+            const auto indexType = sizeof(ImDrawIdx) == 2u ? TRAP::Graphics::RendererAPI::IndexType::UInt16 : TRAP::Graphics::RendererAPI::IndexType::UInt32;
+            command_buffer.BindIndexBuffer(*rb.IndexBuffer, indexType, 0u);
         }
 
         // Setup viewport:
@@ -391,10 +393,10 @@ namespace
         // Setup scale and translation:
         // Our visible imgui space lies from draw_data->DisplayPps (top left) to draw_data->DisplayPos+data_data->DisplaySize (bottom right). DisplayPos is (0,0) for single viewport apps.
         {
-            const std::array<f32, 2> scale{2.0f / draw_data.DisplaySize.x, 2.0f / draw_data.DisplaySize.y};
-            const std::array<f32, 2> translate{-1.0f - draw_data.DisplayPos.x * std::get<0>(scale), -1.0f - draw_data.DisplayPos.y * std::get<1>(scale)};
-            vkCmdPushConstants(command_buffer.GetVkCommandBuffer(), bd->PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, sizeof(f32) * 0, sizeof(f32) * 2, scale.data());
-            vkCmdPushConstants(command_buffer.GetVkCommandBuffer(), bd->PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, sizeof(f32) * 2, sizeof(f32) * 2, translate.data());
+            const std::array<f32, 2u> scale{2.0f / draw_data.DisplaySize.x, 2.0f / draw_data.DisplaySize.y};
+            const std::array<f32, 2u> translate{-1.0f - draw_data.DisplayPos.x * std::get<0u>(scale), -1.0f - draw_data.DisplayPos.y * std::get<1u>(scale)};
+            vkCmdPushConstants(command_buffer.GetVkCommandBuffer(), bd->PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, sizeof(f32) * 0u, sizeof(f32) * 2u, scale.data());
+            vkCmdPushConstants(command_buffer.GetVkCommandBuffer(), bd->PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, sizeof(f32) * 2u, sizeof(f32) * 2u, translate.data());
         }
     }
 
@@ -407,26 +409,29 @@ namespace
 
         // Create the shader modules
         ImGui_ImplVulkan_Data* const bd = GetBackendData();
+        TRAP_ASSERT(bd, "ImGuiVulkanBackend::CreateShaderModules(): Backend data is nullptr!");
+
         if (bd->ShaderModuleVert == VK_NULL_HANDLE)
         {
             static constexpr VkShaderModuleCreateInfo vert_info
             {
                 .sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
                 .pNext = nullptr,
-                .flags = 0,
+                .flags = 0u,
                 .codeSize = glsl_shader_vert_spv.size() * sizeof(decltype(glsl_shader_vert_spv)::value_type),
                 .pCode = glsl_shader_vert_spv.data()
             };
             const VkResult err = vkCreateShaderModule(device.GetVkDevice(), &vert_info, allocator, &bd->ShaderModuleVert);
             CheckVkResult(err);
         }
+
         if (bd->ShaderModuleFrag == VK_NULL_HANDLE)
         {
             static constexpr VkShaderModuleCreateInfo frag_info
             {
                 .sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
                 .pNext = nullptr,
-                .flags = 0,
+                .flags = 0u,
                 .codeSize = glsl_shader_frag_spv.size() * sizeof(decltype(glsl_shader_frag_spv)::value_type),
                 .pCode = glsl_shader_frag_spv.data()
             };
@@ -437,17 +442,19 @@ namespace
 
     //-------------------------------------------------------------------------------------------------------------------//
 
-    void CreatePipeline(const TRAP::Graphics::API::VulkanDevice& device,
-                        const VkAllocationCallbacks* const allocator,
-                        const TRAP::Graphics::API::VulkanPipelineCache* const pipelineCache,
-                        VkRenderPass renderPass, const VkSampleCountFlagBits MSAASamples, VkPipeline& pipeline)
+    [[nodiscard]] VkPipeline CreatePipeline(const TRAP::Graphics::API::VulkanDevice& device,
+                                            const VkAllocationCallbacks* const allocator,
+                                            const TRAP::Graphics::API::VulkanPipelineCache* const pipelineCache,
+                                            VkRenderPass renderPass, const VkSampleCountFlagBits MSAASamples)
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         const ImGui_ImplVulkan_Data* const bd = GetBackendData();
+        TRAP_ASSERT(bd, "ImGuiVulkanBackend::CreatePipeline(): Backend data is nullptr!");
+
         CreateShaderModules(device, allocator);
 
-        const std::array<VkPipelineShaderStageCreateInfo, 2> stage
+        const std::array<VkPipelineShaderStageCreateInfo, 2u> stage
         {
             TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo(VK_SHADER_STAGE_VERTEX_BIT, bd->ShaderModuleVert, "main"),
             TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo(VK_SHADER_STAGE_FRAGMENT_BIT, bd->ShaderModuleFrag, "main")
@@ -455,37 +462,37 @@ namespace
 
         static constexpr VkVertexInputBindingDescription binding_desc
         {
-            .binding = 0,
+            .binding = 0u,
             .stride = sizeof(ImDrawVert),
             .inputRate = VK_VERTEX_INPUT_RATE_VERTEX
         };
 
-        static constexpr std::array<VkVertexInputAttributeDescription, 3> attribute_desc
+        static constexpr std::array<VkVertexInputAttributeDescription, 3u> attribute_desc
         {
             VkVertexInputAttributeDescription
             {
-                .location = 0,
+                .location = 0u,
                 .binding = binding_desc.binding,
                 .format = VK_FORMAT_R32G32_SFLOAT,
                 .offset = NumericCast<u32>(offsetof(ImDrawVert, pos))
             },
             VkVertexInputAttributeDescription
             {
-                .location = 1,
+                .location = 1u,
                 .binding = binding_desc.binding,
                 .format = VK_FORMAT_R32G32_SFLOAT,
                 .offset = NumericCast<u32>(offsetof(ImDrawVert, uv))
             },
             VkVertexInputAttributeDescription
             {
-                .location = 2,
+                .location = 2u,
                 .binding = binding_desc.binding,
                 .format = VK_FORMAT_R8G8B8A8_UNORM,
                 .offset = NumericCast<u32>(offsetof(ImDrawVert, col))
             }
         };
 
-        const VkPipelineVertexInputStateCreateInfo vertex_info = TRAP::Graphics::API::VulkanInits::PipelineVertexInputStateCreateInfo(std::span(&binding_desc, 1), attribute_desc);
+        const VkPipelineVertexInputStateCreateInfo vertex_info = TRAP::Graphics::API::VulkanInits::PipelineVertexInputStateCreateInfo(std::span(&binding_desc, 1u), attribute_desc);
         static constexpr VkPipelineInputAssemblyStateCreateInfo ia_info = TRAP::Graphics::API::VulkanInits::PipelineInputAssemblyStateCreateInfo(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, false);
         static constexpr VkPipelineViewportStateCreateInfo viewport_info = TRAP::Graphics::API::VulkanInits::PipelineViewportStateCreateInfo();
 
@@ -493,7 +500,7 @@ namespace
         {
             .sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
             .pNext = nullptr,
-            .flags = 0,
+            .flags = 0u,
             .depthClampEnable = VK_FALSE,
             .rasterizerDiscardEnable = VK_FALSE,
             .polygonMode = VK_POLYGON_MODE_FILL,
@@ -506,7 +513,7 @@ namespace
             .lineWidth = 1.0f
         };
 
-        const VkPipelineMultisampleStateCreateInfo ms_info = TRAP::Graphics::API::VulkanInits::PipelineMultisampleStateCreateInfo((MSAASamples != 0) ? MSAASamples : VK_SAMPLE_COUNT_1_BIT, false, 0.0f);
+        const VkPipelineMultisampleStateCreateInfo ms_info = TRAP::Graphics::API::VulkanInits::PipelineMultisampleStateCreateInfo((MSAASamples != 0u) ? MSAASamples : VK_SAMPLE_COUNT_1_BIT, false, 0.0f);
 
         static constexpr VkPipelineColorBlendAttachmentState color_attachment
         {
@@ -525,17 +532,17 @@ namespace
         {
             .sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
             .pNext = nullptr,
-            .flags = 0,
+            .flags = 0u,
             .depthTestEnable = VK_FALSE,
             .depthWriteEnable = VK_FALSE,
             .depthCompareOp = VK_COMPARE_OP_NEVER,
             .depthBoundsTestEnable = VK_FALSE,
             .stencilTestEnable = VK_FALSE,
             .front = VkStencilOpState{.failOp = VK_STENCIL_OP_KEEP, .passOp = VK_STENCIL_OP_KEEP, .depthFailOp = VK_STENCIL_OP_KEEP,
-                                      .compareOp = VK_COMPARE_OP_NEVER, .compareMask = 0, .writeMask = 0, .reference = 0},
+                                      .compareOp = VK_COMPARE_OP_NEVER, .compareMask = 0u, .writeMask = 0u, .reference = 0u},
             .back = VkStencilOpState{.failOp = VK_STENCIL_OP_KEEP, .passOp = VK_STENCIL_OP_KEEP, .depthFailOp = VK_STENCIL_OP_KEEP,
-                                      .compareOp = VK_COMPARE_OP_NEVER, .compareMask = 0, .writeMask = 0, .reference = 0},
-            .minDepthBounds =  0.0f,
+                                      .compareOp = VK_COMPARE_OP_NEVER, .compareMask = 0u, .writeMask = 0u, .reference = 0u},
+            .minDepthBounds = 0.0f,
             .maxDepthBounds = 0.0f
         };
 
@@ -559,10 +566,13 @@ namespace
         }
     #endif
 
+        VkPipeline pipeline = VK_NULL_HANDLE;
         const VkResult err = vkCreateGraphicsPipelines(device.GetVkDevice(),
                                                        pipelineCache != nullptr ? pipelineCache->GetVkPipelineCache() : VK_NULL_HANDLE,
-                                                       1, &info, allocator, &pipeline);
+                                                       1u, &info, allocator, &pipeline);
         CheckVkResult(err);
+
+        return pipeline;
     }
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -572,6 +582,8 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         ImGui_ImplVulkan_Data* const bd = GetBackendData();
+        TRAP_ASSERT(bd, "ImGuiVulkanBackend::CreatePipeline(): Backend data is nullptr!");
+
         const InitInfo& v = bd->VulkanInitInfo;
         VkResult err = VK_SUCCESS;
 
@@ -603,9 +615,9 @@ namespace
         {
             static constexpr VkDescriptorSetLayoutBinding binding
             {
-                .binding = 0,
+                .binding = 0u,
                 .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-                .descriptorCount = 1,
+                .descriptorCount = 1u,
                 .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
                 .pImmutableSamplers = nullptr
             };
@@ -613,8 +625,8 @@ namespace
             {
                 .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
                 .pNext = nullptr,
-                .flags = 0,
-                .bindingCount = 1,
+                .flags = 0u,
+                .bindingCount = 1u,
                 .pBindings = &binding
             };
             err = vkCreateDescriptorSetLayout(v.Device->GetVkDevice(), &info, v.Allocator, &bd->DescriptorSetLayout);
@@ -624,22 +636,22 @@ namespace
         if (bd->PipelineLayout == nullptr)
         {
             // Constants: we are using 'vec2 offset' and 'vec2 scale' instead of a full 3d projection matrix
-            static constexpr std::array<VkPushConstantRange, 1> push_constants
+            static constexpr std::array<VkPushConstantRange, 1u> push_constants
             {
                 VkPushConstantRange
                 {
                     .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-                    .offset = sizeof(f32) * 0,
-                    .size = sizeof(f32) * 4
+                    .offset = sizeof(f32) * 0u,
+                    .size = sizeof(f32) * 4u
                 }
             };
-            std::array<VkDescriptorSetLayout, 1> set_layout{bd->DescriptorSetLayout};
+            const std::array<VkDescriptorSetLayout, 1u> set_layout{bd->DescriptorSetLayout};
             const VkPipelineLayoutCreateInfo layout_info = TRAP::Graphics::API::VulkanInits::PipelineLayoutCreateInfo(set_layout, push_constants);
             err = vkCreatePipelineLayout(v.Device->GetVkDevice(), &layout_info, v.Allocator, &bd->PipelineLayout);
             CheckVkResult(err);
         }
 
-        CreatePipeline(*v.Device, v.Allocator, v.PipelineCache.get(), v.RenderPass, v.MSAASamples, bd->Pipeline);
+        bd->Pipeline = CreatePipeline(*v.Device, v.Allocator, v.PipelineCache.get(), v.RenderPass, v.MSAASamples);
     }
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -649,7 +661,9 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         ImGui_ImplVulkan_Data* const bd = GetBackendData();
-        const InitInfo& v = bd->VulkanInitInfo;
+        TRAP_ASSERT(bd, "ImGuiVulkanBackend::CreatePipeline(): Backend data is nullptr!");
+
+        InitInfo& v = bd->VulkanInitInfo;
         DestroyAllViewportsRenderBuffers();
         DestroyFontsTexture();
 
@@ -661,6 +675,13 @@ namespace
         if (bd->PipelineLayout != nullptr)       { vkDestroyPipelineLayout(v.Device->GetVkDevice(), bd->PipelineLayout, v.Allocator); bd->PipelineLayout = VK_NULL_HANDLE; }
         if (bd->Pipeline != nullptr)             { vkDestroyPipeline(v.Device->GetVkDevice(), bd->Pipeline, v.Allocator); bd->Pipeline = VK_NULL_HANDLE; }
         if (bd->PipelineForViewports != nullptr) { vkDestroyPipeline(v.Device->GetVkDevice(), bd->PipelineForViewports, v.Allocator); bd->PipelineForViewports = VK_NULL_HANDLE; }
+
+        if(v.PipelineCache != nullptr)
+        {
+            if(const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath())
+                v.PipelineCache->Save(*tempFolder / "ImGui.cache");
+            v.PipelineCache = nullptr;
+        }
     }
 
     //-------------------------------------------------------------------------
@@ -691,7 +712,7 @@ namespace
         // Assuming that the default behavior is without setting this bit, there is no need for separate Swapchain image and image view format
         // Additionally several new color spaces were introduced with Vulkan Spec v1.0.40,
         // hence we must make sure that a format with the mostly available color space, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR, is found and used.
-        u32 avail_count = 0;
+        u32 avail_count = 0u;
         CheckVkResult(vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device.GetVkPhysicalDevice(), surface, &avail_count, nullptr));
         ImVector<VkSurfaceFormatKHR> avail_format;
         avail_format.resize(NumericCast<i32>(avail_count));
@@ -700,17 +721,17 @@ namespace
         // First check if only one format, VK_FORMAT_UNDEFINED, is available, which would imply that any format is available
         if (avail_format.size() == 1)
         {
-            if (avail_format[0].format == VK_FORMAT_UNDEFINED)
+            if (avail_format.front().format == VK_FORMAT_UNDEFINED)
             {
                 return VkSurfaceFormatKHR
                 {
-                    .format = request_formats[0],
+                    .format = request_formats.front(),
                     .colorSpace = request_color_space
                 };
             }
 
             // No point in searching another format
-            return avail_format[0];
+            return avail_format.front();
         }
 
         // Request several formats, the first found will be used
@@ -724,7 +745,7 @@ namespace
         }
 
         // If none of the requested image formats could be found, use the first available
-        return avail_format[0];
+        return avail_format.front();
     }
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -738,7 +759,7 @@ namespace
         TRAP_ASSERT(!request_modes.empty(), "ImGuiVulkanBackend::SelectPresentMode(): request_modes is empty!");
 
         // Request a certain mode and confirm that it is available. If not use VK_PRESENT_MODE_FIFO_KHR which is mandatory
-        u32 avail_count = 0;
+        u32 avail_count = 0u;
         CheckVkResult(vkGetPhysicalDeviceSurfacePresentModesKHR(physical_device.GetVkPhysicalDevice(), surface, &avail_count, nullptr));
         ImVector<VkPresentModeKHR> avail_modes;
         avail_modes.resize(NumericCast<i32>(avail_count));
@@ -764,7 +785,7 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         // Create Command Buffers
-        for (u32 i = 0; i < wd.ImageCount; i++)
+        for (u32 i = 0u; i < wd.ImageCount; ++i)
         {
             ImGui_ImplVulkanH_Frame& fd = wd.Frames[i];
             const TRAP::Graphics::RendererAPI::CommandPoolDesc cmdPoolDesc
@@ -779,7 +800,7 @@ namespace
             fd.Fence = TRAP::MakeRef<TRAP::Graphics::API::VulkanFence>(true, fmt::format("ImGui Window Fence (Image: {}, QueueType: \"{}\")", i, queue->GetQueueType()));
         }
 
-        for(u32 i = 0; i < wd.FrameSemaphores.size(); ++i)
+        for(u32 i = 0u; i < wd.FrameSemaphores.size(); ++i)
         {
             wd.FrameSemaphores[i].ImageAcquiredSemaphore = TRAP::MakeRef<TRAP::Graphics::API::VulkanSemaphore>(fmt::format("ImGui Window Semaphore (Image: {}, ImageAcquired)", i));
             wd.FrameSemaphores[i].RenderCompleteSemaphore = TRAP::MakeRef<TRAP::Graphics::API::VulkanSemaphore>(fmt::format("ImGui Window Semaphore (Image: {}, RenderComplete)", i));
@@ -788,20 +809,17 @@ namespace
 
     //-------------------------------------------------------------------------------------------------------------------//
 
-    [[nodiscard]] std::optional<i32> GetMinImageCountFromPresentMode(const VkPresentModeKHR present_mode)
+    [[nodiscard]] constexpr TRAP::Optional<u32> GetMinImageCountFromPresentMode(const VkPresentModeKHR present_mode)
     {
-        ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None &&
-                                                 (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
         if (present_mode == VK_PRESENT_MODE_MAILBOX_KHR)
-            return 3;
+            return 3u;
         if (present_mode == VK_PRESENT_MODE_FIFO_KHR || present_mode == VK_PRESENT_MODE_FIFO_RELAXED_KHR)
-            return 2;
+            return 2u;
         if (present_mode == VK_PRESENT_MODE_IMMEDIATE_KHR)
-            return 1;
+            return 1u;
 
         TRAP_ASSERT(false, "ImGuiVulkanBackend::GetMinImageCountFromPresentMode(): Unable to retrieve min image count from present mode!");
-        return std::nullopt;
+        return TRAP::NullOpt;
     }
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -821,17 +839,17 @@ namespace
 
         // We don't use DestroyWindow() because we want to preserve the old swapchain to create the new one.
         // Destroy old Framebuffer
-        for (u32 i = 0; i < wd.ImageCount; i++)
+        for (u32 i = 0u; i < wd.ImageCount; ++i)
             DestroyFrame(device, wd.Frames[i], allocator);
         wd.Frames.clear();
         wd.FrameSemaphores.clear();
-        wd.ImageCount = 0;
+        wd.ImageCount = 0u;
         if (wd.RenderPass != nullptr)
             vkDestroyRenderPass(device.GetVkDevice(), wd.RenderPass, allocator);
 
         // If min image count was not specified, request different count of images dependent on selected present mode
-        if (min_image_count == 0)
-            min_image_count = NumericCast<u32>(GetMinImageCountFromPresentMode(wd.PresentMode).value_or(1u));
+        if (min_image_count == 0u)
+            min_image_count = GetMinImageCountFromPresentMode(wd.PresentMode).ValueOr(1u);
 
         // Create Swapchain
         {
@@ -843,10 +861,10 @@ namespace
             CheckVkResult(err);
             if (info.minImageCount < cap.minImageCount)
                 info.minImageCount = cap.minImageCount;
-            else if (cap.maxImageCount != 0 && info.minImageCount > cap.maxImageCount)
+            else if (cap.maxImageCount != 0u && info.minImageCount > cap.maxImageCount)
                 info.minImageCount = cap.maxImageCount;
 
-            if (cap.currentExtent.width == 0xFFFFFFFF)
+            if (cap.currentExtent.width == 0xFFFFFFFFu)
             {
                 wd.Width = w;
                 wd.Height = h;
@@ -874,22 +892,22 @@ namespace
             TRAP_ASSERT(wd.Frames.empty(), "ImGuiVulkanBackend::CreateWindowSwapChain(): wd.Frames is not empty!");
             TRAP_ASSERT(wd.FrameSemaphores.empty(), "ImGuiVulkanBackend::CreateWindowSwapChain(): wd.FrameSemaphores is not empty!");
             wd.Frames.resize(wd.ImageCount);
-            wd.FrameSemaphores.resize(wd.ImageCount + 1);
-            for (u32 i = 0; i < wd.ImageCount; i++)
+            wd.FrameSemaphores.resize(wd.ImageCount + 1u);
+            for (u32 i = 0u; i < wd.ImageCount; ++i)
             {
                 const TRAP::Graphics::RendererAPI::RenderTargetDesc rtDesc
                 {
                     .Flags = TRAP::Graphics::RendererAPI::TextureCreationFlags::None,
                     .Width = NumericCast<u32>(wd.Width),
                     .Height = NumericCast<u32>(wd.Height),
-                    .Depth = 1,
-                    .ArraySize = 1,
-                    .MipLevels = 0,
+                    .Depth = 1u,
+                    .ArraySize = 1u,
+                    .MipLevels = 0u,
                     .SampleCount = TRAP::Graphics::RendererAPI::SampleCount::One,
                     .Format = TRAP::Graphics::API::ImageFormatFromVkFormat(wd.SurfaceFormat.format),
                     .StartState = TRAP::Graphics::RendererAPI::ResourceState::Present,
                     .ClearValue = {},
-                    .SampleQuality = 0,
+                    .SampleQuality = 0u,
                     .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Undefined,
                     .Name = fmt::format("ImGui Backbuffer (Index: {})", i),
                     .NativeHandle = backbuffers[i]
@@ -909,7 +927,7 @@ namespace
                                                                                                                VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
             static constexpr VkAttachmentReference attachmentRef
             {
-                .attachment = 0,
+                .attachment = 0u,
                 .layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
             };
 
@@ -924,15 +942,15 @@ namespace
             //Secondary viewports in multi-viewport mode may want to create their own pipelines.
             //This fixes the RenderPass incompatibility coming from the bd->RenderPass
             //which was first passed on to ImGui_ImplVulkan_Init().
-            // CreatePipeline(device, allocator, VK_NULL_HANDLE, wd.RenderPass, VK_SAMPLE_COUNT_1_BIT, wd.Pipeline);
+            // wd.Pipeline = CreatePipeline(device, allocator, VK_NULL_HANDLE, wd.RenderPass, VK_SAMPLE_COUNT_1_BIT);
         }
 
         // Create Framebuffer
         if(!wd.UseDynamicRendering)
         {
-            VkFramebufferCreateInfo info = TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo(wd.RenderPass, {}, NumericCast<u32>(wd.Width), NumericCast<u32>(wd.Height), 1);
-            info.attachmentCount = 1;
-            for (u32 i = 0; i < wd.ImageCount; i++)
+            VkFramebufferCreateInfo info = TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo(wd.RenderPass, {}, NumericCast<u32>(wd.Width), NumericCast<u32>(wd.Height), 1u);
+            info.attachmentCount = 1u;
+            for (u32 i = 0u; i < wd.ImageCount; ++i)
             {
                 ImGui_ImplVulkanH_Frame& fd = wd.Frames[i];
                 VkImageView backbufferView = fd.Backbuffer->GetVkImageView();
@@ -971,7 +989,7 @@ namespace
         device.WaitIdle(); // FIXME: We could wait on the Queue if we had the queue in wd-> (otherwise VulkanH functions can't use globals)
         //vkQueueWaitIdle(bd.Queue);
 
-        for (u32 i = 0; i < wnd.ImageCount; i++)
+        for (u32 i = 0u; i < wnd.ImageCount; ++i)
             DestroyFrame(device, wnd.Frames[i], allocator);
         wnd.Frames.clear();
         wnd.FrameSemaphores.clear();
@@ -1005,9 +1023,11 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         ImGui_ImplVulkan_Data* const bd = GetBackendData();
+        TRAP_ASSERT(bd, "ImGuiVulkanBackend::CreateNewDescriptorPool(): Backend data is nullptr!");
+
         InitInfo& v = bd->VulkanInitInfo;
 
-        VkDescriptorPoolCreateInfo poolInfo = TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(v.DescriptorPoolSizes, 1);
+        const VkDescriptorPoolCreateInfo poolInfo = TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(v.DescriptorPoolSizes, 1u);
 
         VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
         CheckVkResult(vkCreateDescriptorPool(v.Device->GetVkDevice(), &poolInfo, nullptr, &descriptorPool));
@@ -1023,12 +1043,9 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
         const ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
-        for(ImGuiViewport* viewport : platform_io.Viewports)
+        for(const ImGuiViewport* const viewport : platform_io.Viewports)
         {
-            if(viewport == nullptr)
-                continue;
-
-            if (ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData); vd)
+            if (ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData))
                 vd->RenderBuffers = {};
         }
     }
@@ -1043,9 +1060,15 @@ namespace
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-        TRAP_ASSERT(viewport != nullptr, "ImGuiVulkanBackend::CreateWindow(): viewport is nullptr!");
+        if(viewport == nullptr)
+        {
+            TRAP_ASSERT(false, "ImGuiVulkanBackend::CreateWindow(): viewport is nullptr!");
+            return;
+        }
 
         ImGui_ImplVulkan_Data* const bd = GetBackendData();
+        TRAP_ASSERT(bd, "ImGuiVulkanBackend::CreateWindow(): Backend data is nullptr!");
+
         ImGui_ImplVulkan_ViewportData* const vd = IM_NEW(ImGui_ImplVulkan_ViewportData)();
         viewport->RendererUserData = vd;
         ImGui_ImplVulkanH_Window& wd = vd->Window;
@@ -1067,20 +1090,20 @@ namespace
 
         // Select Surface Format
 #ifdef IMGUI_IMPL_VULKAN_HAY_DYNAMIC_RENDERING
-        static constexpr std::array<VkFormat, 5> requestSurfaceImageFormat
+        static constexpr std::array<VkFormat, 5u> requestSurfaceImageFormat
         {
             (v.UseDynamicRendering && v.ColorAttachmentFormat) ? v.ColorAttachmentFormat : VK_FORMAT_B8G8R8A8_UNORM,
             VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_B8G8R8_UNORM, VK_FORMAT_R8G8B8_UNORM
         };
 #else
-        static constexpr std::array<VkFormat, 4> requestSurfaceImageFormat{ VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_B8G8R8_UNORM, VK_FORMAT_R8G8B8_UNORM };
+        static constexpr std::array<VkFormat, 4u> requestSurfaceImageFormat{ VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_B8G8R8_UNORM, VK_FORMAT_R8G8B8_UNORM };
 #endif
         static constexpr VkColorSpaceKHR requestSurfaceColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
         wd.SurfaceFormat = SelectSurfaceFormat(v.Device->GetPhysicalDevice(), wd.Surface, requestSurfaceImageFormat, requestSurfaceColorSpace);
 
         // Select Present Mode
         // FIXME-VULKAN: Even thought mailbox seems to get us maximum framerate with a single window, it halves framerate with a second window etc. (w/ Nvidia and SDK 1.82.1)
-        static constexpr std::array<VkPresentModeKHR, 3> present_modes{ VK_PRESENT_MODE_MAILBOX_KHR, VK_PRESENT_MODE_IMMEDIATE_KHR, VK_PRESENT_MODE_FIFO_KHR };
+        static constexpr std::array<VkPresentModeKHR, 3u> present_modes{ VK_PRESENT_MODE_MAILBOX_KHR, VK_PRESENT_MODE_IMMEDIATE_KHR, VK_PRESENT_MODE_FIFO_KHR };
         wd.PresentMode = SelectPresentMode(v.Device->GetPhysicalDevice(), wd.Surface, present_modes);
 
         // Create SwapChain, RenderPass, Framebuffer, etc.
@@ -1091,7 +1114,7 @@ namespace
 
         //Create pipeline (shared by all secondary viewports)
         if(bd->PipelineForViewports == VK_NULL_HANDLE)
-            CreatePipeline(*v.Device, v.Allocator, VK_NULL_HANDLE, wd.RenderPass, VK_SAMPLE_COUNT_1_BIT, bd->PipelineForViewports);
+            bd->PipelineForViewports = CreatePipeline(*v.Device, v.Allocator, VK_NULL_HANDLE, wd.RenderPass, VK_SAMPLE_COUNT_1_BIT);
     }
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -1100,14 +1123,18 @@ namespace
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-        TRAP_ASSERT(viewport != nullptr, "ImGuiVulkanBackend::DestroyWindow(): viewport is nullptr!");
         if(viewport == nullptr)
+        {
+            TRAP_ASSERT(false, "ImGuiVulkanBackend::DestroyWindow(): viewport is nullptr!");
             return;
+        }
 
         // The main viewport (owned by the application) will always have RendererUserData == nullptr since we didn't create the data for it.
-        if (ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData); vd)
+        if (ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData))
         {
             const ImGui_ImplVulkan_Data* const bd = GetBackendData();
+            TRAP_ASSERT(bd, "ImGuiVulkanBackend::DestroyWindow(): Backend data is nullptr!");
+
             const InitInfo& v = bd->VulkanInitInfo;
             if (vd->WindowOwned)
                 DestroyWindow(*v.Instance, *v.Device, vd->Window, v.Allocator);
@@ -1123,12 +1150,16 @@ namespace
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-        TRAP_ASSERT(viewport != nullptr, "ImGuiVulkanBackend::SetWindowSize(): viewport is nullptr!");
         if(viewport == nullptr)
+        {
+            TRAP_ASSERT(false, "ImGuiVulkanBackend::SetWindowSize(): viewport is nullptr!");
             return;
+        }
 
         const ImGui_ImplVulkan_Data* const bd = GetBackendData();
-        if(ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData); vd)
+        TRAP_ASSERT(bd, "ImGuiVulkanBackend::SetWindowSize(): Backend data is nullptr!");
+
+        if(ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData))
         {
             const InitInfo& v = bd->VulkanInitInfo;
             vd->Window.ClearEnable = (viewport->Flags & ImGuiViewportFlags_NoRendererClear) == 0;
@@ -1142,16 +1173,21 @@ namespace
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-        TRAP_ASSERT(viewport != nullptr, "ImGuiVulkanBackend::SwapBuffers(): viewport is nullptr!");
         if(viewport == nullptr)
+        {
+            TRAP_ASSERT(false, "ImGuiVulkanBackend::SwapBuffers(): viewport is nullptr!");
             return;
+        }
 
         const ImGui_ImplVulkan_Data* const bd = GetBackendData();
+        TRAP_ASSERT(bd, "ImGuiVulkanBackend::SwapBuffers(): Backend data is nullptr!");
 
         ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData);
-        TRAP_ASSERT(vd != nullptr, "ImGuiVulkanBackend::SwapBuffers(): vd is nullptr!");
         if(vd == nullptr)
+        {
+            TRAP_ASSERT(false, "ImGuiVulkanBackend::SwapBuffers(): vd is nullptr!");
             return;
+        }
 
         ImGui_ImplVulkanH_Window& wd = vd->Window;
         const InitInfo& v = bd->VulkanInitInfo;
@@ -1176,7 +1212,7 @@ namespace
         else
             CheckVkResult(err);
 
-        wd.FrameIndex = (wd.FrameIndex + 1) % wd.ImageCount;         // This is for the next vkWaitForFences()
+        wd.FrameIndex = (wd.FrameIndex + 1u) % wd.ImageCount;         // This is for the next vkWaitForFences()
         wd.SemaphoreIndex = (wd.SemaphoreIndex + 1u) % NumericCast<u32>(wd.FrameSemaphores.size()); // Now we can use the next set of semaphores
     }
 
@@ -1215,15 +1251,25 @@ void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* const viewport, [[mayb
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-    TRAP_ASSERT(viewport != nullptr, "ImGuiVulkanBackend::RenderWindow(): viewport is nullptr!");
     if(viewport == nullptr)
+    {
+        TRAP_ASSERT(false, "ImGuiVulkanBackend::RenderWindow(): viewport is nullptr!");
         return;
+    }
 
     const ImGui_ImplVulkan_Data* const bd = GetBackendData();
-    ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData);
-    TRAP_ASSERT(vd != nullptr, "ImGuiVulkanBackend::RenderWindow(): vd is nullptr!");
-    if(vd == nullptr)
+    if(bd == nullptr)
+    {
+        TRAP_ASSERT(false, "ImGuiVulkanBackend::RenderWindow(): Backend data is nullptr!");
         return;
+    }
+
+    ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData);
+    if(vd == nullptr)
+    {
+        TRAP_ASSERT(false, "ImGuiVulkanBackend::RenderWindow(): vd is nullptr!");
+        return;
+    }
 
     ImGui_ImplVulkanH_Window& wd = vd->Window;
     const InitInfo& v = bd->VulkanInitInfo;
@@ -1257,7 +1303,7 @@ void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* const viewport, [[mayb
         }
         {
             static constexpr ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
-            std::copy_n(&clear_color.x, 4, &wd.ClearValue.color.float32[0]);
+            std::copy_n(&clear_color.x, 4u, &wd.ClearValue.color.float32[0u]);
         }
 #ifdef IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING
         if(v.UseDynamicRendering)
@@ -1276,8 +1322,8 @@ void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* const viewport, [[mayb
                     .Release = false,
                     .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
                     .SubresourceBarrier = false,
-                    .MipLevel = 0,
-                    .ArrayLayer = 0
+                    .MipLevel = 0u,
+                    .ArrayLayer = 0u
                 }
             };
             fd.CommandBuffer->ResourceBarrier(nullptr, &barriers, nullptr);
@@ -1300,12 +1346,12 @@ void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* const viewport, [[mayb
             {
                 .sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR,
                 .pNext = nullptr,
-                .flags = 0,
+                .flags = 0u,
                 .renderArea = VkRect2D{.offset = VkOffset2D{.x = 0, .y = 0},
                                         .extent = VkExtent2D{.width = NumericCast<u32>(wd.Width), .height = NumericCast<u32>(wd.Height)}},
-                .layerCount = 1,
-                .viewMask = 0,
-                .colorAttachmentCount = 1,
+                .layerCount = 1u,
+                .viewMask = 0u,
+                .colorAttachmentCount = 1u,
                 .pColorAttachments = &attachmentInfo,
                 .pDepthAttachment = nullptr,
                 .pStencilAttachment = nullptr
@@ -1354,8 +1400,8 @@ void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* const viewport, [[mayb
                     .Release = false,
                     .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
                     .SubresourceBarrier = false,
-                    .MipLevel = 0,
-                    .ArrayLayer = 0
+                    .MipLevel = 0u,
+                    .ArrayLayer = 0u
                 }
             };
             fd.CommandBuffer->ResourceBarrier(nullptr, &barriers, nullptr);
@@ -1374,18 +1420,18 @@ void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* const viewport, [[mayb
             {
                 .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
                 .pNext = nullptr,
-                .waitSemaphoreCount = 1,
+                .waitSemaphoreCount = 1u,
                 .pWaitSemaphores = &imageAcquiredSemaphore,
                 .pWaitDstStageMask = &wait_stage,
-                .commandBufferCount = 1,
+                .commandBufferCount = 1u,
                 .pCommandBuffers = &cmdBuffer,
-                .signalSemaphoreCount = 1,
+                .signalSemaphoreCount = 1u,
                 .pSignalSemaphores = &renderCompleteSemaphore
             };
 
             fd.CommandBuffer->End();
             // fd.Fence->ResetState(); //Already done by Fence::Wait();
-            err = vkQueueSubmit(v.Queue->GetVkQueue(), 1, &info, fd.Fence->GetVkFence());
+            err = vkQueueSubmit(v.Queue->GetVkQueue(), 1u, &info, fd.Fence->GetVkFence());
             CheckVkResult(err);
 
             fd.Fence->m_submitted = true;
@@ -1401,6 +1447,8 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
 
     const ImGuiIO& io = ImGui::GetIO();
     ImGui_ImplVulkan_Data* const bd = GetBackendData();
+    TRAP_ASSERT(bd, "ImGuiVulkanBackend::CreateFontsTexture(): Backend data is nullptr!");
+
     const InitInfo& v = bd->VulkanInitInfo;
 
     //Destroy existing texture (if any)
@@ -1449,10 +1497,10 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
         .Flags = TRAP::Graphics::RendererAPI::TextureCreationFlags::None,
         .Width = NumericCast<u32>(width),
         .Height = NumericCast<u32>(height),
-        .Depth = 1,
-        .ArraySize = 1,
+        .Depth = 1u,
+        .ArraySize = 1u,
         .SampleCount = TRAP::Graphics::RendererAPI::SampleCount::One,
-        .SampleQuality = 1,
+        .SampleQuality = 1u,
         .Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM,
         .ClearValue = {},
         .StartState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
@@ -1473,7 +1521,7 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
         const TRAP::Graphics::RendererAPI::BufferDesc bufferDesc
         {
             .Size = upload_size,
-            .Alignment = 0,
+            .Alignment = 0u,
             .MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU,
             .Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::HostVisible,
             .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
@@ -1481,8 +1529,8 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
             .ElementCount = upload_size,
             .StructStride = sizeof(u8),
             .ICBDrawType = {},
-            .ICBMaxVertexBufferBind = 0,
-            .ICBMaxFragmentBufferBind = 0,
+            .ICBMaxVertexBufferBind = 0u,
+            .ICBMaxFragmentBufferBind = 0u,
             .Format = TRAP::Graphics::API::ImageFormat::Undefined,
             .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Undefined,
             .Name = "ImGui UploadBuffer"
@@ -1492,7 +1540,7 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
 
     // Upload to Buffer:
     {
-        if(uploadBuffer->MapBuffer({.Offset = 0, .Range = upload_size}))
+        if(uploadBuffer->MapBuffer({.Offset = 0u, .Range = upload_size}))
         {
             const std::span<u8> map = uploadBuffer->GetCPUMappedAddress();
             std::copy_n(pixels, upload_size, map.begin());
@@ -1515,8 +1563,8 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
                 .Release = false,
                 .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
                 .SubresourceBarrier = false,
-                .MipLevel = 0,
-                .ArrayLayer = 0
+                .MipLevel = 0u,
+                .ArrayLayer = 0u
             }
         };
         bd->FontCommandBuffer->ResourceBarrier(nullptr, &fontImageBarriers, nullptr);
@@ -1524,16 +1572,16 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
         //TODO This currently only supports tightly packed (using image extent) textures
         const TRAP::Graphics::RendererAPI::SubresourceDataDesc subresourceDesc
         {
-            .SrcOffset = 0,
-            .MipLevel = 0,
-            .ArrayLayer = 0,
+            .SrcOffset = 0u,
+            .MipLevel = 0u,
+            .ArrayLayer = 0u,
             .RowPitch = NumericCast<u32>(width) * bd->FontImage->GetBytesPerPixel(),
-            .SlicePitch = 0
+            .SlicePitch = 0u
         };
         bd->FontCommandBuffer->UpdateSubresource(*bd->FontImage, *uploadBuffer, subresourceDesc);
 
-        fontImageBarriers[0].CurrentState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination;
-        fontImageBarriers[0].NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+        fontImageBarriers[0u].CurrentState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination;
+        fontImageBarriers[0u].NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
         bd->FontCommandBuffer->ResourceBarrier(nullptr, &fontImageBarriers, nullptr);
     }
 
@@ -1555,6 +1603,7 @@ void ImGui::INTERNAL::Vulkan::DestroyFontsTexture()
 
     ImGuiIO& io = ImGui::GetIO();
     ImGui_ImplVulkan_Data* const bd = GetBackendData();
+    TRAP_ASSERT(bd, "ImGuiVulkanBackend::DestroyFontsTexture(): Backend data is nullptr!");
 
     if(bd->FontDescriptorSet != nullptr)
     {
@@ -1582,6 +1631,8 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
         return;
 
     const ImGui_ImplVulkan_Data* const bd = GetBackendData();
+    TRAP_ASSERT(bd, "ImGuiVulkanBackend::RenderDrawData(): Backend data is nullptr!");
+
     const InitInfo& v = bd->VulkanInitInfo;
     if (pipeline == VK_NULL_HANDLE)
         pipeline = bd->Pipeline;
@@ -1595,12 +1646,12 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
     ImGui_ImplVulkanH_WindowRenderBuffers& wrb = viewport_renderer_data->RenderBuffers;
     if (wrb.FrameRenderBuffers.empty())
     {
-        wrb.Index = 0;
+        wrb.Index = 0u;
         wrb.Count = v.ImageCount;
         wrb.FrameRenderBuffers.resize(wrb.Count);
     }
     TRAP_ASSERT(wrb.Count == v.ImageCount, "ImGuiVulkanBackend::RenderDrawData(): wrb->Count doesnt match v->ImageCount!");
-    wrb.Index = (wrb.Index + 1) % wrb.Count;
+    wrb.Index = (wrb.Index + 1u) % wrb.Count;
     ImGui_ImplVulkanH_FrameRenderBuffers& rb = wrb.FrameRenderBuffers[wrb.Index];
 
     if (draw_data.TotalVtxCount > 0)
@@ -1613,7 +1664,7 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
             const TRAP::Graphics::RendererAPI::BufferDesc bufferDesc
             {
                 .Size = vertex_size,
-                .Alignment = 0,
+                .Alignment = 0u,
                 .MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU,
                 .Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::HostVisible,
                 .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
@@ -1621,8 +1672,8 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
                 .ElementCount = vertex_size / sizeof(ImDrawVert),
                 .StructStride = sizeof(ImDrawVert),
                 .ICBDrawType = {},
-                .ICBMaxVertexBufferBind = 0,
-                .ICBMaxFragmentBufferBind = 0,
+                .ICBMaxVertexBufferBind = 0u,
+                .ICBMaxFragmentBufferBind = 0u,
                 .Format = TRAP::Graphics::API::ImageFormat::Undefined,
                 .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::VertexBuffer,
                 .Name = "ImGui VertexBuffer"
@@ -1634,7 +1685,7 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
             const TRAP::Graphics::RendererAPI::BufferDesc bufferDesc
             {
                 .Size = index_size,
-                .Alignment = 0,
+                .Alignment = 0u,
                 .MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU,
                 .Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::HostVisible,
                 .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
@@ -1642,8 +1693,8 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
                 .ElementCount = index_size / sizeof(ImDrawIdx),
                 .StructStride = sizeof(ImDrawIdx),
                 .ICBDrawType = {},
-                .ICBMaxVertexBufferBind = 0,
-                .ICBMaxFragmentBufferBind = 0,
+                .ICBMaxVertexBufferBind = 0u,
+                .ICBMaxFragmentBufferBind = 0u,
                 .Format = TRAP::Graphics::API::ImageFormat::Undefined,
                 .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::IndexBuffer,
                 .Name = "ImGui IndexBuffer"
@@ -1652,13 +1703,13 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
         }
 
         // Upload vertex/index data into a single contiguous GPU buffer
-        if(rb.VertexBuffer->MapBuffer({.Offset = 0, .Range = vertex_size}) &&
-           rb.IndexBuffer->MapBuffer({.Offset = 0, .Range = index_size}))
+        if(rb.VertexBuffer->MapBuffer({.Offset = 0u, .Range = vertex_size}) &&
+           rb.IndexBuffer->MapBuffer({.Offset = 0u, .Range = index_size}))
         {
             std::span<ImDrawVert> vtxDst = rb.VertexBuffer->GetCPUMappedAddress<ImDrawVert>();
             std::span<ImDrawIdx> idxDst = rb.IndexBuffer->GetCPUMappedAddress<ImDrawIdx>();
 
-            for (i32 n = 0; n < draw_data.CmdListsCount; n++)
+            for (i32 n = 0; n < draw_data.CmdListsCount; ++n)
             {
                 if(const ImDrawList* const cmd_list = draw_data.CmdLists[n]; cmd_list)
                 {
@@ -1683,14 +1734,14 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
     // Render command lists
     // (Because we merged all buffers into a single one, we maintain our own offset into them)
     i32 global_vtx_offset = 0;
-    u32 global_idx_offset = 0;
-    for (i32 n = 0; n < draw_data.CmdListsCount; n++)
+    u32 global_idx_offset = 0u;
+    for (i32 n = 0; n < draw_data.CmdListsCount; ++n)
     {
         const ImDrawList* const cmd_list = draw_data.CmdLists[n];
         if(cmd_list == nullptr)
             continue;
 
-        for (i32 cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++)
+        for (i32 cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; ++cmd_i)
         {
             const ImDrawCmd& pcmd = cmd_list->CmdBuffer[cmd_i];
             if (pcmd.UserCallback != nullptr)
@@ -1732,7 +1783,7 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
                     TRAP_ASSERT(pcmd.TextureId == static_cast<ImTextureID>(bd->FontDescriptorSet), "ImGuiVulkanBackend::RenderDrawData(): ImTextureID must be at least 64 bits!");
                     descSet = bd->FontDescriptorSet;
                 }
-                vkCmdBindDescriptorSets(command_buffer.GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, bd->PipelineLayout, 0, 1, &descSet, 0, nullptr);
+                vkCmdBindDescriptorSets(command_buffer.GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, bd->PipelineLayout, 0u, 1u, &descSet, 0u, nullptr);
 
                 // Draw
                 command_buffer.DrawIndexed(pcmd.ElemCount, pcmd.IdxOffset + global_idx_offset, NumericCast<i32>(pcmd.VtxOffset) + global_vtx_offset);
@@ -1749,7 +1800,7 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
     // If you use VK_DYNAMIC_STATE_VIEWPORT or VK_DYNAMIC_STATE_SCISSOR you are responsible for setting the values before rendering.
     // In theory we should aim to backup/restore those values but I am not sure this is possible.
     // We perform a call to vkCmdSetScissor() to set back a full viewport which is likely to fix things for 99% users but technically this is not perfect. (See github #4644)
-    command_buffer.SetScissor(0, 0, NumericCast<u32>(fb_width), NumericCast<u32>(fb_height));
+    command_buffer.SetScissor(0u, 0u, NumericCast<u32>(fb_width), NumericCast<u32>(fb_height));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1808,6 +1859,8 @@ void ImGui::INTERNAL::Vulkan::Shutdown()
     ImGuiIO& io = ImGui::GetIO();
     const InitInfo& v = bd->VulkanInitInfo;
 
+    TRAP::Graphics::RendererAPI::GetRenderer()->WaitIdle();
+
     // First destroy objects in all viewports
     DestroyDeviceObjects();
 
@@ -1820,7 +1873,7 @@ void ImGui::INTERNAL::Vulkan::Shutdown()
     TRAP_ASSERT(main_viewport != nullptr, "ImGuiVulkanBackend::Shutdown(): main_viewport is nullptr!");
     if(main_viewport != nullptr)
     {
-        if (ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(main_viewport->RendererUserData); vd)
+        if (ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(main_viewport->RendererUserData))
             IM_DELETE(vd);
     }
     main_viewport->RendererUserData = nullptr;
@@ -1842,7 +1895,7 @@ void ImGui::INTERNAL::Vulkan::NewFrame()
     ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None &&
                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-    [[maybe_unused]] const ImGui_ImplVulkan_Data* const bd = GetBackendData();
+    const ImGui_ImplVulkan_Data* const bd = GetBackendData();
     TRAP_ASSERT(bd != nullptr, "ImGuiVulkanBackend::NewFrame(): Renderer backend hasn't been initialized!");
 
     if(bd->FontDescriptorSet == nullptr)
@@ -1869,6 +1922,8 @@ void ImGui::INTERNAL::Vulkan::NewFrame()
     vulkanDetails.ImageLayout = image_layout;
 
     const ImGui_ImplVulkan_Data* const bd = GetBackendData();
+    TRAP_ASSERT(bd, "ImGuiVulkanBackend::AddTexture(): Backend data is nullptr!");
+
     const InitInfo& v = bd->VulkanInitInfo;
     VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
 
@@ -1917,6 +1972,8 @@ void ImGui::INTERNAL::Vulkan::RemoveTexture(const TRAP::Ref<TRAP::Graphics::API:
     ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
     const ImGui_ImplVulkan_Data* const bd = GetBackendData();
+    TRAP_ASSERT(bd, "ImGuiVulkanBackend::UpdateTextureInfo(): Backend data is nullptr!");
+
     const InitInfo& v = bd->VulkanInitInfo;
 
     // Update Descriptor Set:
@@ -1932,15 +1989,15 @@ void ImGui::INTERNAL::Vulkan::RemoveTexture(const TRAP::Ref<TRAP::Graphics::API:
             .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
             .pNext = nullptr,
             .dstSet = descriptorSet,
-            .dstBinding = 0,
-            .dstArrayElement = 0,
-            .descriptorCount = 1,
+            .dstBinding = 0u,
+            .dstArrayElement = 0u,
+            .descriptorCount = 1u,
             .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
             .pImageInfo = &imageInfo,
             .pBufferInfo = nullptr,
             .pTexelBufferView = nullptr
         };
-        vkUpdateDescriptorSets(v.Device->GetVkDevice(), 1, &writeDesc, 0, nullptr);
+        vkUpdateDescriptorSets(v.Device->GetVkDevice(), 1u, &writeDesc, 0u, nullptr);
     }
 
     return reinterpret_cast<ImTextureID>(descriptorSet);
@@ -1962,7 +2019,10 @@ void ImGui::INTERNAL::Vulkan::SetMSAASamples(const VkSampleCountFlagBits sampleC
     ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(*TRAP::Application::GetWindow());
+
     ImGui_ImplVulkan_Data* const bd = GetBackendData();
+    TRAP_ASSERT(bd, "ImGuiVulkanBackend::SetMSAASamples(): Backend data is nullptr!");
+
     InitInfo& v = bd->VulkanInitInfo;
 
     if(sampleCount == v.MSAASamples)
@@ -1983,7 +2043,7 @@ void ImGui::INTERNAL::Vulkan::SetMSAASamples(const VkSampleCountFlagBits sampleC
     }
 
     //Create new pipeline
-    CreatePipeline(*v.Device, v.Allocator, v.PipelineCache.get(), v.RenderPass, v.MSAASamples, bd->Pipeline);
+    bd->Pipeline = CreatePipeline(*v.Device, v.Allocator, v.PipelineCache.get(), v.RenderPass, v.MSAASamples);
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

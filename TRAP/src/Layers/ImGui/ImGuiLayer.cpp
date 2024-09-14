@@ -58,39 +58,51 @@ namespace
 	#ifdef _MSC_VER
 	#pragma warning(default: 4702)
 	#endif /*_MSC_VER*/
-}
 
-//-------------------------------------------------------------------------------------------------------------------//
+	//-------------------------------------------------------------------------------------------------------------------//
 
-struct InputTextCallbackUserData
-{
-	std::string* Str = nullptr;
-	ImGuiInputTextCallback ChainCallback = nullptr;
-	void* ChainCallbackUserData = nullptr;
-};
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-namespace
-{
-	[[nodiscard]] i32 InputTextCallback(ImGuiInputTextCallbackData* const data)
+	struct InputTextCallbackUserData
 	{
-		TRAP_ASSERT(data != nullptr, "ImGuiLayer::InputTextCallback(): data is nullptr!");
-		if(data == nullptr)
-			return 0;
+		std::string* Str = nullptr;
+		ImGuiInputTextCallback ChainCallback = nullptr;
+		void* ChainCallbackUserData = nullptr;
+	};
 
-		const InputTextCallbackUserData* const userData = static_cast<InputTextCallbackUserData*>(data->UserData);
-		TRAP_ASSERT(userData != nullptr, "ImGuiLayer::InputTextCallback(): userData is nullptr!");
-		if(userData == nullptr)
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr i32 InputTextCallback(ImGuiInputTextCallbackData* const data)
+	{
+		if(data == nullptr)
+		{
+			TRAP_ASSERT(false, "ImGuiLayer::InputTextCallback(): data is nullptr!");
 			return 0;
+		}
+
+		const InputTextCallbackUserData* const userData = static_cast<const InputTextCallbackUserData*>(data->UserData);
+		if(userData == nullptr)
+		{
+			TRAP_ASSERT(false, "ImGuiLayer::InputTextCallback(): userData is nullptr!");
+			return 0;
+		}
 
 		if(data->EventFlag == ImGuiInputTextFlags_CallbackResize)
 		{
 			//Resize string callback
 			//If for some reason we refuse the new length (BufTextLen) and/or capacity (BufSize) we need to set them back to what we want.
-			TRAP_ASSERT(userData->Str != nullptr, "ImGuiLayer::InputTextCallback(): userData->Str is nullptr!");
+			if(userData->Str == nullptr)
+			{
+				TRAP_ASSERT(false, "ImGuiLayer::InputTextCallback(): userData->Str is nullptr!");
+				return 0;
+			}
+
 			std::string& str = *userData->Str;
-			TRAP_ASSERT(data->Buf == str.c_str(), "ImGuiLayer::InputTextCallback(): String pointers data->Buf and str.c_str() aren't the same!");
+
+			if(data->Buf != str.c_str())
+			{
+				TRAP_ASSERT(false, "ImGuiLayer::InputTextCallback(): String pointers data->Buf and str.c_str() aren't the same!");
+				return 0;
+			}
+
 			str.resize(NumericCast<usize>(data->BufTextLen));
 			data->Buf = str.data();
 		}
@@ -103,81 +115,10 @@ namespace
 
 		return 0;
 	}
-}
 
-//-------------------------------------------------------------------------------------------------------------------//
+	//-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::ImGuiLayer::OnAttach()
-{
-	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
-
-	//Setup Dear ImGui context
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; //Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; //Enable Gamepad Controls
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; //Enable Docking
-#ifdef TRAP_PLATFORM_WINDOWS
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; //Enable Multi-Viewport / Platform Windows
-#elif defined(TRAP_PLATFORM_LINUX)
-	//On Wayland we are unable to track global window and mouse positions, so we disable multi-viewport support
-	if(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Wayland)
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; //Enable Multi-Viewport / Platform Windows
-#endif
-
-	//Set imgui.ini path
-	const auto docsFolder = TRAP::FileSystem::GetGameDocumentsFolderPath();
-	if(docsFolder)
-		m_imguiIniPath = (*docsFolder / "imgui.ini").generic_string();
-	else //Fallback
-		m_imguiIniPath = "imgui.ini";
-	io.IniFilename = m_imguiIniPath.c_str();
-
-	const auto contentScale = Application::GetWindow()->GetContentScale();
-	f32 scaleFactor = 1.0f;
-	if (contentScale.x() > 1.0f || contentScale.y() > 1.0f)
-		scaleFactor = contentScale.x();
-
-	ImFontConfig fontConfig;
-	fontConfig.FontDataOwnedByAtlas = false; //This makes the const_cast below safe.
-	io.Fonts->AddFontFromMemoryTTF(const_cast<u8*>(Embed::OpenSansBoldTTFData.data()),
-	                               NumericCast<i32>(Embed::OpenSansBoldTTFData.size()),
-								   scaleFactor * 18.0f, &fontConfig);
-	io.FontDefault = io.Fonts->AddFontFromMemoryTTF(const_cast<u8*>(Embed::OpenSansTTFData.data()),
-	                                                NumericCast<i32>(Embed::OpenSansTTFData.size()),
-													scaleFactor * 18.0f, &fontConfig);
-
-	//Setup Dear ImGui style
-	ImGui::StyleColorsDark();
-
-	//When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to
-	ImGuiStyle& style = ImGui::GetStyle();
-
-	style.ScaleAllSizes(scaleFactor);
-
-	if ((io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) != 0)
-	{
-		style.WindowRounding = 0.0f;
-		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-	}
-
-	SetDarkThemeColors();
-	SetImGuizmoStyle();
-
-	INTERNAL::WindowingAPI::InternalWindow* const window = static_cast<INTERNAL::WindowingAPI::InternalWindow*>
-	(
-		Application::GetWindow()->GetInternalWindow()
-	);
-
-	//Setup Platform/Renderer bindings
-	const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(*TRAP::Application::GetWindow());
-
-	TP_TRACE(Log::ImGuiPrefix, "Init...");
-	if(!TRAP::INTERNAL::ImGuiWindowing::Init(window, true, Graphics::RendererAPI::GetRenderAPI()))
-		Utils::DisplayError(Utils::ErrorCode::ImGuiFailedInitialization);
-
-	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
+	void InitImGuiVulkan(const TRAP::Graphics::RendererAPI::PerViewportData& viewportData, TRAP::Ref<TRAP::Graphics::PipelineCache>& outImGuiPipelineCache)
 	{
 		const TRAP::Graphics::API::VulkanRenderer* const renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
 		(
@@ -185,19 +126,18 @@ void TRAP::ImGuiLayer::OnAttach()
 		);
 		TRAP_ASSERT(renderer != nullptr, "ImGuiLayer::OnAttach(): renderer is nullptr!");
 
-		const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath();
-		if(tempFolder)
+		if(const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath())
 		{
 			const TRAP::Graphics::RendererAPI::PipelineCacheLoadDesc cacheDesc{.Path = *tempFolder / "ImGui.cache",
 			                                                                   .Flags = TRAP::Graphics::RendererAPI::PipelineCacheFlags::None,
 																			   .Name = "Pipeline cache (Pipeline: \"ImGui\")"};
-			m_imguiPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
+			outImGuiPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
 		}
 		else //Create empty cache as fallback
 		{
 			TRAP::Graphics::RendererAPI::PipelineCacheDesc cacheDesc{};
 			cacheDesc.Name = "Pipeline cache (Pipeline: \"ImGui\")";
-			m_imguiPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
+			outImGuiPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
 		}
 
 		TRAP::Graphics::AntiAliasing aaMethod = TRAP::Graphics::AntiAliasing::Off;
@@ -211,10 +151,10 @@ void TRAP::ImGuiLayer::OnAttach()
 		);
 		const auto pipelineCache = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanPipelineCache>
 		(
-			m_imguiPipelineCache
+			outImGuiPipelineCache
 		);
 
-		const auto* cmdBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
+		const auto* const cmdBuffer = dynamic_cast<const TRAP::Graphics::API::VulkanCommandBuffer*>
 		(
 			viewportData.GraphicCommandBuffers[viewportData.ImageIndex]
 		);
@@ -240,8 +180,82 @@ void TRAP::ImGuiLayer::OnAttach()
 
 		ImGui::INTERNAL::Vulkan::Init(initInfo);
 
-		TP_TRACE(Log::ImGuiPrefix, "Finished Vulkan init");
+		TP_TRACE(TRAP::Log::ImGuiPrefix, "Finished Vulkan init");
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::ImGuiLayer::OnAttach()
+{
+	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
+
+	//Setup Dear ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; //Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; //Enable Gamepad Controls
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; //Enable Docking
+#ifdef TRAP_PLATFORM_WINDOWS
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; //Enable Multi-Viewport / Platform Windows
+#elif defined(TRAP_PLATFORM_LINUX)
+	//On Wayland we are unable to track global window and mouse positions, so we disable multi-viewport support
+	if(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Wayland)
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; //Enable Multi-Viewport / Platform Windows
+#endif
+
+	//Set imgui.ini path
+	if(const auto docsFolder = TRAP::FileSystem::GetGameDocumentsFolderPath())
+		m_imguiIniPath = (*docsFolder / "imgui.ini").generic_string();
+	io.IniFilename = m_imguiIniPath.c_str();
+
+	const auto contentScale = Application::GetWindow()->GetContentScale();
+	f32 scaleFactor = 1.0f;
+	if (contentScale.x() > 1.0f || contentScale.y() > 1.0f)
+		scaleFactor = contentScale.x();
+
+	ImFontConfig fontConfig{};
+	fontConfig.FontDataOwnedByAtlas = false; //This makes the const_cast below safe.
+	std::strcpy(fontConfig.Name, "OpenSans Bold");
+	io.Fonts->AddFontFromMemoryTTF(const_cast<u8*>(Embed::OpenSansBoldTTFData.data()),
+	                               NumericCast<i32>(Embed::OpenSansBoldTTFData.size()),
+								   scaleFactor * 18.0f, &fontConfig);
+	std::strcpy(fontConfig.Name, "OpenSans Regular");
+	io.FontDefault = io.Fonts->AddFontFromMemoryTTF(const_cast<u8*>(Embed::OpenSansTTFData.data()),
+	                                                NumericCast<i32>(Embed::OpenSansTTFData.size()),
+													scaleFactor * 18.0f, &fontConfig);
+
+	//Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+	SetDarkThemeColors();
+	SetImGuizmoStyle();
+
+	//When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	style.ScaleAllSizes(scaleFactor);
+
+	if ((io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) != 0)
+	{
+		style.WindowRounding = 0.0f;
+		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+	}
+
+	INTERNAL::WindowingAPI::InternalWindow* const window = static_cast<INTERNAL::WindowingAPI::InternalWindow*>
+	(
+		Application::GetWindow()->GetInternalWindow()
+	);
+
+	//Setup Platform/Renderer bindings
+	const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(*TRAP::Application::GetWindow());
+
+	TP_TRACE(Log::ImGuiPrefix, "Init...");
+	if(!TRAP::INTERNAL::ImGuiWindowing::Init(*window, true, Graphics::RendererAPI::GetRenderAPI()))
+		Utils::DisplayError(Utils::ErrorCode::ImGuiFailedInitialization);
+
+	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
+		InitImGuiVulkan(viewportData, m_imguiPipelineCache);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -250,21 +264,14 @@ void TRAP::ImGuiLayer::OnDetach()
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
+	TP_TRACE(Log::ImGuiPrefix, "Shutting down ImGui...");
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
-	{
-		TP_TRACE(Log::ImGuiPrefix, "Vulkan shutdown...");
-		Graphics::RendererAPI::GetRenderer()->WaitIdle();
-		const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath();
-		if(tempFolder)
-			m_imguiPipelineCache->Save(*tempFolder / "ImGui.cache");
-		m_imguiPipelineCache.reset();
-		TP_TRACE(Log::ImGuiPrefix, "Finished Vulkan shutdown");
-
 		ImGui::INTERNAL::Vulkan::Shutdown();
-		INTERNAL::ImGuiWindowing::Shutdown();
-	}
+
+	INTERNAL::ImGuiWindowing::Shutdown();
 
 	ImGui::DestroyContext();
+	TP_TRACE(Log::ImGuiPrefix, "ImGui shutdown finished");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -302,7 +309,6 @@ void TRAP::ImGuiLayer::Begin()
 		TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
 
 		TRAP::Ref<TRAP::Graphics::RenderTarget> rT = nullptr;
-
 		if(aaMethod == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA && viewportData.RenderScale == 1.0f) //MSAA and no RenderScale
 			rT = viewportData.InternalRenderTargets[viewportData.CurrentSwapChainImageIndex];
 		else
@@ -344,7 +350,7 @@ void TRAP::ImGuiLayer::End()
 		const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(*TRAP::Application::GetWindow());
 		if(!Application::GetWindow()->IsMinimized())
 		{
-			const auto* cmdBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
+			const auto* const cmdBuffer = dynamic_cast<const TRAP::Graphics::API::VulkanCommandBuffer*>
 				(
 					viewportData.GraphicCommandBuffers[viewportData.ImageIndex]
 				);
@@ -496,42 +502,39 @@ bool ImGui::ImageButton(const TRAP::Ref<TRAP::Graphics::Texture>& image, const I
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ImGui::InputText(const std::string_view label, std::string* const str, ImGuiInputTextFlags flags,
+bool ImGui::InputText(const std::string_view label, std::string& str, ImGuiInputTextFlags flags,
                       const ImGuiInputTextCallback callback, void* const userData)
 {
-	TRAP_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0, "ImGui::InputText(): Missing callback resize flag!");
 	flags |= ImGuiInputTextFlags_CallbackResize;
 
-	InputTextCallbackUserData cbUserData{str, callback, userData};
+	InputTextCallbackUserData cbUserData{&str, callback, userData};
 
-	return InputText(label.data(), str->data(), str->capacity() + 1, flags, InputTextCallback, &cbUserData);
+	return InputText(label.data(), str.data(), str.capacity() + 1, flags, InputTextCallback, &cbUserData);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ImGui::InputTextMultiline(const std::string_view label, std::string* const str, const ImVec2& size,
+bool ImGui::InputTextMultiline(const std::string_view label, std::string& str, const ImVec2& size,
                                ImGuiInputTextFlags flags, const ImGuiInputTextCallback callback,
 							   void* const userData)
 {
-	TRAP_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0, "ImGui::InputTextMultiline(): Missing callback resize flag!");
 	flags |= ImGuiInputTextFlags_CallbackResize;
 
-	InputTextCallbackUserData cbUserData{str, callback, userData};
+	InputTextCallbackUserData cbUserData{&str, callback, userData};
 
-	return InputTextMultiline(label.data(), str->data(), str->capacity() + 1, size, flags, InputTextCallback, &cbUserData);
+	return InputTextMultiline(label.data(), str.data(), str.capacity() + 1, size, flags, InputTextCallback, &cbUserData);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ImGui::InputTextWithHint(const std::string_view label, const std::string_view hint, std::string* const str,
+bool ImGui::InputTextWithHint(const std::string_view label, const std::string_view hint, std::string& str,
                               ImGuiInputTextFlags flags, const ImGuiInputTextCallback callback, void* const userData)
 {
-	TRAP_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0, "ImGui::InputTextWithHint(): Missing callback resize flag!");
 	flags |= ImGuiInputTextFlags_CallbackResize;
 
-	InputTextCallbackUserData cbUserData{str, callback, userData};
+	InputTextCallbackUserData cbUserData{&str, callback, userData};
 
-	return InputTextWithHint(label.data(), hint.data(), str->data(), str->capacity() + 1, flags, InputTextCallback, &cbUserData);
+	return InputTextWithHint(label.data(), hint.data(), str.data(), str.capacity() + 1, flags, InputTextCallback, &cbUserData);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -552,13 +555,13 @@ ImFont* ImGui::AddFontFromFileTTF(const std::string_view filename, const f32 siz
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ImFont* ImGui::AddFontFromMemoryTTF(const std::span<const u8> fontData, const f32 sizePixels,
+ImFont* ImGui::AddFontFromMemoryTTF(const std::span<u8> fontData, const f32 sizePixels,
 								    const ImFontConfig* const fontCfg, const ImWchar* const glyphRanges)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	//Add font like normally
-	ImFont* const font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(const_cast<u8*>(fontData.data()),
+	ImFont* const font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(fontData.data(),
 	                                                                NumericCast<i32>(fontData.size_bytes()),
 																	sizePixels, fontCfg, glyphRanges);
 
