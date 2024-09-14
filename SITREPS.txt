@@ -5202,3 +5202,7 @@ SITREP 09/08/2024|24w36a4
 SITREP 09/14/2024|24w37a1
     - Changed TRAP Engine version to 24w37a1(0.11.11)
     - ImGuiLayer/ImGuiWindowing/ImGuiVulkanBackend Reworked implementation ~<30 mins
+
+SITREP 09/15/2024|24w37a2
+    - Changed TRAP Engine version to 24w37a2(0.11.12)
+    - Layer/LayerStack Reworked implementation ~<10 mins

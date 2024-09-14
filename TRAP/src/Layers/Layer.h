@@ -30,27 +30,27 @@ namespace TRAP
 		constexpr virtual ~Layer() = default;
 
 		/// @brief Called when Layer gets pushed to a layer stack.
-		virtual void OnAttach();
+		constexpr virtual void OnAttach();
 		/// @brief Called when Layer gets popped from a layer stack.
-		virtual void OnDetach();
+		constexpr virtual void OnDetach();
 		/// @brief Called every frame.
 		/// @param deltaTime Time difference between current and last frame.
-		virtual void OnUpdate(const Utils::TimeStep& deltaTime);
+		constexpr virtual void OnUpdate(const Utils::TimeStep& deltaTime);
 		/// @brief Called every tick (default 100 ticks).
 		/// @param deltaTime Time difference between current and last tick.
-		virtual void OnTick(const Utils::TimeStep& deltaTime);
+		constexpr virtual void OnTick(const Utils::TimeStep& deltaTime);
 		/// @brief Called every frame.
 		/// Should be used for debug GUIs.
-		virtual void OnImGuiRender();
+		constexpr virtual void OnImGuiRender();
 		/// @brief Called when an event occurs.
 		/// @param event Event that occurred.
-		virtual void OnEvent(Events::Event& event);
+		constexpr virtual void OnEvent(Events::Event& event);
 
 		/// @brief Retrieve the debug name of the layer.
 		/// @return Name of the layer.
 		[[nodiscard]] constexpr std::string GetName() const noexcept;
 
-	protected:
+	private:
 		std::string m_DebugName;
 	};
 }
@@ -59,6 +59,42 @@ namespace TRAP
 
 constexpr TRAP::Layer::Layer(std::string debugName) noexcept
 	: m_DebugName(std::move(debugName))
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Layer::OnAttach()
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Layer::OnDetach()
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Layer::OnUpdate([[maybe_unused]] const Utils::TimeStep& deltaTime)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Layer::OnTick([[maybe_unused]] const Utils::TimeStep& deltaTime)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Layer::OnImGuiRender()
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Layer::OnEvent([[maybe_unused]] Events::Event& event)
 {
 }
 

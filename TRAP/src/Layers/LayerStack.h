@@ -38,10 +38,10 @@ namespace TRAP
 		void PushOverlay(std::unique_ptr<Layer> overlay);
 		/// @brief Pop a layer from the layer stack.
 		/// @param layer Layer to pop.
-		void PopLayer(Layer* layer);
+		void PopLayer(Layer& layer);
 		/// @brief Pop an overlay from the layer stack.
 		/// @param overlay Overlay to pop.
-		void PopOverlay(Layer* overlay);
+		void PopOverlay(Layer& overlay);
 
 		/// @brief Layer stack begin iterator.
 		/// @return Layer stack iterator.
@@ -71,7 +71,7 @@ namespace TRAP
 
 	private:
 		std::vector<std::unique_ptr<Layer>> m_layers;
-		u32 m_layerInsertIndex = 0;
+		u32 m_layerInsertIndex = 0u;
 	};
 }
 
