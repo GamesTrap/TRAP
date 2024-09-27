@@ -17,8 +17,8 @@ function LinkTRAPShared()
 		"TracyClient",
 		"fmt",
 		"SPIRV-Cross",
-        "zlib",
         "libpng",
+        "zlib",
         "QuiteOKImage",
 	}
 
@@ -44,6 +44,11 @@ function LinkTRAPShared()
             "gdi32",
             "comdlg32"
         }
+
+    -- Nsight Aftermath stuff
+    thirdparty.LinkNsightAftermathSDK()
+	-- Steamworks SDK stuff
+    thirdparty.LinkSteamworksSDK()
 
     filter {}
 end
@@ -108,7 +113,6 @@ function m.IncludeTRAP()
     filter {}
 end
 function m.LinkTRAP()
-    LinkTRAPShared()
 
     filter {}
 
@@ -119,6 +123,13 @@ function m.LinkTRAP()
 		"ImGui",
 		"ImGuizmo"
 	}
+
+    LinkTRAPShared()
+
+    -- Discord Game SDK stuff
+    thirdparty.LinkDiscordGameSDK()
+	-- NVIDIA Reflex SDK stuff
+    thirdparty.LinkNVIDIAReflexSDK()
 
     filter {}
 end
@@ -133,11 +144,12 @@ function m.IncludeTRAPHeadless()
     filter{}
 end
 function m.LinkTRAPHeadless()
-    LinkTRAPShared()
 
     filter {}
 
 	links "TRAP-Headless"
+
+    LinkTRAPShared()
 
     filter {}
 
@@ -160,7 +172,6 @@ function m.IncludeTRAPUnitTests()
     filter {}
 end
 function m.LinkTRAPUnitTests()
-    LinkTRAPShared()
 
     filter {}
 
@@ -171,6 +182,8 @@ function m.LinkTRAPUnitTests()
 		"ImGui",
 		"ImGuizmo"
     }
+
+    LinkTRAPShared()
 
     filter {}
 end
