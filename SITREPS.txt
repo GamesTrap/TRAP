@@ -5210,3 +5210,7 @@ SITREP 09/15/2024|24w37a2
 SITREP 09/27/2024|24w39a1
     - Changed TRAP Engine version to 24w39a1(0.11.13)
     - Fixed linking order for ld linker ~<15 mins
+
+SITREP 09/30/2024|24w40a1
+    - Changed TRAP Engine version to 24w40a1(0.11.14)
+    - Git Ignore changes to submodules ~<5 mins

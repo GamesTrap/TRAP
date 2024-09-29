@@ -1,58 +1,77 @@
 [submodule "Dependencies/ModernDialogs"]
 	path = Dependencies/ModernDialogs
 	url = https://github.com/GamesTrap/ModernDialogs.git
+	ignore = dirty
 [submodule "Dependencies/VulkanMemoryAllocator"]
 	path = Dependencies/VulkanMemoryAllocator
 	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git
+	ignore = dirty
 [submodule "Dependencies/EnTT"]
 	path = Dependencies/EnTT
 	url = https://github.com/skypjack/entt.git
+	ignore = dirty
 [submodule "Dependencies/ImGui"]
 	path = Dependencies/ImGui
 	url = https://github.com/ocornut/imgui.git
 	branch = docking
+	ignore = dirty
 [submodule "Dependencies/YAMLCpp"]
 	path = Dependencies/YAMLCpp
 	url = https://github.com/jbeder/yaml-cpp.git
+	ignore = dirty
 [submodule "Dependencies/SPIRV-Cross"]
 	path = Dependencies/SPIRV-Cross
 	url = https://github.com/KhronosGroup/SPIRV-Cross.git
+	ignore = dirty
 [submodule "Dependencies/GLSLang"]
 	path = Dependencies/GLSLang
 	url = https://github.com/KhronosGroup/glslang.git
+	ignore = dirty
 [submodule "Dependencies/Box2D"]
 	path = Dependencies/Box2D
 	url = https://github.com/erincatto/box2d
+	ignore = dirty
 [submodule "Dependencies/Tracy"]
 	path = Dependencies/Tracy
 	url = https://github.com/wolfpld/tracy.git
+	ignore = dirty
 [submodule ".modules/vscode"]
 	path = .modules/vscode
 	url = https://github.com/GamesTrap/Premake-VSCodeGen
+	ignore = dirty
 [submodule "Dependencies/ImGuizmo"]
 	path = Dependencies/ImGuizmo
 	url = https://github.com/GamesTrap/ImGuizmo.git
+	ignore = dirty
 [submodule "Dependencies/fmt"]
 	path = Dependencies/fmt
 	url = https://github.com/fmtlib/fmt
+	ignore = dirty
 [submodule "Dependencies/Catch2"]
 	path = Dependencies/Catch2
 	url = https://github.com/catchorg/Catch2
+	ignore = dirty
 [submodule "Dependencies/Vulkan-Headers"]
 	path = Dependencies/Vulkan-Headers
 	url = https://github.com/KhronosGroup/Vulkan-Headers
+	ignore = dirty
 [submodule "Dependencies/GCEM"]
 	path = Dependencies/GCEM
 	url = https://github.com/GamesTrap/gcem
+	ignore = dirty
 [submodule ".modules/ninja"]
 	path = .modules/ninja
 	url = https://github.com/GamesTrap/premake-ninja.git
+	ignore = dirty
 [submodule "Dependencies/zlib"]
 	path = Dependencies/zlib
 	url = https://github.com/madler/zlib
+	ignore = dirty
 [submodule "Dependencies/libpng"]
 	path = Dependencies/libpng
 	url = https://github.com/pnggroup/libpng
+	ignore = dirty
 [submodule "Dependencies/QuiteOKImage"]
 	path = Dependencies/QuiteOKImage
 	url = https://github.com/phoboslab/qoi
+	ignore = dirty
