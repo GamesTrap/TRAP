@@ -37,8 +37,8 @@ jobs:
         uses: ./.github/composite/update-git-dependency
         with:
           dependency-path: "Dependencies/Box2D"
-          update-method: "latest-commit"
-          branch: "main"
+          update-method: "latest-tag"
+          tag-regex: '^v2(\.[0-9]+)*$' #v2.X.X SemVer
           pr-title: "Box2D"
           pr-branch-name: "box2d-update"
           pr-token: ${{steps.generate-token.outputs.token}}
