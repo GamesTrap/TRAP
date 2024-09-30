@@ -169,9 +169,14 @@ SANITIZER_HOOK_ATTRIBUTE const char* __tsan_default_suppressions()
 
     return "# Add suppressions here\n"
 
-        //    "race:*\n"
+            "race:libglib*.so\n"
+            "race:libgio*.so\n"
+            "race:libfontconfig*.so.1\n"
+            "race:libxcb*.so.1\n"
 
-        //    "deadlock:*\n"
+            "mutex:libxcb*.so.1\n"
+
+            "deadlock:libxcb*.so.1\n"
 
             "called_from_lib:libvulkan_radeon*\n"
 

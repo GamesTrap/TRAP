@@ -5217,3 +5217,7 @@ SITREP 09/30/2024|24w40a1
     - Box2D Fixed submodule version to v2.x.x ~<5 mins
     - TSAN/UBSAN/ASAN Changed static linking to dynamic ~<5 mins
     - VulkanRenderer Set initial shading rate state (resolves validation error) ~<10 mins
+
+SITREP 10/01/2024|24w40a2
+    - Changed TRAP Engine version to 24w40a2(0.11.15)
+    - Sanitizer Added TSAN suppressions for false positives in uninstrumented shared libraries ~<10 mins
