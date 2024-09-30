@@ -38,7 +38,8 @@ SANITIZER_HOOK_ATTRIBUTE const char* __asan_default_options()
            "symbolize=1 "
            "detect_leaks=0 "
            "protect_shadow_gap=0 "
-           "external_symbolizer_path=/usr/bin/llvm-symbolizer-15";
+           //"external_symbolizer_path=/usr/bin/llvm-symbolizer-15"
+           ;
 }
 
 #endif
@@ -52,7 +53,8 @@ SANITIZER_HOOK_ATTRIBUTE const char* __ubsan_default_options()
 {
     return "print_stacktrace=1 "
            "strip_path_prefix=/../../ "
-           "external_symbolizer_path=/usr/bin/llvm-symbolizer-15";
+           //"external_symbolizer_path=/usr/bin/llvm-symbolizer-15"
+           ;
 }
 
 #endif
@@ -69,7 +71,8 @@ SANITIZER_HOOK_ATTRIBUTE const char* __lsan_default_options()
 {
     return "strip_path_prefix=/../../ "
            "use_poisoned=1 "
-           "external_symbolizer_path=/usr/bin/llvm-symbolizer-15";
+           //"external_symbolizer_path=/usr/bin/llvm-symbolizer-15"
+           ;
 }
 
 SANITIZER_HOOK_ATTRIBUTE const char* __lsan_default_suppressions()
@@ -112,7 +115,8 @@ SANITIZER_HOOK_ATTRIBUTE const char* __tsan_default_options()
            "print_suppressions=1 "
            "history_size=7 "
            "strip_path_prefix=/../../ "
-           "external_symbolizer_path=/usr/bin/llvm-symbolizer-15";
+           //"external_symbolizer_path=/usr/bin/llvm-symbolizer-15"
+           ;
 }
 
 SANITIZER_HOOK_ATTRIBUTE const char* __tsan_default_suppressions()

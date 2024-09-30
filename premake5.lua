@@ -110,16 +110,6 @@ workspace "TRAP"
 		{
 			"-fsanitize=address"
 		}
-	filter { "language:C or C++", "configurations:ASAN", "toolset:gcc"}
-		linkoptions
-		{
-			"-static-libasan"
-		}
-	filter { "language:C or C++", "configurations:ASAN", "toolset:clang"}
-		linkoptions
-		{
-			"-static-libsan"
-		}
 
 	filter {"language:C or C++", "configurations:UBSAN"}
 		defines
@@ -139,16 +129,6 @@ workspace "TRAP"
 		linkoptions
 		{
 			"-fsanitize=undefined"
-		}
-	filter { "language:C or C++", "configurations:UBSAN", "toolset:gcc"}
-		linkoptions
-		{
-			"-static-libubsan"
-		}
-	filter { "language:C or C++", "configurations:UBSAN", "toolset:clang"}
-		linkoptions
-		{
-			"-static-libsan"
 		}
 
 	filter {"language:C or C++", "configurations:LSAN"}
@@ -186,16 +166,6 @@ workspace "TRAP"
 		linkoptions
 		{
 			"-fsanitize=thread"
-		}
-	filter { "language:C or C++", "configurations:TSAN", "toolset:gcc"}
-		linkoptions
-		{
-			"-static-libtsan"
-		}
-	filter { "language:C or C++", "configurations:TSAN", "toolset:clang"}
-		linkoptions
-		{
-			"-static-libsan"
 		}
 
 	filter { "language:C or C++", "toolset:gcc or clang"}
