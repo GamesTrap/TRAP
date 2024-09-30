@@ -5216,3 +5216,4 @@ SITREP 09/30/2024|24w40a1
     - Git Ignore changes to submodules ~<5 mins
     - Box2D Fixed submodule version to v2.x.x ~<5 mins
     - TSAN/UBSAN/ASAN Changed static linking to dynamic ~<5 mins
+    - VulkanRenderer Set initial shading rate state (resolves validation error) ~<10 mins

@@ -667,6 +667,8 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData&
 	                  std::numeric_limits<u32>::max());
 #endif
 
+	//Setup initial dynamic state
+
 	//Set Default Dynamic Viewport & Scissor
 	const u32 width = bindRenderTarget->GetWidth();
 	const u32 height = bindRenderTarget->GetHeight();
@@ -674,6 +676,17 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData&
 	p.GraphicCommandBuffers[p.ImageIndex]->SetViewport(0.0f, 0.0f, NumericCast<f32>(width),
 														 NumericCast<f32>(height), 0.0f, 1.0f);
 	p.GraphicCommandBuffers[p.ImageIndex]->SetScissor(0, 0, width, height);
+
+	//Set Default Shading Rate (if support is enabled)
+	if(RendererAPI::GPUSettings.ShadingRateCaps != RendererAPI::ShadingRateCaps::NotSupported) //VRS is not supported
+	{
+		p.GraphicCommandBuffers[p.ImageIndex]->SetShadingRate(RendererAPI::ShadingRate::Full,
+															  RendererAPI::ShadingRateCombiner::Passthrough,
+															  RendererAPI::ShadingRateCombiner::Passthrough);
+	}
+
+	///////////////////////////////
+
 	if(p.CurrentGraphicsPipeline)
 		p.GraphicCommandBuffers[p.ImageIndex]->BindPipeline(*(p.CurrentGraphicsPipeline));
 
