@@ -13,7 +13,7 @@ namespace
 
 TEST_CASE("TRAP::FileSystem::Init()", "[filesystem][init]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
     TRAP::Application app{"UnitTest"};
 
     TRAP::FileSystem::Init();
@@ -21,14 +21,14 @@ TEST_CASE("TRAP::FileSystem::Init()", "[filesystem][init]")
 
 TEST_CASE("TRAP::FileSystem::Shutdown()", "[filesystem][shutdown]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     TRAP::FileSystem::Shutdown();
 }
 
 TEST_CASE("TRAP::FileSystem::ReadFile()", "[filesystem][readfile]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file")
     {
@@ -59,7 +59,7 @@ TEST_CASE("TRAP::FileSystem::ReadFile()", "[filesystem][readfile]")
 
 TEST_CASE("TRAP::FileSystem::ReadTextFile()", "[filesystem][readtextfile]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file")
     {
@@ -90,7 +90,7 @@ TEST_CASE("TRAP::FileSystem::ReadTextFile()", "[filesystem][readtextfile]")
 
 TEST_CASE("TRAP::FileSystem::WriteFile()", "[filesystem][writefile]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file")
     {
@@ -126,7 +126,7 @@ TEST_CASE("TRAP::FileSystem::WriteFile()", "[filesystem][writefile]")
 
 TEST_CASE("TRAP::FileSystem::WriteTextFile()", "[filesystem][writetextfile]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file")
     {
@@ -162,7 +162,7 @@ TEST_CASE("TRAP::FileSystem::WriteTextFile()", "[filesystem][writetextfile]")
 
 TEST_CASE("TRAP::FileSystem::CreateFolder()", "[filesystem][createfolder]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid path")
     {
@@ -195,7 +195,7 @@ TEST_CASE("TRAP::FileSystem::CreateFolder()", "[filesystem][createfolder]")
 
 TEST_CASE("TRAP::FileSystem::Delete()", "[filesystem][delete]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -217,7 +217,7 @@ TEST_CASE("TRAP::FileSystem::Delete()", "[filesystem][delete]")
 
 TEST_CASE("TRAP::FileSystem::Move()", "[filesystem][move]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -253,7 +253,7 @@ TEST_CASE("TRAP::FileSystem::Move()", "[filesystem][move]")
 
 TEST_CASE("TRAP::FileSystem::Copy()", "[filesystem][copy]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -312,7 +312,7 @@ TEST_CASE("TRAP::FileSystem::Copy()", "[filesystem][copy]")
 
 TEST_CASE("TRAP::FileSystem::Rename()", "[filesystem][rename]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -352,7 +352,7 @@ TEST_CASE("TRAP::FileSystem::Rename()", "[filesystem][rename]")
 
 TEST_CASE("TRAP::FileSystem::Exists()", "[filesystem][exists]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -372,7 +372,7 @@ TEST_CASE("TRAP::FileSystem::Exists()", "[filesystem][exists]")
 
 TEST_CASE("TRAP::FileSystem::GetSize()", "[filesystem][getsize]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -403,7 +403,7 @@ TEST_CASE("TRAP::FileSystem::GetSize()", "[filesystem][getsize]")
 
 TEST_CASE("TRAP::FileSystem::GetLastWriteTime()", "[filesystem][getlastwritetime]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -423,7 +423,7 @@ TEST_CASE("TRAP::FileSystem::GetLastWriteTime()", "[filesystem][getlastwritetime
 
 TEST_CASE("TRAP::FileSystem::GetFileNameWithEnding()", "[filesystem][getfilenamewithending]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -445,7 +445,7 @@ TEST_CASE("TRAP::FileSystem::GetFileNameWithEnding()", "[filesystem][getfilename
 
 TEST_CASE("TRAP::FileSystem::GetFileNameWithoutEnding()", "[filesystem][getfilenamewithoutending]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -467,7 +467,7 @@ TEST_CASE("TRAP::FileSystem::GetFileNameWithoutEnding()", "[filesystem][getfilen
 
 TEST_CASE("TRAP::FileSystem::GetFileEnding()", "[filesystem][getfileending]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -492,7 +492,7 @@ TEST_CASE("TRAP::FileSystem::GetFileEnding()", "[filesystem][getfileending]")
 
 TEST_CASE("TRAP::FileSystem::GetFolderPath()", "[filesystem][getfolderpath]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -516,7 +516,7 @@ TEST_CASE("TRAP::FileSystem::GetFolderPath()", "[filesystem][getfolderpath]")
 
 TEST_CASE("TRAP::FileSystem::GetEngineTempFolderPath()", "[filesystem][getenginetempfolderpath]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     const auto engineTempPath = TRAP::FileSystem::GetEngineTempFolderPath();
     REQUIRE(engineTempPath);
@@ -525,7 +525,7 @@ TEST_CASE("TRAP::FileSystem::GetEngineTempFolderPath()", "[filesystem][getengine
 
 TEST_CASE("TRAP::FileSystem::GetGameTempFolderPath()", "[filesystem][getgametempfolderpath]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
     TRAP::Application app{"UnitTest"};
 
     const auto gameTempPath = TRAP::FileSystem::GetGameTempFolderPath();
@@ -535,7 +535,7 @@ TEST_CASE("TRAP::FileSystem::GetGameTempFolderPath()", "[filesystem][getgametemp
 
 TEST_CASE("TRAP::FileSystem::GetDocumentsFolderPath()", "[filesystem][getdocumentsfolderpath]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     const auto docsPath = TRAP::FileSystem::GetDocumentsFolderPath();
     REQUIRE(docsPath);
@@ -544,7 +544,7 @@ TEST_CASE("TRAP::FileSystem::GetDocumentsFolderPath()", "[filesystem][getdocumen
 
 TEST_CASE("TRAP::FileSystem::GetGameDocumentsFolderPath()", "[filesystem][getgamedocumentsfolderpath]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
     TRAP::Application app{"UnitTest"};
 
     const auto gameDocsPath = TRAP::FileSystem::GetGameDocumentsFolderPath();
@@ -554,7 +554,7 @@ TEST_CASE("TRAP::FileSystem::GetGameDocumentsFolderPath()", "[filesystem][getgam
 
 TEST_CASE("TRAP::FileSystem::GetGameLogFolderPath()", "[filesystem][getgamelogfolderpath]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
     TRAP::Application app{"UnitTest"};
 
     const auto gameLogPath = TRAP::FileSystem::GetGameLogFolderPath();
@@ -564,7 +564,7 @@ TEST_CASE("TRAP::FileSystem::GetGameLogFolderPath()", "[filesystem][getgamelogfo
 
 TEST_CASE("TRAP::FileSystem::IsEquivalent()", "[filesystem][isequivalent]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -602,7 +602,7 @@ TEST_CASE("TRAP::FileSystem::IsEquivalent()", "[filesystem][isequivalent]")
 
 TEST_CASE("TRAP::FileSystem::IsFolder()", "[filesystem][isfolder]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -622,7 +622,7 @@ TEST_CASE("TRAP::FileSystem::IsFolder()", "[filesystem][isfolder]")
 
 TEST_CASE("TRAP::FileSystem::IsFile()", "[filesystem][isfile]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -642,7 +642,7 @@ TEST_CASE("TRAP::FileSystem::IsFile()", "[filesystem][isfile]")
 
 TEST_CASE("TRAP::FileSystem::IsEmpty()", "[filesystem][isempty]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -667,7 +667,7 @@ TEST_CASE("TRAP::FileSystem::IsEmpty()", "[filesystem][isempty]")
 
 TEST_CASE("TRAP::FileSystem::IsAbsolute()", "[filesystem][isabsolute]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -695,7 +695,7 @@ TEST_CASE("TRAP::FileSystem::IsAbsolute()", "[filesystem][isabsolute]")
 
 TEST_CASE("TRAP::FileSystem::IsRelative()", "[filesystem][isrelative]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -723,7 +723,7 @@ TEST_CASE("TRAP::FileSystem::IsRelative()", "[filesystem][isrelative]")
 
 TEST_CASE("TRAP::FileSystem::ToAbsolutePath()", "[filesystem][toabsolutepath]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -745,7 +745,7 @@ TEST_CASE("TRAP::FileSystem::ToAbsolutePath()", "[filesystem][toabsolutepath]")
 
 TEST_CASE("TRAP::FileSystem::ToCanonicalAbsolutePath()", "[filesystem][tocanonicalabsolutepath]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     SECTION("Valid file path")
     {
@@ -767,7 +767,7 @@ TEST_CASE("TRAP::FileSystem::ToCanonicalAbsolutePath()", "[filesystem][tocanonic
 
 TEST_CASE("TRAP::FileSystem::ToRelativePath()", "[filesystem][torelativepath]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     const auto cwd = TRAP::FileSystem::GetCurrentWorkingFolderPath();
     REQUIRE(cwd);
@@ -803,7 +803,7 @@ TEST_CASE("TRAP::FileSystem::ToRelativePath()", "[filesystem][torelativepath]")
 
 TEST_CASE("TRAP::FileSystem::SetCurrentWorkingFolderPath()", "[filesystem][setcurrentworkingfolderpath]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     const auto cwd = TRAP::FileSystem::GetCurrentWorkingFolderPath();
     REQUIRE(cwd);
@@ -827,7 +827,7 @@ TEST_CASE("TRAP::FileSystem::SetCurrentWorkingFolderPath()", "[filesystem][setcu
 
 TEST_CASE("TRAP::FileSystem::GetCurrentWorkingFolderPath()", "[filesystem][getcurrentworkingfolderpath]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     const auto cwd = TRAP::FileSystem::GetCurrentWorkingFolderPath();
     REQUIRE(cwd);
@@ -836,7 +836,7 @@ TEST_CASE("TRAP::FileSystem::GetCurrentWorkingFolderPath()", "[filesystem][getcu
 
 TEST_CASE("TRAP::FileSystem::OpenInFileBrowser()", "[filesystem][openinfilebrowser]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     //Note: Requires changes to TRAP::FileSystem
     // SECTION("Valid file path")
@@ -858,7 +858,7 @@ TEST_CASE("TRAP::FileSystem::OpenInFileBrowser()", "[filesystem][openinfilebrows
 
 TEST_CASE("TRAP::FileSystem::OpenExternally()", "[filesystem][openexternally]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
     //Note: Requires changes to TRAP::FileSystem
     // SECTION("Valid file path")

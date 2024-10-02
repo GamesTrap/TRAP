@@ -536,7 +536,7 @@ TRAP::Application::Application(std::string gameName, const std::optional<u32> ap
 	FileSystem::Init();
 
 	//Set main log file path (uses current folder as fallback)
-	TRAP::TRAPLog.SetFilePath(FileSystem::GetGameLogFolderPath().ValueOr("") / "trap.log");
+	TRAP::GetTRAPLog().SetFilePath(FileSystem::GetGameLogFolderPath().ValueOr("") / "trap.log");
 
 	if(appID)
 		TRAP::Utils::Steam::InitializeClient(*appID);

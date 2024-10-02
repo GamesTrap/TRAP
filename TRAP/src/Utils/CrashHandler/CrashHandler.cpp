@@ -143,7 +143,7 @@ namespace
 
 		if(!crashText.empty())
 			TP_CRITICAL(' ', crashText);
-		TRAP::TRAPLog.Save();
+		TRAP::GetTRAPLog().Save();
 		std::abort();
 	}
 	#endif /*TRAP_PLATFORM_LINUX*/
@@ -204,7 +204,7 @@ namespace
 
 		if (!crashText.empty())
 			TP_CRITICAL(' ', crashText);
-		TRAP::TRAPLog.Save();
+		TRAP::GetTRAPLog().Save();
 
 		return EXCEPTION_CONTINUE_SEARCH;
 	}

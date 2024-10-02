@@ -555,9 +555,6 @@ namespace
 
 	[[nodiscard]] constexpr TRAP::Expected<DecodedData, std::string> DecodePixelData(const FileData& fileData)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None &&
-	                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
 		const auto& header = fileData.FileHeader;
 		const auto& colorMapData = fileData.ColorMap;
 		const auto& encodedPixelData = fileData.EncodedPixelData;

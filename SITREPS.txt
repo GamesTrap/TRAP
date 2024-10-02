@@ -5221,3 +5221,9 @@ SITREP 09/30/2024|24w40a1
 SITREP 10/01/2024|24w40a2
     - Changed TRAP Engine version to 24w40a2(0.11.15)
     - Sanitizer Added TSAN suppressions for false positives in uninstrumented shared libraries ~<10 mins
+
+SITREP 10/03/2024|24w40b1
+    - Changed TRAP Engine version to 24w40b1(0.11.16)
+    - Added LockFreeQueue implementation ~<45 mins
+    - Log Reworked implementation (fully threadsafe now) ~>60 mins
+    - Added Tests for TRAP::Log ~<30 mins

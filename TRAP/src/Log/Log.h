@@ -1,28 +1,65 @@
 #ifndef TRAP_LOG_H
 #define TRAP_LOG_H
 
-#ifdef TRAP_PLATFORM_WINDOWS
-	#include "Utils/Win.h"
-#endif
-
 #include <vector>
 #include <mutex>
 #include <string>
 #include <iostream>
-#include <sstream>
 #include <filesystem>
 
+#include <fmt/color.h>
+#include <fmt/format.h>
+#include <fmt/std.h>
+
 #include "Core/Backports.h"
-#include "Maths/Types.h"
+#include "Core/Types.h"
+#include "Utils/Concurrency/LockFreeQueue.h"
+#include "Utils/Concurrency/Safe.h"
+#include "Utils/Optional.h"
 
 namespace TRAP
 {
+	enum class LogLevel : u8;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::LogLevel operator|(TRAP::LogLevel a, TRAP::LogLevel b) noexcept;
+[[nodiscard]] constexpr TRAP::LogLevel operator&(TRAP::LogLevel a, TRAP::LogLevel b) noexcept;
+constexpr TRAP::LogLevel operator|=(TRAP::LogLevel& a, TRAP::LogLevel b) noexcept;
+constexpr TRAP::LogLevel operator&=(TRAP::LogLevel& a, TRAP::LogLevel b) noexcept;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+namespace TRAP
+{
+	/// @brief Importance levels for logging.
+	enum class LogLevel : u8
+	{
+		Trace = 0x01u,
+		Debug = 0x02u,
+		Info = 0x04u,
+		Warn = 0x08u,
+		Error = 0x10u,
+		Critical = 0x20u
+	};
+
+	struct LogEntry
+	{
+		LogLevel Level;
+		std::string Message;
+		std::chrono::time_point<std::chrono::system_clock> Time = std::chrono::system_clock::now();
+
+		[[nodiscard]] constexpr auto operator<=>(const LogEntry& other) const
+		{
+			return Time <=> other.Time;
+		}
+	};
+
 	/// @brief Utility class to log messages to console.
 	class Log final
 	{
 	public:
-		/// @brief Constructor.
-		explicit Log();
 		/// @brief Constructor.
 		/// @param filePath Path for the log file.
 		explicit Log(std::filesystem::path filePath);
@@ -39,73 +76,86 @@ namespace TRAP
 
 		/// @brief Get the current used file path for saving.
 		/// @return File path.
-		[[nodiscard]] const std::filesystem::path& GetFilePath() const noexcept;
+		/// @threadsafe
+		[[nodiscard]] std::filesystem::path GetFilePath() const noexcept;
 		/// @brief Set the file path used for saving.
 		///
 		///	Logs files are always saved in the format: "<FileName>-YYYY-MM-DDTHH-MM-SS.<FileEnding>"
 		/// @param filePath File path.
+		/// @threadsafe
 		void SetFilePath(std::filesystem::path filePath) noexcept;
 
-		/// @brief Importance levels.
-		enum class Level : uint32_t
-		{
-			None = 0x00,
-			Trace = 0x01,
-			Debug = 0x02,
-			Info = 0x04,
-			Warn = 0x08,
-			Error = 0x10,
-			Critical = 0x20
-		};
-
-		/// @brief Set the importance level for the log messages.
-		/// Messages that are blow the given importance level
-		/// won't be printed to the console.
+		/// @brief Set the importance level.
+		/// Only message with the given LogLevel will be printed to console.
 		/// @note All messages are saved in the log file regardless
 		///       off the importance level.
-		/// @param level Importance level to use.
-		constexpr void SetImportance(Level level) noexcept;
+		/// @param level LogLevel to use.
+		/// @threadsafe
+		void SetImportance(LogLevel level) noexcept;
+
+		/// @brief Get the importance level.
+		/// @return Currently active importance level.
+		/// @threadsafe
+		[[nodiscard]] LogLevel GetImportance() const noexcept;
 
 		/// @brief Log a trace message.
 		/// @tparam Args Message to log.
+		/// @threadsafe
 		template<typename... Args>
-		void Trace(Args&& ... args);
+		constexpr void Trace(Args&& ... args);
 
 		/// @brief Log a debug message.
 		/// @tparam Args Message to log.
+		/// @threadsafe
 		template<typename... Args>
-		void Debug(Args&& ... args);
+		constexpr void Debug(Args&& ... args);
 
 		/// @brief Log a info message.
 		/// @tparam Args Message to log.
+		/// @threadsafe
 		template<typename... Args>
-		void Info(Args&& ... args);
+		constexpr void Info(Args&& ... args);
 
 		/// @brief Log a warn message.
 		/// @tparam Args Message to log.
+		/// @threadsafe
 		template<typename... Args>
-		void Warn(Args&& ... args);
+		constexpr void Warn(Args&& ... args);
 
 		/// @brief Log a error message.
 		/// @tparam Args Message to log.
+		/// @threadsafe
 		template<typename... Args>
-		void Error(Args&& ... args);
+		constexpr void Error(Args&& ... args);
 
 		/// @brief Log a critical message.
 		/// @tparam Args Message to log.
+		/// @threadsafe
 		template<typename... Args>
-		void Critical(Args&& ... args);
+		constexpr void Critical(Args&& ... args);
+
+		/// @brief Log a message with the provided LogLevel.
+		/// @tparam Args Message to log.
+		/// @param level LogLevel of the message
+		/// @param args Message to log.
+		/// @threadsafe
+		template<typename... Args>
+		constexpr void LogMessage(LogLevel level, Args&&... args);
 
 		/// @brief Get all saved log messages and their associated importance level.
+		///        This will also flush the internal buffer, so it will be empty afterwards.
 		/// @return Messages with importance level.
-		[[nodiscard]] constexpr const std::vector<std::pair<Level, std::string>>& GetBuffer() const noexcept;
+		/// @threadsafe
+		[[nodiscard]] std::vector<LogEntry> GetBufferAndFlush();
 
 		/// @brief Save all collected messages to file.
-		void Save() const;
+		/// @threadsafe
+		void Save();
 		/// @brief Clears all buffered messages.
-		constexpr void Clear() noexcept;
+		/// @threadsafe
+		void Clear() noexcept;
 
-		static constexpr auto WindowVersion =                        "[24w40a2]";
+		static constexpr auto WindowVersion =                        "[24w40b1]";
 		static constexpr auto WindowPrefix =                         "[Window] ";
 		static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -214,110 +264,264 @@ namespace TRAP
 	private:
 		/// @brief Get a time stamp with [HH:MM:SS] format.
 		/// @return Time stamp as a string.
-		[[nodiscard]] static std::string GetTimeStamp();
-		/// @brief Get a date time stamp with YYYY-MM-DDTHH-MM-SS format.
-		/// @return Time stamp as a string.
-		[[nodiscard]] static std::string GetDateTimeStamp();
+		/// @threadsafe
+		[[nodiscard]] static std::string GetTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& time);
 
-		std::vector<std::pair<Level, std::string>> m_buffer{};
+		/// @threadsafe
+		[[nodiscard]] static constexpr TRAP::Optional<fmt::color> LogLevelToFmtColor(LogLevel level);
+#ifdef TRACY_ENABLE
+		/// @threadsafe
+		[[nodiscard]] static constexpr TRAP::Optional<tracy::Color::ColorType> LogLevelToTracyColor(LogLevel level);
+#endif /*TRACY_ENABLE*/
 
-		std::mutex m_mtx;
+		TRAP::Utils::LockFreeQueue<LogEntry> m_buffer{};
+		Utils::Safe<std::filesystem::path, SharedLockableBase(std::shared_mutex)> m_path{};
 
-		std::filesystem::path m_path = "trap.log";
-
-		Level m_importance;
+#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
+		std::atomic<LogLevel> m_importance = LogLevel::Trace | LogLevel::Debug | LogLevel::Info |
+		                                     LogLevel::Warn | LogLevel::Error | LogLevel::Critical;
+#else
+		std::atomic<LogLevel> m_importance = LogLevel::Warn | LogLevel::Error | LogLevel::Critical;
+#endif
 	};
 
-	extern Log TRAPLog;
+	/// @brief Retrieve the global logger instance.
+	/// @return Global logger instance.
+	/// @threadsafe
+	[[nodiscard]] TRAP::Log& GetTRAPLog();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr void TRAP::Log::SetImportance(const Level level) noexcept
+[[nodiscard]] constexpr TRAP::LogLevel operator|(const TRAP::LogLevel a, const TRAP::LogLevel b) noexcept
 {
-	m_importance = level;
+	return static_cast<TRAP::LogLevel>(std::to_underlying(a) | std::to_underlying(b));
+}
+[[nodiscard]] constexpr TRAP::LogLevel operator&(const TRAP::LogLevel a, const TRAP::LogLevel b) noexcept
+{
+	return static_cast<TRAP::LogLevel>(std::to_underlying(a) & std::to_underlying(b));
+}
+constexpr TRAP::LogLevel operator|=(TRAP::LogLevel& a, const TRAP::LogLevel b) noexcept
+{
+	return a = (a | b);
+}
+constexpr TRAP::LogLevel operator&=(TRAP::LogLevel& a, const TRAP::LogLevel b) noexcept
+{
+	return a = (a & b);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffer() const noexcept
+template<>
+struct fmt::formatter<TRAP::LogLevel>
 {
-	return m_buffer;
+	static constexpr auto parse(const fmt::format_parse_context& ctx)
+	{
+		return ctx.begin();
+	}
+
+	static fmt::format_context::iterator format(const TRAP::LogLevel logLevel, fmt::format_context& ctx)
+	{
+		std::string enumStr{};
+		switch(logLevel)
+		{
+		case TRAP::LogLevel::Trace:
+			enumStr = "Trace";
+			break;
+		case TRAP::LogLevel::Debug:
+			enumStr = "Debug";
+			break;
+		case TRAP::LogLevel::Info:
+			enumStr = "Info";
+			break;
+		case TRAP::LogLevel::Warn:
+			enumStr = "Warn";
+			break;
+		case TRAP::LogLevel::Error:
+			enumStr = "Error";
+			break;
+		case TRAP::LogLevel::Critical:
+			enumStr = "Critical";
+			break;
+		}
+
+		return fmt::format_to(ctx.out(), "{}", enumStr);
+	}
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+template <typename ... Args>
+constexpr void TRAP::Log::Trace(Args&& ... args)
+{
+	LogMessage(LogLevel::Trace, std::forward<Args>(args)...);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr void TRAP::Log::Clear() noexcept
+template<typename... Args>
+constexpr void TRAP::Log::Debug(Args&& ... args)
 {
-	m_buffer.clear();
+	LogMessage(LogLevel::Debug, std::forward<Args>(args)...);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Log::Level operator|(const TRAP::Log::Level a, const TRAP::Log::Level b) noexcept
+template<typename... Args>
+constexpr void TRAP::Log::Info(Args&& ... args)
 {
-	return static_cast<TRAP::Log::Level>(std::to_underlying(a) | std::to_underlying(b));
+	LogMessage(LogLevel::Info, std::forward<Args>(args)...);
 }
-constexpr TRAP::Log::Level operator&(const TRAP::Log::Level a, const TRAP::Log::Level b) noexcept
-{
-	return static_cast<TRAP::Log::Level>(std::to_underlying(a) & std::to_underlying(b));
-}
-constexpr TRAP::Log::Level operator|=(TRAP::Log::Level& a, const TRAP::Log::Level b) noexcept { return a = (a | b); }
-constexpr TRAP::Log::Level operator&=(TRAP::Log::Level& a, const TRAP::Log::Level b) noexcept { return a = (a & b); }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#include "Log.inl"
+template<typename... Args>
+constexpr void TRAP::Log::Warn(Args&& ... args)
+{
+	LogMessage(LogLevel::Warn, std::forward<Args>(args)...);
+}
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename... Args>
+constexpr void TRAP::Log::Error(Args&& ... args)
+{
+	LogMessage(LogLevel::Error, std::forward<Args>(args)...);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename... Args>
+constexpr void TRAP::Log::Critical(Args&& ... args)
+{
+	LogMessage(LogLevel::Critical, std::forward<Args>(args)...);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Optional<fmt::color> TRAP::Log::LogLevelToFmtColor(const LogLevel level)
+{
+	switch(level)
+	{
+	case LogLevel::Trace:
+		return fmt::color::magenta;
+	case LogLevel::Debug:
+		return fmt::color::cyan;
+	case LogLevel::Info:
+		return fmt::color::green;
+	case LogLevel::Warn:
+		return fmt::color::yellow;
+	case LogLevel::Error:
+		return fmt::color::red;
+	case LogLevel::Critical:
+		return fmt::color::dark_red;
+	}
+
+	return TRAP::NullOpt;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRACY_ENABLE
+[[nodiscard]] constexpr TRAP::Optional<tracy::Color::ColorType> TRAP::Log::LogLevelToTracyColor(const LogLevel level)
+{
+	switch(level)
+	{
+	case LogLevel::Trace:
+		return tracy::Color::ColorType::Magenta;
+	case LogLevel::Debug:
+		return tracy::Color::ColorType::Cyan;
+	case LogLevel::Info:
+		return tracy::Color::ColorType::Green;
+	case LogLevel::Warn:
+		return tracy::Color::ColorType::Yellow;
+	case LogLevel::Error:
+		return tracy::Color::ColorType::Red;
+	case LogLevel::Critical:
+		return tracy::Color::ColorType::DarkRed;
+	}
+
+	return TRAP::NullOpt;
+}
+#endif /*TRACY_ENABLE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename... Args>
+constexpr void TRAP::Log::LogMessage(const LogLevel level, Args&&... args)
+{
+	if(!std::is_constant_evaluated())
+	{
+		const auto logTime = std::chrono::system_clock::now();
+
+		const std::string logMsg = fmt::format("{}[{}]{}", GetTimeStamp(logTime), level, (fmt::format("{}", args) + ...));
+
+	#if !defined(TRAP_RELEASE)
+		if (std::to_underlying(m_importance & level) != 0u)
+		{
+			const auto fmtColor = LogLevelToFmtColor(level);
+			const bool isError = std::to_underlying(level & LogLevel::Error) != 0u ||
+								std::to_underlying(level & LogLevel::Critical) != 0u;
+
+			fmt::print(isError ? std::cerr : std::cout, "{}\n", fmt::styled(logMsg, fmtColor ? fmt::fg(*fmtColor) : fmt::text_style{}));
+		}
+	#endif
+
+	#ifdef TRACY_ENABLE
+		const auto tracyColor = LogLevelToTracyColor(level);
+		if(tracyColor)
+			TracyMessageC(logMsg.c_str(), logMsg.size(), *tracyColor);
+		else
+			TracyMessage(logMsg.c_str(), logMsg.size());
+	#endif
+
+		m_buffer.Push({.Level = level, .Message = logMsg, .Time = logTime});
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
 /// @brief Log a trace message.
 /// @tparam Args Message to log.
+/// @threadsafe
 template<typename... Args>
 constexpr void TP_TRACE(const Args& ... args)
 {
 	if(!std::is_constant_evaluated())
 	{
-		TRAP::TRAPLog.Trace(args...);
+		TRAP::GetTRAPLog().Trace(args...);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
-
 /// @brief Log a debug message.
 /// @tparam Args Message to log.
+/// @threadsafe
 template<typename... Args>
 constexpr void TP_DEBUG(const Args& ... args)
 {
 	if(!std::is_constant_evaluated())
 	{
-		TRAP::TRAPLog.Debug(args...);
+		TRAP::GetTRAPLog().Debug(args...);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#else
-/// @brief Log a debug message.
-/// @tparam Args Message to log.
-template<typename... Args>
-constexpr void TP_DEBUG([[maybe_unused]] const Args& ... args)
-{
-}
-#endif
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 /// @brief Log a info message.
 /// @tparam Args Message to log.
+/// @threadsafe
 template<typename... Args>
 constexpr void TP_INFO(const Args& ... args)
 {
 	if(!std::is_constant_evaluated())
 	{
-		TRAP::TRAPLog.Info(args...);
+		TRAP::GetTRAPLog().Info(args...);
 	}
 }
 
@@ -325,12 +529,13 @@ constexpr void TP_INFO(const Args& ... args)
 
 /// @brief Log a warn message.
 /// @tparam Args Message to log.
+/// @threadsafe
 template<typename... Args>
 constexpr void TP_WARN(const Args& ... args)
 {
 	if(!std::is_constant_evaluated())
 	{
-		TRAP::TRAPLog.Warn(args...);
+		TRAP::GetTRAPLog().Warn(args...);
 	}
 }
 
@@ -338,12 +543,13 @@ constexpr void TP_WARN(const Args& ... args)
 
 /// @brief Log a error message.
 /// @tparam Args Message to log.
+/// @threadsafe
 template<typename... Args>
 constexpr void TP_ERROR(const Args& ... args)
 {
 	if(!std::is_constant_evaluated())
 	{
-		TRAP::TRAPLog.Error(args...);
+		TRAP::GetTRAPLog().Error(args...);
 	}
 }
 
@@ -351,12 +557,13 @@ constexpr void TP_ERROR(const Args& ... args)
 
 /// @brief Log a critical message.
 /// @tparam Args Message to log.
+/// @threadsafe
 template<typename... Args>
 constexpr void TP_CRITICAL(const Args& ... args)
 {
 	if(!std::is_constant_evaluated())
 	{
-		TRAP::TRAPLog.Critical(args...);
+		TRAP::GetTRAPLog().Critical(args...);
 	}
 }
 

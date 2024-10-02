@@ -110,7 +110,7 @@ namespace TRAP::Utils
         /// @param valueArgs Perfect forwarding arguments to construct the value object.
         template<typename... ValueArgs>
         explicit Safe([[maybe_unused]] DefaultConstructMutex _, ValueArgs&&... valueArgs)
-            : m_mutex(), m_value(std::forward<ValueArgs>(valueArgs)...)
+            : m_value(std::forward<ValueArgs>(valueArgs)...)
         {
             ZoneScoped;
         }

@@ -227,7 +227,7 @@ namespace
 
 TEST_CASE("TRAP::FileSystem::FileSystemWatcher", "[filesystem][filesystemwatcher][nonrecursive]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
     const std::filesystem::path BasePath = "Testfiles/FileSystemWatcher";
     const bool Recursive = false;
     TRAP::FileSystem::FileSystemWatcher fsWatcher(false, "UnitTest Watcher (non recursive)");
@@ -275,7 +275,7 @@ TEST_CASE("TRAP::FileSystem::FileSystemWatcher", "[filesystem][filesystemwatcher
 
 TEST_CASE("TRAP::FileSystem::FileSystemWatcher - Recursive", "[filesystem][filesystemwatcher][recursive]")
 {
-    TRAP::TRAPLog.SetImportance(TRAP::Log::Level::Critical);
+    TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
     const std::filesystem::path BasePath = "Testfiles/FileSystemWatcher_Recursive";
     const bool Recursive = true;
     TRAP::FileSystem::FileSystemWatcher fsWatcher(true, "UnitTest Watcher (recursive)");
