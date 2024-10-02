@@ -23,6 +23,10 @@
 #include "Utils/UniqueResource.h"
 #include "Utils/Concurrency/Safe.h"
 
+#ifdef TRAP_PLATFORM_WINDOWS
+    #include "Utils/Win.h"
+#endif
+
 namespace TRAP::Events
 {
     class Event;

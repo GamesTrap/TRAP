@@ -10,6 +10,10 @@
 #include "Core/Types.h"
 #include "TRAP_Assert.h"
 
+#ifdef TRAP_PLATFORM_WINDOWS
+#include "Utils/Win.h"
+#endif
+
 namespace TRAP::Utils
 {
 	using UUID = std::array<u8, 16>;

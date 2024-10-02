@@ -6,6 +6,11 @@
 #include "Core/Types.h"
 #include "Utils/Optional.h"
 
+#ifdef TRAP_PLATFORM_WINDOWS
+#pragma warning(push)
+#pragma warning(disable: 4324)
+#endif /*TRAP_PLATFORM_WINDOWS*/
+
 namespace TRAP::Utils
 {
     /// @brief A FIFO Queue implementation without locking.
@@ -129,5 +134,9 @@ namespace TRAP::Utils
         u8 m_avoidFalseSharing2[std::hardware_destructive_interference_size]{};
     };
 }
+
+#ifdef TRAP_PLATFORM_WINDOWS
+#pragma warning(pop)
+#endif /*TRAP_PLATFORM_WINDOWS*/
 
 #endif /*TRAP_CONCURRENCY_QUEUE_H*/
