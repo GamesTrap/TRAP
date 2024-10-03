@@ -552,6 +552,8 @@ void TRAPEditorLayer::OpenScene()
 
 			m_activeScene = m_editorScene;
 		}
+		else
+			TP_ERROR("Failed to deserialize the scene!");
 	}
 }
 
@@ -693,7 +695,7 @@ void TRAPEditorLayer::MousePicking()
 		const i32 id = mousePickBufferRange[mouseY * m_renderTargetDesc.Width + mouseX];
 		if(m_activeScene)
 		{
-			const TRAP::Entity entity{static_cast<entt::entity>(id), m_activeScene.get()};
+			const TRAP::Entity entity{static_cast<entt::entity>(id), *m_activeScene};
 			if(entity != m_sceneGraphPanel.GetSelectedEntity() && !ImGuizmo::IsUsing())
 			{
 				if ((!ImGuizmo::IsOver() && entity != TRAP::Entity()) || id != -1)
@@ -724,7 +726,7 @@ void TRAPEditorLayer::DeleteEntity()
 	TRAP::Entity selectedEntity = m_sceneGraphPanel.GetSelectedEntity();
 	if(selectedEntity)
 	{
-		m_sceneGraphPanel.SetSelectedEntity(TRAP::Entity(entt::null, m_editorScene.get()));
+		m_sceneGraphPanel.SetSelectedEntity(TRAP::Entity(entt::null, *m_editorScene));
 		m_editorScene->DestroyEntity(selectedEntity);
 	}
 }
@@ -790,9 +792,11 @@ void TRAPEditorLayer::UIToolbar()
 
 void TRAPEditorLayer::OnScenePlay()
 {
+	TRAP_ASSERT(m_editorScene, "There is no valid editor scene!");
+
 	m_sceneState = SceneState::Play;
 
-	m_activeScene = TRAP::Scene::Copy(m_editorScene);
+	m_activeScene = TRAP::Scene::Copy(*m_editorScene);
 	m_activeScene->OnRuntimeStart();
 
 	m_sceneGraphPanel.SetContext(m_activeScene);

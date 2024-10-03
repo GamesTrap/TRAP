@@ -30,7 +30,7 @@ namespace TRAP
 		/// Creates a new Entity.
 		/// @param handle Handle to entt::entity.
 		/// @param scene Scene which the new Entity is associated with.
-		constexpr Entity(entt::entity handle, Scene* scene) noexcept;
+		constexpr Entity(entt::entity handle, Scene& scene) noexcept;
 
 		/// @brief Copy constructor.
 		constexpr Entity(const Entity&) = default;
@@ -144,9 +144,10 @@ namespace TRAP
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Entity::Entity(const entt::entity handle, Scene* const scene) noexcept
-	: m_entityHandle(handle), m_scene(scene)
+constexpr TRAP::Entity::Entity(const entt::entity handle, Scene& scene) noexcept
+	: m_entityHandle(handle), m_scene(&scene)
 {
+	TRAP_ASSERT(handle != entt::null, "Handle to internal entity is invalid!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

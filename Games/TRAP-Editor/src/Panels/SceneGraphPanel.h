@@ -23,8 +23,8 @@ namespace TRAP
 		requires TRAP::IsComponent<T>
 		void DisplayAddComponentEntry(const std::string& entryName);
 
-		void DrawEntityNode(Entity entity);
-		void DrawComponents(Entity entity);
+		void DrawEntityNode(const Entity& entity);
+		void DrawComponents(Entity& entity);
 
 		Ref<Scene> m_context = nullptr;
 		Entity m_selectionContext{};

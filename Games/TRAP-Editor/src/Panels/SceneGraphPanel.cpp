@@ -101,7 +101,7 @@ void TRAP::SceneGraphPanel::OnImGuiRender()
 	{
 		for(const auto entityID : m_context->m_registry.storage<entt::entity>())
 		{
-			const Entity entity{ entityID, m_context.get() };
+			const Entity entity{ entityID, *m_context };
 			DrawEntityNode(entity);
 		};
 
@@ -128,7 +128,7 @@ void TRAP::SceneGraphPanel::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::SceneGraphPanel::DrawEntityNode(Entity entity)
+void TRAP::SceneGraphPanel::DrawEntityNode(const Entity& entity)
 {
 	auto& tag = entity.GetComponent<TagComponent>().Tag;
 
@@ -208,7 +208,7 @@ void DrawComponent(const std::string& name, TRAP::Entity& entity, UIFunction fun
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
+void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 {
 	if (entity.HasComponent<TagComponent>() && entity.HasComponent<UIDComponent>())
 	{

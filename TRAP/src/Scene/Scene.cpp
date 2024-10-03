@@ -35,17 +35,16 @@ namespace
 
 		case TRAP::Rigidbody2DComponent::BodyType::Kinematic:
 			return b2_kinematicBody;
-
-		default:
-			TRAP_ASSERT(false, "TRAPRigidbody2DTypeToBox2DBody(): Unknown body type!");
-			return b2_staticBody;
 		}
+
+		TRAP_ASSERT(false, "TRAPRigidbody2DTypeToBox2DBody(): Unknown body type!");
+		return b2_staticBody;
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	template<typename... Component>
-	void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<entt::entity, entt::entity>& enttMap)
+	void CopyComponent(entt::registry& dst, const entt::registry& src, const std::unordered_map<entt::entity, entt::entity>& enttMap)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
@@ -66,7 +65,7 @@ namespace
 
 	template<typename... Component>
 	void CopyComponent([[maybe_unused]] TRAP::ComponentGroup<Component...> components, entt::registry& dst,
-					   entt::registry& src, const std::unordered_map<entt::entity, entt::entity>& enttMap)
+					   const entt::registry& src, const std::unordered_map<entt::entity, entt::entity>& enttMap)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None &&
 		                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -77,7 +76,7 @@ namespace
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	template<typename... Component>
-	void CopyComponentIfExists(TRAP::Entity dst, TRAP::Entity src)
+	void CopyComponentIfExists(TRAP::Entity& dst, const TRAP::Entity& src)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
@@ -91,8 +90,8 @@ namespace
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	template<typename... Component>
-	void CopyComponentIfExists([[maybe_unused]] TRAP::ComponentGroup<Component...> components, TRAP::Entity dst,
-							   TRAP::Entity src)
+	void CopyComponentIfExists([[maybe_unused]] TRAP::ComponentGroup<Component...> components, TRAP::Entity& dst,
+							   const TRAP::Entity& src)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None &&
 		                                             (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -103,23 +102,20 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Scene> TRAP::Scene::Copy(const Ref<Scene>& other)
+[[nodiscard]] TRAP::Ref<TRAP::Scene> TRAP::Scene::Copy(const Scene& other)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	TRAP::Ref<Scene> newScene = TRAP::MakeRef<Scene>();
 
-	newScene->m_viewportWidth = other->m_viewportWidth;
-	newScene->m_viewportHeight = other->m_viewportHeight;
-
-	auto& srcSceneRegistry = other->m_registry;
+	const auto& srcSceneRegistry = other.m_registry;
 	auto& dstSceneRegistry = newScene->m_registry;
 	std::unordered_map<entt::entity, entt::entity> enttMap{};
 
 	//Create entities with UID and Tag in newScene for each entity with an UID component in other scene.
 	//Reversed so the entities have the same order as in the original scene.
-	auto UIDView = srcSceneRegistry.view<UIDComponent>();
-	for(auto it : std::ranges::reverse_view(UIDView))
+	const auto UIDView = srcSceneRegistry.view<UIDComponent>();
+	for(const auto it : std::ranges::reverse_view(UIDView))
 	{
 		const auto& name = srcSceneRegistry.get<TagComponent>(it).Tag;
 		Entity newEntity = newScene->CreateEntity(name);
@@ -138,7 +134,7 @@ TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
-	Entity entity = { m_registry.create(), this };
+	Entity entity = { m_registry.create(), *this };
 	entity.AddComponent<UIDComponent>();
 	entity.AddComponent<TransformComponent>();
 	auto& tag = entity.AddComponent<TagComponent>();
@@ -148,7 +144,7 @@ TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Scene::DestroyEntity(const Entity entity)
+void TRAP::Scene::DestroyEntity(const Entity& entity)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
@@ -163,11 +159,11 @@ void TRAP::Scene::OnRuntimeStart()
 
 	m_physicsWorld = TRAP::MakeScope<b2World>(b2Vec2{0.0f, -9.8f});
 
-	auto view = m_registry.view<Rigidbody2DComponent>();
-	for(auto e : view)
+	const auto view = m_registry.view<Rigidbody2DComponent>();
+	for(const auto e : view)
 	{
-		Entity entity{e, this};
-		auto& transform = entity.GetComponent<TransformComponent>();
+		const Entity entity{e, *this};
+		const auto& transform = entity.GetComponent<TransformComponent>();
 		auto& rigidbody2D = entity.GetComponent<Rigidbody2DComponent>();
 
 		b2BodyDef bodyDef{};
@@ -175,7 +171,7 @@ void TRAP::Scene::OnRuntimeStart()
 		bodyDef.position.Set(transform.Position.x(), transform.Position.y());
 		bodyDef.angle = transform.Rotation.z();
 
-		b2Body* body = m_physicsWorld->CreateBody(&bodyDef);
+		b2Body* const body = m_physicsWorld->CreateBody(&bodyDef);
 		body->SetFixedRotation(rigidbody2D.FixedRotation);
 		rigidbody2D.RuntimeBody = body;
 
@@ -220,10 +216,10 @@ void TRAP::Scene::OnRuntimeStop()
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
-	auto view = m_registry.view<Rigidbody2DComponent>();
-	for(auto e : view)
+	const auto view = m_registry.view<Rigidbody2DComponent>();
+	for(const auto e : view)
 	{
-		Entity entity{e, this};
+		const Entity entity{e, *this};
 		auto& rigidbody2D = entity.GetComponent<Rigidbody2DComponent>();
 
 		if(entity.HasComponent<BoxCollider2DComponent>())
@@ -265,19 +261,19 @@ void TRAP::Scene::OnTickRuntime(const Utils::TimeStep& deltaTime)
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	//Physics
-	const i32 velocityIterations = 6;
-	const i32 positionIterations = 2;
+	static constexpr i32 velocityIterations = 6;
+	static constexpr i32 positionIterations = 2;
 	m_physicsWorld->Step(deltaTime, velocityIterations, positionIterations);
 
 	//Retrieve transform from Box2D
-	auto view = m_registry.view<Rigidbody2DComponent>();
-	for(auto e : view)
+	const auto view = m_registry.view<Rigidbody2DComponent>();
+	for(const auto e : view)
 	{
-		Entity entity{e, this};
+		const Entity entity{e, *this};
 		auto& transform = entity.GetComponent<TransformComponent>();
-		auto& rigidbody2D = entity.GetComponent<Rigidbody2DComponent>();
+		const auto& rigidbody2D = entity.GetComponent<Rigidbody2DComponent>();
 
-		b2Body* body = rigidbody2D.RuntimeBody;
+		const b2Body* const body = rigidbody2D.RuntimeBody;
 		const auto& position = body->GetPosition();
 		transform.Position.x() = position.x;
 		transform.Position.y() = position.y;
@@ -293,14 +289,14 @@ void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 
 	//Update scripts
 	{
-		m_registry.view<NativeScriptComponent>().each([this, deltaTime](auto entity, auto& nsc)
+		m_registry.view<NativeScriptComponent>().each([this, deltaTime](const auto entity, auto& nsc)
 		{
 			//TODO For now create and instantiate every native script.
 			//Bug Memory leak OnDestroy is never called!
 			if(!nsc.Instance)
 			{
 				nsc.Instance = nsc.InstantiateScript();
-				nsc.Instance->m_entity = Entity{ entity, this };
+				nsc.Instance->m_entity = Entity{ entity, *this };
 				nsc.Instance->OnCreate();
 			}
 
@@ -313,10 +309,10 @@ void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 	const Graphics::Camera* mainCamera = nullptr;
 	Math::Mat4 cameraTransform;
 	{
-		auto view = m_registry.view<TransformComponent, CameraComponent>();
-		for (auto entity : view)
+		const auto view = m_registry.view<TransformComponent, CameraComponent>();
+		for (const auto entity : view)
 		{
-			auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
+			const auto& [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
 
 			if(camera.Primary)
 			{
@@ -333,19 +329,19 @@ void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 		Graphics::Renderer2D::BeginScene(*mainCamera, cameraTransform);
 
 		//Render sprites
-		auto spriteGroup = m_registry.view<TransformComponent, SpriteRendererComponent>();
-		for (auto entity : spriteGroup)
+		const auto spriteGroup = m_registry.view<TransformComponent, SpriteRendererComponent>();
+		for (const auto entity : spriteGroup)
 		{
-			auto [transform, sprite] = spriteGroup.get<TransformComponent, SpriteRendererComponent>(entity);
+			const auto& [transform, sprite] = spriteGroup.get<TransformComponent, SpriteRendererComponent>(entity);
 
 			Graphics::Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<i32>(entity));
 		}
 
 		//Render circles
-		auto circleGroup = m_registry.view<TransformComponent, CircleRendererComponent>();
-		for (auto entity : circleGroup)
+		const auto circleGroup = m_registry.view<TransformComponent, CircleRendererComponent>();
+		for (const auto entity : circleGroup)
 		{
-			auto [transform, circle] = circleGroup.get<TransformComponent, CircleRendererComponent>(entity);
+			const auto& [transform, circle] = circleGroup.get<TransformComponent, CircleRendererComponent>(entity);
 
 			Graphics::Renderer2D::DrawCircle(transform.GetTransform(), circle.Color,
 											circle.Thickness, circle.Fade, static_cast<i32>(entity));
@@ -358,15 +354,15 @@ void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Scene::OnUpdateEditor([[maybe_unused]] const Utils::TimeStep deltaTime, Graphics::EditorCamera& camera)
+void TRAP::Scene::OnUpdateEditor([[maybe_unused]] const Utils::TimeStep deltaTime, const Graphics::EditorCamera& camera)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	Graphics::Renderer2D::BeginScene(camera);
 
 	//Renderer sprites
-	auto spriteGroup = m_registry.view<TransformComponent, SpriteRendererComponent>();
-	for (auto entity : spriteGroup)
+	const auto spriteGroup = m_registry.view<TransformComponent, SpriteRendererComponent>();
+	for (const auto entity : spriteGroup)
 	{
 		auto [transform, sprite] = spriteGroup.get<TransformComponent, SpriteRendererComponent>(entity);
 
@@ -374,8 +370,8 @@ void TRAP::Scene::OnUpdateEditor([[maybe_unused]] const Utils::TimeStep deltaTim
 	}
 
 	//Render circles
-	auto circleGroup = m_registry.view<TransformComponent, CircleRendererComponent>();
-	for (auto entity : circleGroup)
+	const auto circleGroup = m_registry.view<TransformComponent, CircleRendererComponent>();
+	for (const auto entity : circleGroup)
 	{
 		auto [transform, circle] = circleGroup.get<TransformComponent, CircleRendererComponent>(entity);
 
@@ -395,14 +391,14 @@ void TRAP::Scene::OnTick(const TRAP::Utils::TimeStep& deltaTime)
 
 	//Update scripts
 	{
-		m_registry.view<NativeScriptComponent>().each([this, deltaTime](auto entity, auto& nsc)
+		m_registry.view<NativeScriptComponent>().each([this, deltaTime](const auto entity, auto& nsc)
 		{
 			//TODO For now create and instantiate every native script.
 			//Bug Memory leak OnDestroy is never called!
 			if (!nsc.Instance)
 			{
 				nsc.Instance = nsc.InstantiateScript();
-				nsc.Instance->m_entity = Entity{ entity, this };
+				nsc.Instance->m_entity = Entity{ entity, *this };
 				nsc.Instance->OnCreate();
 			}
 
@@ -417,12 +413,9 @@ void TRAP::Scene::OnViewportResize(const u32 width, const u32 height)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
-	m_viewportWidth = width;
-	m_viewportHeight = height;
-
 	//Resize non-FixedAspectRatio Cameras
-	auto view = m_registry.view<CameraComponent>();
-	for(auto entity : view)
+	const auto view = m_registry.view<CameraComponent>();
+	for(const auto entity : view)
 	{
 		auto& cameraComponent = view.get<CameraComponent>(entity);
 		if(!cameraComponent.FixedAspectRatio)
@@ -432,12 +425,14 @@ void TRAP::Scene::OnViewportResize(const u32 width, const u32 height)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Scene::DuplicateEntity(Entity entity)
+TRAP::Entity TRAP::Scene::DuplicateEntity(const Entity& entity)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
 	Entity newEntity = CreateEntity(entity.GetName());
 	CopyComponentIfExists(AllComponents{}, newEntity, entity);
+
+	return newEntity;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -446,12 +441,12 @@ void TRAP::Scene::DuplicateEntity(Entity entity)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
-	auto view = m_registry.view<CameraComponent>();
-	for(auto entity : view)
+	const auto view = m_registry.view<CameraComponent>();
+	for(const auto entity : view)
 	{
-		auto camera = view.get<CameraComponent>(entity);
+		const auto& camera = view.get<CameraComponent>(entity);
 		if(camera.Primary)
-			return Entity{ entity, this };
+			return Entity{ entity, *this };
 	}
 
 	return {};

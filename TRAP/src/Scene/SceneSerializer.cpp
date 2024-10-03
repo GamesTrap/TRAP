@@ -142,7 +142,7 @@ namespace TRAP
 		return out;
 	}
 
-	void SerializeEntity(YAML::Emitter& out, Entity entity)
+	void SerializeEntity(YAML::Emitter& out, const Entity& entity)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
@@ -156,7 +156,7 @@ namespace TRAP
 			out << YAML::Key << "TagComponent";
 			out << YAML::BeginMap; //TagComponent
 
-			auto& tag = entity.GetComponent<TagComponent>().Tag;
+			const auto& tag = entity.GetComponent<TagComponent>().Tag;
 			out << YAML::Key << "Tag" << YAML::Value << tag;
 
 			out << YAML::EndMap; //TagComponent
@@ -167,7 +167,7 @@ namespace TRAP
 			out << YAML::Key << "TransformComponent";
 			out << YAML::BeginMap; //TransformComponent
 
-			auto& tc = entity.GetComponent<TransformComponent>();
+			const auto& tc = entity.GetComponent<TransformComponent>();
 			out << YAML::Key << "Position" << YAML::Value << tc.Position;
 			out << YAML::Key << "Rotation" << YAML::Value << tc.Rotation;
 			out << YAML::Key << "Scale" << YAML::Value << tc.Scale;
@@ -180,8 +180,8 @@ namespace TRAP
 			out << YAML::Key << "CameraComponent";
 			out << YAML::BeginMap; //CameraComponent
 
-			auto& cameraComponent = entity.GetComponent<CameraComponent>();
-			auto& camera = cameraComponent.Camera;
+			const auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			const auto& camera = cameraComponent.Camera;
 
 			out << YAML::Key << "Camera" << YAML::Value;
 			out << YAML::BeginMap; //Camera
@@ -204,7 +204,7 @@ namespace TRAP
 			out << YAML::Key << "SpriteRendererComponent";
 			out << YAML::BeginMap; //SpriteRendererComponent
 
-			auto& spriteRendererComponent = entity.GetComponent<SpriteRendererComponent>();
+			const auto& spriteRendererComponent = entity.GetComponent<SpriteRendererComponent>();
 			out << YAML::Key << "Color" << YAML::Value << spriteRendererComponent.Color;
 
 			out << YAML::EndMap; //SpriteRendererComponent
@@ -215,7 +215,7 @@ namespace TRAP
 			out << YAML::Key << "CircleRendererComponent";
 			out << YAML::BeginMap; //CircleRendererComponent
 
-			auto& circleRendererComponent = entity.GetComponent<CircleRendererComponent>();
+			const auto& circleRendererComponent = entity.GetComponent<CircleRendererComponent>();
 			out << YAML::Key << "Color" << YAML::Value << circleRendererComponent.Color;
 			out << YAML::Key << "Thickness" << YAML::Value << circleRendererComponent.Thickness;
 			out << YAML::Key << "Fade" << YAML::Value << circleRendererComponent.Fade;
@@ -228,7 +228,7 @@ namespace TRAP
 			out << YAML::Key << "Rigidbody2DComponent";
 			out << YAML::BeginMap; //Rigidbody2DComponent
 
-			auto& rigidbody2DComponent = entity.GetComponent<Rigidbody2DComponent>();
+			const auto& rigidbody2DComponent = entity.GetComponent<Rigidbody2DComponent>();
 			out << YAML::Key << "BodyType" << YAML::Value << fmt::format("{}", rigidbody2DComponent.Type);
 			out << YAML::Key << "FixedRotation" << YAML::Value << rigidbody2DComponent.FixedRotation;
 
@@ -240,7 +240,7 @@ namespace TRAP
 			out << YAML::Key << "BoxCollider2DComponent";
 			out << YAML::BeginMap; //BoxCollider2DComponent
 
-			auto& boxCollider2DComponent = entity.GetComponent<BoxCollider2DComponent>();
+			const auto& boxCollider2DComponent = entity.GetComponent<BoxCollider2DComponent>();
 			out << YAML::Key << "Offset" << YAML::Value << boxCollider2DComponent.Offset;
 			out << YAML::Key << "Size" << YAML::Value << boxCollider2DComponent.Size;
 			out << YAML::Key << "Density" << YAML::Value << boxCollider2DComponent.Density;
@@ -256,7 +256,7 @@ namespace TRAP
 			out << YAML::Key << "CircleCollider2DComponent";
 			out << YAML::BeginMap; //CircleCollider2DComponent
 
-			auto& circleCollider2DComponent = entity.GetComponent<CircleCollider2DComponent>();
+			const auto& circleCollider2DComponent = entity.GetComponent<CircleCollider2DComponent>();
 			out << YAML::Key << "Offset" << YAML::Value << circleCollider2DComponent.Offset;
 			out << YAML::Key << "Radius" << YAML::Value << circleCollider2DComponent.Radius;
 			out << YAML::Key << "Density" << YAML::Value << circleCollider2DComponent.Density;
@@ -292,7 +292,7 @@ void TRAP::SceneSerializer::Serialize(const std::filesystem::path& filepath)
 
 	for(const auto entityID : m_scene->m_registry.storage<entt::entity>())
 	{
-		const Entity entity = { entityID, m_scene.get() };
+		const Entity entity = { entityID, *m_scene };
 		if (!entity)
 			return;
 
@@ -303,7 +303,7 @@ void TRAP::SceneSerializer::Serialize(const std::filesystem::path& filepath)
 	out << YAML::EndMap;
 
 	if(!FileSystem::WriteTextFile(filepath, out.c_str()))
-		TP_ERROR(Log::SceneSerializerPrefix, " Saving to: ", filepath, " failed!");
+		TP_ERROR(Log::SceneSerializerPrefix, "Saving to: ", filepath, " failed!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -344,15 +344,15 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 	const std::string sceneName = data["Scene"].as<std::string>();
 	TP_TRACE(Log::SceneSerializerPrefix, "Deserializing scene '", sceneName, "'");
 
-	auto entities = data["Entities"];
+	const auto entities = data["Entities"];
 	if (entities)
 	{
-		for (auto entity : entities)
+		for (const auto entity : entities)
 		{
 			const u64 uid = entity["Entity"].as<u64>();
 
 			std::string name;
-			auto tagComponent = entity["TagComponent"];
+			const auto tagComponent = entity["TagComponent"];
 			if (tagComponent)
 				name = tagComponent["Tag"].as<std::string>();
 
@@ -361,7 +361,7 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 			Entity deserializedEntity = m_scene->CreateEntity(name);
 			deserializedEntity.GetComponent<UIDComponent>().UID = TRAP::Utils::UID(uid);
 
-			auto transformComponent = entity["TransformComponent"];
+			const auto transformComponent = entity["TransformComponent"];
 			if (transformComponent)
 			{
 				//Entities always have transforms
@@ -371,12 +371,12 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 				tc.Scale = transformComponent["Scale"].as<Math::Vec3>();
 			}
 
-			auto cameraComponent = entity["CameraComponent"];
+			const auto cameraComponent = entity["CameraComponent"];
 			if (cameraComponent)
 			{
 				auto& cc = deserializedEntity.AddComponent<CameraComponent>();
 
-				auto cameraProps = cameraComponent["Camera"];
+				const auto cameraProps = cameraComponent["Camera"];
 				cc.Camera.SetProjectionType(static_cast<SceneCamera::ProjectionType>
 					(
 						cameraProps["ProjectionType"].as<i32>()
@@ -393,14 +393,14 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 				cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
 			}
 
-			auto spriteRendererComponent = entity["SpriteRendererComponent"];
+			const auto spriteRendererComponent = entity["SpriteRendererComponent"];
 			if (spriteRendererComponent)
 			{
 				auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
 				src.Color = spriteRendererComponent["Color"].as<Math::Vec4>();
 			}
 
-			auto circleRendererComponent = entity["CircleRendererComponent"];
+			const auto circleRendererComponent = entity["CircleRendererComponent"];
 			if (circleRendererComponent)
 			{
 				auto& src = deserializedEntity.AddComponent<CircleRendererComponent>();
@@ -409,7 +409,7 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 				src.Fade = circleRendererComponent["Fade"].as<f32>();
 			}
 
-			auto rigidbody2DComponent = entity["Rigidbody2DComponent"];
+			const auto rigidbody2DComponent = entity["Rigidbody2DComponent"];
 			if (rigidbody2DComponent)
 			{
 				auto& rb2d = deserializedEntity.AddComponent<Rigidbody2DComponent>();
@@ -417,7 +417,7 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 				rb2d.FixedRotation = rigidbody2DComponent["FixedRotation"].as<bool>();
 			}
 
-			auto boxCollider2DComponent = entity["BoxCollider2DComponent"];
+			const auto boxCollider2DComponent = entity["BoxCollider2DComponent"];
 			if (boxCollider2DComponent)
 			{
 				auto& bc2d = deserializedEntity.AddComponent<BoxCollider2DComponent>();
@@ -429,7 +429,7 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 				bc2d.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<f32>();
 			}
 
-			auto circleCollider2DComponent = entity["CircleCollider2DComponent"];
+			const auto circleCollider2DComponent = entity["CircleCollider2DComponent"];
 			if (circleCollider2DComponent)
 			{
 				auto& cc2d = deserializedEntity.AddComponent<CircleCollider2DComponent>();

@@ -47,15 +47,16 @@ namespace TRAP
 		/// @param other Scene to copy.
 		/// @return Copied scene.
 		/// @note Copied scene entities unique identifiers don't match those of the original scene!
-		static TRAP::Ref<Scene> Copy(const Ref<Scene>& other);
+		static TRAP::Ref<Scene> Copy(const Scene& other);
 
 		/// @brief Create a new entity with the given name.
 		/// @param name Name for the entity.
 		/// @return Newly created entity.
 		Entity CreateEntity(const std::string& name = std::string());
 		/// @brief Destroy the given entity from the scene.
+		/// @note This invalidates all Entities that refer to the same underlying instance!
 		/// @param entity Entity to destroy.
-		void DestroyEntity(Entity entity);
+		void DestroyEntity(const Entity& entity);
 
 		/// @brief Function to call on run time start.
 		void OnRuntimeStart();
@@ -71,7 +72,7 @@ namespace TRAP
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Function to call in TRAP-Editor for each frame while not in run mode.
 		/// @remark @headless This function is not available in headless mode.
-		void OnUpdateEditor(Utils::TimeStep deltaTime, Graphics::EditorCamera& camera);
+		void OnUpdateEditor(Utils::TimeStep deltaTime, const Graphics::EditorCamera& camera);
 #endif /*TRAP_HEADLESS_MODE*/
 		void OnTick(const TRAP::Utils::TimeStep& deltaTime);
 		/// @brief Function to call on viewport resize.
@@ -82,7 +83,7 @@ namespace TRAP
 		/// @brief Duplicate the given entity.
 		///        Create a new entity and copies all components from the given entity.
 		/// @param entity Entity to duplicate.
-		void DuplicateEntity(Entity entity);
+		TRAP::Entity DuplicateEntity(const Entity& entity);
 
 		/// @brief Retrieve the primary camera entity for the scene.
 		/// @return Primary camera entity.
@@ -106,7 +107,6 @@ namespace TRAP
 		TRAP::Scope<b2World> m_physicsWorld = nullptr;
 
 		entt::registry m_registry;
-		u32 m_viewportWidth = 0, m_viewportHeight = 0;
 	};
 }
 

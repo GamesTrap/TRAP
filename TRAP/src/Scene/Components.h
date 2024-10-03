@@ -155,7 +155,7 @@ namespace TRAP
 
 	struct Rigidbody2DComponent
 	{
-		enum class BodyType : u32 {Static, Dynamic, Kinematic};
+		enum class BodyType : u8 {Static, Dynamic, Kinematic};
 		BodyType Type = BodyType::Static;
 		bool FixedRotation = false;
 
@@ -242,12 +242,13 @@ struct fmt::formatter<TRAP::Rigidbody2DComponent::BodyType>
         case TRAP::Rigidbody2DComponent::BodyType::Kinematic:
             enumStr = "Kinematic";
             break;
+        }
 
-        default:
+		if(enumStr.empty())
+		{
             TRAP_ASSERT(false, "fmt::formatter<TRAP::Rigidbody2DComponent::BodyType>: Missing enum value!");
             enumStr = "<MISSING ENUM VALUE>";
-            break;
-        }
+		}
 
         return fmt::format_to(ctx.out(), "{}", enumStr);
     }

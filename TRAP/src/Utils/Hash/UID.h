@@ -7,6 +7,8 @@
 #include "Core/Types.h"
 #include "Scene/SceneSerializer.h"
 
+#include "Utils/Random/Random.h"
+
 namespace TRAP::Utils
 {
     /// @brief Unique identifier, basically a randomly generated 64-bit number
@@ -14,7 +16,7 @@ namespace TRAP::Utils
     {
     public:
         /// @brief Constructor. Generated a new unique identifier.
-        UID();
+        UID() = default;
 
         /// @brief Destructor.
         constexpr ~UID() = default;
@@ -37,7 +39,7 @@ namespace TRAP::Utils
         /// @brief Constructor.
         constexpr explicit UID(u64 uid) noexcept;
 
-        u64 m_uid;
+        u64 m_uid = TRAP::Utils::RandomThreadLocal::Get();
 
         friend bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath);
     };
