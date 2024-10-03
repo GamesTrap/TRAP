@@ -722,7 +722,7 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr T& TRAP::Math::Vec<3, T>::at(const usize i)
 {
-	if(i >= this->Length())
+	if(i >= Vec<3, T>::Length())
 		throw std::out_of_range(fmt::format("Math::Vec<3, T>::at(): Index {} is out of range!", i));
 
     return data[i];
@@ -732,7 +732,7 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr const T& TRAP::Math::Vec<3, T>::at(const usize i) const
 {
-	if(i >= this->Length())
+	if(i >= Vec<3, T>::Length())
 		throw std::out_of_range(fmt::format("Math::Vec<3, T>::at(): Index {} is out of range!", i));
 
     return data[i];

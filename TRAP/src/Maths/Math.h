@@ -2555,7 +2555,7 @@ requires std::signed_integral<genFIType> || std::floating_point<genFIType>
 {
 	if constexpr (std::signed_integral<genFIType>)
 	{
-		const genFIType y = x >> (sizeof(genFIType) * 8u - 1u);
+		const genFIType y = x >> ((sizeof(genFIType) * 8u) - 1u);
 		return (x ^ y) - y;
 	}
 	else
@@ -3278,7 +3278,7 @@ template <typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::tQuat<T> TRAP::Math::Lerp(const tQuat<T>& x, const tQuat<T>& y, T a)
 {
-	return x * (static_cast<T>(1) - static_cast<T>(a)) + (y * a);
+	return x * (static_cast<T>(1) - a) + (y * a);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5452,7 +5452,7 @@ namespace TRAP::INTERNAL
 	template<typename T>
 	[[nodiscard]] constexpr T Mod289(const T& x)
 	{
-		return x - TRAP::Math::Floor(x * (static_cast<T>(1.0) / static_cast<T>(289.0))) * static_cast<T>(289.0);
+		return x - (TRAP::Math::Floor(x * (static_cast<T>(1.0) / static_cast<T>(289.0))) * static_cast<T>(289.0));
 	}
 
 	template<typename T>
@@ -5473,14 +5473,14 @@ namespace TRAP::INTERNAL
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr T TaylorInvSqrt(const T& r)
 	{
-		return static_cast<T>(1.79284291400159) - static_cast<T>(0.85373472095314) * r;
+		return static_cast<T>(1.79284291400159) - (static_cast<T>(0.85373472095314) * r);
 	}
 
 	template<u32 L, typename T>
 	requires std::floating_point<T> && (L > 1) && (L < 5)
 	[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TaylorInvSqrt(const TRAP::Math::Vec<L, T>& r)
 	{
-		return static_cast<T>(1.79284291400159) - static_cast<T>(0.85373472095314) * r;
+		return static_cast<T>(1.79284291400159) - (static_cast<T>(0.85373472095314) * r);
 	}
 
 	template<u32 L, typename T>

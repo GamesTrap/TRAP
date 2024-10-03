@@ -114,8 +114,8 @@ namespace TRAP::Math
 				 std::floating_point<X2> && std::floating_point<Y2> && std::floating_point<Z2> &&
 				 std::floating_point<X3> && std::floating_point<Y3> && std::floating_point<Z3>
 		constexpr Mat(X1 x1, Y1 y1, Z1 z1,
-						     X2 x2, Y2 y2, Z2 z2,
-						     X3 x3, Y3 y3, Z3 z3) noexcept
+					  X2 x2, Y2 y2, Z2 z2,
+					  X3 x3, Y3 y3, Z3 z3) noexcept
 			: value{ col_type(x1, y1, z1), col_type(x2, y2, z2), col_type(x3, y3, z3) }
 		{}
 
@@ -293,8 +293,8 @@ namespace TRAP::Math
 		//Increment and decrement operators
 		constexpr Mat<3, 3, T>& operator++() noexcept;
 		constexpr Mat<3, 3, T>& operator--() noexcept;
-		constexpr const Mat<3, 3, T> operator++(i32) noexcept;
-		constexpr const Mat<3, 3, T> operator--(i32) noexcept;
+		constexpr Mat<3, 3, T> operator++(i32) noexcept;
+		constexpr Mat<3, 3, T> operator--(i32) noexcept;
 
 		[[nodiscard]] consteval auto operator<=>(const Mat<3, 3, T>& rhs) const noexcept = delete;
 
@@ -474,7 +474,7 @@ template<typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::col_type& TRAP::Math::Mat<3, 3, T>::at(const usize i)
 {
-	if(i >= this->Length())
+	if(i >= Mat<3, 3, T>::Length())
 		throw std::out_of_range(fmt::format("Math::Mat<3, 3, T>::at(): Index {} is out of range!", i));
 
 	return this->value[i];
@@ -484,7 +484,7 @@ template<typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::col_type& TRAP::Math::Mat<3, 3, T>::at(const usize i) const
 {
-	if(i >= this->Length())
+	if(i >= Mat<3, 3, T>::Length())
 		throw std::out_of_range(fmt::format("Math::Mat<3, 3, T>::at(): Index {} is out of range!", i));
 
 	return this->value[i];
@@ -603,7 +603,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator--() noexc
 
 template<typename T>
 requires std::floating_point<T>
-constexpr const TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator++(const i32) noexcept
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator++(const i32) noexcept
 {
 	const Mat<3, 3, T> result(*this);
 	++*this;
@@ -613,7 +613,7 @@ constexpr const TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator++(co
 
 template<typename T>
 requires std::floating_point<T>
-constexpr const TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator--(const i32) noexcept
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator--(const i32) noexcept
 {
 	const Mat<3, 3, T> result(*this);
 	--*this;
@@ -909,7 +909,7 @@ namespace std
 	template<typename T>
 	requires std::floating_point<T>
 	constexpr void swap(TRAP::Math::Mat<3, 3, T>& lhs, TRAP::Math::Mat<3, 3, T>& rhs) noexcept(std::is_nothrow_move_constructible_v<TRAP::Math::Mat<3, 3, T>> &&
-																                                      std::is_nothrow_move_assignable_v<TRAP::Math::Mat<3, 3, T>>)
+																                               std::is_nothrow_move_assignable_v<TRAP::Math::Mat<3, 3, T>>)
 	{
 		lhs.Swap(rhs);
 	}
