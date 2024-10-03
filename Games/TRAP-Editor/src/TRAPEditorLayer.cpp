@@ -693,7 +693,7 @@ void TRAPEditorLayer::MousePicking()
 		//Get our wanted value
 		const std::span<i32> mousePickBufferRange = m_mousePickBuffer->GetCPUMappedAddress<i32>();
 		const i32 id = mousePickBufferRange[mouseY * m_renderTargetDesc.Width + mouseX];
-		if(m_activeScene)
+		if(m_activeScene && id >= 0)
 		{
 			const TRAP::Entity entity{static_cast<entt::entity>(id), *m_activeScene};
 			if(entity != m_sceneGraphPanel.GetSelectedEntity() && !ImGuizmo::IsUsing())

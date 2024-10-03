@@ -99,7 +99,7 @@ void TRAP::SceneGraphPanel::OnImGuiRender()
 
 	if(m_context)
 	{
-		for(const auto entityID : m_context->m_registry.storage<entt::entity>())
+		for(const auto entityID : m_context->m_registry.view<entt::entity>())
 		{
 			const Entity entity{ entityID, *m_context };
 			DrawEntityNode(entity);

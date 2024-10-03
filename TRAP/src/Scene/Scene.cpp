@@ -134,7 +134,7 @@ TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
 
-	Entity entity = { m_registry.create(), *this };
+	Entity entity{ m_registry.create(), *this };
 	entity.AddComponent<UIDComponent>();
 	entity.AddComponent<TransformComponent>();
 	auto& tag = entity.AddComponent<TagComponent>();
