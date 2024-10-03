@@ -1,4 +1,3 @@
-/*
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
@@ -23,8 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-Modified by: Jan "GamesTrap" Schuerkamp
-*/
+//Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "TRAPPCH.h"
 #include "SocketSelector.h"
@@ -69,6 +67,19 @@ TRAP::Network::SocketSelector::SocketSelector(const SocketSelector& copy)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(const SocketSelector& right)
+{
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
+
+	SocketSelector temp(right);
+
+	std::swap(m_impl, temp.m_impl);
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Network::SocketSelector::SocketSelector(SocketSelector&& other) noexcept
 	: m_impl(std::move(other.m_impl))
 {
@@ -87,7 +98,7 @@ TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(SocketSe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::SocketSelector::Add(Socket& socket)
+void TRAP::Network::SocketSelector::Add(const Socket& socket)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
@@ -124,7 +135,7 @@ void TRAP::Network::SocketSelector::Add(Socket& socket)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::SocketSelector::Remove(Socket& socket) const
+void TRAP::Network::SocketSelector::Remove(const Socket& socket) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
@@ -183,7 +194,7 @@ bool TRAP::Network::SocketSelector::Wait(const Utils::TimeStep timeout) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::Network::SocketSelector::IsReady(Socket& socket) const
+[[nodiscard]] bool TRAP::Network::SocketSelector::IsReady(const Socket& socket) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
@@ -199,19 +210,6 @@ bool TRAP::Network::SocketSelector::Wait(const Utils::TimeStep timeout) const
 	}
 
 	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(const SocketSelector& right)
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
-
-	SocketSelector temp(right);
-
-	std::swap(m_impl, temp.m_impl);
-
-	return *this;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

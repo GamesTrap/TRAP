@@ -1,4 +1,3 @@
-/*
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
@@ -23,8 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-Modified by: Jan "GamesTrap" Schuerkamp
-*/
+//Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "TRAPPCH.h"
 #include "TCPSocket.h"
@@ -44,9 +42,9 @@ namespace
 {
 	//Define the low-level send/receive flags, which depend on the OS
 #ifdef TRAP_PLATFORM_LINUX
-	const i32 flags = MSG_NOSIGNAL;
+	constexpr i32 flags = MSG_NOSIGNAL;
 #else
-	const i32 flags = 0;
+	constexpr i32 flags = 0;
 #endif
 }
 

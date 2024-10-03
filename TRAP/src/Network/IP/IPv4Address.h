@@ -1,4 +1,3 @@
-/*
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
@@ -23,8 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-Modified by: Jan "GamesTrap" Schuerkamp
-*/
+//Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifndef TRAP_IPV4ADDRESS_H
 #define TRAP_IPV4ADDRESS_H
@@ -56,7 +54,7 @@ namespace TRAP::Network
 		/// Here address can be either a decimal address (ex: "192.168.1.180") or a
 		/// network name (ex: "localhost").
 		/// @param address IPv4 address or network name.
-		explicit IPv4Address(std::string_view address);
+		explicit IPv4Address(const std::string& address);
 
 		/// @brief Construct the address from 4 bytes.
 		///
@@ -153,10 +151,10 @@ namespace TRAP::Network
 	private:
 		/// @brief Resolve the given address string.
 		/// @param address Address string.
-		void Resolve(std::string_view address);
+		void Resolve(const std::string& address);
 
-		u32 m_address; //Address stored as an unsigned 32 bit integer
-		bool m_valid; //Is the address valid?
+		u32 m_address = 0u; //Address stored as an unsigned 32 bit integer
+		bool m_valid = false; //Is the address valid?
 	};
 
 	//-------------------------------------------------------------------------------------------------------------------//

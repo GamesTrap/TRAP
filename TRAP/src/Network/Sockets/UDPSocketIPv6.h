@@ -114,14 +114,14 @@ namespace TRAP::Network
 		[[nodiscard]] Status Receive(Packet& packet, IPv6Address& remoteAddress, u16& remotePort);
 
 	private:
-		std::vector<u8> m_buffer; //Temporary buffer holding the received data in Receive(Packet)
+		std::vector<u8> m_buffer = std::vector<u8>(MaxDatagramSize); //Temporary buffer holding the received data in Receive(Packet)
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr TRAP::Network::UDPSocketIPv6::UDPSocketIPv6()
-	: Socket(Type::UDP), m_buffer(MaxDatagramSize)
+	: Socket(Type::UDP)
 {
 }
 

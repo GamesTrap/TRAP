@@ -1,4 +1,3 @@
-/*
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
@@ -23,8 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-Modified by: Jan "GamesTrap" Schuerkamp
-*/
+//Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifndef TRAP_NETWORK_SOCKET_H
 #define TRAP_NETWORK_SOCKET_H
@@ -52,7 +50,7 @@ namespace TRAP::Network
 		consteval Socket& operator=(const Socket&) = delete;
 
 		/// @brief Status codes that may be returned by socket functions.
-		enum class Status
+		enum class Status : u8
 		{
 			Done,         //The socket has sent / received the data
 			NotReady,     //The socket is not ready to send / receive data yet
@@ -62,7 +60,7 @@ namespace TRAP::Network
 		};
 
 		/// @brief Some special values used by sockets.
-		enum
+		enum : u8
 		{
 			AnyPort = 0 //Special value that tells the system to pick any available port
 		};
@@ -90,7 +88,7 @@ namespace TRAP::Network
 
 	protected:
 		/// @brief Types of protocols that the socket can use.
-		enum class Type
+		enum class Type : u8
 		{
 			TCP, //TCP protocol
 			UDP  //UDP protocol

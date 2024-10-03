@@ -1,4 +1,3 @@
-/*
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
@@ -23,8 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-Modified by: Jan "GamesTrap" Schuerkamp
-*/
+//Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "TRAPPCH.h"
 #include "HTTP.h"
@@ -32,7 +30,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Utils/String/String.h"
 
 TRAP::Network::HTTP::Request::Request(std::string uri, const Method method, std::string body)
-	: m_method(method), m_majorVersion(1), m_minorVersion(0), m_body(std::move(body))
+	: m_method(method), m_body(std::move(body))
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
@@ -41,12 +39,12 @@ TRAP::Network::HTTP::Request::Request(std::string uri, const Method method, std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::HTTP::Request::SetField(const std::string& field, const std::string& value)
+void TRAP::Network::HTTP::Request::SetField(const std::string& field, std::string value)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None &&
 	                                         (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	m_fields[Utils::String::ToLower(field)] = value;
+	m_fields[Utils::String::ToLower(field)] = std::move(value);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -76,9 +74,6 @@ void TRAP::Network::HTTP::Request::SetField(const std::string& field, const std:
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::HTTP::Response::Response() noexcept
-	: m_status(Status::ConnectionFailed),
-	  m_majorVersion(0),
-	  m_minorVersion(0)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 }
@@ -203,7 +198,6 @@ void TRAP::Network::HTTP::Response::ParseFields(std::istream& in)
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::HTTP::HTTP() noexcept
-	: m_host(), m_hostIPv6(), m_port(0)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 }
@@ -211,7 +205,6 @@ TRAP::Network::HTTP::HTTP() noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::HTTP::HTTP(const std::string& host, const u16 port)
-	: m_host(), m_hostIPv6(), m_port(0)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
@@ -220,7 +213,7 @@ TRAP::Network::HTTP::HTTP(const std::string& host, const u16 port)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::HTTP::SetHost(const std::string& host, const u16 port)
+void TRAP::Network::HTTP::SetHost(std::string host, const u16 port)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
@@ -242,7 +235,7 @@ void TRAP::Network::HTTP::SetHost(const std::string& host, const u16 port)
 	else
 	{
 		//Undefined protocol - use HTTP
-		m_hostName = host;
+		m_hostName = std::move(host);
 		m_port = (port != 0 ? port : 80);
 	}
 

@@ -1,4 +1,3 @@
-/*
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
@@ -23,8 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-Modified by: Jan "GamesTrap" Schuerkamp
-*/
+//Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifndef TRAP_NETWORK_HTTP_H
 #define TRAP_NETWORK_HTTP_H
@@ -48,7 +46,7 @@ namespace TRAP::Network
 		{
 		public:
 			/// @brief Enumerate the available HTTP methods for a request.
-			enum class Method
+			enum class Method : u8
 			{
 				GET,   //Request in get mode, standard method to retrieve a page
 				POST,  //Request in post mode, usually to send data to a page
@@ -87,7 +85,7 @@ namespace TRAP::Network
 			/// sending the request).
 			/// @param field Name of the field to set.
 			/// @param value Value of the field.
-			void SetField(const std::string& field, const std::string& value);
+			void SetField(const std::string& field, std::string value);
 
 			/// @brief Set the request method.
 			///
@@ -140,12 +138,12 @@ namespace TRAP::Network
 
 			using FieldTable = std::map<std::string, std::string, std::equal_to<>>;
 
-			FieldTable m_fields;     //Fields of the header associated to their value
-			Method m_method;         //Method to use for the request
-			std::string m_uri;       //Target URI of the request
-			u32 m_majorVersion; //Major HTTP version
-			u32 m_minorVersion; //Minor HTTP version
-			std::string m_body;      //Body of the request
+			FieldTable m_fields{};         //Fields of the header associated to their value
+			Method m_method = Method::GET; //Method to use for the request
+			std::string m_uri{};           //Target URI of the request
+			u32 m_majorVersion = 1u;       //Major HTTP version
+			u32 m_minorVersion = 0u;       //Minor HTTP version
+			std::string m_body{};          //Body of the request
 		};
 
 		/// @brief Define a HTTP response.
@@ -153,7 +151,7 @@ namespace TRAP::Network
 		{
 		public:
 			/// @brief Enumerate all the valid status codes for a response.
-			enum class Status
+			enum class Status : u16
 			{
 				//2XX: Success
 				OK             = 200, //Most common code returned when operation was successful
@@ -259,11 +257,11 @@ namespace TRAP::Network
 
 			using FieldTable = std::map<std::string, std::string, std::equal_to<>>;
 
-			FieldTable m_fields;     //Fields of the header
-			Status m_status;         //Status code
-			u32 m_majorVersion; //Major HTTP version
-			u32 m_minorVersion; //Minor HTTP version
-			std::string m_body;      //Body of the response
+			FieldTable m_fields{};                      //Fields of the header
+			Status m_status = Status::ConnectionFailed; //Status code
+			u32 m_majorVersion = 0u;                    //Major HTTP version
+			u32 m_minorVersion = 0u;                    //Minor HTTP version
+			std::string m_body{};                       //Body of the response
 		};
 
 		/// @brief Constructor.
@@ -303,7 +301,7 @@ namespace TRAP::Network
 		/// standard one, or use an unknown protocol.
 		/// @param host Web server to connect to.
 		/// @param port Port to use for connection.
-		void SetHost(const std::string& host, u16 port = 0);
+		void SetHost(std::string host, u16 port = 0);
 
 		/// @brief Send a HTTP request and return the server's response.
 		///
@@ -324,10 +322,10 @@ namespace TRAP::Network
 	private:
 		TCPSocket m_connection;         //Connection to the host
 		TCPSocketIPv6 m_connectionIPv6; //Connection to the host
-		IPv4Address m_host;             //Web host address
-		IPv6Address m_hostIPv6;         //Web host address
-		std::string m_hostName;         //Web host name
-		u16 m_port;                //Port used for connection with host
+		IPv4Address m_host{};           //Web host address
+		IPv6Address m_hostIPv6{};       //Web host address
+		std::string m_hostName{};       //Web host name
+		u16 m_port = 0;                 //Port used for connection with host
 	};
 }
 
@@ -363,11 +361,12 @@ struct fmt::formatter<TRAP::Network::HTTP::Request::Method>
 			case TRAP::Network::HTTP::Request::Method::DELETE:
 				enumStr = "DELETE";
 				break;
+		}
 
-		default:
+		if(enumStr.empty())
+		{
             TRAP_ASSERT(false, "fmt::formatter<TRAP::Network::HTTP::Request::Method>: Missing enum value!");
             enumStr = "<MISSING ENUM VALUE>";
-            break;
 		}
 
 		return fmt::format_to(ctx.out(), "{}", enumStr);
@@ -464,11 +463,12 @@ struct fmt::formatter<TRAP::Network::HTTP::Response::Status>
 			case TRAP::Network::HTTP::Response::Status::ConnectionFailed:
 				enumStr = "ConnectionFailed";
 				break;
+		}
 
-		default:
+		if(enumStr.empty())
+		{
             TRAP_ASSERT(false, "fmt::formatter<TRAP::Network::HTTP::Response::Status>: Missing enum value!");
             enumStr = "<MISSING ENUM VALUE>";
-            break;
 		}
 
 		return fmt::format_to(ctx.out(), "{}", enumStr);

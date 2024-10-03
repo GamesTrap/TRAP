@@ -1,4 +1,3 @@
-/*
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
@@ -23,8 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-Modified by: Jan "GamesTrap" Schuerkamp
-*/
+//Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "TRAPPCH.h"
 #include "IPv4Address.h"
@@ -41,8 +39,7 @@ constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Broadcast(255, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
-	: m_address(0), m_valid(false)
+TRAP::Network::IPv4Address::IPv4Address(const std::string& address)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
@@ -137,7 +134,7 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::IPv4Address::Resolve(const std::string_view address)
+void TRAP::Network::IPv4Address::Resolve(const std::string& address)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
@@ -160,7 +157,7 @@ void TRAP::Network::IPv4Address::Resolve(const std::string_view address)
 	{
 		//Try to convert the address as a byte representation ("xxx.xxx.xxx.xxx")
 		u32 ip{};
-		if((inet_pton(AF_INET, address.data(), &ip) != 0) && ip != INADDR_NONE)
+		if((inet_pton(AF_INET, address.c_str(), &ip) != 0) && ip != INADDR_NONE)
 		{
 			m_address = ip;
 			m_valid = true;
@@ -171,7 +168,7 @@ void TRAP::Network::IPv4Address::Resolve(const std::string_view address)
 			addrinfo hints{};
 			hints.ai_family = AF_INET;
 			addrinfo* result = nullptr;
-			if(getaddrinfo(address.data(), nullptr, &hints, &result) == 0)
+			if(getaddrinfo(address.c_str(), nullptr, &hints, &result) == 0)
 			{
 				if(result != nullptr)
 				{

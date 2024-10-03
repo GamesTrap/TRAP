@@ -21,7 +21,6 @@ constexpr TRAP::Network::IPv6Address TRAP::Network::IPv6Address::LocalHost(std::
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::IPv6Address::IPv6Address(const std::string& address)
-	: m_address(), m_valid(false)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
@@ -31,7 +30,6 @@ TRAP::Network::IPv6Address::IPv6Address(const std::string& address)
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::IPv6Address::IPv6Address(const char* const address)
-	: m_address(), m_valid(false)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
@@ -52,7 +50,7 @@ TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 #endif
 
 	//8 * 4 = 8 Blocks 4 Values each | 7 = 7 times ':'
-	std::string str(8 * 4 + 7, 0);
+	std::string str((8 * 4) + 7, 0);
 	inet_ntop(AF_INET6, &address, str.data(), NumericCast<u32>(str.size()));
 	std::erase(str, '\0');
 	return str;

@@ -114,8 +114,8 @@ namespace TRAP::Network
 		/// @param address Address string.
 		void Resolve(const std::string& address);
 
-		std::array<u8, 16> m_address; //Address stored as an 128 bit array
-		bool m_valid; //Is the address valid?
+		std::array<u8, 16> m_address{}; //Address stored as an 128 bit array
+		bool m_valid = false; //Is the address valid?
 	};
 
 	//-------------------------------------------------------------------------------------------------------------------//

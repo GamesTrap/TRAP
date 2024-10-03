@@ -1,4 +1,3 @@
-/*
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
@@ -23,8 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-Modified by: Jan "GamesTrap" Schuerkamp
-*/
+//Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifndef TRAP_NETWORK_UDPSOCKET_H
 #define TRAP_NETWORK_UDPSOCKET_H
@@ -142,14 +140,14 @@ namespace TRAP::Network
 		[[nodiscard]] Status Receive(Packet& packet, IPv4Address& remoteAddress, u16& remotePort);
 
 	private:
-		std::vector<u8> m_buffer; //Temporary buffer holding the received data in Receive(Packet)
+		std::vector<u8> m_buffer = std::vector<u8>(MaxDatagramSize); //Temporary buffer holding the received data in Receive(Packet)
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr TRAP::Network::UDPSocket::UDPSocket()
-	: Socket(Type::UDP), m_buffer(MaxDatagramSize)
+	: Socket(Type::UDP)
 {
 }
 

@@ -1,4 +1,3 @@
-/*
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
@@ -23,8 +22,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-Modified by: Jan "GamesTrap" Schuerkamp
-*/
+//Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifndef TRAP_NETWORK_SOCKETSELECTOR_H
 #define TRAP_NETWORK_SOCKETSELECTOR_H
@@ -52,6 +50,10 @@ namespace TRAP::Network
 
 		/// @brief Copy constructor.
 		SocketSelector(const SocketSelector& copy);
+		/// @brief Overload of assignment operator.
+		/// @param right Instance to assign.
+		/// @return Reference to self.
+		SocketSelector& operator=(const SocketSelector& right);
 
 		/// @brief Move constructor.
 		SocketSelector(SocketSelector&&) noexcept;
@@ -65,14 +67,14 @@ namespace TRAP::Network
 		/// while it is stored in the selector.
 		/// This function does nothing if the socket is not valid.
 		/// @param socket Reference to the socket to add.
-		void Add(Socket& socket);
+		void Add(const Socket& socket);
 
 		/// @brief Remove a socket from the selector.
 		///
 		/// This function doesn't destroy the socket, it simply
 		/// removes the reference that the selector has to it.
 		/// @param socket Reference to the socket to remove.
-		void Remove(Socket& socket) const;
+		void Remove(const Socket& socket) const;
 
 		/// @brief Remove all the sockets stored in the selector.
 		///
@@ -102,12 +104,7 @@ namespace TRAP::Network
 		/// this means that it is ready to accept a new connection.
 		/// @param socket Socket to test.
 		/// @return True if the socket is ready to read, false otherwise.
-		[[nodiscard]] bool IsReady(Socket& socket) const;
-
-		/// @brief Overload of assignment operator.
-		/// @param right Instance to assign.
-		/// @return Reference to self.
-		SocketSelector& operator=(const SocketSelector& right);
+		[[nodiscard]] bool IsReady(const Socket& socket) const;
 
 	private:
 		struct SocketSelectorImpl;
