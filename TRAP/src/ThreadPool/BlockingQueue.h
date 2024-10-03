@@ -119,7 +119,7 @@ void TRAP::BlockingQueue<T>::Push(T&& item)
 {
 	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::ThreadPool) != ProfileSystems::None);
 
-	m_safeData.WriteLock()->Queue.emplace(std::forward<T>(item));
+	m_safeData.WriteLock()->Queue.emplace(std::move(item));
 
 	m_ready.notify_one();
 }
@@ -159,7 +159,7 @@ bool TRAP::BlockingQueue<T>::TryPush(T&& item)
 		if(!data.Lock)
 			return false;
 
-		data->Queue.emplace(std::forward<T>(item));
+		data->Queue.emplace(std::move(item));
 	}
 
 	m_ready.notify_one();

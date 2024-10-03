@@ -16,7 +16,7 @@ namespace TRAP
 	public:
 		/// @brief Constructor.
 		/// @param threads Max amount of threads to use for tasks.
-		explicit ThreadPool(u32 threads = (std::thread::hardware_concurrency() - 1));
+		explicit ThreadPool(u32 threads = (std::jthread::hardware_concurrency() - 1));
 		/// @brief Destructor.
 		~ThreadPool();
 
