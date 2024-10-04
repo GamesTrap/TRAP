@@ -5239,5 +5239,3 @@ SITREP 10/04/2024|24w40b2
     - Utils/Concurrency various small changes ~<10 mins
     - Config various small changes ~<10 mins
     - Utils various small changes ~<20 mins
-    - Utils Made Adler32 constexpr ~<15 mins
-    - Utils Made CRC32 constexpr ~<30 mins
