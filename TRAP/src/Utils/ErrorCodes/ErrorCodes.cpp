@@ -15,7 +15,7 @@ namespace
         std::string_view LogMessage;
     };
 
-    constexpr TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 28> ErrorCodesMap
+    constexpr TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 28u> ErrorCodesMap
     {
         {
             {

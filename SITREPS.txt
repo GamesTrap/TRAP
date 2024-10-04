@@ -5235,6 +5235,7 @@ SITREP 10/04/2024|24w40b2
     - Changed TRAP Engine version to 24w40b2(0.11.17)
     - TRAP-Editor Fixed crash when deleting an entity via the SceneGraphPanel ~<5 mins
     - TRAP-Editor SceneSerializer Only serialize entities which are still alive ~<5 mins
-    - ThreadPool various small changes ~<10mins
-    - Utils/Concurrency various small changes ~<10mins
-    - Config various small changes ~<10mins
+    - ThreadPool various small changes ~<10 mins
+    - Utils/Concurrency various small changes ~<10 mins
+    - Config various small changes ~<10 mins
+    - Utils various small changes ~<20 mins

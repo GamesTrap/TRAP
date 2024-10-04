@@ -22,7 +22,7 @@ namespace TRAP::Utils::DynamicLoading
     /// @brief Loads a dynamic library into memory.
     /// @param path Path to the library.
     /// @return Pointer to the loaded library.
-    [[nodiscard]] void* LoadLibrary(std::string_view path);
+    [[nodiscard]] void* LoadLibrary(const std::string& path);
     /// @brief Unloads a dynamic library from memory.
     /// @param module Pointer to the library to unload.
     void FreeLibrary(void* module);
@@ -31,18 +31,18 @@ namespace TRAP::Utils::DynamicLoading
     /// @param name Name of the function.
     /// @return Pointer to the function.
     template<typename T>
-    [[nodiscard]] T GetLibrarySymbol(void* module, std::string_view name);
+    [[nodiscard]] T GetLibrarySymbol(void* module, const std::string& name);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] inline T TRAP::Utils::DynamicLoading::GetLibrarySymbol([[maybe_unused]] void* module, [[maybe_unused]] const std::string_view name)
+[[nodiscard]] inline T TRAP::Utils::DynamicLoading::GetLibrarySymbol([[maybe_unused]] void* const module, [[maybe_unused]] const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 #ifdef TRAP_PLATFORM_WINDOWS
-    FARPROC proc = ::GetProcAddress(static_cast<HMODULE>(module), name.data());
+    FARPROC proc = ::GetProcAddress(static_cast<HMODULE>(module), name.c_str());
     if(!proc)
     {
         TP_ERROR(Log::UtilsPrefix, "Failed to get symbol: ", name);
@@ -50,7 +50,7 @@ template<typename T>
     }
     return reinterpret_cast<T>(proc);
 #elif defined(TRAP_PLATFORM_LINUX)
-    void* symbol = dlsym(module, name.data());
+    void* symbol = dlsym(module, name.c_str());
     if(!symbol)
     {
         TP_ERROR(Log::UtilsPrefix, "Failed to get symbol: ", name);

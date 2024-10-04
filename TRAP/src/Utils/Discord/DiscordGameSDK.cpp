@@ -17,14 +17,18 @@
 	#pragma warning(pop)
 #endif /*_MSC_VER*/
 
-discord::Core* core{};
-discord::Result lastRes = discord::Result::Ok;
-i64 CurrentAppID = TRAP::Utils::Discord::TRAPDiscordAppID;
-TRAP::Utils::Discord::Activity CurrentActivity{};
+namespace
+{
+    discord::Core* core = nullptr;
+    discord::Result lastRes = discord::Result::Ok;
+    i64 CurrentAppID = TRAP::Utils::Discord::TRAPDiscordAppID;
+    TRAP::Utils::Discord::Activity CurrentActivity{};
 
-//Forward declares
-void DiscordLogger(discord::LogLevel logLevel, std::string_view msg);
-void DiscordLogResult(discord::Result res);
+    //Forward declares
+    void DiscordLogger(discord::LogLevel logLevel, std::string_view msg);
+    void DiscordLogResult(discord::Result res);
+}
+
 #endif /*USE_DISCORD_GAME_SDK*/
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -152,175 +156,178 @@ bool TRAP::Utils::Discord::SetActivity([[maybe_unused]] const Activity& activity
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#ifdef USE_DISCORD_GAME_SDK
-void DiscordLogger(const discord::LogLevel logLevel, const std::string_view msg)
+namespace
 {
-    switch (logLevel)
+#ifdef USE_DISCORD_GAME_SDK
+    void DiscordLogger(const discord::LogLevel logLevel, const std::string_view msg)
     {
-    case discord::LogLevel::Debug:
-        TP_DEBUG(TRAP::Log::DiscordGameSDKPrefix, msg);
-    break;
-
-    case discord::LogLevel::Info:
-        TP_INFO(TRAP::Log::DiscordGameSDKPrefix, msg);
-    break;
-
-    case discord::LogLevel::Warn:
-        TP_WARN(TRAP::Log::DiscordGameSDKPrefix, msg);
-    break;
-
-    case discord::LogLevel::Error:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, msg);
-    break;
-
-    default:
+        switch (logLevel)
+        {
+        case discord::LogLevel::Debug:
+            TP_DEBUG(TRAP::Log::DiscordGameSDKPrefix, msg);
         break;
+
+        case discord::LogLevel::Info:
+            TP_INFO(TRAP::Log::DiscordGameSDKPrefix, msg);
+        break;
+
+        case discord::LogLevel::Warn:
+            TP_WARN(TRAP::Log::DiscordGameSDKPrefix, msg);
+        break;
+
+        case discord::LogLevel::Error:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, msg);
+        break;
+        }
     }
-}
 #endif /*USE_DISCORD_GAME_SDK*/
 
-//-------------------------------------------------------------------------------------------------------------------//
+    //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef USE_DISCORD_GAME_SDK
-void DiscordLogResult(const discord::Result res)
-{
-    switch(res)
+    void DiscordLogResult(const discord::Result res)
     {
-    // case discord::Result::Ok:
-    //     TP_DEBUG(TRAP::Log::DiscordGameSDKPrefix, "Ok");
-    //     break;
-    case discord::Result::ServiceUnavailable:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Service unavailable");
-        break;
-    case discord::Result::InvalidVersion:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid version");
-        break;
-    case discord::Result::LockFailed:
-    case discord::Result::InternalError:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Internal API error");
-        break;
-    case discord::Result::InvalidPayload:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid payload");
-        break;
-    case discord::Result::InvalidCommand:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid command");
-        break;
-    case discord::Result::InvalidPermissions:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid permissions");
-        break;
-    case discord::Result::NotFetched:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Not fetched");
-        break;
-    case discord::Result::NotFound:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Not found");
-        break;
-    case discord::Result::Conflict:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Conflict");
-        break;
-    case discord::Result::InvalidSecret:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid secret");
-        break;
-    case discord::Result::InvalidJoinSecret:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid join secret");
-        break;
-    case discord::Result::NoEligibleActivity:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "No eligible activity");
-        break;
-    case discord::Result::InvalidInvite:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid invite");
-        break;
-    case discord::Result::NotAuthenticated:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Not authenticated");
-        break;
-    case discord::Result::InvalidAccessToken:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid access token");
-        break;
-    case discord::Result::ApplicationMismatch:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Application mismatch");
-        break;
-    case discord::Result::InvalidDataUrl:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid data URL");
-        break;
-    case discord::Result::InvalidBase64:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid Base64");
-        break;
-    case discord::Result::NotFiltered:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Not filtered");
-        break;
-    case discord::Result::LobbyFull:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Lobby full");
-        break;
-    case discord::Result::InvalidLobbySecret:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid lobby secret");
-        break;
-    case discord::Result::InvalidFilename:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid filename");
-        break;
-    case discord::Result::InvalidFileSize:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid file size");
-        break;
-    case discord::Result::InvalidEntitlement:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid entitlement");
-        break;
-    case discord::Result::NotInstalled:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Not installed");
-        break;
-    case discord::Result::NotRunning:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Not running");
-        break;
-    case discord::Result::InsufficientBuffer:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Insufficient buffer");
-        break;
-    case discord::Result::PurchaseCanceled:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Purchase canceled");
-        break;
-    case discord::Result::InvalidGuild:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid guild");
-        break;
-    case discord::Result::InvalidEvent:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid event");
-        break;
-    case discord::Result::InvalidChannel:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid channel");
-        break;
-    case discord::Result::InvalidOrigin:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid origin");
-        break;
-    case discord::Result::RateLimited:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Rate limited");
-        break;
-    case discord::Result::OAuth2Error:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "OAuth2 error");
-        break;
-    case discord::Result::SelectChannelTimeout:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Select channel timeout");
-        break;
-    case discord::Result::GetGuildTimeout:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Get guild timeout");
-        break;
-    case discord::Result::SelectVoiceForceRequired:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Select voice force required");
-        break;
-    case discord::Result::CaptureShortcutAlreadyListening:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Capture shortcut already listening");
-        break;
-    case discord::Result::UnauthorizedForAchievement:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Unauthorized for achievement");
-        break;
-    case discord::Result::InvalidGiftCode:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid gift code");
-        break;
-    case discord::Result::PurchaseError:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Purchase error");
-        break;
-    case discord::Result::TransactionAborted:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Transaction aborted");
-        break;
+        switch(res)
+        {
+        // case discord::Result::Ok:
+        //     TP_DEBUG(TRAP::Log::DiscordGameSDKPrefix, "Ok");
+        //     break;
+        case discord::Result::ServiceUnavailable:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Service unavailable");
+            break;
+        case discord::Result::InvalidVersion:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid version");
+            break;
+        case discord::Result::LockFailed:
+        case discord::Result::InternalError:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Internal API error");
+            break;
+        case discord::Result::InvalidPayload:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid payload");
+            break;
+        case discord::Result::InvalidCommand:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid command");
+            break;
+        case discord::Result::InvalidPermissions:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid permissions");
+            break;
+        case discord::Result::NotFetched:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Not fetched");
+            break;
+        case discord::Result::NotFound:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Not found");
+            break;
+        case discord::Result::Conflict:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Conflict");
+            break;
+        case discord::Result::InvalidSecret:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid secret");
+            break;
+        case discord::Result::InvalidJoinSecret:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid join secret");
+            break;
+        case discord::Result::NoEligibleActivity:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "No eligible activity");
+            break;
+        case discord::Result::InvalidInvite:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid invite");
+            break;
+        case discord::Result::NotAuthenticated:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Not authenticated");
+            break;
+        case discord::Result::InvalidAccessToken:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid access token");
+            break;
+        case discord::Result::ApplicationMismatch:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Application mismatch");
+            break;
+        case discord::Result::InvalidDataUrl:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid data URL");
+            break;
+        case discord::Result::InvalidBase64:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid Base64");
+            break;
+        case discord::Result::NotFiltered:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Not filtered");
+            break;
+        case discord::Result::LobbyFull:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Lobby full");
+            break;
+        case discord::Result::InvalidLobbySecret:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid lobby secret");
+            break;
+        case discord::Result::InvalidFilename:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid filename");
+            break;
+        case discord::Result::InvalidFileSize:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid file size");
+            break;
+        case discord::Result::InvalidEntitlement:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid entitlement");
+            break;
+        case discord::Result::NotInstalled:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Not installed");
+            break;
+        case discord::Result::NotRunning:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Not running");
+            break;
+        case discord::Result::InsufficientBuffer:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Insufficient buffer");
+            break;
+        case discord::Result::PurchaseCanceled:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Purchase canceled");
+            break;
+        case discord::Result::InvalidGuild:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid guild");
+            break;
+        case discord::Result::InvalidEvent:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid event");
+            break;
+        case discord::Result::InvalidChannel:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid channel");
+            break;
+        case discord::Result::InvalidOrigin:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid origin");
+            break;
+        case discord::Result::RateLimited:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Rate limited");
+            break;
+        case discord::Result::OAuth2Error:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "OAuth2 error");
+            break;
+        case discord::Result::SelectChannelTimeout:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Select channel timeout");
+            break;
+        case discord::Result::GetGuildTimeout:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Get guild timeout");
+            break;
+        case discord::Result::SelectVoiceForceRequired:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Select voice force required");
+            break;
+        case discord::Result::CaptureShortcutAlreadyListening:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Capture shortcut already listening");
+            break;
+        case discord::Result::UnauthorizedForAchievement:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Unauthorized for achievement");
+            break;
+        case discord::Result::InvalidGiftCode:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid gift code");
+            break;
+        case discord::Result::PurchaseError:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Purchase error");
+            break;
+        case discord::Result::TransactionAborted:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Transaction aborted");
+            break;
+        case discord::Result::DrawingInitFailed:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Drawing init failed");
+            break;
 
-    default:
-        break;
+        default:
+            break;
+        }
     }
-}
 #endif /*USE_DISCORD_GAME_SDK*/
+}
 
 #endif /*TRAP_HEADLESS_MODE*/

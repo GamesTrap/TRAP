@@ -1,12 +1,12 @@
 #include "TRAPPCH.h"
 #include "DynamicLoading.h"
 
-[[nodiscard]] void* TRAP::Utils::DynamicLoading::LoadLibrary(const std::string_view path)
+[[nodiscard]] void* TRAP::Utils::DynamicLoading::LoadLibrary(const std::string& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
 #ifdef TRAP_PLATFORM_WINDOWS
-	HMODULE handle = LoadLibraryA(path.data());
+	HMODULE handle = LoadLibraryA(path.c_str());
 	if(!handle)
 	{
 		TP_ERROR(Log::UtilsPrefix, "Failed to load library: ", path);
@@ -24,7 +24,7 @@
 	static constexpr i32 mode = RTLD_LAZY | RTLD_LOCAL;
 #endif
 
-	void* handle = dlopen(path.data(), mode);
+	void* handle = dlopen(path.c_str(), mode);
 	if(handle == nullptr)
 	{
 		TP_ERROR(Log::UtilsPrefix, "Failed to load library: ", path);

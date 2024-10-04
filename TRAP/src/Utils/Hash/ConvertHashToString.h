@@ -23,13 +23,13 @@ namespace TRAP::Utils::Hash
 	template<usize N>
 	[[nodiscard]] constexpr std::string ConvertHashToString(const std::array<u8, N>& hash)
 	{
-		constexpr std::array<char, 16> hexDigits{'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
-		std::string result(hash.size() * 2, '\0');
+		constexpr std::array<char, 16u> hexDigits{'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+		std::string result(hash.size() * 2u, '\0');
 
-		for(usize i = 0; i < hash.size(); ++i)
+		for(usize i = 0u; i < hash.size(); ++i)
 		{
-			result[i * 2] = hexDigits[hash[i] >> 4u];
-			result[i * 2 + 1] = hexDigits[hash[i] & 0xFu];
+			result[i * 2u] = hexDigits[hash[i] >> 4u];
+			result[i * 2u + 1u] = hexDigits[hash[i] & 0xFu];
 		}
 
 		return result;
