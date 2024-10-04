@@ -64,9 +64,6 @@ namespace TRAP::Utils
 		template<typename T>
 		void Set(const std::string& key, const std::vector<T>& value);
 
-		/// @brief Print all stored values to the console.
-		void Print() const;
-
 	private:
 		bool m_hasChanged = false;
 		std::vector<std::pair<std::string, std::string>> m_data{};
@@ -155,7 +152,7 @@ void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& valu
 
 	//Transform the vector into a string that separates the elements with a comma
 	std::string valueAsString;
-	for (usize i = 0; i < value.size() - 1; ++i)
+	for (isize i = 0; i < value.size() - 1; ++i)
 		valueAsString += fmt::format("{},", value[i]);
 	valueAsString += fmt::format("{}", value.back());
 

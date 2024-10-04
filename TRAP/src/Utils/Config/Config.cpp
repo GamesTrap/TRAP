@@ -17,20 +17,20 @@ namespace
 		if(line.empty() || line[0] == '#')
 			return { "", "" };
 
-		usize index = 0;
+		usize index = 0u;
 		//Trim leading whitespace
 		while (TRAP::Utils::String::IsSpace(line[index]))
-			index++;
+			++index;
 		//Get the key string
 		const usize beginKeyString = index;
 		while (!TRAP::Utils::String::IsSpace(line[index]) && line[index] != '=')
-			index++;
+			++index;
 		const std::string key(line.data() + beginKeyString, index - beginKeyString);
 
 		//Skip the assignment
 		while (TRAP::Utils::String::IsSpace(line[index]) || line[index] == '=')
 		{
-			index++;
+			++index;
 			if(index >= line.size())
 			{
 				//Out of range so line only contains key
@@ -106,17 +106,17 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 		for (const auto& line : lines)
 		{
 			//Parse line
-			auto pLine = ParseLine(line);
-			auto& [key, value] = pLine;
+			auto [key, value] = ParseLine(line);
 
 			if (!key.empty())
 			{
 				//Check if the key is found in the vector
 				const auto it = std::ranges::find_if(m_data,
-					[&pLine](const std::pair<std::string, std::string>& element)
+					[&key](const std::pair<std::string, std::string>& element)
 					{
-						return Utils::String::CompareAnyCase(element.first, pLine.first);
+						return Utils::String::CompareAnyCase(element.first, key);
 					});
+
 				if (it != m_data.end())
 				{
 					//If so take it's value, otherwise the value from the file is kept
@@ -139,19 +139,19 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 	}
 
 	//Add new values to the file
-	for (const std::pair<std::string, std::string>& pair : m_data)
+	for (const auto& [key, value] : m_data)
 	{
 		//Check if the key is found in the vector
 		const auto it = std::ranges::find_if(fileContents,
-			[&pair](const std::pair<std::string, std::string>& element)
+			[&key](const std::pair<std::string, std::string>& element)
 			{
-				return Utils::String::CompareAnyCase(element.first, pair.first);
+				return Utils::String::CompareAnyCase(element.first, key);
 			});
 
 		if (it == fileContents.end())
 		{
 			//If not found add it to the vector
-			fileContents.emplace_back(pair.first, pair.second);
+			fileContents.emplace_back(key, value);
 		}
 	}
 
@@ -160,16 +160,4 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 		outputContent += fmt::format("{}{}\n", key, (!value.empty() ? fmt::format(" = {}", value) : ""));
 
 	return FileSystem::WriteTextFile(file, outputContent);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Utils::Config::Print() const
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
-
-	for (const auto& [key, value] : m_data)
-		TP_TRACE(Log::ConfigPrefix, key, " = ", value);
-
-	TP_TRACE(Log::ConfigPrefix, "Size: ", m_data.size());
 }

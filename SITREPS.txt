@@ -5237,3 +5237,4 @@ SITREP 10/04/2024|24w40b2
     - TRAP-Editor SceneSerializer Only serialize entities which are still alive ~<5 mins
     - ThreadPool various small changes ~<10mins
     - Utils/Concurrency various small changes ~<10mins
+    - Config various small changes ~<10mins
