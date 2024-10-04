@@ -11,7 +11,7 @@ namespace TRAP::Utils
     /// @brief Wait until all std::future or std::shared_futures are ready.
     /// @note This call blocks until all futures are ready.
     template<typename F1, typename... Fs>
-    requires (IsFutureType<F1>::value && IsFutureType<Fs...>::value )
+    requires (IsFutureType<F1> && (IsFutureType<Fs>, ...) )
     void WaitForAll(F1& f1, Fs&... fs)
     {
         ZoneScoped;
@@ -23,7 +23,7 @@ namespace TRAP::Utils
     /// @brief Wait until all std::future or std::shared_futures are ready.
     /// @note This call blocks until all futures are ready.
     template<typename Iterator>
-    requires (IsFutureType<typename Iterator::value_type>::value)
+    requires (IsFutureType<typename Iterator::value_type>)
     void WaitForAll(Iterator begin, Iterator end)
     {
         ZoneScoped;

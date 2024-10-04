@@ -36,7 +36,7 @@ namespace TRAP::Utils
         concept SupportsAtomic = std::integral<T> || std::same_as<T, bool>;
     }
 
-    enum class AccessMode
+    enum class AccessMode : u8
     {
         ReadOnly,
         ReadWrite

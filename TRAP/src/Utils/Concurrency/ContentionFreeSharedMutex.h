@@ -21,15 +21,11 @@ namespace TRAP::Utils
     /// @tparam ContentionFreeCount Max number of threads to support contention free.
     ///         Falls back to exclusive locking when max is reached.
     /// @note This type supports Tracy via TracySharedLockable.
-    template<u32 ContentionFreeCount = 32>
+    template<u32 ContentionFreeCount = 32u>
     class ContentionFreeSharedMutex
     {
     public:
-        ContentionFreeSharedMutex()
-            : m_sharedLocksArrayPtr(std::make_shared<ArraySlockT>()),
-              m_sharedLocksArray(*m_sharedLocksArrayPtr)
-        {
-        }
+        ContentionFreeSharedMutex() = default;
 
         ~ContentionFreeSharedMutex()
         {
@@ -96,7 +92,7 @@ namespace TRAP::Utils
                     while(m_wantXLock.load(std::memory_order_seq_cst))
                     {
                         m_sharedLocksArray[registerIndex].Value.store(recursionDepth, std::memory_order_seq_cst);
-                        for(/*volatile*/ usize i = 0; m_wantXLock.load(std::memory_order_seq_cst); ++i)
+                        for(/*volatile*/ usize i = 0u; m_wantXLock.load(std::memory_order_seq_cst); ++i)
                         {
                             if(i % 100000 == 0)
                                 std::this_thread::yield();
@@ -109,7 +105,7 @@ namespace TRAP::Utils
             {
                 if(m_ownerThreadID.load(std::memory_order_acquire) != GetFastThisThreadID())
                 {
-                    usize i = 0;
+                    usize i = 0u;
                     for(bool flag = false; !m_wantXLock.compare_exchange_weak(flag, true, std::memory_order_seq_cst); flag = false)
                         if(++i % 100000 == 0)
                             std::this_thread::yield();
@@ -176,7 +172,7 @@ namespace TRAP::Utils
 
             if(m_ownerThreadID.load(std::memory_order_acquire) != GetFastThisThreadID())
             {
-                usize i = 0;
+                usize i = 0u;
                 for(bool flag = false; !m_wantXLock.compare_exchange_weak(flag, true, std::memory_order_seq_cst); flag = false)
                 {
                     if(++i % 100000 == 0)
@@ -209,23 +205,20 @@ namespace TRAP::Utils
         struct ContentionFreeFlagT
         {
             alignas(std::hardware_destructive_interference_size) //Avoid false sharing
-            std::atomic<i32> Value;
-            constexpr ContentionFreeFlagT()
-                : Value(0)
-            {
-            }
+            std::atomic<i32> Value{0};
+            constexpr ContentionFreeFlagT() = default;
         };
         using ArraySlockT = std::array<ContentionFreeFlagT, ContentionFreeCount>;
 
-        const std::shared_ptr<ArraySlockT> m_sharedLocksArrayPtr; //0 - unregistered, 1 registered & free, 2... - busy
-        char m_avoidFalseSharing1[std::hardware_destructive_interference_size]{};
+        const std::shared_ptr<ArraySlockT> m_sharedLocksArrayPtr = std::make_shared<ArraySlockT>(); //0 - unregistered, 1 registered & free, 2... - busy
+        u8 m_avoidFalseSharing1[std::hardware_destructive_interference_size]{};
 
-        ArraySlockT& m_sharedLocksArray;
-        char m_avoidFalseSharing2[std::hardware_destructive_interference_size]{};
+        ArraySlockT& m_sharedLocksArray = *m_sharedLocksArrayPtr;
+        u8 m_avoidFalseSharing2[std::hardware_destructive_interference_size]{};
 
         i32 m_recursiveXLockCount = 0;
 
-        enum class IndexOp
+        enum class IndexOp : u8
         {
             UnregisterThreadOp,
             GetIndexOp,

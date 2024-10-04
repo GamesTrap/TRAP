@@ -8,12 +8,12 @@ TEST_CASE("TRAP::Utils::IsFutureType", "[utils][concurrency][futures][isfuturety
 {
     SECTION("Valid")
     {
-        STATIC_REQUIRE(TRAP::Utils::IsFutureType<std::future<int>>::value);
-        STATIC_REQUIRE(TRAP::Utils::IsFutureType<std::shared_future<int>>::value);
+        STATIC_REQUIRE(TRAP::Utils::IsFutureType<std::future<int>>);
+        STATIC_REQUIRE(TRAP::Utils::IsFutureType<std::shared_future<int>>);
     }
 
     SECTION("Invalid")
     {
-        STATIC_REQUIRE(!TRAP::Utils::IsFutureType<void>::value);
+        STATIC_REQUIRE(!TRAP::Utils::IsFutureType<void>);
     }
 }
