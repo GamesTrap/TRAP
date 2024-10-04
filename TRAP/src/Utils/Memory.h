@@ -33,9 +33,9 @@ namespace TRAP::Utils::Memory
 	/// @param source Bytes to convert.
 	/// @return Converted bytes.
 	/// @note Byte order depends on the given input bytes.
-	template<typename T>
-	requires (std::unsigned_integral<T> && !std::same_as<T, u8>)
-	[[nodiscard]] constexpr T ConvertByte(const u8* const source)
+	template<typename T, typename Src>
+	requires (std::same_as<Src, u8> || std::same_as<Src, char>) && (std::unsigned_integral<T> && !std::same_as<T, u8>)
+	[[nodiscard]] constexpr T ConvertByte(const Src* const source)
 	{
 		if constexpr (sizeof(T) == 2)
 		{
