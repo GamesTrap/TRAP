@@ -2,6 +2,7 @@
 #define TRAP_CRC32_H
 
 #include <string_view>
+#include <array>
 
 #include "Core/Types.h"
 

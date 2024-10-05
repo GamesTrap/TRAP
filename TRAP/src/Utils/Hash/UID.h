@@ -1,7 +1,6 @@
 #ifndef TRAP_UID_H
 #define TRAP_UID_H
 
-#include <functional>
 #include <filesystem>
 
 #include "Core/Types.h"

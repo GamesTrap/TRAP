@@ -5239,3 +5239,7 @@ SITREP 10/04/2024|24w40b2
     - Utils/Concurrency various small changes ~<10 mins
     - Config various small changes ~<10 mins
     - Utils various small changes ~<20 mins
+
+SITREP 10/05/2024|24w40b3
+    - Changed TRAP Engine version to 24w40b3(0.11.18)
+    - Utils Hash various small changes ~<15 mins
