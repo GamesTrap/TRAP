@@ -5245,3 +5245,4 @@ SITREP 10/05/2024|24w40b3
     - Utils Hash various small changes ~<15 mins
     - Updated VulkanLoader ~<5 mins
     - Utils Random various small changes ~<15 mins
+    - Utils Steamworks various small changes ~<15 mins

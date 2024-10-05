@@ -5,19 +5,50 @@
 
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
-bool steamClientInitialized = false;
-bool steamServerInitialized = false;
-
-//-------------------------------------------------------------------------------------------------------------------//
-#ifdef USE_STEAMWORKS_SDK
-void SteamLogCallback(const i32 severity, const char* const msg)
+namespace
 {
-    if(severity == 0)
-        TP_INFO(TRAP::Log::SteamworksSDKPrefix, msg);
-    else if(severity == 1)
-        TP_WARN(TRAP::Log::SteamworksSDKPrefix, msg);
-}
+    bool steamClientInitialized = false;
+    bool steamServerInitialized = false;
+
+    //-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef USE_STEAMWORKS_SDK
+    constexpr void SteamLogCallback(const i32 severity, const char* const msg)
+    {
+        if(severity == 0)
+            TP_INFO(TRAP::Log::SteamworksSDKPrefix, msg);
+        else if(severity == 1)
+            TP_WARN(TRAP::Log::SteamworksSDKPrefix, msg);
+    }
 #endif /*USE_STEAMWORKS_SDK*/
+
+    //-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef USE_STEAMWORKS_SDK
+    void ShutdownClient()
+    {
+        if(steamClientInitialized)
+        {
+            TP_INFO(TRAP::Log::SteamworksSDKPrefix, "Destroying Steam");
+            SteamAPI_Shutdown();
+        }
+    }
+#endif /*USE_STEAMWORKS_SDK*/
+
+    //-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef USE_STEAMWORKS_SDK
+    void ShutdownServer()
+    {
+        if(steamServerInitialized)
+        {
+            TP_INFO(TRAP::Log::SteamworksSDKPrefix, "Destroying Steam Server");
+            SteamGameServer_Shutdown();
+        }
+    }
+#endif /*USE_STEAMWORKS_SDK*/
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Utils::Steam::InitializeClient([[maybe_unused]] const u32 appID)
@@ -46,8 +77,6 @@ void TRAP::Utils::Steam::InitializeClient([[maybe_unused]] const u32 appID)
         break;
 
     case k_ESteamAPIInitResult_OK:
-        [[fallthrough]];
-    default:
         break;
     }
 
@@ -60,12 +89,12 @@ void TRAP::Utils::Steam::InitializeClient([[maybe_unused]] const u32 appID)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef USE_STEAMWORKS_SDK
-bool TRAP::Utils::Steam::InitializeServer(const u32 bindIPv4, const u16 gamePort,
+void TRAP::Utils::Steam::InitializeServer(const u32 bindIPv4, const u16 gamePort,
                                           const u16 queryPort, const EServerMode authenticationMethod,
                                           const std::string& version)
 {
     if(steamServerInitialized)
-        return true;
+        return;
 
     switch(SteamGameServer_InitEx(bindIPv4, gamePort, queryPort, authenticationMethod, version.c_str(), nullptr))
     {
@@ -82,42 +111,12 @@ bool TRAP::Utils::Steam::InitializeServer(const u32 bindIPv4, const u16 gamePort
         break;
 
     case k_ESteamAPIInitResult_OK:
-        [[fallthrough]];
-    default:
         break;
     }
 
-    SteamGameServerUtils()->SetWarningMessageHook(&SteamLogCallback);
-
     steamServerInitialized = true;
 
-    return steamServerInitialized;
-}
-#endif /*USE_STEAMWORKS_SDK*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#ifdef USE_STEAMWORKS_SDK
-void ShutdownClient()
-{
-    if(steamClientInitialized)
-    {
-        TP_INFO(TRAP::Log::SteamworksSDKPrefix, "Destroying Steam");
-        SteamAPI_Shutdown();
-    }
-}
-#endif /*USE_STEAMWORKS_SDK*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#ifdef USE_STEAMWORKS_SDK
-void ShutdownServer()
-{
-    if(steamServerInitialized)
-    {
-        TP_INFO(TRAP::Log::SteamworksSDKPrefix, "Destroying Steam Server");
-        SteamGameServer_Shutdown();
-    }
+    SteamGameServerUtils()->SetWarningMessageHook(&SteamLogCallback);
 }
 #endif /*USE_STEAMWORKS_SDK*/
 

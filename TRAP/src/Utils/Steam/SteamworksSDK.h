@@ -35,8 +35,7 @@ namespace TRAP::Utils::Steam
     /// @param authenticationMethod Method of authentication to use.
     /// @param version Version of the server. This usually has the format "x.x.x.x".
     /// It is used by the master server to detect out of date servers.
-    /// @return True if Steamworks SDK for servers is initialized, false otherwise.
-    bool InitializeServer(u32 bindIPv4, u16 gamePort,
+    void InitializeServer(u32 bindIPv4, u16 gamePort,
                           u16 queryPort, EServerMode authenticationMethod,
                           const std::string& version);
 #endif /*USE_STEAMWORKS_SDK*/
