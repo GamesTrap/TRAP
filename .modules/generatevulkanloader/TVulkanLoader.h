@@ -56,11 +56,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
     #endif
 #endif /*VULKAN_H_*/
 
-//Disable VK_NVX_image_view_handle because SDK 140 introduced a change that can't be used with prior versions */
-#if VK_HEADER_VERSION < 140
-    #undef VK_NVX_image_view_handle
-#endif /*VK_HEADER_VERSION < 140*/
-
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
 #endif /*_MSC_VER*/

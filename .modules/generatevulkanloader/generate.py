@@ -12,7 +12,9 @@ import re
 cmdversions = {
 	"vkCmdSetDiscardRectangleEnableEXT": 2,
 	"vkCmdSetDiscardRectangleModeEXT": 2,
-	"vkCmdSetExclusiveScissorEnableNV": 2
+	"vkCmdSetExclusiveScissorEnableNV": 2,
+	"vkGetImageViewAddressNVX": 2,
+	"vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI": 2,
 }
 
 def parse_xml(path):
