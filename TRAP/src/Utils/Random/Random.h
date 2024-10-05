@@ -220,8 +220,7 @@ namespace TRAP::Utils
 	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             //Choose between i16 and u16 for byte conversion
-            using short_t = typename std::conditional<std::is_signed<T>::value,
-                                                      i16, u16>::type;
+            using short_t = typename std::conditional_t<std::is_signed_v<T>, i16, u16>;
 
             return static_cast<T>(Get<short_t>(from, to));
         }
@@ -234,7 +233,7 @@ namespace TRAP::Utils
         template<typename Key,
                  typename A,
                  typename B,
-                 typename C = typename std::common_type<A, B>::type>
+                 typename C = typename std::common_type_t<A, B>>
         requires (std::same_as<Key, Common> && INTERNAL::IsSupportedNumber<A> &&
                   INTERNAL::IsSupportedNumber<B> && std::is_signed_v<A> != std::is_unsigned_v<B>)
         [[nodiscard]] static C Get(A from = std::numeric_limits<A>::min(), B to = std::numeric_limits<B>::max())
@@ -271,7 +270,7 @@ namespace TRAP::Utils
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
-            TRAP_ASSERT(0 <= probability && 1 >= probability, "BasicRandomStatic::Get(): Out of range!"); //Out of [0; 1] range
+            TRAP_ASSERT(0.0 <= probability && 1.0 >= probability, "BasicRandomStatic::Get(): Out of range!"); //Out of [0; 1] range
             return BoolDist{ probability }(EngineInstance());
         }
 
@@ -300,7 +299,7 @@ namespace TRAP::Utils
 	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             const auto size = std::distance(first, last);
-            if (0 == size)
+            if (size == 0)
                 return last;
             using diff_t = typename std::iterator_traits<InputIt>::difference_type;
             return std::next(first, Get<diff_t>(0, size - 1));
@@ -590,8 +589,7 @@ namespace TRAP::Utils
 	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             //Choose between i16 and u16 for byte conversion
-            using short_t = typename std::conditional<std::is_signed<T>::value,
-                i16, u16>::type;
+            using short_t = typename std::conditional_t<std::is_signed_v<T>, i16, u16>;
 
             return static_cast<T>(Get<short_t>(from, to));
         }
@@ -604,7 +602,7 @@ namespace TRAP::Utils
         template<typename Key,
                  typename A,
                  typename B,
-                 typename C = typename std::common_type<A, B>::type>
+                 typename C = typename std::common_type_t<A, B>>
         requires (std::same_as<Key, Common> && INTERNAL::IsSupportedNumber<A> &&
                   INTERNAL::IsSupportedNumber<B> && std::is_signed_v<A> != std::is_unsigned_v<B>)
         [[nodiscard]] static C Get(A from = std::numeric_limits<A>::min(), B to = std::numeric_limits<B>::max())
@@ -641,7 +639,7 @@ namespace TRAP::Utils
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
-            TRAP_ASSERT(0 <= probability && 1 >= probability, "BasicRandomThreadLocal::Get(): Out of range!"); //Out of [0; 1] range
+            TRAP_ASSERT(0.0 <= probability && 1.0 >= probability, "BasicRandomThreadLocal::Get(): Out of range!"); //Out of [0; 1] range
             return BoolDist{ probability }(EngineInstance());
         }
 
@@ -668,7 +666,7 @@ namespace TRAP::Utils
 	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             const auto size = std::distance(first, last);
-            if (0 == size)
+            if (size == 0)
                 return last;
             using diff_t = typename std::iterator_traits<InputIt>::difference_type;
             return std::next(first, Get<diff_t>(0, size - 1));
@@ -946,8 +944,7 @@ namespace TRAP::Utils
 	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             //Choose between i16 and u16 for byte conversion
-            using short_t = typename std::conditional<std::is_signed<T>::value,
-                i16, u16>::type;
+            using short_t = typename std::conditional_t<std::is_signed_v<T>, i16, u16>;
 
             return static_cast<T>(Get<short_t>(from, to));
         }
@@ -960,7 +957,7 @@ namespace TRAP::Utils
         template<typename Key,
                  typename A,
                  typename B,
-                 typename C = typename std::common_type<A, B>::type>
+                 typename C = typename std::common_type_t<A, B>>
         requires (std::same_as<Key, Common> && INTERNAL::IsSupportedNumber<A> &&
                   INTERNAL::IsSupportedNumber<B> && std::is_signed_v<A> != std::is_unsigned_v<B>)
         [[nodiscard]] C Get(A from = std::numeric_limits<A>::min(), B to = std::numeric_limits<B>::max())
@@ -998,7 +995,7 @@ namespace TRAP::Utils
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
-            TRAP_ASSERT(0 <= probability && 1 >= probability, "BasicRandomLocal::Get(): Out of range!"); //Out of [0; 1] range
+            TRAP_ASSERT(0.0 <= probability && 1.0 >= probability, "BasicRandomLocal::Get(): Out of range!"); //Out of [0; 1] range
             return BoolDist{ probability }(m_engine);
         }
 
@@ -1025,7 +1022,7 @@ namespace TRAP::Utils
 	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             const auto size = std::distance(first, last);
-            if (0 == size)
+            if (size == 0)
                 return last;
             using diff_t = typename std::iterator_traits<InputIt>::difference_type;
             return std::next(first, Get<diff_t>(0, size - 1));
