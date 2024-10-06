@@ -5,6 +5,7 @@
 #include "Events/FileEvent.h"
 #include "Utils/String/String.h"
 #include "Utils/UniqueResource.h"
+#include "Utils/Utils.h"
 
 TRAP::FileSystem::FileSystemWatcher::FileSystemWatcher(const bool recursive, std::string debugName)
     : m_recursive(recursive), m_debugName(std::move(debugName))

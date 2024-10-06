@@ -5,6 +5,7 @@
 #include "FileSystem/FileSystem.h"
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 #include "Graphics/API/Objects/Queue.h"
+#include "FileSystem/FileSystemWatcher.h"
 
 namespace
 {

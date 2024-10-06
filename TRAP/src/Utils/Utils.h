@@ -9,6 +9,7 @@
 
 #include "Core/Types.h"
 #include "TRAP_Assert.h"
+#include "Utils/String/ConvertToType.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
 #include "Utils/Win.h"
@@ -294,5 +295,19 @@ struct fmt::formatter<TRAP::Utils::LinuxWindowManager>
         return fmt::format_to(ctx.out(), "{}", enumStr);
     }
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+[[nodiscard]] constexpr TRAP::Utils::LinuxWindowManager TRAP::Utils::String::ConvertToType(const std::string& input)
+{
+    if(Utils::String::CompareAnyCase("X11", input))
+        return Utils::LinuxWindowManager::X11;
+
+    if(Utils::String::CompareAnyCase("Wayland", input))
+        return Utils::LinuxWindowManager::Wayland;
+
+    return Utils::LinuxWindowManager::Unknown;
+}
 
 #endif /*TRAP_UTILS_H*/

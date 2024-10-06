@@ -5242,7 +5242,12 @@ SITREP 10/04/2024|24w40b2
 
 SITREP 10/05/2024|24w40b3
     - Changed TRAP Engine version to 24w40b3(0.11.18)
-    - Utils Hash various small changes ~<15 mins
+    - Utils/Hash various small changes ~<15 mins
     - Updated VulkanLoader ~<5 mins
-    - Utils Random various small changes ~<15 mins
-    - Utils Steamworks various small changes ~<15 mins
+    - Utils/Random various small changes ~<15 mins
+    - Utils/Steamworks various small changes ~<15 mins
+
+SITREP 10/06/2024|24w40b4
+    - Changed TRAP Engine version to 24w40b4(0.11.19)
+    - Utils/String various small changes ~<15 mins
+    - Utils Moved ConvertToType() out of String header ~<30 mins

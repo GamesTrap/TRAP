@@ -3,6 +3,7 @@
 
 #include <optional>
 
+#include "Utils/String/ConvertToType.h"
 #include "Utils/String/String.h"
 
 namespace TRAP::Utils
@@ -42,12 +43,14 @@ namespace TRAP::Utils
 		/// @tparam T Output variable.
 		/// @param key Key to get value from.
 		/// @return Found value or std::nullopt.
+		/// @note To support custom types you can specialize the TRAP::Utils::String::ConvertToType().
 		template<typename T>
 		[[nodiscard]] std::optional<T> Get(std::string_view key) const;
 		/// @brief Retrieve the values of a specific key in the config.
 		/// @tparam T Output variable.
 		/// @param key Key to get values from.
 		/// @return Found values or std::nullopt.
+		/// @note To support custom types you can specialize the TRAP::Utils::String::ConvertToType().
 		template<typename T>
 		[[nodiscard]] std::optional<std::vector<T>> GetVector(std::string_view key) const;
 
@@ -55,12 +58,14 @@ namespace TRAP::Utils
 		/// @tparam T Value type.
 		/// @param key Key for the new or updated value.
 		/// @param value Value.
+		/// @note T must be convertible to a std::string via fmt::format().
 		template<typename T>
 		void Set(const std::string& key, T value);
 		/// @brief Set values in the config.
 		/// @tparam T Value type.
 		/// @param key Key for the new or updated values.
 		/// @param value Values.
+		/// @note T must be convertible to a std::string via fmt::format().
 		template<typename T>
 		void Set(const std::string& key, const std::vector<T>& value);
 

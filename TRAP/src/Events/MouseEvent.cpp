@@ -4,6 +4,7 @@
 #ifndef TRAP_HEADLESS_MODE
 
 #include "Utils/String/String.h"
+#include "Window/Window.h"
 
 TRAP::Events::MouseMoveEvent::MouseMoveEvent(const f32 x, const f32 y, TRAP::Window& window)
 	: m_mouseX(x), m_mouseY(y), m_window(window)

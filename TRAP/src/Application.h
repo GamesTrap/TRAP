@@ -5,11 +5,14 @@
 #include <optional>
 
 #include "Core/Types.h"
+#include "FileSystem/FileSystemWatcher.h"
+#include "Graphics/API/RendererAPI.h"
 #include "Utils/Config/Config.h"
 #include "Layers/LayerStack.h"
 #include "ThreadPool/ThreadPool.h"
 #include "Utils/Concurrency/Safe.h"
 #include "Utils/Time/Timer.h"
+#include "Utils/Utils.h"
 
 #if !defined(DOXYGEN_DOCUMENTATION_BUILD) && !defined(TRAP_UNITTESTS)
 int main(i32 argc, const char* const* argv);
@@ -18,6 +21,8 @@ int main(i32 argc, const char* const* argv);
 namespace TRAP
 {
 	class ImGuiLayer;
+	class Window;
+	struct WindowProps;
 
 	namespace Events
 	{
@@ -31,11 +36,6 @@ namespace TRAP
 		class FrameBufferResizeEvent;
 #endif /*TRAP_HEADLESS_MODE*/
 		class FileSystemChangeEvent;
-	}
-
-	namespace FileSystem
-	{
-		class FileSystemWatcher;
 	}
 
 	namespace Utils

@@ -254,4 +254,20 @@ struct fmt::formatter<TRAP::Rigidbody2DComponent::BodyType>
     }
 };
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+[[nodiscard]] constexpr TRAP::Rigidbody2DComponent::BodyType TRAP::Utils::String::ConvertToType(const std::string& input)
+{
+    if(Utils::String::CompareAnyCase("Static", input))
+        return Rigidbody2DComponent::BodyType::Static;
+    if(Utils::String::CompareAnyCase("Dynamic", input))
+        return Rigidbody2DComponent::BodyType::Dynamic;
+    if(Utils::String::CompareAnyCase("Kinematic", input))
+        return Rigidbody2DComponent::BodyType::Kinematic;
+
+    TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Rigidbody2DComponent::BodyType!");
+    throw std::invalid_argument("Exception while converting string to TRAP::Rigidbody2DComponent::BodyType!");
+}
+
 #endif /*TRAP_COMPONENTS_H*/

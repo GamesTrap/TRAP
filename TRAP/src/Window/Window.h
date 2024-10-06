@@ -6,6 +6,8 @@
 #include "Window/Monitor.h"
 #include "WindowingAPI.h"
 
+#include "Utils/String/ConvertToType.h"
+
 namespace TRAP
 {
 	struct WindowProps;
@@ -430,6 +432,22 @@ struct fmt::formatter<TRAP::Window::DisplayMode>
         return fmt::format_to(ctx.out(), "{}", enumStr);
     }
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+[[nodiscard]] constexpr TRAP::Window::DisplayMode TRAP::Utils::String::ConvertToType(const std::string& input)
+{
+    if (Utils::String::CompareAnyCase("Windowed", input))
+        return Window::DisplayMode::Windowed;
+    if (Utils::String::CompareAnyCase("Fullscreen (Borderless)", input))
+        return Window::DisplayMode::Borderless;
+    if (Utils::String::CompareAnyCase("Fullscreen", input))
+        return Window::DisplayMode::Fullscreen;
+
+    TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Window::DisplayMode!");
+    return Window::DisplayMode::Windowed;
+}
 
 #endif /*TRAP_HEADLESS_MODE*/
 

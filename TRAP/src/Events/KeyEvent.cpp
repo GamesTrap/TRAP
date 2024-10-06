@@ -4,6 +4,7 @@
 #ifndef TRAP_HEADLESS_MODE
 
 #include "Utils/String/String.h"
+#include "Window/Window.h"
 
 TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, TRAP::Window& window)
 	: KeyEvent(key), m_window(window)

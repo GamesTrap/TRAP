@@ -3,6 +3,7 @@
 
 #include "Application.h"
 #include "ImageLoader/Image.h"
+#include "Maths/Math.h"
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::Flush(const Window& window)

@@ -3353,4 +3353,76 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::ShaderType>
     }
 };
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+template<>
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::LatencyMode TRAP::Utils::String::ConvertToType(const std::string& input)
+{
+    if(Utils::String::CompareAnyCase("Enabled", input))
+        return Graphics::RendererAPI::LatencyMode::Enabled;
+    if(Utils::String::CompareAnyCase("Enabled+Boost", input))
+        return Graphics::RendererAPI::LatencyMode::EnabledBoost;
+    if(Utils::String::CompareAnyCase("Disabled", input))
+        return Graphics::RendererAPI::LatencyMode::Disabled;
+
+    TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::LatencyMode!");
+    return Graphics::RendererAPI::LatencyMode::Disabled;
+}
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+[[nodiscard]] constexpr TRAP::Graphics::RenderAPI TRAP::Utils::String::ConvertToType(const std::string& input)
+{
+    if (Utils::String::CompareAnyCase("Vulkan", input) || Utils::String::CompareAnyCase("VulkanAPI", input))
+        return Graphics::RenderAPI::Vulkan;
+
+    if (Utils::String::CompareAnyCase("NONE", input))
+        return Graphics::RenderAPI::NONE;
+
+    TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RenderAPI!");
+    return Graphics::RenderAPI::NONE;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::AntiAliasing TRAP::Utils::String::ConvertToType(const std::string& input)
+{
+    if (Utils::String::CompareAnyCase("Off", input))
+        return Graphics::RendererAPI::AntiAliasing::Off;
+
+    if (Utils::String::CompareAnyCase("MSAA", input))
+        return Graphics::RendererAPI::AntiAliasing::MSAA;
+
+    TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::AntiAliasing!");
+    return Graphics::RendererAPI::AntiAliasing::Off;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::SampleCount TRAP::Utils::String::ConvertToType(const std::string& input)
+{
+    if (Utils::String::CompareAnyCase("1", input))
+        return Graphics::RendererAPI::SampleCount::One;
+
+    if (Utils::String::CompareAnyCase("2", input))
+        return Graphics::RendererAPI::SampleCount::Two;
+
+    if (Utils::String::CompareAnyCase("4", input))
+        return Graphics::RendererAPI::SampleCount::Four;
+
+    if (Utils::String::CompareAnyCase("8", input))
+        return Graphics::RendererAPI::SampleCount::Eight;
+
+    if (Utils::String::CompareAnyCase("16", input))
+        return Graphics::RendererAPI::SampleCount::Sixteen;
+
+    TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::SampleCount!");
+    return Graphics::RendererAPI::SampleCount::One;
+}
+
 #endif /*TRAP_RENDERERAPI_H*/

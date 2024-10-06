@@ -16,7 +16,7 @@
 	localtime_r(&time, &tm);
 #endif
 
-	std::array<char, 9> buffer{};
+	std::array<char, 9u> buffer{};
 	if(strftime(buffer.data(), buffer.size(), "%T", &tm) == 0)
 		return "";
 
@@ -38,7 +38,7 @@
 	localtime_r(&time, &tm);
 #endif
 
-	std::array<char, 20> buffer{};
+	std::array<char, 20u> buffer{};
 	if(strftime(buffer.data(), buffer.size(), "%F %T", &tm) == 0)
 		return "";
 
@@ -52,7 +52,7 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
-    std::string error(1024, '\0');
+    std::string error(1024u, '\0');
     #if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
         strerror_r(errno, error.data(), error.size());
         //Remove trailing terminating null characters

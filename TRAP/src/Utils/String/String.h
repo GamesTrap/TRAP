@@ -1,11 +1,12 @@
 #ifndef TRAP_STRING_H
 #define TRAP_STRING_H
 
+#include <vector>
+#include <string_view>
+#include <string>
+#include <chrono>
+
 #include "Core/Types.h"
-#include "Window/Window.h"
-#include "Graphics/API/RendererAPI.h"
-#include "FileSystem/FileSystemWatcher.h"
-#include "Scene/Components.h"
 #include "Utils/NumericCasts.h"
 
 namespace TRAP::Utils::String
@@ -72,7 +73,7 @@ namespace TRAP::Utils::String
 #if __cplusplus >= 202302L
 	[[deprecated("Use std::string::contains() instead!")]]
 #endif /*__cplusplus >= 202302L*/
-	[[nodiscard]] constexpr bool Contains(std::string_view str, const char* substr);
+	[[nodiscard]] constexpr bool Contains(std::string_view str, const char* substr) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -114,35 +115,35 @@ namespace TRAP::Utils::String
 	/// @brief Check if a character is a digit (0123456789).
 	/// @param c Character to check.
 	/// @return True if character is a digit, false otherwise.
-	[[nodiscard]] constexpr bool IsDigit(char c);
+	[[nodiscard]] constexpr bool IsDigit(char c) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// @brief Check if a character is a hexdecimal digit (0123456789abcdefABCDEF).
 	/// @param c Character to check.
 	/// @return True if character is a hexdecimal digit, false otherwise.
-	[[nodiscard]] constexpr bool IsHexDigit(char c);
+	[[nodiscard]] constexpr bool IsHexDigit(char c) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// @brief Check if a character is a whitespace character.
 	/// @param c Character to check.
 	/// @return True if character is a whitespace character, false otherwise.
-	[[nodiscard]] constexpr bool IsSpace(char c);
+	[[nodiscard]] constexpr bool IsSpace(char c) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// @brief Check if a character is an alphabetic character.
 	/// @param c Character to check.
 	/// @return True if character is an alphabetic character, false otherwise.
-	[[nodiscard]] constexpr bool IsAlpha(char c);
+	[[nodiscard]] constexpr bool IsAlpha(char c) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// @brief Check if a character is an alphanumeric character.
 	/// @param c Character to check.
 	/// @return True if character is an alphanumeric character, false otherwise.
-	[[nodiscard]] constexpr bool IsAlphaNumeric(char c);
+	[[nodiscard]] constexpr bool IsAlphaNumeric(char c) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -159,15 +160,6 @@ namespace TRAP::Utils::String
 	/// @param right String to check.
 	/// @return True if both strings are equal, false otherwise
 	[[nodiscard]] constexpr bool CompareAnyCase(std::string_view left, std::string_view right);
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
-	/// @brief Convert a string to the given type.
-	/// @tparam T Type to get
-	/// @param input String to convert.
-	/// @return String converted to type T.
-	template<typename T>
-	[[nodiscard]] T ConvertToType(const std::string& input);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -212,7 +204,7 @@ namespace TRAP::Utils::String
 [[nodiscard]] constexpr std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::string_view str,
                                                                                            const std::string_view delimiters)
 {
-	usize start = 0;
+	usize start = 0u;
 	usize end = str.find_first_of(delimiters);
 
 	std::vector<std::string_view> result;
@@ -231,7 +223,7 @@ namespace TRAP::Utils::String
 		if (end == std::string_view::npos)
 			break;
 
-		start = end + 1;
+		start = end + 1u;
 		end = str.find_first_of(delimiters, start);
 	}
 
@@ -243,7 +235,7 @@ namespace TRAP::Utils::String
 [[nodiscard]] constexpr std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::string_view str,
                                                                                            const char delimiter)
 {
-	return SplitStringView(str, std::string_view(&delimiter, 1));
+	return SplitStringView(str, std::string_view(&delimiter, 1u));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -251,7 +243,7 @@ namespace TRAP::Utils::String
 [[nodiscard]] constexpr std::vector<std::string> TRAP::Utils::String::SplitString(const std::string& str,
                                                                                   const std::string_view delimiters)
 {
-	usize start = 0;
+	usize start = 0u;
 	usize end = str.find_first_of(delimiters);
 
 	std::vector<std::string> result;
@@ -266,7 +258,7 @@ namespace TRAP::Utils::String
 		if (end == std::string::npos)
 			break;
 
-		start = end + 1;
+		start = end + 1u;
 		end = str.find_first_of(delimiters, start);
 	}
 
@@ -277,7 +269,7 @@ namespace TRAP::Utils::String
 
 [[nodiscard]] constexpr std::vector<std::string> TRAP::Utils::String::SplitString(const std::string& str, const char delimiter)
 {
-	return SplitString(str, std::string_view(&delimiter, 1));
+	return SplitString(str, std::string_view(&delimiter, 1u));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -296,21 +288,21 @@ namespace TRAP::Utils::String
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::Utils::String::Contains(std::string_view str, std::string_view substr) noexcept
+[[nodiscard]] constexpr bool TRAP::Utils::String::Contains(const std::string_view str, const std::string_view substr) noexcept
 {
 	return str.find(substr) != std::string_view::npos;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::Utils::String::Contains(std::string_view str, char c) noexcept
+[[nodiscard]] constexpr bool TRAP::Utils::String::Contains(const std::string_view str, const char c) noexcept
 {
 	return str.find(c) != std::string_view::npos;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::Utils::String::Contains(std::string_view str, const char* substr)
+[[nodiscard]] constexpr bool TRAP::Utils::String::Contains(const std::string_view str, const char* const substr) noexcept
 {
 	return str.find(substr) != std::string_view::npos;
 }
@@ -338,7 +330,7 @@ namespace TRAP::Utils::String
 [[nodiscard]] constexpr std::string TRAP::Utils::String::ToLower(std::string str)
 {
 	for(char& c : str)
-		c = NumericCast<char>(::tolower(c));
+		c = ToLower(c);
 
 	return str;
 }
@@ -362,42 +354,42 @@ namespace TRAP::Utils::String
 [[nodiscard]] constexpr std::string TRAP::Utils::String::ToUpper(std::string str)
 {
 	for(char& c : str)
-		c = NumericCast<char>(::toupper(c));
+		c = ToUpper(c);
 
 	return str;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::Utils::String::IsDigit(const char c)
+[[nodiscard]] constexpr bool TRAP::Utils::String::IsDigit(const char c) noexcept
 {
 	return (c >= '0' && c <= '9');
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::Utils::String::IsHexDigit(const char c)
+[[nodiscard]] constexpr bool TRAP::Utils::String::IsHexDigit(const char c) noexcept
 {
 	return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::Utils::String::IsSpace(const char c)
+[[nodiscard]] constexpr bool TRAP::Utils::String::IsSpace(const char c) noexcept
 {
 	return c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t' || c == '\v';
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::Utils::String::IsAlpha(const char c)
+[[nodiscard]] constexpr bool TRAP::Utils::String::IsAlpha(const char c) noexcept
 {
 	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::Utils::String::IsAlphaNumeric(const char c)
+[[nodiscard]] constexpr bool TRAP::Utils::String::IsAlphaNumeric(const char c) noexcept
 {
 	return (c >= '0' && c <= '9') || IsAlpha(c);
 }
@@ -430,7 +422,7 @@ namespace TRAP::Utils::String
 [[nodiscard]] constexpr std::string TRAP::Utils::String::EncodeUTF8(const u32 codePoint)
 {
 	std::string result{};
-	result.reserve(4);
+	result.reserve(4); //1 UTF-8 char can be up-to 4 bytes big
 
 	if (codePoint < 0x80u)
 		result.push_back(NumericCast<char>(codePoint));
@@ -455,9 +447,5 @@ namespace TRAP::Utils::String
 
 	return result;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#include "String.inl"
 
 #endif /*TRAP_STRING_H*/
