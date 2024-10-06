@@ -16,7 +16,7 @@ namespace TRAP
 {
 	namespace Utils
 	{
-		struct TimeStep;
+		class TimeStep;
 		class UID;
 	}
 	namespace Graphics

@@ -8,7 +8,7 @@
 
 namespace TRAP::Utils
 {
-	struct TimeStep;
+	class TimeStep;
 }
 
 namespace TRAP::Graphics

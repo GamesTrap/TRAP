@@ -40,7 +40,7 @@ namespace TRAP
 
 	namespace Utils
 	{
-		struct TimeStep;
+		class TimeStep;
 	}
 
 	class Application
