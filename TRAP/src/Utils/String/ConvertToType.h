@@ -121,7 +121,7 @@ template<>
 
     try
     {
-        return NumericCast<u32>(std::stoul(input));
+        return static_cast<u32>(std::stoul(input));
     }
     catch(...)
     {
@@ -139,7 +139,7 @@ template<>
 
     try
     {
-        return NumericCast<i32>(std::stol(input));
+        return static_cast<i32>(std::stol(input));
     }
     catch(...)
     {
@@ -157,7 +157,7 @@ template<>
 
     try
     {
-        return NumericCast<u64>(std::stoull(input));
+        return std::stoull(input);
     }
     catch(...)
     {
@@ -175,7 +175,7 @@ template<>
 
     try
     {
-        return NumericCast<i64>(std::stoll(input));
+        return std::stoll(input);
     }
     catch(...)
     {
