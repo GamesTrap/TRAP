@@ -6,8 +6,9 @@
 namespace TRAP::Utils
 {
 	/// @brief Struct for a single step in time.
-	struct TimeStep
+	class TimeStep
 	{
+	public:
 		/// @brief Constructor for a single step in time.
 		/// @param time Time for the time step in seconds.
 		constexpr explicit TimeStep(f32 time) noexcept;
