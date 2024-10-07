@@ -324,7 +324,7 @@ TEST_CASE("TRAP::Utils::ConvertRGBPixelDataToRGBA()", "[utils][imageutils]")
     }
 }
 
-TEST_CASE("TRAP::Utils::ConvertRGBPixelDataToRGBA()", "[utils][imageutils]")
+TEST_CASE("TRAP::Utils::ConvertRGBAPixelDataToRGB()", "[utils][imageutils]")
 {
     SECTION("GrayScaleAlpha")
     {
