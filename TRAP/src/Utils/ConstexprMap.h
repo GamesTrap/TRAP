@@ -15,8 +15,9 @@ namespace TRAP::Utils
     /// @tparam Value Value type for the map.
     /// @tparam Size Size for the map.
     template<typename Key, typename Value, usize Size, typename KeyEqual = std::equal_to<Key>>
-    struct ConstexprMap
+    class ConstexprMap
     {
+    public:
         using key_type = Key;
         using mapped_type = Value;
         using value_type = std::pair<const Key, Value>;
@@ -30,17 +31,12 @@ namespace TRAP::Utils
         using iterator = value_type*;
         using const_iterator = const value_type*;
 
-private:
-        std::array<value_type, Size> m_data{};
-
-public:
-
         //-------------------------------------------------------------------------------------------------------------------//
 
         constexpr ConstexprMap() = default;
 
         template<typename InputIt>
-        constexpr ConstexprMap(InputIt first, InputIt last)
+        constexpr ConstexprMap(const InputIt first, const InputIt last)
             : m_data(std::to_array(first, last))
         {
             static_assert(std::distance(first, last) == Size);
@@ -65,7 +61,7 @@ public:
 
         /// @brief Destructs the ConstexprMap. The destructor of the elements are calaled and the used storage is deallocated.
         /// @note If the elements are pointers, the pointer-to objects are not destroyed.
-        ~ConstexprMap() = default;
+        constexpr ~ConstexprMap() = default;
 
         //-------------------------------------------------------------------------------------------------------------------//
 
@@ -250,7 +246,7 @@ public:
         /// @return True if the container is empty, false otherwise.
         [[nodiscard]] constexpr bool empty() const noexcept
         {
-            return Size == 0;
+            return Size == 0u;
         }
 
         //-------------------------------------------------------------------------------------------------------------------//
@@ -291,8 +287,11 @@ public:
         /// @return Number of elements with key key, that is either 1 or 0.
         [[nodiscard]] constexpr size_type count(const key_type& key) const
         {
-            return contains(key) ? 1 : 0;
+            return contains(key) ? 1u : 0u;
         }
+
+    private:
+        std::array<value_type, Size> m_data{};
     };
 
     //-------------------------------------------------------------------------------------------------------------------//

@@ -4,10 +4,8 @@
 
 #include <initializer_list>
 #include <exception>
-#include <functional>
 #include <type_traits>
 #include <utility>
-#include <variant>
 
 #include "Core/Base.h"
 #include "Core/Types.h"
@@ -31,7 +29,7 @@ namespace TRAP
     public:
         /// @brief Returns the explanatory string.
         /// @return Pointer to a null-terminated string with explanatory information.
-        [[nodiscard]] const char* what() const noexcept override
+        [[nodiscard]] constexpr const char* what() const noexcept override
         {
             return "Bad access to TRAP::Expected without expected value";
         }
@@ -142,13 +140,13 @@ namespace TRAP
         constexpr Unexpected(const Unexpected&) = default;
         /// @brief Move constructor. Constructs a TRAP::Unexpected object.
         ///        Moves the stored value.
-        constexpr Unexpected(Unexpected&&) = default;
+        constexpr Unexpected(Unexpected&&) noexcept = default;
         /// @brief Copy assignment operator.
         /// @return *this.
         constexpr Unexpected& operator=(const Unexpected&) = default;
         /// @brief Move assignment operator.
         /// @return *this.
-        constexpr Unexpected& operator=(Unexpected&&) = default;
+        constexpr Unexpected& operator=(Unexpected&&) noexcept = default;
 
         /// @brief Constructs a TRAP::Unexpected object.
         ///        Constructs the stored value, as if by direct-initializing a value of
@@ -304,8 +302,8 @@ namespace TRAP
                 }
             }
 
-            constexpr Guard(Guard&&) = default;
-            constexpr Guard& operator=(Guard&&) = default;
+            constexpr Guard(Guard&&) noexcept = default;
+            constexpr Guard& operator=(Guard&&) noexcept = default;
 
             consteval Guard(const Guard&) = delete;
             consteval Guard& operator=(const Guard&) = delete;
@@ -458,7 +456,7 @@ namespace TRAP
         ///
         ///        After construction, HasValue() is equal to other.HasValue().
         /// @param other Another expected object whose contained value is copied.
-        constexpr Expected(Expected&& other) = default;
+        constexpr Expected(Expected&& other) noexcept = default;
 
         /// @brief Constructs a new expected object.
         ///        Move constructor. If other.HasValue() is false, the new object contains an
