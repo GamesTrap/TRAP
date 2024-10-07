@@ -200,7 +200,7 @@ void TRAP::INTERNAL::PPMImage::Save(const Image& img, const std::filesystem::pat
 
 	//NOTE Only supports 24/32BPP RGB(A) Input
 
-	if(img.GetBitsPerPixel() != 24u || img.GetBitsPerPixel() != 32u || !img.IsLDR())
+	if((img.GetBitsPerPixel() != 24u && img.GetBitsPerPixel() != 32u) || !img.IsLDR())
 	{
 		TP_ERROR(Log::ImagePPMPrefix, "Failed to save image: ", filepath);
 		return;

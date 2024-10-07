@@ -5252,3 +5252,7 @@ SITREP 10/06/2024|24w40b4
     - Utils/String various small changes ~<15 mins
     - Utils Moved ConvertToType() out of String header ~<30 mins
     - Utils/Time various small changes ~<5 mins
+
+SITREP 10/06/2024|24w41a1
+    - Changed TRAP Engine version to 24w41a1(0.11.29)
+    - PPMImage Fixed Save() falsely early returning on valid images ~<5 mins
