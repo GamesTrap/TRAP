@@ -5257,3 +5257,5 @@ SITREP 10/06/2024|24w41a1
     - Changed TRAP Engine version to 24w41a1(0.11.29)
     - PPMImage Fixed Save() falsely early returning on valid images ~<5 mins
     - Utils/ConstexprMap/Expected various small changes ~<10 mins
+    - Utils/ImageUtils Rewrote FlipPixelDataX() implementation ~<20 mins
+    - Utils/ImageUtils Added UnitTests for some functions ~<45 mins

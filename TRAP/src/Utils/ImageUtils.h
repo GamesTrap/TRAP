@@ -1,7 +1,6 @@
 #ifndef TRAP_IMAGEUTILS_H
 #define TRAP_IMAGEUTILS_H
 
-#include <concepts>
 #include <span>
 #include <vector>
 
@@ -29,20 +28,24 @@ namespace TRAP::Utils
             return std::vector<T>();
         }
 
-        std::vector<T> newData(pixelData.begin(), pixelData.end());
-        const u32 rowStride = height * channels;
+        std::vector<T> flippedData(pixelData.size());
+        const u32 rowSize = width * channels;
 
-        std::vector<T> tmpRow(rowStride);
-
-        for (u32 lowOffset = 0, highOffset = (width - 1) * rowStride; lowOffset < highOffset;
-            lowOffset += rowStride, highOffset -= rowStride)
+        for(u32 y = 0u; y < height; ++y)
         {
-            std::copy(&newData[lowOffset], &newData[lowOffset + rowStride], tmpRow.begin()); //Copy low row to temporary row buffer
-            std::copy(&newData[highOffset], &newData[highOffset + rowStride], &newData[lowOffset]); //Copy high row to low row destination
-            std::ranges::copy(tmpRow, &newData[highOffset]); //Copy temporary row buffer (low row) to high row destination
+            const T* const srcRowStart = pixelData.data() + (y * rowSize);
+            T* const dstRowStart = flippedData.data() + (y * rowSize);
+
+            for(u32 x = 0u; x < width; ++x)
+            {
+                const T* const srcPixel = srcRowStart + (x * channels);
+                T* const dstPixel = dstRowStart + ((width - 1u - x) * channels);
+
+                std::copy_n(srcPixel, channels, dstPixel);
+            }
         }
 
-        return newData;
+        return flippedData;
     }
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -66,16 +69,13 @@ namespace TRAP::Utils
         }
 
         std::vector<T> newData(pixelData.begin(), pixelData.end());
-        const u32 colStride = width * channels;
+        const u32 rowSize = width * channels;
 
-        std::vector<T> tmpCol(colStride);
-
-        for (u32 lowOffset = 0, highOffset = (height - 1) * colStride; lowOffset < highOffset;
-            lowOffset += colStride, highOffset -= colStride)
+        for (u32 lowOffset = 0u, highOffset = (height - 1u) * rowSize;
+             lowOffset < highOffset;
+             lowOffset += rowSize, highOffset -= rowSize)
         {
-            std::copy(&newData[lowOffset], &newData[lowOffset + colStride], tmpCol.begin()); //Copy low column to temporary column buffer
-            std::copy(&newData[highOffset], &newData[highOffset + colStride], &newData[lowOffset]); //Copy high column to low column destination
-            std::ranges::copy(tmpCol, &newData[highOffset]); //Copy temporary column buffer (low column) to high column destination
+            std::swap_ranges(newData.begin() + lowOffset, newData.begin() + lowOffset + rowSize, newData.begin() + highOffset);
         }
 
         return newData;
@@ -104,13 +104,13 @@ namespace TRAP::Utils
 
         std::vector<T> rotated(data.size());
 
-        for(u32 y = 0, destCol = height - 1; y < height; ++y, --destCol)
+        for(u32 y = 0u, destCol = height - 1u; y < height; ++y, --destCol)
         {
             const u32 offset = y * width;
 
-            for(u32 x = 0; x < width; ++x)
+            for(u32 x = 0u; x < width; ++x)
             {
-                for(u32 channel = 0; channel < channels; ++channel)
+                for(u32 channel = 0u; channel < channels; ++channel)
                 {
                     rotated[(x * height + destCol) * channels + channel] =
                         data[(offset + x) * channels + channel];
@@ -199,7 +199,7 @@ namespace TRAP::Utils
         for(usize oldDataIndex = 0; oldDataIndex < (NumericCast<usize>(width) * height * RGBChannels);
             oldDataIndex += 3, newDataIndex += 4)
         {
-            std::copy(&data[oldDataIndex], &data[oldDataIndex + 3], &newData[newDataIndex]); //Copy RGB
+            std::copy(data.begin() + oldDataIndex, data.begin() + oldDataIndex + 3, &newData[newDataIndex]); //Copy RGB
             newData[newDataIndex + 3] = whitePixelColor; //Add alpha channel
         }
 
