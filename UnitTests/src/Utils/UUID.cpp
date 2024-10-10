@@ -16,18 +16,18 @@ namespace
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-// TEST_CASE("TRAP::Utils::UUIDToString()", "[utils][uuid]")
-// {
-//     SECTION("Valid")
-//     {
-//         STATIC_REQUIRE(TRAP::Utils::UUIDToString(testUUID) == testUUIDStr);
-//     }
+TEST_CASE("TRAP::Utils::UUIDToString()", "[utils][uuid]")
+{
+    SECTION("Valid")
+    {
+        REQUIRE(TRAP::Utils::UUIDToString(testUUID) == testUUIDStr);
+    }
 
-//     SECTION("Empty")
-//     {
-//         STATIC_REQUIRE(TRAP::Utils::UUIDToString(TRAP::Utils::EMPTY_UUID) == "00000000-0000-0000-0000-000000000000");
-//     }
-// }
+    SECTION("Empty")
+    {
+        REQUIRE(TRAP::Utils::UUIDToString(TRAP::Utils::EMPTY_UUID) == "00000000-0000-0000-0000-000000000000");
+    }
+}
 
 TEST_CASE("TRAP::Utils::UUIDFromString()", "[utils][uuid]")
 {
