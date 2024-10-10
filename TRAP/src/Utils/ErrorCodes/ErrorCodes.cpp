@@ -15,7 +15,7 @@ namespace
         std::string_view LogMessage;
     };
 
-    constexpr TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 28u> ErrorCodesMap
+    constexpr TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 30u> ErrorCodesMap
     {
         {
             {
@@ -45,6 +45,8 @@ namespace
                 {TRAP::Utils::ErrorCode::WindowingAPIWindowCreationFailed, {"Failed to create window", "Failed to create window!\nError code: 0x0009", TRAP::Log::WindowPrefix, "Failed to create window! (0x0009)"}},
                 {TRAP::Utils::ErrorCode::MonitorNoneFound, {"No monitor found!", "No monitor found!\nError code: 0x000C", TRAP::Log::WindowPrefix, "No monitor found! (0x000C)"}},
                 {TRAP::Utils::ErrorCode::LinuxUnsupportedWindowManager, {"No supported window manager", "No supported window manager found!\nTRAP™ only supports X11 and Wayland\nMake sure the appropriate environment variable(s) is/are set!\nError code: 0x0008", TRAP::Log::EngineLinuxPrefix, "No supported window manager found! (0x0008)"}},
+                {TRAP::Utils::ErrorCode::FailedToLoadLibrary, {"Application error", "Failed to load a dynamic library!\nError code: 0x0021", TRAP::Log::EngineLinuxPrefix, "Failed to load a dynamic library! (0x0021)"}},
+                {TRAP::Utils::ErrorCode::FailedToLoadFunctionFromLibrary, {"Application error", "Failed to load a function from a dynamic library!\nError code: 0x0022", TRAP::Log::EngineLinuxPrefix, "Failed to load a function from a dynamic library! (0x0022)"}},
 
                 {TRAP::Utils::ErrorCode::ApplicationNotLaunchedWithSteam, {"Application error", "Please launch the game through Steam!\nError code: 0x0015", TRAP::Log::SteamworksSDKPrefix, "Application not launched through steam! (0x0015)"}},
                 {TRAP::Utils::ErrorCode::SteamNotRunning, {"Application error", "Steam must be running to play the game!\nError code: 0x0016", TRAP::Log::SteamworksSDKPrefix, "Steam must be running to play the game! (0x0016)"}},

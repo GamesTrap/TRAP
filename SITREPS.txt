@@ -5265,3 +5265,4 @@ SITREP 10/10/2024|24w41a2
     - Changed TRAP Engine version to 24w41a2(0.11.21)
     - UnitTests Added tests for UUID ~<10 mins
     - Utils Rewrote implementation of CheckSingleProcessLinux() (now lock-file based) ~<20 mins
+    - Utils Made GetCPUInfo() architecture independent ~<30 mins

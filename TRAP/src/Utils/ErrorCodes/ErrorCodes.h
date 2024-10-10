@@ -37,7 +37,9 @@ namespace TRAP::Utils
         VulkanFailedToAllocateCommandBuffer = 0x001C,
         VulkanNoMatchingSurfaceFormatFound = 0x001D,
         VulkanNoQueueWithPresentationSupportFound = 0x001F,
-        VulkanNoSupportedCompositeAlphaFlagFound = 0x0020
+        VulkanNoSupportedCompositeAlphaFlagFound = 0x0020,
+        FailedToLoadLibrary = 0x0021,
+        FailedToLoadFunctionFromLibrary = 0x0022,
     };
 
 //-------------------------------------------------------------------------------------------------------------------//

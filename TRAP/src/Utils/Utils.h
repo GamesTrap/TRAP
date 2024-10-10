@@ -111,13 +111,14 @@ namespace TRAP::Utils
 	struct CPUInfo
 	{
 		std::string Model{};
-		u32 Cores = 0;
-		u32 LogicalCores = 0;
+		u32 Cores = 0u;
+		u32 LogicalCores = 0u;
 		bool HyperThreaded = false;
 	};
 
 	/// @brief Get information about the CPU that runs the engine.
 	/// @return Constant reference to the TRAP::CPUInfo.
+	/// @threadsafe
 	[[nodiscard]] const CPUInfo& GetCPUInfo();
 
 	//-------------------------------------------------------------------------------------------------------------------//

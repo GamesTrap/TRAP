@@ -10,29 +10,37 @@
 namespace
 {
 #ifdef TRAP_PLATFORM_WINDOWS
-	using PFN_RtlVerifyVersionInfo = LONG(WINAPI*)(OSVERSIONINFOEXW*, ULONG, ULONGLONG);
-	struct NTDLL
+	class NTDLL final
 	{
-		HINSTANCE Instance = nullptr;
-		PFN_RtlVerifyVersionInfo RtlVerifyVersionInfo = nullptr;
-	} s_ntdll;
+	public:
+		using PFN_RtlVerifyVersionInfo = LONG(WINAPI*)(OSVERSIONINFOEXW*, ULONG, ULONGLONG);
 
-	[[nodiscard]] bool InitNTDLL()
-	{
-		if(!s_ntdll.Instance || !s_ntdll.RtlVerifyVersionInfo) //Init s_ntdll if not already done
+		NTDLL()
 		{
-			s_ntdll.Instance = static_cast<HINSTANCE>(TRAP::Utils::DynamicLoading::LoadLibrary("ntdll.dll"));
-			if (s_ntdll.Instance)
-			{
-				s_ntdll.RtlVerifyVersionInfo = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_RtlVerifyVersionInfo>(s_ntdll.Instance,
-																										               "RtlVerifyVersionInfo");
-			}
+			m_instance = TRAP::Utils::DynamicLoading::LoadLibrary("ntdll.dll");
+			if (!m_instance)
+				TRAP::Utils::DisplayError(TRAP::Utils::ErrorCode::FailedToLoadLibrary);
 
-			TRAP_ASSERT(s_ntdll.Instance && s_ntdll.RtlVerifyVersionInfo, "Utils::InitNTDLL(): Failed to load ntdll.dll");
+			RtlVerifyVersionInfo = TRAP::Utils::DynamicLoading::GetLibrarySymbol<NTDLL::PFN_RtlVerifyVersionInfo>(m_instance, "RtlVerifyVersionInfo");
+			if (!RtlVerifyVersionInfo)
+				TRAP::Utils::DisplayError(TRAP::Utils::ErrorCode::FailedToLoadFunctionFromLibrary);
 		}
 
-		return s_ntdll.Instance && s_ntdll.RtlVerifyVersionInfo;
-	}
+		~NTDLL()
+		{
+			TRAP::Utils::DynamicLoading::FreeLibrary(m_instance);
+		}
+
+		NTDLL(const NTDLL&) = delete;
+		NTDLL(NTDLL&&) = delete;
+
+		NTDLL& operator=(const NTDLL&) = delete;
+		NTDLL& operator=(NTDLL&&) = delete;
+
+		PFN_RtlVerifyVersionInfo RtlVerifyVersionInfo = nullptr;
+	private:
+		void* m_instance = nullptr;
+	} s_ntdll{};
 #endif /*TRAP_PLATFORM_WINDOWS*/
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -124,150 +132,97 @@ namespace
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
-	//Note this will only store info of the CPU we are currently running on.
-	//Its likely that this is broken on multi NUMA systems... //TODO
-
-	static CPUInfo cpu{};
-
-	if(!cpu.Model.empty())
-		return cpu;
-
-	static const auto CPUID = [](const u32 funcID, const u32 subFuncID)
+	static const auto LoadCPUInfo = []()
 	{
-	#ifdef TRAP_PLATFORM_WINDOWS
-		std::array<i32, 4> regs{};
-		__cpuidex(regs.data(), static_cast<i32>(funcID), static_cast<i32>(subFuncID));
-	#else
-		std::array<u32, 4> regs{};
-		__get_cpuid_count(funcID, subFuncID, &std::get<0>(regs), &std::get<1>(regs), &std::get<2>(regs), &std::get<3>(regs));
-	#endif
+		CPUInfo cpu{};
 
-		return std::bit_cast<std::array<u32, 4>>(regs);
+#ifdef TRAP_PLATFORM_WINDOWS
+		//Retrieve physical core count
+		DWORD length = 0u;
+		GetLogicalProcessorInformationEx(RelationProcessorCore, nullptr, &length);
+		std::vector<u8> buffer(length);
+		if(GetLogicalProcessorInformationEx(RelationProcessorCore, reinterpret_cast<PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>(buffer.data()), &length))
+		{
+			auto* logicalProcInfo = reinterpret_cast<PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>(buffer.data());
+			for(DWORD i = 0u; i < buffer.size(); i += logicalProcInfo->Size)
+			{
+				if(logicalProcInfo->Relationship == RelationProcessorCore)
+					++cpu.Cores;
+
+				logicalProcInfo = reinterpret_cast<PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>(reinterpret_cast<u8*>(logicalProcInfo) + logicalProcInfo->Size);
+			}
+		}
+
+		//Retrieve thread count
+		SYSTEM_INFO sysInfo{};
+		GetSystemInfo(&sysInfo);
+		cpu.LogicalCores = sysInfo.dwNumberOfProcessors;
+
+		//Retrieve CPU model name
+		HKEY hKey{};
+		static constexpr std::wstring_view subKey = L"HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0";
+		static constexpr std::wstring_view valueName = L"ProcessorNameString";
+		if(RegOpenKeyExW(HKEY_LOCAL_MACHINE, subKey.data(), 0, KEY_READ, &hKey) == ERROR_SUCCESS)
+		{
+			DWORD bufferSize = 0u;
+			std::wstring temp{};
+			if(RegGetValueW(hKey, nullptr, valueName.data(), RRF_RT_REG_SZ, nullptr, nullptr, &bufferSize) == ERROR_SUCCESS)
+			{
+				temp.resize(bufferSize / sizeof(wchar_t));
+
+				if(RegGetValueW(hKey, nullptr, valueName.data(), RRF_RT_REG_SZ, nullptr, temp.data(), &bufferSize) == ERROR_SUCCESS)
+					cpu.Model = TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(temp);
+			}
+
+			RegCloseKey(hKey);
+		}
+#elif defined(TRAP_PLATFORM_LINUX)
+		std::ifstream cpuInfo("/proc/cpuinfo");
+		std::set<i32> coreIDs{};
+
+		std::string temp{};
+		while(std::getline(cpuInfo, temp))
+		{
+			if(temp.find("core id") != std::string::npos)
+			{
+				try
+				{
+					const i32 coreID = std::stoi(temp.substr(temp.find(':') + 1u));
+					coreIDs.insert(coreID);
+				}
+				catch(...)
+				{
+					TP_ERROR(Log::UtilsPrefix, "Failed to parse /proc/cpuinfo for physical core count!");
+				}
+			}
+
+			if(cpu.Model.empty() && temp.find("model name") != std::string::npos)
+			{
+				if(const usize pos = temp.find(':'); pos != std::string::npos)
+					cpu.Model = temp.substr(pos + 2u);
+			}
+		}
+		cpu.Cores = NumericCast<u32>(coreIDs.size());
+		cpu.LogicalCores = NumericCast<u32>(sysconf(_SC_NPROCESSORS_ONLN));
+#endif
+
+		if (cpu.Cores == 0u)
+			cpu.Cores = 1u;
+		if (cpu.LogicalCores == 0u)
+			cpu.LogicalCores = cpu.Cores;
+		cpu.HyperThreaded = cpu.LogicalCores > cpu.Cores;
+		if(cpu.Model.empty())
+			cpu.Model = "Unknown CPU";
+
+		usize lastAlphaChar = 0u;
+		if(const auto it = std::ranges::find_if(std::ranges::reverse_view(cpu.Model), Utils::String::IsAlphaNumeric);it != cpu.Model.rend())
+			lastAlphaChar = NumericCast<usize>(it - cpu.Model.rbegin());
+		cpu.Model.erase(cpu.Model.end() - NumericCast<std::string::difference_type>(lastAlphaChar), cpu.Model.end());
+
+		return cpu;
 	};
 
-	std::array<u32, 4> regs = CPUID(0, 0);
-	const u32 HFS = std::get<0>(regs);
-	//Get Vendor
-	const std::string vendorID = std::string(reinterpret_cast<char*>(&std::get<1>(regs)), sizeof(u32)) +
-		                         std::string(reinterpret_cast<char*>(&std::get<2>(regs)), sizeof(u32)) +
-		                         std::string(reinterpret_cast<char*>(&std::get<3>(regs)), sizeof(u32));
-	regs = CPUID(1, 0);
-	cpu.HyperThreaded = ((std::get<3>(regs) & 0x10000000u) != 0u); //Get Hyper-threading
-
-	const std::string upVendorID = Utils::String::ToUpper(vendorID);
-	//Get Number of cores
-	static constexpr i32 MAX_INTEL_TOP_LVL = 4;
-	static constexpr u32 LVL_TYPE = 0x0000FF00;
-	static constexpr u32 LVL_CORES = 0x0000FFFF;
-	if (Utils::String::Contains(upVendorID, "INTEL"))
-	{
-		if (HFS >= 11u)
-		{
-			u32 numSMT = 0;
-			for (u32 lvl = 0; lvl < MAX_INTEL_TOP_LVL; ++lvl)
-			{
-				const std::array<u32, 4> regs1 = CPUID(0x0Bu, lvl);
-				const u32 currentLevel = (LVL_TYPE & std::get<2>(regs1)) >> 8u;
-				switch (currentLevel)
-				{
-				case BIT(0u):
-					numSMT = LVL_CORES & std::get<1>(regs1);
-					break;
-
-				case BIT(1u):
-					cpu.LogicalCores = LVL_CORES & std::get<1>(regs1);
-					break;
-
-				default:
-					break;
-				}
-			}
-			cpu.Cores = cpu.LogicalCores / numSMT;
-		}
-		else
-		{
-			if (HFS >= 1)
-			{
-				cpu.LogicalCores = (std::get<1>(regs) >> 16u) & 0xFFu;
-				if (HFS >= 4)
-				{
-					const std::array<u32, 4> regs1 = CPUID(4, 0);
-					cpu.Cores = (1 + (std::get<0>(regs1) >> 26u)) & 0x3Fu;
-				}
-			}
-			if (cpu.HyperThreaded)
-			{
-				if (!(cpu.Cores > 1))
-				{
-					cpu.Cores = 1;
-					cpu.LogicalCores = (cpu.LogicalCores >= 2 ? cpu.LogicalCores : 2);
-				}
-			}
-			else
-				cpu.Cores = cpu.LogicalCores = 1;
-		}
-	}
-	else if (Utils::String::Contains(upVendorID, "AMD"))
-	{
-		u32 extFamily = 0;
-		if (((std::get<0>(regs) >> 8u) & 0xFu) < 0xFu)
-			extFamily = (std::get<0>(regs) >> 8u) & 0xFu;
-		else
-			extFamily = ((std::get<0>(regs) >> 8u) & 0xFu) + ((std::get<0>(regs) >> 20u) & 0xFFu);
-
-		if (HFS >= 1)
-		{
-			cpu.LogicalCores = (std::get<1>(regs) >> 16u) & 0xFFu;
-			std::array<u32, 4> regs1 = CPUID(0x80000000u, 0u);
-			if (std::get<0>(regs1) >= 8u)
-			{
-				regs1 = CPUID(0x80000008u, 0u);
-				cpu.Cores = 1 + (std::get<2>(regs1) & 0xFFu);
-			}
-		}
-		if (cpu.HyperThreaded)
-		{
-			if (!(cpu.Cores > 1))
-			{
-				cpu.Cores = 1;
-				cpu.LogicalCores = (cpu.LogicalCores >= 2 ? cpu.LogicalCores : 2);
-			}
-			else if (cpu.Cores > 1)
-			{
-				//Ryzen 3 has SMT flag, but in fact cores count is equal to threads count.
-				//Ryzen 5/7 reports twice as many "real" cores (e.g. 16 cores instead of 8) because of SMT.
-				//On PPR 17h, page 82:
-				//CPUID_Fn8000001E_EBX [Core Identifiers][15:8] is ThreadsPerCore
-				//ThreadsPerCore: [...] The number of threads per core is ThreadsPerCore + 1
-				std::array<u32, 4> regs1 = CPUID(0x80000000u, 0u);
-				if ((extFamily >= 23u) && (std::get<0>(regs1) >= 30u))
-				{
-					regs1 = CPUID(0x8000001Eu, 0u);
-					cpu.Cores /= ((std::get<1>(regs1) >> 8u) & 0xFFu) + 1u;
-				}
-			}
-		}
-		else
-			cpu.Cores = cpu.LogicalCores = 1;
-	}
-
-	//Get CPU brand string
-	for (u32 i = 0x80000002u; i < 0x80000005u; ++i)
-	{
-		std::array<u32, 4> regs1 = CPUID(i, 0);
-		cpu.Model += fmt::format("{}{}{}{}",
-		                         std::string(reinterpret_cast<char*>(&std::get<0>(regs1)), sizeof(u32)),
-		                         std::string(reinterpret_cast<char*>(&std::get<1>(regs1)), sizeof(u32)),
-		                         std::string(reinterpret_cast<char*>(&std::get<2>(regs1)), sizeof(u32)),
-		                         std::string(reinterpret_cast<char*>(&std::get<3>(regs1)), sizeof(u32)));
-	}
-
-	usize lastAlphaChar = 0;
-	const auto it = std::ranges::find_if(std::ranges::reverse_view(cpu.Model), Utils::String::IsAlphaNumeric);
-	if(it != cpu.Model.rend())
-		lastAlphaChar = NumericCast<usize>(it - cpu.Model.rbegin());
-
-	cpu.Model.erase(cpu.Model.end() - NumericCast<std::string::difference_type>(lastAlphaChar), cpu.Model.end());
+	static const CPUInfo cpu{LoadCPUInfo()};
 
 	return cpu;
 }
