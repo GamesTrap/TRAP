@@ -63,44 +63,36 @@ namespace
 	{
 		ZoneScoped;
 
-		constinit static i32 socketFD = -1;
-		constinit static i32 rc = 1;
-		static constexpr u16 port = 49420; //Just a free (hopefully) random port
-
-		if(socketFD == -1 || (rc != 0))
+		static const auto TryAcquireLockfile = []()
 		{
-			socketFD = -1;
-			rc = 1;
+			static constexpr std::string_view lockfile = "/tmp/trap_engine.lock";
 
-			socketFD = socket(AF_INET, SOCK_DGRAM, 0);
-			if(socketFD < 0)
+			const i32 fd = open(lockfile.data(), O_CREAT | O_RDWR, 0666);
+			if(fd == -1)
 			{
-				TP_ERROR(TRAP::Log::ApplicationPrefix, "Failed to create socket!");
-				TP_ERROR(TRAP::Log::ApplicationPrefix, TRAP::Utils::String::GetStrError());
+				TP_ERROR(TRAP::Log::UtilsPrefix, "Failed to open lockfile!");
+				TP_ERROR(TRAP::Log::UtilsPrefix, TRAP::Utils::String::GetStrError());
 				return false;
 			}
 
-			sockaddr_in name{};
-			name.sin_family = AF_INET;
-			name.sin_port = port;
-			name.sin_addr.s_addr = INADDR_ANY;
-
-			if constexpr (Utils::GetEndian() != Utils::Endian::Big)
+			const i32 lockResult = flock(fd, LOCK_EX | LOCK_NB);
+			if(lockResult != 0)
 			{
-				TRAP::Utils::Memory::SwapBytes(name.sin_port);
-				TRAP::Utils::Memory::SwapBytes(name.sin_addr.s_addr);
+				if(errno != EWOULDBLOCK)
+				{
+					TP_ERROR(TRAP::Log::UtilsPrefix, "Failed to acquire lockfile!");
+					TP_ERROR(TRAP::Log::UtilsPrefix, TRAP::Utils::String::GetStrError());
+				}
+				close(fd);
+				return false; //Another process holds the lock
 			}
 
-			sockaddr convertedSock = std::bit_cast<sockaddr>(name); //Prevent usage of reinterpret_cast
-			rc = bind(socketFD, &convertedSock, sizeof(name));
-			if(rc < 0)
-			{
-				TP_ERROR(TRAP::Log::ApplicationPrefix, "Failed to bind socket!");
-				TP_ERROR(TRAP::Log::ApplicationPrefix, TRAP::Utils::String::GetStrError());
-			}
-		}
+			return true;
+		};
 
-		return (socketFD != -1 && rc == 0);
+		static const bool isSingleProcess = TryAcquireLockfile();
+
+		return isSingleProcess;
 	}
 #endif /*ENABLE_SINGLE_PROCESS_ONLY && TRAP_PLATFORM_LINUX*/
 

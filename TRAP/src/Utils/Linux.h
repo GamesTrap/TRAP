@@ -18,6 +18,7 @@
 #include <sys/eventfd.h>
 #include <sys/timerfd.h>
 #include <sys/mman.h>
+#include <sys/file.h>
 #include <fcntl.h>
 #include <dirent.h>
 #include <unistd.h>
