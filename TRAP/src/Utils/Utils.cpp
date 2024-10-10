@@ -128,52 +128,6 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::string TRAP::Utils::UUIDToString(const TRAP::Utils::UUID& uuid)
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
-
-	return fmt::format("{:02x}{:02x}{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}",
-					   std::get<0>(uuid), std::get<1>(uuid), std::get<2>(uuid), std::get<3>(uuid),
-					   std::get<4>(uuid), std::get<5>(uuid), std::get<6>(uuid), std::get<7>(uuid),
-					   std::get<8>(uuid), std::get<9>(uuid), std::get<10>(uuid), std::get<11>(uuid),
-					   std::get<12>(uuid), std::get<13>(uuid), std::get<14>(uuid), std::get<15>(uuid));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Utils::UUID TRAP::Utils::UUIDFromString(const std::string_view uuid)
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
-
-	TRAP::Utils::UUID result{};
-
-	if(uuid.empty())
-		return {};
-
-	usize index = 0;
-	for(const char c : uuid)
-	{
-		if(!String::IsHexDigit(c)) //Ignore non hex characters
-			continue;
-
-		if(index >= 32) //Out of bounds
-			return {};
-
-		const u8 convertedCharacter = String::IsDigit(c) ? NumericCast<u8>(c - '0') :
-		                                                        NumericCast<u8>(String::ToLower(c) - 'a' + 10);
-		if(index % 2 == 0)
-			result[index / 2] = NumericCast<u8>(convertedCharacter << 4u);
-		else
-			result[index / 2] |= convertedCharacter;
-
-		++index;
-	}
-
-	return result;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);

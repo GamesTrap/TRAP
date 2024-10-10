@@ -5253,10 +5253,14 @@ SITREP 10/06/2024|24w40b4
     - Utils Moved ConvertToType() out of String header ~<30 mins
     - Utils/Time various small changes ~<5 mins
 
-SITREP 10/06/2024|24w41a1
-    - Changed TRAP Engine version to 24w41a1(0.11.29)
+SITREP 10/07/2024|24w41a1
+    - Changed TRAP Engine version to 24w41a1(0.11.20)
     - PPMImage Fixed Save() falsely early returning on valid images ~<5 mins
     - Utils/ConstexprMap/Expected various small changes ~<10 mins
     - Utils/ImageUtils Rewrote FlipPixelDataX() implementation ~<20 mins
     - Utils/ImageUtils Added UnitTests for some functions ~<45 mins
     - Utils/ImageUtils various small changes ~<25 mins
+
+SITREP 10/10/2024|24w41a2
+    - Changed TRAP Engine version to 24w41a2(0.11.21)
+    - UnitTests Added tests for UUID ~<10 mins

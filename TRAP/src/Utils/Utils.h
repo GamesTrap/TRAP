@@ -17,17 +17,19 @@
 
 namespace TRAP::Utils
 {
-	using UUID = std::array<u8, 16>;
+	using UUID = std::array<u8, 16u>;
 	constexpr UUID EMPTY_UUID = UUID{};
 
 	/// @brief Convert a 16 byte long UUID to a string.
 	/// @param uuid UUID.
 	/// @return String representation of UUID.
-	[[nodiscard]] std::string UUIDToString(const TRAP::Utils::UUID& uuid);
+	/// @threadsafe
+	[[nodiscard]] constexpr std::string UUIDToString(const TRAP::Utils::UUID& uuid);
 	/// @brief Convert a string to a 16 byte long UUID.
 	/// @param uuid String representation of a 16 byte long UUID.
 	/// @return 16 byte long UUID.
-	[[nodiscard]] TRAP::Utils::UUID UUIDFromString(std::string_view uuid);
+	/// @threadsafe
+	[[nodiscard]] constexpr TRAP::Utils::UUID UUIDFromString(std::string_view uuid);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -219,6 +221,57 @@ namespace TRAP::Utils
     constexpr void SetThreadName([[maybe_unused]] const std::string_view name, [[maybe_unused]] const ThreadGroup group)
 	{}
 #endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Utils::UUIDToString(const TRAP::Utils::UUID& uuid)
+{
+	constexpr auto DigitToHexChar = [](const u8 value)
+	{
+		return value < 10u ? static_cast<char>('0' + value) : static_cast<char>('a' + (value - 10u));
+	};
+
+	std::string result((uuid.size() * 2u) + 4u, '\0');
+
+	for(usize inI = 0u, outI = 0u; inI < uuid.size(); ++inI)
+	{
+		if(outI == 8u || outI == 13u || outI == 18u || outI == 23u)
+			result[outI++] = '-';
+
+		result[outI++] = DigitToHexChar(static_cast<u8>(uuid[inI] >> 4u) & 0xFu);
+		result[outI++] = DigitToHexChar(uuid[inI] & 0xFu);
+	}
+
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Utils::UUID TRAP::Utils::UUIDFromString(const std::string_view uuid)
+{
+	TRAP::Utils::UUID result{};
+
+	if(uuid.empty() || std::ranges::count_if(uuid, [](const char c){return c != '-';}) != NumericCast<isize>(EMPTY_UUID.size() * 2u))
+		return {};
+
+	usize index = 0u;
+	for(const char c : uuid)
+	{
+		if(!String::IsHexDigit(c)) //Ignore non hex characters
+			continue;
+
+		const u8 convertedCharacter = String::IsDigit(c) ? NumericCast<u8>(c - '0') :
+		                                                   NumericCast<u8>(String::ToLower(c) - 'a' + 10u);
+		if(index % 2u == 0u)
+			result[index / 2u] = NumericCast<u8>(convertedCharacter << 4u);
+		else
+			result[index / 2u] |= convertedCharacter;
+
+		++index;
+	}
+
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
