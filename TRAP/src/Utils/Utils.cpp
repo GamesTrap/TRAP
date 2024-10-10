@@ -32,7 +32,8 @@ namespace
 
 		~NTDLL()
 		{
-			TRAP::Utils::DynamicLoading::FreeLibrary(m_instance);
+			if(m_instance)
+				TRAP::Utils::DynamicLoading::FreeLibrary(m_instance);
 		}
 
 		NTDLL(const NTDLL&) = delete;
@@ -44,7 +45,13 @@ namespace
 		PFN_RtlVerifyVersionInfo RtlVerifyVersionInfo = nullptr;
 	private:
 		void* m_instance = nullptr;
-	} s_ntdll{};
+	};
+
+	[[nodiscard]] const NTDLL& GetNTDLL()
+	{
+		static NTDLL ntdll{};
+		return ntdll;
+	}
 #endif /*TRAP_PLATFORM_WINDOWS*/
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -325,7 +332,7 @@ namespace
 	//HACK: Use RtlVerifyVersionInfo instead of VerifyVersionInfoW as the
 	//      latter lies unless the user knew to embed a non-default manifest
 	//      announcing support for Windows 10 via supportedOS GUID
-	return s_ntdll.RtlVerifyVersionInfo(&osvi, mask, cond) == 0;
+	return GetNTDLL().RtlVerifyVersionInfo(&osvi, mask, cond) == 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -348,7 +355,7 @@ namespace
 	//HACK: Use RtlVerifyVersionInfo instead of VerifyVersionInfoW as the
 	//      latter lies unless the user knew to embed a non-default manifest
 	//      announcing support for Windows 10 via supportedOS GUID
-	return s_ntdll.RtlVerifyVersionInfo(&osvi, mask, cond) == 0;
+	return GetNTDLL().RtlVerifyVersionInfo(&osvi, mask, cond) == 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
