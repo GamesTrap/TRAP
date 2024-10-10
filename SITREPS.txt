@@ -5266,3 +5266,5 @@ SITREP 10/10/2024|24w41a2
     - UnitTests Added tests for UUID ~<10 mins
     - Utils Rewrote implementation of CheckSingleProcessLinux() (now lock-file based) ~<20 mins
     - Utils Made GetCPUInfo() architecture independent ~<30 mins
+    - Utils various small changes ~<30 mins
+    - Utils Made some functions threadsafe ~<20 mins

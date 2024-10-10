@@ -34,6 +34,10 @@ namespace TRAP
         ///
         ///        Default constructor.
         BadOptionalAccess() noexcept = default;
+
+        /// @brief Default destructor.
+        ~BadOptionalAccess() override = default;
+
         /// @brief Constructs a new BadOptionalAccess object with an implementation-defined null-terminated byte
         ///        string which is accessible through what().
         ///
@@ -42,11 +46,25 @@ namespace TRAP
         /// @param other Another exception object to copy.
         constexpr BadOptionalAccess(const BadOptionalAccess& other) noexcept = default;
 
+        /// @brief Constructs a new BadOptionalAccess object with an implementation-defined null-terminated byte
+        ///        string which is accessible through what().
+        ///
+        ///        Move constructor. If *this and other both have dynamic type TRAP::BadOptionalAccess then
+        ///        std::strcmp(what(), other.what()) == 0.
+        /// @param other Another exception object to move.
+        constexpr BadOptionalAccess(BadOptionalAccess&& other) noexcept = default;
+
         /// @brief Assigns the contents with those of other. If *this and other both have dynamic type
         ///        TRAP::BadOptionalAccess then std::strcmp(what(), other.what()) == 0 after assignment.
         /// @param other Another exception object to assign with.
         /// @return *this.
         BadOptionalAccess& operator=(const BadOptionalAccess& other) noexcept = default;
+
+        /// @brief Assigns the contents with those of other. If *this and other both have dynamic type
+        ///        TRAP::BadOptionalAccess then std::strcmp(what(), other.what()) == 0 after assignment.
+        /// @param other Another exception object to assign with.
+        /// @return *this.
+        BadOptionalAccess& operator=(BadOptionalAccess&& other) noexcept = default;
 
         /// @brief Returns the explanatory string.
         /// @return Pointer to a null-terminated string with explanatory information.
@@ -159,7 +177,7 @@ namespace TRAP
     /// @tparam T The type of the value to manage initialization state for. The type must meet the requiremnts of
     ///           Destructible (in particular, array types are not allowed).
     template<typename T>
-    class Optional
+    class Optional final
     {
         constexpr void MaybeInitUnion()
         {
@@ -988,7 +1006,7 @@ namespace TRAP
 	//-------------------------------------------------------------------------------------------------------------------//
 
     template<typename T>
-    class Optional<T&>
+    class Optional<T&> final
     {
         template<typename X>
         struct IsOptionalImpl : std::false_type

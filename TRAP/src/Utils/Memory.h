@@ -1,5 +1,5 @@
-#ifndef TRAP_BYTESWAP_H
-#define TRAP_BYTESWAP_H
+#ifndef TRAP_MEMORY_H
+#define TRAP_MEMORY_H
 
 #include "Core/Base.h"
 #include "TRAP_Assert.h"
@@ -13,6 +13,8 @@ namespace TRAP::Utils::Memory
 	{
 		t = std::byteswap(t);
 	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// @brief Converts all primitive data types in the container from
 	/// big->little or little->big endian depending on
@@ -28,6 +30,8 @@ namespace TRAP::Utils::Memory
 			SwapBytes(*begin);
 	}
 
+	//-------------------------------------------------------------------------------------------------------------------//
+
 	/// @brief Converts the given bytes to the given data type
 	/// @tparam T Type to convert bytes to.
 	/// @param source Bytes to convert.
@@ -37,28 +41,30 @@ namespace TRAP::Utils::Memory
 	requires (std::unsigned_integral<T> && !std::same_as<T, u8>)
 	[[nodiscard]] constexpr T ConvertByte(const u8* const source)
 	{
-		if constexpr (sizeof(T) == 2)
+		if constexpr (sizeof(T) == 2u)
 		{
-			return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u);
+			return (static_cast<T>(source[0u])) | (static_cast<T>(source[1u]) << 8u);
 		}
-		else if constexpr (sizeof(T) == 4)
+		else if constexpr (sizeof(T) == 4u)
 		{
-			return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u) |
-					(static_cast<T>(source[2]) << 16u) | (static_cast<T>(source[3]) << 24u);
+			return (static_cast<T>(source[0u])) | (static_cast<T>(source[1u]) << 8u) |
+					(static_cast<T>(source[2u]) << 16u) | (static_cast<T>(source[3u]) << 24u);
 		}
-		else if constexpr (sizeof(T) == 8)
+		else if constexpr (sizeof(T) == 8u)
 		{
-			return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u) |
-					(static_cast<T>(source[2]) << 16u) | (static_cast<T>(source[3]) << 24u) |
-					(static_cast<T>(source[4]) << 32u) | (static_cast<T>(source[5]) << 40u) |
-					(static_cast<T>(source[6]) << 48u) | (static_cast<T>(source[7]) << 56u);
+			return (static_cast<T>(source[0u])) | (static_cast<T>(source[1u]) << 8u) |
+					(static_cast<T>(source[2u]) << 16u) | (static_cast<T>(source[3u]) << 24u) |
+					(static_cast<T>(source[4u]) << 32u) | (static_cast<T>(source[5u]) << 40u) |
+					(static_cast<T>(source[6u]) << 48u) | (static_cast<T>(source[7u]) << 56u);
 		}
 		else
 		{
-			static_assert(sizeof(T) == 0, "T has unknown byte size for unsigned interger type");
+			static_assert(sizeof(T) == 0u, "T has unknown byte size for unsigned interger type");
 			return {};
 		}
 	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// @brief Converts all bytes from begin to end iterators to the given type from
 	/// the output iterator and stores the resulting data in output.
@@ -71,13 +77,13 @@ namespace TRAP::Utils::Memory
 	/// @note The output container must be big enough to hold the converted data.
 	template<typename InputIt, typename OutputIt>
 	requires std::same_as<typename std::iterator_traits<InputIt>::value_type, u8>
-	static void ConvertBytes(InputIt begin, InputIt end, OutputIt output)
+	constexpr void ConvertBytes(InputIt begin, InputIt end, OutputIt output)
 	{
 		using output_type = typename std::iterator_traits<OutputIt>::value_type;
 
 		//Is size a multiple of OutputIts type
 		const auto size = std::distance(begin, end);
-		if(NumericCast<u64>(size) % sizeof(output_type) != 0)
+		if(NumericCast<u64>(size) % sizeof(output_type) != 0u)
 		{
 			TRAP_ASSERT(false, "Memory::ConvertBytes(): Size of input type is not a multiple of output type");
 			return;
@@ -100,4 +106,4 @@ namespace TRAP::Utils::Memory
 	}
 }
 
-#endif /*TRAP_BYTESWAP_H*/
+#endif /*TRAP_MEMORY_H*/

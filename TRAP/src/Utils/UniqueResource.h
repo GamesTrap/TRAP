@@ -41,7 +41,7 @@ namespace TRAP
     ///        stack unwinding.
     /// @tparam EF Type of stored exit function.
     template<typename EF>
-    class ScopeFail
+    class ScopeFail final
     {
     public:
         /// @brief Creates a ScopeFail from a function, a function object or another ScopeFail.
@@ -179,19 +179,19 @@ namespace TRAP
     /// @note Resource handle types satisfying NullablePointer can also be managed by std::unique_ptr.
     ///       Unlike std::unique_ptr, UniqueResource does not require NullablePointer.
     template<typename Resource, typename Deleter>
-    class UniqueResource
+    class UniqueResource final
     {
         static_assert(!std::is_rvalue_reference_v<Resource>);
         static_assert(!std::is_reference_v<Deleter>);
 
         struct Dummy
         {
-            constexpr void Release()
+            constexpr void Release() const noexcept
             {}
         };
 
         template<typename T>
-        struct Wrap
+        struct Wrap final
         {
             template<typename U>
             requires std::is_constructible_v<T, U>
@@ -235,7 +235,7 @@ namespace TRAP
         };
 
         template<typename T>
-        struct Wrap<T&>
+        struct Wrap<T&> final
         {
             template<typename U>
             requires std::is_constructible_v<std::reference_wrapper<T>, U>
@@ -249,7 +249,7 @@ namespace TRAP
             }
 
             // consteval Wrap() noexcept = delete;
-            //constexpr Wrap() = default;
+            // constexpr Wrap() = default;
 
             constexpr ~Wrap() = default;
 

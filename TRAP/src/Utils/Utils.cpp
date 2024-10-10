@@ -7,6 +7,10 @@
 #include "Utils/DynamicLoading/DynamicLoading.h"
 #include "Application.h"
 
+#ifdef TRAP_PLATFORM_WINDOWS
+#include "Utils/Win.h"
+#endif
+
 namespace
 {
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -50,17 +54,24 @@ namespace
 	{
 		ZoneScoped;
 
-		const HANDLE hMutex = CreateMutex(0, 0, L"TRAP-Engine");
-		if(!hMutex) //Error creating mutex
+		static const auto TryAcquireMutex = []()
 		{
-			TP_ERROR(TRAP::Log::ApplicationPrefix, "Failed to create mutex!");
-			TP_ERROR(TRAP::Log::ApplicationPrefix, TRAP::Utils::String::GetStrError());
-			return false;
-		}
-		if(hMutex && GetLastError() == ERROR_ALREADY_EXISTS)
-			return false;
+			const HANDLE hMutex = CreateMutexW(0, 0, L"TRAP-Engine");
+			if(!hMutex) //Error creating mutex
+			{
+				TP_ERROR(TRAP::Log::ApplicationPrefix, "Failed to create mutex!");
+				TP_ERROR(TRAP::Log::ApplicationPrefix, TRAP::Utils::String::GetStrError());
+				return false;
+			}
+			if(hMutex && GetLastError() == ERROR_ALREADY_EXISTS)
+				return false;
 
-		return true;
+			return true;
+		};
+
+		static const bool isSingleProcess = TryAcquireMutex();
+
+		return isSingleProcess;
 	}
 #endif /*ENABLE_SINGLE_PROCESS_ONLY && TRAP_PLATFORM_WINDOWS*/
 
@@ -233,54 +244,58 @@ namespace
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
-	constinit static LinuxWindowManager windowManager = LinuxWindowManager::Unknown;
+	static const auto LoadWindowManager = []()
+	{
+		LinuxWindowManager windowManager = LinuxWindowManager::Unknown;
 
 #ifdef TRAP_PLATFORM_LINUX
-	if(windowManager != LinuxWindowManager::Unknown)
-		return windowManager;
+		static constexpr std::string wl = "wayland";
+		static constexpr std::string x11 = "x11";
+		std::string session;
 
-	static constexpr std::string wl = "wayland";
-	static constexpr std::string x11 = "x11";
-	std::string session;
-
-	//TRAP_WM env var allows the user to override the window manager detection
-	if(getenv("TRAP_WM"))
-	{
-		session = getenv("TRAP_WM");
-
-		if(session == wl)
-			windowManager = LinuxWindowManager::Wayland;
-		else if(session == x11)
-			windowManager = LinuxWindowManager::X11;
-
-
-		//Return if a valid window manager was set via TRAP_WM
-		if(windowManager != LinuxWindowManager::Unknown)
+		//TRAP_WM env var allows the user to override the window manager detection
+		if(getenv("TRAP_WM"))
 		{
-			TP_INFO(Log::EngineLinuxPrefix, "TRAP_WM env var detected, now using ", windowManager);
-			return windowManager;
+			session = getenv("TRAP_WM");
+
+			if(session == wl)
+				windowManager = LinuxWindowManager::Wayland;
+			else if(session == x11)
+				windowManager = LinuxWindowManager::X11;
+
+
+			//Return if a valid window manager was set via TRAP_WM
+			if(windowManager != LinuxWindowManager::Unknown)
+			{
+				TP_INFO(Log::EngineLinuxPrefix, "TRAP_WM env var detected, now using ", windowManager);
+				return windowManager;
+			}
 		}
-	}
 
-	//Proceed with normal detection
-	session = "";
+		//Proceed with normal detection
+		session = "";
 
-	if(getenv("XDG_SESSION_TYPE"))
-		session = getenv("XDG_SESSION_TYPE");
+		if(getenv("XDG_SESSION_TYPE"))
+			session = getenv("XDG_SESSION_TYPE");
 
-	if (getenv("WAYLAND_DISPLAY") || session == wl)
-		windowManager = LinuxWindowManager::Wayland;
-	else if (getenv("DISPLAY") || session == x11)
-		windowManager = LinuxWindowManager::X11;
-	else
-	{
+		if (getenv("WAYLAND_DISPLAY") || session == wl)
+			windowManager = LinuxWindowManager::Wayland;
+		else if (getenv("DISPLAY") || session == x11)
+			windowManager = LinuxWindowManager::X11;
+		else
+		{
 #ifndef TRAP_HEADLESS_MODE
-		Utils::DisplayError(Utils::ErrorCode::LinuxUnsupportedWindowManager);
+			Utils::DisplayError(Utils::ErrorCode::LinuxUnsupportedWindowManager);
 #else
-		return LinuxWindowManager::Unknown;
+			return LinuxWindowManager::Unknown;
 #endif /*TRAP_HEADLESS_MODE*/
-	}
+		}
 #endif /*TRAP_PLATFORM_LINUX*/
+
+		return windowManager;
+	};
+
+	static const LinuxWindowManager windowManager{LoadWindowManager()};
 
 	return windowManager;
 }
@@ -289,16 +304,22 @@ namespace
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
-[[nodiscard]] BOOL TRAP::Utils::IsWindowsVersionOrGreaterWin32(const WORD major, const WORD minor, const WORD sp)
+[[nodiscard]] bool TRAP::Utils::IsWindowsVersionOrGreaterWin32(const u16 major, const u16 minor, const u16 sp)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
-	if(!InitNTDLL())
-		return false;
-
-	OSVERSIONINFOEXW osvi = { sizeof(osvi), major, minor, 0, 0, {0}, sp };
-	const DWORD mask = VER_MAJORVERSION | VER_MINORVERSION | VER_SERVICEPACKMAJOR;
-	ULONGLONG cond = VerSetConditionMask(0, VER_MAJORVERSION, VER_GREATER_EQUAL);
+	OSVERSIONINFOEXW osvi
+	{
+		.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXW),
+		.dwMajorVersion = static_cast<WORD>(major),
+		.dwMinorVersion = static_cast<WORD>(minor),
+		.dwBuildNumber = 0u,
+		.dwPlatformId = 0u,
+		.szCSDVersion = {},
+		.wServicePackMajor = static_cast<WORD>(sp)
+	};
+	static constexpr DWORD mask = VER_MAJORVERSION | VER_MINORVERSION | VER_SERVICEPACKMAJOR;
+	ULONGLONG cond = VerSetConditionMask(0u, VER_MAJORVERSION, VER_GREATER_EQUAL);
 	cond = VerSetConditionMask(cond, VER_MINORVERSION, VER_GREATER_EQUAL);
 	cond = VerSetConditionMask(cond, VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
 	//HACK: Use RtlVerifyVersionInfo instead of VerifyVersionInfoW as the
@@ -309,16 +330,19 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] BOOL TRAP::Utils::IsWindows10BuildOrGreaterWin32(const WORD build)
+[[nodiscard]] bool TRAP::Utils::IsWindows10BuildOrGreaterWin32(const u16 build)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
-	if(!InitNTDLL())
-		return false;
-
-	OSVERSIONINFOEXW osvi = { sizeof(osvi), 10, 0, build };
-	const DWORD mask = VER_MAJORVERSION | VER_MINORVERSION | VER_BUILDNUMBER;
-	ULONGLONG cond = VerSetConditionMask(0, VER_MAJORVERSION, VER_GREATER_EQUAL);
+	OSVERSIONINFOEXW osvi
+	{
+		.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXW),
+		.dwMajorVersion = 10u,
+		.dwMinorVersion = 0u,
+		.dwBuildNumber = static_cast<WORD>(build)
+	};
+	static constexpr DWORD mask = VER_MAJORVERSION | VER_MINORVERSION | VER_BUILDNUMBER;
+	ULONGLONG cond = VerSetConditionMask(0u, VER_MAJORVERSION, VER_GREATER_EQUAL);
 	cond = VerSetConditionMask(cond, VER_MINORVERSION, VER_GREATER_EQUAL);
 	cond = VerSetConditionMask(cond, VER_BUILDNUMBER, VER_GREATER_EQUAL);
 	//HACK: Use RtlVerifyVersionInfo instead of VerifyVersionInfoW as the
@@ -329,7 +353,7 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] BOOL TRAP::Utils::IsWindows11BuildOrGreaterWin32(const WORD build)
+[[nodiscard]] bool TRAP::Utils::IsWindows11BuildOrGreaterWin32(const u16 build)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
 	                                          (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -339,7 +363,7 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] BOOL TRAP::Utils::IsWindows11OrGreaterWin32()
+[[nodiscard]] bool TRAP::Utils::IsWindows11OrGreaterWin32()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
 	                                          (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -349,7 +373,7 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] BOOL TRAP::Utils::IsWindows10Version1607OrGreaterWin32()
+[[nodiscard]] bool TRAP::Utils::IsWindows10Version1607OrGreaterWin32()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
 	                                          (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -359,7 +383,7 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] BOOL TRAP::Utils::IsWindows10Version1703OrGreaterWin32()
+[[nodiscard]] bool TRAP::Utils::IsWindows10Version1703OrGreaterWin32()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
 	                                          (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -369,7 +393,7 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] BOOL TRAP::Utils::IsWindows10OrGreaterWin32()
+[[nodiscard]] bool TRAP::Utils::IsWindows10OrGreaterWin32()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
 	                                          (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -403,7 +427,10 @@ void TRAP::Utils::CheckSingleProcess()
 void TRAP::Utils::RegisterSIGINTCallback()
 {
 #ifdef TRAP_PLATFORM_LINUX
-	if(signal(SIGINT, [](i32) {TRAP::Application::Shutdown(); }) == SIG_ERR)
+	struct sigaction handler{};
+	handler.sa_handler = [](i32){TRAP::Application::Shutdown();};
+
+	if(sigaction(SIGINT, &handler, nullptr) == -1)
 #elif defined(TRAP_PLATFORM_WINDOWS)
 	if(!SetConsoleCtrlHandler(SIGINTHandlerRoutine, TRUE))
 #endif

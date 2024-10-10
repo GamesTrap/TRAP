@@ -15,7 +15,7 @@ namespace TRAP::Utils
     /// @tparam Value Value type for the map.
     /// @tparam Size Size for the map.
     template<typename Key, typename Value, usize Size, typename KeyEqual = std::equal_to<Key>>
-    class ConstexprMap
+    class ConstexprMap final
     {
     public:
         using key_type = Key;

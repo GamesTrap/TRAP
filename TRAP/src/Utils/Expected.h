@@ -47,7 +47,7 @@ namespace TRAP
     ///        an expected object that contains an unexpected value. BadExpectedAccess<E>
     ///        stores a copy of the unexpected value.
     template<typename E>
-    class BadExpectedAccess : public BadExpectedAccess<void>
+    class BadExpectedAccess final : public BadExpectedAccess<void>
     {
     public:
         /// @brief Constructs a new BadExpectedAccess<E> object.
@@ -125,7 +125,7 @@ namespace TRAP
     /// @tparam E The type of the unexpected value. The type must not be an array type, a non-object type,
     ///         a specialization of TRAP::Unexpected, or a cv-qualified type.
     template<typename E>
-    class Unexpected
+    class Unexpected final
     {
     public:
         static_assert(INTERNAL::CanBeUnexpected<E>);
@@ -284,7 +284,7 @@ namespace TRAP
     namespace INTERNAL
     {
         template<typename T>
-        struct Guard
+        struct Guard final
         {
             static_assert(std::is_nothrow_move_constructible_v<T>);
 
@@ -367,7 +367,7 @@ namespace TRAP
     ///           a valid template argument for TRAP::Unexpected (in particular, arrays, non-object types, and
     ///           cv-qualified types are not allowed).
     template<typename T, typename E>
-    class Expected
+    class Expected final
     {
         static_assert(!std::is_reference_v<T>, "T must not be a reference!");
         static_assert(!std::is_function_v<T>, "T must not be a function type!");
@@ -1576,7 +1576,7 @@ namespace TRAP
     //Partial specialization for TRAP::Expected<cv void, E>
     template<typename T, typename E>
     requires std::is_void_v<T>
-    class Expected<T, E>
+    class Expected<T, E> final
     {
         static_assert(INTERNAL::CanBeUnexpected<E>);
 

@@ -11,10 +11,6 @@
 #include "TRAP_Assert.h"
 #include "Utils/String/ConvertToType.h"
 
-#ifdef TRAP_PLATFORM_WINDOWS
-#include "Utils/Win.h"
-#endif
-
 namespace TRAP::Utils
 {
 	using UUID = std::array<u8, 16u>;
@@ -41,9 +37,10 @@ namespace TRAP::Utils
 	/// @param seed Seed.
 	/// @param v Value to hash.
 	/// @param rest Optional variadic for more values.
+	/// @threadsafety This function may be called from any thread when seed is either thread local or guarded appropriately by the caller.
 	template<typename T, typename... Rest>
 	requires (Hashable<T> && ... && Hashable<Rest>)
-	constexpr void HashCombine(usize& seed, const T& v, Rest... rest) noexcept
+	constexpr void HashCombine(usize& seed, const T& v, const Rest&... rest) noexcept
 	{
 		seed ^= std::hash<T>()(v) + 0x9E3779B9u + (seed << 6u) + (seed >> 2u);
     	((seed ^= std::hash<Rest>()(rest) + 0x9E3779B9u + (seed << 6u) + (seed >> 2u)), ...);
@@ -56,6 +53,7 @@ namespace TRAP::Utils
 	{
 		using is_transparent = void; //Enable heterogeneous lookup.
 
+		/// @threadsafe
 		[[nodiscard]] usize operator()(const std::string_view sv) const
 		{
 			std::hash<std::string_view> hasher{};
@@ -69,14 +67,15 @@ namespace TRAP::Utils
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// @brief Enum used to describe endianness.
-	enum class Endian
+	enum class Endian : u8
 	{
-		Little = 1,
-		Big = 0
+		Little = 1u,
+		Big = 0u
 	};
 
 	/// @brief Get the endianness of the system.
 	/// @return TRAP::Utils::Endian::Little or TRAP::Utils::Endian::Big.
+	/// @threadsafe
 	[[nodiscard]] consteval Endian GetEndian();
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -85,6 +84,7 @@ namespace TRAP::Utils
 	///        If Extent is std::dynamic_extent, the extent of the returned span S is also std::dynamic_extent;
 	///        otherwise it is sizeof(T) * Extent.
 	/// @return Span as bytes.
+	/// @threadsafety This function may be called from any thread when s is either thread local or guarded appropriately by the caller.
 	template<typename T, usize Extent>
 	[[nodiscard]] constexpr auto AsBytes(std::span<const T, Extent> s) noexcept;
 
@@ -92,6 +92,7 @@ namespace TRAP::Utils
 	///        If Extent is std::dynamic_extent, the extent of the returned span S is also std::dynamic_extent;
 	///        otherwise it is sizeof(T) * Extent.
 	/// @return Span as writable bytes.
+	/// @threadsafety This function may be called from any thread when s is either thread local or guarded appropriately by the caller.
 	template<typename T, usize Extent>
 	requires (!std::is_const_v<T>)
 	[[nodiscard]] constexpr auto AsWritableBytes(std::span<T, Extent> s) noexcept;
@@ -124,7 +125,7 @@ namespace TRAP::Utils
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// @brief Enum used to indicate which window manager is used by Linux based systems.
-	enum class LinuxWindowManager
+	enum class LinuxWindowManager : u8
 	{
 		Unknown,
 
@@ -139,6 +140,7 @@ namespace TRAP::Utils
 	/// TRAP::Application::LinuxWindowManager::X11, TRAP::Application::LinuxWindowManager::Wayland or
 	/// TRAP::Application::LinuxWindowManager::Unknown(If window manager is unknown or system OS
 	/// is not Linux based).
+	/// @threadsafe
 	[[nodiscard]] LinuxWindowManager GetLinuxWindowManager();
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -150,34 +152,42 @@ namespace TRAP::Utils
 	/// @param minor Minor Windows version.
 	/// @param sp Service pack.
 	/// @return Whether Windows version is given version or newer.
-	[[nodiscard]] BOOL IsWindowsVersionOrGreaterWin32(const WORD major, const WORD minor, const WORD sp);
+	/// @threadsafe
+	[[nodiscard]] bool IsWindowsVersionOrGreaterWin32(const u16 major, const u16 minor, const u16 sp);
 	/// @brief Checks whether we are on at least the specified build of Windows 10.
 	/// @param build Build number.
 	/// @return Whether Windows 10 version is given build or newer.
-	[[nodiscard]] BOOL IsWindows10BuildOrGreaterWin32(const WORD build);
+	/// @threadsafe
+	[[nodiscard]] bool IsWindows10BuildOrGreaterWin32(const u16 build);
 	/// @brief Checks whether we are on at least the specified build of Windows 11.
 	/// @param build Build number.
 	/// @return Whether Windows 11 version is given build or newer.
-	[[nodiscard]] BOOL IsWindows11BuildOrGreaterWin32(const WORD build);
+	/// @threadsafe
+	[[nodiscard]] bool IsWindows11BuildOrGreaterWin32(const u16 build);
 	/// @brief Checks whether we are on at least Windows 11 21H2 "Sun Valley" (10.0.22000).
 	/// @return Whether Windows 11 version is given build or newer.
-	[[nodiscard]] BOOL IsWindows11OrGreaterWin32();
+	/// @threadsafe
+	[[nodiscard]] bool IsWindows11OrGreaterWin32();
 
 	/// @brief Checks whether we are on at least Windows 10 Anniversary Update ("Redstone 1" / 1607 / 10.0.14393).
 	/// @return Whether Windows 10 Anniversary version or newer.
-	[[nodiscard]] BOOL IsWindows10Version1607OrGreaterWin32();
+	/// @threadsafe
+	[[nodiscard]] bool IsWindows10Version1607OrGreaterWin32();
 	/// @brief Checks whether we are on at least Windows 10 Creators Update ("Redstone 2" / 1703 / 10.0.15063).
 	/// @return Whether Window 10 Creators version or newer.
-	[[nodiscard]] BOOL IsWindows10Version1703OrGreaterWin32();
+	/// @threadsafe
+	[[nodiscard]] bool IsWindows10Version1703OrGreaterWin32();
 	/// @brief Checks whether we are on at least Windows 10 Threshold 1 (1507 / 10.0.10240).
 	/// @return Whether Windows 10 version is given build or newer.
-	[[nodiscard]] BOOL IsWindows10OrGreaterWin32();
+	/// @threadsafe
+	[[nodiscard]] bool IsWindows10OrGreaterWin32();
 #endif /*TRAP_PLATFORM_WINDOWS*/
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// @brief Checks if another instance of the engine is already running.
-	/// If another instance is already running then this instance will be closed with an error code.
+	/// @note If another instance is already running then this instance will be closed with an error code.
+	/// @threadsafe
 	void CheckSingleProcess();
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -186,6 +196,7 @@ namespace TRAP::Utils
 	/// @brief Register the SIGINT callback function.
 	///        Used in Headless mode to handle CTRL+C.
 	/// @remark This function is only available in headless mode.
+	/// @threadsafe
 	void RegisterSIGINTCallback();
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -193,7 +204,7 @@ namespace TRAP::Utils
 
 	enum class ThreadGroup : i32
 	{
-		MainThread = 0,
+		MainThread = 1,
 		ThreadPool,
 		ResourceLoader,
 		FileSystemWatchers
@@ -203,22 +214,26 @@ namespace TRAP::Utils
 	/// @brief Set the name of the current thread.
 	/// @param name Name to set
 	/// @note Only used when compiling with profiling configuration, no-op otherwise.
+	/// @threadsafe
     void SetThreadName(const std::string_view name);
 	/// @brief Set the name of the current thread.
 	/// @param name Name to set
 	/// @param groupHint Number to group threads together with in the profiler UI.
 	/// @note Only used when compiling with profiling configuration, no-op otherwise.
+	/// @threadsafe
     void SetThreadName(const std::string_view name, const ThreadGroup group);
 #else
 	/// @brief Set the name of the current thread.
 	/// @param name Name to set
 	/// @note Only used when compiling with profiling configuration, no-op otherwise.
+	/// @threadsafe
     constexpr void SetThreadName([[maybe_unused]] const std::string_view name)
     {}
 	/// @brief Set the name of the current thread.
 	/// @param name Name to set
 	/// @param groupHint Number to group threads together with in the profiler UI.
 	/// @note Only used when compiling with profiling configuration, no-op otherwise.
+	/// @threadsafe
     constexpr void SetThreadName([[maybe_unused]] const std::string_view name, [[maybe_unused]] const ThreadGroup group)
 	{}
 #endif
