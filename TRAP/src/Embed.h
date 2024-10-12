@@ -317,7 +317,7 @@ namespace TRAP::Embed
 	};
 
 	/// @brief Default debug image pixel data RGBA 32BPP
-	constexpr std::array<u8, 4096> DefaultImageData =
+	constexpr std::array<u8, 4096u> DefaultImageData =
 	{
 		13, 13, 13, 255,
 		13, 13, 13, 255,
@@ -1346,7 +1346,7 @@ namespace TRAP::Embed
 	};
 
 	/// @brief TRAP Engine Logo Pixel Data RGBA 32BPP
-	constexpr std::array<u8, 4096> TRAPLogo
+	constexpr std::array<u8, 4096u> TRAPLogo
 	{
 		255, 255, 255, 0,
 		255, 255, 255, 0,
@@ -2375,7 +2375,7 @@ namespace TRAP::Embed
 	};
 
 	/// @brief OpenSans TTF Font data.
-	constexpr std::array<u8, 96932> OpenSansTTFData =
+	constexpr std::array<u8, 96932u> OpenSansTTFData =
 	{
 		0x00, 0x01, 0x00, 0x00, 0x00, 0x11, 0x01, 0x00, 0x00, 0x04, 0x00, 0x10,
 		0x47, 0x44, 0x45, 0x46, 0x0B, 0x7C, 0x0C, 0xD4, 0x00, 0x01, 0x77, 0x74,
@@ -10458,7 +10458,7 @@ namespace TRAP::Embed
 	};
 
 	/// @brief OpenSans Bold TTF Font data
-	constexpr std::array<u8, 104120> OpenSansBoldTTFData =
+	constexpr std::array<u8, 104120u> OpenSansBoldTTFData =
 	{
 		0x00, 0x01, 0x00, 0x00, 0x00, 0x11, 0x01, 0x00, 0x00, 0x04, 0x00, 0x10,
 		0x47, 0x44, 0x45, 0x46, 0x0B, 0x7C, 0x0C, 0xD4, 0x00, 0x01, 0x93, 0x88,

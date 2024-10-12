@@ -244,17 +244,16 @@ namespace TRAP
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 		//Multithreading
-		ThreadPool m_threadPool{Utils::GetCPUInfo().LogicalCores > 1 ? (Utils::GetCPUInfo().LogicalCores - 1) :
-	                            std::thread::hardware_concurrency()};
+		ThreadPool m_threadPool{Utils::GetCPUInfo().LogicalCores - 1u};
 		std::thread::id m_mainThreadID = std::this_thread::get_id();
 
 		//Other data
 		Utils::Config m_config{};
 		Utils::Timer m_timer{};
 		f32 m_FrameTime = 0.0f;
-		u32 m_fpsLimit = 0;
-		u32 m_unfocusedFPSLimit = 0;
-		u32 m_tickRate = 64;
+		u32 m_fpsLimit = 0u;
+		u32 m_unfocusedFPSLimit = 0u;
+		u32 m_tickRate = 64u;
 		f32 m_timeScale = 1.0f;
 		std::string m_gameName = "TRAP™";
 		bool m_running = true;

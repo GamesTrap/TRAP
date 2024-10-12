@@ -5275,3 +5275,4 @@ SITREP 10/12/2024|24w41b1
     - Monitor various small changes ~<10 mins
     - Window various small changes ~<10 mins
     - WindowingAPI various small changes ~<60 mins
+    - Application various small changes ~<10 mins

@@ -124,7 +124,7 @@ namespace
 #endif /*TRAP_HEADLESS_MODE*/
 
 		const std::chrono::duration<f32, std::milli> limitMs =
-			std::chrono::duration<f32, std::milli>(1000.0f / NumericCast<f32>(fpsLimit) - limitTimer.ElapsedMilliseconds());
+			std::chrono::duration<f32, std::milli>((1000.0f / NumericCast<f32>(fpsLimit)) - limitTimer.ElapsedMilliseconds());
 		std::this_thread::sleep_for(limitMs); //If this is too inaccurate, resort to using nanosleep
 		limitTimer.Reset();
 	}
@@ -137,7 +137,7 @@ namespace
 	[[maybe_unused]] void UnfocusedLimitFPS(const u32 fpsLimit, TRAP::Utils::Timer& limitTimer)
 	{
 		const std::chrono::duration<f32, std::milli> limitMs =
-			std::chrono::duration<f32, std::milli>(1000.0f / NumericCast<f32>(fpsLimit) - limitTimer.ElapsedMilliseconds());
+			std::chrono::duration<f32, std::milli>((1000.0f / NumericCast<f32>(fpsLimit)) - limitTimer.ElapsedMilliseconds());
 		std::this_thread::sleep_for(limitMs); //If this is too inaccurate, resort to using nanosleep
 		limitTimer.Reset();
 	}
@@ -204,7 +204,7 @@ namespace
 			{
 				//Save the unscaled pixel size
 				const auto videoMode = window->GetMonitor().GetCurrentVideoMode();
-				if(videoMode && videoMode->Width > 0 && videoMode->Height > 0)
+				if(videoMode && videoMode->Width > 0u && videoMode->Height > 0u)
 				{
 					config.Set("Width", videoMode->Width);
 					config.Set("Height", videoMode->Height);
@@ -213,9 +213,9 @@ namespace
 			else
 			{
 				//Save the possibly scaled logical window size
-				if(window->GetWidth() > 0)
+				if(window->GetWidth() > 0u)
 					config.Set("Width", window->GetWidth());
-				if(window->GetHeight() > 0)
+				if(window->GetHeight() > 0u)
 					config.Set("Height", window->GetHeight());
 			}
 			config.Set("RefreshRate", window->GetRefreshRate());
@@ -305,9 +305,9 @@ namespace
 	/// @remark @headless This function is not available in headless mode.
 	[[maybe_unused]] [[nodiscard]] TRAP::WindowProps LoadWindowProps(const TRAP::Utils::Config& config)
 	{
-		static constexpr u32 DefaultWindowWidth = 1280;
-		static constexpr u32 DefaultWindowHeight = 720;
-		static constexpr u32 DefaultWindowRefreshRate = 60;
+		static constexpr u32 DefaultWindowWidth = 1280u;
+		static constexpr u32 DefaultWindowHeight = 720u;
+		static constexpr u32 DefaultWindowRefreshRate = 60u;
 
 		TRAP::WindowProps props{};
 
@@ -324,7 +324,7 @@ namespace
 		else if(monitorIdx < monitors.size())
 			props.Monitor = TRAP::Monitor::GetAllMonitors()[config.Get<u32>("Monitor").value_or(0u)];
 		else //Fallback to primary monitor
-			props.Monitor = TRAP::Monitor::GetAllMonitors()[0];
+			props.Monitor = TRAP::Monitor::GetAllMonitors()[0u];
 
 		props.Advanced = LoadAdvancedWindowProps(config);
 
@@ -656,7 +656,7 @@ void TRAP::Application::Run()
 		if(m_fpsLimit != 0u)
 			LimitFPS(m_fpsLimit, limiterTimer);
 #else
-		if(Window::GetActiveWindows() == 1 && !m_window->IsFocused() &&
+		if(Window::GetActiveWindows() == 1u && !m_window->IsFocused() &&
 		   !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
 		{
 			UnfocusedLimitFPS(m_unfocusedFPSLimit, limiterTimer);
@@ -679,7 +679,7 @@ void TRAP::Application::Run()
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		if(Window::GetActiveWindows() > 1 || !m_window->IsMinimized())
+		if(Window::GetActiveWindows() > 1u || !m_window->IsMinimized())
 #endif /*TRAP_HEADLESS_MODE*/
 		{
 			RunWork(deltaTime, tickTimerSeconds);
@@ -718,7 +718,7 @@ void TRAP::Application::RunWork(const Utils::TimeStep& deltaTime, f32& tickTimer
 	//If we reached at least one fixed time step update
 	if (tickTimerSeconds >= tickRateTimeStep)
 	{
-		static constexpr u32 MAX_TICKS_PER_FRAME = 8;
+		static constexpr u32 MAX_TICKS_PER_FRAME = 8u;
 
 		//Count how many ticks we need to run (this is limited to a maximum of MAX_TICKS_PER_FRAME)
 		const u32 fixedTimeSteps = TRAP::Math::Min(NumericCast<u32>(tickTimerSeconds / tickRateTimeStep), MAX_TICKS_PER_FRAME);
@@ -726,7 +726,7 @@ void TRAP::Application::RunWork(const Utils::TimeStep& deltaTime, f32& tickTimer
 
 		// TP_TRACE("Before: ", tickTimerSeconds, "s of tick time remaining");
 		//Call OnTick() fixedTimeSteps times.
-		for(u32 i = 0; i < fixedTimeSteps; ++i)
+		for(u32 i = 0u; i < fixedTimeSteps; ++i)
 		{
 			for (const auto& layer : m_layerStack)
 				layer->OnTick(tickRateTimeStep);
@@ -774,7 +774,7 @@ void TRAP::Application::OnEvent(Events::Event& event)
 #endif /*TRAP_HEADLESS_MODE*/
 	dispatcher.Dispatch<Events::FileSystemChangeEvent>(std::bind_front(&Application::OnFileSystemChangeEvent, this));
 
-	for (auto& it : std::ranges::reverse_view(m_layerStack))
+	for (const auto& it : std::ranges::reverse_view(m_layerStack))
 	{
 		if (event.Handled)
 			break;
@@ -844,7 +844,7 @@ void TRAP::Application::SetFPSLimit(const u32 targetFPS)
 
 	TRAP_ASSERT(s_Instance, "Application::SetFPSLimit(): Application is nullptr!");
 
-	s_Instance->m_fpsLimit = (targetFPS != 0) ? TRAP::Math::Clamp(targetFPS, MinLimitedFPS, MaxLimitedFPS) : 0u;
+	s_Instance->m_fpsLimit = (targetFPS != 0u) ? TRAP::Math::Clamp(targetFPS, MinLimitedFPS, MaxLimitedFPS) : 0u;
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE &&
@@ -874,7 +874,7 @@ void TRAP::Application::SetUnfocusedFPSLimit(const u32 targetFPS)
 
 	TRAP_ASSERT(s_Instance, "Application::SetFPSLimit(): Application is nullptr!");
 
-	s_Instance->m_unfocusedFPSLimit = (targetFPS != 0) ? TRAP::Math::Clamp(targetFPS, MinUnfocusedFPS, MaxLimitedFPS) : 0u;
+	s_Instance->m_unfocusedFPSLimit = (targetFPS != 0u) ? TRAP::Math::Clamp(targetFPS, MinUnfocusedFPS, MaxLimitedFPS) : 0u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
