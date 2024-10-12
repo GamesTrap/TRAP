@@ -16,7 +16,7 @@
 
 [[nodiscard]] constexpr std::unsigned_integral auto BIT(const std::unsigned_integral auto x) noexcept
 {
-	return decltype(x)(1) << x;
+	return decltype(x)(1u) << x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -26,7 +26,7 @@
     if(path.empty())
         return false;
 
-    std::error_code ec;
+    std::error_code ec{};
     const bool res = std::filesystem::exists(path, ec);
 
     if(ec)
@@ -74,7 +74,6 @@
 
         result += line + '\n';
     }
-    file.close();
 
     return result;
 }
@@ -105,24 +104,24 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::vector<std::string> SplitString(const std::string& string, const std::string& delimiters)
+[[nodiscard]] constexpr std::vector<std::string> SplitString(const std::string_view string, const std::string_view delimiters)
 {
-	usize start = 0;
+	usize start = 0u;
 	usize end = string.find_first_of(delimiters);
 
 	std::vector<std::string> result;
 
 	while (end <= std::string::npos)
 	{
-		std::string token = string.substr(start, end - start);
+		const std::string_view token = string.substr(start, end - start);
 
 		if (!token.empty())
-			result.push_back(token);
+			result.emplace_back(token);
 
 		if (end == std::string::npos)
 			break;
 
-		start = end + 1;
+		start = end + 1u;
 		end = string.find_first_of(delimiters, start);
 	}
 
@@ -131,7 +130,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::vector<std::string> GetLines(const std::string& string)
+[[nodiscard]] constexpr std::vector<std::string> GetLines(const std::string_view string)
 {
 	return SplitString(string, "\n");
 }
@@ -142,7 +141,7 @@
 {
 	const usize pos = name.rfind('.');
 
-	return (pos == std::string::npos) ? "" : name.substr(pos + 1);
+	return (pos == std::string::npos) ? "" : name.substr(pos + 1u);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -190,7 +189,7 @@ namespace std
 {
     template<class Enum>
     requires std::is_enum_v<Enum> || std::is_scoped_enum_v<Enum>
-    constexpr std::underlying_type_t<Enum> to_underlying(Enum e) noexcept
+    [[nodiscard]] constexpr std::underlying_type_t<Enum> to_underlying(Enum e) noexcept
     {
         return static_cast<std::underlying_type_t<Enum>>(e);
     }
@@ -200,21 +199,21 @@ namespace std
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool Contains(std::string_view str, std::string_view substr) noexcept
+[[nodiscard]] constexpr bool Contains(const std::string_view str, const std::string_view substr) noexcept
 {
 	return str.find(substr) != std::string_view::npos;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool Contains(std::string_view str, char c) noexcept
+[[nodiscard]] constexpr bool Contains(const std::string_view str, const char c) noexcept
 {
 	return str.find(c) != std::string_view::npos;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool Contains(std::string_view str, const char* substr)
+[[nodiscard]] constexpr bool Contains(const std::string_view str, const char* const substr)
 {
 	return str.find(substr) != std::string_view::npos;
 }
@@ -225,25 +224,25 @@ template<typename T>
 requires (std::unsigned_integral<T> && !std::same_as<T, u8>)
 [[nodiscard]] constexpr T ConvertByte(const u8* const source)
 {
-    if constexpr (sizeof(T) == 2)
+    if constexpr (sizeof(T) == 2u)
     {
-        return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u);
+        return (static_cast<T>(source[0u])) | (static_cast<T>(source[1u]) << 8u);
     }
-    else if constexpr (sizeof(T) == 4)
+    else if constexpr (sizeof(T) == 4u)
     {
-        return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u) |
-                (static_cast<T>(source[2]) << 16u) | (static_cast<T>(source[3]) << 24u);
+        return (static_cast<T>(source[0u])) | (static_cast<T>(source[1u]) << 8u) |
+                (static_cast<T>(source[2u]) << 16u) | (static_cast<T>(source[3u]) << 24u);
     }
-    else if constexpr (sizeof(T) == 8)
+    else if constexpr (sizeof(T) == 8u)
     {
-        return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u) |
-                (static_cast<T>(source[2]) << 16u) | (static_cast<T>(source[3]) << 24u) |
-                (static_cast<T>(source[4]) << 32u) | (static_cast<T>(source[5]) << 40u) |
-                (static_cast<T>(source[6]) << 48u) | (static_cast<T>(source[7]) << 56u);
+        return (static_cast<T>(source[0u])) | (static_cast<T>(source[1u]) << 8u) |
+                (static_cast<T>(source[2u]) << 16u) | (static_cast<T>(source[3u]) << 24u) |
+                (static_cast<T>(source[4u]) << 32u) | (static_cast<T>(source[5u]) << 40u) |
+                (static_cast<T>(source[6u]) << 48u) | (static_cast<T>(source[7u]) << 56u);
     }
     else
     {
-        static_assert(sizeof(T) == 0, "T has unknown size for unsigned interger type");
+        static_assert(sizeof(T) == 0u, "T has unknown size for unsigned interger type");
         return {};
     }
 }

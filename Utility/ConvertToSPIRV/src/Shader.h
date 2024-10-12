@@ -46,7 +46,7 @@ using Macro = std::pair<std::string, std::string>;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr std::array<std::pair<std::string_view, std::string_view>, 2> DefaultShaderMacros
+constexpr std::array<std::pair<std::string_view, std::string_view>, 2u> DefaultShaderMacros
 {
 	{
 		{"UpdateFreqStatic", "set = 0"},
@@ -86,14 +86,14 @@ enum class ShaderStage : u32
 	Domain = TessellationEvaluation,
 	Pixel = Fragment,
 
-	SHADER_STAGE_COUNT = 7
+	SHADER_STAGE_COUNT = 7u
 };
 
-[[nodiscard]] static constexpr ShaderStage operator|(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(std::to_underlying(a) |
-																		                                                             std::to_underlying(b)); }
-[[nodiscard]] static constexpr ShaderStage operator&(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(std::to_underlying(a) &
-																		                                                             std::to_underlying(b)); }
-static constexpr ShaderStage operator|=(ShaderStage& a, ShaderStage b) noexcept { return a = (a | b); }
+[[nodiscard]] static constexpr ShaderStage operator|(const ShaderStage a, const ShaderStage b) noexcept { return static_cast<ShaderStage>(std::to_underlying(a) |
+																		                                                                  std::to_underlying(b)); }
+[[nodiscard]] static constexpr ShaderStage operator&(const ShaderStage a, const ShaderStage b) noexcept { return static_cast<ShaderStage>(std::to_underlying(a) &
+																		                                                                  std::to_underlying(b)); }
+static constexpr ShaderStage operator|=(ShaderStage& a, const ShaderStage b) noexcept { return a = (a | b); }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -126,18 +126,48 @@ struct ShaderStageData
 inline const std::array<ShaderStageData, std::to_underlying(ShaderStage::SHADER_STAGE_COUNT)> ShaderStages
 {
 	{
-		{ShaderStage::Vertex, "Vertex", {"vertex"}, EShLanguage::EShLangVertex},
-		{ShaderStage::TessellationControl, "TessellationControl", {"tessellationcontrol", "tessellation control"}, EShLanguage::EShLangTessControl},
-		{ShaderStage::TessellationEvaluation, "TessellationEvaluation", {"tessellationevaluation", "tessellation evaluation"}, EShLanguage::EShLangTessEvaluation},
-		{ShaderStage::Geometry, "Geometry", {"geometry"}, EShLanguage::EShLangGeometry},
-		{ShaderStage::Fragment, "Fragment", {"fragment", "pixel"}, EShLanguage::EShLangFragment},
-		{ShaderStage::Compute, "Compute", {"compute"}, EShLanguage::EShLangCompute}
+		{
+			.Stage=ShaderStage::Vertex,
+			.StageString="Vertex",
+			.StageIdentifierStrs={"vertex"},
+			.StageGLSLang=EShLanguage::EShLangVertex
+		},
+		{
+			.Stage=ShaderStage::TessellationControl,
+			.StageString="TessellationControl",
+			.StageIdentifierStrs={"tessellationcontrol", "tessellation control"},
+			.StageGLSLang=EShLanguage::EShLangTessControl
+		},
+		{
+			.Stage=ShaderStage::TessellationEvaluation,
+			.StageString="TessellationEvaluation",
+			.StageIdentifierStrs={"tessellationevaluation", "tessellation evaluation"},
+			.StageGLSLang=EShLanguage::EShLangTessEvaluation
+		},
+		{
+			.Stage=ShaderStage::Geometry,
+			.StageString="Geometry",
+			.StageIdentifierStrs={"geometry"},
+			.StageGLSLang=EShLanguage::EShLangGeometry
+		},
+		{
+			.Stage=ShaderStage::Fragment,
+			.StageString="Fragment",
+			.StageIdentifierStrs={"fragment", "pixel"},
+			.StageGLSLang=EShLanguage::EShLangFragment
+		},
+		{
+			.Stage=ShaderStage::Compute,
+			.StageString="Compute",
+			.StageIdentifierStrs={"compute"},
+			.StageGLSLang=EShLanguage::EShLangCompute
+		}
 	}
 };
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::string_view ShaderStageToString(const ShaderStage stage)
+[[nodiscard]] constexpr std::string_view ShaderStageToString(const ShaderStage stage)
 {
 	const auto it = std::ranges::find_if(ShaderStages, [stage](const auto& element){return stage == element.Stage;});
 	return it->StageString;
@@ -145,7 +175,7 @@ inline std::string_view ShaderStageToString(const ShaderStage stage)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
+[[nodiscard]] constexpr EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 {
 	const auto it = std::ranges::find_if(ShaderStages, [stage](const auto& element){return stage == element.Stage;});
 	return it->StageGLSLang;
@@ -153,7 +183,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline std::optional<ShaderStage> DetectShaderStage(const std::string_view identifyString)
+[[nodiscard]] constexpr std::optional<ShaderStage> DetectShaderStage(const std::string_view identifyString)
 {
     //Detect shader type
     for(const auto& shaderStageData : ShaderStages)
@@ -221,7 +251,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 	const std::vector<std::string> lines = GetLines(shader.Source);
 
 	//Go through every line of the shader source
-	for (usize i = 0; i < lines.size(); ++i)
+	for (usize i = 0u; i < lines.size(); ++i)
 	{
 		//Make it easier to parse
 		const std::string lowerLine = ToLower(lines[i]);
@@ -250,7 +280,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 			}
 
 			shader.Stages |= *currentShaderStage;
-			shader.SubShaderSources.push_back(Shader::SubShader{*currentShaderStage, "", std::vector<u32>{}});
+			shader.SubShaderSources.emplace_back(*currentShaderStage, "", std::vector<u32>{});
 		}
 		else if (Contains(lowerLine, "#version")) //Check for unnecessary "#version" define
 			fmt::println("{}Found Tag: \"{}\" this is unnecessary! Skipping Line: {}", GLSLPrefix, lines[i], i);
@@ -318,7 +348,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline std::vector<u32> ConvertToSPIRV(const ShaderStage stage, glslang::TProgram& program)
+[[nodiscard]] inline std::vector<u32> ConvertToSPIRV(const ShaderStage stage, const glslang::TProgram& program)
 {
 	std::vector<u32> SPIRV{};
 
@@ -332,7 +362,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 #endif /*TRAP_PLATFORM_DEBUG*/
 
     glslang::GlslangToSpv(*program.getIntermediate(ShaderStageToEShLanguage(stage)), SPIRV, &logger, &spvOptions);
-    if (logger.getAllMessages().length() > 0)
+    if (logger.getAllMessages().length() > 0u)
 		fmt::println("{}{} Shader: {}", SPIRVPrefix, ShaderStageToString(stage), logger.getAllMessages());
 
     return SPIRV;
@@ -366,7 +396,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 	{
         glslang::TProgram program;
 
-		const char* srcCStr = subShaderSource.Source.c_str();
+		const char* const srcCStr = subShaderSource.Source.c_str();
 
 		glslang::TShader glslShader = glslang::TShader(ShaderStageToEShLanguage(subShaderSource.Stage));
 		glslShader.setStrings(&srcCStr, 1);
@@ -451,8 +481,8 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 		return false;
 
 	std::string newPath = filePath.string();
-	newPath = newPath.substr(0, newPath.size() - 7);
-	outShader = Shader{newPath, *source, ShaderStage::None};
+	newPath = newPath.substr(0u, newPath.size() - 7u);
+	outShader = Shader{.FilePath=newPath, .Source=*source, .Stages=ShaderStage::None};
 
 	return true;
 }
@@ -489,7 +519,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 	outShader.SubShaderSources.resize(shaderCount);
 
-	for(u8 i = 0; i < shaderCount; ++i)
+	for(u8 i = 0u; i < shaderCount; ++i)
 	{
 		if(shaderData.size() <= (currIndex + sizeof(usize) + sizeof(u8)))
 			break;

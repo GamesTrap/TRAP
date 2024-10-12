@@ -1,4 +1,5 @@
 #ifndef TRAP_VERSION_H
+#define TRAP_VERSION_H
 
 #include <optional>
 #include <string_view>
