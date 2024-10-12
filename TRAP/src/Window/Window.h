@@ -19,7 +19,7 @@ namespace TRAP
 	{
 	public:
 		/// @brief Specifies the display mode of a window.
-		enum class DisplayMode
+		enum class DisplayMode : u8
 		{
 			Windowed,
 			Fullscreen,
@@ -95,7 +95,7 @@ namespace TRAP
 		/// @brief Get the current monitor used by the window
 		/// (only for display modes fullscreen and borderless).
 		/// @return Object of monitor class used by the window.
-		[[nodiscard]] Monitor GetMonitor() const;
+		[[nodiscard]] constexpr Monitor GetMonitor() const;
 		/// @brief Get the current cursor mode of the window.
 		/// @return Cursor mode of the window.
 		[[nodiscard]] CursorMode GetCursorMode() const noexcept;
@@ -268,7 +268,9 @@ namespace TRAP
 		/// @brief Setup how to handle/process/dispatch incoming events from the internal WindowingAPI.
 		void SetupEventCallbacks();
 
-		INTERNAL::WindowingAPI::InternalWindow* m_window; //Handle to the internal window
+		inline static u32 s_activeWindows = 0u;
+
+		INTERNAL::WindowingAPI::InternalWindow* m_window = nullptr; //Handle to the internal window
 
 		/// @brief Used when switching between fullscreen <-> windowed mode.
 		struct WindowedModeParams
@@ -371,6 +373,13 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr TRAP::Monitor TRAP::Window::GetMonitor() const
+{
+	return m_data.Monitor;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr void* TRAP::Window::GetInternalWindow() const noexcept
 {
 	return m_window;
@@ -422,12 +431,13 @@ struct fmt::formatter<TRAP::Window::DisplayMode>
         case TRAP::Window::DisplayMode::Borderless:
             enumStr = "Fullscreen (Borderless)";
             break;
-
-        default:
-            TRAP_ASSERT(false, "fmt::formatter<TRAP::Window::DisplayMod>: Missing enum value!");
-            enumStr = "<MISSING ENUM VALUE>";
-            break;
         }
+
+		if(enumStr.empty())
+		{
+			TRAP_ASSERT(false, "fmt::formatter<TRAP::Window::DisplayMod>: Missing enum value!");
+			enumStr = "<MISSING ENUM VALUE>";
+		}
 
         return fmt::format_to(ctx.out(), "{}", enumStr);
     }

@@ -5,14 +5,6 @@
 
 #ifndef TRAP_HEADLESS_MODE
 
-TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
-	: m_handle(monitor)
-{
-	TRAP_ASSERT(m_handle, "Monitor::Monitor(): monitor is nullptr!");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] std::vector<TRAP::Monitor::VideoMode> TRAP::Monitor::GetVideoModes() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Window) != ProfileSystems::None);
@@ -175,13 +167,13 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Window) != ProfileSystems::None);
 
 	const std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
-	for(usize i = 0; i < monitors.size(); i++)
+	for(usize i = 0u; i < monitors.size(); ++i)
 	{
 		if (monitors[i] == m_handle)
 			return NumericCast<u32>(i);
 	}
 
-	return 0; //Primary Monitor as fallback
+	return 0u; //Primary Monitor as fallback
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -194,7 +186,7 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 		Utils::DisplayError(Utils::ErrorCode::WindowingAPIFailedInitialization);
 
 	std::vector<Monitor> monitors{};
-	for(auto *internalMonitor : INTERNAL::WindowingAPI::GetMonitors())
+	for(auto* const internalMonitor : INTERNAL::WindowingAPI::GetMonitors())
 		monitors.push_back(Monitor(internalMonitor));
 
 	return monitors;

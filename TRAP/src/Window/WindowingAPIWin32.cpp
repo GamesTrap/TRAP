@@ -153,13 +153,13 @@ void TRAP::INTERNAL::WindowingAPI::InputErrorWin32(const Error error, const std:
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	std::wstring buffer(1024, L'\0');
-	std::string message(1024, '\0');
+	std::wstring buffer(1024u, L'\0');
+	std::string message(1024u, '\0');
 
 	FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM |	FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_MAX_WIDTH_MASK,
 		           nullptr, GetLastError() & 0xFFFF, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),	buffer.data(),
 		           static_cast<DWORD>(buffer.size()), nullptr);
-	WideCharToMultiByte(CP_UTF8, 0, buffer.data(), -1, message.data(), NumericCast<i32>(message.size()),
+	WideCharToMultiByte(CP_UTF8, 0u, buffer.data(), -1, message.data(), NumericCast<i32>(message.size()),
 	                    nullptr, nullptr);
 
 	std::erase(message, '\0');
@@ -174,21 +174,20 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	std::array<BYTE, 256> state{};
+	std::array<BYTE, 256u> state{};
 
 	s_Data.KeyNames = {};
 
-	for (u32 key = std::to_underlying(Input::Key::Space); key <= std::to_underlying(Input::Key::Menu); key++)
+	for (u32 key = std::to_underlying(Input::Key::Space); key <= std::to_underlying(Input::Key::Menu); ++key)
 	{
-		u32 virtualKey;
-
 		const i32 scanCode = s_Data.ScanCodes[key];
 		if (scanCode == -1)
 			continue;
 
+		u32 virtualKey = 0u;
 		if (key >= std::to_underlying(Input::Key::KP_0) && key <= std::to_underlying(Input::Key::KP_Add))
 		{
-			static constexpr std::array<u32, 15> virtualKeys =
+			static constexpr std::array<u32, 15u> virtualKeys =
 			{
 				VK_NUMPAD0,  VK_NUMPAD1,  VK_NUMPAD2, VK_NUMPAD3,
 				VK_NUMPAD4,  VK_NUMPAD5,  VK_NUMPAD6, VK_NUMPAD7,
@@ -201,22 +200,22 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 		else
 			virtualKey = MapVirtualKeyW(scanCode, MAPVK_VSC_TO_VK);
 
-		std::wstring chars(16, L'\0');
+		std::wstring chars(16u, L'\0');
 		i32 length = ToUnicode(virtualKey, scanCode, state.data(), chars.data(),
-		                           NumericCast<i32>(chars.size()), 0);
+		                           NumericCast<i32>(chars.size()), 0u);
 
 		if (length == -1)
 		{
 			//This is a dead key, so we need a second simulated key press to make it output its own
 			//character (usually a diacritic)
 			length = ToUnicode(virtualKey, scanCode, state.data(), chars.data(), NumericCast<i32>(chars.size()),
-				               0);
+				               0u);
 		}
 
 		if (length < 1)
 			continue;
 
-		WideCharToMultiByte(CP_UTF8, 0, chars.data(), 1, s_Data.KeyNames[key].data(),
+		WideCharToMultiByte(CP_UTF8, 0u, chars.data(), 1, s_Data.KeyNames[key].data(),
 		                    NumericCast<i32>(s_Data.KeyNames[key].size()), nullptr, nullptr);
 	}
 }
@@ -260,7 +259,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	{
 		//HACK: Disable the cursor once the caption button action has been
 		//      completed or cancelled
-		if (lParam == 0 && windowPtr->FrameAction)
+		if (lParam == 0u && windowPtr->FrameAction)
 		{
 			if (windowPtr->cursorMode == CursorMode::Disabled)
 				DisableCursor(*windowPtr);
@@ -286,7 +285,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		else if (windowPtr->cursorMode == CursorMode::Captured)
 			CaptureCursor(*windowPtr);
 
-		return 0;
+		return 0u;
 	}
 
 	case WM_KILLFOCUS:
@@ -301,12 +300,12 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 		InputWindowFocus(*windowPtr, false);
 
-		return 0;
+		return 0u;
 	}
 
 	case WM_SYSCOMMAND:
 	{
-		switch (wParam & 0xFFF0)
+		switch (wParam & 0xFFF0u)
 		{
 		case SC_SCREENSAVE:
 			[[fallthrough]];
@@ -315,7 +314,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 			if (windowPtr->Monitor)
 				//We are running in full screen mode, so disallow
 				//screen saver and screen blanking
-				return 0;
+				return 0u;
 
 			break;
 		}
@@ -323,7 +322,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		//User trying to access application menu using ALT?
 		case SC_KEYMENU:
 		{
-			return 0;
+			return 0u;
 		}
 
 		default:
@@ -336,7 +335,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	case WM_CLOSE:
 	{
 		InputWindowCloseRequest(*windowPtr);
-		return 0;
+		return 0u;
 	}
 
 	case WM_INPUTLANGCHANGE:
@@ -350,19 +349,19 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		[[fallthrough]];
 	case WM_SYSCHAR:
 	{
-		if (wParam >= 0xD800 && wParam <= 0xDBFF)
+		if (wParam >= 0xD800u && wParam <= 0xDBFFu)
 			windowPtr->HighSurrogate = static_cast<WCHAR>(wParam);
 		else
 		{
-			u32 codePoint = 0;
+			u32 codePoint = 0u;
 
-			if (wParam >= 0xDC00 && wParam <= 0xDFFF)
+			if (wParam >= 0xDC00u && wParam <= 0xDFFFu)
 			{
 				if (windowPtr->HighSurrogate)
 				{
 					codePoint += (windowPtr->HighSurrogate - 0xD800) << 10;
 					codePoint += static_cast<WCHAR>(wParam) - 0xDC00;
-					codePoint += 0x10000;
+					codePoint += 0x10000u;
 				}
 			}
 			else
@@ -372,7 +371,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 			InputChar(*windowPtr, codePoint);
 		}
 
-		return 0;
+		return 0u;
 	}
 
 	case WM_UNICHAR:
@@ -381,11 +380,11 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		{
 			//WM_UNICHAR is not sent by Windows, but is sent by some third-party input method engine
 			//Returning TRUE(1) here announces support for this message
-			return 1;
+			return 1u;
 		}
 
 		InputChar(*windowPtr, static_cast<u32>(wParam));
-		return 0;
+		return 0u;
 	}
 
 	case WM_KEYDOWN:
@@ -434,7 +433,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 				MSG next;
 				const DWORD time = GetMessageTime();
 
-				if(PeekMessageW(&next, nullptr, 0, 0, PM_NOREMOVE))
+				if(PeekMessageW(&next, nullptr, 0u, 0u, PM_NOREMOVE))
 				{
 					if(next.message == WM_KEYDOWN || next.message == WM_SYSKEYDOWN ||
 						next.message == WM_KEYUP || next.message == WM_SYSKEYUP)
@@ -472,7 +471,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 			InputKey(*windowPtr, key, scanCode, Input::KeyState::Pressed);
 			InputKey(*windowPtr, key, scanCode, Input::KeyState::Released);
 		}
-		else if(wParam != 0x07) //Fixes Xbox controller Xbox button presses (Windows 11)
+		else if(wParam != 0x07u) //Fixes Xbox controller Xbox button presses (Windows 11)
 			InputKey(*windowPtr, key, scanCode, state);
 
 		break;
@@ -515,7 +514,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 			state = Input::KeyState::Released;
 
 		u32 i;
-		for (i = 0; i <= std::to_underlying(Input::MouseButton::Eight); i++)
+		for (i = 0u; i <= std::to_underlying(Input::MouseButton::Eight); ++i)
 			if (windowPtr->MouseButtons[i] == Input::KeyState::Pressed)
 				break;
 
@@ -524,7 +523,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 		InputMouseClick(*windowPtr, button, state);
 
-		for (i = 0; i <= std::to_underlying(Input::MouseButton::Eight); i++)
+		for (i = 0u; i <= std::to_underlying(Input::MouseButton::Eight); ++i)
 			if (windowPtr->MouseButtons[i] == Input::KeyState::Pressed)
 				break;
 
@@ -534,7 +533,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		if (uMsg == WM_XBUTTONDOWN || uMsg == WM_XBUTTONUP)
 			return TRUE;
 
-		return 0;
+		return 0u;
 	}
 
 	case WM_NCLBUTTONDOWN:
@@ -543,7 +542,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		{
 			windowPtr->NCMouseButton = uMsg;
 			windowPtr->NCMousePos = lParam;
-			return 0;
+			return 0u;
 		}
 		break;
 	}
@@ -556,7 +555,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 				GET_Y_LPARAM(windowPtr->NCMousePos) != GET_Y_LPARAM(lParam))
 			{
 				DefWindowProcW(hWnd, windowPtr->NCMouseButton, HTCAPTION, windowPtr->NCMousePos);
-				windowPtr->NCMouseButton = 0;
+				windowPtr->NCMouseButton = 0u;
 			}
 		}
 		break;
@@ -573,17 +572,19 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 				GET_Y_LPARAM(windowPtr->NCMousePos) != y)
 			{
 				DefWindowProcW(hWnd, windowPtr->NCMouseButton, HTCAPTION, windowPtr->NCMousePos);
-				windowPtr->NCMouseButton = 0;
+				windowPtr->NCMouseButton = 0u;
 			}
 		}
 
 		if (!windowPtr->CursorTracked)
 		{
-			TRACKMOUSEEVENT tme;
-			ZeroMemory(&tme, sizeof(tme));
-			tme.cbSize = sizeof(tme);
-			tme.dwFlags = TME_LEAVE;
-			tme.hwndTrack = windowPtr->Handle;
+			TRACKMOUSEEVENT tme
+			{
+				.cbSize = sizeof(TRACKMOUSEEVENT),
+				.dwFlags = TME_LEAVE,
+				.hwndTrack = windowPtr->Handle,
+				.dwHoverTime = 0u
+			};
 			TrackMouseEvent(&tme);
 
 			windowPtr->CursorTracked = true;
@@ -608,12 +609,12 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		windowPtr->LastCursorPosX = x;
 		windowPtr->LastCursorPosY = y;
 
-		return 0;
+		return 0u;
 	}
 
 	case WM_INPUT:
 	{
-		UINT size = 0;
+		UINT size = 0u;
 		const HRAWINPUT ri = reinterpret_cast<HRAWINPUT>(lParam);
 		i32 dx, dy;
 
@@ -639,15 +640,15 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		}
 
 		const std::vector<RAWINPUT> data = s_Data.RawInput;
-		if (data[0].data.mouse.usFlags & MOUSE_MOVE_ABSOLUTE)
+		if (data[0u].data.mouse.usFlags & MOUSE_MOVE_ABSOLUTE)
 		{
-			dx = data[0].data.mouse.lLastX - windowPtr->LastCursorPosX;
-			dy = data[0].data.mouse.lLastY - windowPtr->LastCursorPosY;
+			dx = data[0u].data.mouse.lLastX - windowPtr->LastCursorPosX;
+			dy = data[0u].data.mouse.lLastY - windowPtr->LastCursorPosY;
 		}
 		else
 		{
-			dx = data[0].data.mouse.lLastX;
-			dy = data[0].data.mouse.lLastY;
+			dx = data[0u].data.mouse.lLastX;
+			dy = data[0u].data.mouse.lLastY;
 		}
 
 		InputCursorPos(*windowPtr, windowPtr->VirtualCursorPosX + dx, windowPtr->VirtualCursorPosY + dy);
@@ -662,13 +663,13 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	{
 		windowPtr->CursorTracked = false;
 		InputCursorEnter(*windowPtr, false);
-		return 0;
+		return 0u;
 	}
 
 	case WM_MOUSEWHEEL:
 	{
 		InputScroll(*windowPtr, 0.0, static_cast<SHORT>(HIWORD(wParam)) / NumericCast<f64>(WHEEL_DELTA));
-		return 0;
+		return 0u;
 	}
 
 	case WM_MOUSEHWHEEL:
@@ -676,7 +677,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		//This message is only sent on Windows Vista and later
 		//NOTE: The X-axis is inverted for consistency with X11
 		InputScroll(*windowPtr, -(static_cast<SHORT>(HIWORD(wParam)) / NumericCast<f64>(WHEEL_DELTA)), 0.0);
-		return 0;
+		return 0u;
 	}
 
 	case WM_ENTERSIZEMOVE:
@@ -693,7 +694,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		else if (windowPtr->cursorMode == CursorMode::Captured)
 			ReleaseCursor();
 
-		SetTimer(hWnd, 1, 1, nullptr);
+		SetTimer(hWnd, 1u, 1u, nullptr);
 
 		break;
 	}
@@ -712,14 +713,14 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		else if (windowPtr->cursorMode == CursorMode::Captured)
 			CaptureCursor(*windowPtr);
 
-		KillTimer(hWnd, 1);
+		KillTimer(hWnd, 1u);
 
 		break;
 	}
 
 	case WM_TIMER:
 	{
-		if (wParam == 1)
+		if (wParam == 1u)
 			SwitchToFiber(s_Data.MainFiber);
 		break;
 	}
@@ -757,7 +758,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		windowPtr->Width = width;
 		windowPtr->Height = height;
 
-		return 0;
+		return 0u;
 	}
 
 	case WM_MOVE:
@@ -768,7 +769,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		//NOTE: This cannot use LOWORD/HIWORD recommended by MSDN, as
 		//      those macros do not handle negative window positions correctly
 		InputWindowPos(*windowPtr, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		return 0;
+		return 0u;
 	}
 
 	case WM_SIZING:
@@ -827,7 +828,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 			}
 		}
 
-		return 0;
+		return 0u;
 	}
 
 	case WM_NCACTIVATE:
@@ -843,7 +844,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 	case WM_DWMCOMPOSITIONCHANGED:
 	{
-		return 0;
+		return 0u;
 	}
 
 	case WM_THEMECHANGED:
@@ -918,17 +919,17 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		const HDROP drop = reinterpret_cast<HDROP>(wParam);
 		POINT pt;
 
-		const u32 count = DragQueryFileW(drop, 0xFFFFFFFF, nullptr, 0);
+		const u32 count = DragQueryFileW(drop, 0xFFFFFFFFu, nullptr, 0u);
 		std::vector<std::string> paths(count);
 
 		//Move the mouse to the position of the drop
 		DragQueryPoint(drop, &pt);
 		InputCursorPos(*windowPtr, pt.x, pt.y);
 
-		for (u32 i = 0; i < paths.size(); i++)
+		for (u32 i = 0u; i < paths.size(); ++i)
 		{
-			const UINT length = DragQueryFileW(drop, i, nullptr, 0);
-			std::wstring buffer(length + 1, L'\0');
+			const UINT length = DragQueryFileW(drop, i, nullptr, 0u);
+			std::wstring buffer(length + 1u, L'\0');
 
 			DragQueryFileW(drop, i, buffer.data(), NumericCast<UINT>(buffer.size()));
 			paths[i] = TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(buffer);
@@ -937,7 +938,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		InputDrop(*windowPtr, paths);
 
 		DragFinish(drop);
-		return 0;
+		return 0u;
 	}
 
 	default:
@@ -964,8 +965,8 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 std::optional<std::string> TRAP::INTERNAL::WindowingAPI::GetAccurateMonitorName(const std::wstring_view deviceName)
 {
 	LONG rc = 0;
-	UINT32 pathCount = 0;
-	UINT32 modeCount = 0;
+	UINT32 pathCount = 0u;
+	UINT32 modeCount = 0u;
 
 	std::vector<DISPLAYCONFIG_PATH_INFO> paths{};
 	std::vector<DISPLAYCONFIG_MODE_INFO> modes{};
@@ -985,7 +986,7 @@ std::optional<std::string> TRAP::INTERNAL::WindowingAPI::GetAccurateMonitorName(
 
 	if(rc == ERROR_SUCCESS)
 	{
-		for(u32 i = 0; i < pathCount; ++i)
+		for(u32 i = 0u; i < pathCount; ++i)
 		{
 			DISPLAYCONFIG_SOURCE_DEVICE_NAME sourceName;
 			ZeroMemory(&sourceName, sizeof(sourceName));
@@ -1009,7 +1010,7 @@ std::optional<std::string> TRAP::INTERNAL::WindowingAPI::GetAccurateMonitorName(
 			if(rc == ERROR_SUCCESS)
 			{
 				const std::string name = TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(targetName.monitorFriendlyDeviceName);
-				if(name.empty() || (name.size() == 1 && name.back() == '\0'))
+				if(name.empty() || (name.size() == 1u && name.back() == '\0'))
 					return std::nullopt;
 
 				return name;
@@ -1091,11 +1092,13 @@ BOOL CALLBACK TRAP::INTERNAL::WindowingAPI::MonitorCallback(HMONITOR handle, [[m
 		monitor->PublicDisplayName = TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(display->DeviceName);
 	}
 
-	RECT rect{};
-	rect.left = dm.dmPosition.x;
-	rect.top = dm.dmPosition.y;
-	rect.right = dm.dmPosition.x + dm.dmPelsWidth;
-	rect.bottom = dm.dmPosition.y + dm.dmPelsHeight;
+	const RECT rect
+	{
+		.left = dm.dmPosition.x,
+		.top = dm.dmPosition.y,
+		.right = dm.dmPosition.x + static_cast<LONG>(dm.dmPelsWidth),
+		.bottom = dm.dmPosition.y + static_cast<LONG>(dm.dmPelsHeight)
+	};
 
 	EnumDisplayMonitors(nullptr, &rect, MonitorCallback, reinterpret_cast<LPARAM>(monitor.get()));
 	return monitor;
@@ -1114,34 +1117,34 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsWin32()
 	DISPLAY_DEVICEW adapter, display;
 	Scope<InternalMonitor> monitor = nullptr;
 
-	for (DWORD adapterIndex = 0; ; adapterIndex++)
+	for (DWORD adapterIndex = 0u; ; ++adapterIndex)
 	{
-		u32 type = 1;
+		u32 type = 1u;
 
 		ZeroMemory(&adapter, sizeof(adapter));
 		adapter.cb = sizeof(adapter);
 
-		if (!EnumDisplayDevicesW(nullptr, adapterIndex, &adapter, 0))
+		if (!EnumDisplayDevicesW(nullptr, adapterIndex, &adapter, 0u))
 			break;
 
 		if (!(adapter.StateFlags & DISPLAY_DEVICE_ACTIVE))
 			continue;
 
 		if (adapter.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE)
-			type = 0;
+			type = 0u;
 
-		for (displayIndex = 0; ; displayIndex++)
+		for (displayIndex = 0u; ; ++displayIndex)
 		{
 			ZeroMemory(&display, sizeof(display));
 			display.cb = sizeof(display);
 
-			if (!EnumDisplayDevicesW(adapter.DeviceName, displayIndex, &display, 0))
+			if (!EnumDisplayDevicesW(adapter.DeviceName, displayIndex, &display, 0u))
 				break;
 
 			if (!(display.StateFlags & DISPLAY_DEVICE_ACTIVE))
 				continue;
 
-			for (i = 0; i < disconnected.size(); i++)
+			for (i = 0u; i < disconnected.size(); ++i)
 			{
 				if (s_Data.Monitors[i] && s_Data.Monitors[i]->DisplayName.compare(display.DeviceName) == 0)
 				{
@@ -1162,14 +1165,14 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsWin32()
 
 			InputMonitor(std::move(monitor), true, type);
 
-			type = 1;
+			type = 1u;
 		}
 
 		//HACK: If an active adapter does not have any display devices
 		//      (as sometimes happens), add it directly as a monitor
-		if (displayIndex == 0)
+		if (displayIndex == 0u)
 		{
-			for (i = 0; i < disconnected.size(); i++)
+			for (i = 0u; i < disconnected.size(); ++i)
 			{
 				if (s_Data.Monitors[i] && s_Data.Monitors[i]->AdapterName.compare(adapter.DeviceName) == 0)
 				{
@@ -1189,10 +1192,10 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsWin32()
 		}
 	}
 
-	for (i = 0; i < disconnected.size(); i++)
+	for (i = 0u; i < disconnected.size(); ++i)
 	{
 		if (disconnected[i])
-			InputMonitorDisconnect(i, 0);
+			InputMonitorDisconnect(i, 0u);
 	}
 
 	//Update HMonitor Handles
@@ -1207,11 +1210,13 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsWin32()
 		dm.dmSize = sizeof(dm);
 		EnumDisplaySettingsW(mon->AdapterName.data(), ENUM_CURRENT_SETTINGS, &dm);
 
-		RECT rect{};
-		rect.left = dm.dmPosition.x;
-		rect.top = dm.dmPosition.y;
-		rect.right = dm.dmPosition.x + dm.dmPelsWidth;
-		rect.bottom = dm.dmPosition.y + dm.dmPelsHeight;
+		const RECT rect
+		{
+			.left = dm.dmPosition.x,
+			.top = dm.dmPosition.y,
+			.right = dm.dmPosition.x + static_cast<LONG>(dm.dmPelsWidth),
+			.bottom = dm.dmPosition.y + static_cast<LONG>(dm.dmPelsHeight)
+		};
 
 		EnumDisplayMonitors(nullptr, &rect, MonitorCallback, reinterpret_cast<LPARAM>(mon.get()));
 	}
@@ -1233,12 +1238,12 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(InternalWindow& window)
 
 		//HACK: When mouse trails are enabled the cursor becomes invisible when
 		//      the OpenGL ICD switches to page flipping
-		SystemParametersInfoW(SPI_GETMOUSETRAILS, 0, &s_Data.MouseTrailSize, 0);
-		SystemParametersInfoW(SPI_SETMOUSETRAILS, 0, nullptr, 0);
+		SystemParametersInfoW(SPI_GETMOUSETRAILS, 0u, &s_Data.MouseTrailSize, 0u);
+		SystemParametersInfoW(SPI_SETMOUSETRAILS, 0u, nullptr, 0u);
 	}
 
 	if (!window.Monitor->Window)
-		s_Data.AcquiredMonitorCount++;
+		++s_Data.AcquiredMonitorCount;
 
 	SetVideoModeWin32(*window.Monitor, window.videoMode);
 	window.Monitor->Window = &window;
@@ -1260,12 +1265,12 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow& wind
 
 		//HACK: When mouse trails are enabled the cursor becomes invisible when
 		//      the OpenGL ICD switches to page flipping
-		SystemParametersInfoW(SPI_GETMOUSETRAILS, 0, &s_Data.MouseTrailSize, 0);
-		SystemParametersInfoW(SPI_SETMOUSETRAILS, 0, nullptr, 0);
+		SystemParametersInfoW(SPI_GETMOUSETRAILS, 0u, &s_Data.MouseTrailSize, 0u);
+		SystemParametersInfoW(SPI_SETMOUSETRAILS, 0u, nullptr, 0u);
 	}
 
 	if (!window.Monitor->Window)
-		s_Data.AcquiredMonitorCount++;
+		++s_Data.AcquiredMonitorCount;
 
 	window.Monitor->Window = &window;
 }
@@ -1286,14 +1291,14 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseMonitor(const InternalWindow& window)
 		SetThreadExecutionState(ES_CONTINUOUS);
 
 		//HACK: Restore mouse trail length saved in acquireMonitor
-		SystemParametersInfoW(SPI_SETMOUSETRAILS, s_Data.MouseTrailSize, nullptr, 0);
+		SystemParametersInfoW(SPI_SETMOUSETRAILS, s_Data.MouseTrailSize, nullptr, 0u);
 	}
 
 	window.Monitor->Window = nullptr;
 
 	if (window.Monitor->ModeChanged)
 	{
-		ChangeDisplaySettingsExW(window.Monitor->AdapterName.data(), nullptr, nullptr, CDS_FULLSCREEN, nullptr);
+		ChangeDisplaySettingsExW(window.Monitor->AdapterName.c_str(), nullptr, nullptr, CDS_FULLSCREEN, nullptr);
 		window.Monitor->ModeChanged = false;
 	}
 }
@@ -1333,10 +1338,10 @@ void TRAP::INTERNAL::WindowingAPI::SetVideoModeWin32(InternalMonitor& monitor, c
 	dm.dmBitsPerPel = best->RedBits + best->GreenBits + best->BlueBits;
 	dm.dmDisplayFrequency = static_cast<DWORD>(best->RefreshRate);
 
-	if (dm.dmBitsPerPel < 15 || dm.dmBitsPerPel >= 24)
-		dm.dmBitsPerPel = 32;
+	if (dm.dmBitsPerPel < 15u || dm.dmBitsPerPel >= 24u)
+		dm.dmBitsPerPel = 32u;
 
-	const LONG result = ChangeDisplaySettingsExW(monitor.AdapterName.data(), &dm, nullptr, CDS_FULLSCREEN, nullptr);
+	const LONG result = ChangeDisplaySettingsExW(monitor.AdapterName.c_str(), &dm, nullptr, CDS_FULLSCREEN, nullptr);
 	if (result == DISP_CHANGE_SUCCESSFUL)
 		monitor.ModeChanged = true;
 	else
@@ -1369,7 +1374,7 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScaleWin32(HMONITOR handle, 
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	UINT xDPI = 0, yDPI = 0;
+	UINT xDPI = 0u, yDPI = 0u;
 
 	if(s_Data.SHCore.GetDPIForMonitor(handle, Monitor_DPI_Type::MDT_Effective_DPI, &xDPI, &yDPI) != S_OK)
 	{
@@ -1386,23 +1391,23 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScaleWin32(HMONITOR handle, 
 //Update window theme (light/dark)
 void TRAP::INTERNAL::WindowingAPI::UpdateTheme(HWND hWnd)
 {
-	static constexpr DWORD DWMWA_USE_IMMERSIVE_DARK_MODE_UNOFFICIAL = 19;
-	static constexpr DWORD DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+	static constexpr DWORD DWMWA_USE_IMMERSIVE_DARK_MODE_UNOFFICIAL = 19u;
+	static constexpr DWORD DWMWA_USE_IMMERSIVE_DARK_MODE = 20u;
 
 	if (!s_Data.UXTheme.DarkModeAvailable || !s_Data.UXTheme.ShouldAppsUseDarkMode)
 		return;
 
 	HIGHCONTRASTW hc{};
 	hc.cbSize = sizeof(hc);
-	SystemParametersInfoW(SPI_GETHIGHCONTRAST, sizeof(hc), &hc, 0);
+	SystemParametersInfoW(SPI_GETHIGHCONTRAST, sizeof(hc), &hc, 0u);
 
 	if (hc.dwFlags & HCF_HIGHCONTRASTON) //High contrast is on so do not set light/dark mode
 		return;
 
-	BOOL dark = 0; //Default to light mode
+	BOOL dark = FALSE; //Default to light mode
 
 	if (s_Data.UXTheme.ShouldAppsUseDarkMode()) //Use dark mode
-		dark = 1;
+		dark = TRUE;
 
 	//Set dark/light mode (official way, Windows 10 build 18362 and later)
 	if(S_OK != s_Data.DWMAPI_.SetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark)))
@@ -1661,7 +1666,7 @@ void CALLBACK TRAP::INTERNAL::WindowingAPI::MessageFiberProc([[maybe_unused]] LP
 	{
 		MSG msg;
 
-		while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE))
+		while (PeekMessageW(&msg, nullptr, 0u, 0u, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT)
 			{
@@ -1777,16 +1782,16 @@ void CALLBACK TRAP::INTERNAL::WindowingAPI::MessageFiberProc([[maybe_unused]] LP
 	bi.bV5Planes = 1;
 	bi.bV5BitCount = 32;
 	bi.bV5Compression = BI_BITFIELDS;
-	bi.bV5RedMask = 0x00ff0000;
-	bi.bV5GreenMask = 0x0000ff00;
-	bi.bV5BlueMask = 0x000000ff;
-	bi.bV5AlphaMask = 0xff000000;
+	bi.bV5RedMask = 0x00ff0000u;
+	bi.bV5GreenMask = 0x0000ff00u;
+	bi.bV5BlueMask = 0x000000ffu;
+	bi.bV5AlphaMask = 0xff000000u;
 
 	u8* target = nullptr;
 
 	const HDC dc = GetDC(nullptr);
 	const HBITMAP color = CreateDIBSection(dc, reinterpret_cast<BITMAPINFO*>(&bi), DIB_RGB_COLORS,
-		                                   reinterpret_cast<void**>(&target), nullptr, static_cast<DWORD>(0));
+		                                   reinterpret_cast<void**>(&target), nullptr, static_cast<DWORD>(0u));
 	ReleaseDC(nullptr, dc);
 
 	if (!color)
@@ -1795,7 +1800,7 @@ void CALLBACK TRAP::INTERNAL::WindowingAPI::MessageFiberProc([[maybe_unused]] LP
 		return nullptr;
 	}
 
-	const HBITMAP mask = CreateBitmap(image.GetWidth(), image.GetHeight(), 1, 1, nullptr);
+	const HBITMAP mask = CreateBitmap(image.GetWidth(), image.GetHeight(), 1u, 1u, nullptr);
 	if (!mask)
 	{
 		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to create mask bitmap");
@@ -1804,14 +1809,14 @@ void CALLBACK TRAP::INTERNAL::WindowingAPI::MessageFiberProc([[maybe_unused]] LP
 	}
 
 	const u8* source = image.GetPixelData().data();
-	for (u32 i = 0; i < image.GetWidth() * image.GetHeight(); i++)
+	for (u32 i = 0u; i < image.GetWidth() * image.GetHeight(); ++i)
 	{
-		target[0] = source[2];
-		target[1] = source[1];
-		target[2] = source[0];
-		target[3] = source[3];
-		target += 4;
-		source += 4;
+		target[0u] = source[2u];
+		target[1u] = source[1u];
+		target[2u] = source[0u];
+		target[3u] = source[3u];
+		target += 4u;
+		source += 4u;
 	}
 
 	ICONINFO ii;
@@ -1899,7 +1904,7 @@ void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion(const InternalWindow& wi
 
 	const RAWINPUTDEVICE rid = { 0x01, 0x02, 0, window.Handle };
 
-	if (!RegisterRawInputDevices(&rid, 1, sizeof(rid)))
+	if (!RegisterRawInputDevices(&rid, 1u, sizeof(rid)))
 		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to register raw input device");
 }
 
@@ -1912,7 +1917,7 @@ void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion([[maybe_unused]] const 
 
 	const RAWINPUTDEVICE rid = { 0x01, 0x02, RIDEV_REMOVE, nullptr };
 
-	if (!RegisterRawInputDevices(&rid, 1, sizeof(rid)))
+	if (!RegisterRawInputDevices(&rid, 1u, sizeof(rid)))
 		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to remove raw input device");
 }
 
@@ -1981,23 +1986,23 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowStyles(const InternalWindow& wind
 	f64 refreshRate = NumericCast<f64>(dm.dmDisplayFrequency);
 	switch(dm.dmDisplayFrequency)
 	{
-	case 23:
+	case 23u:
 		[[fallthrough]];
-	case 29:
+	case 29u:
 		[[fallthrough]];
-	case 47:
+	case 47u:
 		[[fallthrough]];
-	case 59:
+	case 59u:
 		[[fallthrough]];
-	case 71:
+	case 71u:
 		[[fallthrough]];
-	case 89:
+	case 89u:
 		[[fallthrough]];
-	case 95:
+	case 95u:
 		[[fallthrough]];
-	case 119:
+	case 119u:
 		[[fallthrough]];
-	case 143:
+	case 143u:
 		refreshRate = (refreshRate + 1.0) / 1.001;
 		break;
 
@@ -2185,7 +2190,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	u32 modeIndex = 0;
+	u32 modeIndex = 0u;
 	std::vector<InternalVideoMode> result{};
 	//HACK: Always return the current video mode
 	const auto currMode = PlatformGetVideoMode(monitor);
@@ -2201,10 +2206,10 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 		if (!EnumDisplaySettingsW(monitor.AdapterName.data(), modeIndex, &dm))
 			break;
 
-		modeIndex++;
+		++modeIndex;
 
 		//Skip modes with less than 15 BPP
-		if (dm.dmBitsPerPel < 15)
+		if (dm.dmBitsPerPel < 15u)
 			continue;
 
 		//dm.dmDisplayFrequency is an integer which is rounded down, so it's
@@ -2213,23 +2218,23 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 		f64 refreshRate = NumericCast<f64>(dm.dmDisplayFrequency);
 		switch(dm.dmDisplayFrequency)
 		{
-		case 23:
+		case 23u:
 			[[fallthrough]];
-		case 29:
+		case 29u:
 			[[fallthrough]];
-		case 47:
+		case 47u:
 			[[fallthrough]];
-		case 59:
+		case 59u:
 			[[fallthrough]];
-		case 71:
+		case 71u:
 			[[fallthrough]];
-		case 89:
+		case 89u:
 			[[fallthrough]];
-		case 95:
+		case 95u:
 			[[fallthrough]];
-		case 119:
+		case 119u:
 			[[fallthrough]];
-		case 143:
+		case 143u:
 			refreshRate = (refreshRate + 1.0) / 1.001;
 			break;
 
@@ -2279,9 +2284,9 @@ void TRAP::INTERNAL::WindowingAPI::SetAccessibilityShortcutKeys(const bool allow
 		TOGGLEKEYS tk = s_Data.UserToggleKeys;
 		FILTERKEYS fk = s_Data.UserFilterKeys;
 
-		SystemParametersInfo(SPI_SETSTICKYKEYS, sizeof(STICKYKEYS), &sk, 0);
-		SystemParametersInfo(SPI_SETTOGGLEKEYS, sizeof(TOGGLEKEYS), &tk, 0);
-		SystemParametersInfo(SPI_SETFILTERKEYS, sizeof(FILTERKEYS), &fk, 0);
+		SystemParametersInfoW(SPI_SETSTICKYKEYS, sizeof(STICKYKEYS), &sk, 0u);
+		SystemParametersInfoW(SPI_SETTOGGLEKEYS, sizeof(TOGGLEKEYS), &tk, 0u);
+		SystemParametersInfoW(SPI_SETFILTERKEYS, sizeof(FILTERKEYS), &fk, 0u);
 	}
 	else
 	{
@@ -2294,7 +2299,7 @@ void TRAP::INTERNAL::WindowingAPI::SetAccessibilityShortcutKeys(const bool allow
 			skOff.dwFlags &= ~SKF_HOTKEYACTIVE;
 			skOff.dwFlags &= ~SKF_CONFIRMHOTKEY;
 
-			SystemParametersInfo(SPI_SETSTICKYKEYS, sizeof(STICKYKEYS), &skOff, 0);
+			SystemParametersInfoW(SPI_SETSTICKYKEYS, sizeof(STICKYKEYS), &skOff, 0u);
 		}
 
 		TOGGLEKEYS tkOff = s_Data.UserToggleKeys;
@@ -2303,7 +2308,7 @@ void TRAP::INTERNAL::WindowingAPI::SetAccessibilityShortcutKeys(const bool allow
 			tkOff.dwFlags &= ~TKF_HOTKEYACTIVE;
 			tkOff.dwFlags &= ~TKF_CONFIRMHOTKEY;
 
-			SystemParametersInfo(SPI_SETTOGGLEKEYS, sizeof(TOGGLEKEYS), &tkOff, 0);
+			SystemParametersInfoW(SPI_SETTOGGLEKEYS, sizeof(TOGGLEKEYS), &tkOff, 0u);
 		}
 
 		FILTERKEYS fkOff = s_Data.UserFilterKeys;
@@ -2312,7 +2317,7 @@ void TRAP::INTERNAL::WindowingAPI::SetAccessibilityShortcutKeys(const bool allow
 			fkOff.dwFlags &= ~FKF_HOTKEYACTIVE;
 			fkOff.dwFlags &= ~FKF_CONFIRMHOTKEY;
 
-			SystemParametersInfo(SPI_SETFILTERKEYS, sizeof(FILTERKEYS), &fkOff, 0);
+			SystemParametersInfoW(SPI_SETFILTERKEYS, sizeof(FILTERKEYS), &fkOff, 0u);
 		}
 	}
 }
@@ -2351,9 +2356,9 @@ void TRAP::INTERNAL::WindowingAPI::SetAccessibilityShortcutKeys(const bool allow
 	}
 
 	//Store accessibility key states
-	SystemParametersInfo(SPI_GETSTICKYKEYS, sizeof(STICKYKEYS), &s_Data.UserStickyKeys, 0);
-	SystemParametersInfo(SPI_GETTOGGLEKEYS, sizeof(TOGGLEKEYS), &s_Data.UserToggleKeys, 0);
-	SystemParametersInfo(SPI_GETFILTERKEYS, sizeof(FILTERKEYS), &s_Data.UserFilterKeys, 0);
+	SystemParametersInfoW(SPI_GETSTICKYKEYS, sizeof(STICKYKEYS), &s_Data.UserStickyKeys, 0u);
+	SystemParametersInfoW(SPI_GETTOGGLEKEYS, sizeof(TOGGLEKEYS), &s_Data.UserToggleKeys, 0u);
+	SystemParametersInfoW(SPI_GETFILTERKEYS, sizeof(FILTERKEYS), &s_Data.UserFilterKeys, 0u);
 
 	SetAccessibilityShortcutKeys(false);
 
@@ -2843,7 +2848,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthrough(InternalWin
 
 	COLORREF key = 0;
 	BYTE alpha = 0;
-	DWORD flags = 0;
+	DWORD flags = 0u;
 	DWORD exStyle = static_cast<DWORD>(GetWindowLongPtrW(window.Handle, GWL_EXSTYLE));
 
 	if (exStyle & WS_EX_LAYERED)
@@ -2973,7 +2978,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 
 		if (windowPtr)
 		{
-			static constexpr std::array<std::array<i32, 2>, 4> keys =
+			static constexpr std::array<std::array<i32, 2u>, 4u> keys =
 			{
 				{
 					{ VK_LSHIFT, std::to_underlying(Input::Key::Left_Shift)},
@@ -3031,7 +3036,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEvent()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	PostMessageW(s_Data.HelperWindowHandle, WM_NULL, 0, 0);
+	PostMessageW(s_Data.HelperWindowHandle, WM_NULL, 0u, 0u);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3152,7 +3157,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string&
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	const i32 characterCount = MultiByteToWideChar(CP_UTF8, 0, string.data(), -1, nullptr, 0);
+	const i32 characterCount = MultiByteToWideChar(CP_UTF8, 0u, string.data(), -1, nullptr, 0);
 	if (!characterCount)
 		return;
 
@@ -3171,7 +3176,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string&
 		return;
 	}
 
-	MultiByteToWideChar(CP_UTF8, 0, string.data(), -1, buffer, characterCount);
+	MultiByteToWideChar(CP_UTF8, 0u, string.data(), -1, buffer, characterCount);
 	GlobalUnlock(object);
 
 	if (!OpenClipboard(s_Data.HelperWindowHandle))
@@ -3224,7 +3229,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensions(std::array<std::string, 2>& extensions)
+void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensions(std::array<std::string, 2u>& extensions)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
 	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -3232,8 +3237,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensions(std::ar
 	if (!s_Data.VK.KHR_Surface || !s_Data.VK.KHR_Win32_Surface)
 		return;
 
-	std::get<0>(extensions) = "VK_KHR_surface";
-	std::get<1>(extensions) = "VK_KHR_win32_surface";
+	std::get<0u>(extensions) = "VK_KHR_surface";
+	std::get<1u>(extensions) = "VK_KHR_win32_surface";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3262,7 +3267,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensions(std::ar
 	{
 		VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
 		nullptr,
-		0,
+		0u,
 		s_Data.Instance,
 		window.Handle
 	};
@@ -3416,129 +3421,129 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesWin32()
 	std::ranges::fill(s_Data.KeyCodes, Input::Key::Unknown);
 	std::ranges::fill(s_Data.ScanCodes, std::numeric_limits<i16>::max());
 
-	std::get<0x00B>(s_Data.KeyCodes) = Input::Key::Zero;
-	std::get<0x002>(s_Data.KeyCodes) = Input::Key::One;
-	std::get<0x003>(s_Data.KeyCodes) = Input::Key::Two;
-	std::get<0x004>(s_Data.KeyCodes) = Input::Key::Three;
-	std::get<0x005>(s_Data.KeyCodes) = Input::Key::Four;
-	std::get<0x006>(s_Data.KeyCodes) = Input::Key::Five;
-	std::get<0x007>(s_Data.KeyCodes) = Input::Key::Six;
-	std::get<0x008>(s_Data.KeyCodes) = Input::Key::Seven;
-	std::get<0x009>(s_Data.KeyCodes) = Input::Key::Eight;
-	std::get<0x00A>(s_Data.KeyCodes) = Input::Key::Nine;
-	std::get<0x01E>(s_Data.KeyCodes) = Input::Key::A;
-	std::get<0x030>(s_Data.KeyCodes) = Input::Key::B;
-	std::get<0x02E>(s_Data.KeyCodes) = Input::Key::C;
-	std::get<0x020>(s_Data.KeyCodes) = Input::Key::D;
-	std::get<0x012>(s_Data.KeyCodes) = Input::Key::E;
-	std::get<0x021>(s_Data.KeyCodes) = Input::Key::F;
-	std::get<0x022>(s_Data.KeyCodes) = Input::Key::G;
-	std::get<0x023>(s_Data.KeyCodes) = Input::Key::H;
-	std::get<0x017>(s_Data.KeyCodes) = Input::Key::I;
-	std::get<0x024>(s_Data.KeyCodes) = Input::Key::J;
-	std::get<0x025>(s_Data.KeyCodes) = Input::Key::K;
-	std::get<0x026>(s_Data.KeyCodes) = Input::Key::L;
-	std::get<0x032>(s_Data.KeyCodes) = Input::Key::M;
-	std::get<0x031>(s_Data.KeyCodes) = Input::Key::N;
-	std::get<0x018>(s_Data.KeyCodes) = Input::Key::O;
-	std::get<0x019>(s_Data.KeyCodes) = Input::Key::P;
-	std::get<0x010>(s_Data.KeyCodes) = Input::Key::Q;
-	std::get<0x013>(s_Data.KeyCodes) = Input::Key::R;
-	std::get<0x01F>(s_Data.KeyCodes) = Input::Key::S;
-	std::get<0x014>(s_Data.KeyCodes) = Input::Key::T;
-	std::get<0x016>(s_Data.KeyCodes) = Input::Key::U;
-	std::get<0x02F>(s_Data.KeyCodes) = Input::Key::V;
-	std::get<0x011>(s_Data.KeyCodes) = Input::Key::W;
-	std::get<0x02D>(s_Data.KeyCodes) = Input::Key::X;
-	std::get<0x015>(s_Data.KeyCodes) = Input::Key::Y;
-	std::get<0x02C>(s_Data.KeyCodes) = Input::Key::Z;
+	std::get<0x00Bu>(s_Data.KeyCodes) = Input::Key::Zero;
+	std::get<0x002u>(s_Data.KeyCodes) = Input::Key::One;
+	std::get<0x003u>(s_Data.KeyCodes) = Input::Key::Two;
+	std::get<0x004u>(s_Data.KeyCodes) = Input::Key::Three;
+	std::get<0x005u>(s_Data.KeyCodes) = Input::Key::Four;
+	std::get<0x006u>(s_Data.KeyCodes) = Input::Key::Five;
+	std::get<0x007u>(s_Data.KeyCodes) = Input::Key::Six;
+	std::get<0x008u>(s_Data.KeyCodes) = Input::Key::Seven;
+	std::get<0x009u>(s_Data.KeyCodes) = Input::Key::Eight;
+	std::get<0x00Au>(s_Data.KeyCodes) = Input::Key::Nine;
+	std::get<0x01Eu>(s_Data.KeyCodes) = Input::Key::A;
+	std::get<0x030u>(s_Data.KeyCodes) = Input::Key::B;
+	std::get<0x02Eu>(s_Data.KeyCodes) = Input::Key::C;
+	std::get<0x020u>(s_Data.KeyCodes) = Input::Key::D;
+	std::get<0x012u>(s_Data.KeyCodes) = Input::Key::E;
+	std::get<0x021u>(s_Data.KeyCodes) = Input::Key::F;
+	std::get<0x022u>(s_Data.KeyCodes) = Input::Key::G;
+	std::get<0x023u>(s_Data.KeyCodes) = Input::Key::H;
+	std::get<0x017u>(s_Data.KeyCodes) = Input::Key::I;
+	std::get<0x024u>(s_Data.KeyCodes) = Input::Key::J;
+	std::get<0x025u>(s_Data.KeyCodes) = Input::Key::K;
+	std::get<0x026u>(s_Data.KeyCodes) = Input::Key::L;
+	std::get<0x032u>(s_Data.KeyCodes) = Input::Key::M;
+	std::get<0x031u>(s_Data.KeyCodes) = Input::Key::N;
+	std::get<0x018u>(s_Data.KeyCodes) = Input::Key::O;
+	std::get<0x019u>(s_Data.KeyCodes) = Input::Key::P;
+	std::get<0x010u>(s_Data.KeyCodes) = Input::Key::Q;
+	std::get<0x013u>(s_Data.KeyCodes) = Input::Key::R;
+	std::get<0x01Fu>(s_Data.KeyCodes) = Input::Key::S;
+	std::get<0x014u>(s_Data.KeyCodes) = Input::Key::T;
+	std::get<0x016u>(s_Data.KeyCodes) = Input::Key::U;
+	std::get<0x02Fu>(s_Data.KeyCodes) = Input::Key::V;
+	std::get<0x011u>(s_Data.KeyCodes) = Input::Key::W;
+	std::get<0x02Du>(s_Data.KeyCodes) = Input::Key::X;
+	std::get<0x015u>(s_Data.KeyCodes) = Input::Key::Y;
+	std::get<0x02Cu>(s_Data.KeyCodes) = Input::Key::Z;
 
-	std::get<0x028>(s_Data.KeyCodes) = Input::Key::Apostrophe;
-	std::get<0x02B>(s_Data.KeyCodes) = Input::Key::Backslash;
-	std::get<0x033>(s_Data.KeyCodes) = Input::Key::Comma;
-	std::get<0x00D>(s_Data.KeyCodes) = Input::Key::Equal;
-	std::get<0x029>(s_Data.KeyCodes) = Input::Key::Grave_Accent;
-	std::get<0x01A>(s_Data.KeyCodes) = Input::Key::Left_Bracket;
-	std::get<0x00C>(s_Data.KeyCodes) = Input::Key::Minus;
-	std::get<0x034>(s_Data.KeyCodes) = Input::Key::Period;
-	std::get<0x01B>(s_Data.KeyCodes) = Input::Key::Right_Bracket;
-	std::get<0x027>(s_Data.KeyCodes) = Input::Key::Semicolon;
-	std::get<0x035>(s_Data.KeyCodes) = Input::Key::Slash;
-	std::get<0x056>(s_Data.KeyCodes) = Input::Key::World_2;
+	std::get<0x028u>(s_Data.KeyCodes) = Input::Key::Apostrophe;
+	std::get<0x02Bu>(s_Data.KeyCodes) = Input::Key::Backslash;
+	std::get<0x033u>(s_Data.KeyCodes) = Input::Key::Comma;
+	std::get<0x00Du>(s_Data.KeyCodes) = Input::Key::Equal;
+	std::get<0x029u>(s_Data.KeyCodes) = Input::Key::Grave_Accent;
+	std::get<0x01Au>(s_Data.KeyCodes) = Input::Key::Left_Bracket;
+	std::get<0x00Cu>(s_Data.KeyCodes) = Input::Key::Minus;
+	std::get<0x034u>(s_Data.KeyCodes) = Input::Key::Period;
+	std::get<0x01Bu>(s_Data.KeyCodes) = Input::Key::Right_Bracket;
+	std::get<0x027u>(s_Data.KeyCodes) = Input::Key::Semicolon;
+	std::get<0x035u>(s_Data.KeyCodes) = Input::Key::Slash;
+	std::get<0x056u>(s_Data.KeyCodes) = Input::Key::World_2;
 
-	std::get<0x00E>(s_Data.KeyCodes) = Input::Key::Backspace;
-	std::get<0x153>(s_Data.KeyCodes) = Input::Key::Delete;
-	std::get<0x14F>(s_Data.KeyCodes) = Input::Key::End;
-	std::get<0x01C>(s_Data.KeyCodes) = Input::Key::Enter;
-	std::get<0x001>(s_Data.KeyCodes) = Input::Key::Escape;
-	std::get<0x147>(s_Data.KeyCodes) = Input::Key::Home;
-	std::get<0x152>(s_Data.KeyCodes) = Input::Key::Insert;
-	std::get<0x15D>(s_Data.KeyCodes) = Input::Key::Menu;
-	std::get<0x151>(s_Data.KeyCodes) = Input::Key::Page_Down;
-	std::get<0x149>(s_Data.KeyCodes) = Input::Key::Page_Up;
-	std::get<0x045>(s_Data.KeyCodes) = Input::Key::Pause;
-	std::get<0x039>(s_Data.KeyCodes) = Input::Key::Space;
-	std::get<0x00F>(s_Data.KeyCodes) = Input::Key::Tab;
-	std::get<0x03A>(s_Data.KeyCodes) = Input::Key::Caps_Lock;
-	std::get<0x145>(s_Data.KeyCodes) = Input::Key::Num_Lock;
-	std::get<0x046>(s_Data.KeyCodes) = Input::Key::Scroll_Lock;
-	std::get<0x03B>(s_Data.KeyCodes) = Input::Key::F1;
-	std::get<0x03C>(s_Data.KeyCodes) = Input::Key::F2;
-	std::get<0x03D>(s_Data.KeyCodes) = Input::Key::F3;
-	std::get<0x03E>(s_Data.KeyCodes) = Input::Key::F4;
-	std::get<0x03F>(s_Data.KeyCodes) = Input::Key::F5;
-	std::get<0x040>(s_Data.KeyCodes) = Input::Key::F6;
-	std::get<0x041>(s_Data.KeyCodes) = Input::Key::F7;
-	std::get<0x042>(s_Data.KeyCodes) = Input::Key::F8;
-	std::get<0x043>(s_Data.KeyCodes) = Input::Key::F9;
-	std::get<0x044>(s_Data.KeyCodes) = Input::Key::F10;
-	std::get<0x057>(s_Data.KeyCodes) = Input::Key::F11;
-	std::get<0x058>(s_Data.KeyCodes) = Input::Key::F12;
-	std::get<0x064>(s_Data.KeyCodes) = Input::Key::F13;
-	std::get<0x065>(s_Data.KeyCodes) = Input::Key::F14;
-	std::get<0x066>(s_Data.KeyCodes) = Input::Key::F15;
-	std::get<0x067>(s_Data.KeyCodes) = Input::Key::F16;
-	std::get<0x068>(s_Data.KeyCodes) = Input::Key::F17;
-	std::get<0x069>(s_Data.KeyCodes) = Input::Key::F18;
-	std::get<0x06A>(s_Data.KeyCodes) = Input::Key::F19;
-	std::get<0x06B>(s_Data.KeyCodes) = Input::Key::F20;
-	std::get<0x06C>(s_Data.KeyCodes) = Input::Key::F21;
-	std::get<0x06D>(s_Data.KeyCodes) = Input::Key::F22;
-	std::get<0x06E>(s_Data.KeyCodes) = Input::Key::F23;
-	std::get<0x076>(s_Data.KeyCodes) = Input::Key::F24;
-	std::get<0x038>(s_Data.KeyCodes) = Input::Key::Left_ALT;
-	std::get<0x01D>(s_Data.KeyCodes) = Input::Key::Left_Control;
-	std::get<0x02A>(s_Data.KeyCodes) = Input::Key::Left_Shift;
-	std::get<0x15B>(s_Data.KeyCodes) = Input::Key::Left_Super;
-	std::get<0x137>(s_Data.KeyCodes) = Input::Key::Print_Screen;
-	std::get<0x138>(s_Data.KeyCodes) = Input::Key::Right_ALT;
-	std::get<0x11D>(s_Data.KeyCodes) = Input::Key::Right_Control;
-	std::get<0x036>(s_Data.KeyCodes) = Input::Key::Right_Shift;
-	std::get<0x15C>(s_Data.KeyCodes) = Input::Key::Right_Super;
-	std::get<0x150>(s_Data.KeyCodes) = Input::Key::Down;
-	std::get<0x14B>(s_Data.KeyCodes) = Input::Key::Left;
-	std::get<0x14D>(s_Data.KeyCodes) = Input::Key::Right;
-	std::get<0x148>(s_Data.KeyCodes) = Input::Key::Up;
+	std::get<0x00Eu>(s_Data.KeyCodes) = Input::Key::Backspace;
+	std::get<0x153u>(s_Data.KeyCodes) = Input::Key::Delete;
+	std::get<0x14Fu>(s_Data.KeyCodes) = Input::Key::End;
+	std::get<0x01Cu>(s_Data.KeyCodes) = Input::Key::Enter;
+	std::get<0x001u>(s_Data.KeyCodes) = Input::Key::Escape;
+	std::get<0x147u>(s_Data.KeyCodes) = Input::Key::Home;
+	std::get<0x152u>(s_Data.KeyCodes) = Input::Key::Insert;
+	std::get<0x15Du>(s_Data.KeyCodes) = Input::Key::Menu;
+	std::get<0x151u>(s_Data.KeyCodes) = Input::Key::Page_Down;
+	std::get<0x149u>(s_Data.KeyCodes) = Input::Key::Page_Up;
+	std::get<0x045u>(s_Data.KeyCodes) = Input::Key::Pause;
+	std::get<0x039u>(s_Data.KeyCodes) = Input::Key::Space;
+	std::get<0x00Fu>(s_Data.KeyCodes) = Input::Key::Tab;
+	std::get<0x03Au>(s_Data.KeyCodes) = Input::Key::Caps_Lock;
+	std::get<0x145u>(s_Data.KeyCodes) = Input::Key::Num_Lock;
+	std::get<0x046u>(s_Data.KeyCodes) = Input::Key::Scroll_Lock;
+	std::get<0x03Bu>(s_Data.KeyCodes) = Input::Key::F1;
+	std::get<0x03Cu>(s_Data.KeyCodes) = Input::Key::F2;
+	std::get<0x03Du>(s_Data.KeyCodes) = Input::Key::F3;
+	std::get<0x03Eu>(s_Data.KeyCodes) = Input::Key::F4;
+	std::get<0x03Fu>(s_Data.KeyCodes) = Input::Key::F5;
+	std::get<0x040u>(s_Data.KeyCodes) = Input::Key::F6;
+	std::get<0x041u>(s_Data.KeyCodes) = Input::Key::F7;
+	std::get<0x042u>(s_Data.KeyCodes) = Input::Key::F8;
+	std::get<0x043u>(s_Data.KeyCodes) = Input::Key::F9;
+	std::get<0x044u>(s_Data.KeyCodes) = Input::Key::F10;
+	std::get<0x057u>(s_Data.KeyCodes) = Input::Key::F11;
+	std::get<0x058u>(s_Data.KeyCodes) = Input::Key::F12;
+	std::get<0x064u>(s_Data.KeyCodes) = Input::Key::F13;
+	std::get<0x065u>(s_Data.KeyCodes) = Input::Key::F14;
+	std::get<0x066u>(s_Data.KeyCodes) = Input::Key::F15;
+	std::get<0x067u>(s_Data.KeyCodes) = Input::Key::F16;
+	std::get<0x068u>(s_Data.KeyCodes) = Input::Key::F17;
+	std::get<0x069u>(s_Data.KeyCodes) = Input::Key::F18;
+	std::get<0x06Au>(s_Data.KeyCodes) = Input::Key::F19;
+	std::get<0x06Bu>(s_Data.KeyCodes) = Input::Key::F20;
+	std::get<0x06Cu>(s_Data.KeyCodes) = Input::Key::F21;
+	std::get<0x06Du>(s_Data.KeyCodes) = Input::Key::F22;
+	std::get<0x06Eu>(s_Data.KeyCodes) = Input::Key::F23;
+	std::get<0x076u>(s_Data.KeyCodes) = Input::Key::F24;
+	std::get<0x038u>(s_Data.KeyCodes) = Input::Key::Left_ALT;
+	std::get<0x01Du>(s_Data.KeyCodes) = Input::Key::Left_Control;
+	std::get<0x02Au>(s_Data.KeyCodes) = Input::Key::Left_Shift;
+	std::get<0x15Bu>(s_Data.KeyCodes) = Input::Key::Left_Super;
+	std::get<0x137u>(s_Data.KeyCodes) = Input::Key::Print_Screen;
+	std::get<0x138u>(s_Data.KeyCodes) = Input::Key::Right_ALT;
+	std::get<0x11Du>(s_Data.KeyCodes) = Input::Key::Right_Control;
+	std::get<0x036u>(s_Data.KeyCodes) = Input::Key::Right_Shift;
+	std::get<0x15Cu>(s_Data.KeyCodes) = Input::Key::Right_Super;
+	std::get<0x150u>(s_Data.KeyCodes) = Input::Key::Down;
+	std::get<0x14Bu>(s_Data.KeyCodes) = Input::Key::Left;
+	std::get<0x14Du>(s_Data.KeyCodes) = Input::Key::Right;
+	std::get<0x148u>(s_Data.KeyCodes) = Input::Key::Up;
 
-	std::get<0x052>(s_Data.KeyCodes) = Input::Key::KP_0;
-	std::get<0x04F>(s_Data.KeyCodes) = Input::Key::KP_1;
-	std::get<0x050>(s_Data.KeyCodes) = Input::Key::KP_2;
-	std::get<0x051>(s_Data.KeyCodes) = Input::Key::KP_3;
-	std::get<0x04B>(s_Data.KeyCodes) = Input::Key::KP_4;
-	std::get<0x04C>(s_Data.KeyCodes) = Input::Key::KP_5;
-	std::get<0x04D>(s_Data.KeyCodes) = Input::Key::KP_6;
-	std::get<0x047>(s_Data.KeyCodes) = Input::Key::KP_7;
-	std::get<0x048>(s_Data.KeyCodes) = Input::Key::KP_8;
-	std::get<0x049>(s_Data.KeyCodes) = Input::Key::KP_9;
-	std::get<0x04E>(s_Data.KeyCodes) = Input::Key::KP_Add;
-	std::get<0x053>(s_Data.KeyCodes) = Input::Key::KP_Decimal;
-	std::get<0x135>(s_Data.KeyCodes) = Input::Key::KP_Divide;
-	std::get<0x11C>(s_Data.KeyCodes) = Input::Key::KP_Enter;
-	std::get<0x059>(s_Data.KeyCodes) = Input::Key::KP_Equal;
-	std::get<0x037>(s_Data.KeyCodes) = Input::Key::KP_Multiply;
-	std::get<0x04A>(s_Data.KeyCodes) = Input::Key::KP_Subtract;
+	std::get<0x052u>(s_Data.KeyCodes) = Input::Key::KP_0;
+	std::get<0x04Fu>(s_Data.KeyCodes) = Input::Key::KP_1;
+	std::get<0x050u>(s_Data.KeyCodes) = Input::Key::KP_2;
+	std::get<0x051u>(s_Data.KeyCodes) = Input::Key::KP_3;
+	std::get<0x04Bu>(s_Data.KeyCodes) = Input::Key::KP_4;
+	std::get<0x04Cu>(s_Data.KeyCodes) = Input::Key::KP_5;
+	std::get<0x04Du>(s_Data.KeyCodes) = Input::Key::KP_6;
+	std::get<0x047u>(s_Data.KeyCodes) = Input::Key::KP_7;
+	std::get<0x048u>(s_Data.KeyCodes) = Input::Key::KP_8;
+	std::get<0x049u>(s_Data.KeyCodes) = Input::Key::KP_9;
+	std::get<0x04Eu>(s_Data.KeyCodes) = Input::Key::KP_Add;
+	std::get<0x053u>(s_Data.KeyCodes) = Input::Key::KP_Decimal;
+	std::get<0x135u>(s_Data.KeyCodes) = Input::Key::KP_Divide;
+	std::get<0x11Cu>(s_Data.KeyCodes) = Input::Key::KP_Enter;
+	std::get<0x059u>(s_Data.KeyCodes) = Input::Key::KP_Equal;
+	std::get<0x037u>(s_Data.KeyCodes) = Input::Key::KP_Multiply;
+	std::get<0x04Au>(s_Data.KeyCodes) = Input::Key::KP_Subtract;
 
-	for (u32 scanCode = 0; scanCode < 512; scanCode++)
+	for (u32 scanCode = 0u; scanCode < 512u; ++scanCode)
 	{
 		if (std::to_underlying(s_Data.KeyCodes[scanCode]) > 0)
 			s_Data.ScanCodes[std::to_underlying(s_Data.KeyCodes[scanCode])] = NumericCast<i16>(scanCode);

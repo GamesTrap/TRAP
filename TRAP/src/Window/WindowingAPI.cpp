@@ -385,7 +385,7 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 	WNDConfig.Title = std::move(title);
 
 	s_Data.WindowList.push_front(MakeScope<InternalWindow>());
-	InternalWindow* window = s_Data.WindowList.front().get();
+	InternalWindow* const window = s_Data.WindowList.front().get();
 
 	window->videoMode.Width = NumericCast<i32>(width);
 	window->videoMode.Height = NumericCast<i32>(height);
@@ -495,40 +495,6 @@ void TRAP::INTERNAL::WindowingAPI::CenterCursorInContentArea(InternalWindow& win
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::string_view str)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
-	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
-	std::string description = "[WindowingAPI]";
-
-	if (!str.empty())
-		description += str;
-	else
-	{
-		if (code == Error::Invalid_Enum)
-			description += " Invalid argument for enum parameter";
-		else if (code == Error::Invalid_Value)
-			description += " Invalid value for parameter";
-		else if (code == Error::Out_Of_Memory)
-			description += " Out of memory";
-		else if (code == Error::API_Unavailable)
-			description += " The requested API is unavailable";
-		else if (code == Error::Platform_Error)
-			description += " A platform-specific error occurred";
-		else if (code == Error::Format_Unavailable)
-			description += " The requested format is unavailable";
-		else if (code == Error::Cursor_Unavailable)
-			description += " The specified cursor shape is unavailable";
-		else
-			description += " UNKNOWN WINDOWING ERROR";
-	}
-
-	TP_ERROR(description, " Code(", std::to_underlying(code), ")");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::INTERNAL::WindowingAPI::DestroyCursor(InternalCursor* cursor)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
@@ -580,7 +546,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(InternalCursor* cursor)
 		return nullptr;
 	}
 
-	if(image.GetWidth() <= 0 || image.GetHeight() <= 0)
+	if(image.GetWidth() <= 0u || image.GetHeight() <= 0u)
 	{
 		InputError(Error::Invalid_Value, "[Cursor] Invalid image dimensions for cursor!");
 		return nullptr;
@@ -592,14 +558,14 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(InternalCursor* cursor)
 		return nullptr;
 	}
 
-	if (image.GetBitsPerPixel() > 32)
+	if (image.GetBitsPerPixel() > 32u)
 	{
 		InputError(Error::Invalid_Value, "[Cursor] BPP > 32 is unsupported as icon!");
 		return nullptr;
 	}
 
-	if ((image.GetColorFormat() != Image::ColorFormat::RGB || image.GetBitsPerPixel() != 24) &&
-	    (image.GetColorFormat() != Image::ColorFormat::RGBA || image.GetBitsPerPixel() != 32))
+	if ((image.GetColorFormat() != Image::ColorFormat::RGB || image.GetBitsPerPixel() != 24u) &&
+	    (image.GetColorFormat() != Image::ColorFormat::RGBA || image.GetBitsPerPixel() != 32u))
 	{
 		InputError(Error::Invalid_Value, "[Cursor] Unsupported BPP or format used!");
 		return nullptr;
@@ -611,7 +577,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(InternalCursor* cursor)
 		const Scope<Image> iconImage = Image::ConvertRGBToRGBA(image);
 
 		s_Data.CursorList.push_front(MakeScope<InternalCursor>());
-		InternalCursor* cursor = s_Data.CursorList.front().get();
+		InternalCursor* const cursor = s_Data.CursorList.front().get();
 
 		if(!PlatformCreateCursor(*cursor, *iconImage, xHotspot, yHotspot))
 		{
@@ -624,7 +590,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(InternalCursor* cursor)
 	if (image.GetColorFormat() == Image::ColorFormat::RGBA)
 	{
 		s_Data.CursorList.push_front(MakeScope<InternalCursor>());
-		InternalCursor* cursor = s_Data.CursorList.front().get();
+		InternalCursor* const cursor = s_Data.CursorList.front().get();
 
 		if (!PlatformCreateCursor(*cursor, image, xHotspot, yHotspot))
 		{
@@ -653,7 +619,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(InternalCursor* cursor)
 	}
 
 	s_Data.CursorList.push_front(MakeScope<InternalCursor>());
-	InternalCursor* cursor = s_Data.CursorList.front().get();
+	InternalCursor* const cursor = s_Data.CursorList.front().get();
 	if(cursor == nullptr)
 		return nullptr;
 
@@ -707,7 +673,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow& window, const I
 		return;
 	}
 
-	if(image->GetWidth() <= 0 || image->GetHeight() <= 0)
+	if(image->GetWidth() <= 0u || image->GetHeight() <= 0u)
 	{
 		InputError(Error::Invalid_Value, "[Window] Invalid image dimensions for window icon!");
 		return;
@@ -719,14 +685,14 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow& window, const I
 		return;
 	}
 
-	if(image->GetBitsPerPixel() > 32)
+	if(image->GetBitsPerPixel() > 32u)
 	{
 		InputError(Error::Invalid_Value, "[Icon] BPP > 32 is unsupported as icon!");
 		return;
 	}
 
-	if((image->GetColorFormat() != Image::ColorFormat::RGB || image->GetBitsPerPixel() != 24) &&
-	   (image->GetColorFormat() != Image::ColorFormat::RGBA || image->GetBitsPerPixel() != 32))
+	if((image->GetColorFormat() != Image::ColorFormat::RGB || image->GetBitsPerPixel() != 24u) &&
+	   (image->GetColorFormat() != Image::ColorFormat::RGBA || image->GetBitsPerPixel() != 32u))
 	{
 		InputError(Error::Invalid_Value, "[Icon] Unsupported BPP or format used!");
 		return;
@@ -2075,7 +2041,7 @@ void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 	// 	return false;
 	// }
 
-	return InitVulkan(1);
+	return InitVulkan(1u);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2091,10 +2057,10 @@ void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 	// 	return {};
 	// }
 
-	if (!InitVulkan(2))
+	if (!InitVulkan(2u))
 		return {};
 
-	if (std::get<0>(s_Data.VK.Extensions).empty() || std::get<1>(s_Data.VK.Extensions).empty())
+	if (std::get<0u>(s_Data.VK.Extensions).empty() || std::get<1u>(s_Data.VK.Extensions).empty())
 		return {};
 
 	return s_Data.VK.Extensions;
@@ -2118,10 +2084,10 @@ void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 		return VK_ERROR_INITIALIZATION_FAILED;
 	}
 
-	if (!InitVulkan(2))
+	if (!InitVulkan(2u))
 		return VK_ERROR_INITIALIZATION_FAILED;
 
-	if (std::get<0>(s_Data.VK.Extensions).empty() || std::get<1>(s_Data.VK.Extensions).empty())
+	if (std::get<0u>(s_Data.VK.Extensions).empty() || std::get<1u>(s_Data.VK.Extensions).empty())
 	{
 		InputError(Error::API_Unavailable, "[Vulkan] Window surface creation extensions not found");
 		return VK_ERROR_EXTENSION_NOT_PRESENT;
@@ -2274,7 +2240,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow& window, cons
 	if(focused)
 		return;
 
-	for (u32 key = 0; key <= std::to_underlying(Input::Key::Menu); key++)
+	for (u32 key = 0u; key <= std::to_underlying(Input::Key::Menu); ++key)
 	{
 		if (window.Keys[key] == Input::KeyState::Pressed)
 		{
@@ -2283,7 +2249,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow& window, cons
 		}
 	}
 
-	for (u32 button = 0; button <= std::to_underlying(Input::MouseButton::Eight); button++)
+	for (u32 button = 0u; button <= std::to_underlying(Input::MouseButton::Eight); ++button)
 	{
 		if (window.MouseButtons[button] == Input::KeyState::Pressed)
 			InputMouseClick(window, static_cast<Input::MouseButton>(button), Input::KeyState::Pressed);
@@ -2339,8 +2305,6 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	u32 count = 0;
-
 	if (s_Data.VK.Available)
 		return true;
 
@@ -2352,11 +2316,12 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 		return false;
 	}
 
+	u32 count = 0u;
 	err = vkEnumerateInstanceExtensionProperties(nullptr, &count, nullptr);
 	if (err != 0)
 	{
 		//NOTE: This happens on systems with a loader but without any Vulkan ICD
-		if (mode == 2)
+		if (mode == 2u)
 			InputError(Error::API_Unavailable, "[Vulkan] Failed to query instance extension count: " +
 			           GetVulkanResultString(err));
 
@@ -2373,7 +2338,7 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 		return false;
 	}
 
-	for (u32 i = 0; i < count; i++)
+	for (u32 i = 0u; i < count; ++i)
 	{
 		const std::string_view ext(extensionProps[i].extensionName);
 
@@ -2417,7 +2382,7 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 
 	for (auto& mode : monitor.Modes)
 	{
-		u32 colorDiff = 0;
+		u32 colorDiff = 0u;
 
 		if (desired.RedBits != -1)
 			colorDiff += NumericCast<u32>(abs(mode.RedBits - desired.RedBits));
@@ -2426,10 +2391,10 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 		if (desired.BlueBits != -1)
 			colorDiff += NumericCast<u32>(abs(mode.BlueBits - desired.BlueBits));
 
-		const u32 sizeDiff = NumericCast<u32>(abs((mode.Width - desired.Width) *
-			(mode.Width - desired.Width) +
-			(mode.Height - desired.Height) *
-			(mode.Height - desired.Height)));
+		const u32 sizeDiff = NumericCast<u32>(abs(((mode.Width - desired.Width) *
+			                                       (mode.Width - desired.Width)) +
+			                                      ((mode.Height - desired.Height) *
+			                                       (mode.Height - desired.Height))));
 
 		if (desired.RefreshRate != -1.0)
 			rateDiff = abs(mode.RefreshRate - desired.RefreshRate);
@@ -2467,7 +2432,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, 
 
 		const InternalMonitor* mon = nullptr;
 
-		if (placement == 0)
+		if (placement == 0u)
 		{
 			s_Data.Monitors.insert(s_Data.Monitors.begin(), std::move(monitor));
 			mon = s_Data.Monitors.front().get();

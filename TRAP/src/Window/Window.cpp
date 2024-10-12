@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "Window.h"
 
+#include <algorithm>
+
 #ifndef TRAP_HEADLESS_MODE
 
 #include "Utils/String/String.h"
@@ -19,7 +21,7 @@
 
 namespace
 {
-	constinit u32 ActiveWindows = 0;
+	constinit u32 ActiveWindows = 0u;
 
 	constexpr i32 MinimumSupportedWindowWidth = 2;
 	constexpr i32 MinimumSupportedWindowHeight = 2;
@@ -28,7 +30,6 @@ namespace
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Window::Window(const WindowProps &props)
-	: m_window(nullptr)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Window) != ProfileSystems::None);
 
@@ -179,13 +180,6 @@ void TRAP::Window::OnUpdate()
 	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return INTERNAL::WindowingAPI::GetCursorMode(*m_window);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Monitor TRAP::Window::GetMonitor() const
-{
-	return m_data.Monitor;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -447,12 +441,20 @@ void TRAP::Window::SetCursorIcon(const Image* const image, const u32 xHotspot, c
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Window) != ProfileSystems::None);
 
-	INTERNAL::WindowingAPI::InternalCursor* cursor = INTERNAL::WindowingAPI::CreateCursor
-		(
-			*image, xHotspot, yHotspot
-		);
-	INTERNAL::WindowingAPI::SetCursor(*m_window, cursor);
-	INTERNAL::ImGuiWindowing::SetCustomCursor(cursor); //Make ImGui the owner of the cursor
+	if(image != nullptr)
+	{
+		INTERNAL::WindowingAPI::InternalCursor* cursor = INTERNAL::WindowingAPI::CreateCursor
+			(
+				*image, xHotspot, yHotspot
+			);
+		INTERNAL::WindowingAPI::SetCursor(*m_window, cursor);
+		INTERNAL::ImGuiWindowing::SetCustomCursor(cursor); //Make ImGui the owner of the cursor
+	}
+	else
+	{
+		INTERNAL::WindowingAPI::SetCursor(*m_window, nullptr);
+		INTERNAL::ImGuiWindowing::SetCustomCursor(nullptr);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -503,14 +505,14 @@ void TRAP::Window::SetIcon(const Image* const image) const
 		SetIcon();
 		return;
 	}
-	if (image->IsHDR() && image->GetBytesPerChannel() == 4)
+	if (image->IsHDR() && image->GetBytesPerChannel() == 4u)
 	{
 		TP_ERROR(Log::WindowIconPrefix, "\"", m_data.Title, "\" HDR is not supported for window icons!");
 		TP_WARN(Log::WindowIconPrefix, "\"", m_data.Title, "\" Using default icon!");
 		SetIcon();
 		return;
 	}
-	if (image->IsLDR() && image->GetBytesPerChannel() == 2)
+	if (image->IsLDR() && image->GetBytesPerChannel() == 2u)
 	{
 		TP_ERROR(Log::WindowIconPrefix, "\"", m_data.Title,
 		         "\" Images with short pixel data are not supported for window icons!");
@@ -577,10 +579,8 @@ void TRAP::Window::SetMinimumSize(const u32 minWidth, const u32 minHeight)
 				"Using maximum height as the new minimum height");
 	}
 
-	if(m_data.MinWidth < MinimumSupportedWindowWidth)
-		m_data.MinWidth = MinimumSupportedWindowWidth;
-	if(m_data.MinHeight < MinimumSupportedWindowHeight)
-		m_data.MinHeight = MinimumSupportedWindowHeight;
+	m_data.MinWidth = TRAP::Math::Max(m_data.MinWidth, MinimumSupportedWindowWidth);
+	m_data.MinHeight = TRAP::Math::Max(m_data.MinHeight, MinimumSupportedWindowHeight);
 
 	INTERNAL::WindowingAPI::SetWindowSizeLimits(*m_window, m_data.MinWidth, m_data.MinHeight,
 											    m_data.MaxWidth, m_data.MaxHeight);
@@ -625,7 +625,7 @@ void TRAP::Window::SetAspectRatio(const u32 numerator, const u32 denominator)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Window) != ProfileSystems::None);
 
-	if(numerator == 0 && denominator == 0) //Disable aspect ratio
+	if(numerator == 0u && denominator == 0u) //Disable aspect ratio
 		INTERNAL::WindowingAPI::SetWindowAspectRatio(*m_window, -1, -1);
 	else //Enable aspect ratio
 		INTERNAL::WindowingAPI::SetWindowAspectRatio(*m_window, NumericCast<i32>(numerator),
@@ -1186,7 +1186,7 @@ void TRAP::Window::SetupEventCallbacks()
 	INTERNAL::WindowingAPI::SetMonitorCallback([](const INTERNAL::WindowingAPI::InternalMonitor& mon,
 	                                              const bool connected)
 	{
-		if(!connected && Monitor::GetAllMonitors().size() == 1)
+		if(!connected && Monitor::GetAllMonitors().size() == 1u)
 			Utils::DisplayError(Utils::ErrorCode::MonitorNoneFound);
 
 		if(mon.Window == nullptr)

@@ -59,6 +59,462 @@ namespace
 
 	constexpr i32 KeyPress = 2;
 	constexpr i32 KeyRelease = 3;
+
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	//Convert the specified Latin-1 string to UTF-8
+	[[nodiscard]] constexpr std::string ConvertLatin1ToUTF8(const std::string_view source)
+	{
+		usize size = 1u;
+		for(const char c : source)
+			size += (NumericCast<u8>(c) & 0x80u) != 0u ? 2u : 1u;
+
+		std::string target{};
+		target.reserve(size);
+
+		for(const char c : source)
+			target += TRAP::Utils::String::EncodeUTF8(NumericCast<u32>(c));
+
+		return target;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	//Translate the X11 KeySyms for a key to a TRAP key
+	//NOTE: This is only used as a fallback, in case the XKB method fails
+	//      It is layout-dependent and will fail partially on most non-US layouts
+	[[nodiscard]] constexpr std::optional<TRAP::Input::Key> TranslateKeySyms(const std::vector<KeySym>& keySyms)
+	{
+		if(keySyms.empty())
+			return std::nullopt;
+
+		if(keySyms.size() > 1u)
+		{
+			switch(keySyms[1u])
+			{
+			case XK_KP_0:
+				return TRAP::Input::Key::KP_0;
+
+			case XK_KP_1:
+				return TRAP::Input::Key::KP_1;
+
+			case XK_KP_2:
+				return TRAP::Input::Key::KP_2;
+
+			case XK_KP_3:
+				return TRAP::Input::Key::KP_3;
+
+			case XK_KP_4:
+				return TRAP::Input::Key::KP_4;
+
+			case XK_KP_5:
+				return TRAP::Input::Key::KP_5;
+
+			case XK_KP_6:
+				return TRAP::Input::Key::KP_6;
+
+			case XK_KP_7:
+				return TRAP::Input::Key::KP_7;
+
+			case XK_KP_8:
+				return TRAP::Input::Key::KP_8;
+
+			case XK_KP_9:
+				return TRAP::Input::Key::KP_9;
+
+			case XK_KP_Separator:
+				[[fallthrough]];
+			case XK_KP_Decimal:
+				return TRAP::Input::Key::KP_Decimal;
+
+			case XK_KP_Equal:
+				return TRAP::Input::Key::KP_Equal;
+
+			case XK_KP_Enter:
+				return TRAP::Input::Key::KP_Enter;
+
+			default:
+				break;
+			}
+		}
+
+		switch(keySyms[0u])
+		{
+			case XK_Escape:
+				return TRAP::Input::Key::Escape;
+
+			case XK_Tab:
+				return TRAP::Input::Key::Tab;
+
+			case XK_Shift_L:
+				return TRAP::Input::Key::Left_Shift;
+
+			case XK_Shift_R:
+				return TRAP::Input::Key::Right_Shift;
+
+			case XK_Control_L:
+				return TRAP::Input::Key::Left_Control;
+
+			case XK_Control_R:
+				return TRAP::Input::Key::Right_Control;
+
+			case XK_Meta_L:
+				[[fallthrough]];
+			case XK_Alt_L:
+				return TRAP::Input::Key::Left_ALT;
+
+			case XK_Mode_switch: //Mapped to Alt_R on many keyboards
+				[[fallthrough]];
+			case XK_ISO_Level3_Shift: //AltGr on at least some machines
+				[[fallthrough]];
+			case XK_Meta_R:
+				[[fallthrough]];
+			case XK_Alt_R:
+				return TRAP::Input::Key::Right_ALT;
+
+			case XK_Super_L:
+				return TRAP::Input::Key::Left_Super;
+
+			case XK_Super_R:
+				return TRAP::Input::Key::Right_Super;
+
+			case XK_Menu:
+				return TRAP::Input::Key::Menu;
+
+			case XK_Num_Lock:
+				return TRAP::Input::Key::Num_Lock;
+
+			case XK_Caps_Lock:
+				return TRAP::Input::Key::Caps_Lock;
+
+			case XK_Print:
+				return TRAP::Input::Key::Print_Screen;
+
+			case XK_Scroll_Lock:
+				return TRAP::Input::Key::Scroll_Lock;
+
+			case XK_Pause:
+				return TRAP::Input::Key::Pause;
+
+			case XK_Delete:
+				return TRAP::Input::Key::Delete;
+
+			case XK_BackSpace:
+				return TRAP::Input::Key::Backspace;
+
+			case XK_Return:
+				return TRAP::Input::Key::Enter;
+
+			case XK_Home:
+				return TRAP::Input::Key::Home;
+
+			case XK_End:
+				return TRAP::Input::Key::End;
+
+			case XK_Page_Up:
+				return TRAP::Input::Key::Page_Up;
+
+			case XK_Page_Down:
+				return TRAP::Input::Key::Page_Down;
+
+			case XK_Insert:
+				return TRAP::Input::Key::Insert;
+
+			case XK_Left:
+				return TRAP::Input::Key::Left;
+
+			case XK_Right:
+				return TRAP::Input::Key::Right;
+
+			case XK_Down:
+				return TRAP::Input::Key::Down;
+
+			case XK_Up:
+				return TRAP::Input::Key::Up;
+
+			case XK_F1:
+				return TRAP::Input::Key::F1;
+
+			case XK_F2:
+				return TRAP::Input::Key::F2;
+
+			case XK_F3:
+				return TRAP::Input::Key::F3;
+
+			case XK_F4:
+				return TRAP::Input::Key::F4;
+
+			case XK_F5:
+				return TRAP::Input::Key::F5;
+
+			case XK_F6:
+				return TRAP::Input::Key::F6;
+
+			case XK_F7:
+				return TRAP::Input::Key::F7;
+
+			case XK_F8:
+				return TRAP::Input::Key::F8;
+
+			case XK_F9:
+				return TRAP::Input::Key::F9;
+
+			case XK_F10:
+				return TRAP::Input::Key::F10;
+
+			case XK_F11:
+				return TRAP::Input::Key::F11;
+
+			case XK_F12:
+				return TRAP::Input::Key::F12;
+
+			case XK_F13:
+				return TRAP::Input::Key::F13;
+
+			case XK_F14:
+				return TRAP::Input::Key::F14;
+
+			case XK_F15:
+				return TRAP::Input::Key::F15;
+
+			case XK_F16:
+				return TRAP::Input::Key::F16;
+
+			case XK_F17:
+				return TRAP::Input::Key::F17;
+
+			case XK_F18:
+				return TRAP::Input::Key::F18;
+
+			case XK_F19:
+				return TRAP::Input::Key::F19;
+
+			case XK_F20:
+				return TRAP::Input::Key::F20;
+
+			case XK_F21:
+				return TRAP::Input::Key::F21;
+
+			case XK_F22:
+				return TRAP::Input::Key::F22;
+
+			case XK_F23:
+				return TRAP::Input::Key::F23;
+
+			case XK_F24:
+				return TRAP::Input::Key::F24;
+
+			case XK_F25:
+				return TRAP::Input::Key::F25;
+
+			//Numeric keypad
+			case XK_KP_Divide:
+				return TRAP::Input::Key::KP_Divide;
+
+			case XK_KP_Multiply:
+				return TRAP::Input::Key::KP_Multiply;
+
+			case XK_KP_Subtract:
+				return TRAP::Input::Key::KP_Subtract;
+
+			case XK_KP_Add:
+				return TRAP::Input::Key::KP_Add;
+
+			//These should have been detected in seconday keysym test above!
+			case XK_KP_Insert:
+				return TRAP::Input::Key::KP_0;
+
+			case XK_KP_End:
+				return TRAP::Input::Key::KP_1;
+
+			case XK_KP_Down:
+				return TRAP::Input::Key::KP_2;
+
+			case XK_KP_Page_Down:
+				return TRAP::Input::Key::KP_3;
+
+			case XK_KP_Left:
+				return TRAP::Input::Key::KP_4;
+
+			case XK_KP_Right:
+				return TRAP::Input::Key::KP_6;
+
+			case XK_KP_Home:
+				return TRAP::Input::Key::KP_7;
+
+			case XK_KP_Up:
+				return TRAP::Input::Key::KP_8;
+
+			case XK_KP_Page_Up:
+				return TRAP::Input::Key::KP_9;
+
+			case XK_KP_Delete:
+				return TRAP::Input::Key::KP_Decimal;
+
+			case XK_KP_Equal:
+				return TRAP::Input::Key::KP_Equal;
+
+			case XK_KP_Enter:
+				return TRAP::Input::Key::KP_Enter;
+
+			//Last resor: Check for printable keys (should not happen if the XKB extension is available).
+			//This will give a layout dependent mapping (which is wrong, and we may miss some keys,
+			//especially on non-US keyboards), but it is better than nothing...
+			case XK_a:
+				return TRAP::Input::Key::A;
+
+			case XK_b:
+				return TRAP::Input::Key::B;
+
+			case XK_c:
+				return TRAP::Input::Key::C;
+
+			case XK_d:
+				return TRAP::Input::Key::D;
+
+			case XK_e:
+				return TRAP::Input::Key::E;
+
+			case XK_f:
+				return TRAP::Input::Key::F;
+
+			case XK_g:
+				return TRAP::Input::Key::G;
+
+			case XK_h:
+				return TRAP::Input::Key::H;
+
+			case XK_i:
+				return TRAP::Input::Key::I;
+
+			case XK_j:
+				return TRAP::Input::Key::J;
+
+			case XK_k:
+				return TRAP::Input::Key::K;
+
+			case XK_l:
+				return TRAP::Input::Key::L;
+
+			case XK_m:
+				return TRAP::Input::Key::M;
+
+			case XK_n:
+				return TRAP::Input::Key::N;
+
+			case XK_o:
+				return TRAP::Input::Key::O;
+
+			case XK_p:
+				return TRAP::Input::Key::P;
+
+			case XK_q:
+				return TRAP::Input::Key::Q;
+
+			case XK_r:
+				return TRAP::Input::Key::R;
+
+			case XK_s:
+				return TRAP::Input::Key::S;
+
+			case XK_t:
+				return TRAP::Input::Key::T;
+
+			case XK_u:
+				return TRAP::Input::Key::U;
+
+			case XK_v:
+				return TRAP::Input::Key::V;
+
+			case XK_w:
+				return TRAP::Input::Key::W;
+
+			case XK_x:
+				return TRAP::Input::Key::X;
+
+			case XK_y:
+				return TRAP::Input::Key::Y;
+
+			case XK_z:
+				return TRAP::Input::Key::Z;
+
+			case XK_1:
+				return TRAP::Input::Key::One;
+
+			case XK_2:
+				return TRAP::Input::Key::Two;
+
+			case XK_3:
+				return TRAP::Input::Key::Three;
+
+			case XK_4:
+				return TRAP::Input::Key::Four;
+
+			case XK_5:
+				return TRAP::Input::Key::Five;
+
+			case XK_6:
+				return TRAP::Input::Key::Six;
+
+			case XK_7:
+				return TRAP::Input::Key::Seven;
+
+			case XK_8:
+				return TRAP::Input::Key::Eight;
+
+			case XK_9:
+				return TRAP::Input::Key::Nine;
+
+			case XK_0:
+				return TRAP::Input::Key::Zero;
+
+			case XK_space:
+				return TRAP::Input::Key::Space;
+
+			case XK_minus:
+				return TRAP::Input::Key::Minus;
+
+			case XK_equal:
+				return TRAP::Input::Key::Equal;
+
+			case XK_bracketleft:
+				return TRAP::Input::Key::Left_Bracket;
+
+			case XK_bracketright:
+				return TRAP::Input::Key::Right_Bracket;
+
+			case XK_backslash:
+				return TRAP::Input::Key::Backslash;
+
+			case XK_semicolon:
+				return TRAP::Input::Key::Semicolon;
+
+			case XK_apostrophe:
+				return TRAP::Input::Key::Apostrophe;
+
+			case XK_grave:
+				return TRAP::Input::Key::Grave_Accent;
+
+			case XK_comma:
+				return TRAP::Input::Key::Comma;
+
+			case XK_period:
+				return TRAP::Input::Key::Period;
+
+			case XK_slash:
+				return TRAP::Input::Key::Slash;
+
+			case XK_less:
+				return TRAP::Input::Key::World_1; //At least in some layouts...
+
+			default:
+				break;
+		}
+
+		//No matching translation was found
+		return std::nullopt;
+	}
 }
 
 //Sends an EWMH or ICCCM event to the window manager
@@ -87,11 +543,16 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForX11Event(f64* const timeout)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	pollfd fd = {ConnectionNumber(s_Data.X11.display), POLLIN, 0};
+	pollfd fd
+	{
+		.fd = ConnectionNumber(s_Data.X11.display),
+		.events = POLLIN,
+		.revents = 0
+	};
 
 	while(s_Data.X11.XLIB.Pending(s_Data.X11.display) == 0)
 	{
-		if(!PollPOSIX(&fd, 1, timeout))
+		if(!PollPOSIX({&fd, 1u}, timeout))
 			return false;
 	}
 
@@ -104,21 +565,21 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForAnyEvent(f64* const timeout)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	std::array<pollfd, 3> fds
+	std::array<pollfd, 3u> fds
 	{
 		{
-			{ConnectionNumber(s_Data.X11.display), POLLIN, 0},
-			{std::get<0>(s_Data.EmptyEventPipe), POLLIN, 0},
-			{TRAP::Input::s_linuxController.INotify, POLLIN, 0}
+			pollfd{.fd = ConnectionNumber(s_Data.X11.display), .events = POLLIN, .revents = 0},
+			pollfd{.fd = std::get<0u>(s_Data.EmptyEventPipe), .events = POLLIN, .revents = 0},
+			pollfd{.fd = TRAP::Input::s_linuxController.INotify, .events = POLLIN, .revents = 0}
 		}
 	};
 
 	while(s_Data.X11.XLIB.Pending(s_Data.X11.display) == 0)
 	{
-		if(!PollPOSIX(fds.data(), fds.size(), timeout))
+		if(!PollPOSIX(fds, timeout))
 			return false;
 
-		for(usize i = 1; i < fds.size(); ++i)
+		for(usize i = 1u; i < fds.size(); ++i)
 		{
 			if((fds[i].revents & POLLIN) != 0)
 				return true;
@@ -137,7 +598,7 @@ void TRAP::INTERNAL::WindowingAPI::WriteEmptyEvent()
 	while(true)
 	{
 		const char byte = 0;
-		const ssize_t result = write(std::get<1>(s_Data.EmptyEventPipe), &byte, 1);
+		const ssize_t result = write(std::get<1u>(s_Data.EmptyEventPipe), &byte, 1u);
 		if(result == 1 || (result == -1 && errno != EINTR))
 			break;
 	}
@@ -151,8 +612,8 @@ void TRAP::INTERNAL::WindowingAPI::DrainEmptyEvents()
 
 	while(true)
 	{
-		std::array<char, 64> dummy{};
-		const ssize_t result = read(std::get<0>(s_Data.EmptyEventPipe), dummy.data(), dummy.size());
+		std::array<char, 64u> dummy{};
+		const ssize_t result = read(std::get<0u>(s_Data.EmptyEventPipe), dummy.data(), dummy.size());
 		if(result == -1 && errno != EINTR)
 			break;
 	}
@@ -160,7 +621,7 @@ void TRAP::INTERNAL::WindowingAPI::DrainEmptyEvents()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::SetEventFlags(i32& fileDescriptor)
+[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::SetEventFlags(const i32 fileDescriptor)
 {
 	const i32 sf = fcntl(fileDescriptor, F_GETFL, 0);
 	const i32 df = fcntl(fileDescriptor, F_GETFD, 0);
@@ -188,10 +649,7 @@ void TRAP::INTERNAL::WindowingAPI::DrainEmptyEvents()
 		return false;
 	}
 
-	if(!std::ranges::all_of(s_Data.EmptyEventPipe, SetEventFlags))
-		return false;
-
-	return true;
+	return std::ranges::all_of(s_Data.EmptyEventPipe, SetEventFlags);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -339,7 +797,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow& window)
 		//Enable compositor bypass
 		if(!window.Transparent)
 		{
-			const u64 value = 1;
+			static constexpr u64 value = 1u;
 
 			s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, window.X11.Handle,
 			                               s_Data.X11.NET_WM_BYPASS_COMPOSITOR, XA_CARDINAL, 32,
@@ -407,8 +865,7 @@ void TRAP::INTERNAL::WindowingAPI::GetSystemContentScale(f32& xScale, f32& yScal
 			{
 				if((type != nullptr) && "String"sv == type)
 				{
-					char* strEnd = nullptr;
-					xDPI = yDPI = NumericCast<f32>(std::strtod(value.addr, &strEnd));
+					xDPI = yDPI = NumericCast<f32>(std::stod(value.addr));
 				}
 			}
 
@@ -765,18 +1222,18 @@ void TRAP::INTERNAL::WindowingAPI::DetectEWMH()
 
 	//See which of the atoms we support that are supported by the WM
 
-	s_Data.X11.NET_WM_STATE                   = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE").value_or(0);
-    s_Data.X11.NET_WM_STATE_ABOVE             = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE_ABOVE").value_or(0);
-    s_Data.X11.NET_WM_STATE_FULLSCREEN        = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE_FULLSCREEN").value_or(0);
-    s_Data.X11.NET_WM_STATE_MAXIMIZED_VERT    = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE_MAXIMIZED_VERT").value_or(0);
-    s_Data.X11.NET_WM_STATE_MAXIMIZED_HORZ    = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE_MAXIMIZED_HORZ").value_or(0);
-    s_Data.X11.NET_WM_STATE_DEMANDS_ATTENTION = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE_DEMANDS_ATTENTION").value_or(0);
-    s_Data.X11.NET_WM_FULLSCREEN_MONITORS     = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_FULLSCREEN_MONITORS").value_or(0);
-    s_Data.X11.NET_WM_WINDOW_TYPE             = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_WINDOW_TYPE").value_or(0);
-    s_Data.X11.NET_WM_WINDOW_TYPE_NORMAL      = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_WINDOW_TYPE_NORMAL").value_or(0);
-    s_Data.X11.NET_WORKAREA                   = GetAtomIfSupported(supportedAtomsSpan, "_NET_WORKAREA").value_or(0);
-    s_Data.X11.NET_CURRENT_DESKTOP            = GetAtomIfSupported(supportedAtomsSpan, "_NET_CURRENT_DESKTOP").value_or(0);
-    s_Data.X11.NET_ACTIVE_WINDOW              = GetAtomIfSupported(supportedAtomsSpan, "_NET_ACTIVE_WINDOW").value_or(0);
+	s_Data.X11.NET_WM_STATE                   = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE").value_or(0u);
+    s_Data.X11.NET_WM_STATE_ABOVE             = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE_ABOVE").value_or(0u);
+    s_Data.X11.NET_WM_STATE_FULLSCREEN        = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE_FULLSCREEN").value_or(0u);
+    s_Data.X11.NET_WM_STATE_MAXIMIZED_VERT    = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE_MAXIMIZED_VERT").value_or(0u);
+    s_Data.X11.NET_WM_STATE_MAXIMIZED_HORZ    = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE_MAXIMIZED_HORZ").value_or(0u);
+    s_Data.X11.NET_WM_STATE_DEMANDS_ATTENTION = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_STATE_DEMANDS_ATTENTION").value_or(0u);
+    s_Data.X11.NET_WM_FULLSCREEN_MONITORS     = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_FULLSCREEN_MONITORS").value_or(0u);
+    s_Data.X11.NET_WM_WINDOW_TYPE             = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_WINDOW_TYPE").value_or(0u);
+    s_Data.X11.NET_WM_WINDOW_TYPE_NORMAL      = GetAtomIfSupported(supportedAtomsSpan, "_NET_WM_WINDOW_TYPE_NORMAL").value_or(0u);
+    s_Data.X11.NET_WORKAREA                   = GetAtomIfSupported(supportedAtomsSpan, "_NET_WORKAREA").value_or(0u);
+    s_Data.X11.NET_CURRENT_DESKTOP            = GetAtomIfSupported(supportedAtomsSpan, "_NET_CURRENT_DESKTOP").value_or(0u);
+    s_Data.X11.NET_ACTIVE_WINDOW              = GetAtomIfSupported(supportedAtomsSpan, "_NET_ACTIVE_WINDOW").value_or(0u);
 
 	if(supportedAtoms != nullptr)
 		s_Data.X11.XLIB.Free(supportedAtoms);
@@ -830,11 +1287,11 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseErrorHandlerX11()
 
 //Return the atom ID only if it is listed in the specified array
 [[nodiscard]] std::optional<Atom> TRAP::INTERNAL::WindowingAPI::GetAtomIfSupported(const std::span<const Atom> supportedAtoms,
-                                                                                   const std::string_view atomName)
+                                                                                   const std::string& atomName)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	const Atom searchAtom = s_Data.X11.XLIB.InternAtom(s_Data.X11.display, atomName.data(), 0);
+	const Atom searchAtom = s_Data.X11.XLIB.InternAtom(s_Data.X11.display, atomName.c_str(), 0);
 
 	const auto res = std::ranges::find(supportedAtoms, searchAtom);
 	if(res != supportedAtoms.end())
@@ -850,13 +1307,13 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseErrorHandlerX11()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	const std::array<u8, NumericCast<usize>(16) * 16 * 4> pixels{0};
-	const Scope<Image> cursorImage = TRAP::Image::LoadFromMemory(16, 16, TRAP::Image::ColorFormat::RGBA,
-	                                                             std::vector<u8>(pixels.begin(), pixels.end()));
+	static const std::vector<u8> pixels(NumericCast<usize>(16u) * 16u * 4u, 0u);
+	const Scope<Image> cursorImage = TRAP::Image::LoadFromMemory(16u, 16u, TRAP::Image::ColorFormat::RGBA,
+	                                                             pixels);
 	if(!cursorImage)
 		return std::nullopt;
 
-	return CreateCursorX11(*cursorImage, 0, 0);
+	return CreateCursorX11(*cursorImage, 0u, 0u);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -871,7 +1328,7 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseErrorHandlerX11()
 	if(s_Data.X11.XLIB.GetIMValues(s_Data.X11.IM, XNQueryInputStyle, &styles, nullptr) != nullptr || (styles == nullptr))
 		return false;
 
-	for(u16 i = 0; i < styles->count_styles; i++)
+	for(u16 i = 0u; i < styles->count_styles; ++i)
 	{
 		if(styles->supported_styles[i] == (XIMPreeditNothing | XIMStatusNothing))
 		{
@@ -917,9 +1374,11 @@ void TRAP::INTERNAL::WindowingAPI::InputMethodInstantiateCallback([[maybe_unused
 		return;
 	}
 
-	XIMCallback callback{};
-	callback.callback = static_cast<XIMProc>(InputMethodDestroyCallback);
-	callback.client_data = nullptr;
+	static constexpr XIMCallback callback
+	{
+		.client_data = nullptr,
+		.callback = static_cast<XIMProc>(InputMethodDestroyCallback)
+	};
 	s_Data.X11.XLIB.SetIMValues(s_Data.X11.IM, XNDestroyCallback, &callback, nullptr);
 
 	for(const Scope<InternalWindow>& window : s_Data.WindowList)
@@ -935,14 +1394,10 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 
 	if(!s_Data.X11.RandR.Available || s_Data.X11.RandR.MonitorBroken)
 	{
-		InputMonitor(CreateMonitor("Display"), true, 0);
+		InputMonitor(CreateMonitor("Display"), true, 0u);
 		return;
 	}
 
-	usize disconnectedCount = 0;
-	i32 screenCount = 0;
-	std::vector<InternalMonitor*> disconnected{};
-	XineramaScreenInfo* screens = nullptr;
 	XRRScreenResources* const sr = s_Data.X11.RandR.GetScreenResourcesCurrent(s_Data.X11.display, s_Data.X11.Root);
 	const RROutput primary = s_Data.X11.RandR.GetOutputPrimary(s_Data.X11.display, s_Data.X11.Root);
 
@@ -952,24 +1407,24 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 		return;
 	}
 
+	i32 screenCount = 0;
+	XineramaScreenInfo* screens = nullptr;
 	if(s_Data.X11.Xinerama.Available)
 		screens = s_Data.X11.Xinerama.QueryScreens(s_Data.X11.display, &screenCount);
 
-	disconnectedCount = s_Data.Monitors.size();
-	if(disconnectedCount != 0)
+	const usize disconnectedCount = s_Data.Monitors.size();
+	std::vector<InternalMonitor*> disconnected{};
+	if(disconnectedCount != 0u)
 	{
 		disconnected.resize(s_Data.Monitors.size());
-		for(usize i = 0; i < s_Data.Monitors.size(); i++)
+		for(usize i = 0u; i < s_Data.Monitors.size(); ++i)
 			disconnected[i] = s_Data.Monitors[i].get();
 	}
 
-	for(i32 i = 0; i < sr->noutput; i++)
+	for(i32 i = 0; i < sr->noutput; ++i)
 	{
-		usize j = 0;
-		u32 type = 0;
-
 		XRROutputInfo* const oi = s_Data.X11.RandR.GetOutputInfo(s_Data.X11.display, sr, sr->outputs[i]);
-		if((oi == nullptr) || oi->connection != RR_Connected || oi->crtc == 0)
+		if((oi == nullptr) || oi->connection != RR_Connected || oi->crtc == 0u)
 		{
 			if(oi != nullptr)
 				s_Data.X11.RandR.FreeOutputInfo(oi);
@@ -984,7 +1439,8 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 			continue;
 		}
 
-		for(j = 0; j < disconnectedCount; j++)
+		usize j = 0u;
+		for(j = 0u; j < disconnectedCount; ++j)
 		{
 			if((disconnected[j] != nullptr) && disconnected[j]->X11.Output == sr->outputs[i])
 			{
@@ -1006,7 +1462,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 
 		if(screens != nullptr)
 		{
-			for(j = 0; std::cmp_less(j, screenCount); j++)
+			for(j = 0u; std::cmp_less(j, screenCount); ++j)
 			{
 				if(screens[j].x_org == ci->x && screens[j].y_org == ci->y &&
 				   std::cmp_equal(screens[j].width, ci->width) &&
@@ -1018,10 +1474,11 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 			}
 		}
 
+		u32 type = 0u;
 		if(monitor->X11.Output == primary)
-			type = 0;
+			type = 0u;
 		else
-			type = 1;
+			type = 1u;
 
 		InputMonitor(std::move(monitor), true, type);
 
@@ -1035,10 +1492,10 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 	if(screens != nullptr)
 		s_Data.X11.XLIB.Free(screens);
 
-	for(usize i = 0; i < disconnectedCount; i++)
+	for(usize i = 0u; i < disconnectedCount; ++i)
 	{
 		if(disconnected[i] != nullptr)
-			InputMonitorDisconnect(NumericCast<u32>(i), 0);
+			InputMonitorDisconnect(NumericCast<u32>(i), 0u);
 	}
 }
 
@@ -1070,7 +1527,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	std::string selectionString{};
-	const std::array<Atom, 2> formats{s_Data.X11.UTF8_STRING, XA_STRING};
+	const std::array<Atom, 2u> formats{s_Data.X11.UTF8_STRING, XA_STRING};
 
 	if(request.selection == s_Data.X11.PRIMARY)
 		selectionString = s_Data.X11.PrimarySelectionString;
@@ -1087,7 +1544,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 	if(request.target == s_Data.X11.TARGETS)
 	{
 		//The list of supported targets was requested
-		const std::array<Atom, 4> targets{s_Data.X11.TARGETS, s_Data.X11.MULTIPLE, s_Data.X11.UTF8_STRING, XA_STRING};
+		const std::array<Atom, 4u> targets{s_Data.X11.TARGETS, s_Data.X11.MULTIPLE, s_Data.X11.UTF8_STRING, XA_STRING};
 
 		s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, request.requestor, request.property, XA_ATOM, 32,
 		                               PropModeReplace, reinterpret_cast<const u8*>(targets.data()),
@@ -1107,16 +1564,16 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 		if(targets == nullptr)
 			return None;
 
-		for(u64 i = 0; i < count; i += 2)
+		for(u64 i = 0u; i < count; i += 2u)
 		{
 			if(std::ranges::contains(formats, targets[i]))
 			{
-				s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, request.requestor, targets[i + 1], targets[i], 8,
+				s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, request.requestor, targets[i + 1u], targets[i], 8,
 				                               PropModeReplace, reinterpret_cast<u8*>(selectionString.data()),
 										       NumericCast<i32>(selectionString.size()));
 			}
 			else
-				targets[i + 1] = None;
+				targets[i + 1u] = None;
 		}
 
 		s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, request.requestor, request.property, s_Data.X11.ATOM_PAIR, 32,
@@ -1158,7 +1615,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::HandleSelectionRequest(XEvent& event)
+void TRAP::INTERNAL::WindowingAPI::HandleSelectionRequest(const XEvent& event)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
@@ -1223,9 +1680,11 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	XIMCallback callback{};
-	callback.callback = reinterpret_cast<XIMProc>(InputContextDestroyCallback);
-	callback.client_data = reinterpret_cast<XPointer>(&window);
+	const XIMCallback callback
+	{
+		.client_data = reinterpret_cast<XPointer>(&window),
+		.callback = reinterpret_cast<XIMProc>(InputContextDestroyCallback),
+	};
 
 	window.X11.IC = s_Data.X11.XLIB.CreateIC(s_Data.X11.IM,
 		                                     XNInputStyle,
@@ -1244,7 +1703,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 	XWindowAttributes attribs;
 	s_Data.X11.XLIB.GetWindowAttributes(s_Data.X11.display, window.X11.Handle, &attribs);
 
-	u64 filter = 0;
+	u64 filter = 0u;
 	if(s_Data.X11.XLIB.GetICValues(window.X11.IC, XNFilterEvents, &filter, nullptr) == nullptr)
 		s_Data.X11.XLIB.SelectInput(s_Data.X11.display, window.X11.Handle,
 		                            NumericCast<i64>(NumericCast<u64>(attribs.your_event_mask) | filter));
@@ -1292,7 +1751,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 	window.X11.Handle = s_Data.X11.XLIB.CreateWindow(s_Data.X11.display, s_Data.X11.Root,
 	                                                 0, 0,
 								                     width, height,
-								                     0,
+								                     0u,
 								                     depth,
 								                     InputOutput,
 								                     &visual,
@@ -1314,7 +1773,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 
 	if((s_Data.X11.NET_WM_STATE != 0u) && (window.Monitor == nullptr))
 	{
-		std::array<Atom, 3> states{};
+		std::array<Atom, 3u> states{};
 		u32 count = 0;
 
 		if(WNDConfig.Floating)
@@ -1334,7 +1793,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 			}
 		}
 
-		if(count != 0)
+		if(count != 0u)
 		{
 			s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, window.X11.Handle, s_Data.X11.NET_WM_STATE, XA_ATOM, 32,
 							               PropModeReplace, reinterpret_cast<const u8*>(states.data()),
@@ -1344,7 +1803,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 
 	//Declare the WM protocols supported by TRAP
 	{
-		std::array<Atom, 2> protocols{s_Data.X11.WM_DELETE_WINDOW, s_Data.X11.NET_WM_PING};
+		std::array<Atom, 2u> protocols{s_Data.X11.WM_DELETE_WINDOW, s_Data.X11.NET_WM_PING};
 
 		s_Data.X11.XLIB.SetWMProtocols(s_Data.X11.display, window.X11.Handle, protocols.data(), protocols.size());
 	}
@@ -1460,14 +1919,14 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 	const u8* source = image.GetPixelData().data();
 	XcursorPixel* target = native->pixels;
 
-	for(u64 i = 0; i < NumericCast<u64>(image.GetWidth()) * NumericCast<u64>(image.GetHeight()); i++, target++, source += 4)
+	for(u64 i = 0u; i < NumericCast<u64>(image.GetWidth()) * NumericCast<u64>(image.GetHeight()); ++i, ++target, source += 4u)
 	{
-		const u32 alpha = source[3];
+		const u32 alpha = source[3u];
 
 		*target = (alpha << 24u) |
-		          NumericCast<u8>(((source[0] * alpha) / 255u) << 16u) |
-				  NumericCast<u8>(((source[1] * alpha) / 255u) <<  8u) |
-				  NumericCast<u8>(((source[2] * alpha) / 255u) <<  0u);
+		          NumericCast<u8>(((source[0u] * alpha) / 255u) << 16u) |
+				  NumericCast<u8>(((source[1u] * alpha) / 255u) <<  8u) |
+				  NumericCast<u8>(((source[2u] * alpha) / 255u) <<  0u);
 	}
 
 	const Cursor cursor = s_Data.X11.XCursor.ImageLoadCursor(s_Data.X11.display, native);
@@ -1507,7 +1966,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	std::string& selectionString = (selection == s_Data.X11.PRIMARY) ? s_Data.X11.PrimarySelectionString : s_Data.ClipboardString;
-	const std::array<Atom, 2> targets = {s_Data.X11.UTF8_STRING, XA_STRING};
+	const std::array<Atom, 2u> targets = {s_Data.X11.UTF8_STRING, XA_STRING};
 
 	if(s_Data.X11.XLIB.GetSelectionOwner(s_Data.X11.display, selection) == s_Data.X11.HelperWindowHandle)
 	{
@@ -1521,9 +1980,9 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 	for(const Atom& target : targets)
 	{
 		char* data = nullptr;
-		Atom actualType = 0;
+		Atom actualType = 0u;
 		i32 actualFormat = 0;
-		u64 itemCount = 0, bytesAfter = 0;
+		u64 itemCount = 0u, bytesAfter = 0u;
 		XEvent notification, dummy;
 
 		s_Data.X11.XLIB.ConvertSelection(s_Data.X11.display, selection, target, s_Data.X11.TRAP_SELECTION,
@@ -1604,7 +2063,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 
 //Returns whether it is a property event for the specified selection transfer
 [[nodiscard]] i32 TRAP::INTERNAL::WindowingAPI::IsSelPropNewValueNotify([[maybe_unused]] Display* const display,
-                                                                            XEvent* const event, XPointer ptr)
+                                                                            XEvent* const event, XPointer const ptr)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
 	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -1612,33 +2071,12 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 	TRAP_ASSERT(event, "WindowingAPI::IsSelPropNewValueNotify(): XEvent is nullptr!");
 	TRAP_ASSERT(ptr, "WindowingAPI::IsSelPropNewValueNotify(): XPointer is nullptr!");
 
-	const XEvent* const notification = reinterpret_cast<XEvent*>(ptr);
+	const XEvent* const notification = reinterpret_cast<const XEvent*>(ptr);
 
 	return NumericCast<i32>(event->type == PropertyNotify &&
 	                            event->xproperty.state == PropertyNewValue &&
 		                        event->xproperty.window == notification->xselection.requestor &&
 		                        event->xproperty.atom == notification->xselection.property);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Convert the specified Latin-1 string to UTF-8
-[[nodiscard]] std::string TRAP::INTERNAL::WindowingAPI::ConvertLatin1ToUTF8(const std::string_view source)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
-
-	usize size = 1;
-
-	for(const char c : source)
-		size += (NumericCast<u8>(c) & 0x80u) != 0 ? 2 : 1;
-
-	std::string target{};
-	target.reserve(size);
-
-	for(const char c : source)
-		target += Utils::String::EncodeUTF8(NumericCast<u32>(c));
-
-	return target;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1670,10 +2108,12 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 
 	if(!mode)
 	{
-		mode = InternalVideoMode{};
-		mode->Width = DisplayWidth(s_Data.X11.display, s_Data.X11.Screen);
-		mode->Height = DisplayHeight(s_Data.X11.display, s_Data.X11.Screen);
-		mode->RefreshRate = 60.0;
+		mode = InternalVideoMode
+		{
+			.Width = DisplayWidth(s_Data.X11.display, s_Data.X11.Screen),
+			.Height = DisplayHeight(s_Data.X11.display, s_Data.X11.Screen),
+			.RefreshRate = 60.0
+		};
 
 		SplitBPP(DefaultDepth(s_Data.X11.display, s_Data.X11.Screen), mode->RedBits, mode->GreenBits, mode->BlueBits);
 	}
@@ -1818,7 +2258,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessX11(Interna
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	std::vector<InternalVideoMode> result{};
-	u32 count = 0;
 
 	if(s_Data.X11.RandR.Available && !s_Data.X11.RandR.MonitorBroken)
 	{
@@ -1830,7 +2269,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessX11(Interna
 		{
 			result.reserve(NumericCast<u32>(oi->nmode));
 
-			for(i32 i = 0; i < oi->nmode; i++)
+			u32 count = 0u;
+			for(i32 i = 0; i < oi->nmode; ++i)
 			{
 				const XRRModeInfo* const mi = GetModeInfo(*sr, oi->modes[i]);
 				if((mi == nullptr) || (mi->modeFlags & RR_Interlace) != 0)
@@ -1846,7 +2286,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessX11(Interna
 				if(pos < count)
 					continue;
 
-				count++;
+				++count;
 				result.push_back(*mode);
 			}
 		}
@@ -2108,13 +2548,13 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindowX11(InternalWindow& wind
 		s_Data.X11.XLIB.DeleteContext(s_Data.X11.display, window.X11.Handle, s_Data.X11.Context);
 		s_Data.X11.XLIB.UnmapWindow(s_Data.X11.display, window.X11.Handle);
 		s_Data.X11.XLIB.DestroyWindow(s_Data.X11.display, window.X11.Handle);
-		window.X11.Handle = 0;
+		window.X11.Handle = 0u;
 	}
 
 	if(window.X11.colormap != 0u)
 	{
 		s_Data.X11.XLIB.FreeColormap(s_Data.X11.display, window.X11.colormap);
-		window.X11.colormap = 0;
+		window.X11.colormap = 0u;
 	}
 
 	s_Data.X11.XLIB.Flush(s_Data.X11.display);
@@ -2167,10 +2607,10 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdownX11()
 	if(s_Data.X11.XLIB.Handle != nullptr)
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.X11.XLIB.Handle);
 
-	if((std::get<0>(s_Data.EmptyEventPipe) != 0) || (std::get<1>(s_Data.EmptyEventPipe) != 0))
+	if((std::get<0u>(s_Data.EmptyEventPipe) != 0) || (std::get<1u>(s_Data.EmptyEventPipe) != 0))
 	{
-		close(std::get<0>(s_Data.EmptyEventPipe));
-		close(std::get<1>(s_Data.EmptyEventPipe));
+		close(std::get<0u>(s_Data.EmptyEventPipe));
+		close(std::get<1u>(s_Data.EmptyEventPipe));
 	}
 
 	s_Data.X11 = {};
@@ -2216,7 +2656,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPosX11(const InternalMonito
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformShowWindowX11(InternalWindow& window)
+void TRAP::INTERNAL::WindowingAPI::PlatformShowWindowX11(const InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
@@ -2386,7 +2826,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleX11(const InternalWindo
 
 	if(cursor.X11.Handle == 0u)
 	{
-		u32 native = 0;
+		u32 native = 0u;
 
 		if(type == CursorType::Arrow)
 			native = XC_left_ptr;
@@ -2427,7 +2867,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleX11(const InternalWindo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformDestroyCursorX11(InternalCursor& cursor)
+void TRAP::INTERNAL::WindowingAPI::PlatformDestroyCursorX11(const InternalCursor& cursor)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
@@ -2437,8 +2877,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyCursorX11(InternalCursor& curs
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorX11(InternalWindow& window,
-                                                        [[maybe_unused]] InternalCursor* const cursor)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorX11(const InternalWindow& window,
+                                                        [[maybe_unused]] const InternalCursor* const cursor)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
@@ -2498,7 +2938,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPosX11(InternalWindow& windo
 	window.X11.WarpCursorPosX = NumericCast<i32>(xPos);
 	window.X11.WarpCursorPosY = NumericCast<i32>(yPos);
 
-	s_Data.X11.XLIB.WarpPointer(s_Data.X11.display, None, window.X11.Handle, 0, 0, 0, 0, NumericCast<i32>(xPos),
+	s_Data.X11.XLIB.WarpPointer(s_Data.X11.display, None, window.X11.Handle, 0, 0, 0u, 0u, NumericCast<i32>(xPos),
 	                            NumericCast<i32>(yPos));
 	s_Data.X11.XLIB.Flush(s_Data.X11.display);
 }
@@ -2509,9 +2949,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPosX11(const InternalWindow&
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	::Window root = 0, child = 0;
+	::Window root = 0u, child = 0u;
 	i32 rootX = 0, rootY = 0, childX = 0, childY = 0;
-	u32 mask = 0;
+	u32 mask = 0u;
 
 	s_Data.X11.XLIB.QueryPointer(s_Data.X11.display, window.X11.Handle, &root, &child, &rootX, &rootY, &childX, &childY,
 	                             &mask);
@@ -2522,28 +2962,27 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPosX11(const InternalWindow&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIconX11(InternalWindow& window, const Image* const image)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIconX11(const InternalWindow& window, const Image* const image)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if(image != nullptr)
 	{
-		const u32 longCount = 2 + image->GetWidth() * image->GetHeight();
+		const u32 longCount = 2u + (image->GetWidth() * image->GetHeight());
 
-		std::vector<u64> icon{};
-		icon.resize(longCount);
+		std::vector<u64> icon(longCount, 0u);
 		auto targetIt = icon.begin();
 		const std::span imgData = image->GetPixelData();
 
 		*targetIt++ = image->GetWidth();
 		*targetIt++ = image->GetHeight();
 
-		for(u64 j = 0; j < NumericCast<u64>(image->GetWidth()) * NumericCast<u64>(image->GetHeight()); j++)
+		for(u64 j = 0u; j < NumericCast<u64>(image->GetWidth()) * NumericCast<u64>(image->GetHeight()); ++j)
 		{
-			*targetIt++ = (static_cast<u64>(imgData[j * 4 + 0]) << 16u) |
-						  (static_cast<u64>(imgData[j * 4 + 1]) <<  8u) |
-						  (static_cast<u64>(imgData[j * 4 + 2]) <<  0u) |
-						  (static_cast<u64>(imgData[j * 4 + 3]) << 24u);
+			*targetIt++ = (static_cast<u64>(imgData[(j * 4u) + 0u]) << 16u) |
+						  (static_cast<u64>(imgData[(j * 4u) + 1u]) <<  8u) |
+						  (static_cast<u64>(imgData[(j * 4u) + 2u]) <<  0u) |
+						  (static_cast<u64>(imgData[(j * 4u) + 3u]) << 24u);
 		}
 
 		//NOTE: XChangeProperty expects 32-bit values like the image data above to be
@@ -2568,7 +3007,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPosX11(const InternalWindow&
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	::Window dummy = 0;
+	::Window dummy = 0u;
 	i32 x = 0, y = 0;
 
 	s_Data.X11.XLIB.TranslateCoordinates(s_Data.X11.display, window.X11.Handle, s_Data.X11.Root, 0, 0, &x, &y, &dummy);
@@ -2604,7 +3043,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeX11(InternalWindow& wind
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizableX11(InternalWindow& window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizableX11(const InternalWindow& window,
                                                                  [[maybe_unused]] const bool enabled)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
@@ -2617,17 +3056,17 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizableX11(InternalWindow&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecoratedX11(InternalWindow& window, const bool enabled)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecoratedX11(const InternalWindow& window, const bool enabled)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	struct Hints
 	{
-		u64 Flags = 0;
-		u64 Functions = 0;
-		u64 Decorations = 0;
+		u64 Flags = 0u;
+		u64 Functions = 0u;
+		u64 Decorations = 0u;
 		i64 InputMode = 0;
-		u64 status = 0;
+		u64 status = 0u;
 	} hints{};
 
 	hints.Flags = MWM_HINTS_DECORATIONS; //MWM_HINTS_DECORATIONS
@@ -2662,9 +3101,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloatingX11(const InternalWi
 		//      it implicitly with append)
 		if(enabled)
 		{
-			u64 i = 0;
+			u64 i = 0u;
 
-			for(i = 0; i < count; i++)
+			for(i = 0u; i < count; ++i)
 			{
 				if(states[i] == s_Data.X11.NET_WM_STATE_ABOVE)
 					break;
@@ -2678,7 +3117,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloatingX11(const InternalWi
 		}
 		else if(states != nullptr)
 		{
-			for(u64 i = 0; i < count; ++i)
+			for(u64 i = 0u; i < count; ++i)
 			{
 				if(states[i] == s_Data.X11.NET_WM_STATE_ABOVE)
 				{
@@ -2711,7 +3150,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacityX11(const InternalWin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthroughX11(InternalWindow& window, const bool enabled)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthroughX11(const InternalWindow& window, const bool enabled)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
@@ -2726,16 +3165,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthroughX11(Internal
 	}
 	else
 		s_Data.X11.XShape.CombineMask(s_Data.X11.display, window.X11.Handle, ShapeInput, 0, 0, None, ShapeSet);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbarX11([[maybe_unused]] InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
-	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
-    InputError(Error::Feature_Unavailable, "[X11] Platform does not support hiding windows from the taskbar");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2839,12 +3268,12 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkAreaX11(const InternalM
 		if(GetWindowPropertyX11(s_Data.X11.Root, s_Data.X11.NET_CURRENT_DESKTOP, XA_CARDINAL,
 		                        reinterpret_cast<u8**>(&desktop)) > 0)
 		{
-			if(extentCount >= 4 && *desktop < extentCount / 4)
+			if(extentCount >= 4u && *desktop < extentCount / 4u)
 			{
-				const i32 globalX = static_cast<i32>(extents[*desktop * 4 + 0]);
-				const i32 globalY = static_cast<i32>(extents[*desktop * 4 + 1]);
-				const i32 globalWidth = static_cast<i32>(extents[*desktop * 4 + 2]);
-				const i32 globalHeight = static_cast<i32>(extents[*desktop * 4 + 3]);
+				const i32 globalX = static_cast<i32>(extents[*desktop * 4u + 0u]);
+				const i32 globalY = static_cast<i32>(extents[*desktop * 4u + 1u]);
+				const i32 globalWidth = static_cast<i32>(extents[*desktop * 4u + 2u]);
+				const i32 globalHeight = static_cast<i32>(extents[*desktop * 4u + 3u]);
 
 				if(areaX < globalX)
 				{
@@ -2905,7 +3334,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkAreaX11(const InternalM
 	const u64 count = GetWindowPropertyX11(window.X11.Handle, s_Data.X11.NET_WM_STATE, XA_ATOM,
 	                                            reinterpret_cast<u8**>(&states));
 
-	for(u64 i = 0; i < count; i++)
+	for(u64 i = 0u; i < count; ++i)
 	{
 		if(states[i] == s_Data.X11.NET_WM_STATE_MAXIMIZED_VERT || states[i] == s_Data.X11.NET_WM_STATE_MAXIMIZED_HORZ)
 		{
@@ -2990,7 +3419,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEventX11()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	::Window focused = 0;
+	::Window focused = 0u;
 	i32 state = 0;
 
 	s_Data.X11.XLIB.GetInputFocus(s_Data.X11.display, &focused, &state);
@@ -3007,9 +3436,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEventX11()
 	::Window w = s_Data.X11.Root;
 	while(w != 0u)
 	{
-		::Window root = 0;
+		::Window root = 0u;
 		i32 rootX = 0, rootY = 0, childX = 0, childY = 0;
-		u32 mask = 0;
+		u32 mask = 0u;
 
 		GrabErrorHandlerX11();
 
@@ -3127,7 +3556,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardStringX11(const std::stri
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensionsX11(std::array<std::string, 2>& extensions)
+void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensionsX11(std::array<std::string, 2u>& extensions)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
 	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -3181,10 +3610,14 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensionsX11(std:
 			return VK_ERROR_EXTENSION_NOT_PRESENT;
 		}
 
-		VkXcbSurfaceCreateInfoKHR sci{};
-		sci.sType = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR;
-		sci.connection = connection;
-		sci.window = window.X11.Handle;
+		const VkXcbSurfaceCreateInfoKHR sci
+		{
+			.sType = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,
+			.pNext = nullptr,
+			.flags = 0,
+			.connection = connection,
+			.window = window.X11.Handle
+		};
 
 		const VkResult err = vkCreateXcbSurfaceKHR(instance, &sci, allocator, &surface);
 		if(err != 0)
@@ -3203,10 +3636,14 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensionsX11(std:
 		return VK_ERROR_EXTENSION_NOT_PRESENT;
 	}
 
-	VkXlibSurfaceCreateInfoKHR sci{};
-	sci.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
-	sci.dpy = s_Data.X11.display;
-	sci.window = window.X11.Handle;
+	const VkXlibSurfaceCreateInfoKHR sci
+	{
+		.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
+		.pNext = nullptr,
+		.flags = 0,
+		.dpy = s_Data.X11.display,
+		.window = window.X11.Handle
+	};
 
 	const VkResult err = vkCreateXlibSurfaceKHR(instance, &sci, allocator, &surface);
 	if(err != 0)
@@ -3241,21 +3678,21 @@ void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindowX11(const InternalWindo
 
 		//NOTE: We don't check for failure as this property may not exist yet and that's fine (and we'll create it
 		//      implicitly with append)
-		std::array<Atom, 2> missing =
+		std::array<Atom, 2u> missing =
 		{
 			s_Data.X11.NET_WM_STATE_MAXIMIZED_VERT,
 			s_Data.X11.NET_WM_STATE_MAXIMIZED_HORZ
 		};
-		u64 missingCount = 2;
+		u64 missingCount = 2u;
 
-		for(u64 i = 0; i < count; i++)
+		for(u64 i = 0u; i < count; ++i)
 		{
-			for(u64 j = 0; j < missingCount; j++)
+			for(u64 j = 0u; j < missingCount; ++j)
 			{
 				if(states[i] == missing[j])
 				{
-					missing[j] = missing[missingCount - 1];
-					missingCount--;
+					missing[j] = missing[missingCount - 1u];
+					--missingCount;
 				}
 			}
 		}
@@ -3294,7 +3731,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformMinimizeWindowX11(const InternalWindo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttentionX11(InternalWindow& window)
+void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttentionX11(const InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
@@ -3307,7 +3744,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttentionX11(InternalWin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowX11(InternalWindow& window)
+void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowX11(const InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
@@ -3317,7 +3754,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowX11(InternalWindow& window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindowX11(InternalWindow& window)
+void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindowX11(const InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
@@ -3351,7 +3788,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindowX11(InternalWindow& wind
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimitsX11(InternalWindow& window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimitsX11(const InternalWindow& window,
                                                                   [[maybe_unused]] const i32 minWidth,
                                                                   [[maybe_unused]] const i32 minHeight,
 															      [[maybe_unused]] const i32 maxWidth,
@@ -3367,7 +3804,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimitsX11(InternalWindow
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatioX11(InternalWindow& window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatioX11(const InternalWindow& window,
                                                                    [[maybe_unused]] const i32 numerator,
                                                                    [[maybe_unused]] const i32 denominator)
 {
@@ -3388,10 +3825,12 @@ void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion([[maybe_unused]] const I
 
 	std::array<u8, XIMaskLen(XI_RawMotion)> mask{};
 
-	XIEventMask em{};
-	em.deviceid = XIAllMasterDevices;
-	em.mask_len = mask.size();
-	em.mask = mask.data();
+	XIEventMask em
+	{
+		.deviceid = XIAllMasterDevices,
+		.mask_len = mask.size(),
+		.mask = mask.data()
+	};
 	XISetMask(mask.data(), XI_RawMotion);
 
 	s_Data.X11.XI.SelectEvents(s_Data.X11.display, s_Data.X11.Root, &em, 1);
@@ -3404,12 +3843,14 @@ void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion([[maybe_unused]] const 
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	std::array<u8, 1> mask{};
+	std::array<u8, 1u> mask{};
 
-	XIEventMask em{};
-	em.deviceid = XIAllMasterDevices;
-	em.mask_len = mask.size();
-	em.mask = mask.data();
+	XIEventMask em
+	{
+		.deviceid = XIAllMasterDevices,
+		.mask_len = mask.size(),
+		.mask = mask.data()
+	};
 
 	s_Data.X11.XI.SelectEvents(s_Data.X11.display, s_Data.X11.Root, &em, 1);
 }
@@ -3421,12 +3862,12 @@ void TRAP::INTERNAL::WindowingAPI::InputErrorX11(const Error error, const std::s
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	std::vector<char> buffer(1024, '\0');
+	std::string buffer(1024u, '\0');
 	s_Data.X11.XLIB.GetErrorText(s_Data.X11.display, s_Data.X11.ErrorCode, buffer.data(), NumericCast<i32>(buffer.size()));
 
 	std::erase(buffer, '\0');
 
-	InputError(error, fmt::format("[X11] {}: {}", message, buffer.data()));
+	InputError(error, fmt::format("[X11] {}: {}", message, buffer));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3436,14 +3877,12 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-	i32 keyCode = 0;
-	bool filtered = false;
-
 	//HACK: Save scanCode as some IMs clear the field in s_Data.XLIB.FilterEvent
+	i32 keyCode = 0;
 	if(event.type == KeyPress || event.type == KeyRelease)
 		keyCode = NumericCast<i32>(event.xkey.keycode);
 
-	filtered = (s_Data.X11.XLIB.FilterEvent(&event, 0) != 0);
+	const bool filtered = (s_Data.X11.XLIB.FilterEvent(&event, 0) != 0);
 
 	if(s_Data.X11.RandR.Available)
 	{
@@ -3489,7 +3928,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 					if(XIMaskIsSet(re->valuators.mask, 0))
 					{
 						xPos += *values;
-						values++;
+						++values;
 					}
 
 					if(XIMaskIsSet(re->valuators.mask, 1))
@@ -3539,7 +3978,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			//      (the server never sends a timestamp of zero)
 			//NOTE: Timestamp difference is compared to handle wrap-around
 			const Time diff = event.xkey.time - window->X11.KeyPressTimes[NumericCast<u32>(keyCode)];
-			if(diff == event.xkey.time || (diff > 0 && diff < (static_cast<Time>(1u) << 31u)))
+			if(diff == event.xkey.time || (diff > 0u && diff < (static_cast<Time>(1u) << 31u)))
 			{
 				if(keyCode != 0)
 					InputKey(*window, key, keyCode, Input::KeyState::Pressed);
@@ -3549,13 +3988,12 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 
 			if(!filtered)
 			{
-				i32 count = 0;
 				i32 status = 0;
 
 				std::string buffer(100, '\0');
 				char* chars = buffer.data();
 
-				count = s_Data.X11.XLIB.UTF8LookupString(window->X11.IC, &event.xkey, buffer.data(),
+				i32 count = s_Data.X11.XLIB.UTF8LookupString(window->X11.IC, &event.xkey, buffer.data(),
 				                                         NumericCast<i32>(buffer.size()) - 1, nullptr, &status);
 
 				if(status == XBufferOverflow)
@@ -3606,7 +4044,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 					std::cmp_equal(next.xkey.keycode, keyCode))
 				{
 					//HACK: The time of repeat events sometimes doesn't match that of the press event, so add an epsilon
-					if((next.xkey.time - event.xkey.time) < 20)
+					if((next.xkey.time - event.xkey.time) < 20u)
 					{
 						//This is very likely a server-generated key repeat event, so ignore it
 						return;
@@ -3741,7 +4179,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		{
 			GrabErrorHandlerX11();
 
-			::Window dummy = 0;
+			::Window dummy = 0u;
 			s_Data.X11.XLIB.TranslateCoordinates(s_Data.X11.display, window->X11.Parent, s_Data.X11.Root, xPos, yPos, &xPos, &yPos, &dummy);
 
 			ReleaseErrorHandlerX11();
@@ -3771,7 +4209,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 
 		if(event.xclient.message_type == s_Data.X11.WM_PROTOCOLS)
 		{
-			const Atom protocol = static_cast<Atom>(event.xclient.data.l[0]);
+			const Atom protocol = static_cast<Atom>(event.xclient.data.l[0u]);
 			if(protocol == None)
 				return;
 
@@ -3794,12 +4232,12 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		else if(event.xclient.message_type == s_Data.X11.XDNDEnter)
 		{
 			//A drag operation has entered the window
-			u64 count = 0;
+			u64 count = 0u;
 			Atom* formats = nullptr;
-			const bool list = (event.xclient.data.l[1] & 1) != 0;
+			const bool list = (event.xclient.data.l[1u] & 1) != 0;
 
-			s_Data.X11.XDND.Source = static_cast<::Window>(event.xclient.data.l[0]);
-			s_Data.X11.XDND.Version = NumericCast<i32>(event.xclient.data.l[1] >> 24u);
+			s_Data.X11.XDND.Source = static_cast<::Window>(event.xclient.data.l[0u]);
+			s_Data.X11.XDND.Version = NumericCast<i32>(event.xclient.data.l[1u] >> 24u);
 			s_Data.X11.XDND.Format = None;
 
 			if(s_Data.X11.XDND.Version > TRAP_XDND_VERSION)
@@ -3812,11 +4250,11 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			}
 			else
 			{
-				count = 3;
-				formats = reinterpret_cast<Atom*>(event.xclient.data.l) + 2;
+				count = 3u;
+				formats = reinterpret_cast<Atom*>(event.xclient.data.l) + 2u;
 			}
 
-			for(u64 i = 0; i < count; i++)
+			for(u64 i = 0u; i < count; ++i)
 			{
 				if(formats[i] == s_Data.X11.text_uri_list)
 				{
@@ -3839,7 +4277,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			if(s_Data.X11.XDND.Format != 0u)
 			{
 				if(s_Data.X11.XDND.Version >= 1)
-					time = static_cast<Time>(event.xclient.data.l[2]);
+					time = static_cast<Time>(event.xclient.data.l[2u]);
 
 				//Request the chosen format from the source window
 				s_Data.X11.XLIB.ConvertSelection(s_Data.X11.display, s_Data.X11.XDNDSelection, s_Data.X11.XDND.Format,
@@ -3851,9 +4289,9 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				reply.xclient.window = s_Data.X11.XDND.Source;
 				reply.xclient.message_type = s_Data.X11.XDNDFinished;
 				reply.xclient.format = 32;
-				reply.xclient.data.l[0] = static_cast<i64>(window->X11.Handle);
-				reply.xclient.data.l[1] = 0; //The drag was rejected
-				reply.xclient.data.l[2] = None;
+				reply.xclient.data.l[0u] = static_cast<i64>(window->X11.Handle);
+				reply.xclient.data.l[1u] = 0; //The drag was rejected
+				reply.xclient.data.l[2u] = None;
 
 				s_Data.X11.XLIB.SendEvent(s_Data.X11.display, s_Data.X11.XDND.Source, 0, NoEventMask, &reply);
 				s_Data.X11.XLIB.Flush(s_Data.X11.display);
@@ -3862,9 +4300,9 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		else if(event.xclient.message_type == s_Data.X11.XDNDPosition)
 		{
 			//The drag operation has moved over the window
-			const i32 xAbs = NumericCast<i32>((event.xclient.data.l[2] >> 16) & 0xFFFFu);
-			const i32 yAbs = NumericCast<i32>((event.xclient.data.l[2]) & 0xFFFFu);
-			::Window dummy = 0;
+			const i32 xAbs = NumericCast<i32>((event.xclient.data.l[2u] >> 16) & 0xFFFFu);
+			const i32 yAbs = NumericCast<i32>((event.xclient.data.l[2u]) & 0xFFFFu);
+			::Window dummy = 0u;
 			i32 xPos = 0, yPos = 0;
 
 			if(s_Data.X11.XDND.Version > TRAP_XDND_VERSION)
@@ -3879,16 +4317,16 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			reply.xclient.window = s_Data.X11.XDND.Source;
 			reply.xclient.message_type = s_Data.X11.XDNDStatus;
 			reply.xclient.format = 32;
-			reply.xclient.data.l[0] = static_cast<i64>(window->X11.Handle);
-			reply.xclient.data.l[2] = 0; //Specify an empty rectangle
-			reply.xclient.data.l[3] = 0;
+			reply.xclient.data.l[0u] = static_cast<i64>(window->X11.Handle);
+			reply.xclient.data.l[2u] = 0; //Specify an empty rectangle
+			reply.xclient.data.l[3u] = 0;
 
 			if(s_Data.X11.XDND.Format != 0u)
 			{
 				//Reply that we are ready to copy the dragged data
-				reply.xclient.data.l[1] = 1; //Accept with no rectangle
+				reply.xclient.data.l[1u] = 1; //Accept with no rectangle
 				if(s_Data.X11.XDND.Version >= 2)
-					reply.xclient.data.l[4] = static_cast<i64>(s_Data.X11.XDNDActionCopy);
+					reply.xclient.data.l[4u] = static_cast<i64>(s_Data.X11.XDNDActionCopy);
 			}
 
 			s_Data.X11.XLIB.SendEvent(s_Data.X11.display, s_Data.X11.XDND.Source, 0, NoEventMask, &reply);
@@ -3925,9 +4363,9 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				reply.xclient.window = s_Data.X11.XDND.Source;
 				reply.xclient.message_type = s_Data.X11.XDNDFinished;
 				reply.xclient.format = 32;
-				reply.xclient.data.l[0] = static_cast<i64>(window->X11.Handle);
-				reply.xclient.data.l[1] = static_cast<i64>(result);
-				reply.xclient.data.l[2] = static_cast<i64>(s_Data.X11.XDNDActionCopy);
+				reply.xclient.data.l[0u] = static_cast<i64>(window->X11.Handle);
+				reply.xclient.data.l[1u] = static_cast<i64>(result);
+				reply.xclient.data.l[2u] = static_cast<i64>(s_Data.X11.XDNDActionCopy);
 
 				s_Data.X11.XLIB.SendEvent(s_Data.X11.display, s_Data.X11.XDND.Source, 0, NoEventMask, &reply);
 				s_Data.X11.XLIB.Flush(s_Data.X11.display);
@@ -4048,8 +4486,8 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 
 	TRAP_ASSERT(str, "WindowingAPI::DecodeUTF8(): Unicode codepoint is nullptr!");
 
-	u32 ch = 0, count = 0;
-	static constexpr std::array<u32, 6> offsets =
+	u32 ch = 0u, count = 0u;
+	static constexpr std::array<u32, 6u> offsets =
 	{
 		0x00000000u, 0x00003080u, 0x000E2080u,
 		0x03C82080u, 0xFA082080u, 0x82082080u
@@ -4058,13 +4496,13 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 	do
 	{
 		ch = (ch << 6u) + static_cast<u8>(**str);
-		(*str)++;
-		count++;
+		++(*str);
+		++count;
 	} while((NumericCast<u8>(**str) & 0xC0u) == 0x80u);
 
-	TRAP_ASSERT(count <= 6, "WindowingAPI::DecodeUTF8(): Invalid UTF-8 sequence!");
+	TRAP_ASSERT(count <= 6u, "WindowingAPI::DecodeUTF8(): Invalid UTF-8 sequence!");
 
-	return ch - offsets[count - 1];
+	return ch - offsets[count - 1u];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4085,7 +4523,7 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(InternalWindow& window)
 	}
 
 	if(window.Monitor->Window == nullptr)
-		s_Data.X11.Saver.Count++;
+		++s_Data.X11.Saver.Count;
 
 	SetVideoModeX11(*window.Monitor, window.videoMode);
 
@@ -4121,7 +4559,7 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseMonitor(const InternalWindow& window)
 	window.Monitor->Window = nullptr;
 	RestoreVideoModeX11(*window.Monitor);
 
-	s_Data.X11.Saver.Count--;
+	--s_Data.X11.Saver.Count;
 
 	if(s_Data.X11.Saver.Count == 0)
 	{
@@ -4141,7 +4579,7 @@ void TRAP::INTERNAL::WindowingAPI::SetVideoModeX11(InternalMonitor& monitor, con
 	if(!s_Data.X11.RandR.Available || s_Data.X11.RandR.MonitorBroken)
 		return;
 
-	RRMode native = 0;
+	RRMode native = 0u;
 
 	const std::optional<InternalVideoMode> best = ChooseVideoMode(monitor, desired);
 	const std::optional<InternalVideoMode> current = PlatformGetVideoModeX11(monitor);
@@ -4154,7 +4592,7 @@ void TRAP::INTERNAL::WindowingAPI::SetVideoModeX11(InternalMonitor& monitor, con
 
 	if((sr != nullptr) && (ci != nullptr) && (oi != nullptr))
 	{
-		for(i32 i = 0; i < oi->nmode; i++)
+		for(i32 i = 0; i < oi->nmode; ++i)
 		{
 			const XRRModeInfo* const mi = GetModeInfo(*sr, oi->modes[i]);
 			if((mi == nullptr) || (ci == nullptr) || !((mi->modeFlags & RR_Interlace) == 0))
@@ -4170,7 +4608,7 @@ void TRAP::INTERNAL::WindowingAPI::SetVideoModeX11(InternalMonitor& monitor, con
 
 		if(native != 0u)
 		{
-			if(monitor.X11.OldMode == 0)
+			if(monitor.X11.OldMode == 0u)
 				monitor.X11.OldMode = ci->mode;
 
 			s_Data.X11.RandR.SetCrtcConfig(s_Data.X11.display, sr, monitor.X11.CRTC, CurrentTime, ci->x, ci->y, native,
@@ -4196,7 +4634,7 @@ void TRAP::INTERNAL::WindowingAPI::RestoreVideoModeX11(InternalMonitor& monitor)
 	if(!s_Data.X11.RandR.Available || s_Data.X11.RandR.MonitorBroken)
 		return;
 
-	if(monitor.X11.OldMode == 0)
+	if(monitor.X11.OldMode == 0u)
 		return;
 
 	XRRScreenResources* const sr = s_Data.X11.RandR.GetScreenResourcesCurrent(s_Data.X11.display, s_Data.X11.Root);
@@ -4210,7 +4648,7 @@ void TRAP::INTERNAL::WindowingAPI::RestoreVideoModeX11(InternalMonitor& monitor)
 		s_Data.X11.RandR.FreeCrtcInfo(ci);
 		s_Data.X11.RandR.FreeScreenResources(sr);
 
-		monitor.X11.OldMode = 0;
+		monitor.X11.OldMode = 0u;
 	}
 	else
 		InputErrorX11(Error::Platform_Error, "[X11] Failed to restore video mode");
@@ -4234,7 +4672,7 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow& wind
 	}
 
 	if(window.Monitor->Window == nullptr)
-		s_Data.X11.Saver.Count++;
+		++s_Data.X11.Saver.Count;
 
 	if(window.X11.OverrideRedirect)
 	{
@@ -4367,7 +4805,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 	{
 		//Use XKB to determine physical key locations independently of the current keyboard layout
 
-		XkbDescPtr desc = s_Data.X11.XKB.GetMap(s_Data.X11.display, 0, XkbUseCoreKbd);
+		XkbDescPtr desc = s_Data.X11.XKB.GetMap(s_Data.X11.display, 0u, XkbUseCoreKbd);
 		s_Data.X11.XKB.GetNames(s_Data.X11.display, XkbKeyNamesMask | XkbKeyAliasesMask, desc);
 
 		scanCodeMin = desc->min_key_code;
@@ -4376,78 +4814,78 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 		struct Keys
 		{
 			TRAP::Input::Key Key = TRAP::Input::Key::Unknown;
-			std::string_view Name;
+			std::string Name;
 		};
 
-		constexpr std::array<Keys, 121> KeyMap =
+		static constexpr std::array<Keys, 121u> KeyMap =
 		{
             {
-                { TRAP::Input::Key::Grave_Accent, "TLDE"}, { TRAP::Input::Key::One, "AE01"},
-                { TRAP::Input::Key::Two, "AE02"}, { TRAP::Input::Key::Three, "AE03"},
-                { TRAP::Input::Key::Four, "AE04"}, { TRAP::Input::Key::Five, "AE05"},
-                { TRAP::Input::Key::Six, "AE06"}, { TRAP::Input::Key::Seven, "AE07"},
-                { TRAP::Input::Key::Eight, "AE08"}, { TRAP::Input::Key::Nine, "AE09"},
-                { TRAP::Input::Key::Zero, "AE10"}, { TRAP::Input::Key::Minus, "AE11"},
-                { TRAP::Input::Key::Equal, "AE12"}, { TRAP::Input::Key::Q, "AD01"},
-                { TRAP::Input::Key::W, "AD02"}, { TRAP::Input::Key::E, "AD03"},
-                { TRAP::Input::Key::R, "AD04"}, { TRAP::Input::Key::T, "AD05"},
-                { TRAP::Input::Key::Y, "AD06"}, { TRAP::Input::Key::U, "AD07"},
-                { TRAP::Input::Key::I, "AD08"}, { TRAP::Input::Key::O, "AD09"},
-                { TRAP::Input::Key::P, "AD10"}, { TRAP::Input::Key::Left_Bracket, "AD11"},
-                { TRAP::Input::Key::Right_Bracket, "AD12"}, { TRAP::Input::Key::A, "AC01"},
-                { TRAP::Input::Key::S, "AC02"}, { TRAP::Input::Key::D, "AC03"},
-                { TRAP::Input::Key::F, "AC04"}, { TRAP::Input::Key::G, "AC05"},
-                { TRAP::Input::Key::H, "AC06"}, { TRAP::Input::Key::J, "AC07"},
-                { TRAP::Input::Key::K, "AC08"}, { TRAP::Input::Key::L, "AC09"},
-                { TRAP::Input::Key::Semicolon, "AC10"}, { TRAP::Input::Key::Apostrophe, "AC11"},
-                { TRAP::Input::Key::Z, "AB01"}, { TRAP::Input::Key::X, "AB02"},
-                { TRAP::Input::Key::C, "AB03"}, { TRAP::Input::Key::V, "AB04"},
-                { TRAP::Input::Key::B, "AB05"}, { TRAP::Input::Key::N, "AB06"},
-                { TRAP::Input::Key::M, "AB07"}, { TRAP::Input::Key::Comma, "AB08"},
-                { TRAP::Input::Key::Period, "AB09"}, { TRAP::Input::Key::Slash, "AB10"},
-                { TRAP::Input::Key::Backslash, "BKSL"}, { TRAP::Input::Key::World_1, "LSGT"},
-                { TRAP::Input::Key::Space, "SPCE"}, { TRAP::Input::Key::Escape, "ESC"},
-                { TRAP::Input::Key::Enter, "RTRN"}, { TRAP::Input::Key::Tab, "TAB"},
-                { TRAP::Input::Key::Backspace, "BKSP"}, { TRAP::Input::Key::Insert, "INS"},
-                { TRAP::Input::Key::Delete, "DELE"}, { TRAP::Input::Key::Right, "RGHT"},
-                { TRAP::Input::Key::Left, "LEFT"}, { TRAP::Input::Key::Down, "DOWN"},
-                { TRAP::Input::Key::Up, "UP"}, { TRAP::Input::Key::Page_Up, "PGUP"},
-                { TRAP::Input::Key::Page_Down, "PGDN"}, { TRAP::Input::Key::Home, "HOME"},
-                { TRAP::Input::Key::End, "END"}, { TRAP::Input::Key::Caps_Lock, "CAPS"},
-                { TRAP::Input::Key::Scroll_Lock, "SCLK"}, { TRAP::Input::Key::Num_Lock, "NMLK"},
-                { TRAP::Input::Key::Print_Screen, "PRSC"}, { TRAP::Input::Key::Pause, "PAUS"},
-                { TRAP::Input::Key::F1, "FK01"}, { TRAP::Input::Key::F2, "FK02"},
-                { TRAP::Input::Key::F3, "FK03"}, { TRAP::Input::Key::F4, "FK04"},
-                { TRAP::Input::Key::F5, "FK05"}, { TRAP::Input::Key::F6, "FK06"},
-                { TRAP::Input::Key::F7, "FK07"}, { TRAP::Input::Key::F8, "FK08"},
-                { TRAP::Input::Key::F9, "FK09"}, { TRAP::Input::Key::F10, "FK10"},
-                { TRAP::Input::Key::F11, "FK11"}, { TRAP::Input::Key::F12, "FK12"},
-                { TRAP::Input::Key::F13, "FK13"}, { TRAP::Input::Key::F14, "FK14"},
-                { TRAP::Input::Key::F15, "FK15"}, { TRAP::Input::Key::F16, "FK16"},
-                { TRAP::Input::Key::F17, "FK17"}, { TRAP::Input::Key::F18, "FK18"},
-                { TRAP::Input::Key::F19, "FK19"}, { TRAP::Input::Key::F20, "FK20"},
-                { TRAP::Input::Key::F21, "FK21"}, { TRAP::Input::Key::F22, "FK22"},
-                { TRAP::Input::Key::F23, "FK23"}, { TRAP::Input::Key::F24, "FK24"},
-                { TRAP::Input::Key::F25, "FK25"}, { TRAP::Input::Key::KP_0, "KP0"},
-                { TRAP::Input::Key::KP_1, "KP1"}, { TRAP::Input::Key::KP_2, "KP2"},
-                { TRAP::Input::Key::KP_3, "KP3"}, { TRAP::Input::Key::KP_4, "KP4"},
-                { TRAP::Input::Key::KP_5, "KP5"}, { TRAP::Input::Key::KP_6, "KP6"},
-                { TRAP::Input::Key::KP_7, "KP7"}, { TRAP::Input::Key::KP_8, "KP8"},
-                { TRAP::Input::Key::KP_9, "KP9"}, { TRAP::Input::Key::KP_Decimal, "KPDL"},
-                { TRAP::Input::Key::KP_Divide, "KPDV"}, { TRAP::Input::Key::KP_Multiply, "KPMU"},
-                { TRAP::Input::Key::KP_Subtract, "KPSU"}, { TRAP::Input::Key::KP_Add, "KPAD"},
-                { TRAP::Input::Key::KP_Enter, "KPEN"}, { TRAP::Input::Key::KP_Equal, "KPEQ"},
-                { TRAP::Input::Key::Left_Shift, "LFSH"}, { TRAP::Input::Key::Left_Control, "LCTL"},
-                { TRAP::Input::Key::Left_ALT, "LALT"}, { TRAP::Input::Key::Left_Super, "LWIN"},
-                { TRAP::Input::Key::Right_Shift, "RTSH"}, { TRAP::Input::Key::Right_Control, "RCTL"},
-                { TRAP::Input::Key::Right_ALT, "RALT"}, { TRAP::Input::Key::Right_ALT, "LVL3"},
-				{ TRAP::Input::Key::Right_ALT, "MDSW"}, { TRAP::Input::Key::Right_Super, "RWIN"},
-                { TRAP::Input::Key::Menu, "MENU"}
+                { .Key=TRAP::Input::Key::Grave_Accent, .Name="TLDE"}, { .Key=TRAP::Input::Key::One, .Name="AE01"},
+                { .Key=TRAP::Input::Key::Two, .Name="AE02"}, { .Key=TRAP::Input::Key::Three, .Name="AE03"},
+                { .Key=TRAP::Input::Key::Four, .Name="AE04"}, { .Key=TRAP::Input::Key::Five, .Name="AE05"},
+                { .Key=TRAP::Input::Key::Six, .Name="AE06"}, { .Key=TRAP::Input::Key::Seven, .Name="AE07"},
+                { .Key=TRAP::Input::Key::Eight, .Name="AE08"}, { .Key=TRAP::Input::Key::Nine, .Name="AE09"},
+                { .Key=TRAP::Input::Key::Zero, .Name="AE10"}, { .Key=TRAP::Input::Key::Minus, .Name="AE11"},
+                { .Key=TRAP::Input::Key::Equal, .Name="AE12"}, { .Key=TRAP::Input::Key::Q, .Name="AD01"},
+                { .Key=TRAP::Input::Key::W, .Name="AD02"}, { .Key=TRAP::Input::Key::E, .Name="AD03"},
+                { .Key=TRAP::Input::Key::R, .Name="AD04"}, { .Key=TRAP::Input::Key::T, .Name="AD05"},
+                { .Key=TRAP::Input::Key::Y, .Name="AD06"}, { .Key=TRAP::Input::Key::U, .Name="AD07"},
+                { .Key=TRAP::Input::Key::I, .Name="AD08"}, { .Key=TRAP::Input::Key::O, .Name="AD09"},
+                { .Key=TRAP::Input::Key::P, .Name="AD10"}, { .Key=TRAP::Input::Key::Left_Bracket, .Name="AD11"},
+                { .Key=TRAP::Input::Key::Right_Bracket, .Name="AD12"}, { .Key=TRAP::Input::Key::A, .Name="AC01"},
+                { .Key=TRAP::Input::Key::S, .Name="AC02"}, { .Key=TRAP::Input::Key::D, .Name="AC03"},
+                { .Key=TRAP::Input::Key::F, .Name="AC04"}, { .Key=TRAP::Input::Key::G, .Name="AC05"},
+                { .Key=TRAP::Input::Key::H, .Name="AC06"}, { .Key=TRAP::Input::Key::J, .Name="AC07"},
+                { .Key=TRAP::Input::Key::K, .Name="AC08"}, { .Key=TRAP::Input::Key::L, .Name="AC09"},
+                { .Key=TRAP::Input::Key::Semicolon, .Name="AC10"}, { .Key=TRAP::Input::Key::Apostrophe, .Name="AC11"},
+                { .Key=TRAP::Input::Key::Z, .Name="AB01"}, { .Key=TRAP::Input::Key::X, .Name="AB02"},
+                { .Key=TRAP::Input::Key::C, .Name="AB03"}, { .Key=TRAP::Input::Key::V, .Name="AB04"},
+                { .Key=TRAP::Input::Key::B, .Name="AB05"}, { .Key=TRAP::Input::Key::N, .Name="AB06"},
+                { .Key=TRAP::Input::Key::M, .Name="AB07"}, { .Key=TRAP::Input::Key::Comma, .Name="AB08"},
+                { .Key=TRAP::Input::Key::Period, .Name="AB09"}, { .Key=TRAP::Input::Key::Slash, .Name="AB10"},
+                { .Key=TRAP::Input::Key::Backslash, .Name="BKSL"}, { .Key=TRAP::Input::Key::World_1, .Name="LSGT"},
+                { .Key=TRAP::Input::Key::Space, .Name="SPCE"}, { .Key=TRAP::Input::Key::Escape, .Name="ESC"},
+                { .Key=TRAP::Input::Key::Enter, .Name="RTRN"}, { .Key=TRAP::Input::Key::Tab, .Name="TAB"},
+                { .Key=TRAP::Input::Key::Backspace, .Name="BKSP"}, { .Key=TRAP::Input::Key::Insert, .Name="INS"},
+                { .Key=TRAP::Input::Key::Delete, .Name="DELE"}, { .Key=TRAP::Input::Key::Right, .Name="RGHT"},
+                { .Key=TRAP::Input::Key::Left, .Name="LEFT"}, { .Key=TRAP::Input::Key::Down, .Name="DOWN"},
+                { .Key=TRAP::Input::Key::Up, .Name="UP"}, { .Key=TRAP::Input::Key::Page_Up, .Name="PGUP"},
+                { .Key=TRAP::Input::Key::Page_Down, .Name="PGDN"}, { .Key=TRAP::Input::Key::Home, .Name="HOME"},
+                { .Key=TRAP::Input::Key::End, .Name="END"}, { .Key=TRAP::Input::Key::Caps_Lock, .Name="CAPS"},
+                { .Key=TRAP::Input::Key::Scroll_Lock, .Name="SCLK"}, { .Key=TRAP::Input::Key::Num_Lock, .Name="NMLK"},
+                { .Key=TRAP::Input::Key::Print_Screen, .Name="PRSC"}, { .Key=TRAP::Input::Key::Pause, .Name="PAUS"},
+                { .Key=TRAP::Input::Key::F1, .Name="FK01"}, { .Key=TRAP::Input::Key::F2, .Name="FK02"},
+                { .Key=TRAP::Input::Key::F3, .Name="FK03"}, { .Key=TRAP::Input::Key::F4, .Name="FK04"},
+                { .Key=TRAP::Input::Key::F5, .Name="FK05"}, { .Key=TRAP::Input::Key::F6, .Name="FK06"},
+                { .Key=TRAP::Input::Key::F7, .Name="FK07"}, { .Key=TRAP::Input::Key::F8, .Name="FK08"},
+                { .Key=TRAP::Input::Key::F9, .Name="FK09"}, { .Key=TRAP::Input::Key::F10, .Name="FK10"},
+                { .Key=TRAP::Input::Key::F11, .Name="FK11"}, { .Key=TRAP::Input::Key::F12, .Name="FK12"},
+                { .Key=TRAP::Input::Key::F13, .Name="FK13"}, { .Key=TRAP::Input::Key::F14, .Name="FK14"},
+                { .Key=TRAP::Input::Key::F15, .Name="FK15"}, { .Key=TRAP::Input::Key::F16, .Name="FK16"},
+                { .Key=TRAP::Input::Key::F17, .Name="FK17"}, { .Key=TRAP::Input::Key::F18, .Name="FK18"},
+                { .Key=TRAP::Input::Key::F19, .Name="FK19"}, { .Key=TRAP::Input::Key::F20, .Name="FK20"},
+                { .Key=TRAP::Input::Key::F21, .Name="FK21"}, { .Key=TRAP::Input::Key::F22, .Name="FK22"},
+                { .Key=TRAP::Input::Key::F23, .Name="FK23"}, { .Key=TRAP::Input::Key::F24, .Name="FK24"},
+                { .Key=TRAP::Input::Key::F25, .Name="FK25"}, { .Key=TRAP::Input::Key::KP_0, .Name="KP0"},
+                { .Key=TRAP::Input::Key::KP_1, .Name="KP1"}, { .Key=TRAP::Input::Key::KP_2, .Name="KP2"},
+                { .Key=TRAP::Input::Key::KP_3, .Name="KP3"}, { .Key=TRAP::Input::Key::KP_4, .Name="KP4"},
+                { .Key=TRAP::Input::Key::KP_5, .Name="KP5"}, { .Key=TRAP::Input::Key::KP_6, .Name="KP6"},
+                { .Key=TRAP::Input::Key::KP_7, .Name="KP7"}, { .Key=TRAP::Input::Key::KP_8, .Name="KP8"},
+                { .Key=TRAP::Input::Key::KP_9, .Name="KP9"}, { .Key=TRAP::Input::Key::KP_Decimal, .Name="KPDL"},
+                { .Key=TRAP::Input::Key::KP_Divide, .Name="KPDV"}, { .Key=TRAP::Input::Key::KP_Multiply, .Name="KPMU"},
+                { .Key=TRAP::Input::Key::KP_Subtract, .Name="KPSU"}, { .Key=TRAP::Input::Key::KP_Add, .Name="KPAD"},
+                { .Key=TRAP::Input::Key::KP_Enter, .Name="KPEN"}, { .Key=TRAP::Input::Key::KP_Equal, .Name="KPEQ"},
+                { .Key=TRAP::Input::Key::Left_Shift, .Name="LFSH"}, { .Key=TRAP::Input::Key::Left_Control, .Name="LCTL"},
+                { .Key=TRAP::Input::Key::Left_ALT, .Name="LALT"}, { .Key=TRAP::Input::Key::Left_Super, .Name="LWIN"},
+                { .Key=TRAP::Input::Key::Right_Shift, .Name="RTSH"}, { .Key=TRAP::Input::Key::Right_Control, .Name="RCTL"},
+                { .Key=TRAP::Input::Key::Right_ALT, .Name="RALT"}, { .Key=TRAP::Input::Key::Right_ALT, .Name="LVL3"},
+				{ .Key=TRAP::Input::Key::Right_ALT, .Name="MDSW"}, { .Key=TRAP::Input::Key::Right_Super, .Name="RWIN"},
+                { .Key=TRAP::Input::Key::Menu, .Name="MENU"}
             }
 		};
 
 		//Find the X11 key code -> TRAP key code mapping
-		for(scanCode = scanCodeMin; scanCode <= scanCodeMax; scanCode++)
+		for(scanCode = scanCodeMin; scanCode <= scanCodeMax; ++scanCode)
 		{
 			TRAP::Input::Key key = TRAP::Input::Key::Unknown;
 
@@ -4457,7 +4895,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 			//they are mapped here instead.
 			for(const Keys& keyMapKey : KeyMap)
 			{
-				if(strncmp(desc->names->keys[scanCode].name, keyMapKey.Name.data(), XkbKeyNameLength) == 0)
+				if(strncmp(desc->names->keys[scanCode].name, keyMapKey.Name.c_str(), XkbKeyNameLength) == 0)
 				{
 					key = keyMapKey.Key;
 					break;
@@ -4465,7 +4903,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 			}
 
 			//Fall back to key aliases in case the key name did not match
-			for(u8 i = 0; i < desc->names->num_key_aliases; i++)
+			for(u8 i = 0u; i < desc->names->num_key_aliases; ++i)
 			{
 				if(key != TRAP::Input::Key::Unknown)
 					break;
@@ -4475,7 +4913,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 
 				for(const Keys& keyMapKey : KeyMap)
 				{
-					if(strncmp(desc->names->key_aliases[i].alias, keyMapKey.Name.data(), XkbKeyNameLength) == 0)
+					if(strncmp(desc->names->key_aliases[i].alias, keyMapKey.Name.c_str(), XkbKeyNameLength) == 0)
 					{
 						key = keyMapKey.Key;
 						break;
@@ -4487,7 +4925,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 		}
 
 		s_Data.X11.XKB.FreeNames(desc, XkbKeyNamesMask, 1);
-		s_Data.X11.XKB.FreeKeyboard(desc, 0, 1);
+		s_Data.X11.XKB.FreeKeyboard(desc, 0u, 1);
 	}
 	else
 		s_Data.X11.XLIB.DisplayKeycodes(s_Data.X11.display, &scanCodeMin, &scanCodeMax);
@@ -4496,7 +4934,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 	KeySym* const keySyms = s_Data.X11.XLIB.GetKeyboardMapping(s_Data.X11.display, NumericCast<u8>(scanCodeMin), scanCodeMax - scanCodeMin + 1,
 	                                                           &width);
 
-	for(scanCode = scanCodeMin; scanCode <= scanCodeMax; scanCode++)
+	for(scanCode = scanCodeMin; scanCode <= scanCodeMax; ++scanCode)
 	{
 		//Translate the un-translated key codes using traditional X11 KeySym lookups
 		if(std::to_underlying(s_Data.KeyCodes[NumericCast<u32>(scanCode)]) < 0)
@@ -4541,446 +4979,6 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseCursor()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Translate the X11 KeySyms for a key to a TRAP key
-//NOTE: This is only used as a fallback, in case the XKB method fails
-//      It is layout-dependent and will fail partially on most non-US layouts
-[[nodiscard]] std::optional<TRAP::Input::Key> TRAP::INTERNAL::WindowingAPI::TranslateKeySyms(const std::vector<KeySym>& keySyms)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None &&
-	                                              (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
-	if(keySyms.empty())
-		return std::nullopt;
-
-	if(keySyms.size() > 1)
-	{
-		switch(keySyms[1])
-		{
-		case XK_KP_0:
-			return TRAP::Input::Key::KP_0;
-
-		case XK_KP_1:
-			return TRAP::Input::Key::KP_1;
-
-		case XK_KP_2:
-			return TRAP::Input::Key::KP_2;
-
-		case XK_KP_3:
-			return TRAP::Input::Key::KP_3;
-
-		case XK_KP_4:
-			return TRAP::Input::Key::KP_4;
-
-		case XK_KP_5:
-			return TRAP::Input::Key::KP_5;
-
-		case XK_KP_6:
-			return TRAP::Input::Key::KP_6;
-
-		case XK_KP_7:
-			return TRAP::Input::Key::KP_7;
-
-		case XK_KP_8:
-			return TRAP::Input::Key::KP_8;
-
-		case XK_KP_9:
-			return TRAP::Input::Key::KP_9;
-
-		case XK_KP_Separator:
-			[[fallthrough]];
-		case XK_KP_Decimal:
-			return TRAP::Input::Key::KP_Decimal;
-
-		case XK_KP_Equal:
-			return TRAP::Input::Key::KP_Equal;
-
-		case XK_KP_Enter:
-			return TRAP::Input::Key::KP_Enter;
-
-		default:
-			break;
-		}
-	}
-
-	switch(keySyms[0])
-	{
-		case XK_Escape:
-			return TRAP::Input::Key::Escape;
-
-		case XK_Tab:
-			return TRAP::Input::Key::Tab;
-
-		case XK_Shift_L:
-			return TRAP::Input::Key::Left_Shift;
-
-		case XK_Shift_R:
-			return TRAP::Input::Key::Right_Shift;
-
-		case XK_Control_L:
-			return TRAP::Input::Key::Left_Control;
-
-		case XK_Control_R:
-			return TRAP::Input::Key::Right_Control;
-
-		case XK_Meta_L:
-			[[fallthrough]];
-		case XK_Alt_L:
-			return TRAP::Input::Key::Left_ALT;
-
-		case XK_Mode_switch: //Mapped to Alt_R on many keyboards
-			[[fallthrough]];
-		case XK_ISO_Level3_Shift: //AltGr on at least some machines
-			[[fallthrough]];
-		case XK_Meta_R:
-			[[fallthrough]];
-		case XK_Alt_R:
-			return TRAP::Input::Key::Right_ALT;
-
-		case XK_Super_L:
-			return TRAP::Input::Key::Left_Super;
-
-		case XK_Super_R:
-			return TRAP::Input::Key::Right_Super;
-
-		case XK_Menu:
-			return TRAP::Input::Key::Menu;
-
-		case XK_Num_Lock:
-			return TRAP::Input::Key::Num_Lock;
-
-		case XK_Caps_Lock:
-			return TRAP::Input::Key::Caps_Lock;
-
-		case XK_Print:
-			return TRAP::Input::Key::Print_Screen;
-
-		case XK_Scroll_Lock:
-			return TRAP::Input::Key::Scroll_Lock;
-
-		case XK_Pause:
-			return TRAP::Input::Key::Pause;
-
-		case XK_Delete:
-			return TRAP::Input::Key::Delete;
-
-		case XK_BackSpace:
-			return TRAP::Input::Key::Backspace;
-
-		case XK_Return:
-			return TRAP::Input::Key::Enter;
-
-		case XK_Home:
-			return TRAP::Input::Key::Home;
-
-		case XK_End:
-			return TRAP::Input::Key::End;
-
-		case XK_Page_Up:
-			return TRAP::Input::Key::Page_Up;
-
-		case XK_Page_Down:
-			return TRAP::Input::Key::Page_Down;
-
-		case XK_Insert:
-			return TRAP::Input::Key::Insert;
-
-		case XK_Left:
-			return TRAP::Input::Key::Left;
-
-		case XK_Right:
-			return TRAP::Input::Key::Right;
-
-		case XK_Down:
-			return TRAP::Input::Key::Down;
-
-		case XK_Up:
-			return TRAP::Input::Key::Up;
-
-		case XK_F1:
-			return TRAP::Input::Key::F1;
-
-		case XK_F2:
-			return TRAP::Input::Key::F2;
-
-		case XK_F3:
-			return TRAP::Input::Key::F3;
-
-		case XK_F4:
-			return TRAP::Input::Key::F4;
-
-		case XK_F5:
-			return TRAP::Input::Key::F5;
-
-		case XK_F6:
-			return TRAP::Input::Key::F6;
-
-		case XK_F7:
-			return TRAP::Input::Key::F7;
-
-		case XK_F8:
-			return TRAP::Input::Key::F8;
-
-		case XK_F9:
-			return TRAP::Input::Key::F9;
-
-		case XK_F10:
-			return TRAP::Input::Key::F10;
-
-		case XK_F11:
-			return TRAP::Input::Key::F11;
-
-		case XK_F12:
-			return TRAP::Input::Key::F12;
-
-		case XK_F13:
-			return TRAP::Input::Key::F13;
-
-		case XK_F14:
-			return TRAP::Input::Key::F14;
-
-		case XK_F15:
-			return TRAP::Input::Key::F15;
-
-		case XK_F16:
-			return TRAP::Input::Key::F16;
-
-		case XK_F17:
-			return TRAP::Input::Key::F17;
-
-		case XK_F18:
-			return TRAP::Input::Key::F18;
-
-		case XK_F19:
-			return TRAP::Input::Key::F19;
-
-		case XK_F20:
-			return TRAP::Input::Key::F20;
-
-		case XK_F21:
-			return TRAP::Input::Key::F21;
-
-		case XK_F22:
-			return TRAP::Input::Key::F22;
-
-		case XK_F23:
-			return TRAP::Input::Key::F23;
-
-		case XK_F24:
-			return TRAP::Input::Key::F24;
-
-		case XK_F25:
-			return TRAP::Input::Key::F25;
-
-		//Numeric keypad
-		case XK_KP_Divide:
-			return TRAP::Input::Key::KP_Divide;
-
-		case XK_KP_Multiply:
-			return TRAP::Input::Key::KP_Multiply;
-
-		case XK_KP_Subtract:
-			return TRAP::Input::Key::KP_Subtract;
-
-		case XK_KP_Add:
-			return TRAP::Input::Key::KP_Add;
-
-		//These should have been detected in seconday keysym test above!
-		case XK_KP_Insert:
-			return TRAP::Input::Key::KP_0;
-
-		case XK_KP_End:
-			return TRAP::Input::Key::KP_1;
-
-		case XK_KP_Down:
-			return TRAP::Input::Key::KP_2;
-
-		case XK_KP_Page_Down:
-			return TRAP::Input::Key::KP_3;
-
-		case XK_KP_Left:
-			return TRAP::Input::Key::KP_4;
-
-		case XK_KP_Right:
-			return TRAP::Input::Key::KP_6;
-
-		case XK_KP_Home:
-			return TRAP::Input::Key::KP_7;
-
-		case XK_KP_Up:
-			return TRAP::Input::Key::KP_8;
-
-		case XK_KP_Page_Up:
-			return TRAP::Input::Key::KP_9;
-
-		case XK_KP_Delete:
-			return TRAP::Input::Key::KP_Decimal;
-
-		case XK_KP_Equal:
-			return TRAP::Input::Key::KP_Equal;
-
-		case XK_KP_Enter:
-			return TRAP::Input::Key::KP_Enter;
-
-		//Last resor: Check for printable keys (should not happen if the XKB extension is available).
-		//This will give a layout dependent mapping (which is wrong, and we may miss some keys,
-		//especially on non-US keyboards), but it is better than nothing...
-		case XK_a:
-			return TRAP::Input::Key::A;
-
-		case XK_b:
-			return TRAP::Input::Key::B;
-
-		case XK_c:
-			return TRAP::Input::Key::C;
-
-		case XK_d:
-			return TRAP::Input::Key::D;
-
-		case XK_e:
-			return TRAP::Input::Key::E;
-
-		case XK_f:
-			return TRAP::Input::Key::F;
-
-		case XK_g:
-			return TRAP::Input::Key::G;
-
-		case XK_h:
-			return TRAP::Input::Key::H;
-
-		case XK_i:
-			return TRAP::Input::Key::I;
-
-		case XK_j:
-			return TRAP::Input::Key::J;
-
-		case XK_k:
-			return TRAP::Input::Key::K;
-
-		case XK_l:
-			return TRAP::Input::Key::L;
-
-		case XK_m:
-			return TRAP::Input::Key::M;
-
-		case XK_n:
-			return TRAP::Input::Key::N;
-
-		case XK_o:
-			return TRAP::Input::Key::O;
-
-		case XK_p:
-			return TRAP::Input::Key::P;
-
-		case XK_q:
-			return TRAP::Input::Key::Q;
-
-		case XK_r:
-			return TRAP::Input::Key::R;
-
-		case XK_s:
-			return TRAP::Input::Key::S;
-
-		case XK_t:
-			return TRAP::Input::Key::T;
-
-		case XK_u:
-			return TRAP::Input::Key::U;
-
-		case XK_v:
-			return TRAP::Input::Key::V;
-
-		case XK_w:
-			return TRAP::Input::Key::W;
-
-		case XK_x:
-			return TRAP::Input::Key::X;
-
-		case XK_y:
-			return TRAP::Input::Key::Y;
-
-		case XK_z:
-			return TRAP::Input::Key::Z;
-
-		case XK_1:
-			return TRAP::Input::Key::One;
-
-		case XK_2:
-			return TRAP::Input::Key::Two;
-
-		case XK_3:
-			return TRAP::Input::Key::Three;
-
-		case XK_4:
-			return TRAP::Input::Key::Four;
-
-		case XK_5:
-			return TRAP::Input::Key::Five;
-
-		case XK_6:
-			return TRAP::Input::Key::Six;
-
-		case XK_7:
-			return TRAP::Input::Key::Seven;
-
-		case XK_8:
-			return TRAP::Input::Key::Eight;
-
-		case XK_9:
-			return TRAP::Input::Key::Nine;
-
-		case XK_0:
-			return TRAP::Input::Key::Zero;
-
-		case XK_space:
-			return TRAP::Input::Key::Space;
-
-		case XK_minus:
-			return TRAP::Input::Key::Minus;
-
-		case XK_equal:
-			return TRAP::Input::Key::Equal;
-
-		case XK_bracketleft:
-			return TRAP::Input::Key::Left_Bracket;
-
-		case XK_bracketright:
-			return TRAP::Input::Key::Right_Bracket;
-
-		case XK_backslash:
-			return TRAP::Input::Key::Backslash;
-
-		case XK_semicolon:
-			return TRAP::Input::Key::Semicolon;
-
-		case XK_apostrophe:
-			return TRAP::Input::Key::Apostrophe;
-
-		case XK_grave:
-			return TRAP::Input::Key::Grave_Accent;
-
-		case XK_comma:
-			return TRAP::Input::Key::Comma;
-
-		case XK_period:
-			return TRAP::Input::Key::Period;
-
-		case XK_slash:
-			return TRAP::Input::Key::Slash;
-
-		case XK_less:
-			return TRAP::Input::Key::World_1; //At least in some layouts...
-
-		default:
-			break;
-	}
-
-	//No matching translation was found
-	return std::nullopt;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] std::optional<std::string> TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutNameX11()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
@@ -4997,15 +4995,15 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseCursor()
 	XkbDescPtr desc = s_Data.X11.XKB.AllocKeyboard();
 	if (s_Data.X11.XKB.GetNames(s_Data.X11.display, XkbGroupNamesMask, desc) != 0) //0 = Success
 	{
-		s_Data.X11.XKB.FreeKeyboard(desc, 0, 1);
+		s_Data.X11.XKB.FreeKeyboard(desc, 0u, 1);
 		InputError(Error::Platform_Error, "[Input][X11] Failed to retrieve keyboard layout names");
 		return std::nullopt;
 	}
 
 	const Atom atom = desc->names->groups[state.group];
-	s_Data.X11.XKB.FreeKeyboard(desc, 0, 1);
+	s_Data.X11.XKB.FreeKeyboard(desc, 0u, 1);
 
-	if (atom == 0)
+	if (atom == 0u)
 	{
 		InputError(Error::Platform_Error, "[Input][X11] Name missing for current keyboard layout");
 		return std::nullopt;
@@ -5016,14 +5014,14 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseCursor()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDropX11(InternalWindow& window, const bool value)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDropX11(const InternalWindow& window, const bool value)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
 	if(value)
 	{
 		//Announce support for Xdnd (drag and drop)
-		const Atom version = 5;
+		static constexpr Atom version = 5u;
 		s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, window.X11.Handle, s_Data.X11.XDNDAware, XA_ATOM, 32,
 			                       PropModeReplace, reinterpret_cast<const u8*>(&version), 1);
 	}

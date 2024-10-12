@@ -27,9 +27,9 @@ namespace TRAP
 			/// @param refreshRate Refresh rate.
 			constexpr VideoMode(u32 width, u32 height, f64 refreshRate) noexcept;
 
-			u32 Width = 0;
-			u32 Height = 0;
-			f64 RefreshRate = 0;
+			u32 Width = 0u;
+			u32 Height = 0u;
+			f64 RefreshRate = 0.0;
 
 			[[nodiscard]] constexpr auto operator<=>(const VideoMode& mode) const noexcept = default;
 		};
@@ -40,11 +40,11 @@ namespace TRAP
 		/// @brief Copy constructor.
 		constexpr Monitor(const Monitor&) noexcept = default;
 		/// @brief Copy assignment operator.
-		Monitor& operator=(const Monitor&) noexcept = default;
+		constexpr Monitor& operator=(const Monitor&) noexcept = default;
 		/// @brief Move constructor.
 		constexpr Monitor(Monitor&&) noexcept = default;
 		/// @brief Move assignment operator.
-		Monitor& operator=(Monitor&&) noexcept = default;
+		constexpr Monitor& operator=(Monitor&&) noexcept = default;
 
 		/// @brief Retrieve the name of a monitor.
 		/// @return Name of the monitor.
@@ -115,7 +115,7 @@ namespace TRAP
 	private:
 		/// @brief Constructor.
 		/// @param monitor Pointer to the InternalMonitor handle.
-		explicit Monitor(INTERNAL::WindowingAPI::InternalMonitor* monitor);
+		constexpr explicit Monitor(INTERNAL::WindowingAPI::InternalMonitor* monitor);
 
 		INTERNAL::WindowingAPI::InternalMonitor* m_handle{};
 	};
@@ -146,6 +146,14 @@ constexpr TRAP::Monitor::VideoMode::VideoMode(const u32 width, const u32 height,
 [[nodiscard]] constexpr void* TRAP::Monitor::GetInternalMonitor() const noexcept
 {
 	return m_handle;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
+	: m_handle(monitor)
+{
+	TRAP_ASSERT(m_handle, "Monitor::Monitor(): monitor is nullptr!");
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

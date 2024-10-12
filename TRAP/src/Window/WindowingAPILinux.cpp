@@ -697,7 +697,7 @@ std::string TRAP::INTERNAL::WindowingAPI::PlatformGetClipboardString()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensions(std::array<std::string, 2>& extensions)
+void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensions(std::array<std::string, 2u>& extensions)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -854,10 +854,10 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow& window
 
     for(std::string_view line : TRAP::Utils::String::SplitStringView(text, "\r\n"))
     {
-        if(line.empty() || line[0] == '#') //Ignore empty lines and comments
+        if(line.empty() || line[0u] == '#') //Ignore empty lines and comments
             continue;
 
-        usize prefixOffset = 0;
+        usize prefixOffset = 0u;
         if(line.starts_with(prefix))
             prefixOffset = line.find_first_of('/', prefix.size());
 
@@ -870,7 +870,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow& window
             if(line[i] == '%' && Utils::String::IsHexDigit(line[i + 1]) && Utils::String::IsHexDigit(line[i + 2]))
             {
                 path.push_back(NumericCast<char>(std::stoi(std::string{line[i + 1], line[i + 2]}, nullptr, 16)));
-                i += 2;
+                i += 2u;
             }
             else
                 path.push_back(line[i]);
@@ -884,20 +884,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow& window
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Translates an X11 or Wayland key code to a TRAP key token
-TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKey(const i32 scanCode)
-{
-	//Use the pre-filled LUT (see CreateKeyTables())
-	if(scanCode < 0 || std::cmp_greater_equal(scanCode, s_Data.KeyCodes.size()))
-		return Input::Key::Unknown;
-
-	return s_Data.KeyCodes[NumericCast<u32>(scanCode)];
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Wait for data to arrive on any of the specified file descriptors
-bool TRAP::INTERNAL::WindowingAPI::PollPOSIX(pollfd* const fds, const nfds_t count, f64* const timeout)
+bool TRAP::INTERNAL::WindowingAPI::PollPOSIX(const std::span<pollfd> fds, f64* const timeout)
 {
 	while(true)
 	{
@@ -908,16 +896,16 @@ bool TRAP::INTERNAL::WindowingAPI::PollPOSIX(pollfd* const fds, const nfds_t cou
 #if defined(__linux__) || defined(__FreeBDS__) || defined(__OpenBSD__) || defined(__CYGWIN__)
 			const time_t seconds = static_cast<time_t>(*timeout);
 			const i64 nanoseconds = static_cast<i64>((*timeout - static_cast<f64>(seconds)) * 1e9);
-			const timespec ts = {seconds, nanoseconds};
-			const i32 result = ppoll(fds, count, &ts, nullptr);
+			const timespec ts = {.tv_sec = seconds, .tv_nsec = nanoseconds};
+			const i32 result = ppoll(fds.data(), fds.size(), &ts, nullptr);
 #elif defined(__NetBSD__)
 			const time_t seconds = static_cast<time_t>(*timeout);
 			const i64 nanoseconds = static_cast<i64>((*timeout - seconds) * 1e9);
 			const timespec ts = {seconds, nanoseconds};
-			const i32 result = pollts(fds, count, &ts, nullptr);
+			const i32 result = pollts(fds.data(), fds.size(), &ts, nullptr);
 #else
 			const i32 milliseconds = static_cast<i32>(*timeout * 1e3);
-			const i32 result = poll(fds, count, milliseconds);
+			const i32 result = poll(fds.data(), fds.size(), milliseconds);
 #endif
 
 			const i32 error = errno;
@@ -931,7 +919,7 @@ bool TRAP::INTERNAL::WindowingAPI::PollPOSIX(pollfd* const fds, const nfds_t cou
 		}
 		else
 		{
-			const i32 result = poll(fds, count, -1);
+			const i32 result = poll(fds.data(), fds.size(), -1);
 			if(result > 0)
 				return true;
 			if(result == -1 && errno != EINTR && errno != EAGAIN)

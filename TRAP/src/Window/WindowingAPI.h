@@ -75,7 +75,7 @@ namespace TRAP::INTERNAL
 		struct InternalWindow;
 		struct InternalMonitor;
 		struct InternalCursor;
-		enum class Error;
+		enum class Error : u8;
 	private:
 		struct VkWin32SurfaceCreateInfoKHR;
 		struct VkWaylandSurfaceCreateInfoKHR;
@@ -501,7 +501,7 @@ namespace TRAP::INTERNAL
 		//---------//
 	public:
 		/// @brief Error codes.
-		enum class Error
+		enum class Error : u8
 		{
 			No_Error, // No error has occurred.
 			Not_Initialized, //WindowingAPI has not been initialized.
@@ -518,7 +518,7 @@ namespace TRAP::INTERNAL
 		};
 
 		/// @brief Hints for window creation and runtime changes.
-		enum class Hint
+		enum class Hint : u8
 		{
 			Resizable,
 			Maximized,
@@ -533,7 +533,7 @@ namespace TRAP::INTERNAL
 		};
 
 		/// @brief Cursor modes that can be used.
-		enum class CursorMode
+		enum class CursorMode : u8
 		{
 			Normal,   //Makes the cursor visible and behaving normally.
 			Hidden,   //Makes the cursor invisible when it is over the
@@ -558,7 +558,7 @@ namespace TRAP::INTERNAL
 		};
 
 		/// @brief State of progress for a window.
-		enum class ProgressState
+		enum class ProgressState : u8
 		{
 			Disabled = 0,
 			Indeterminate = 0x1,
@@ -765,8 +765,8 @@ namespace TRAP::INTERNAL
 		/// @brief Window configuration.
 		struct WindowConfig
 		{
-			u32 Width = 0;
-			u32 Height = 0;
+			u32 Width = 0u;
+			u32 Height = 0u;
 			std::string Title{};
 			bool Resizable = false;
 			bool Visible = false;
@@ -807,7 +807,7 @@ namespace TRAP::INTERNAL
 			{
 				bool Available = false;
 				void* Handle = nullptr;
-				std::array<std::string, 2> Extensions{};
+				std::array<std::string, 2u> Extensions{};
 				bool KHR_Surface = false;
 #if defined(TRAP_PLATFORM_WINDOWS)
 				bool KHR_Win32_Surface = false;
@@ -819,18 +819,18 @@ namespace TRAP::INTERNAL
 			} VK{};
 
 			std::string ClipboardString{};
-			std::array<std::string, std::to_underlying(Input::Key::Menu) + 1> KeyNames{};
-			std::array<i16, std::to_underlying(Input::Key::Menu) + 1> ScanCodes{};
+			std::array<std::string, std::to_underlying(Input::Key::Menu) + 1u> KeyNames{};
+			std::array<i16, std::to_underlying(Input::Key::Menu) + 1u> ScanCodes{};
 			//Where to place the cursor when re-enabled
 			f64 RestoreCursorPosX = 0.0, RestoreCursorPosY = 0.0;
 			//The window whose disabled cursor mode is active
 			InternalWindow* DisabledCursorWindow = nullptr;
-			std::array<i32, 2> EmptyEventPipe{};
+			std::array<i32, 2u> EmptyEventPipe{};
 			//The window the cursor is captured in
 			InternalWindow* CapturedCursorWindow = nullptr;
 
 #ifdef TRAP_PLATFORM_WINDOWS
-			std::array<Input::Key, 512> KeyCodes{};
+			std::array<Input::Key, 512u> KeyCodes{};
 			HINSTANCE Instance = nullptr;
 			HWND HelperWindowHandle = nullptr;
 			ATOM HelperWindowClass{};
@@ -839,7 +839,7 @@ namespace TRAP::INTERNAL
 			i32 AcquiredMonitorCount = 0;
 			std::vector<RAWINPUT> RawInput{};
 			i32 RawInputSize = 0;
-			UINT MouseTrailSize = 0;
+			UINT MouseTrailSize = 0u;
 			LPVOID MessageFiber;
 			LPVOID MainFiber;
 
@@ -886,7 +886,7 @@ namespace TRAP::INTERNAL
 				PFN_GetDPIForMonitor GetDPIForMonitor = nullptr;
 			} SHCore;
 #elif defined(TRAP_PLATFORM_LINUX)
-			std::array<Input::Key, 256> KeyCodes{};
+			std::array<Input::Key, 256u> KeyCodes{};
 
 			struct x11
 			{
@@ -895,7 +895,7 @@ namespace TRAP::INTERNAL
 				::Window Root{};
 
 				//System content scale
-				f32 ContentScaleX = 0, ContentScaleY = 0;
+				f32 ContentScaleX = 0.0f, ContentScaleY = 0.0f;
 				//Helper window for IPC
 				::Window HelperWindowHandle{};
 				//Invisible cursor for hidden cursor mode
@@ -1408,9 +1408,9 @@ namespace TRAP::INTERNAL
 #elif defined(TRAP_PLATFORM_LINUX)
 			struct x11
 			{
-				RROutput Output = 0;
-				RRCrtc CRTC = 0;
-				RRMode OldMode = 0;
+				RROutput Output = 0u;
+				RRCrtc CRTC = 0u;
+				RRMode OldMode = 0u;
 
 				//Index of corresponding Xinerama screen, for EWMH full screen window placement
 				i32 Index = 0;
@@ -1472,8 +1472,8 @@ namespace TRAP::INTERNAL
 			i32 Numerator = -1, Denominator = -1;
 
 			CursorMode cursorMode = CursorMode::Normal;
-			std::array<TRAP::Input::KeyState, std::to_underlying(TRAP::Input::MouseButton::Eight) + 1> MouseButtons{};
-			std::array<TRAP::Input::KeyState, std::to_underlying(TRAP::Input::Key::Menu) + 1> Keys{};
+			std::array<TRAP::Input::KeyState, std::to_underlying(TRAP::Input::MouseButton::Eight) + 1u> MouseButtons{};
+			std::array<TRAP::Input::KeyState, std::to_underlying(TRAP::Input::Key::Menu) + 1u> Keys{};
 			//Virtual cursor position when cursor is disabled
 			f64 VirtualCursorPosX = 0.0, VirtualCursorPosY = 0.0;
 			bool RawMouseMotion = false;
@@ -1517,7 +1517,7 @@ namespace TRAP::INTERNAL
 			WCHAR HighSurrogate{};
 
 			ITaskbarList3* TaskbarList = nullptr;
-			UINT TaskbarListMsgID = 0;
+			UINT TaskbarListMsgID = 0u;
 
 			//If user pressed mouse button on window title bar
 			UINT NCMouseButton;
@@ -1529,9 +1529,9 @@ namespace TRAP::INTERNAL
 			struct x11
 			{
 				//X11
-				Colormap colormap = 0;
-				::Window Handle = 0;
-				::Window Parent = 0;
+				Colormap colormap = 0u;
+				::Window Handle = 0u;
+				::Window Parent = 0u;
 				XIC IC = nullptr;
 				bool OverrideRedirect = false;
 
@@ -1542,7 +1542,7 @@ namespace TRAP::INTERNAL
 
 				//The time of the last KeyPress event per keycode, for discarding
 				//duplicate key events generated from some keys by ibus
-				std::array<Time, 256> KeyPressTimes{};
+				std::array<Time, 256u> KeyPressTimes{};
 			} X11;
 
 			struct wayland
@@ -1557,7 +1557,7 @@ namespace TRAP::INTERNAL
 				wl_callback* Callback;
 
 				f64 CursorPosX, CursorPosY;
-				u32 PointerAxisTime = 0;
+				u32 PointerAxisTime = 0u;
 
 				struct
 				{
@@ -2779,7 +2779,7 @@ namespace TRAP::INTERNAL
 		/// @threadsafe
 		/// @return Array containing the required instance extensions, or an array with empty string
 		/// if an error occurred.
-		[[nodiscard]] static std::array<std::string, 2> GetRequiredInstanceExtensions();
+		[[nodiscard]] static std::array<std::string, 2u> GetRequiredInstanceExtensions();
 		/// @brief Creates a Vulkan surface for the specified window.
 		/// This function create a Vulkan surface for the specified window.
 		///
@@ -2835,7 +2835,7 @@ namespace TRAP::INTERNAL
 		/// @brief Notifies shared code of an error.
 		/// @param code Error code.
 		/// @param str Description of the occurred error.
-		static void InputError(Error code, std::string_view str);
+		static constexpr void InputError(Error code, std::string_view str);
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Platform Specific Functions----------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -2885,7 +2885,7 @@ namespace TRAP::INTERNAL
 		/// @param yPos Y position to be set.
 		static void PlatformSetWindowPos(const InternalWindow& window, i32 xPos, i32 yPos);
 		static void PlatformSetWindowPosX11(const InternalWindow& window, i32 xPos, i32 yPos);
-		static void PlatformSetWindowPosWayland(const InternalWindow& window, i32 xPos, i32 yPos);
+		static constexpr void PlatformSetWindowPosWayland(const InternalWindow& window, i32 xPos, i32 yPos);
 		/// @brief This function sets the monitor that the window uses for full screen mode or,
 		/// if the monitor is nullptr, makes it windowed mode.
 		///
@@ -2942,7 +2942,7 @@ namespace TRAP::INTERNAL
 		/// if an error occurred.
 		[[nodiscard]] static std::vector<InternalVideoMode> PlatformGetVideoModes(const InternalMonitor& monitor);
 		[[nodiscard]] static std::vector<InternalVideoMode> PlatformGetVideoModesX11(const InternalMonitor& monitor);
-		[[nodiscard]] static std::vector<InternalVideoMode> PlatformGetVideoModesWayland(const InternalMonitor& monitor);
+		[[nodiscard]] static constexpr std::vector<InternalVideoMode> PlatformGetVideoModesWayland(const InternalMonitor& monitor);
 		/// @brief Initializes the windowing API.
 		/// Before most WindowingAPI functions can be used, the WindowingAPI must be initialized, and before the engine
 		/// terminates the WindowingAPI should be terminated in order to free any resources allocated during or after
@@ -3036,7 +3036,7 @@ namespace TRAP::INTERNAL
 		/// @threadsafety This function must only be called from the main thread.
 		/// @param window Internal window to display.
 		static void PlatformShowWindow(InternalWindow& window);
-		static void PlatformShowWindowX11(InternalWindow& window);
+		static void PlatformShowWindowX11(const InternalWindow& window);
 		static void PlatformShowWindowWayland(InternalWindow& window);
 		/// @brief This function brings the specified window to front and sets input focus.
 		/// The window should already be visible and not minimized/iconified.
@@ -3061,7 +3061,7 @@ namespace TRAP::INTERNAL
 		/// @param window Internal window to focus.
 		static void PlatformFocusWindow(const InternalWindow& window);
 		static void PlatformFocusWindowX11(const InternalWindow& window);
-		static void PlatformFocusWindowWayland(const InternalWindow& window);
+		static constexpr void PlatformFocusWindowWayland(const InternalWindow& window);
 		/// @brief This function creates a window.
 		/// Most of the options controlling how the window should be created are specified with window hints.
 		///
@@ -3114,7 +3114,7 @@ namespace TRAP::INTERNAL
 		[[nodiscard]] static bool PlatformCreateWindowX11(InternalWindow& window,
 			                                              WindowConfig& WNDConfig);
 		[[nodiscard]] static bool PlatformCreateWindowWayland(InternalWindow& window,
-			                                                  WindowConfig& WNDConfig);
+			                                                  const WindowConfig& WNDConfig);
 		/// @brief This function sets the window title, encoded as UTF-8, of the specified window.
 		///
 		/// Errors: Possible errors include Error::Platform_Error.
@@ -3165,7 +3165,7 @@ namespace TRAP::INTERNAL
 		/// @threadsafety This function must only be called from the main thread.
 		/// @param cursor Internal cursor to be destroyed.
 		static void PlatformDestroyCursor(InternalCursor& cursor);
-		static void PlatformDestroyCursorX11(InternalCursor& cursor);
+		static void PlatformDestroyCursorX11(const InternalCursor& cursor);
 		static void PlatformDestroyCursorWayland(InternalCursor& cursor);
 		/// @brief This function sets the cursor image to be used when the cursor is over the content are of the
 		/// specified window. The set cursor will only be visible when the CursorMode of the window is
@@ -3178,7 +3178,7 @@ namespace TRAP::INTERNAL
 		/// @param window Internal window to set the cursor for.
 		/// @param cursor Internal cursor to set, or nullptr to switch back to the default arrow cursor.
 		static void PlatformSetCursor(InternalWindow& window, InternalCursor* cursor);
-		static void PlatformSetCursorX11(InternalWindow& window, InternalCursor* cursor);
+		static void PlatformSetCursorX11(const InternalWindow& window, const InternalCursor* cursor);
 		static void PlatformSetCursorWayland(InternalWindow& window, InternalCursor* cursor);
 		/// @brief This function sets a cursor mode for the specified window.
 		///
@@ -3215,7 +3215,7 @@ namespace TRAP::INTERNAL
 		/// @param yPos New y position, relative to the top edge of the content area, for the cursor.
 		static void PlatformSetCursorPos(InternalWindow& window, f64 xPos, f64 yPos);
 		static void PlatformSetCursorPosX11(InternalWindow& window, f64 xPos, f64 yPos);
-		static void PlatformSetCursorPosWayland(InternalWindow& window, f64 xPos, f64 yPos);
+		static constexpr void PlatformSetCursorPosWayland(InternalWindow& window, f64 xPos, f64 yPos);
 		/// @brief This function returns the position of the cursor, in screen coordinates, relative
 		/// to the upper-left corner of the content area of the specified window.
 		///
@@ -3250,8 +3250,8 @@ namespace TRAP::INTERNAL
 		/// @param window Internal window whose icon to set.
 		/// @param image Image to be set as window icon or nullptr to revert back to the default icon.
 		static void PlatformSetWindowIcon(InternalWindow& window, const Image* image);
-		static void PlatformSetWindowIconX11(InternalWindow& window, const Image* image);
-		static void PlatformSetWindowIconWayland(InternalWindow& window, const Image* image);
+		static void PlatformSetWindowIconX11(const InternalWindow& window, const Image* image);
+		static constexpr void PlatformSetWindowIconWayland(InternalWindow& window, const Image* image);
 		/// @brief This function retrieves the position, in screen coordinates, of the upper-left corner of the
 		/// content area of the specified window.
 		///
@@ -3264,7 +3264,7 @@ namespace TRAP::INTERNAL
 		/// @param yPos Output variable for the current y position of the internal window.
 		static void PlatformGetWindowPos(const InternalWindow& window, i32& xPos, i32& yPos);
 		static void PlatformGetWindowPosX11(const InternalWindow& window, i32& xPos, i32& yPos);
-		static void PlatformGetWindowPosWayland(const InternalWindow& window, i32& xPos, i32& yPos);
+		static constexpr void PlatformGetWindowPosWayland(const InternalWindow& window, i32& xPos, i32& yPos);
 		/// @brief This function sets the size, in screen coordinates, of the content area of the specified window.
 		///
 		/// For full screen windows, this function updates the resolution of its desired video mode
@@ -3291,7 +3291,7 @@ namespace TRAP::INTERNAL
 		/// @param window Internal window to set the size for.
 		/// @param enabled Enable or disable resizing for the internal window.
 		static void PlatformSetWindowResizable(InternalWindow& window, bool enabled);
-		static void PlatformSetWindowResizableX11(InternalWindow& window, bool enabled);
+		static void PlatformSetWindowResizableX11(const InternalWindow& window, bool enabled);
 		static void PlatformSetWindowResizableWayland(InternalWindow& window, bool enabled);
 		/// @brief This function toggles the decorations of the specified window.
 		///
@@ -3300,7 +3300,7 @@ namespace TRAP::INTERNAL
 		/// @param window Internal window to set the size for.
 		/// @param enabled Enable or disable decorations for the internal window.
 		static void PlatformSetWindowDecorated(InternalWindow& window, bool enabled);
-		static void PlatformSetWindowDecoratedX11(InternalWindow& window, bool enabled);
+		static void PlatformSetWindowDecoratedX11(const InternalWindow& window, bool enabled);
 		static void PlatformSetWindowDecoratedWayland(InternalWindow& window, bool enabled);
 		/// @brief This function toggles whether the specified window is floating.
 		///
@@ -3310,7 +3310,7 @@ namespace TRAP::INTERNAL
 		/// @param enabled Enable or disable floating mode for the internal window.
 		static void PlatformSetWindowFloating(const InternalWindow& window, bool enabled);
 		static void PlatformSetWindowFloatingX11(const InternalWindow& window, bool enabled);
-		static void PlatformSetWindowFloatingWayland(const InternalWindow& window, bool enabled);
+		static constexpr void PlatformSetWindowFloatingWayland(const InternalWindow& window, bool enabled);
 		/// @brief This function sets the opacity of the window, including any decorations.
 		///
 		/// The opacity (or alpha) value is a positive finite number between zero and one,
@@ -3324,7 +3324,7 @@ namespace TRAP::INTERNAL
 		/// @param opacity Opacity ranging from 0.0f-1.0f.
 		static void PlatformSetWindowOpacity(const InternalWindow& window, f32 opacity);
 		static void PlatformSetWindowOpacityX11(const InternalWindow& window, f32 opacity);
-		static void PlatformSetWindowOpacityWayland(const InternalWindow& window, f32 opacity);
+		static constexpr void PlatformSetWindowOpacityWayland(const InternalWindow& window, f32 opacity);
 		/// @brief This function toggles mouse passthrough for the specified window.
 		///
 		/// Errors: Possible errors include Error::Platform_Error.
@@ -3332,13 +3332,13 @@ namespace TRAP::INTERNAL
 		/// @param window Internal window to set the size for.
 		/// @param enabled Enable or disable mouse passthrough for the internal window.
 		static void PlatformSetWindowMousePassthrough(InternalWindow& window, bool enabled);
-		static void PlatformSetWindowMousePassthroughX11(InternalWindow& window, bool enabled);
+		static void PlatformSetWindowMousePassthroughX11(const InternalWindow& window, bool enabled);
 		static void PlatformSetWindowMousePassthroughWayland(InternalWindow& window, bool enabled);
 		/// @brief Hides the specified window from the taskbar.
 		/// @param window Internal window to hide from the taskbar.
 		static void PlatformHideWindowFromTaskbar(InternalWindow& window);
-		static void PlatformHideWindowFromTaskbarX11(InternalWindow& window);
-		static void PlatformHideWindowFromTaskbarWayland(InternalWindow& window);
+		static constexpr void PlatformHideWindowFromTaskbarX11(const InternalWindow& window);
+		static constexpr void PlatformHideWindowFromTaskbarWayland(InternalWindow& window);
 		/// @brief This function returns the opacity of the window, including any decorations.
 		///
 		/// The opacity (or alpha) value is a positive finite number between zero and one,
@@ -3624,9 +3624,9 @@ namespace TRAP::INTERNAL
 		///          in the VkInstanceCreateInfo struct.
 		/// @threadsafe
 		/// @param extensions output array for the required instance extensions.
-		static void PlatformGetRequiredInstanceExtensions(std::array<std::string, 2>& extensions);
-		static void PlatformGetRequiredInstanceExtensionsX11(std::array<std::string, 2>& extensions);
-		static void PlatformGetRequiredInstanceExtensionsWayland(std::array<std::string, 2>& extensions);
+		static void PlatformGetRequiredInstanceExtensions(std::array<std::string, 2u>& extensions);
+		static void PlatformGetRequiredInstanceExtensionsX11(std::array<std::string, 2u>& extensions);
+		static void PlatformGetRequiredInstanceExtensionsWayland(std::array<std::string, 2u>& extensions);
 		/// @brief Creates a Vulkan surface for the specified window.
 		/// This function create a Vulkan surface for the specified window.
 		///
@@ -3697,7 +3697,7 @@ namespace TRAP::INTERNAL
 		/// @threadsafety This function must only be called from the main thread.
 		/// @param window Internal window to request user attention for.
 		static void PlatformRequestWindowAttention(InternalWindow& window);
-		static void PlatformRequestWindowAttentionX11(InternalWindow& window);
+		static void PlatformRequestWindowAttentionX11(const InternalWindow& window);
 		static void PlatformRequestWindowAttentionWayland(InternalWindow& window);
 		/// @brief This function hides the specified window if it was previously visible. If
 		/// the window is already hidden or is in full screen mode, this function
@@ -3707,7 +3707,7 @@ namespace TRAP::INTERNAL
 		/// @threadsafety This function must only be called from the main thread.
 		/// @param window Internal window to hide.
 		static void PlatformHideWindow(InternalWindow& window);
-		static void PlatformHideWindowX11(InternalWindow& window);
+		static void PlatformHideWindowX11(const InternalWindow& window);
 		static void PlatformHideWindowWayland(InternalWindow& window);
 		/// @brief Restores the specified window.
 		/// This function restores the specified window if it was previously
@@ -3721,7 +3721,7 @@ namespace TRAP::INTERNAL
 		/// @threadsafety This function must only be called from the main thread.
 		/// @param window Internal window to be restored.
 		static void PlatformRestoreWindow(InternalWindow& window);
-		static void PlatformRestoreWindowX11(InternalWindow& window);
+		static void PlatformRestoreWindowX11(const InternalWindow& window);
 		static void PlatformRestoreWindowWayland(InternalWindow& window);
 		/// @brief Sets the size limits of the specified window.
 		///
@@ -3748,7 +3748,7 @@ namespace TRAP::INTERNAL
 		/// @param maxHeight New maximum window height.
 		static void PlatformSetWindowSizeLimits(InternalWindow& window, i32 minWidth, i32 minHeight,
 		                                        i32 maxWidth, i32 maxHeight);
-		static void PlatformSetWindowSizeLimitsX11(InternalWindow& window, i32 minWidth, i32 minHeight,
+		static void PlatformSetWindowSizeLimitsX11(const InternalWindow& window, i32 minWidth, i32 minHeight,
 		                                        i32 maxWidth, i32 maxHeight);
 		static void PlatformSetWindowSizeLimitsWayland(InternalWindow& window, i32 minWidth, i32 minHeight,
 		                                        i32 maxWidth, i32 maxHeight);
@@ -3777,14 +3777,14 @@ namespace TRAP::INTERNAL
 		/// @param numerator Numerator of the desired aspect ratio, or -1.
 		/// @param denominator Denominator of the desired aspect ratio, or -1.
 		static void PlatformSetWindowAspectRatio(InternalWindow& window, i32 numerator, i32 denominator);
-		static void PlatformSetWindowAspectRatioX11(InternalWindow& window, i32 numerator, i32 denominator);
+		static void PlatformSetWindowAspectRatioX11(const InternalWindow& window, i32 numerator, i32 denominator);
 		static void PlatformSetWindowAspectRatioWayland(InternalWindow& window, i32 numerator, i32 denominator);
 		/// @brief Enable/Disable drag and drop feature for the specified window.
 		/// @param window Internal window for which to set drag and drop.
 		/// @param value Whether to enable or disable drag and drop.
 		static void PlatformSetDragAndDrop(InternalWindow& window, bool value);
-		static void PlatformSetDragAndDropX11(InternalWindow& window, bool value);
-		static void PlatformSetDragAndDropWayland(InternalWindow& window, bool value);
+		static void PlatformSetDragAndDropX11(const InternalWindow& window, bool value);
+		static constexpr void PlatformSetDragAndDropWayland(InternalWindow& window, bool value);
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Single Platform Functions------------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -4075,10 +4075,9 @@ namespace TRAP::INTERNAL
 		                          i64 d, i64 e);
 		/// @brief Wait for data to arrive on any of the specified file descriptors
 		/// @param fds Array of file descriptors to wait for.
-		/// @param count Number of file descriptors to wait for.
 		/// @param timeout Time out in seconds.
 		/// @return Number of file descriptors with data.
-		[[nodiscard]] static bool PollPOSIX(pollfd* fds, nfds_t count, f64* timeout);
+		[[nodiscard]] static bool PollPOSIX(std::span<pollfd> fds, f64* timeout);
 		/// @brief Wait for event data to arrive on the X11 display socket.
 		/// This avoids blocking other threads via the per-display Xlib lock.
 		/// @param timeout Time out in seconds.
@@ -4097,7 +4096,7 @@ namespace TRAP::INTERNAL
 		/// @brief Set event flags for file descriptor.
 		/// @param fileDescriptor File descriptor to set flags for.
 		/// @return True on success, false otherwise.
-		[[nodiscard]] static bool SetEventFlags(i32& fileDescriptor);
+		[[nodiscard]] static bool SetEventFlags(i32 fileDescriptor);
 		/// @brief Create the pipe for empty events without assuming the OS has pipe2(2)
 		/// @return True if the pipe was created, false otherwise.
 		[[nodiscard]] static bool CreateEmptyEventPipe();
@@ -4147,7 +4146,7 @@ namespace TRAP::INTERNAL
 		/// @param supportedAtoms List of supported atoms.
 		/// @param atomName Atom to check.
 		/// @return Atom on success, empty optional otherwise.
-		[[nodiscard]] static std::optional<Atom> GetAtomIfSupported(const std::span<const Atom> supportedAtoms, std::string_view atomName);
+		[[nodiscard]] static std::optional<Atom> GetAtomIfSupported(const std::span<const Atom> supportedAtoms, const std::string& atomName);
 		/// @brief Create a blank cursor for hidden and disabled cursor modes.
 		/// @return Newly created Cursor on success, empty optional otherwise.
 		[[nodiscard]] static std::optional<Cursor> CreateHiddenCursor();
@@ -4178,7 +4177,7 @@ namespace TRAP::INTERNAL
 		[[nodiscard]] static Atom WriteTargetToProperty(const XSelectionRequestEvent& request);
 		/// @brief Handles a selection request.
 		/// @param event Selection request event.
-		static void HandleSelectionRequest(XEvent& event);
+		static void HandleSelectionRequest(const XEvent& event);
 		/// @brief Push contents of our selection to clipboard manager.
 		static void PushSelectionToManagerX11();
 		/// @brief Create X11 input context.
@@ -4220,10 +4219,6 @@ namespace TRAP::INTERNAL
 		/// @param ptr Pointer to the event.
 		/// @return True if the event is a property new value event for the specified selection, false otherwise.
 		[[nodiscard]] static i32 IsSelPropNewValueNotify(Display* display, XEvent* event, XPointer ptr);
-		/// @brief Convert the specified Latin-1 string to UTF-8.
-		/// @param source Latin-1 string.
-		/// @return UTF-8 string.
-		[[nodiscard]] static std::string ConvertLatin1ToUTF8(std::string_view source);
 		/// @brief Reports the specified error, appending information about the last X error.
 		/// @param error Error code.
 		/// @param message Description of error.
@@ -4234,7 +4229,7 @@ namespace TRAP::INTERNAL
 		/// @brief Translates an X11 key code to a TRAP key token.
 		/// @param scanCode X11 key code.
 		/// @return Translated TRAP::Input::Key.
-		[[nodiscard]] static Input::Key TranslateKey(i32 scanCode);
+		[[nodiscard]] static constexpr Input::Key TranslateKey(i32 scanCode);
 #ifdef X_HAVE_UTF8_STRING
 		/// @brief Decode a Unicode code point from a UTF-8 stream.
 		/// @param s UTF-8 stream.
@@ -4259,10 +4254,6 @@ namespace TRAP::INTERNAL
 		/// @brief Creates a dummy window for behind-the-scenes work.
 		/// @return Newly created X11 Window.
 		[[nodiscard]] static ::Window CreateHelperWindow();
-		/// @brief Translate the X11 KeySyms for a key to a TRAP key.
-		/// @param keySyms X11 KeySyms.
-		/// @return Translated TRAP::Input::Key on success, false otherwise.
-		[[nodiscard]] static std::optional<Input::Key> TranslateKeySyms(const std::vector<KeySym>& keySyms);
 		/// @brief Clear its handle when the input context has been destroyed.
 		/// @param ic Input context.
 		/// @param clientData Client data.
@@ -4288,8 +4279,8 @@ namespace TRAP::INTERNAL
 		static void RegistryHandleGlobal(void* userData, wl_registry* registry, u32 name, const char* interface, u32 version);
 		static constexpr wl_registry_listener RegistryListener
 		{
-			RegistryHandleGlobal,
-			RegistryHandleGlobalRemove
+			.global = RegistryHandleGlobal,
+			.global_remove = RegistryHandleGlobalRemove
 		};
 
 		/// @brief Callback function for LibDecor errors.
@@ -4299,23 +4290,23 @@ namespace TRAP::INTERNAL
 		static void LibDecorHandleError(libdecor* context, libdecor_error error, const char* message);
 		static constexpr libdecor_interface LibDecorInterface
 		{
-			LibDecorHandleError,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr
+			.error = LibDecorHandleError,
+			.reserved0 = nullptr,
+			.reserved1 = nullptr,
+			.reserved2 = nullptr,
+			.reserved3 = nullptr,
+			.reserved4 = nullptr,
+			.reserved5 = nullptr,
+			.reserved6 = nullptr,
+			.reserved7 = nullptr,
+			.reserved8 = nullptr,
+			.reserved9 = nullptr
 		};
 
 		static void LibDecorReadyCallback(void* userData, wl_callback* callback, u32 time);
 		static constexpr wl_callback_listener LibDecorReadyListener =
 		{
-			LibDecorReadyCallback
+			.done = LibDecorReadyCallback
 		};
 
 		/// @brief Callback function for Wayland to check if the client is still alive.
@@ -4325,7 +4316,7 @@ namespace TRAP::INTERNAL
 		static void WMBaseHandlePing(void* userData, xdg_wm_base* wmBase, u32 serial);
 		static constexpr xdg_wm_base_listener WMBaseListener
 		{
-			WMBaseHandlePing
+			.ping = WMBaseHandlePing
 		};
 
 		/// @brief Callback function for Wayland to retrieve the capabilities of
@@ -4342,8 +4333,8 @@ namespace TRAP::INTERNAL
 		static constexpr void SeatHandleName(void* userData, wl_seat* seat, const char* name);
 		static constexpr wl_seat_listener SeatListener
 		{
-			SeatHandleCapabilities,
-			SeatHandleName
+			.capabilities = SeatHandleCapabilities,
+			.name = SeatHandleName
 		};
 
 		/// @brief Callback function for Wayland notifying that the pointer
@@ -4389,17 +4380,17 @@ namespace TRAP::INTERNAL
 		static void PointerHandleAxis(void* userData, wl_pointer* pointer, u32 time, u32 axis, wl_fixed_t value);
 		static constexpr wl_pointer_listener PointerListener
 		{
-			PointerHandleEnter,
-			PointerHandleLeave,
-			PointerHandleMotion,
-			PointerHandleButton,
-			PointerHandleAxis,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr
+			.enter = PointerHandleEnter,
+			.leave = PointerHandleLeave,
+			.motion = PointerHandleMotion,
+			.button = PointerHandleButton,
+			.axis = PointerHandleAxis,
+			.frame = nullptr,
+			.axis_source = nullptr,
+			.axis_stop = nullptr,
+			.axis_discrete = nullptr,
+			.axis_value120 = nullptr,
+			.axis_relative_direction = nullptr
 		};
 
 		/// @brief Callback function for Wayland notifying about the keyboard mapping.
@@ -4454,13 +4445,13 @@ namespace TRAP::INTERNAL
 #endif /*WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION*/
 		static constexpr wl_keyboard_listener KeyboardListener
 		{
-			KeyboardHandleKeymap,
-			KeyboardHandleEnter,
-			KeyboardHandleLeave,
-			KeyboardHandleKey,
-			KeyboardHandleModifiers,
+			.keymap = KeyboardHandleKeymap,
+			.enter = KeyboardHandleEnter,
+			.leave = KeyboardHandleLeave,
+			.key = KeyboardHandleKey,
+			.modifiers = KeyboardHandleModifiers,
 #ifdef WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION
-			KeyboardHandleRepeatInfo
+			.repeat_info = KeyboardHandleRepeatInfo
 #endif /*WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION*/
 		};
 
@@ -4517,13 +4508,13 @@ namespace TRAP::INTERNAL
 #endif /*WL_OUTPUT_NAME_SINCE_VERSION*/
 		static constexpr wl_output_listener OutputListener
 		{
-			OutputHandleGeometry,
-			OutputHandleMode,
-			OutputHandleDone,
-			OutputHandleScale,
+			.geometry = OutputHandleGeometry,
+			.mode = OutputHandleMode,
+			.done = OutputHandleDone,
+			.scale = OutputHandleScale,
 #ifdef WL_OUTPUT_NAME_SINCE_VERSION
-			OutputHandleName,
-			OutputHandleDescription
+			.name = OutputHandleName,
+			.description = OutputHandleDescription
 #endif /*WL_OUTPUT_NAME_SINCE_VERSION*/
 		};
 
@@ -4563,12 +4554,12 @@ namespace TRAP::INTERNAL
 		static void DataDeviceHandleSelection(void* userData, wl_data_device* device, wl_data_offer* offer);
 		static constexpr wl_data_device_listener DataDeviceListener
 		{
-			DataDeviceHandleDataOffer,
-			DataDeviceHandleEnter,
-			DataDeviceHandleLeave,
-			DataDeviceHandleMotion,
-			DataDeviceHandleDrop,
-			DataDeviceHandleSelection
+			.data_offer = DataDeviceHandleDataOffer,
+			.enter = DataDeviceHandleEnter,
+			.leave = DataDeviceHandleLeave,
+			.motion = DataDeviceHandleMotion,
+			.drop = DataDeviceHandleDrop,
+			.selection = DataDeviceHandleSelection
 		};
 
 		/// @brief Callback function for Wayland notifying about the mime type of a data offer.
@@ -4578,9 +4569,9 @@ namespace TRAP::INTERNAL
 		static void DataOfferHandleOffer(void* userData, wl_data_offer* offer, const char* mimeType);
 		static constexpr wl_data_offer_listener DataOfferListener
 		{
-			DataOfferHandleOffer,
-			nullptr,
-			nullptr
+			.offer = DataOfferHandleOffer,
+			.source_actions = nullptr,
+			.action = nullptr
 		};
 
 		/// @brief Callback function for Wayland suggesting a surface change.
@@ -4590,7 +4581,7 @@ namespace TRAP::INTERNAL
 		static void XDGSurfaceHandleConfigure(void* userData, xdg_surface* surface, u32 serial);
 		static constexpr xdg_surface_listener XDGSurfaceListener
 		{
-			XDGSurfaceHandleConfigure
+			.configure = XDGSurfaceHandleConfigure
 		};
 
 		/// @brief Callback function for Wayland suggesting a surface change
@@ -4607,10 +4598,10 @@ namespace TRAP::INTERNAL
 		static void XDGTopLevelHandleClose(void* userData, xdg_toplevel* topLevel);
 		static constexpr xdg_toplevel_listener XDGTopLevelListener
 		{
-			XDGTopLevelHandleConfigure,
-			XDGTopLevelHandleClose,
-			nullptr,
-			nullptr
+			.configure = XDGTopLevelHandleConfigure,
+			.close = XDGTopLevelHandleClose,
+			.configure_bounds = nullptr,
+			.wm_capabilities = nullptr
 		};
 
 		/// @brief Callback function for Wayland notifying that the XDG activation is done.
@@ -4620,7 +4611,7 @@ namespace TRAP::INTERNAL
 		static void XDGActivationHandleDone(void* userData, xdg_activation_token_v1* activationToken, const char* token);
 		static constexpr xdg_activation_token_v1_listener XDGActivationListener
 		{
-			XDGActivationHandleDone
+			.done = XDGActivationHandleDone
 		};
 
 		/// @brief Callback function for Wayland suggesting to change the decoration mode.
@@ -4630,7 +4621,7 @@ namespace TRAP::INTERNAL
 		static void XDGDecorationHandleConfigure(void* userData, zxdg_toplevel_decoration_v1* decoration, u32 mode);
 		static constexpr zxdg_toplevel_decoration_v1_listener XDGDecorationListener
 		{
-			XDGDecorationHandleConfigure
+			.configure = XDGDecorationHandleConfigure
 		};
 
 		/// @brief Callback function for Wayland notifying that an output entered a surface.
@@ -4645,10 +4636,10 @@ namespace TRAP::INTERNAL
 		static void SurfaceHandleLeave(void* userData, wl_surface* surface, wl_output* output);
 		static constexpr wl_surface_listener SurfaceListener
 		{
-			SurfaceHandleEnter,
-			SurfaceHandleLeave,
-			nullptr,
-			nullptr
+			.enter = SurfaceHandleEnter,
+			.leave = SurfaceHandleLeave,
+			.preferred_buffer_scale = nullptr,
+			.preferred_buffer_transform = nullptr
 		};
 
 		/// @brief Callback function for Wayland notifying that
@@ -4663,8 +4654,8 @@ namespace TRAP::INTERNAL
 		static constexpr void ConfinedPointerHandleUnconfined(void* userData, zwp_confined_pointer_v1* confinedPointer);
 		static constexpr zwp_confined_pointer_v1_listener ConfinedPointerListener
 		{
-			ConfinedPointerHandleConfined,
-			ConfinedPointerHandleUnconfined
+			.confined = ConfinedPointerHandleConfined,
+			.unconfined = ConfinedPointerHandleUnconfined
 		};
 
 		/// @brief Callback function for Wayland notifying that the relative pointer moved.
@@ -4680,7 +4671,7 @@ namespace TRAP::INTERNAL
 		                                                u32 timeLo, wl_fixed_t dx, wl_fixed_t dy, wl_fixed_t dxUnaccel, wl_fixed_t dyUnaccel);
 		static constexpr zwp_relative_pointer_v1_listener RelativePointerListener
 		{
-			RelativePointerHandleRelativeMotion
+			.relative_motion = RelativePointerHandleRelativeMotion
 		};
 
 		/// @brief Callback function for Wayland notifying that pointer has been locked.
@@ -4693,8 +4684,8 @@ namespace TRAP::INTERNAL
 		static constexpr void LockedPointerHandleUnlocked(void* userData, zwp_locked_pointer_v1* lockedPointer);
 		static constexpr zwp_locked_pointer_v1_listener LockedPointerListener
 		{
-			LockedPointerHandleLocked,
-			LockedPointerHandleUnlocked
+			.locked = LockedPointerHandleLocked,
+			.unlocked = LockedPointerHandleUnlocked
 		};
 
 		/// @brief Callback function for Wayland called when an offered mime type got accepted.
@@ -4714,12 +4705,12 @@ namespace TRAP::INTERNAL
 		static void DataSourceHandleCancelled(void* userData, wl_data_source* source);
 		static constexpr wl_data_source_listener DataSourceListener
 		{
-			DataSourceHandleTarget,
-			DataSourceHandleSend,
-			DataSourceHandleCancelled,
-			nullptr,
-			nullptr,
-			nullptr
+			.target = DataSourceHandleTarget,
+			.send = DataSourceHandleSend,
+			.cancelled = DataSourceHandleCancelled,
+			.dnd_drop_performed = nullptr,
+			.dnd_finished = nullptr,
+			.action = nullptr
 		};
 
 		/// @brief Callback function for Wayland notifying that a new preferred scale exists.
@@ -4729,7 +4720,7 @@ namespace TRAP::INTERNAL
 		static void FractionalScaleHandleScaleFactor(void* userData, wp_fractional_scale_v1* fractionalScale, u32 preferredScale_8_24);
 		static constexpr wp_fractional_scale_v1_listener FractionalScaleListener =
 		{
-			FractionalScaleHandleScaleFactor
+			.preferred_scale = FractionalScaleHandleScaleFactor
 		};
 
 		/// @brief Callback function for Wayland notifying that a new configuration was received.
@@ -4755,20 +4746,20 @@ namespace TRAP::INTERNAL
 		static constexpr void LibDecorFrameHandleDismissPopup(libdecor_frame* frame, const char* seatName, void* userData);
 		static constexpr libdecor_frame_interface LibDecorFrameInterface
 		{
-			LibDecorFrameHandleConfigure,
-			LibDecorFrameHandleClose,
-			LibDecorFrameHandleCommit,
-			LibDecorFrameHandleDismissPopup,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr,
+			.configure = LibDecorFrameHandleConfigure,
+			.close = LibDecorFrameHandleClose,
+			.commit = LibDecorFrameHandleCommit,
+			.dismiss_popup = LibDecorFrameHandleDismissPopup,
+			.reserved0 = nullptr,
+			.reserved1 = nullptr,
+			.reserved2 = nullptr,
+			.reserved3 = nullptr,
+			.reserved4 = nullptr,
+			.reserved5 = nullptr,
+			.reserved6 = nullptr,
+			.reserved7 = nullptr,
+			.reserved8 = nullptr,
+			.reserved9 = nullptr
 		};
 
 		/// @brief This function tries to load the cursor's size and theme.
@@ -4778,7 +4769,7 @@ namespace TRAP::INTERNAL
 		/// @param offer Wayland data offer object.
 		/// @param mimeType Mime type of data to receive.
 		/// @return Read data on success, empty optional otherwise
-		[[nodiscard]] static std::optional<std::string> ReadDataOfferAsString(wl_data_offer& offer, std::string_view mimeType);
+		[[nodiscard]] static std::optional<std::string> ReadDataOfferAsString(wl_data_offer& offer, const std::string& mimeType);
 		/// @brief Flush the display till it succeeds.
 		/// @return True on successful flush, false otherwise.
 		static bool FlushDisplay();
@@ -4887,7 +4878,7 @@ namespace TRAP::INTERNAL
 		/// @param window Window to create surface for.
 		/// @param WNDConfig WindowConfig to use for the surface.
 		/// @return True on success, false otherwise.
-		[[nodiscard]] static bool CreateNativeSurfaceWayland(InternalWindow& window, WindowConfig& WNDConfig);
+		[[nodiscard]] static bool CreateNativeSurfaceWayland(InternalWindow& window, const WindowConfig& WNDConfig);
 		/// @brief Confine the pointer/cursor to the limits of the given window.
 		/// @param window Window to confine pointer to.
 		static void ConfinePointerWayland(InternalWindow& window);
@@ -4942,245 +4933,245 @@ namespace TRAP::INTERNAL
 			u16 UCS;
 		};
 
-		static constexpr std::array<CodePair, 828> KeySymTab
+		static constexpr std::array<CodePair, 828u> KeySymTab
 		{
 			{
-				{ 0x01a1, 0x0104 }, { 0x01a2, 0x02d8 }, { 0x01a3, 0x0141 }, { 0x01a5, 0x013d },
-				{ 0x01a6, 0x015a }, { 0x01a9, 0x0160 }, { 0x01aa, 0x015e }, { 0x01ab, 0x0164 },
-				{ 0x01ac, 0x0179 }, { 0x01ae, 0x017d }, { 0x01af, 0x017b }, { 0x01b1, 0x0105 },
-				{ 0x01b2, 0x02db }, { 0x01b3, 0x0142 }, { 0x01b5, 0x013e }, { 0x01b6, 0x015b },
-				{ 0x01b7, 0x02c7 }, { 0x01b9, 0x0161 }, { 0x01ba, 0x015f }, { 0x01bb, 0x0165 },
-				{ 0x01bc, 0x017a }, { 0x01bd, 0x02dd }, { 0x01be, 0x017e }, { 0x01bf, 0x017c },
-				{ 0x01c0, 0x0154 }, { 0x01c3, 0x0102 }, { 0x01c5, 0x0139 }, { 0x01c6, 0x0106 },
-				{ 0x01c8, 0x010c }, { 0x01ca, 0x0118 }, { 0x01cc, 0x011a }, { 0x01cf, 0x010e },
-				{ 0x01d0, 0x0110 }, { 0x01d1, 0x0143 }, { 0x01d2, 0x0147 }, { 0x01d5, 0x0150 },
-				{ 0x01d8, 0x0158 }, { 0x01d9, 0x016e }, { 0x01db, 0x0170 }, { 0x01de, 0x0162 },
-				{ 0x01e0, 0x0155 }, { 0x01e3, 0x0103 }, { 0x01e5, 0x013a }, { 0x01e6, 0x0107 },
-				{ 0x01e8, 0x010d }, { 0x01ea, 0x0119 }, { 0x01ec, 0x011b }, { 0x01ef, 0x010f },
-				{ 0x01f0, 0x0111 }, { 0x01f1, 0x0144 }, { 0x01f2, 0x0148 }, { 0x01f5, 0x0151 },
-				{ 0x01f8, 0x0159 }, { 0x01f9, 0x016f }, { 0x01fb, 0x0171 }, { 0x01fe, 0x0163 },
-				{ 0x01ff, 0x02d9 }, { 0x02a1, 0x0126 }, { 0x02a6, 0x0124 }, { 0x02a9, 0x0130 },
-				{ 0x02ab, 0x011e }, { 0x02ac, 0x0134 }, { 0x02b1, 0x0127 }, { 0x02b6, 0x0125 },
-				{ 0x02b9, 0x0131 }, { 0x02bb, 0x011f }, { 0x02bc, 0x0135 }, { 0x02c5, 0x010a },
-				{ 0x02c6, 0x0108 }, { 0x02d5, 0x0120 }, { 0x02d8, 0x011c }, { 0x02dd, 0x016c },
-				{ 0x02de, 0x015c }, { 0x02e5, 0x010b }, { 0x02e6, 0x0109 }, { 0x02f5, 0x0121 },
-				{ 0x02f8, 0x011d }, { 0x02fd, 0x016d }, { 0x02fe, 0x015d }, { 0x03a2, 0x0138 },
-				{ 0x03a3, 0x0156 }, { 0x03a5, 0x0128 }, { 0x03a6, 0x013b }, { 0x03aa, 0x0112 },
-				{ 0x03ab, 0x0122 }, { 0x03ac, 0x0166 }, { 0x03b3, 0x0157 }, { 0x03b5, 0x0129 },
-				{ 0x03b6, 0x013c }, { 0x03ba, 0x0113 }, { 0x03bb, 0x0123 }, { 0x03bc, 0x0167 },
-				{ 0x03bd, 0x014a }, { 0x03bf, 0x014b }, { 0x03c0, 0x0100 }, { 0x03c7, 0x012e },
-				{ 0x03cc, 0x0116 }, { 0x03cf, 0x012a }, { 0x03d1, 0x0145 }, { 0x03d2, 0x014c },
-				{ 0x03d3, 0x0136 }, { 0x03d9, 0x0172 }, { 0x03dd, 0x0168 }, { 0x03de, 0x016a },
-				{ 0x03e0, 0x0101 }, { 0x03e7, 0x012f }, { 0x03ec, 0x0117 }, { 0x03ef, 0x012b },
-				{ 0x03f1, 0x0146 }, { 0x03f2, 0x014d }, { 0x03f3, 0x0137 }, { 0x03f9, 0x0173 },
-				{ 0x03fd, 0x0169 }, { 0x03fe, 0x016b }, { 0x047e, 0x203e }, { 0x04a1, 0x3002 },
-				{ 0x04a2, 0x300c }, { 0x04a3, 0x300d }, { 0x04a4, 0x3001 }, { 0x04a5, 0x30fb },
-				{ 0x04a6, 0x30f2 }, { 0x04a7, 0x30a1 }, { 0x04a8, 0x30a3 }, { 0x04a9, 0x30a5 },
-				{ 0x04aa, 0x30a7 }, { 0x04ab, 0x30a9 }, { 0x04ac, 0x30e3 }, { 0x04ad, 0x30e5 },
-				{ 0x04ae, 0x30e7 }, { 0x04af, 0x30c3 }, { 0x04b0, 0x30fc }, { 0x04b1, 0x30a2 },
-				{ 0x04b2, 0x30a4 }, { 0x04b3, 0x30a6 }, { 0x04b4, 0x30a8 }, { 0x04b5, 0x30aa },
-				{ 0x04b6, 0x30ab }, { 0x04b7, 0x30ad }, { 0x04b8, 0x30af }, { 0x04b9, 0x30b1 },
-				{ 0x04ba, 0x30b3 }, { 0x04bb, 0x30b5 }, { 0x04bc, 0x30b7 }, { 0x04bd, 0x30b9 },
-				{ 0x04be, 0x30bb }, { 0x04bf, 0x30bd }, { 0x04c0, 0x30bf }, { 0x04c1, 0x30c1 },
-				{ 0x04c2, 0x30c4 }, { 0x04c3, 0x30c6 }, { 0x04c4, 0x30c8 }, { 0x04c5, 0x30ca },
-				{ 0x04c6, 0x30cb }, { 0x04c7, 0x30cc }, { 0x04c8, 0x30cd }, { 0x04c9, 0x30ce },
-				{ 0x04ca, 0x30cf }, { 0x04cb, 0x30d2 }, { 0x04cc, 0x30d5 }, { 0x04cd, 0x30d8 },
-				{ 0x04ce, 0x30db }, { 0x04cf, 0x30de }, { 0x04d0, 0x30df }, { 0x04d1, 0x30e0 },
-				{ 0x04d2, 0x30e1 }, { 0x04d3, 0x30e2 }, { 0x04d4, 0x30e4 }, { 0x04d5, 0x30e6 },
-				{ 0x04d6, 0x30e8 }, { 0x04d7, 0x30e9 }, { 0x04d8, 0x30ea }, { 0x04d9, 0x30eb },
-				{ 0x04da, 0x30ec }, { 0x04db, 0x30ed }, { 0x04dc, 0x30ef }, { 0x04dd, 0x30f3 },
-				{ 0x04de, 0x309b }, { 0x04df, 0x309c }, { 0x05ac, 0x060c }, { 0x05bb, 0x061b },
-				{ 0x05bf, 0x061f }, { 0x05c1, 0x0621 }, { 0x05c2, 0x0622 }, { 0x05c3, 0x0623 },
-				{ 0x05c4, 0x0624 }, { 0x05c5, 0x0625 }, { 0x05c6, 0x0626 }, { 0x05c7, 0x0627 },
-				{ 0x05c8, 0x0628 }, { 0x05c9, 0x0629 }, { 0x05ca, 0x062a }, { 0x05cb, 0x062b },
-				{ 0x05cc, 0x062c }, { 0x05cd, 0x062d }, { 0x05ce, 0x062e }, { 0x05cf, 0x062f },
-				{ 0x05d0, 0x0630 }, { 0x05d1, 0x0631 }, { 0x05d2, 0x0632 }, { 0x05d3, 0x0633 },
-				{ 0x05d4, 0x0634 }, { 0x05d5, 0x0635 }, { 0x05d6, 0x0636 }, { 0x05d7, 0x0637 },
-				{ 0x05d8, 0x0638 }, { 0x05d9, 0x0639 }, { 0x05da, 0x063a }, { 0x05e0, 0x0640 },
-				{ 0x05e1, 0x0641 }, { 0x05e2, 0x0642 }, { 0x05e3, 0x0643 }, { 0x05e4, 0x0644 },
-				{ 0x05e5, 0x0645 }, { 0x05e6, 0x0646 }, { 0x05e7, 0x0647 }, { 0x05e8, 0x0648 },
-				{ 0x05e9, 0x0649 }, { 0x05ea, 0x064a }, { 0x05eb, 0x064b }, { 0x05ec, 0x064c },
-				{ 0x05ed, 0x064d }, { 0x05ee, 0x064e }, { 0x05ef, 0x064f }, { 0x05f0, 0x0650 },
-				{ 0x05f1, 0x0651 }, { 0x05f2, 0x0652 }, { 0x06a1, 0x0452 }, { 0x06a2, 0x0453 },
-				{ 0x06a3, 0x0451 }, { 0x06a4, 0x0454 }, { 0x06a5, 0x0455 }, { 0x06a6, 0x0456 },
-				{ 0x06a7, 0x0457 }, { 0x06a8, 0x0458 }, { 0x06a9, 0x0459 }, { 0x06aa, 0x045a },
-				{ 0x06ab, 0x045b }, { 0x06ac, 0x045c }, { 0x06ae, 0x045e }, { 0x06af, 0x045f },
-				{ 0x06b0, 0x2116 }, { 0x06b1, 0x0402 }, { 0x06b2, 0x0403 }, { 0x06b3, 0x0401 },
-				{ 0x06b4, 0x0404 }, { 0x06b5, 0x0405 }, { 0x06b6, 0x0406 }, { 0x06b7, 0x0407 },
-				{ 0x06b8, 0x0408 }, { 0x06b9, 0x0409 }, { 0x06ba, 0x040a }, { 0x06bb, 0x040b },
-				{ 0x06bc, 0x040c }, { 0x06be, 0x040e }, { 0x06bf, 0x040f }, { 0x06c0, 0x044e },
-				{ 0x06c1, 0x0430 }, { 0x06c2, 0x0431 }, { 0x06c3, 0x0446 }, { 0x06c4, 0x0434 },
-				{ 0x06c5, 0x0435 }, { 0x06c6, 0x0444 }, { 0x06c7, 0x0433 }, { 0x06c8, 0x0445 },
-				{ 0x06c9, 0x0438 }, { 0x06ca, 0x0439 }, { 0x06cb, 0x043a }, { 0x06cc, 0x043b },
-				{ 0x06cd, 0x043c }, { 0x06ce, 0x043d }, { 0x06cf, 0x043e }, { 0x06d0, 0x043f },
-				{ 0x06d1, 0x044f }, { 0x06d2, 0x0440 }, { 0x06d3, 0x0441 }, { 0x06d4, 0x0442 },
-				{ 0x06d5, 0x0443 }, { 0x06d6, 0x0436 }, { 0x06d7, 0x0432 }, { 0x06d8, 0x044c },
-				{ 0x06d9, 0x044b }, { 0x06da, 0x0437 }, { 0x06db, 0x0448 }, { 0x06dc, 0x044d },
-				{ 0x06dd, 0x0449 }, { 0x06de, 0x0447 }, { 0x06df, 0x044a }, { 0x06e0, 0x042e },
-				{ 0x06e1, 0x0410 }, { 0x06e2, 0x0411 }, { 0x06e3, 0x0426 }, { 0x06e4, 0x0414 },
-				{ 0x06e5, 0x0415 }, { 0x06e6, 0x0424 }, { 0x06e7, 0x0413 }, { 0x06e8, 0x0425 },
-				{ 0x06e9, 0x0418 }, { 0x06ea, 0x0419 }, { 0x06eb, 0x041a }, { 0x06ec, 0x041b },
-				{ 0x06ed, 0x041c }, { 0x06ee, 0x041d }, { 0x06ef, 0x041e }, { 0x06f0, 0x041f },
-				{ 0x06f1, 0x042f }, { 0x06f2, 0x0420 }, { 0x06f3, 0x0421 }, { 0x06f4, 0x0422 },
-				{ 0x06f5, 0x0423 }, { 0x06f6, 0x0416 }, { 0x06f7, 0x0412 }, { 0x06f8, 0x042c },
-				{ 0x06f9, 0x042b }, { 0x06fa, 0x0417 }, { 0x06fb, 0x0428 }, { 0x06fc, 0x042d },
-				{ 0x06fd, 0x0429 }, { 0x06fe, 0x0427 }, { 0x06ff, 0x042a }, { 0x07a1, 0x0386 },
-				{ 0x07a2, 0x0388 }, { 0x07a3, 0x0389 }, { 0x07a4, 0x038a }, { 0x07a5, 0x03aa },
-				{ 0x07a7, 0x038c }, { 0x07a8, 0x038e }, { 0x07a9, 0x03ab }, { 0x07ab, 0x038f },
-				{ 0x07ae, 0x0385 }, { 0x07af, 0x2015 }, { 0x07b1, 0x03ac }, { 0x07b2, 0x03ad },
-				{ 0x07b3, 0x03ae }, { 0x07b4, 0x03af }, { 0x07b5, 0x03ca }, { 0x07b6, 0x0390 },
-				{ 0x07b7, 0x03cc }, { 0x07b8, 0x03cd }, { 0x07b9, 0x03cb }, { 0x07ba, 0x03b0 },
-				{ 0x07bb, 0x03ce }, { 0x07c1, 0x0391 }, { 0x07c2, 0x0392 }, { 0x07c3, 0x0393 },
-				{ 0x07c4, 0x0394 }, { 0x07c5, 0x0395 }, { 0x07c6, 0x0396 }, { 0x07c7, 0x0397 },
-				{ 0x07c8, 0x0398 }, { 0x07c9, 0x0399 }, { 0x07ca, 0x039a }, { 0x07cb, 0x039b },
-				{ 0x07cc, 0x039c }, { 0x07cd, 0x039d }, { 0x07ce, 0x039e }, { 0x07cf, 0x039f },
-				{ 0x07d0, 0x03a0 }, { 0x07d1, 0x03a1 }, { 0x07d2, 0x03a3 }, { 0x07d4, 0x03a4 },
-				{ 0x07d5, 0x03a5 }, { 0x07d6, 0x03a6 }, { 0x07d7, 0x03a7 }, { 0x07d8, 0x03a8 },
-				{ 0x07d9, 0x03a9 }, { 0x07e1, 0x03b1 }, { 0x07e2, 0x03b2 }, { 0x07e3, 0x03b3 },
-				{ 0x07e4, 0x03b4 }, { 0x07e5, 0x03b5 }, { 0x07e6, 0x03b6 }, { 0x07e7, 0x03b7 },
-				{ 0x07e8, 0x03b8 }, { 0x07e9, 0x03b9 }, { 0x07ea, 0x03ba }, { 0x07eb, 0x03bb },
-				{ 0x07ec, 0x03bc }, { 0x07ed, 0x03bd }, { 0x07ee, 0x03be }, { 0x07ef, 0x03bf },
-				{ 0x07f0, 0x03c0 }, { 0x07f1, 0x03c1 }, { 0x07f2, 0x03c3 }, { 0x07f3, 0x03c2 },
-				{ 0x07f4, 0x03c4 }, { 0x07f5, 0x03c5 }, { 0x07f6, 0x03c6 }, { 0x07f7, 0x03c7 },
-				{ 0x07f8, 0x03c8 }, { 0x07f9, 0x03c9 }, { 0x08a1, 0x23b7 }, { 0x08a2, 0x250c },
-				{ 0x08a3, 0x2500 }, { 0x08a4, 0x2320 }, { 0x08a5, 0x2321 }, { 0x08a6, 0x2502 },
-				{ 0x08a7, 0x23a1 }, { 0x08a8, 0x23a3 }, { 0x08a9, 0x23a4 }, { 0x08aa, 0x23a6 },
-				{ 0x08ab, 0x239b }, { 0x08ac, 0x239d }, { 0x08ad, 0x239e }, { 0x08ae, 0x23a0 },
-				{ 0x08af, 0x23a8 }, { 0x08b0, 0x23ac }, { 0x08bc, 0x2264 }, { 0x08bd, 0x2260 },
-				{ 0x08be, 0x2265 }, { 0x08bf, 0x222b }, { 0x08c0, 0x2234 }, { 0x08c1, 0x221d },
-				{ 0x08c2, 0x221e }, { 0x08c5, 0x2207 }, { 0x08c8, 0x223c }, { 0x08c9, 0x2243 },
-				{ 0x08cd, 0x21d4 }, { 0x08ce, 0x21d2 }, { 0x08cf, 0x2261 }, { 0x08d6, 0x221a },
-				{ 0x08da, 0x2282 }, { 0x08db, 0x2283 }, { 0x08dc, 0x2229 }, { 0x08dd, 0x222a },
-				{ 0x08de, 0x2227 }, { 0x08df, 0x2228 }, { 0x08ef, 0x2202 }, { 0x08f6, 0x0192 },
-				{ 0x08fb, 0x2190 }, { 0x08fc, 0x2191 }, { 0x08fd, 0x2192 }, { 0x08fe, 0x2193 },
-				{ 0x09e0, 0x25c6 }, { 0x09e1, 0x2592 }, { 0x09e2, 0x2409 }, { 0x09e3, 0x240c },
-				{ 0x09e4, 0x240d }, { 0x09e5, 0x240a }, { 0x09e8, 0x2424 }, { 0x09e9, 0x240b },
-				{ 0x09ea, 0x2518 }, { 0x09eb, 0x2510 }, { 0x09ec, 0x250c }, { 0x09ed, 0x2514 },
-				{ 0x09ee, 0x253c }, { 0x09ef, 0x23ba }, { 0x09f0, 0x23bb }, { 0x09f1, 0x2500 },
-				{ 0x09f2, 0x23bc }, { 0x09f3, 0x23bd }, { 0x09f4, 0x251c }, { 0x09f5, 0x2524 },
-				{ 0x09f6, 0x2534 }, { 0x09f7, 0x252c }, { 0x09f8, 0x2502 }, { 0x0aa1, 0x2003 },
-				{ 0x0aa2, 0x2002 }, { 0x0aa3, 0x2004 }, { 0x0aa4, 0x2005 }, { 0x0aa5, 0x2007 },
-				{ 0x0aa6, 0x2008 }, { 0x0aa7, 0x2009 }, { 0x0aa8, 0x200a }, { 0x0aa9, 0x2014 },
-				{ 0x0aaa, 0x2013 }, { 0x0aae, 0x2026 }, { 0x0aaf, 0x2025 }, { 0x0ab0, 0x2153 },
-				{ 0x0ab1, 0x2154 }, { 0x0ab2, 0x2155 }, { 0x0ab3, 0x2156 }, { 0x0ab4, 0x2157 },
-				{ 0x0ab5, 0x2158 }, { 0x0ab6, 0x2159 }, { 0x0ab7, 0x215a }, { 0x0ab8, 0x2105 },
-				{ 0x0abb, 0x2012 }, { 0x0abc, 0x2329 }, { 0x0abe, 0x232a }, { 0x0ac3, 0x215b },
-				{ 0x0ac4, 0x215c }, { 0x0ac5, 0x215d }, { 0x0ac6, 0x215e }, { 0x0ac9, 0x2122 },
-				{ 0x0aca, 0x2613 }, { 0x0acc, 0x25c1 }, { 0x0acd, 0x25b7 }, { 0x0ace, 0x25cb },
-				{ 0x0acf, 0x25af }, { 0x0ad0, 0x2018 }, { 0x0ad1, 0x2019 }, { 0x0ad2, 0x201c },
-				{ 0x0ad3, 0x201d }, { 0x0ad4, 0x211e }, { 0x0ad6, 0x2032 }, { 0x0ad7, 0x2033 },
-				{ 0x0ad9, 0x271d }, { 0x0adb, 0x25ac }, { 0x0adc, 0x25c0 }, { 0x0add, 0x25b6 },
-				{ 0x0ade, 0x25cf }, { 0x0adf, 0x25ae }, { 0x0ae0, 0x25e6 }, { 0x0ae1, 0x25ab },
-				{ 0x0ae2, 0x25ad }, { 0x0ae3, 0x25b3 }, { 0x0ae4, 0x25bd }, { 0x0ae5, 0x2606 },
-				{ 0x0ae6, 0x2022 }, { 0x0ae7, 0x25aa }, { 0x0ae8, 0x25b2 }, { 0x0ae9, 0x25bc },
-				{ 0x0aea, 0x261c }, { 0x0aeb, 0x261e }, { 0x0aec, 0x2663 }, { 0x0aed, 0x2666 },
-				{ 0x0aee, 0x2665 }, { 0x0af0, 0x2720 }, { 0x0af1, 0x2020 }, { 0x0af2, 0x2021 },
-				{ 0x0af3, 0x2713 }, { 0x0af4, 0x2717 }, { 0x0af5, 0x266f }, { 0x0af6, 0x266d },
-				{ 0x0af7, 0x2642 }, { 0x0af8, 0x2640 }, { 0x0af9, 0x260e }, { 0x0afa, 0x2315 },
-				{ 0x0afb, 0x2117 }, { 0x0afc, 0x2038 }, { 0x0afd, 0x201a }, { 0x0afe, 0x201e },
-				{ 0x0ba3, 0x003c }, { 0x0ba6, 0x003e }, { 0x0ba8, 0x2228 }, { 0x0ba9, 0x2227 },
-				{ 0x0bc0, 0x00af }, { 0x0bc2, 0x22a5 }, { 0x0bc3, 0x2229 }, { 0x0bc4, 0x230a },
-				{ 0x0bc6, 0x005f }, { 0x0bca, 0x2218 }, { 0x0bcc, 0x2395 }, { 0x0bce, 0x22a4 },
-				{ 0x0bcf, 0x25cb }, { 0x0bd3, 0x2308 }, { 0x0bd6, 0x222a }, { 0x0bd8, 0x2283 },
-				{ 0x0bda, 0x2282 }, { 0x0bdc, 0x22a2 }, { 0x0bfc, 0x22a3 }, { 0x0cdf, 0x2017 },
-				{ 0x0ce0, 0x05d0 }, { 0x0ce1, 0x05d1 }, { 0x0ce2, 0x05d2 }, { 0x0ce3, 0x05d3 },
-				{ 0x0ce4, 0x05d4 }, { 0x0ce5, 0x05d5 }, { 0x0ce6, 0x05d6 }, { 0x0ce7, 0x05d7 },
-				{ 0x0ce8, 0x05d8 }, { 0x0ce9, 0x05d9 }, { 0x0cea, 0x05da }, { 0x0ceb, 0x05db },
-				{ 0x0cec, 0x05dc }, { 0x0ced, 0x05dd }, { 0x0cee, 0x05de }, { 0x0cef, 0x05df },
-				{ 0x0cf0, 0x05e0 }, { 0x0cf1, 0x05e1 }, { 0x0cf2, 0x05e2 }, { 0x0cf3, 0x05e3 },
-				{ 0x0cf4, 0x05e4 }, { 0x0cf5, 0x05e5 }, { 0x0cf6, 0x05e6 }, { 0x0cf7, 0x05e7 },
-				{ 0x0cf8, 0x05e8 }, { 0x0cf9, 0x05e9 }, { 0x0cfa, 0x05ea }, { 0x0da1, 0x0e01 },
-				{ 0x0da2, 0x0e02 }, { 0x0da3, 0x0e03 }, { 0x0da4, 0x0e04 }, { 0x0da5, 0x0e05 },
-				{ 0x0da6, 0x0e06 }, { 0x0da7, 0x0e07 }, { 0x0da8, 0x0e08 }, { 0x0da9, 0x0e09 },
-				{ 0x0daa, 0x0e0a }, { 0x0dab, 0x0e0b }, { 0x0dac, 0x0e0c }, { 0x0dad, 0x0e0d },
-				{ 0x0dae, 0x0e0e }, { 0x0daf, 0x0e0f }, { 0x0db0, 0x0e10 }, { 0x0db1, 0x0e11 },
-				{ 0x0db2, 0x0e12 }, { 0x0db3, 0x0e13 }, { 0x0db4, 0x0e14 }, { 0x0db5, 0x0e15 },
-				{ 0x0db6, 0x0e16 }, { 0x0db7, 0x0e17 }, { 0x0db8, 0x0e18 }, { 0x0db9, 0x0e19 },
-				{ 0x0dba, 0x0e1a }, { 0x0dbb, 0x0e1b }, { 0x0dbc, 0x0e1c }, { 0x0dbd, 0x0e1d },
-				{ 0x0dbe, 0x0e1e }, { 0x0dbf, 0x0e1f }, { 0x0dc0, 0x0e20 }, { 0x0dc1, 0x0e21 },
-				{ 0x0dc2, 0x0e22 }, { 0x0dc3, 0x0e23 }, { 0x0dc4, 0x0e24 }, { 0x0dc5, 0x0e25 },
-				{ 0x0dc6, 0x0e26 }, { 0x0dc7, 0x0e27 }, { 0x0dc8, 0x0e28 }, { 0x0dc9, 0x0e29 },
-				{ 0x0dca, 0x0e2a }, { 0x0dcb, 0x0e2b }, { 0x0dcc, 0x0e2c }, { 0x0dcd, 0x0e2d },
-				{ 0x0dce, 0x0e2e }, { 0x0dcf, 0x0e2f }, { 0x0dd0, 0x0e30 }, { 0x0dd1, 0x0e31 },
-				{ 0x0dd2, 0x0e32 }, { 0x0dd3, 0x0e33 }, { 0x0dd4, 0x0e34 }, { 0x0dd5, 0x0e35 },
-				{ 0x0dd6, 0x0e36 }, { 0x0dd7, 0x0e37 }, { 0x0dd8, 0x0e38 }, { 0x0dd9, 0x0e39 },
-				{ 0x0dda, 0x0e3a }, { 0x0ddf, 0x0e3f }, { 0x0de0, 0x0e40 }, { 0x0de1, 0x0e41 },
-				{ 0x0de2, 0x0e42 }, { 0x0de3, 0x0e43 }, { 0x0de4, 0x0e44 }, { 0x0de5, 0x0e45 },
-				{ 0x0de6, 0x0e46 }, { 0x0de7, 0x0e47 }, { 0x0de8, 0x0e48 }, { 0x0de9, 0x0e49 },
-				{ 0x0dea, 0x0e4a }, { 0x0deb, 0x0e4b }, { 0x0dec, 0x0e4c }, { 0x0ded, 0x0e4d },
-				{ 0x0df0, 0x0e50 }, { 0x0df1, 0x0e51 }, { 0x0df2, 0x0e52 }, { 0x0df3, 0x0e53 },
-				{ 0x0df4, 0x0e54 }, { 0x0df5, 0x0e55 }, { 0x0df6, 0x0e56 }, { 0x0df7, 0x0e57 },
-				{ 0x0df8, 0x0e58 }, { 0x0df9, 0x0e59 }, { 0x0ea1, 0x3131 }, { 0x0ea2, 0x3132 },
-				{ 0x0ea3, 0x3133 }, { 0x0ea4, 0x3134 }, { 0x0ea5, 0x3135 }, { 0x0ea6, 0x3136 },
-				{ 0x0ea7, 0x3137 }, { 0x0ea8, 0x3138 }, { 0x0ea9, 0x3139 }, { 0x0eaa, 0x313a },
-				{ 0x0eab, 0x313b }, { 0x0eac, 0x313c }, { 0x0ead, 0x313d }, { 0x0eae, 0x313e },
-				{ 0x0eaf, 0x313f }, { 0x0eb0, 0x3140 }, { 0x0eb1, 0x3141 }, { 0x0eb2, 0x3142 },
-				{ 0x0eb3, 0x3143 }, { 0x0eb4, 0x3144 }, { 0x0eb5, 0x3145 }, { 0x0eb6, 0x3146 },
-				{ 0x0eb7, 0x3147 }, { 0x0eb8, 0x3148 }, { 0x0eb9, 0x3149 }, { 0x0eba, 0x314a },
-				{ 0x0ebb, 0x314b }, { 0x0ebc, 0x314c }, { 0x0ebd, 0x314d }, { 0x0ebe, 0x314e },
-				{ 0x0ebf, 0x314f }, { 0x0ec0, 0x3150 }, { 0x0ec1, 0x3151 }, { 0x0ec2, 0x3152 },
-				{ 0x0ec3, 0x3153 }, { 0x0ec4, 0x3154 }, { 0x0ec5, 0x3155 }, { 0x0ec6, 0x3156 },
-				{ 0x0ec7, 0x3157 }, { 0x0ec8, 0x3158 }, { 0x0ec9, 0x3159 }, { 0x0eca, 0x315a },
-				{ 0x0ecb, 0x315b }, { 0x0ecc, 0x315c }, { 0x0ecd, 0x315d }, { 0x0ece, 0x315e },
-				{ 0x0ecf, 0x315f }, { 0x0ed0, 0x3160 }, { 0x0ed1, 0x3161 }, { 0x0ed2, 0x3162 },
-				{ 0x0ed3, 0x3163 }, { 0x0ed4, 0x11a8 }, { 0x0ed5, 0x11a9 }, { 0x0ed6, 0x11aa },
-				{ 0x0ed7, 0x11ab }, { 0x0ed8, 0x11ac }, { 0x0ed9, 0x11ad }, { 0x0eda, 0x11ae },
-				{ 0x0edb, 0x11af }, { 0x0edc, 0x11b0 }, { 0x0edd, 0x11b1 }, { 0x0ede, 0x11b2 },
-				{ 0x0edf, 0x11b3 }, { 0x0ee0, 0x11b4 }, { 0x0ee1, 0x11b5 }, { 0x0ee2, 0x11b6 },
-				{ 0x0ee3, 0x11b7 }, { 0x0ee4, 0x11b8 }, { 0x0ee5, 0x11b9 }, { 0x0ee6, 0x11ba },
-				{ 0x0ee7, 0x11bb }, { 0x0ee8, 0x11bc }, { 0x0ee9, 0x11bd }, { 0x0eea, 0x11be },
-				{ 0x0eeb, 0x11bf }, { 0x0eec, 0x11c0 }, { 0x0eed, 0x11c1 }, { 0x0eee, 0x11c2 },
-				{ 0x0eef, 0x316d }, { 0x0ef0, 0x3171 }, { 0x0ef1, 0x3178 }, { 0x0ef2, 0x317f },
-				{ 0x0ef3, 0x3181 }, { 0x0ef4, 0x3184 }, { 0x0ef5, 0x3186 }, { 0x0ef6, 0x318d },
-				{ 0x0ef7, 0x318e }, { 0x0ef8, 0x11eb }, { 0x0ef9, 0x11f0 }, { 0x0efa, 0x11f9 },
-				{ 0x0eff, 0x20a9 }, { 0x13a4, 0x20ac }, { 0x13bc, 0x0152 }, { 0x13bd, 0x0153 },
-				{ 0x13be, 0x0178 }, { 0x20ac, 0x20ac }, { 0xfe50,    '`' }, { 0xfe51, 0x00b4 },
-				{ 0xfe52,    '^' }, { 0xfe53,    '~' }, { 0xfe54, 0x00af }, { 0xfe55, 0x02d8 },
-				{ 0xfe56, 0x02d9 }, { 0xfe57, 0x00a8 }, { 0xfe58, 0x02da }, { 0xfe59, 0x02dd },
-				{ 0xfe5a, 0x02c7 }, { 0xfe5b, 0x00b8 }, { 0xfe5c, 0x02db }, { 0xfe5d, 0x037a },
-				{ 0xfe5e, 0x309b }, { 0xfe5f, 0x309c }, { 0xfe63,    '/' }, { 0xfe64, 0x02bc },
-				{ 0xfe65, 0x02bd }, { 0xfe66, 0x02f5 }, { 0xfe67, 0x02f3 }, { 0xfe68, 0x02cd },
-				{ 0xfe69, 0xa788 }, { 0xfe6a, 0x02f7 }, { 0xfe6e,    ',' }, { 0xfe6f, 0x00a4 },
-				{ 0xfe80,    'a' }, // XK_dead_a
-				{ 0xfe81,    'A' }, // XK_dead_A
-				{ 0xfe82,    'e' }, // XK_dead_e
-				{ 0xfe83,    'E' }, // XK_dead_E
-				{ 0xfe84,    'i' }, // XK_dead_i
-				{ 0xfe85,    'I' }, // XK_dead_I
-				{ 0xfe86,    'o' }, // XK_dead_o
-				{ 0xfe87,    'O' }, // XK_dead_O
-				{ 0xfe88,    'u' }, // XK_dead_u
-				{ 0xfe89,    'U' }, // XK_dead_U
-				{ 0xfe8a, 0x0259 }, { 0xfe8b, 0x018f }, { 0xfe8c, 0x00b5 }, { 0xfe90,    '_' },
-				{ 0xfe91, 0x02c8 }, { 0xfe92, 0x02cc },
-				{ 0xff80 /*XKB_KEY_KP_Space*/,     ' ' },
-				{ 0xff95 /*XKB_KEY_KP_7*/, 0x0037 },
-				{ 0xff96 /*XKB_KEY_KP_4*/, 0x0034 },
-				{ 0xff97 /*XKB_KEY_KP_8*/, 0x0038 },
-				{ 0xff98 /*XKB_KEY_KP_6*/, 0x0036 },
-				{ 0xff99 /*XKB_KEY_KP_2*/, 0x0032 },
-				{ 0xff9a /*XKB_KEY_KP_9*/, 0x0039 },
-				{ 0xff9b /*XKB_KEY_KP_3*/, 0x0033 },
-				{ 0xff9c /*XKB_KEY_KP_1*/, 0x0031 },
-				{ 0xff9d /*XKB_KEY_KP_5*/, 0x0035 },
-				{ 0xff9e /*XKB_KEY_KP_0*/, 0x0030 },
-				{ 0xffaa /*XKB_KEY_KP_Multiply*/,  '*' },
-				{ 0xffab /*XKB_KEY_KP_Add*/,       '+' },
-				{ 0xffac /*XKB_KEY_KP_Separator*/, ',' },
-				{ 0xffad /*XKB_KEY_KP_Subtract*/,  '-' },
-				{ 0xffae /*XKB_KEY_KP_Decimal*/,   '.' },
-				{ 0xffaf /*XKB_KEY_KP_Divide*/,    '/' },
-				{ 0xffb0 /*XKB_KEY_KP_0*/, 0x0030 },
-				{ 0xffb1 /*XKB_KEY_KP_1*/, 0x0031 },
-				{ 0xffb2 /*XKB_KEY_KP_2*/, 0x0032 },
-				{ 0xffb3 /*XKB_KEY_KP_3*/, 0x0033 },
-				{ 0xffb4 /*XKB_KEY_KP_4*/, 0x0034 },
-				{ 0xffb5 /*XKB_KEY_KP_5*/, 0x0035 },
-				{ 0xffb6 /*XKB_KEY_KP_6*/, 0x0036 },
-				{ 0xffb7 /*XKB_KEY_KP_7*/, 0x0037 },
-				{ 0xffb8 /*XKB_KEY_KP_8*/, 0x0038 },
-				{ 0xffb9 /*XKB_KEY_KP_9*/, 0x0039 },
-				{ 0xffbd /*XKB_KEY_KP_Equal*/,     '=' }
+				{ 0x01a1u, 0x0104u }, { 0x01a2u, 0x02d8u }, { 0x01a3u, 0x0141u }, { 0x01a5u, 0x013du },
+				{ 0x01a6u, 0x015au }, { 0x01a9u, 0x0160u }, { 0x01aau, 0x015eu }, { 0x01abu, 0x0164u },
+				{ 0x01acu, 0x0179u }, { 0x01aeu, 0x017du }, { 0x01afu, 0x017bu }, { 0x01b1u, 0x0105u },
+				{ 0x01b2u, 0x02dbu }, { 0x01b3u, 0x0142u }, { 0x01b5u, 0x013eu }, { 0x01b6u, 0x015bu },
+				{ 0x01b7u, 0x02c7u }, { 0x01b9u, 0x0161u }, { 0x01bau, 0x015fu }, { 0x01bbu, 0x0165u },
+				{ 0x01bcu, 0x017au }, { 0x01bdu, 0x02ddu }, { 0x01beu, 0x017eu }, { 0x01bfu, 0x017cu },
+				{ 0x01c0u, 0x0154u }, { 0x01c3u, 0x0102u }, { 0x01c5u, 0x0139u }, { 0x01c6u, 0x0106u },
+				{ 0x01c8u, 0x010cu }, { 0x01cau, 0x0118u }, { 0x01ccu, 0x011au }, { 0x01cfu, 0x010eu },
+				{ 0x01d0u, 0x0110u }, { 0x01d1u, 0x0143u }, { 0x01d2u, 0x0147u }, { 0x01d5u, 0x0150u },
+				{ 0x01d8u, 0x0158u }, { 0x01d9u, 0x016eu }, { 0x01dbu, 0x0170u }, { 0x01deu, 0x0162u },
+				{ 0x01e0u, 0x0155u }, { 0x01e3u, 0x0103u }, { 0x01e5u, 0x013au }, { 0x01e6u, 0x0107u },
+				{ 0x01e8u, 0x010du }, { 0x01eau, 0x0119u }, { 0x01ecu, 0x011bu }, { 0x01efu, 0x010fu },
+				{ 0x01f0u, 0x0111u }, { 0x01f1u, 0x0144u }, { 0x01f2u, 0x0148u }, { 0x01f5u, 0x0151u },
+				{ 0x01f8u, 0x0159u }, { 0x01f9u, 0x016fu }, { 0x01fbu, 0x0171u }, { 0x01feu, 0x0163u },
+				{ 0x01ffu, 0x02d9u }, { 0x02a1u, 0x0126u }, { 0x02a6u, 0x0124u }, { 0x02a9u, 0x0130u },
+				{ 0x02abu, 0x011eu }, { 0x02acu, 0x0134u }, { 0x02b1u, 0x0127u }, { 0x02b6u, 0x0125u },
+				{ 0x02b9u, 0x0131u }, { 0x02bbu, 0x011fu }, { 0x02bcu, 0x0135u }, { 0x02c5u, 0x010au },
+				{ 0x02c6u, 0x0108u }, { 0x02d5u, 0x0120u }, { 0x02d8u, 0x011cu }, { 0x02ddu, 0x016cu },
+				{ 0x02deu, 0x015cu }, { 0x02e5u, 0x010bu }, { 0x02e6u, 0x0109u }, { 0x02f5u, 0x0121u },
+				{ 0x02f8u, 0x011du }, { 0x02fdu, 0x016du }, { 0x02feu, 0x015du }, { 0x03a2u, 0x0138u },
+				{ 0x03a3u, 0x0156u }, { 0x03a5u, 0x0128u }, { 0x03a6u, 0x013bu }, { 0x03aau, 0x0112u },
+				{ 0x03abu, 0x0122u }, { 0x03acu, 0x0166u }, { 0x03b3u, 0x0157u }, { 0x03b5u, 0x0129u },
+				{ 0x03b6u, 0x013cu }, { 0x03bau, 0x0113u }, { 0x03bbu, 0x0123u }, { 0x03bcu, 0x0167u },
+				{ 0x03bdu, 0x014au }, { 0x03bfu, 0x014bu }, { 0x03c0u, 0x0100u }, { 0x03c7u, 0x012eu },
+				{ 0x03ccu, 0x0116u }, { 0x03cfu, 0x012au }, { 0x03d1u, 0x0145u }, { 0x03d2u, 0x014cu },
+				{ 0x03d3u, 0x0136u }, { 0x03d9u, 0x0172u }, { 0x03ddu, 0x0168u }, { 0x03deu, 0x016au },
+				{ 0x03e0u, 0x0101u }, { 0x03e7u, 0x012fu }, { 0x03ecu, 0x0117u }, { 0x03efu, 0x012bu },
+				{ 0x03f1u, 0x0146u }, { 0x03f2u, 0x014du }, { 0x03f3u, 0x0137u }, { 0x03f9u, 0x0173u },
+				{ 0x03fdu, 0x0169u }, { 0x03feu, 0x016bu }, { 0x047eu, 0x203eu }, { 0x04a1u, 0x3002u },
+				{ 0x04a2u, 0x300cu }, { 0x04a3u, 0x300du }, { 0x04a4u, 0x3001u }, { 0x04a5u, 0x30fbu },
+				{ 0x04a6u, 0x30f2u }, { 0x04a7u, 0x30a1u }, { 0x04a8u, 0x30a3u }, { 0x04a9u, 0x30a5u },
+				{ 0x04aau, 0x30a7u }, { 0x04abu, 0x30a9u }, { 0x04acu, 0x30e3u }, { 0x04adu, 0x30e5u },
+				{ 0x04aeu, 0x30e7u }, { 0x04afu, 0x30c3u }, { 0x04b0u, 0x30fcu }, { 0x04b1u, 0x30a2u },
+				{ 0x04b2u, 0x30a4u }, { 0x04b3u, 0x30a6u }, { 0x04b4u, 0x30a8u }, { 0x04b5u, 0x30aau },
+				{ 0x04b6u, 0x30abu }, { 0x04b7u, 0x30adu }, { 0x04b8u, 0x30afu }, { 0x04b9u, 0x30b1u },
+				{ 0x04bau, 0x30b3u }, { 0x04bbu, 0x30b5u }, { 0x04bcu, 0x30b7u }, { 0x04bdu, 0x30b9u },
+				{ 0x04beu, 0x30bbu }, { 0x04bfu, 0x30bdu }, { 0x04c0u, 0x30bfu }, { 0x04c1u, 0x30c1u },
+				{ 0x04c2u, 0x30c4u }, { 0x04c3u, 0x30c6u }, { 0x04c4u, 0x30c8u }, { 0x04c5u, 0x30cau },
+				{ 0x04c6u, 0x30cbu }, { 0x04c7u, 0x30ccu }, { 0x04c8u, 0x30cdu }, { 0x04c9u, 0x30ceu },
+				{ 0x04cau, 0x30cfu }, { 0x04cbu, 0x30d2u }, { 0x04ccu, 0x30d5u }, { 0x04cdu, 0x30d8u },
+				{ 0x04ceu, 0x30dbu }, { 0x04cfu, 0x30deu }, { 0x04d0u, 0x30dfu }, { 0x04d1u, 0x30e0u },
+				{ 0x04d2u, 0x30e1u }, { 0x04d3u, 0x30e2u }, { 0x04d4u, 0x30e4u }, { 0x04d5u, 0x30e6u },
+				{ 0x04d6u, 0x30e8u }, { 0x04d7u, 0x30e9u }, { 0x04d8u, 0x30eau }, { 0x04d9u, 0x30ebu },
+				{ 0x04dau, 0x30ecu }, { 0x04dbu, 0x30edu }, { 0x04dcu, 0x30efu }, { 0x04ddu, 0x30f3u },
+				{ 0x04deu, 0x309bu }, { 0x04dfu, 0x309cu }, { 0x05acu, 0x060cu }, { 0x05bbu, 0x061bu },
+				{ 0x05bfu, 0x061fu }, { 0x05c1u, 0x0621u }, { 0x05c2u, 0x0622u }, { 0x05c3u, 0x0623u },
+				{ 0x05c4u, 0x0624u }, { 0x05c5u, 0x0625u }, { 0x05c6u, 0x0626u }, { 0x05c7u, 0x0627u },
+				{ 0x05c8u, 0x0628u }, { 0x05c9u, 0x0629u }, { 0x05cau, 0x062au }, { 0x05cbu, 0x062bu },
+				{ 0x05ccu, 0x062cu }, { 0x05cdu, 0x062du }, { 0x05ceu, 0x062eu }, { 0x05cfu, 0x062fu },
+				{ 0x05d0u, 0x0630u }, { 0x05d1u, 0x0631u }, { 0x05d2u, 0x0632u }, { 0x05d3u, 0x0633u },
+				{ 0x05d4u, 0x0634u }, { 0x05d5u, 0x0635u }, { 0x05d6u, 0x0636u }, { 0x05d7u, 0x0637u },
+				{ 0x05d8u, 0x0638u }, { 0x05d9u, 0x0639u }, { 0x05dau, 0x063au }, { 0x05e0u, 0x0640u },
+				{ 0x05e1u, 0x0641u }, { 0x05e2u, 0x0642u }, { 0x05e3u, 0x0643u }, { 0x05e4u, 0x0644u },
+				{ 0x05e5u, 0x0645u }, { 0x05e6u, 0x0646u }, { 0x05e7u, 0x0647u }, { 0x05e8u, 0x0648u },
+				{ 0x05e9u, 0x0649u }, { 0x05eau, 0x064au }, { 0x05ebu, 0x064bu }, { 0x05ecu, 0x064cu },
+				{ 0x05edu, 0x064du }, { 0x05eeu, 0x064eu }, { 0x05efu, 0x064fu }, { 0x05f0u, 0x0650u },
+				{ 0x05f1u, 0x0651u }, { 0x05f2u, 0x0652u }, { 0x06a1u, 0x0452u }, { 0x06a2u, 0x0453u },
+				{ 0x06a3u, 0x0451u }, { 0x06a4u, 0x0454u }, { 0x06a5u, 0x0455u }, { 0x06a6u, 0x0456u },
+				{ 0x06a7u, 0x0457u }, { 0x06a8u, 0x0458u }, { 0x06a9u, 0x0459u }, { 0x06aau, 0x045au },
+				{ 0x06abu, 0x045bu }, { 0x06acu, 0x045cu }, { 0x06aeu, 0x045eu }, { 0x06afu, 0x045fu },
+				{ 0x06b0u, 0x2116u }, { 0x06b1u, 0x0402u }, { 0x06b2u, 0x0403u }, { 0x06b3u, 0x0401u },
+				{ 0x06b4u, 0x0404u }, { 0x06b5u, 0x0405u }, { 0x06b6u, 0x0406u }, { 0x06b7u, 0x0407u },
+				{ 0x06b8u, 0x0408u }, { 0x06b9u, 0x0409u }, { 0x06bau, 0x040au }, { 0x06bbu, 0x040bu },
+				{ 0x06bcu, 0x040cu }, { 0x06beu, 0x040eu }, { 0x06bfu, 0x040fu }, { 0x06c0u, 0x044eu },
+				{ 0x06c1u, 0x0430u }, { 0x06c2u, 0x0431u }, { 0x06c3u, 0x0446u }, { 0x06c4u, 0x0434u },
+				{ 0x06c5u, 0x0435u }, { 0x06c6u, 0x0444u }, { 0x06c7u, 0x0433u }, { 0x06c8u, 0x0445u },
+				{ 0x06c9u, 0x0438u }, { 0x06cau, 0x0439u }, { 0x06cbu, 0x043au }, { 0x06ccu, 0x043bu },
+				{ 0x06cdu, 0x043cu }, { 0x06ceu, 0x043du }, { 0x06cfu, 0x043eu }, { 0x06d0u, 0x043fu },
+				{ 0x06d1u, 0x044fu }, { 0x06d2u, 0x0440u }, { 0x06d3u, 0x0441u }, { 0x06d4u, 0x0442u },
+				{ 0x06d5u, 0x0443u }, { 0x06d6u, 0x0436u }, { 0x06d7u, 0x0432u }, { 0x06d8u, 0x044cu },
+				{ 0x06d9u, 0x044bu }, { 0x06dau, 0x0437u }, { 0x06dbu, 0x0448u }, { 0x06dcu, 0x044du },
+				{ 0x06ddu, 0x0449u }, { 0x06deu, 0x0447u }, { 0x06dfu, 0x044au }, { 0x06e0u, 0x042eu },
+				{ 0x06e1u, 0x0410u }, { 0x06e2u, 0x0411u }, { 0x06e3u, 0x0426u }, { 0x06e4u, 0x0414u },
+				{ 0x06e5u, 0x0415u }, { 0x06e6u, 0x0424u }, { 0x06e7u, 0x0413u }, { 0x06e8u, 0x0425u },
+				{ 0x06e9u, 0x0418u }, { 0x06eau, 0x0419u }, { 0x06ebu, 0x041au }, { 0x06ecu, 0x041bu },
+				{ 0x06edu, 0x041cu }, { 0x06eeu, 0x041du }, { 0x06efu, 0x041eu }, { 0x06f0u, 0x041fu },
+				{ 0x06f1u, 0x042fu }, { 0x06f2u, 0x0420u }, { 0x06f3u, 0x0421u }, { 0x06f4u, 0x0422u },
+				{ 0x06f5u, 0x0423u }, { 0x06f6u, 0x0416u }, { 0x06f7u, 0x0412u }, { 0x06f8u, 0x042cu },
+				{ 0x06f9u, 0x042bu }, { 0x06fau, 0x0417u }, { 0x06fbu, 0x0428u }, { 0x06fcu, 0x042du },
+				{ 0x06fdu, 0x0429u }, { 0x06feu, 0x0427u }, { 0x06ffu, 0x042au }, { 0x07a1u, 0x0386u },
+				{ 0x07a2u, 0x0388u }, { 0x07a3u, 0x0389u }, { 0x07a4u, 0x038au }, { 0x07a5u, 0x03aau },
+				{ 0x07a7u, 0x038cu }, { 0x07a8u, 0x038eu }, { 0x07a9u, 0x03abu }, { 0x07abu, 0x038fu },
+				{ 0x07aeu, 0x0385u }, { 0x07afu, 0x2015u }, { 0x07b1u, 0x03acu }, { 0x07b2u, 0x03adu },
+				{ 0x07b3u, 0x03aeu }, { 0x07b4u, 0x03afu }, { 0x07b5u, 0x03cau }, { 0x07b6u, 0x0390u },
+				{ 0x07b7u, 0x03ccu }, { 0x07b8u, 0x03cdu }, { 0x07b9u, 0x03cbu }, { 0x07bau, 0x03b0u },
+				{ 0x07bbu, 0x03ceu }, { 0x07c1u, 0x0391u }, { 0x07c2u, 0x0392u }, { 0x07c3u, 0x0393u },
+				{ 0x07c4u, 0x0394u }, { 0x07c5u, 0x0395u }, { 0x07c6u, 0x0396u }, { 0x07c7u, 0x0397u },
+				{ 0x07c8u, 0x0398u }, { 0x07c9u, 0x0399u }, { 0x07cau, 0x039au }, { 0x07cbu, 0x039bu },
+				{ 0x07ccu, 0x039cu }, { 0x07cdu, 0x039du }, { 0x07ceu, 0x039eu }, { 0x07cfu, 0x039fu },
+				{ 0x07d0u, 0x03a0u }, { 0x07d1u, 0x03a1u }, { 0x07d2u, 0x03a3u }, { 0x07d4u, 0x03a4u },
+				{ 0x07d5u, 0x03a5u }, { 0x07d6u, 0x03a6u }, { 0x07d7u, 0x03a7u }, { 0x07d8u, 0x03a8u },
+				{ 0x07d9u, 0x03a9u }, { 0x07e1u, 0x03b1u }, { 0x07e2u, 0x03b2u }, { 0x07e3u, 0x03b3u },
+				{ 0x07e4u, 0x03b4u }, { 0x07e5u, 0x03b5u }, { 0x07e6u, 0x03b6u }, { 0x07e7u, 0x03b7u },
+				{ 0x07e8u, 0x03b8u }, { 0x07e9u, 0x03b9u }, { 0x07eau, 0x03bau }, { 0x07ebu, 0x03bbu },
+				{ 0x07ecu, 0x03bcu }, { 0x07edu, 0x03bdu }, { 0x07eeu, 0x03beu }, { 0x07efu, 0x03bfu },
+				{ 0x07f0u, 0x03c0u }, { 0x07f1u, 0x03c1u }, { 0x07f2u, 0x03c3u }, { 0x07f3u, 0x03c2u },
+				{ 0x07f4u, 0x03c4u }, { 0x07f5u, 0x03c5u }, { 0x07f6u, 0x03c6u }, { 0x07f7u, 0x03c7u },
+				{ 0x07f8u, 0x03c8u }, { 0x07f9u, 0x03c9u }, { 0x08a1u, 0x23b7u }, { 0x08a2u, 0x250cu },
+				{ 0x08a3u, 0x2500u }, { 0x08a4u, 0x2320u }, { 0x08a5u, 0x2321u }, { 0x08a6u, 0x2502u },
+				{ 0x08a7u, 0x23a1u }, { 0x08a8u, 0x23a3u }, { 0x08a9u, 0x23a4u }, { 0x08aau, 0x23a6u },
+				{ 0x08abu, 0x239bu }, { 0x08acu, 0x239du }, { 0x08adu, 0x239eu }, { 0x08aeu, 0x23a0u },
+				{ 0x08afu, 0x23a8u }, { 0x08b0u, 0x23acu }, { 0x08bcu, 0x2264u }, { 0x08bdu, 0x2260u },
+				{ 0x08beu, 0x2265u }, { 0x08bfu, 0x222bu }, { 0x08c0u, 0x2234u }, { 0x08c1u, 0x221du },
+				{ 0x08c2u, 0x221eu }, { 0x08c5u, 0x2207u }, { 0x08c8u, 0x223cu }, { 0x08c9u, 0x2243u },
+				{ 0x08cdu, 0x21d4u }, { 0x08ceu, 0x21d2u }, { 0x08cfu, 0x2261u }, { 0x08d6u, 0x221au },
+				{ 0x08dau, 0x2282u }, { 0x08dbu, 0x2283u }, { 0x08dcu, 0x2229u }, { 0x08ddu, 0x222au },
+				{ 0x08deu, 0x2227u }, { 0x08dfu, 0x2228u }, { 0x08efu, 0x2202u }, { 0x08f6u, 0x0192u },
+				{ 0x08fbu, 0x2190u }, { 0x08fcu, 0x2191u }, { 0x08fdu, 0x2192u }, { 0x08feu, 0x2193u },
+				{ 0x09e0u, 0x25c6u }, { 0x09e1u, 0x2592u }, { 0x09e2u, 0x2409u }, { 0x09e3u, 0x240cu },
+				{ 0x09e4u, 0x240du }, { 0x09e5u, 0x240au }, { 0x09e8u, 0x2424u }, { 0x09e9u, 0x240bu },
+				{ 0x09eau, 0x2518u }, { 0x09ebu, 0x2510u }, { 0x09ecu, 0x250cu }, { 0x09edu, 0x2514u },
+				{ 0x09eeu, 0x253cu }, { 0x09efu, 0x23bau }, { 0x09f0u, 0x23bbu }, { 0x09f1u, 0x2500u },
+				{ 0x09f2u, 0x23bcu }, { 0x09f3u, 0x23bdu }, { 0x09f4u, 0x251cu }, { 0x09f5u, 0x2524u },
+				{ 0x09f6u, 0x2534u }, { 0x09f7u, 0x252cu }, { 0x09f8u, 0x2502u }, { 0x0aa1u, 0x2003u },
+				{ 0x0aa2u, 0x2002u }, { 0x0aa3u, 0x2004u }, { 0x0aa4u, 0x2005u }, { 0x0aa5u, 0x2007u },
+				{ 0x0aa6u, 0x2008u }, { 0x0aa7u, 0x2009u }, { 0x0aa8u, 0x200au }, { 0x0aa9u, 0x2014u },
+				{ 0x0aaau, 0x2013u }, { 0x0aaeu, 0x2026u }, { 0x0aafu, 0x2025u }, { 0x0ab0u, 0x2153u },
+				{ 0x0ab1u, 0x2154u }, { 0x0ab2u, 0x2155u }, { 0x0ab3u, 0x2156u }, { 0x0ab4u, 0x2157u },
+				{ 0x0ab5u, 0x2158u }, { 0x0ab6u, 0x2159u }, { 0x0ab7u, 0x215au }, { 0x0ab8u, 0x2105u },
+				{ 0x0abbu, 0x2012u }, { 0x0abcu, 0x2329u }, { 0x0abeu, 0x232au }, { 0x0ac3u, 0x215bu },
+				{ 0x0ac4u, 0x215cu }, { 0x0ac5u, 0x215du }, { 0x0ac6u, 0x215eu }, { 0x0ac9u, 0x2122u },
+				{ 0x0acau, 0x2613u }, { 0x0accu, 0x25c1u }, { 0x0acdu, 0x25b7u }, { 0x0aceu, 0x25cbu },
+				{ 0x0acfu, 0x25afu }, { 0x0ad0u, 0x2018u }, { 0x0ad1u, 0x2019u }, { 0x0ad2u, 0x201cu },
+				{ 0x0ad3u, 0x201du }, { 0x0ad4u, 0x211eu }, { 0x0ad6u, 0x2032u }, { 0x0ad7u, 0x2033u },
+				{ 0x0ad9u, 0x271du }, { 0x0adbu, 0x25acu }, { 0x0adcu, 0x25c0u }, { 0x0addu, 0x25b6u },
+				{ 0x0adeu, 0x25cfu }, { 0x0adfu, 0x25aeu }, { 0x0ae0u, 0x25e6u }, { 0x0ae1u, 0x25abu },
+				{ 0x0ae2u, 0x25adu }, { 0x0ae3u, 0x25b3u }, { 0x0ae4u, 0x25bdu }, { 0x0ae5u, 0x2606u },
+				{ 0x0ae6u, 0x2022u }, { 0x0ae7u, 0x25aau }, { 0x0ae8u, 0x25b2u }, { 0x0ae9u, 0x25bcu },
+				{ 0x0aeau, 0x261cu }, { 0x0aebu, 0x261eu }, { 0x0aecu, 0x2663u }, { 0x0aedu, 0x2666u },
+				{ 0x0aeeu, 0x2665u }, { 0x0af0u, 0x2720u }, { 0x0af1u, 0x2020u }, { 0x0af2u, 0x2021u },
+				{ 0x0af3u, 0x2713u }, { 0x0af4u, 0x2717u }, { 0x0af5u, 0x266fu }, { 0x0af6u, 0x266du },
+				{ 0x0af7u, 0x2642u }, { 0x0af8u, 0x2640u }, { 0x0af9u, 0x260eu }, { 0x0afau, 0x2315u },
+				{ 0x0afbu, 0x2117u }, { 0x0afcu, 0x2038u }, { 0x0afdu, 0x201au }, { 0x0afeu, 0x201eu },
+				{ 0x0ba3u, 0x003cu }, { 0x0ba6u, 0x003eu }, { 0x0ba8u, 0x2228u }, { 0x0ba9u, 0x2227u },
+				{ 0x0bc0u, 0x00afu }, { 0x0bc2u, 0x22a5u }, { 0x0bc3u, 0x2229u }, { 0x0bc4u, 0x230au },
+				{ 0x0bc6u, 0x005fu }, { 0x0bcau, 0x2218u }, { 0x0bccu, 0x2395u }, { 0x0bceu, 0x22a4u },
+				{ 0x0bcfu, 0x25cbu }, { 0x0bd3u, 0x2308u }, { 0x0bd6u, 0x222au }, { 0x0bd8u, 0x2283u },
+				{ 0x0bdau, 0x2282u }, { 0x0bdcu, 0x22a2u }, { 0x0bfcu, 0x22a3u }, { 0x0cdfu, 0x2017u },
+				{ 0x0ce0u, 0x05d0u }, { 0x0ce1u, 0x05d1u }, { 0x0ce2u, 0x05d2u }, { 0x0ce3u, 0x05d3u },
+				{ 0x0ce4u, 0x05d4u }, { 0x0ce5u, 0x05d5u }, { 0x0ce6u, 0x05d6u }, { 0x0ce7u, 0x05d7u },
+				{ 0x0ce8u, 0x05d8u }, { 0x0ce9u, 0x05d9u }, { 0x0ceau, 0x05dau }, { 0x0cebu, 0x05dbu },
+				{ 0x0cecu, 0x05dcu }, { 0x0cedu, 0x05ddu }, { 0x0ceeu, 0x05deu }, { 0x0cefu, 0x05dfu },
+				{ 0x0cf0u, 0x05e0u }, { 0x0cf1u, 0x05e1u }, { 0x0cf2u, 0x05e2u }, { 0x0cf3u, 0x05e3u },
+				{ 0x0cf4u, 0x05e4u }, { 0x0cf5u, 0x05e5u }, { 0x0cf6u, 0x05e6u }, { 0x0cf7u, 0x05e7u },
+				{ 0x0cf8u, 0x05e8u }, { 0x0cf9u, 0x05e9u }, { 0x0cfau, 0x05eau }, { 0x0da1u, 0x0e01u },
+				{ 0x0da2u, 0x0e02u }, { 0x0da3u, 0x0e03u }, { 0x0da4u, 0x0e04u }, { 0x0da5u, 0x0e05u },
+				{ 0x0da6u, 0x0e06u }, { 0x0da7u, 0x0e07u }, { 0x0da8u, 0x0e08u }, { 0x0da9u, 0x0e09u },
+				{ 0x0daau, 0x0e0au }, { 0x0dabu, 0x0e0bu }, { 0x0dacu, 0x0e0cu }, { 0x0dadu, 0x0e0du },
+				{ 0x0daeu, 0x0e0eu }, { 0x0dafu, 0x0e0fu }, { 0x0db0u, 0x0e10u }, { 0x0db1u, 0x0e11u },
+				{ 0x0db2u, 0x0e12u }, { 0x0db3u, 0x0e13u }, { 0x0db4u, 0x0e14u }, { 0x0db5u, 0x0e15u },
+				{ 0x0db6u, 0x0e16u }, { 0x0db7u, 0x0e17u }, { 0x0db8u, 0x0e18u }, { 0x0db9u, 0x0e19u },
+				{ 0x0dbau, 0x0e1au }, { 0x0dbbu, 0x0e1bu }, { 0x0dbcu, 0x0e1cu }, { 0x0dbdu, 0x0e1du },
+				{ 0x0dbeu, 0x0e1eu }, { 0x0dbfu, 0x0e1fu }, { 0x0dc0u, 0x0e20u }, { 0x0dc1u, 0x0e21u },
+				{ 0x0dc2u, 0x0e22u }, { 0x0dc3u, 0x0e23u }, { 0x0dc4u, 0x0e24u }, { 0x0dc5u, 0x0e25u },
+				{ 0x0dc6u, 0x0e26u }, { 0x0dc7u, 0x0e27u }, { 0x0dc8u, 0x0e28u }, { 0x0dc9u, 0x0e29u },
+				{ 0x0dcau, 0x0e2au }, { 0x0dcbu, 0x0e2bu }, { 0x0dccu, 0x0e2cu }, { 0x0dcdu, 0x0e2du },
+				{ 0x0dceu, 0x0e2eu }, { 0x0dcfu, 0x0e2fu }, { 0x0dd0u, 0x0e30u }, { 0x0dd1u, 0x0e31u },
+				{ 0x0dd2u, 0x0e32u }, { 0x0dd3u, 0x0e33u }, { 0x0dd4u, 0x0e34u }, { 0x0dd5u, 0x0e35u },
+				{ 0x0dd6u, 0x0e36u }, { 0x0dd7u, 0x0e37u }, { 0x0dd8u, 0x0e38u }, { 0x0dd9u, 0x0e39u },
+				{ 0x0ddau, 0x0e3au }, { 0x0ddfu, 0x0e3fu }, { 0x0de0u, 0x0e40u }, { 0x0de1u, 0x0e41u },
+				{ 0x0de2u, 0x0e42u }, { 0x0de3u, 0x0e43u }, { 0x0de4u, 0x0e44u }, { 0x0de5u, 0x0e45u },
+				{ 0x0de6u, 0x0e46u }, { 0x0de7u, 0x0e47u }, { 0x0de8u, 0x0e48u }, { 0x0de9u, 0x0e49u },
+				{ 0x0deau, 0x0e4au }, { 0x0debu, 0x0e4bu }, { 0x0decu, 0x0e4cu }, { 0x0dedu, 0x0e4du },
+				{ 0x0df0u, 0x0e50u }, { 0x0df1u, 0x0e51u }, { 0x0df2u, 0x0e52u }, { 0x0df3u, 0x0e53u },
+				{ 0x0df4u, 0x0e54u }, { 0x0df5u, 0x0e55u }, { 0x0df6u, 0x0e56u }, { 0x0df7u, 0x0e57u },
+				{ 0x0df8u, 0x0e58u }, { 0x0df9u, 0x0e59u }, { 0x0ea1u, 0x3131u }, { 0x0ea2u, 0x3132u },
+				{ 0x0ea3u, 0x3133u }, { 0x0ea4u, 0x3134u }, { 0x0ea5u, 0x3135u }, { 0x0ea6u, 0x3136u },
+				{ 0x0ea7u, 0x3137u }, { 0x0ea8u, 0x3138u }, { 0x0ea9u, 0x3139u }, { 0x0eaau, 0x313au },
+				{ 0x0eabu, 0x313bu }, { 0x0eacu, 0x313cu }, { 0x0eadu, 0x313du }, { 0x0eaeu, 0x313eu },
+				{ 0x0eafu, 0x313fu }, { 0x0eb0u, 0x3140u }, { 0x0eb1u, 0x3141u }, { 0x0eb2u, 0x3142u },
+				{ 0x0eb3u, 0x3143u }, { 0x0eb4u, 0x3144u }, { 0x0eb5u, 0x3145u }, { 0x0eb6u, 0x3146u },
+				{ 0x0eb7u, 0x3147u }, { 0x0eb8u, 0x3148u }, { 0x0eb9u, 0x3149u }, { 0x0ebau, 0x314au },
+				{ 0x0ebbu, 0x314bu }, { 0x0ebcu, 0x314cu }, { 0x0ebdu, 0x314du }, { 0x0ebeu, 0x314eu },
+				{ 0x0ebfu, 0x314fu }, { 0x0ec0u, 0x3150u }, { 0x0ec1u, 0x3151u }, { 0x0ec2u, 0x3152u },
+				{ 0x0ec3u, 0x3153u }, { 0x0ec4u, 0x3154u }, { 0x0ec5u, 0x3155u }, { 0x0ec6u, 0x3156u },
+				{ 0x0ec7u, 0x3157u }, { 0x0ec8u, 0x3158u }, { 0x0ec9u, 0x3159u }, { 0x0ecau, 0x315au },
+				{ 0x0ecbu, 0x315bu }, { 0x0eccu, 0x315cu }, { 0x0ecdu, 0x315du }, { 0x0eceu, 0x315eu },
+				{ 0x0ecfu, 0x315fu }, { 0x0ed0u, 0x3160u }, { 0x0ed1u, 0x3161u }, { 0x0ed2u, 0x3162u },
+				{ 0x0ed3u, 0x3163u }, { 0x0ed4u, 0x11a8u }, { 0x0ed5u, 0x11a9u }, { 0x0ed6u, 0x11aau },
+				{ 0x0ed7u, 0x11abu }, { 0x0ed8u, 0x11acu }, { 0x0ed9u, 0x11adu }, { 0x0edau, 0x11aeu },
+				{ 0x0edbu, 0x11afu }, { 0x0edcu, 0x11b0u }, { 0x0eddu, 0x11b1u }, { 0x0edeu, 0x11b2u },
+				{ 0x0edfu, 0x11b3u }, { 0x0ee0u, 0x11b4u }, { 0x0ee1u, 0x11b5u }, { 0x0ee2u, 0x11b6u },
+				{ 0x0ee3u, 0x11b7u }, { 0x0ee4u, 0x11b8u }, { 0x0ee5u, 0x11b9u }, { 0x0ee6u, 0x11bau },
+				{ 0x0ee7u, 0x11bbu }, { 0x0ee8u, 0x11bcu }, { 0x0ee9u, 0x11bdu }, { 0x0eeau, 0x11beu },
+				{ 0x0eebu, 0x11bfu }, { 0x0eecu, 0x11c0u }, { 0x0eedu, 0x11c1u }, { 0x0eeeu, 0x11c2u },
+				{ 0x0eefu, 0x316du }, { 0x0ef0u, 0x3171u }, { 0x0ef1u, 0x3178u }, { 0x0ef2u, 0x317fu },
+				{ 0x0ef3u, 0x3181u }, { 0x0ef4u, 0x3184u }, { 0x0ef5u, 0x3186u }, { 0x0ef6u, 0x318du },
+				{ 0x0ef7u, 0x318eu }, { 0x0ef8u, 0x11ebu }, { 0x0ef9u, 0x11f0u }, { 0x0efau, 0x11f9u },
+				{ 0x0effu, 0x20a9u }, { 0x13a4u, 0x20acu }, { 0x13bcu, 0x0152u }, { 0x13bdu, 0x0153u },
+				{ 0x13beu, 0x0178u }, { 0x20acu, 0x20acu }, { 0xfe50u,    '`' }, { 0xfe51u, 0x00b4u },
+				{ 0xfe52u,    '^' }, { 0xfe53u,    '~' }, { 0xfe54u, 0x00afu }, { 0xfe55u, 0x02d8u },
+				{ 0xfe56u, 0x02d9u }, { 0xfe57u, 0x00a8u }, { 0xfe58u, 0x02dau }, { 0xfe59u, 0x02ddu },
+				{ 0xfe5au, 0x02c7u }, { 0xfe5bu, 0x00b8u }, { 0xfe5cu, 0x02dbu }, { 0xfe5du, 0x037au },
+				{ 0xfe5eu, 0x309bu }, { 0xfe5fu, 0x309cu }, { 0xfe63u,    '/' }, { 0xfe64u, 0x02bcu },
+				{ 0xfe65u, 0x02bdu }, { 0xfe66u, 0x02f5u }, { 0xfe67u, 0x02f3u }, { 0xfe68u, 0x02cdu },
+				{ 0xfe69u, 0xa788u }, { 0xfe6au, 0x02f7u }, { 0xfe6eu,    ',' }, { 0xfe6fu, 0x00a4u },
+				{ 0xfe80u,    'a' }, // XK_dead_a
+				{ 0xfe81u,    'A' }, // XK_dead_A
+				{ 0xfe82u,    'e' }, // XK_dead_e
+				{ 0xfe83u,    'E' }, // XK_dead_E
+				{ 0xfe84u,    'i' }, // XK_dead_i
+				{ 0xfe85u,    'I' }, // XK_dead_I
+				{ 0xfe86u,    'o' }, // XK_dead_o
+				{ 0xfe87u,    'O' }, // XK_dead_O
+				{ 0xfe88u,    'u' }, // XK_dead_u
+				{ 0xfe89u,    'U' }, // XK_dead_U
+				{ 0xfe8au, 0x0259u }, { 0xfe8bu, 0x018fu }, { 0xfe8cu, 0x00b5u }, { 0xfe90u,    '_' },
+				{ 0xfe91u, 0x02c8u }, { 0xfe92u, 0x02ccu },
+				{ 0xff80u /*XKB_KEY_KP_Space*/,     ' ' },
+				{ 0xff95u /*XKB_KEY_KP_7*/, 0x0037u },
+				{ 0xff96u /*XKB_KEY_KP_4*/, 0x0034u },
+				{ 0xff97u /*XKB_KEY_KP_8*/, 0x0038u },
+				{ 0xff98u /*XKB_KEY_KP_6*/, 0x0036u },
+				{ 0xff99u /*XKB_KEY_KP_2*/, 0x0032u },
+				{ 0xff9au /*XKB_KEY_KP_9*/, 0x0039u },
+				{ 0xff9bu /*XKB_KEY_KP_3*/, 0x0033u },
+				{ 0xff9cu /*XKB_KEY_KP_1*/, 0x0031u },
+				{ 0xff9du /*XKB_KEY_KP_5*/, 0x0035u },
+				{ 0xff9eu /*XKB_KEY_KP_0*/, 0x0030u },
+				{ 0xffaau /*XKB_KEY_KP_Multiply*/,  '*' },
+				{ 0xffabu /*XKB_KEY_KP_Add*/,       '+' },
+				{ 0xffacu /*XKB_KEY_KP_Separator*/, ',' },
+				{ 0xffadu /*XKB_KEY_KP_Subtract*/,  '-' },
+				{ 0xffaeu /*XKB_KEY_KP_Decimal*/,   '.' },
+				{ 0xffafu /*XKB_KEY_KP_Divide*/,    '/' },
+				{ 0xffb0u /*XKB_KEY_KP_0*/, 0x0030u },
+				{ 0xffb1u /*XKB_KEY_KP_1*/, 0x0031u },
+				{ 0xffb2u /*XKB_KEY_KP_2*/, 0x0032u },
+				{ 0xffb3u /*XKB_KEY_KP_3*/, 0x0033u },
+				{ 0xffb4u /*XKB_KEY_KP_4*/, 0x0034u },
+				{ 0xffb5u /*XKB_KEY_KP_5*/, 0x0035u },
+				{ 0xffb6u /*XKB_KEY_KP_6*/, 0x0036u },
+				{ 0xffb7u /*XKB_KEY_KP_7*/, 0x0037u },
+				{ 0xffb8u /*XKB_KEY_KP_8*/, 0x0038u },
+				{ 0xffb9u /*XKB_KEY_KP_9*/, 0x0039u },
+				{ 0xffbdu /*XKB_KEY_KP_Equal*/,     '=' }
 			}
 		};
 #endif
@@ -5521,10 +5512,60 @@ constexpr void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWindow& win
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::string_view str)
+{
+	std::string description = "[WindowingAPI]";
+
+	if (!str.empty())
+		description += str;
+	else
+	{
+		if (code == Error::Invalid_Enum)
+			description += " Invalid argument for enum parameter";
+		else if (code == Error::Invalid_Value)
+			description += " Invalid value for parameter";
+		else if (code == Error::Out_Of_Memory)
+			description += " Out of memory";
+		else if (code == Error::API_Unavailable)
+			description += " The requested API is unavailable";
+		else if (code == Error::Platform_Error)
+			description += " A platform-specific error occurred";
+		else if (code == Error::Format_Unavailable)
+			description += " The requested format is unavailable";
+		else if (code == Error::Cursor_Unavailable)
+			description += " The specified cursor shape is unavailable";
+		else
+			description += " UNKNOWN WINDOWING ERROR";
+	}
+
+	TP_ERROR(description, " Code(", std::to_underlying(code), ")");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 //Linux (X11 & Wayland)----------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef TRAP_PLATFORM_LINUX
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbarX11([[maybe_unused]] const InternalWindow& window)
+{
+    InputError(Error::Feature_Unavailable, "[X11] Platform does not support hiding windows from the taskbar");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Translates an X11 or Wayland key code to a TRAP key token
+[[nodiscard]] constexpr TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKey(const i32 scanCode)
+{
+	//Use the pre-filled LUT (see CreateKeyTables())
+	if(scanCode < 0 || std::cmp_greater_equal(scanCode, s_Data.KeyCodes.size()))
+		return Input::Key::Unknown;
+
+	return s_Data.KeyCodes[NumericCast<u32>(scanCode)];
+}
 
 //Calculates the refresh rate, in Hz, from the specified RandR mode info
 [[nodiscard]] constexpr std::optional<f64> TRAP::INTERNAL::WindowingAPI::CalculateRefreshRate(const XRRModeInfo& mi)
@@ -5759,6 +5800,90 @@ constexpr void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionWayland([[
                                                                                      [[maybe_unused]] const bool enabled)
 {
     //This is handled in RelativePointerHandleRelativeMotion
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosWayland([[maybe_unused]] const InternalWindow& window,
+                                                                         [[maybe_unused]] const i32 xPos,
+                                                                         [[maybe_unused]] const i32 yPos)
+{
+    //A Wayland client can't set its position, so just warn
+
+    InputError(Error::Feature_Unavailable, "[Wayland] The platform doesn't support setting the window position");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModesWayland(const InternalMonitor& monitor)
+{
+    return monitor.Modes;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindowWayland([[maybe_unused]] const InternalWindow& window)
+{
+    InputError(Error::Feature_Unavailable, "[Wayland] The platform does not support setting the input focus");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPosWayland([[maybe_unused]] InternalWindow& window,
+                                                                         [[maybe_unused]] const f64 xPos,
+                                                                         [[maybe_unused]] const f64 yPos)
+{
+    InputError(Error::Feature_Unavailable, "[Wayland] The platform does not support setting the cursor position");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIconWayland([[maybe_unused]] InternalWindow& window,
+                                                                          [[maybe_unused]] const Image* const image)
+{
+    InputError(Error::Feature_Unavailable, "[Wayland] The platform does not support setting the window icon, use a .desktop file instead");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPosWayland([[maybe_unused]] const InternalWindow& window,
+                                                                         [[maybe_unused]] i32& xPos,
+                                                                         [[maybe_unused]] i32& yPos)
+{
+    //A Wayland client is not aware of its position, so just warn and leave it as (0, 0)
+
+    InputError(Error::Feature_Unavailable, "[Wayland] The platform does not provide the window position");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloatingWayland([[maybe_unused]] const InternalWindow& window,
+                                                                              [[maybe_unused]] const bool enabled)
+{
+    InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support making a window floating");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacityWayland([[maybe_unused]] const InternalWindow& window,
+                                                                             [[maybe_unused]] const f32 opacity)
+{
+    InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support setting the window opacity");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbarWayland([[maybe_unused]] InternalWindow& window)
+{
+    InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support hiding windows from the taskbar");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDropWayland([[maybe_unused]] InternalWindow& window,
+                                                                           [[maybe_unused]] const bool value)
+{
+    InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support toggling drag and drop. Drag and drop is enabled by default.");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

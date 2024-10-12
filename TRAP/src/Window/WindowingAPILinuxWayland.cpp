@@ -88,6 +88,52 @@ namespace
 {
     constexpr i32 TRAP_BORDER_SIZE = 4;
     constexpr i32 TRAP_CAPTION_HEIGHT = 24;
+
+    //-------------------------------------------------------------------------------------------------------------------//
+
+    constexpr std::array<std::pair<i32, i32>, 31u> EmulatedVideoModes
+    {
+        {
+            //16:9 (1.77)
+            { 7680, 4320 },
+            { 6144, 3160 },
+            { 5120, 2880 },
+            { 4096, 2304 },
+            { 3840, 2160 },
+            { 3200, 1800 },
+            { 2880, 1620 },
+            { 2560, 1440 },
+            { 2048, 1152 },
+            { 1920, 1080 },
+            { 1600, 900 },
+            { 1368, 768 },
+            { 1280, 720 },
+            { 864, 486 },
+
+            //16:10 (1.6)
+            { 2560, 1600 },
+            { 1920, 1200 },
+            { 1680, 1050 },
+            { 1440, 900 },
+            { 1280, 800 },
+
+            //3:2 (1.5)
+            { 720, 480 },
+
+            //4:3 (1.33)
+            { 2048, 1536 },
+            { 1920, 1440 },
+            { 1600, 1200 },
+            { 1440, 1080 },
+            { 1400, 1050 },
+            { 1280, 1024 },
+            { 1280, 960 },
+            { 1152, 864 },
+            { 1024, 768 },
+            { 800, 600 },
+            { 640, 480 }
+        }
+    };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -127,7 +173,7 @@ void TRAP::INTERNAL::WindowingAPI::DataSourceHandleSend([[maybe_unused]] void* c
     const char* string = s_Data.ClipboardString.c_str();
     usize length = s_Data.ClipboardString.size();
 
-    while(length > 0)
+    while(length > 0u)
     {
         const ssize_t result = write(fd, string, length);
         if(result == -1)
@@ -280,15 +326,10 @@ void TRAP::INTERNAL::WindowingAPI::SurfaceHandleLeave(void* const userData,
         return;
     }
 
-    for(auto& scale : window->Wayland.Scales)
+    std::erase_if(window->Wayland.Scales, [output](const TRAPScaleWayland& scale)
     {
-        if(scale.output == output)
-        {
-            scale = window->Wayland.Scales.back(); //Overwrite scale with last element in vector
-            window->Wayland.Scales.pop_back(); //Remove last element from vector
-            break;
-        }
-    }
+        return scale.output == output;
+    });
 
     UpdateContentScaleWayland(*window);
 }
@@ -323,7 +364,7 @@ void TRAP::INTERNAL::WindowingAPI::XDGDecorationHandleConfigure(void* const user
 void TRAP::INTERNAL::WindowingAPI::XDGTopLevelHandleConfigure(void* const userData,
                                                               [[maybe_unused]] xdg_toplevel* const topLevel,
                                                               const i32 width, const i32 height,
-                                                              wl_array* const states)
+                                                              wl_array* states)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
@@ -338,10 +379,9 @@ void TRAP::INTERNAL::WindowingAPI::XDGTopLevelHandleConfigure(void* const userDa
     window->Wayland.Pending.Maximized = false;
     window->Wayland.Pending.Fullscreen = false;
 
-    u32* state = nullptr;
-    for (state = static_cast<u32*>((states)->data);
-         reinterpret_cast<const char*>(state)<(static_cast<const char*>((states)->data) + (states)->size);
-         state++)
+    for (u32* state = static_cast<u32*>(states->data);
+         reinterpret_cast<const u8*>(state) < (static_cast<const u8*>(states->data) + states->size);
+         ++state)
     {
         switch(*state)
         {
@@ -356,6 +396,9 @@ void TRAP::INTERNAL::WindowingAPI::XDGTopLevelHandleConfigure(void* const userDa
         case XDG_TOPLEVEL_STATE_ACTIVATED:
             window->Wayland.Pending.Activated = true;
             break;
+
+        default:
+            break;
         }
     }
 
@@ -363,7 +406,7 @@ void TRAP::INTERNAL::WindowingAPI::XDGTopLevelHandleConfigure(void* const userDa
     {
         if(window->Wayland.Decorations.Top.surface != nullptr)
         {
-            window->Wayland.Pending.Width = TRAP::Math::Max(0, width - TRAP_BORDER_SIZE * 2);
+            window->Wayland.Pending.Width = TRAP::Math::Max(0, width - (TRAP_BORDER_SIZE * 2));
             window->Wayland.Pending.Height = TRAP::Math::Max(0, height - TRAP_BORDER_SIZE - TRAP_CAPTION_HEIGHT);
         }
         else
@@ -473,16 +516,17 @@ void TRAP::INTERNAL::WindowingAPI::DataOfferHandleOffer([[maybe_unused]] void* c
 
 	TRAP_ASSERT(offer, "WindowingAPI::DataOfferHandleOffer(): wl_data_offer is nullptr!");
 
-    for(auto& off : s_Data.Wayland.Offers)
+    const auto it = std::ranges::find_if(s_Data.Wayland.Offers, [offer](const TRAPOfferWayland& off)
     {
-        if(off.offer != offer)
-            continue;
+        return off.offer == offer;
+    });
 
-        if("text/plain;charset=utf-8"sv.compare(mimeType) == 0)
-            off.text_plain_utf8 = true;
-        else if("text/uri-list"sv.compare(mimeType) == 0)
-            off.text_uri_list = true;
-        break;
+    if(it != s_Data.Wayland.Offers.end())
+    {
+        if("text/plain;charset=utf-8"sv == mimeType)
+            it->text_plain_utf8 = true;
+        else if("text/uri-list"sv == mimeType)
+            it->text_uri_list = true;
     }
 }
 
@@ -496,7 +540,7 @@ void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleDataOffer([[maybe_unused]] vo
 
 	TRAP_ASSERT(offer, "WindowingAPI::DataDeviceHandleDataOffer(): wl_data_offer is nullptr!");
 
-    s_Data.Wayland.Offers.push_back(TRAPOfferWayland{offer, false, false});
+    s_Data.Wayland.Offers.emplace_back(offer, false, false);
     wl_data_offer_add_listener(offer, &DataOfferListener, nullptr);
 }
 
@@ -521,41 +565,35 @@ void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleEnter([[maybe_unused]] void* 
         s_Data.Wayland.DragFocus = nullptr;
     }
 
-    for(auto& off : s_Data.Wayland.Offers)
+    const auto it = std::ranges::find_if(s_Data.Wayland.Offers, [offer](const TRAPOfferWayland& off)
     {
-        if(off.offer != offer)
-            continue;
+        return off.offer == offer;
+    });
 
-        InternalWindow* window = nullptr;
+    if(it == s_Data.Wayland.Offers.end())
+        return;
 
-        if(surface != nullptr)
-        {
-            if(s_Data.Wayland.WaylandClient.ProxyGetTag(reinterpret_cast<wl_proxy*>(surface)) == &s_Data.Wayland.TagCStr)
-                window = static_cast<InternalWindow*>(wl_surface_get_user_data(surface));
-        }
-
-        if((window != nullptr) && surface == window->Wayland.Surface && off.text_uri_list)
+    if(surface != nullptr &&
+       s_Data.Wayland.WaylandClient.ProxyGetTag(reinterpret_cast<wl_proxy*>(surface)) == &s_Data.Wayland.TagCStr)
+    {
+        InternalWindow* const window = static_cast<InternalWindow*>(wl_surface_get_user_data(surface));
+        if(window != nullptr && window->Wayland.Surface == surface && it->text_uri_list)
         {
             s_Data.Wayland.DragOffer = offer;
             s_Data.Wayland.DragFocus = window;
             s_Data.Wayland.DragSerial = serial;
-        }
 
-        off = s_Data.Wayland.Offers.back();
-        s_Data.Wayland.Offers.pop_back();
-        break;
+            wl_data_offer_accept(offer, serial, "text/uri-list");
+        }
     }
 
-    if(s_Data.Wayland.WaylandClient.ProxyGetTag(reinterpret_cast<wl_proxy*>(surface)) != &s_Data.Wayland.TagCStr)
-        return;
-
     if(s_Data.Wayland.DragOffer != nullptr)
-        wl_data_offer_accept(offer, serial, "text/uri-list");
-    else
     {
         wl_data_offer_accept(offer, serial, nullptr);
         wl_data_offer_destroy(offer);
     }
+
+    s_Data.Wayland.Offers.erase(it);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -565,12 +603,12 @@ void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleLeave([[maybe_unused]] void* 
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-    if(s_Data.Wayland.DragOffer != nullptr)
-    {
-        wl_data_offer_destroy(s_Data.Wayland.DragOffer);
-        s_Data.Wayland.DragOffer = nullptr;
-        s_Data.Wayland.DragFocus = nullptr;
-    }
+    if(s_Data.Wayland.DragOffer == nullptr)
+        return;
+
+    wl_data_offer_destroy(s_Data.Wayland.DragOffer);
+    s_Data.Wayland.DragOffer = nullptr;
+    s_Data.Wayland.DragFocus = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -606,67 +644,23 @@ void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleSelection([[maybe_unused]] vo
         s_Data.Wayland.SelectionOffer = nullptr;
     }
 
-    for(auto& off : s_Data.Wayland.Offers)
+    const auto it = std::ranges::find_if(s_Data.Wayland.Offers, [offer](const TRAPOfferWayland& off)
     {
-        if(off.offer != offer)
-            continue;
+        return off.offer == offer;
+    });
 
-        if(off.text_plain_utf8)
+    if(it != s_Data.Wayland.Offers.end())
+    {
+        if(it->text_plain_utf8)
             s_Data.Wayland.SelectionOffer = offer;
         else if(offer != nullptr)
             wl_data_offer_destroy(offer);
 
-        off = s_Data.Wayland.Offers.back();
-        s_Data.Wayland.Offers.pop_back();
-        break;
+        s_Data.Wayland.Offers.erase(it);
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
-
-constexpr std::array<std::pair<i32, i32>, 31> EmulatedVideoModes
-{
-    {
-        //16:9 (1.77)
-        { 7680, 4320 },
-        { 6144, 3160 },
-        { 5120, 2880 },
-        { 4096, 2304 },
-        { 3840, 2160 },
-        { 3200, 1800 },
-        { 2880, 1620 },
-        { 2560, 1440 },
-        { 2048, 1152 },
-        { 1920, 1080 },
-        { 1600, 900 },
-        { 1368, 768 },
-        { 1280, 720 },
-        { 864, 486 },
-
-        //16:10 (1.6)
-        { 2560, 1600 },
-        { 1920, 1200 },
-        { 1680, 1050 },
-        { 1440, 900 },
-        { 1280, 800 },
-
-        //3:2 (1.5)
-        { 720, 480 },
-
-        //4:3 (1.33)
-        { 2048, 1536 },
-        { 1920, 1440 },
-        { 1600, 1200 },
-        { 1440, 1080 },
-        { 1400, 1050 },
-        { 1280, 1024 },
-        { 1280, 960 },
-        { 1152, 864 },
-        { 1024, 768 },
-        { 800, 600 },
-        { 640, 480 }
-    }
-};
 
 void TRAP::INTERNAL::WindowingAPI::AddEmulatedVideoModes(InternalMonitor& monitor)
 {
@@ -677,15 +671,16 @@ void TRAP::INTERNAL::WindowingAPI::AddEmulatedVideoModes(InternalMonitor& monito
         return;
 
     const InternalVideoMode& nativeMode = monitor.NativeMode.value_or(monitor.CurrentMode);
-    std::vector<InternalVideoMode>& modes = monitor.Modes;
 
     const bool rot90 = nativeMode.Width < nativeMode.Height; //Reverse width / height for portrait displays.
 
-    InternalVideoMode mode{};
-    mode.RedBits = 8;
-    mode.GreenBits = 8;
-    mode.BlueBits = 8;
-    mode.RefreshRate = nativeMode.RefreshRate;
+    InternalVideoMode mode
+    {
+        .RedBits = 8,
+        .GreenBits = 8,
+        .BlueBits = 8,
+        .RefreshRate = nativeMode.RefreshRate
+    };
 
     for(const auto& [width, height] : EmulatedVideoModes)
     {
@@ -705,7 +700,7 @@ void TRAP::INTERNAL::WindowingAPI::AddEmulatedVideoModes(InternalMonitor& monito
            (mode.Width < nativeMode.Width && mode.Height == nativeMode.Height) ||
            (mode.Width == nativeMode.Width && mode.Height < nativeMode.Height))
         {
-            modes.push_back(mode);
+            monitor.Modes.push_back(mode);
         }
     }
 }
@@ -755,15 +750,19 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleMode(void* const userData, [[mayb
     if(monitor == nullptr)
         return;
 
-    const InternalVideoMode mode{width, height, 8, 8, 8, refresh / 1000.0};
-
-    const auto ele = std::ranges::find_if(monitor->Modes, [&mode](const InternalVideoMode& e)
+    const InternalVideoMode mode
     {
-        return mode.Width == e.Width && mode.Height == e.Height && mode.RedBits == e.RedBits &&
-               mode.GreenBits == e.GreenBits && mode.BlueBits == e.BlueBits && mode.RefreshRate == e.RefreshRate;
-    });
+        .Width = width,
+        .Height = height,
+        .RedBits = 8,
+        .GreenBits = 8,
+        .BlueBits = 8,
+        .RefreshRate = refresh / 1000.0
+    };
 
-    if(ele != monitor->Modes.cend())
+    const auto ele = std::ranges::find(monitor->Modes, mode);
+
+    if(ele != monitor->Modes.end())
     {
         if((flags & WL_OUTPUT_MODE_CURRENT) != 0u)
         {
@@ -832,14 +831,14 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleScale(void* const userData, [[may
             continue;
         }
 
-        for(TRAPScaleWayland& scale : window->Wayland.Scales)
+        const auto it = std::ranges::find_if(window->Wayland.Scales, [monitor](const TRAPScaleWayland& scale)
         {
-            if(scale.output == monitor->Wayland.Output)
-            {
-                scale.factor = factor;
-                UpdateContentScaleWayland(*window);
-                break;
-            }
+            return scale.output == monitor->Wayland.Output;
+        });
+        if(it != window->Wayland.Scales.end())
+        {
+            it->factor = factor;
+            UpdateContentScaleWayland(*window);
         }
     }
 
@@ -881,7 +880,7 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKeymap([[maybe_unused]] void* c
         return;
     }
 
-    char* mapStr = static_cast<char*>(mmap(nullptr, size, PROT_READ, MAP_SHARED, fd, 0));
+    char* const mapStr = static_cast<char*>(mmap(nullptr, size, PROT_READ, MAP_SHARED, fd, 0));
     if(mapStr == MAP_FAILED)
     {
         close(fd);
@@ -1017,7 +1016,7 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKey([[maybe_unused]] void* cons
 
     if(action == Input::KeyState::Pressed)
     {
-        const xkb_keycode_t keycode = scanCode + 8;
+        const xkb_keycode_t keycode = scanCode + 8u;
 
         if((s_Data.Wayland.WaylandXKB.KeyMapKeyRepeats(s_Data.Wayland.WaylandXKB.KeyMap, keycode) != 0) &&
            s_Data.Wayland.KeyRepeatRate > 0)
@@ -1158,7 +1157,6 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion([[maybe_unused]] void* co
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
     InternalWindow* const window = s_Data.Wayland.PointerFocus;
-    std::string cursorName{};
 
     if(window == nullptr)
         return;
@@ -1190,6 +1188,7 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion([[maybe_unused]] void* co
         }
     }
 
+    std::string cursorName{};
     switch(window->Wayland.Decorations.Focus)
     {
     case TRAPDecorationSideWayland::MainWindow:
@@ -1536,13 +1535,15 @@ void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobalRemove([[maybe_unused]] v
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-    for(u32 i = 0; i < s_Data.Monitors.size(); ++i)
+    const auto it = std::ranges::find_if(s_Data.Monitors, [name](const TRAP::Scope<InternalMonitor>& monitor)
     {
-        if(s_Data.Monitors[i]->Wayland.Name == name)
-        {
-            InputMonitorDisconnect(i, 0);
-            return;
-        }
+        return monitor && monitor->Wayland.Name == name;
+    });
+
+    if(it != s_Data.Monitors.end())
+    {
+        const u32 monitorIndex = NumericCast<u32>(std::distance(s_Data.Monitors.begin(), it));
+        InputMonitorDisconnect(monitorIndex, 0u);
     }
 }
 
@@ -1582,126 +1583,126 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesWayland()
 	std::ranges::fill(s_Data.KeyCodes, Input::Key::Unknown);
 	std::ranges::fill(s_Data.ScanCodes, -1);
 
-    s_Data.KeyCodes[KEY_GRAVE]      = Input::Key::Grave_Accent;
-    s_Data.KeyCodes[KEY_1]          = Input::Key::One;
-    s_Data.KeyCodes[KEY_2]          = Input::Key::Two;
-    s_Data.KeyCodes[KEY_3]          = Input::Key::Three;
-    s_Data.KeyCodes[KEY_4]          = Input::Key::Four;
-    s_Data.KeyCodes[KEY_5]          = Input::Key::Five;
-    s_Data.KeyCodes[KEY_6]          = Input::Key::Six;
-    s_Data.KeyCodes[KEY_7]          = Input::Key::Seven;
-    s_Data.KeyCodes[KEY_8]          = Input::Key::Eight;
-    s_Data.KeyCodes[KEY_9]          = Input::Key::Nine;
-    s_Data.KeyCodes[KEY_0]          = Input::Key::Zero;
-    s_Data.KeyCodes[KEY_SPACE]      = Input::Key::Space;
-    s_Data.KeyCodes[KEY_MINUS]      = Input::Key::Minus;
-    s_Data.KeyCodes[KEY_EQUAL]      = Input::Key::Equal;
-    s_Data.KeyCodes[KEY_Q]          = Input::Key::Q;
-    s_Data.KeyCodes[KEY_W]          = Input::Key::W;
-    s_Data.KeyCodes[KEY_E]          = Input::Key::E;
-    s_Data.KeyCodes[KEY_R]          = Input::Key::R;
-    s_Data.KeyCodes[KEY_T]          = Input::Key::T;
-    s_Data.KeyCodes[KEY_Y]          = Input::Key::Y;
-    s_Data.KeyCodes[KEY_U]          = Input::Key::U;
-    s_Data.KeyCodes[KEY_I]          = Input::Key::I;
-    s_Data.KeyCodes[KEY_O]          = Input::Key::O;
-    s_Data.KeyCodes[KEY_P]          = Input::Key::P;
-    s_Data.KeyCodes[KEY_LEFTBRACE]  = Input::Key::Left_Bracket;
-    s_Data.KeyCodes[KEY_RIGHTBRACE] = Input::Key::Right_Bracket;
-    s_Data.KeyCodes[KEY_A]          = Input::Key::A;
-    s_Data.KeyCodes[KEY_S]          = Input::Key::S;
-    s_Data.KeyCodes[KEY_D]          = Input::Key::D;
-    s_Data.KeyCodes[KEY_F]          = Input::Key::F;
-    s_Data.KeyCodes[KEY_G]          = Input::Key::G;
-    s_Data.KeyCodes[KEY_H]          = Input::Key::H;
-    s_Data.KeyCodes[KEY_J]          = Input::Key::J;
-    s_Data.KeyCodes[KEY_K]          = Input::Key::K;
-    s_Data.KeyCodes[KEY_L]          = Input::Key::L;
-    s_Data.KeyCodes[KEY_SEMICOLON]  = Input::Key::Semicolon;
-    s_Data.KeyCodes[KEY_APOSTROPHE] = Input::Key::Apostrophe;
-    s_Data.KeyCodes[KEY_Z]          = Input::Key::Z;
-    s_Data.KeyCodes[KEY_X]          = Input::Key::X;
-    s_Data.KeyCodes[KEY_C]          = Input::Key::C;
-    s_Data.KeyCodes[KEY_V]          = Input::Key::V;
-    s_Data.KeyCodes[KEY_B]          = Input::Key::B;
-    s_Data.KeyCodes[KEY_N]          = Input::Key::N;
-    s_Data.KeyCodes[KEY_M]          = Input::Key::M;
-    s_Data.KeyCodes[KEY_COMMA]      = Input::Key::Comma;
-    s_Data.KeyCodes[KEY_DOT]        = Input::Key::Period;
-    s_Data.KeyCodes[KEY_SLASH]      = Input::Key::Slash;
-    s_Data.KeyCodes[KEY_BACKSLASH]  = Input::Key::Backslash;
-    s_Data.KeyCodes[KEY_ESC]        = Input::Key::Escape;
-    s_Data.KeyCodes[KEY_TAB]        = Input::Key::Tab;
-    s_Data.KeyCodes[KEY_LEFTSHIFT]  = Input::Key::Left_Shift;
-    s_Data.KeyCodes[KEY_RIGHTSHIFT] = Input::Key::Right_Shift;
-    s_Data.KeyCodes[KEY_LEFTCTRL]   = Input::Key::Left_Control;
-    s_Data.KeyCodes[KEY_RIGHTCTRL]  = Input::Key::Right_Control;
-    s_Data.KeyCodes[KEY_LEFTALT]    = Input::Key::Left_ALT;
-    s_Data.KeyCodes[KEY_RIGHTALT]   = Input::Key::Right_ALT;
-    s_Data.KeyCodes[KEY_LEFTMETA]   = Input::Key::Left_Super;
-    s_Data.KeyCodes[KEY_RIGHTMETA]  = Input::Key::Right_Super;
-    s_Data.KeyCodes[KEY_COMPOSE]    = Input::Key::Menu;
-    s_Data.KeyCodes[KEY_NUMLOCK]    = Input::Key::Num_Lock;
-    s_Data.KeyCodes[KEY_CAPSLOCK]   = Input::Key::Caps_Lock;
-    s_Data.KeyCodes[KEY_PRINT]      = Input::Key::Print_Screen;
-    s_Data.KeyCodes[KEY_SCROLLLOCK] = Input::Key::Scroll_Lock;
-    s_Data.KeyCodes[KEY_PAUSE]      = Input::Key::Pause;
-    s_Data.KeyCodes[KEY_DELETE]     = Input::Key::Delete;
-    s_Data.KeyCodes[KEY_BACKSPACE]  = Input::Key::Backspace;
-    s_Data.KeyCodes[KEY_ENTER]      = Input::Key::Enter;
-    s_Data.KeyCodes[KEY_HOME]       = Input::Key::Home;
-    s_Data.KeyCodes[KEY_END]        = Input::Key::End;
-    s_Data.KeyCodes[KEY_PAGEUP]     = Input::Key::Page_Up;
-    s_Data.KeyCodes[KEY_PAGEDOWN]   = Input::Key::Page_Down;
-    s_Data.KeyCodes[KEY_INSERT]     = Input::Key::Insert;
-    s_Data.KeyCodes[KEY_LEFT]       = Input::Key::Left;
-    s_Data.KeyCodes[KEY_RIGHT]      = Input::Key::Right;
-    s_Data.KeyCodes[KEY_DOWN]       = Input::Key::Down;
-    s_Data.KeyCodes[KEY_UP]         = Input::Key::Up;
-    s_Data.KeyCodes[KEY_F1]         = Input::Key::F1;
-    s_Data.KeyCodes[KEY_F2]         = Input::Key::F2;
-    s_Data.KeyCodes[KEY_F3]         = Input::Key::F3;
-    s_Data.KeyCodes[KEY_F4]         = Input::Key::F4;
-    s_Data.KeyCodes[KEY_F5]         = Input::Key::F5;
-    s_Data.KeyCodes[KEY_F6]         = Input::Key::F6;
-    s_Data.KeyCodes[KEY_F7]         = Input::Key::F7;
-    s_Data.KeyCodes[KEY_F8]         = Input::Key::F8;
-    s_Data.KeyCodes[KEY_F9]         = Input::Key::F9;
-    s_Data.KeyCodes[KEY_F10]        = Input::Key::F10;
-    s_Data.KeyCodes[KEY_F11]        = Input::Key::F11;
-    s_Data.KeyCodes[KEY_F12]        = Input::Key::F12;
-    s_Data.KeyCodes[KEY_F13]        = Input::Key::F13;
-    s_Data.KeyCodes[KEY_F14]        = Input::Key::F14;
-    s_Data.KeyCodes[KEY_F15]        = Input::Key::F15;
-    s_Data.KeyCodes[KEY_F16]        = Input::Key::F16;
-    s_Data.KeyCodes[KEY_F17]        = Input::Key::F17;
-    s_Data.KeyCodes[KEY_F18]        = Input::Key::F18;
-    s_Data.KeyCodes[KEY_F19]        = Input::Key::F19;
-    s_Data.KeyCodes[KEY_F20]        = Input::Key::F20;
-    s_Data.KeyCodes[KEY_F21]        = Input::Key::F21;
-    s_Data.KeyCodes[KEY_F22]        = Input::Key::F22;
-    s_Data.KeyCodes[KEY_F23]        = Input::Key::F23;
-    s_Data.KeyCodes[KEY_F24]        = Input::Key::F24;
-    s_Data.KeyCodes[KEY_KPSLASH]    = Input::Key::KP_Divide;
-    s_Data.KeyCodes[KEY_KPASTERISK] = Input::Key::KP_Multiply;
-    s_Data.KeyCodes[KEY_KPMINUS]    = Input::Key::KP_Subtract;
-    s_Data.KeyCodes[KEY_KPPLUS]     = Input::Key::KP_Add;
-    s_Data.KeyCodes[KEY_KP0]        = Input::Key::KP_0;
-    s_Data.KeyCodes[KEY_KP1]        = Input::Key::KP_1;
-    s_Data.KeyCodes[KEY_KP2]        = Input::Key::KP_2;
-    s_Data.KeyCodes[KEY_KP3]        = Input::Key::KP_3;
-    s_Data.KeyCodes[KEY_KP4]        = Input::Key::KP_4;
-    s_Data.KeyCodes[KEY_KP5]        = Input::Key::KP_5;
-    s_Data.KeyCodes[KEY_KP6]        = Input::Key::KP_6;
-    s_Data.KeyCodes[KEY_KP7]        = Input::Key::KP_7;
-    s_Data.KeyCodes[KEY_KP8]        = Input::Key::KP_8;
-    s_Data.KeyCodes[KEY_KP9]        = Input::Key::KP_9;
-    s_Data.KeyCodes[KEY_KPDOT]      = Input::Key::KP_Decimal;
-    s_Data.KeyCodes[KEY_KPEQUAL]    = Input::Key::KP_Equal;
-    s_Data.KeyCodes[KEY_KPENTER]    = Input::Key::KP_Enter;
-    s_Data.KeyCodes[KEY_102ND]      = Input::Key::World_2;
+    std::get<KEY_GRAVE>(s_Data.KeyCodes)      = Input::Key::Grave_Accent;
+    std::get<KEY_1>(s_Data.KeyCodes)          = Input::Key::One;
+    std::get<KEY_2>(s_Data.KeyCodes)          = Input::Key::Two;
+    std::get<KEY_3>(s_Data.KeyCodes)          = Input::Key::Three;
+    std::get<KEY_4>(s_Data.KeyCodes)          = Input::Key::Four;
+    std::get<KEY_5>(s_Data.KeyCodes)          = Input::Key::Five;
+    std::get<KEY_6>(s_Data.KeyCodes)          = Input::Key::Six;
+    std::get<KEY_7>(s_Data.KeyCodes)          = Input::Key::Seven;
+    std::get<KEY_8>(s_Data.KeyCodes)          = Input::Key::Eight;
+    std::get<KEY_9>(s_Data.KeyCodes)          = Input::Key::Nine;
+    std::get<KEY_0>(s_Data.KeyCodes)          = Input::Key::Zero;
+    std::get<KEY_SPACE>(s_Data.KeyCodes)      = Input::Key::Space;
+    std::get<KEY_MINUS>(s_Data.KeyCodes)      = Input::Key::Minus;
+    std::get<KEY_EQUAL>(s_Data.KeyCodes)      = Input::Key::Equal;
+    std::get<KEY_Q>(s_Data.KeyCodes)          = Input::Key::Q;
+    std::get<KEY_W>(s_Data.KeyCodes)          = Input::Key::W;
+    std::get<KEY_E>(s_Data.KeyCodes)          = Input::Key::E;
+    std::get<KEY_R>(s_Data.KeyCodes)          = Input::Key::R;
+    std::get<KEY_T>(s_Data.KeyCodes)          = Input::Key::T;
+    std::get<KEY_Y>(s_Data.KeyCodes)          = Input::Key::Y;
+    std::get<KEY_U>(s_Data.KeyCodes)          = Input::Key::U;
+    std::get<KEY_I>(s_Data.KeyCodes)          = Input::Key::I;
+    std::get<KEY_O>(s_Data.KeyCodes)          = Input::Key::O;
+    std::get<KEY_P>(s_Data.KeyCodes)          = Input::Key::P;
+    std::get<KEY_LEFTBRACE>(s_Data.KeyCodes)  = Input::Key::Left_Bracket;
+    std::get<KEY_RIGHTBRACE>(s_Data.KeyCodes) = Input::Key::Right_Bracket;
+    std::get<KEY_A>(s_Data.KeyCodes)          = Input::Key::A;
+    std::get<KEY_S>(s_Data.KeyCodes)          = Input::Key::S;
+    std::get<KEY_D>(s_Data.KeyCodes)          = Input::Key::D;
+    std::get<KEY_F>(s_Data.KeyCodes)          = Input::Key::F;
+    std::get<KEY_G>(s_Data.KeyCodes)          = Input::Key::G;
+    std::get<KEY_H>(s_Data.KeyCodes)          = Input::Key::H;
+    std::get<KEY_J>(s_Data.KeyCodes)          = Input::Key::J;
+    std::get<KEY_K>(s_Data.KeyCodes)          = Input::Key::K;
+    std::get<KEY_L>(s_Data.KeyCodes)          = Input::Key::L;
+    std::get<KEY_SEMICOLON>(s_Data.KeyCodes)  = Input::Key::Semicolon;
+    std::get<KEY_APOSTROPHE>(s_Data.KeyCodes) = Input::Key::Apostrophe;
+    std::get<KEY_Z>(s_Data.KeyCodes)          = Input::Key::Z;
+    std::get<KEY_X>(s_Data.KeyCodes)          = Input::Key::X;
+    std::get<KEY_C>(s_Data.KeyCodes)          = Input::Key::C;
+    std::get<KEY_V>(s_Data.KeyCodes)          = Input::Key::V;
+    std::get<KEY_B>(s_Data.KeyCodes)          = Input::Key::B;
+    std::get<KEY_N>(s_Data.KeyCodes)          = Input::Key::N;
+    std::get<KEY_M>(s_Data.KeyCodes)          = Input::Key::M;
+    std::get<KEY_COMMA>(s_Data.KeyCodes)      = Input::Key::Comma;
+    std::get<KEY_DOT>(s_Data.KeyCodes)        = Input::Key::Period;
+    std::get<KEY_SLASH>(s_Data.KeyCodes)      = Input::Key::Slash;
+    std::get<KEY_BACKSLASH>(s_Data.KeyCodes)  = Input::Key::Backslash;
+    std::get<KEY_ESC>(s_Data.KeyCodes)        = Input::Key::Escape;
+    std::get<KEY_TAB>(s_Data.KeyCodes)        = Input::Key::Tab;
+    std::get<KEY_LEFTSHIFT>(s_Data.KeyCodes)  = Input::Key::Left_Shift;
+    std::get<KEY_RIGHTSHIFT>(s_Data.KeyCodes) = Input::Key::Right_Shift;
+    std::get<KEY_LEFTCTRL>(s_Data.KeyCodes)   = Input::Key::Left_Control;
+    std::get<KEY_RIGHTCTRL>(s_Data.KeyCodes)  = Input::Key::Right_Control;
+    std::get<KEY_LEFTALT>(s_Data.KeyCodes)    = Input::Key::Left_ALT;
+    std::get<KEY_RIGHTALT>(s_Data.KeyCodes)   = Input::Key::Right_ALT;
+    std::get<KEY_LEFTMETA>(s_Data.KeyCodes)   = Input::Key::Left_Super;
+    std::get<KEY_RIGHTMETA>(s_Data.KeyCodes)  = Input::Key::Right_Super;
+    std::get<KEY_COMPOSE>(s_Data.KeyCodes)    = Input::Key::Menu;
+    std::get<KEY_NUMLOCK>(s_Data.KeyCodes)    = Input::Key::Num_Lock;
+    std::get<KEY_CAPSLOCK>(s_Data.KeyCodes)   = Input::Key::Caps_Lock;
+    std::get<KEY_PRINT>(s_Data.KeyCodes)      = Input::Key::Print_Screen;
+    std::get<KEY_SCROLLLOCK>(s_Data.KeyCodes) = Input::Key::Scroll_Lock;
+    std::get<KEY_PAUSE>(s_Data.KeyCodes)      = Input::Key::Pause;
+    std::get<KEY_DELETE>(s_Data.KeyCodes)     = Input::Key::Delete;
+    std::get<KEY_BACKSPACE>(s_Data.KeyCodes)  = Input::Key::Backspace;
+    std::get<KEY_ENTER>(s_Data.KeyCodes)      = Input::Key::Enter;
+    std::get<KEY_HOME>(s_Data.KeyCodes)       = Input::Key::Home;
+    std::get<KEY_END>(s_Data.KeyCodes)        = Input::Key::End;
+    std::get<KEY_PAGEUP>(s_Data.KeyCodes)     = Input::Key::Page_Up;
+    std::get<KEY_PAGEDOWN>(s_Data.KeyCodes)   = Input::Key::Page_Down;
+    std::get<KEY_INSERT>(s_Data.KeyCodes)     = Input::Key::Insert;
+    std::get<KEY_LEFT>(s_Data.KeyCodes)       = Input::Key::Left;
+    std::get<KEY_RIGHT>(s_Data.KeyCodes)      = Input::Key::Right;
+    std::get<KEY_DOWN>(s_Data.KeyCodes)       = Input::Key::Down;
+    std::get<KEY_UP>(s_Data.KeyCodes)         = Input::Key::Up;
+    std::get<KEY_F1>(s_Data.KeyCodes)         = Input::Key::F1;
+    std::get<KEY_F2>(s_Data.KeyCodes)         = Input::Key::F2;
+    std::get<KEY_F3>(s_Data.KeyCodes)         = Input::Key::F3;
+    std::get<KEY_F4>(s_Data.KeyCodes)         = Input::Key::F4;
+    std::get<KEY_F5>(s_Data.KeyCodes)         = Input::Key::F5;
+    std::get<KEY_F6>(s_Data.KeyCodes)         = Input::Key::F6;
+    std::get<KEY_F7>(s_Data.KeyCodes)         = Input::Key::F7;
+    std::get<KEY_F8>(s_Data.KeyCodes)         = Input::Key::F8;
+    std::get<KEY_F9>(s_Data.KeyCodes)         = Input::Key::F9;
+    std::get<KEY_F10>(s_Data.KeyCodes)        = Input::Key::F10;
+    std::get<KEY_F11>(s_Data.KeyCodes)        = Input::Key::F11;
+    std::get<KEY_F12>(s_Data.KeyCodes)        = Input::Key::F12;
+    std::get<KEY_F13>(s_Data.KeyCodes)        = Input::Key::F13;
+    std::get<KEY_F14>(s_Data.KeyCodes)        = Input::Key::F14;
+    std::get<KEY_F15>(s_Data.KeyCodes)        = Input::Key::F15;
+    std::get<KEY_F16>(s_Data.KeyCodes)        = Input::Key::F16;
+    std::get<KEY_F17>(s_Data.KeyCodes)        = Input::Key::F17;
+    std::get<KEY_F18>(s_Data.KeyCodes)        = Input::Key::F18;
+    std::get<KEY_F19>(s_Data.KeyCodes)        = Input::Key::F19;
+    std::get<KEY_F20>(s_Data.KeyCodes)        = Input::Key::F20;
+    std::get<KEY_F21>(s_Data.KeyCodes)        = Input::Key::F21;
+    std::get<KEY_F22>(s_Data.KeyCodes)        = Input::Key::F22;
+    std::get<KEY_F23>(s_Data.KeyCodes)        = Input::Key::F23;
+    std::get<KEY_F24>(s_Data.KeyCodes)        = Input::Key::F24;
+    std::get<KEY_KPSLASH>(s_Data.KeyCodes)    = Input::Key::KP_Divide;
+    std::get<KEY_KPASTERISK>(s_Data.KeyCodes) = Input::Key::KP_Multiply;
+    std::get<KEY_KPMINUS>(s_Data.KeyCodes)    = Input::Key::KP_Subtract;
+    std::get<KEY_KPPLUS>(s_Data.KeyCodes)     = Input::Key::KP_Add;
+    std::get<KEY_KP0>(s_Data.KeyCodes)        = Input::Key::KP_0;
+    std::get<KEY_KP1>(s_Data.KeyCodes)        = Input::Key::KP_1;
+    std::get<KEY_KP2>(s_Data.KeyCodes)        = Input::Key::KP_2;
+    std::get<KEY_KP3>(s_Data.KeyCodes)        = Input::Key::KP_3;
+    std::get<KEY_KP4>(s_Data.KeyCodes)        = Input::Key::KP_4;
+    std::get<KEY_KP5>(s_Data.KeyCodes)        = Input::Key::KP_5;
+    std::get<KEY_KP6>(s_Data.KeyCodes)        = Input::Key::KP_6;
+    std::get<KEY_KP7>(s_Data.KeyCodes)        = Input::Key::KP_7;
+    std::get<KEY_KP8>(s_Data.KeyCodes)        = Input::Key::KP_8;
+    std::get<KEY_KP9>(s_Data.KeyCodes)        = Input::Key::KP_9;
+    std::get<KEY_KPDOT>(s_Data.KeyCodes)      = Input::Key::KP_Decimal;
+    std::get<KEY_KPEQUAL>(s_Data.KeyCodes)    = Input::Key::KP_Equal;
+    std::get<KEY_KPENTER>(s_Data.KeyCodes)    = Input::Key::KP_Enter;
+    std::get<KEY_102ND>(s_Data.KeyCodes)      = Input::Key::World_2;
 
-    for (usize scancode = 0; scancode < s_Data.KeyCodes.size();  scancode++)
+    for (usize scancode = 0u; scancode < s_Data.KeyCodes.size(); ++scancode)
     {
         if (s_Data.KeyCodes[scancode] != TRAP::Input::Key::Unknown)
             s_Data.ScanCodes[NumericCast<u32>(std::to_underlying(s_Data.KeyCodes[scancode]))] = NumericCast<i16>(scancode);
@@ -1746,11 +1747,11 @@ bool TRAP::INTERNAL::WindowingAPI::LoadCursorThemeWayland()
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::optional<std::string> TRAP::INTERNAL::WindowingAPI::ReadDataOfferAsString(wl_data_offer& offer,
-                                                                               const std::string_view mimeType)
+                                                                               const std::string& mimeType)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-    std::array<i32, 2> fds{};
+    std::array<i32, 2u> fds{};
 
     if(pipe2(fds.data(), O_CLOEXEC) == -1)
     {
@@ -1758,26 +1759,22 @@ std::optional<std::string> TRAP::INTERNAL::WindowingAPI::ReadDataOfferAsString(w
         return std::nullopt;
     }
 
-    wl_data_offer_receive(&offer, mimeType.data(), std::get<1>(fds));
+    wl_data_offer_receive(&offer, mimeType.c_str(), std::get<1u>(fds));
     FlushDisplay();
-    close(std::get<1>(fds));
+    close(std::get<1u>(fds));
 
     std::string str;
-    usize size = 0;
-    usize length = 0;
+    usize length = 0u;
 
     while(true)
     {
-        const usize readSize = 4096;
+        static constexpr usize readSize = 4096u;
         const usize requiredSize = length + readSize;
-        if(requiredSize > size)
-        {
+        if(requiredSize > str.size())
             str.resize(requiredSize);
-            size = requiredSize;
-        }
 
-        const ssize_t result = read(std::get<0>(fds), str.data() + length, readSize);
-        if(result == 0)
+        const ssize_t result = read(std::get<0u>(fds), str.data() + length, readSize);
+        if(result == 0) //EOF
             break;
         if(result == -1)
         {
@@ -1785,14 +1782,14 @@ std::optional<std::string> TRAP::INTERNAL::WindowingAPI::ReadDataOfferAsString(w
                 continue;
 
             InputError(Error::Platform_Error, fmt::format("[Wayland] Failed to read data offer pipe: {}", Utils::String::GetStrError()));
-            close(std::get<0>(fds));
+            close(std::get<0u>(fds));
             return std::nullopt;
         }
 
         length += NumericCast<usize>(result);
     }
 
-    close(std::get<0>(fds));
+    close(std::get<0u>(fds));
 
     str.resize(length);
 
@@ -1810,7 +1807,12 @@ bool TRAP::INTERNAL::WindowingAPI::FlushDisplay()
         if(errno != EAGAIN)
             return false;
 
-        pollfd fd{s_Data.Wayland.WaylandClient.DisplayGetFD(s_Data.Wayland.DisplayWL), POLLOUT, 0};
+        pollfd fd
+        {
+            .fd = s_Data.Wayland.WaylandClient.DisplayGetFD(s_Data.Wayland.DisplayWL),
+            .events = POLLOUT,
+            .revents = 0
+        };
 
         while(poll(&fd, 1, -1) == -1)
         {
@@ -1871,9 +1873,9 @@ void TRAP::INTERNAL::WindowingAPI::InputTextWayland(const InternalWindow& window
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
     const xkb_keysym_t* keysyms = nullptr;
-    const xkb_keycode_t keycode = scanCode + 8;
+    const xkb_keycode_t keycode = scanCode + 8u;
 
-    if(s_Data.Wayland.WaylandXKB.StateKeyGetSyms(s_Data.Wayland.WaylandXKB.State, keycode, &keysyms) == 1 && keysyms)
+    if(s_Data.Wayland.WaylandXKB.StateKeyGetSyms(s_Data.Wayland.WaylandXKB.State, keycode, &keysyms) == 1 && (keysyms != nullptr))
     {
         const xkb_keysym_t keysym = ComposeSymbol(keysyms[0]);
         const std::optional<u32> codePoint = KeySymToUnicode(keysym);
@@ -1903,6 +1905,7 @@ xkb_keysym_t TRAP::INTERNAL::WindowingAPI::ComposeSymbol(const xkb_keysym_t sym)
         return XKB_KEY_NoSymbol;
 
     case XKB_COMPOSE_NOTHING:
+        [[fallthrough]];
     default:
         return sym;
     }
@@ -2106,8 +2109,8 @@ void TRAP::INTERNAL::WindowingAPI::CreateFallbackDecorationsWayland(InternalWind
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-    static const std::vector<u8> data{224, 244, 244, 255};
-    const Scope<Image> img = Image::LoadFromMemory(1, 1, Image::ColorFormat::RGBA, data);
+    static const std::vector<u8> data{224u, 244u, 244u, 255u};
+    const Scope<Image> img = Image::LoadFromMemory(1u, 1u, Image::ColorFormat::RGBA, data);
 
     if((s_Data.Wayland.Viewporter == nullptr) || !img)
         return;
@@ -2153,7 +2156,7 @@ wl_buffer* TRAP::INTERNAL::WindowingAPI::CreateShmBufferWayland(const Image& ima
         return nullptr;
     }
 
-    void* data = mmap(nullptr, NumericCast<usize>(length), PROT_READ | PROT_WRITE, MAP_SHARED, *fd, 0);
+    void* const data = mmap(nullptr, NumericCast<usize>(length), PROT_READ | PROT_WRITE, MAP_SHARED, *fd, 0);
     if(data == MAP_FAILED)
     {
         InputError(Error::Platform_Error, fmt::format("[Wayland] Failed to map file: {}", Utils::String::GetStrError()));
@@ -2166,15 +2169,15 @@ wl_buffer* TRAP::INTERNAL::WindowingAPI::CreateShmBufferWayland(const Image& ima
     close(*fd);
 
     const std::span<const u8> pixelData = image.GetPixelData();
-    usize sourceIndex = 0;
+    usize sourceIndex = 0u;
     u8* target = static_cast<u8*>(data);
-    for(u32 i = 0; i < image.GetWidth() * image.GetHeight(); ++i, sourceIndex += 4)
+    for(u32 i = 0u; i < image.GetWidth() * image.GetHeight(); ++i, sourceIndex += 4u)
     {
-        u32 alpha = pixelData[sourceIndex + 3];
+        const u32 alpha = pixelData[sourceIndex + 3u];
 
-        *target++ = NumericCast<u8>((pixelData[sourceIndex + 2] * alpha) / 255u);
-        *target++ = NumericCast<u8>((pixelData[sourceIndex + 1] * alpha) / 255u);
-        *target++ = NumericCast<u8>((pixelData[sourceIndex + 0] * alpha) / 255u);
+        *target++ = NumericCast<u8>((pixelData[sourceIndex + 2u] * alpha) / 255u);
+        *target++ = NumericCast<u8>((pixelData[sourceIndex + 1u] * alpha) / 255u);
+        *target++ = NumericCast<u8>((pixelData[sourceIndex + 0u] * alpha) / 255u);
         *target++ = NumericCast<u8>(alpha);
     }
 
@@ -2194,9 +2197,8 @@ std::optional<i32> TRAP::INTERNAL::WindowingAPI::CreateAnonymousFileWayland(cons
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
     static constexpr std::string_view temp = "/trap-shared-XXXXXX";
-    i32 fd = 0;
-    i32 ret = 0;
 
+    i32 fd = 0;
 #ifdef _GNU_SOURCE
     fd = memfd_create("trap-shared", MFD_CLOEXEC | MFD_ALLOW_SEALING);
     if(fd >= 0)
@@ -2228,6 +2230,7 @@ std::optional<i32> TRAP::INTERNAL::WindowingAPI::CreateAnonymousFileWayland(cons
             return std::nullopt;
     }
 
+    i32 ret = 0;
 #ifdef SHM_ANON
     //posix fallocate does not work on SHM descriptors
     ret = ftruncate(fd, size);
@@ -2357,7 +2360,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyShellObjectsWayland(InternalWindow& wi
 
     window.Wayland.LibDecor.Frame = nullptr;
     window.Wayland.XDG.Decoration = nullptr;
-    window.Wayland.XDG.DecorationMode = 0;
+    window.Wayland.XDG.DecorationMode = 0u;
     window.Wayland.XDG.TopLevel = nullptr;
     window.Wayland.XDG.Surface = nullptr;
 }
@@ -2602,7 +2605,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateXDGShellObjectsWayland(InternalWindow& 
         window.Wayland.XDG.Decoration = zxdg_decoration_manager_v1_get_toplevel_decoration(s_Data.Wayland.DecorationManager, window.Wayland.XDG.TopLevel);
         zxdg_toplevel_decoration_v1_add_listener(window.Wayland.XDG.Decoration, &XDGDecorationListener, &window);
 
-        u32 mode = 0;
+        u32 mode = 0u;
 
         if(window.Decorated)
             mode = ZXDG_TOPLEVEL_DECORATION_V1_MODE_SERVER_SIDE;
@@ -2668,7 +2671,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateShellObjectsWayland(InternalWindow& win
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::CreateNativeSurfaceWayland(InternalWindow& window, WindowConfig& WNDConfig)
+bool TRAP::INTERNAL::WindowingAPI::CreateNativeSurfaceWayland(InternalWindow& window, const WindowConfig& WNDConfig)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
@@ -2775,7 +2778,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorImageWayland(const InternalWindow& w
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
-    wl_cursor* wlCursor = cursorWayland.CursorWL;
+    const wl_cursor* wlCursor = cursorWayland.CursorWL;
     wl_buffer* buffer = nullptr;
     i32 scale = 1;
 
@@ -2825,18 +2828,18 @@ void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(f64* const timeout)
 
     bool event = false;
 
-    std::array<pollfd, 4> fds
+    std::array<pollfd, 4u> fds
     {
         {
-            {s_Data.Wayland.WaylandClient.DisplayGetFD(s_Data.Wayland.DisplayWL), POLLIN, 0},
-            {s_Data.Wayland.KeyRepeatTimerFD, POLLIN, 0},
-            {s_Data.Wayland.CursorTimerFD, POLLIN, 0},
-            {-1, POLLIN, 0}
+            pollfd{.fd = s_Data.Wayland.WaylandClient.DisplayGetFD(s_Data.Wayland.DisplayWL), .events = POLLIN, .revents = 0},
+            pollfd{.fd = s_Data.Wayland.KeyRepeatTimerFD, .events = POLLIN, .revents = 0},
+            pollfd{.fd = s_Data.Wayland.CursorTimerFD, .events = POLLIN, .revents = 0},
+            pollfd{.fd = -1, .events = POLLIN, .revents = 0}
         }
     };
 
     if(s_Data.Wayland.LibDecor.Context != nullptr)
-        std::get<3>(fds).fd = s_Data.Wayland.LibDecor.GetFD(s_Data.Wayland.LibDecor.Context);
+        std::get<3u>(fds).fd = s_Data.Wayland.LibDecor.GetFD(s_Data.Wayland.LibDecor.Context);
 
     while(!event)
     {
@@ -2861,13 +2864,13 @@ void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(f64* const timeout)
             return;
         }
 
-        if(!PollPOSIX(fds.data(), fds.size(), timeout))
+        if(!PollPOSIX(fds, timeout))
         {
             s_Data.Wayland.WaylandClient.DisplayCancelRead(s_Data.Wayland.DisplayWL);
             return;
         }
 
-        if((std::get<0>(fds).revents & POLLIN) != 0)
+        if((std::get<0u>(fds).revents & POLLIN) != 0)
         {
             s_Data.Wayland.WaylandClient.DisplayReadEvents(s_Data.Wayland.DisplayWL);
             if(s_Data.Wayland.WaylandClient.DisplayDispatchPending(s_Data.Wayland.DisplayWL) > 0)
@@ -2876,13 +2879,13 @@ void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(f64* const timeout)
         else
             s_Data.Wayland.WaylandClient.DisplayCancelRead(s_Data.Wayland.DisplayWL);
 
-        if((std::get<1>(fds).revents & POLLIN) != 0)
+        if((std::get<1u>(fds).revents & POLLIN) != 0)
         {
-            u64 repeats = 0;
+            u64 repeats = 0u;
 
             if(read(s_Data.Wayland.KeyRepeatTimerFD, &repeats, sizeof(repeats)) == sizeof(repeats))
             {
-                for(u64 i = 0; i < repeats; ++i)
+                for(u64 i = 0u; i < repeats; ++i)
                 {
                     InputKey(*s_Data.Wayland.KeyboardFocus,
                              TranslateKey(s_Data.Wayland.KeyRepeatScancode),
@@ -2896,9 +2899,9 @@ void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(f64* const timeout)
             }
         }
 
-        if((std::get<2>(fds).revents & POLLIN) != 0)
+        if((std::get<2u>(fds).revents & POLLIN) != 0)
         {
-            u64 repeats = 0;
+            u64 repeats = 0u;
 
             if(read(s_Data.Wayland.CursorTimerFD, &repeats, sizeof(repeats)) == sizeof(repeats))
             {
@@ -2909,7 +2912,7 @@ void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(f64* const timeout)
             }
         }
 
-        if((std::get<3>(fds).revents & POLLIN) != 0)
+        if((std::get<3u>(fds).revents & POLLIN) != 0)
         {
             if(s_Data.Wayland.LibDecor.Dispatch(s_Data.Wayland.LibDecor.Context, 0) > 0)
                 event = true;
@@ -2929,7 +2932,7 @@ void TRAP::INTERNAL::WindowingAPI::IncrementCursorImageWayland(const InternalWin
     InternalCursor* const cursor = window.Cursor;
     if((cursor != nullptr) && (cursor->Wayland.CursorWL != nullptr))
     {
-        cursor->Wayland.CurrentImage++;
+        ++cursor->Wayland.CurrentImage;
         cursor->Wayland.CurrentImage %= cursor->Wayland.CursorWL->image_count;
         SetCursorImageWayland(window, cursor->Wayland);
     }
@@ -2939,24 +2942,11 @@ void TRAP::INTERNAL::WindowingAPI::IncrementCursorImageWayland(const InternalWin
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosWayland([[maybe_unused]] const InternalWindow& window,
-                                                               [[maybe_unused]] const i32 xPos,
-                                                               [[maybe_unused]] const i32 yPos)
-{
-    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
-
-    //A Wayland client can't set its position, so just warn
-
-    InputError(Error::Feature_Unavailable, "[Wayland] The platform doesn't support setting the window position");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindow& window,
                                                                    InternalMonitor* const monitor,
 														           [[maybe_unused]] const i32 xPos,
                                                                    [[maybe_unused]] const i32 yPos,
-                                                                   i32 width, i32 height,
+                                                                   const i32 width, const i32 height,
                                                                    [[maybe_unused]] const f64 refreshRate)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
@@ -3011,15 +3001,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessWayland(Int
         PlatformSetWindowSizeWayland(window, window.videoMode.Width, window.videoMode.Height); //Update fractional scaling
         AcquireMonitorWayland(window);
     }
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModesWayland(const InternalMonitor& monitor)
-{
-    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
-
-    return monitor.Modes;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3436,17 +3417,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShowWindowWayland(InternalWindow& win
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindowWayland([[maybe_unused]] const InternalWindow& window)
-{
-    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
-
-    InputError(Error::Feature_Unavailable, "[Wayland] The platform does not support setting the input focus");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowWayland(InternalWindow& window,
-			                                                   WindowConfig& WNDConfig)
+			                                                   const WindowConfig& WNDConfig)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
@@ -3683,12 +3655,12 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorWayland(InternalWindow& wind
 
             InternalCursor::wayland cursorWayland =
             {
-                defaultCursor,
-                defaultCursorHiDPI,
-                nullptr,
-                0, 0,
-                0, 0,
-                0
+                .CursorWL = defaultCursor,
+                .CursorHiDPI = defaultCursorHiDPI,
+                .Buffer = nullptr,
+                .Width = 0, .Height = 0,
+                .XHotspot = 0, .YHotspot = 0,
+                .CurrentImage = 0
             };
 
             SetCursorImageWayland(window, cursorWayland);
@@ -3712,40 +3684,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorModeWayland(InternalWindow& 
         PlatformSetCursorWayland(window, nullptr);
     else
         PlatformSetCursorWayland(window, window.Cursor);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPosWayland([[maybe_unused]] InternalWindow& window,
-                                                               [[maybe_unused]] const f64 xPos,
-                                                               [[maybe_unused]] const f64 yPos)
-{
-    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
-
-    InputError(Error::Feature_Unavailable, "[Wayland] The platform does not support setting the cursor position");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIconWayland([[maybe_unused]] InternalWindow& window,
-                                                                [[maybe_unused]] const Image* const image)
-{
-    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
-
-    InputError(Error::Feature_Unavailable, "[Wayland] The platform does not support setting the window icon, use a .desktop file instead");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPosWayland([[maybe_unused]] const InternalWindow& window,
-                                                               [[maybe_unused]] i32& xPos,
-                                                               [[maybe_unused]] i32& yPos)
-{
-    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
-
-    //A Wayland client is not aware of its position, so just warn and leave it as (0, 0)
-
-    InputError(Error::Feature_Unavailable, "[Wayland] The platform does not provide the window position");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3819,8 +3757,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecoratedWayland(InternalWin
         s_Data.Wayland.LibDecor.FrameSetVisibility(window.Wayland.LibDecor.Frame, enabled);
     else if(window.Wayland.XDG.Decoration != nullptr)
     {
-        u32 mode = 0;
-
+        u32 mode = 0u;
         if(enabled)
             mode = ZXDG_TOPLEVEL_DECORATION_V1_MODE_SERVER_SIDE;
         else
@@ -3839,26 +3776,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecoratedWayland(InternalWin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloatingWayland([[maybe_unused]] const InternalWindow& window,
-                                                                    [[maybe_unused]] const bool enabled)
-{
-    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
-
-    InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support making a window floating");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacityWayland([[maybe_unused]] const InternalWindow& window,
-                                                                   [[maybe_unused]] const f32 opacity)
-{
-    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
-
-    InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support setting the window opacity");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthroughWayland(InternalWindow& window,
                                                                             const bool enabled)
 {
@@ -3872,15 +3789,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthroughWayland(Inte
     }
     else
         wl_surface_set_input_region(window.Wayland.Surface, nullptr);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbarWayland([[maybe_unused]] InternalWindow& window)
-{
-    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
-
-    InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support hiding windows from the taskbar");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4059,12 +3967,16 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurfaceWayland(VkInst
         return VK_ERROR_EXTENSION_NOT_PRESENT;
     }
 
-    VkWaylandSurfaceCreateInfoKHR sci{};
-    sci.sType = VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR;
-    sci.display = s_Data.Wayland.DisplayWL;
-    sci.surface = window.Wayland.Surface;
+    const VkWaylandSurfaceCreateInfoKHR sci
+    {
+        .sType = VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR,
+        .pNext = nullptr,
+        .flags = 0,
+        .display = s_Data.Wayland.DisplayWL,
+        .surface = window.Wayland.Surface
+    };
 
-    VkResult err = vkCreateWaylandSurfaceKHR(instance, &sci, allocator, &surface);
+    const VkResult err = vkCreateWaylandSurfaceKHR(instance, &sci, allocator, &surface);
     if(err != 0)
         InputError(Error::Platform_Error, fmt::format("[Wayland] Failed to create Vulkan surface: {}", GetVulkanResultString(err)));
 
@@ -4260,16 +4172,6 @@ std::optional<std::string> TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutN
     }
 
     return s_Data.Wayland.WaylandXKB.KeyboardLayoutName;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDropWayland([[maybe_unused]] InternalWindow& window,
-                                                                 [[maybe_unused]] const bool value)
-{
-    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
-
-    InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support toggling drag and drop. Drag and drop is enabled by default.");
 }
 
 #endif /*TRAP_HEADLESS_MODE*/
