@@ -5268,3 +5268,7 @@ SITREP 10/10/2024|24w41a2
     - Utils Made GetCPUInfo() architecture independent ~<30 mins
     - Utils various small changes ~<30 mins
     - Utils Made some functions threadsafe ~<20 mins
+
+SITREP 10/12/2024|24w41b1
+    - Changed TRAP Engine version to 24w41b1(0.11.22)
+    - Utils Fixed infinite loop inside GetCPUInfo() function on Windows ~<5 mins

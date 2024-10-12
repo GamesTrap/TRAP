@@ -161,13 +161,12 @@ namespace
 		std::vector<u8> buffer(length);
 		if(GetLogicalProcessorInformationEx(RelationProcessorCore, reinterpret_cast<PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>(buffer.data()), &length))
 		{
-			auto* logicalProcInfo = reinterpret_cast<PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>(buffer.data());
-			for(DWORD i = 0u; i < buffer.size(); i += logicalProcInfo->Size)
+			u8* current = buffer.data();
+			for(; current < (buffer.data() + buffer.size()); current += reinterpret_cast<const SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX*>(current)->Size)
 			{
-				if(logicalProcInfo->Relationship == RelationProcessorCore)
+				const auto* const logicalProcInfo = reinterpret_cast<const SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX*>(current);
+				if(logicalProcInfo && logicalProcInfo->Relationship == RelationProcessorCore)
 					++cpu.Cores;
-
-				logicalProcInfo = reinterpret_cast<PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>(reinterpret_cast<u8*>(logicalProcInfo) + logicalProcInfo->Size);
 			}
 		}
 
