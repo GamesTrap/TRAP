@@ -9,19 +9,6 @@ public:
 	constexpr IPAddressTests();
 
 	void OnAttach() override;
-
-private:
-    void TestIPv4Construction();
-    void TestIPv6Construction();
-
-    void TestIPv4StaticFunctions();
-    void TestIPv6StaticFunctions();
-
-    void TestIPv4StaticConstants();
-    void TestIPv6StaticConstants();
-
-    void TestIPv4Operators();
-    void TestIPv6Operators();
 };
 
 //-------------------------------------------------------------------------------------------------------------------//

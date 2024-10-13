@@ -9,14 +9,6 @@ public:
 	constexpr HashTests();
 
 	void OnAttach() override;
-
-private:
-    void TestAdler32();
-    void TestCRC32();
-    void TestSHA2_256();
-    void TestSHA2_512();
-    void TestSHA3_256();
-    void TestSHA3_512();
 };
 
 //-------------------------------------------------------------------------------------------------------------------//
