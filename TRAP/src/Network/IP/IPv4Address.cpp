@@ -33,9 +33,9 @@
 #include "Utils/Memory.h"
 
 constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::None{};
-constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Any(0, 0, 0, 0);
-constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::LocalHost(127, 0, 0, 1);
-constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Broadcast(255, 255, 255, 255);
+constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Any(0u, 0u, 0u, 0u);
+constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::LocalHost(127u, 0u, 0u, 1u);
+constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Broadcast(255u, 255u, 255u, 255u);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -118,13 +118,21 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string& address)
 
 	//The trick here is more complicated, because the only way
 	//to get our public IPv4 address is to get it from a distant computer.
-	//Here we get the web page from http://www.sfml-dev.org/ip-provider.php
+	//Here we get the web page from http://trappedgames.de/ip-provider.php
 	//and parse the result to extract our IP address
 	//(not very hard: the web page contains only our IPv4 address).
 
-	HTTP server("www.sfml-dev.org");
-	const HTTP::Request request("/ip-provider.php", HTTP::Request::Method::GET);
-	const HTTP::Response page = server.SendRequest(request, timeout);
+	HTTP server{};
+	server.SetHost("api.trappedgames.de", 80u, IPVersion::IPv4);
+	HTTP::Request request("/ip-provider.php", HTTP::Request::Method::GET);
+	HTTP::Response page = server.SendRequest(request, timeout);
+	if(page.GetStatus() == HTTP::Response::Status::OK)
+		return IPv4Address(page.GetBody());
+
+	//Retry with a different server
+	server.SetHost("www.sfml-dev.org", 80u, IPVersion::IPv4);
+	request.SetURI("/ip-provider.php");
+	page = server.SendRequest(request, timeout);
 	if (page.GetStatus() == HTTP::Response::Status::OK)
 		return IPv4Address(page.GetBody());
 

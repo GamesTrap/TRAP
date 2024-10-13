@@ -9,13 +9,13 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr TRAP::Network::IPv6Address TRAP::Network::IPv6Address::None{};
-constexpr TRAP::Network::IPv6Address TRAP::Network::IPv6Address::Any(std::array<u8, 16>
+constexpr TRAP::Network::IPv6Address TRAP::Network::IPv6Address::Any(std::array<u8, 16u>
 	{
-		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+		0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u
 	});
-constexpr TRAP::Network::IPv6Address TRAP::Network::IPv6Address::LocalHost(std::array<u8, 16>
+constexpr TRAP::Network::IPv6Address TRAP::Network::IPv6Address::LocalHost(std::array<u8, 16u>
     {
-		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01
+		0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x01u
 	});
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -112,12 +112,24 @@ TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
-	//HTTP URL v6.ident.me
-	//GetBody
-	TRAP::Network::HTTP server("v6.ident.me");
-	const TRAP::Network::HTTP::Request request("", TRAP::Network::HTTP::Request::Method::GET);
-	const TRAP::Network::HTTP::Response page = server.SendRequest(request, timeout);
-	if(page.GetStatus() == TRAP::Network::HTTP::Response::Status::OK)
+	//The trick here is more complicated, because the only way
+	//to get our public IPv6 address is to get it from a distant computer.
+	//Here we get the web page from http://trappedgames.de/ip-provider.php
+	//and parse the result to extract our IP address
+	//(not very hard: the web page contains only our IPv6 address).
+
+	HTTP server{};
+	server.SetHost("api.trappedgames.de", 80u, IPVersion::IPv6);
+	HTTP::Request request("/ip-provider.php", TRAP::Network::HTTP::Request::Method::GET);
+	HTTP::Response page = server.SendRequest(request, timeout);
+	if(page.GetStatus() == HTTP::Response::Status::OK)
+		return IPv6Address(page.GetBody());
+
+	//Retry with a different server
+	server.SetHost("v6.ident.me", 80u, IPVersion::IPv6);
+	request = HTTP::Request("", TRAP::Network::HTTP::Request::Method::GET);
+	page = server.SendRequest(request, timeout);
+	if(page.GetStatus() == HTTP::Response::Status::OK)
 		return IPv6Address(page.GetBody());
 
 	//Something failed: return an invalid address
