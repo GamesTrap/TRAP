@@ -50,7 +50,7 @@ private:
 
 	//Viewport
 	TRAP::Math::Vec2 m_viewportSize{};
-	std::array<TRAP::Math::Vec2, 2> m_viewportBounds{};
+	std::array<TRAP::Math::Vec2, 2u> m_viewportBounds{};
 	bool m_viewportFocused = false;
 	bool m_viewportHovered = false;
 
@@ -64,7 +64,7 @@ private:
 	bool m_startedCameraMovement = false;
 
 	//Mouse picking
-	u32 m_leftMouseBtnRepeatCount = 0;
+	u32 m_leftMouseBtnRepeatCount = 0u;
 	bool m_entityChanged = false;
 	TRAP::Graphics::RendererAPI::BufferDesc m_mousePickBufferDesc{};
 	TRAP::Ref<TRAP::Graphics::Buffer> m_mousePickBuffer = nullptr;
@@ -78,7 +78,7 @@ private:
 	TRAP::Ref<TRAP::Scene> m_activeScene = nullptr;
 	TRAP::Ref<TRAP::Scene> m_editorScene = nullptr;
 
-	enum class SceneState
+	enum class SceneState : u8
 	{
 		Edit,
 		Play,

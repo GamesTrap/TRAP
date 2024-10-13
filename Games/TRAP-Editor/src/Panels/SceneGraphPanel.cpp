@@ -6,13 +6,13 @@
 
 namespace
 {
-	void DrawVec3Control(const std::string& label, //TODO can be replaced with std::string_view?!
+	void DrawVec3Control(const std::string& label,
 						 TRAP::Math::Vec3& values,
 						 const f32 resetValues = 0.0f,
 						 const f32 columnWidth = 100.0f)
 	{
 		ImGuiIO& io = ImGui::GetIO();
-		auto* const boldFont = io.Fonts->Fonts[0];
+		auto* const boldFont = io.Fonts->Fonts[0u];
 
 		ImGui::PushID(label.c_str());
 
@@ -24,7 +24,7 @@ namespace
 		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
-		const f32 lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+		const f32 lineHeight = GImGui->Font->FontSize + (GImGui->Style.FramePadding.y * 2.0f);
 		const ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.1f, 0.15f, 1.0f));
@@ -130,7 +130,7 @@ void TRAP::SceneGraphPanel::OnImGuiRender()
 
 void TRAP::SceneGraphPanel::DrawEntityNode(const Entity& entity)
 {
-	auto& tag = entity.GetComponent<TagComponent>().Tag;
+	const auto& tag = entity.GetComponent<TagComponent>().Tag;
 
 	const ImGuiTreeNodeFlags flags = ((m_selectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 	const bool opened = ImGui::TreeNodeEx(reinterpret_cast<void*>(static_cast<u64>(entity.GetUID())), flags, "%s", tag.c_str());
@@ -161,48 +161,49 @@ void TRAP::SceneGraphPanel::DrawEntityNode(const Entity& entity)
 
 template <typename T, typename UIFunction>
 requires TRAP::IsComponent<T> && std::is_invocable_r_v<void, UIFunction, T&>
-void DrawComponent(const std::string& name, TRAP::Entity& entity, UIFunction func) //TODO name can be replaced by std::string_view
+void DrawComponent(const std::string& name, TRAP::Entity& entity, UIFunction func)
 {
 	static constexpr ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowOverlap |
-		ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_FramePadding;
+		                                                ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Framed |
+														ImGuiTreeNodeFlags_FramePadding;
 
-	if (entity.HasComponent<T>())
+	if (!entity.HasComponent<T>())
+		return;
+
+	auto& component = entity.GetComponent<T>();
+	const ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
+
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4.0f, 4.0f });
+	const f32 lineHeight = GImGui->Font->FontSize + (GImGui->Style.FramePadding.y * 2.0f);
+	ImGui::Separator();
+	const bool open = ImGui::TreeNodeEx(reinterpret_cast<void*>(typeid(T).hash_code()), treeNodeFlags, "%s", name.c_str());
+	ImGui::PopStyleVar();
+	bool removeComponent = false;
+	if(!std::same_as<T, TRAP::TransformComponent>)
 	{
-		auto& component = entity.GetComponent<T>();
-		const ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
+		ImGui::SameLine(contentRegionAvailable.x - (lineHeight * 0.5f));
+		if (ImGui::Button(":", ImVec2{ lineHeight, lineHeight }))
+			ImGui::OpenPopup("ComponentSettings");
 
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4.0f, 4.0f });
-		const f32 lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
-		ImGui::Separator();
-		const bool open = ImGui::TreeNodeEx(reinterpret_cast<void*>(typeid(T).hash_code()), treeNodeFlags, "%s", name.c_str());
-		ImGui::PopStyleVar();
-		bool removeComponent = false;
-		if(!std::same_as<T, TRAP::TransformComponent>)
+		if (ImGui::BeginPopup("ComponentSettings"))
 		{
-			ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
-			if (ImGui::Button(":", ImVec2{ lineHeight, lineHeight }))
-				ImGui::OpenPopup("ComponentSettings");
+			if (ImGui::MenuItem("Remove Component"))
+				removeComponent = true;
 
-			if (ImGui::BeginPopup("ComponentSettings"))
-			{
-				if (ImGui::MenuItem("Remove Component"))
-					removeComponent = true;
-
-				ImGui::EndPopup();
-			}
-
+			ImGui::EndPopup();
 		}
 
-		if (open)
-		{
-			func(component);
-			ImGui::TreePop();
-		}
-		if(!std::same_as<T, TRAP::TransformComponent>)
-		{
-			if (removeComponent)
-				entity.RemoveComponent<T>();
-		}
+	}
+
+	if (open)
+	{
+		func(component);
+		ImGui::TreePop();
+	}
+	if(!std::same_as<T, TRAP::TransformComponent>)
+	{
+		if (removeComponent)
+			entity.RemoveComponent<T>();
 	}
 }
 
@@ -248,29 +249,29 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 
 	DrawComponent<TransformComponent>("Transform", entity, [](auto& component)
 	{
-			DrawVec3Control("Position", component.Position);
-			Math::Vec3 rotation = Math::Degrees(component.Rotation);
-			DrawVec3Control("Rotation", rotation);
-			component.Rotation = Math::Radians(rotation);
-			DrawVec3Control("Scale", component.Scale, 1.0f);
+		DrawVec3Control("Position", component.Position);
+		Math::Vec3 rotation = Math::Degrees(component.Rotation);
+		DrawVec3Control("Rotation", rotation);
+		component.Rotation = Math::Radians(rotation);
+		DrawVec3Control("Scale", component.Scale, 1.0f);
 	});
 
-	DrawComponent<CameraComponent>("Camera", entity, [&](auto& component)
+	DrawComponent<CameraComponent>("Camera", entity, [](auto& component)
 	{
 		auto& camera = component.Camera;
 
 		ImGui::Checkbox("Primary", &component.Primary);
 
-		static constexpr std::array<std::string_view, 2> projectionTypeStrings = { "Perspective", "Orthographic" };
-		const char* currentProjectionTypeString = projectionTypeStrings[std::to_underlying(camera.GetProjectionType())].data();
+		static const std::array<std::string, 2u> projectionTypeStrings{ "Perspective", "Orthographic" };
+		const char* currentProjectionTypeString = projectionTypeStrings[std::to_underlying(camera.GetProjectionType())].c_str();
 		if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
 		{
-			for (u32 i = 0; i < projectionTypeStrings.size(); i++)
+			for (u32 i = 0u; i < projectionTypeStrings.size(); ++i)
 			{
 				const bool isSelected = std::string_view(currentProjectionTypeString) == projectionTypeStrings[i];
-				if (ImGui::Selectable(projectionTypeStrings[i].data(), isSelected))
+				if (ImGui::Selectable(projectionTypeStrings[i].c_str(), isSelected))
 				{
-					currentProjectionTypeString = projectionTypeStrings[i].data();
+					currentProjectionTypeString = projectionTypeStrings[i].c_str();
 					camera.SetProjectionType(static_cast<SceneCamera::ProjectionType>(i));
 				}
 
@@ -312,28 +313,28 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 
 	DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
 	{
-		ImGui::ColorEdit4("Color", &std::get<0>(component.Color));
+		ImGui::ColorEdit4("Color", &std::get<0u>(component.Color));
 	});
 
 	DrawComponent<CircleRendererComponent>("Circle Renderer", entity, [](auto& component)
 	{
-		ImGui::ColorEdit4("Color", &std::get<0>(component.Color));
+		ImGui::ColorEdit4("Color", &std::get<0u>(component.Color));
 		ImGui::DragFloat("Thickness", &component.Thickness, 0.025f, 0.0f, 1.0f);
 		ImGui::DragFloat("Fade", &component.Fade, 0.00025f, 0.0f, 1.0f);
 	});
 
 	DrawComponent<Rigidbody2DComponent>("Rigidbody 2D", entity, [](auto& component)
 	{
-		static constexpr std::array<std::string_view, 3> bodyTypeStrings{"Static", "Dynamic", "Kinematic"};
-		const char* currentBodyTypeString = bodyTypeStrings[std::to_underlying(component.Type)].data();
+		static const std::array<std::string, 3u> bodyTypeStrings{"Static", "Dynamic", "Kinematic"};
+		const char* currentBodyTypeString = bodyTypeStrings[std::to_underlying(component.Type)].c_str();
 		if(ImGui::BeginCombo("Body Type", currentBodyTypeString))
 		{
-			for(u32 i = 0; i < bodyTypeStrings.size(); ++i)
+			for(u32 i = 0u; i < bodyTypeStrings.size(); ++i)
 			{
 				const bool isSelected = std::string_view(currentBodyTypeString) == bodyTypeStrings[i];
-				if(ImGui::Selectable(bodyTypeStrings[i].data(), isSelected))
+				if(ImGui::Selectable(bodyTypeStrings[i].c_str(), isSelected))
 				{
-					currentBodyTypeString = bodyTypeStrings[i].data();
+					currentBodyTypeString = bodyTypeStrings[i].c_str();
 					component.Type = static_cast<Rigidbody2DComponent::BodyType>(i);
 				}
 
@@ -349,8 +350,8 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 
 	DrawComponent<BoxCollider2DComponent>("Box Collider 2D", entity, [](auto& component)
 	{
-		ImGui::DragFloat2("Offset", &std::get<0>(component.Offset), 0.1f);
-		ImGui::DragFloat2("Size", &std::get<0>(component.Size), 0.1f);
+		ImGui::DragFloat2("Offset", &std::get<0u>(component.Offset), 0.1f);
+		ImGui::DragFloat2("Size", &std::get<0u>(component.Size), 0.1f);
 		ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
@@ -359,7 +360,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 
 	DrawComponent<CircleCollider2DComponent>("Circle Collider 2D", entity, [](auto& component)
 	{
-		ImGui::DragFloat2("Offset", &std::get<0>(component.Offset), 0.1f);
+		ImGui::DragFloat2("Offset", &std::get<0u>(component.Offset), 0.1f);
 		ImGui::DragFloat("Radius", &component.Radius, 0.1f);
 		ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);

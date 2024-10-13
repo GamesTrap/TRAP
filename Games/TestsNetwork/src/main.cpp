@@ -1,8 +1,8 @@
 #include <TRAP.h>
 
-#include "FTP/FTPTests.h" // IWYU pragma: keep
-#include "Socket/SocketTests.h" // IWYU pragma: keep
-#include "IPv6/IPv6Tests.h" // IWYU pragma: keep
+#include "FTP/FTPTests.h"
+#include "Socket/SocketTests.h"
+#include "IPv6/IPv6Tests.h"
 
 class TestsNetwork final : public TRAP::Application
 {
