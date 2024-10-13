@@ -2,7 +2,7 @@
 
 namespace
 {
-    constexpr std::array<f32, 5ull * 4> QuadVerticesIndexed
+    constexpr std::array<f32, 5ull * 4u> QuadVerticesIndexed
 	{
 		//XYZ UV
 		-1.0f, -1.0f, 0.0f,    0.0f, 1.0f,
@@ -11,38 +11,28 @@ namespace
 		-1.0f,  1.0f, 0.0f,    0.0f, 0.0f
 	};
 
-    constexpr std::array<u16, 6> QuadIndices
+    constexpr std::array<u16, 6u> QuadIndices
 	{
-		0, 1, 2, 2, 3, 0
+		0u, 1u, 2u, 2u, 3u, 0u
 	};
 
-    TRAP::Ref<TRAP::Graphics::RenderTarget> BuildRenderTarget(const u32 width, const u32 height,
-                                                              const TRAP::Graphics::SampleCount sampleCount,
-                                                              const std::string& name = "")
+    [[nodiscard]] TRAP::Ref<TRAP::Graphics::RenderTarget> BuildRenderTarget(const u32 width, const u32 height,
+                                                                            const TRAP::Graphics::SampleCount sampleCount,
+                                                                            const std::string& name)
     {
         TRAP::Graphics::RendererAPI::RenderTargetDesc desc{};
         desc.Width = width;
         desc.Height = height;
-        desc.Depth = 1;
-        desc.ArraySize = 1;
+        desc.Depth = 1u;
+        desc.ArraySize = 1u;
         desc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
-        desc.ClearValue = TRAP::Graphics::RendererAPI::Color{0.0, 0.0, 0.0, 1.0};
+        desc.ClearValue = TRAP::Graphics::RendererAPI::Color{.Red=0.0, .Green=0.0, .Blue=0.0, .Alpha=1.0};
         desc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
         desc.StartState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
         desc.SampleCount = sampleCount;
-        desc.SampleQuality = 0;
+        desc.SampleQuality = 0u;
         desc.Name = name;
         return TRAP::Graphics::RenderTarget::Create(desc);
-    }
-
-    //-------------------------------------------------------------------------------------------------------------------//
-
-    bool OnKeyPress(const TRAP::Events::KeyPressEvent& e)
-    {
-        if(e.GetKey() == TRAP::Input::Key::Escape)
-            TRAP::Application::Shutdown();
-
-        return false;
     }
 }
 
@@ -80,16 +70,17 @@ void FrameBufferTests::OnAttach()
     //Load Shader
     m_shader = TRAP::Graphics::ShaderManager::LoadFile("TextureTest", "./Assets/Shaders/testtextureseperate.shader", TRAP::Graphics::ShaderType::Graphics);
 
-    TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
-    samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
-	samplerDesc.AddressV = TRAP::Graphics::AddressMode::Repeat;
-	samplerDesc.AddressW = TRAP::Graphics::AddressMode::Repeat;
-	samplerDesc.MagFilter = TRAP::Graphics::FilterType::Linear;
-	samplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
-    samplerDesc.EnableAnisotropy = false;
-	samplerDesc.CompareFunc = TRAP::Graphics::CompareMode::Never;
-	samplerDesc.MipLodBias = 0.0f;
-	samplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;
+    static constexpr TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc
+    {
+        .MinFilter = TRAP::Graphics::FilterType::Linear,
+        .MagFilter = TRAP::Graphics::FilterType::Linear,
+        .MipMapMode = TRAP::Graphics::MipMapMode::Linear,
+        .AddressU = TRAP::Graphics::AddressMode::Repeat,
+        .AddressV = TRAP::Graphics::AddressMode::Repeat,
+        .AddressW = TRAP::Graphics::AddressMode::Repeat,
+        .EnableAnisotropy = false,
+        .CompareFunc = TRAP::Graphics::CompareMode::Never
+    };
     m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
     //Wait for all pending resources (Just in case)
@@ -98,10 +89,10 @@ void FrameBufferTests::OnAttach()
     TRAP::Graphics::AntiAliasing aaMethod = TRAP::Graphics::AntiAliasing::Off;
     TRAP::Graphics::SampleCount aaSamples = TRAP::Graphics::SampleCount::One;
     TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
-    m_MSAAEnabled = aaMethod == TRAP::Graphics::AntiAliasing::MSAA;
+    m_MSAAEnabled = (aaMethod == TRAP::Graphics::AntiAliasing::MSAA);
 
-    m_renderTarget = BuildRenderTarget(m_texture->GetWidth() / 2, m_texture->GetHeight() / 2, aaSamples, "Intermediate RenderTarget (FrameBufferTests)");
-    m_resolveTarget = BuildRenderTarget(m_texture->GetWidth() / 2, m_texture->GetHeight() / 2, TRAP::Graphics::SampleCount::One, "MSAA Resolve RenderTarget (FrameBufferTests)");
+    m_renderTarget = BuildRenderTarget(m_texture->GetWidth() / 2u, m_texture->GetHeight() / 2u, aaSamples, "Intermediate RenderTarget (FrameBufferTests)");
+    m_resolveTarget = BuildRenderTarget(m_texture->GetWidth() / 2u, m_texture->GetHeight() / 2u, TRAP::Graphics::SampleCount::One, "MSAA Resolve RenderTarget (FrameBufferTests)");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -112,10 +103,10 @@ void FrameBufferTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
     TRAP::Graphics::SampleCount aaSamples = TRAP::Graphics::SampleCount::One;
     TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
     if(m_MSAAEnabled != (aaMethod == TRAP::Graphics::AntiAliasing::MSAA))
-        m_renderTarget = BuildRenderTarget(m_texture->GetWidth() / 2, m_texture->GetHeight() / 2, aaSamples, "Intermediate RenderTarget (FrameBufferTests)");
-    m_MSAAEnabled = aaMethod == TRAP::Graphics::AntiAliasing::MSAA;
+        m_renderTarget = BuildRenderTarget(m_texture->GetWidth() / 2u, m_texture->GetHeight() / 2u, aaSamples, "Intermediate RenderTarget (FrameBufferTests)");
+    m_MSAAEnabled = (aaMethod == TRAP::Graphics::AntiAliasing::MSAA);
 
-    m_shader->UseSampler(0, 1, *m_textureSampler);
+    m_shader->UseSampler(0u, 1u, *m_textureSampler);
 
     //Stop RenderPass (necessary for transition)
     TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
@@ -135,13 +126,13 @@ void FrameBufferTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 
     //Bind render target/framebuffer for draw
     TRAP::Graphics::RenderCommand::BindRenderTarget(m_renderTarget.get());
-    TRAP::Graphics::RenderCommand::SetViewport(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
-    TRAP::Graphics::RenderCommand::SetScissor(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
+    TRAP::Graphics::RenderCommand::SetViewport(0u, 0u, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
+    TRAP::Graphics::RenderCommand::SetScissor(0u, 0u, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
 
     //Bind geometry and shader
     m_vertexBuffer->Use();
     m_indexBuffer->Use();
-    m_shader->UseTexture(1, 0, *m_texture);
+    m_shader->UseTexture(1u, 0u, *m_texture);
     m_shader->Use();
 
     //Render Quad
@@ -168,11 +159,11 @@ void FrameBufferTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
     if (m_titleTimer.Elapsed() >= 0.025f)
     {
         m_titleTimer.Reset();
-        constinit static usize frameTimeIndex = 0;
-        if (frameTimeIndex < m_frameTimeHistory.size() - 1)
+        constinit static usize frameTimeIndex = 0u;
+        if (frameTimeIndex < m_frameTimeHistory.size() - 1u)
         {
             m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
-            frameTimeIndex++;
+            ++frameTimeIndex;
         }
         else
         {
@@ -196,13 +187,13 @@ void FrameBufferTests::OnImGuiRender()
     ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
     ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
     ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
-    ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()), 0, nullptr, 0,
-                        33, ImVec2(200, 50));
+    ImGui::PlotLines("##frametimeHistory", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()),
+                     0, nullptr, 0.0f, 33.0f, ImVec2(200.0f, 50.0f));
     ImGui::End();
 
     ImGui::Begin("COLOR_B8G8R8A8_UNORM_Framebuffer", nullptr, ImGuiWindowFlags_AlwaysAutoResize |
-                                                                ImGuiWindowFlags_NoCollapse |
-                                                                ImGuiWindowFlags_NoResize);
+                                                              ImGuiWindowFlags_NoCollapse |
+                                                              ImGuiWindowFlags_NoResize);
     if(m_MSAAEnabled)
     {
         ImGui::Image(m_resolveTarget->GetTexture(), ImVec2(NumericCast<f32>(m_resolveTarget->GetWidth()),
@@ -219,8 +210,10 @@ void FrameBufferTests::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void FrameBufferTests::OnEvent(TRAP::Events::Event& event)
+bool FrameBufferTests::OnKeyPress(const TRAP::Events::KeyPressEvent& e)
 {
-    TRAP::Events::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(OnKeyPress);
+    if(e.GetKey() == TRAP::Input::Key::Escape)
+        TRAP::Application::Shutdown();
+
+    return false;
 }

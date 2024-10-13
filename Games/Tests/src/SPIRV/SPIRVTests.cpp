@@ -2,7 +2,7 @@
 
 namespace
 {
-    constexpr std::array<f32, 5ull * 4> QuadVerticesIndexed
+    constexpr std::array<f32, 5ull * 4u> QuadVerticesIndexed
 	{
 		//XYZ UV
 		-0.5f, -0.5f, 0.0f,    0.0f, 1.0f,
@@ -11,9 +11,9 @@ namespace
 		-0.5f,  0.5f, 0.0f,    0.0f, 0.0f
 	};
 
-    constexpr std::array<u16, 6> QuadIndices
+    constexpr std::array<u16, 6u> QuadIndices
 	{
-		0, 1, 2, 2, 3, 0
+		0u, 1u, 2u, 2u, 3u, 0u
 	};
 }
 
@@ -49,8 +49,8 @@ void SPIRVTests::OnAttach()
     //Load Shader
 	const std::vector<TRAP::Graphics::Shader::Macro> macros
 	{
-		{"HALF", "0.5f"},
-		{"COLOR", "vec3(1.0f, 0.0f, 0.0f)"}
+		{.Definition="HALF", .Value="0.5f"},
+		{.Definition="COLOR", .Value="vec3(1.0f, 0.0f, 0.0f)"}
 	};
 
     // TRAP::Graphics::ShaderManager::LoadFile("Test", "./Assets/Shaders/testspirv.shader", TRAP::Graphics::ShaderType::Graphics, macros);
@@ -77,11 +77,11 @@ void SPIRVTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTim
     if (m_titleTimer.Elapsed() >= 0.025f)
     {
         m_titleTimer.Reset();
-        constinit static usize frameTimeIndex = 0;
-        if (frameTimeIndex < m_frameTimeHistory.size() - 1)
+        constinit static usize frameTimeIndex = 0u;
+        if (frameTimeIndex < m_frameTimeHistory.size() - 1u)
         {
             m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
-            frameTimeIndex++;
+            ++frameTimeIndex;
         }
         else
         {
@@ -96,7 +96,7 @@ void SPIRVTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTim
 void SPIRVTests::OnImGuiRender()
 {
 	ImGui::Begin("SPIRV", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	                                            ImGuiWindowFlags_AlwaysAutoResize);
+	                               ImGuiWindowFlags_AlwaysAutoResize);
 
 	ImGui::Text("Press ESC to close");
     ImGui::Separator();
@@ -107,17 +107,9 @@ void SPIRVTests::OnImGuiRender()
     ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
     ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
     ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
-    ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()), 0, nullptr, 0,
-                     33, ImVec2(200, 50));
+    ImGui::PlotLines("##frametimeHistory", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()),
+                     0, nullptr, 0.0f, 33.0f, ImVec2(200.0f, 50.0f));
 	ImGui::End();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void SPIRVTests::OnEvent(TRAP::Events::Event& event)
-{
-	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&SPIRVTests::OnKeyPress, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

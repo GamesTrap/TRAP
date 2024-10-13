@@ -6,38 +6,38 @@ namespace
 	{
 		constexpr f32 c = 64.0f / 2.0f;
 
-		const f32 i = (0.25f * TRAP::Math::Sin(2.0f * TRAP::Math::PI<f32>() * t) + 0.75f);
+		const f32 i = ((0.25f * TRAP::Math::Sin(2.0f * TRAP::Math::PI<f32>() * t)) + 0.75f);
 		const f32 k = 64.0f * 0.046875f * i;
 
-		const f32 dist = TRAP::Math::Sqrt((NumericCast<f32>(x) - c) * (NumericCast<f32>(x) - c) +
-										  (NumericCast<f32>(y) - c) * (NumericCast<f32>(y) - c));
+		const f32 dist = TRAP::Math::Sqrt(((NumericCast<f32>(x) - c) * (NumericCast<f32>(x) - c)) +
+										  ((NumericCast<f32>(y) - c) * (NumericCast<f32>(y) - c)));
 
-		const f32 sAlpha = 1.0f - dist / c;
+		const f32 sAlpha = 1.0f - (dist / c);
 		const f32 xAlpha = NumericCast<f32>(x) == c ? c : k / TRAP::Math::Abs(NumericCast<f32>(x) - c);
 		const f32 yAlpha = NumericCast<f32>(y) == c ? c : k / TRAP::Math::Abs(NumericCast<f32>(y) - c);
 
-		return TRAP::Math::Max(0.0f, TRAP::Math::Min(1.0f, i * sAlpha * 0.2f + sAlpha * xAlpha * yAlpha));
+		return TRAP::Math::Max(0.0f, TRAP::Math::Min(1.0f, (i * sAlpha * 0.2f) + (sAlpha * xAlpha * yAlpha)));
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	[[nodiscard]] TRAP::Scope<TRAP::Image> CreateCursorFrame(const f32 t)
 	{
-		u32 i = 0;
-		std::vector<u8> buffer(64ull * 64ull * 4ull, 0);
+		u32 i = 0u;
+		std::vector<u8> buffer(64ull * 64ull * 4ull);
 
-		for(u32 y = 0; y < 64; y++)
+		for(u32 y = 0u; y < 64u; ++y)
 		{
-			for(u32 x = 0; x < 64; x++)
+			for(u32 x = 0u; x < 64u; ++x)
 			{
-				buffer[i++] = 255;
-				buffer[i++] = 255;
-				buffer[i++] = 255;
-				buffer[i++] = NumericCast<u8>(255 * Star(x, y, t));
+				buffer[i++] = 255u;
+				buffer[i++] = 255u;
+				buffer[i++] = 255u;
+				buffer[i++] = NumericCast<u8>(255u * Star(x, y, t));
 			}
 		}
 
-		return TRAP::Image::LoadFromMemory(64, 64, TRAP::Image::ColorFormat::RGBA, buffer);
+		return TRAP::Image::LoadFromMemory(64u, 64u, TRAP::Image::ColorFormat::RGBA, buffer);
 	}
 }
 
@@ -66,8 +66,8 @@ void CursorTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Cursor");
 
-	m_starCursors.reserve(60);
-	for(u32 i = 0; i < 60; i++)
+	m_starCursors.reserve(60u);
+	for(u32 i = 0u; i < 60u; ++i)
 		m_starCursors.push_back(CreateCursorFrame(NumericCast<f32>(i) / 60.0f));
 }
 
@@ -77,7 +77,7 @@ void CursorTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTi
 {
 	if (m_animateCursor)
 	{
-		const u32 i = NumericCast<u32>(TRAP::Application::GetTime() * 30.0f) % 60;
+		const u32 i = NumericCast<u32>(TRAP::Application::GetTime() * 30.0f) % 60u;
 		if (m_currentFrame != m_starCursors[i].get())
 		{
 			TRAP::Application::GetWindow()->SetCursorIcon(m_starCursors[i].get(), 32u, 32u);
@@ -86,16 +86,6 @@ void CursorTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTi
 	}
 	else
 		m_currentFrame = nullptr;
-
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void CursorTests::OnEvent(TRAP::Events::Event& event)
-{
-	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&CursorTests::OnKeyPress, this));
-	dispatcher.Dispatch<TRAP::Events::MouseMoveEvent>(std::bind_front(&CursorTests::OnMouseMove, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -196,7 +186,7 @@ bool CursorTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 
 	case TRAP::Input::Key::Up:
 	{
-		TRAP::Input::SetMousePosition(0, 0);
+		TRAP::Input::SetMousePosition(0.0f, 0.0f);
 		m_cursorX = TRAP::Input::GetMouseX();
 		m_cursorY = TRAP::Input::GetMouseY();
 
@@ -241,7 +231,9 @@ bool CursorTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 		i32 index = std::to_underlying(event.GetKey()) - std::to_underlying(TRAP::Input::Key::One);
 		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Shift) ||
 			TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Shift))
+		{
 			index += 9;
+		}
 
 		if (std::cmp_less_equal(index, std::to_underlying(TRAP::Window::CursorType::NotAllowed)))
 			TRAP::Application::GetWindow()->SetCursorType(static_cast<TRAP::Window::CursorType>(index));
@@ -252,19 +244,6 @@ bool CursorTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 	default:
 		break;
 	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool CursorTests::OnMouseMove(const TRAP::Events::MouseMoveEvent& event)
-{
-	TP_INFO("[Cursor] Position: ", event.GetX(), " ", event.GetY(), " (", event.GetX() - m_cursorX, " ",
-	        event.GetY() - m_cursorY, ")");
-
-	m_cursorX = event.GetX();
-	m_cursorY = event.GetY();
 
 	return true;
 }

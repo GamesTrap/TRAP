@@ -2,7 +2,7 @@
 
 namespace
 {
-    constexpr std::array<f32, 5ull * 4> QuadVerticesIndexed
+    constexpr std::array<f32, 5ull * 4u> QuadVerticesIndexed
 	{
 		//XYZ UV
 		-0.5f, -0.5f, 0.0f,    0.0f, 1.0f,
@@ -11,9 +11,9 @@ namespace
 		-0.5f,  0.5f, 0.0f,    0.0f, 0.0f
 	};
 
-    constexpr std::array<u16, 6> QuadIndices
+    constexpr std::array<u16, 6u> QuadIndices
 	{
-		0, 1, 2, 2, 3, 0
+		0u, 1u, 2u, 2u, 3u, 0u
 	};
 }
 
@@ -50,16 +50,17 @@ void VulkanTextureTests::OnAttach()
     //Load Shader
     m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKTextureTest", "./Assets/Shaders/testtextureseperatelod.shader", TRAP::Graphics::ShaderType::Graphics);
 
-    TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
-    samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
-	samplerDesc.AddressV = TRAP::Graphics::AddressMode::Repeat;
-	samplerDesc.AddressW = TRAP::Graphics::AddressMode::Repeat;
-	samplerDesc.MagFilter = TRAP::Graphics::FilterType::Linear;
-	samplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
-	samplerDesc.EnableAnisotropy = false;
-	samplerDesc.CompareFunc = TRAP::Graphics::CompareMode::Never;
-	samplerDesc.MipLodBias = 0.0f;
-	samplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;
+    static constexpr TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc
+    {
+        .MinFilter = TRAP::Graphics::FilterType::Linear,
+        .MagFilter = TRAP::Graphics::FilterType::Linear,
+        .MipMapMode = TRAP::Graphics::MipMapMode::Linear,
+        .AddressU = TRAP::Graphics::AddressMode::Repeat,
+        .AddressV = TRAP::Graphics::AddressMode::Repeat,
+        .AddressW = TRAP::Graphics::AddressMode::Repeat,
+        .EnableAnisotropy = false,
+        .CompareFunc = TRAP::Graphics::CompareMode::Never
+    };
     m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
     //Wait for all pending resources (Just in case)
@@ -70,8 +71,8 @@ void VulkanTextureTests::OnAttach()
 
 void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
-    m_shader->UseTexture(0, 0, *m_texture);
-    m_shader->UseSampler(0, 1, *m_textureSampler);
+    m_shader->UseTexture(0u, 0u, *m_texture);
+    m_shader->UseSampler(0u, 1u, *m_textureSampler);
 
     m_vertexBuffer->Use();
     m_indexBuffer->Use();
@@ -82,21 +83,21 @@ void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
         time += deltaTime.GetMilliseconds();
         if(time > 1000.0f)
         {
-            m_currentMipLevel = (m_currentMipLevel + 1) % m_maxMipLevel;
+            m_currentMipLevel = (m_currentMipLevel + 1u) % m_maxMipLevel;
             time = 0.0f;
         }
     }
     else
-        m_currentMipLevel = 0;
+        m_currentMipLevel = 0u;
 
     if(m_updateTexture)
     {
         m_updateTexture = false;
-        m_currentTexture = (m_currentTexture + 1) % 2;
+        m_currentTexture = (m_currentTexture + 1u) % 2u;
 
-        if(m_currentTexture == 0)
+        if(m_currentTexture == 0u)
             m_texture->Update(m_vulkanLogo->GetPixelData());
-        else if(m_currentTexture == 1)
+        else if(m_currentTexture == 1u)
             m_texture->Update(m_vulkanLogoTransparent->GetPixelData());
     }
 
@@ -121,14 +122,6 @@ void VulkanTextureTests::OnImGuiRender()
     ImGui::Text("Cycle Mip Levels (F1): %s", m_cycleMips ? "Enabled" : "Disabled");
     ImGui::Text("Update Texture (F2)");
     ImGui::End();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void VulkanTextureTests::OnEvent(TRAP::Events::Event& event)
-{
-    TRAP::Events::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&VulkanTextureTests::OnKeyPress, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

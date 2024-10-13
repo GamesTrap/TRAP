@@ -2,7 +2,7 @@
 
 namespace
 {
-	constexpr std::array<f32, 18> TriangleVertices
+	constexpr std::array<f32, 18u> TriangleVertices
 	{
 		//XYZ RGB
 		 0.0f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
@@ -10,12 +10,12 @@ namespace
 		 0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,
 	};
 
-	constexpr std::array<u16, 3> TriangleIndices
+	constexpr std::array<u16, 3u> TriangleIndices
 	{
-		0, 1, 2
+		0u, 1u, 2u
 	};
 
-	constexpr std::array<f32, 36> QuadVertices
+	constexpr std::array<f32, 36u> QuadVertices
 	{
 		//XYZ RGB
 		-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
@@ -26,7 +26,7 @@ namespace
 		-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f
 	};
 
-	constexpr std::array<f32, 32> QuadVerticesIndexed
+	constexpr std::array<f32, 32u> QuadVerticesIndexed
 	{
 		//XYZ RGB UV
 		-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f,    0.0f, 1.0f,
@@ -35,9 +35,9 @@ namespace
 		-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f,    0.0f, 0.0f
 	};
 
-	constexpr std::array<u16, 6> QuadIndices
+	constexpr std::array<u16, 6u> QuadIndices
 	{
-		0, 1, 2, 2, 3, 0
+		0u, 1u, 2u, 2u, 3u, 0u
 	};
 }
 
@@ -82,7 +82,7 @@ void RendererAPITests::OnAttach()
 
 	TRAP::Graphics::ShaderManager::LoadFile("Test", "./Assets/Shaders/test.shader", TRAP::Graphics::ShaderType::Graphics);
 	TRAP::Graphics::ShaderManager::LoadFile("TestPushConstant", "./Assets/Shaders/testpushconstant.shader", TRAP::Graphics::ShaderType::Graphics);
-	const std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
+	const std::vector<TRAP::Graphics::Shader::Macro> macros{{.Definition="TEST", .Value="0.5f"}};
 	TRAP::Graphics::ShaderManager::LoadFile("TestUBO", "./Assets/Shaders/testubo.shader", TRAP::Graphics::ShaderType::Graphics, macros);
 
 	//Wait for all pending resources (just in case)
@@ -134,7 +134,7 @@ void RendererAPITests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();
 
-	if(m_pushConstantOrUBO == 1)
+	if(m_pushConstantOrUBO == 1u)
 	{
 		if(m_colorTimer.Elapsed() > 2.5f)
 		{
@@ -148,7 +148,7 @@ void RendererAPITests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 
 		TRAP::Graphics::RenderCommand::SetPushConstants("ColorRootConstant", m_colorData);
 	}
-	else if(m_pushConstantOrUBO == 2)
+	else if(m_pushConstantOrUBO == 2u)
 	{
 		if(m_vertexTimer.Elapsed() > 2.0f)
 		{
@@ -177,8 +177,8 @@ void RendererAPITests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 
 		const auto& shader = TRAP::Graphics::ShaderManager::GetGraphics("TestUBO");
 		//Use UBOs
-		shader->UseUBO(1, 0, *m_sizeMultiplicatorUniformBuffer);
-		shader->UseUBO(1, 1, *m_colorUniformBuffer);
+		shader->UseUBO(1u, 0u, *m_sizeMultiplicatorUniformBuffer);
+		shader->UseUBO(1u, 1u, *m_colorUniformBuffer);
 
 		shader->Use();
 	}
@@ -186,9 +186,9 @@ void RendererAPITests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 		TRAP::Graphics::ShaderManager::GetGraphics("Test")->Use();
 
 	if(!m_indexed)
-		TRAP::Graphics::RenderCommand::Draw(m_quad ? 6 : 3);
+		TRAP::Graphics::RenderCommand::Draw(m_quad ? 6u : 3u);
 	else
-		TRAP::Graphics::RenderCommand::DrawIndexed(m_quad ? 6 : 3);
+		TRAP::Graphics::RenderCommand::DrawIndexed(m_quad ? 6u : 3u);
 
 	//Simple performance metrics
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
@@ -204,27 +204,19 @@ void RendererAPITests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 void RendererAPITests::OnImGuiRender()
 {
 	ImGui::Begin("RendererAPI Test", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	                                     ImGuiWindowFlags_AlwaysAutoResize);
+	                                          ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
 	ImGui::Text("WireFrame (F1): %s", m_wireFrame ? "Enabled" : "Disabled");
 	ImGui::Text("Geometry (F2): %s", m_quad ? "Quad" : "Triangle");
 	ImGui::Text("Indexed Drawing (F3): %s", m_indexed ? "Enabled" : "Disabled");
 	std::string shaderData = "Uniform Buffer";
-	if(m_pushConstantOrUBO == 0)
+	if(m_pushConstantOrUBO == 0u)
 		shaderData = "Disabled";
-	else if(m_pushConstantOrUBO == 1)
+	else if(m_pushConstantOrUBO == 1u)
 		shaderData = "Push Constants";
 	ImGui::Text("Shader Data (F4): %s", shaderData.c_str());
 	ImGui::Text("VSync (V): %s", m_vsync ? "Enabled" : "Disabled");
 	ImGui::End();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void RendererAPITests::OnEvent(TRAP::Events::Event& event)
-{
-	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&RendererAPITests::OnKeyPress, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -248,7 +240,7 @@ bool RendererAPITests::OnKeyPress(const TRAP::Events::KeyPressEvent& e)
 	}
 	if(e.GetKey() == TRAP::Input::Key::F4)
 	{
-		m_pushConstantOrUBO = NumericCast<u8>((m_pushConstantOrUBO + 1) % 3);
+		m_pushConstantOrUBO = NumericCast<u8>((m_pushConstantOrUBO + 1u) % 3u);
 		TP_TRACE("[RendererAPITests] Push Constant / Uniform Buffer: ", m_pushConstantOrUBO != 0u ? "On" : "Off");
 	}
 	if(e.GetKey() == TRAP::Input::Key::V)

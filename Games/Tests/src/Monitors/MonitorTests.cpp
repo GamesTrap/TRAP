@@ -2,27 +2,9 @@
 
 namespace
 {
-	bool OnMonitorConnect(const TRAP::Events::MonitorConnectEvent& event)
-	{
-		TP_TRACE(event);
-
-		return true;
-	}
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
-	bool OnMonitorDisconnect(const TRAP::Events::MonitorDisconnectEvent& event)
-	{
-		TP_TRACE(event);
-
-		return true;
-	}
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
 	[[nodiscard]] constexpr u32 Euclid(const u32 a, const u32 b)
 	{
-		return b != 0 ? Euclid(b, a % b) : a;
+		return b != 0u ? Euclid(b, a % b) : a;
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -85,13 +67,4 @@ void MonitorTests::OnImGuiRender()
 		}
 		ImGui::End();
 	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void MonitorTests::OnEvent(TRAP::Events::Event& event)
-{
-	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::MonitorConnectEvent>(OnMonitorConnect);
-	dispatcher.Dispatch<TRAP::Events::MonitorDisconnectEvent>(OnMonitorDisconnect);
 }

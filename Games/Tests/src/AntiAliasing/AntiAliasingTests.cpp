@@ -4,21 +4,99 @@
 
 namespace
 {
-	struct SampleData
+	[[nodiscard]] TRAP::Graphics::AntiAliasing DrawAntiAliasingMethodComboBox(TRAP::Graphics::AntiAliasing currentAAMethod)
 	{
-		const char* Name;
-		TRAP::Graphics::SampleCount Samples;
-	};
-
-	constexpr std::array<SampleData, 4> Samples
-	{
+		static constexpr std::array<TRAP::Graphics::AntiAliasing, 2u> aaMethods
 		{
-			{ "x2", TRAP::Graphics::SampleCount::Two },
-			{ "x4", TRAP::Graphics::SampleCount::Four },
-			{ "x8", TRAP::Graphics::SampleCount::Eight },
-			{ "x16", TRAP::Graphics::SampleCount::Sixteen }
+			TRAP::Graphics::AntiAliasing::Off,
+			TRAP::Graphics::AntiAliasing::MSAA
+		};
+
+		TRAP::Graphics::AntiAliasing newAAMethod = currentAAMethod;
+		if(ImGui::BeginCombo("Anti aliasing", fmt::format("{}", currentAAMethod).c_str()))
+		{
+			for(const auto aaMethod : aaMethods)
+			{
+				const bool isSelected = aaMethod == currentAAMethod;
+
+				if(ImGui::Selectable(fmt::format("{}", aaMethod).c_str(), isSelected))
+					newAAMethod = aaMethod;
+
+				if(isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
 		}
-	};
+
+		return newAAMethod;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] constexpr std::string SampleCountToStringForUI(const TRAP::Graphics::SampleCount sample)
+	{
+		if(sample == TRAP::Graphics::SampleCount::One)
+			return "Off";
+
+		return fmt::format("{}x", sample);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] TRAP::Graphics::SampleCount DrawAntiAliasingSampleComboBox(const TRAP::Graphics::AntiAliasing currentAAMethod, const TRAP::Graphics::SampleCount currentSample)
+	{
+		static constexpr std::array<TRAP::Graphics::SampleCount, 4u> aaSamples
+		{
+			TRAP::Graphics::SampleCount::Two,
+			TRAP::Graphics::SampleCount::Four,
+			TRAP::Graphics::SampleCount::Eight,
+			TRAP::Graphics::SampleCount::Sixteen
+		};
+
+		if(currentAAMethod == TRAP::Graphics::AntiAliasing::Off)
+			return TRAP::Graphics::SampleCount::Two;
+
+		const TRAP::Graphics::SampleCount maxMSAASamples = TRAP::Graphics::RendererAPI::GPUSettings.MaxMSAASampleCount;
+
+		TRAP::Graphics::SampleCount newAASample = currentSample;
+		if(ImGui::BeginCombo("Quality", SampleCountToStringForUI(currentSample).c_str()))
+		{
+			for(const auto aaSample : aaSamples)
+			{
+				const bool isSelected = aaSample == currentSample;
+
+				const bool isAASampleSupported = aaSample <= maxMSAASamples;
+				if(ImGui::Selectable(SampleCountToStringForUI(aaSample).c_str(), isSelected,
+									 isAASampleSupported ? ImGuiSelectableFlags_None : ImGuiSelectableFlags_Disabled))
+				{
+					newAASample = aaSample;
+				}
+
+				if(isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+		}
+
+		return newAASample;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void DrawAntiAliasingComboBox()
+	{
+		TRAP::Graphics::AntiAliasing currentAntiAliasing = TRAP::Graphics::AntiAliasing::Off;
+		TRAP::Graphics::SampleCount currentAntiAliasingSamples = TRAP::Graphics::SampleCount::One;
+		TRAP::Graphics::RenderCommand::GetAntiAliasing(currentAntiAliasing, currentAntiAliasingSamples);
+
+		const auto newAAMethod = DrawAntiAliasingMethodComboBox(currentAntiAliasing);
+		const auto newSample = DrawAntiAliasingSampleComboBox(currentAntiAliasing, currentAntiAliasingSamples);
+
+		if(newAAMethod != currentAntiAliasing || newSample != currentAntiAliasingSamples)
+			TRAP::Graphics::RenderCommand::SetAntiAliasing(newAAMethod, newSample);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -33,11 +111,6 @@ AntiAliasingTests::AntiAliasingTests()
 void AntiAliasingTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("AntiAliasing");
-
-	TRAP::Graphics::RenderCommand::GetAntiAliasing(m_antiAliasing, m_sampleCount);
-
-	for(u32 i = std::to_underlying(TRAP::Graphics::AntiAliasing::Off); i < (std::to_underlying(TRAP::Graphics::AntiAliasing::MSAA) + 1); ++i)
-		m_antiAliasingMethods.emplace_back(static_cast<TRAP::Graphics::AntiAliasing>(i));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -70,71 +143,10 @@ void AntiAliasingTests::OnImGuiRender()
 	ImGui::Begin("AntiAliasing", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                      ImGuiWindowFlags_AlwaysAutoResize);
 
-	bool updateAA = false;
-	if(ImGui::BeginCombo("Anti aliasing", fmt::format("{}", m_antiAliasing).c_str()))
-	{
-		for(usize i = 0; i < m_antiAliasingMethods.size(); ++i)
-		{
-			const bool isSelected = std::cmp_equal(std::to_underlying(m_antiAliasing), i);
-			if(ImGui::Selectable(fmt::format("{}", m_antiAliasingMethods[i]).c_str(), isSelected))
-			{
-				updateAA = true;
-				m_antiAliasing = m_antiAliasingMethods[i];
-			}
-			if(isSelected)
-				ImGui::SetItemDefaultFocus();
-		}
-
-		ImGui::EndCombo();
-	}
-
-	if(m_antiAliasing != TRAP::Graphics::AntiAliasing::Off)
-	{
-		u32 currSample = 0;
-		for(u32 i = 0; i < Samples.size(); ++i)
-		{
-			if(Samples[i].Samples == m_sampleCount)
-			{
-				currSample = i;
-				break;
-			}
-		}
-
-		if(ImGui::BeginCombo("Quality", Samples[currSample].Name))
-		{
-			for(auto Sample : Samples)
-			{
-				const bool isSelected = (m_sampleCount == Sample.Samples);
-				ImGuiSelectableFlags flags = ImGuiSelectableFlags_None;
-				if(m_antiAliasing == TRAP::Graphics::AntiAliasing::MSAA && Sample.Samples > TRAP::Graphics::RendererAPI::GPUSettings.MaxMSAASampleCount)
-					flags = ImGuiSelectableFlags_Disabled;
-				if(ImGui::Selectable(Sample.Name, isSelected, flags))
-				{
-					updateAA = true;
-					m_sampleCount = Sample.Samples;
-				}
-				if(isSelected)
-					ImGui::SetItemDefaultFocus();
-			}
-
-			ImGui::EndCombo();
-		}
-	}
-
-	if(updateAA)
-		TRAP::Graphics::RenderCommand::SetAntiAliasing(m_antiAliasing, m_sampleCount);
+	DrawAntiAliasingComboBox();
 
 	ImGui::Text("Press ESC to close");
 	ImGui::End();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void AntiAliasingTests::OnEvent(TRAP::Events::Event& event)
-{
-	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&AntiAliasingTests::OnKeyPress, this));
-	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(std::bind_front(&AntiAliasingTests::OnFrameBufferResize, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -146,21 +158,10 @@ bool AntiAliasingTests::OnKeyPress(const TRAP::Events::KeyPressEvent& e)
 	if (e.GetKey() == TRAP::Input::Key::P && TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Control))
 	{
         //Screenshot
-	    TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();
+	    const TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();
 		if(testImage)
 	    	TRAP::INTERNAL::PPMImage::Save(*testImage, "antialiasing.ppm");
 	}
-
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool AntiAliasingTests::OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& e)
-{
-	m_camera.SetProjection(-e.GetAspectRatio(),
-		                   e.GetAspectRatio(),
-		                   -1.0f, 1.0f, -1.0f, 1.0f);
 
 	return false;
 }

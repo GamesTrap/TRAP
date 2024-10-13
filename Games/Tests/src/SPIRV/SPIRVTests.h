@@ -12,7 +12,7 @@ public:
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnImGuiRender() override;
 
-	void OnEvent(TRAP::Events::Event& event) override;
+	constexpr void OnEvent(TRAP::Events::Event& event) override;
 
 private:
 	bool OnKeyPress(const TRAP::Events::KeyPressEvent& e);
@@ -20,9 +20,17 @@ private:
     TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer = nullptr;
     TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer = nullptr;
 
-    std::array<f32, 50> m_frameTimeHistory{};
+    std::array<f32, 50u> m_frameTimeHistory{};
 	TRAP::Utils::Timer m_fpsTimer{};
 	TRAP::Utils::Timer m_titleTimer{};
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void SPIRVTests::OnEvent(TRAP::Events::Event& event)
+{
+	const TRAP::Events::EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&SPIRVTests::OnKeyPress, this));
+}
 
 #endif /*GAMESTRAP_SPIRVTESTS_H*/

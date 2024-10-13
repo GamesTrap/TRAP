@@ -12,7 +12,7 @@ public:
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnImGuiRender() override;
 
-	void OnEvent(TRAP::Events::Event& event) override;
+	constexpr void OnEvent(TRAP::Events::Event& event) override;
 
 private:
 	bool OnWindowClose(const TRAP::Events::WindowCloseEvent& e);
@@ -42,5 +42,14 @@ private:
 	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_sizeMultiplicatorUniformBuffer = nullptr;
 	bool m_useUBO = false;
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void MultiWindowTests::OnEvent(TRAP::Events::Event& event)
+{
+	const TRAP::Events::EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<TRAP::Events::WindowCloseEvent>(std::bind_front(&MultiWindowTests::OnWindowClose, this));
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&MultiWindowTests::OnKeyPress, this));
+}
 
 #endif /*GAMESTRAP_MULTIWINDOWTESTS_H*/

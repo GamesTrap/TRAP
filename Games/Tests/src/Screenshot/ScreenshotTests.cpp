@@ -31,8 +31,8 @@ void ScreenshotTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	TRAP::Graphics::Renderer2D::ResetStats();
 	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
 	{
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.5f, -0.5f, 0.0f}, {}, {0.8f, 0.8f, 1.0f} }, { 1.0f, 0.0f, 0.0f, 1.0f });
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, 0.5f, 0.0f}, {}, {0.5f, 0.75f, 1.0f} }, { 0.0f, 1.0f, 0.0f, 1.0f });
+		TRAP::Graphics::Renderer2D::DrawQuad({ .Position={-0.5f, -0.5f, 0.0f}, .Rotation={}, .Scale={0.8f, 0.8f, 1.0f} }, { 1.0f, 0.0f, 0.0f, 1.0f });
+		TRAP::Graphics::Renderer2D::DrawQuad({ .Position={0.5f, 0.5f, 0.0f}, .Rotation={}, .Scale={0.5f, 0.75f, 1.0f} }, { 0.0f, 1.0f, 0.0f, 1.0f });
 	}
 	TRAP::Graphics::Renderer2D::EndScene();
 
@@ -41,7 +41,7 @@ void ScreenshotTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	time += deltaTime.GetSeconds();
 	if(time >= 3.0f && !done)
 	{
-		TRAP::Scope<TRAP::Image> renderedImg = TRAP::Graphics::RendererAPI::GetRenderer()->CaptureScreenshot(*TRAP::Application::GetWindow());
+		const TRAP::Scope<TRAP::Image> renderedImg = TRAP::Graphics::RendererAPI::GetRenderer()->CaptureScreenshot(*TRAP::Application::GetWindow());
 		if(renderedImg)
 			TRAP::INTERNAL::PPMImage::Save(*renderedImg, "output.ppm");
 		done = true;

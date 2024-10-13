@@ -10,7 +10,10 @@ public:
 
 	void OnImGuiRender() override;
 	void OnAttach() override;
-	void OnEvent(TRAP::Events::Event& event) override;
+	constexpr void OnEvent(TRAP::Events::Event& event) override;
+
+private:
+	static bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 };
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -18,6 +21,14 @@ public:
 constexpr TitleTests::TitleTests()
 	: Layer("Title")
 {
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TitleTests::OnEvent(TRAP::Events::Event& event)
+{
+	const TRAP::Events::EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(OnKeyPress);
 }
 
 #endif /*GAMESTRAP_TITLETESTS_H*/

@@ -12,7 +12,7 @@ public:
     void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
     void OnImGuiRender() override;
 
-    void OnEvent(TRAP::Events::Event& event) override;
+    constexpr void OnEvent(TRAP::Events::Event& event) override;
 
 private:
     bool OnKeyPress(const TRAP::Events::KeyPressEvent& e);
@@ -31,9 +31,17 @@ private:
 
     bool m_reset = false;
 
-    std::array<f32, 50> m_frameTimeHistory{};
+    std::array<f32, 50u> m_frameTimeHistory{};
 	TRAP::Utils::Timer m_fpsTimer{};
 	TRAP::Utils::Timer m_titleTimer{};
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void ComputeTests::OnEvent(TRAP::Events::Event& event)
+{
+    const TRAP::Events::EventDispatcher dispatcher(event);
+    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&ComputeTests::OnKeyPress, this));
+}
 
 #endif /*GAMESTRAP_COMPUTETESTS_H*/

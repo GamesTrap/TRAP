@@ -31,7 +31,6 @@ private:
 	TRAP::Ref<TRAP::Graphics::RenderTarget> m_shadingRateTexture = nullptr;
 
     TRAP::Graphics::ShadingRate m_shadingRate = TRAP::Graphics::ShadingRate::NotSupported;
-    std::vector<RateData> m_shadingRates{};
     f32 m_currRenderScale = 1.0f;
 
 	bool m_supportsPerDrawVRS = (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerDraw) != TRAP::Graphics::RendererAPI::ShadingRateCaps::NotSupported;

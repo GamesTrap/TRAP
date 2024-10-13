@@ -33,16 +33,28 @@ void VRSTests::OnImGuiRender()
 
     if(m_supportsPerDrawVRS && m_perDrawActive)
     {
-        constinit static usize selectedPerDrawShadingRate = 0;
-        if(ImGui::BeginCombo("##Shading rate", m_shadingRates[selectedPerDrawShadingRate].Name.c_str()))
+        static constexpr std::array<TRAP::Graphics::ShadingRate, 8u> shadingRates
         {
-            for(usize i = 0; i < m_shadingRates.size(); ++i)
+            TRAP::Graphics::ShadingRate::Full,
+            TRAP::Graphics::ShadingRate::Half,
+            TRAP::Graphics::ShadingRate::Quarter,
+            TRAP::Graphics::ShadingRate::Eighth,
+            TRAP::Graphics::ShadingRate::OneXTwo,
+            TRAP::Graphics::ShadingRate::TwoXOne,
+            TRAP::Graphics::ShadingRate::TwoXFour,
+            TRAP::Graphics::ShadingRate::FourXTwo
+        };
+
+        if(ImGui::BeginCombo("##Shading rate", fmt::format("{}", m_shadingRate).c_str()))
+        {
+            for(const auto shadingRate : shadingRates)
             {
-                bool isSelected = (i == selectedPerDrawShadingRate);
-                if(ImGui::Selectable(m_shadingRates[i].Name.c_str(), isSelected, m_shadingRates[i].Supported ? ImGuiSelectableFlags_None : ImGuiSelectableFlags_Disabled))
+                bool isSelected = (shadingRate == m_shadingRate);
+
+                const bool isShadingRateSupported = (shadingRate & TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates) != TRAP::Graphics::ShadingRate::NotSupported;
+                if(ImGui::Selectable(fmt::format("{}", shadingRate).c_str(), isSelected, isShadingRateSupported ? ImGuiSelectableFlags_None : ImGuiSelectableFlags_Disabled))
                 {
-                    selectedPerDrawShadingRate = i;
-                    m_shadingRate = m_shadingRates[selectedPerDrawShadingRate].ShadingRate;
+                    m_shadingRate = shadingRate;
                 }
             }
 
@@ -73,15 +85,6 @@ void VRSTests::OnAttach()
         m_shadingRateTexture = CreateShadingRateTexture(texRes.x(), texRes.y());
     }
 
-    m_shadingRates.push_back({TRAP::Graphics::ShadingRate::Full, "1x1", (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Full) != TRAP::Graphics::ShadingRate::NotSupported});
-    m_shadingRates.push_back({TRAP::Graphics::ShadingRate::OneXTwo, "1x2", (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::OneXTwo) != TRAP::Graphics::ShadingRate::NotSupported});
-    m_shadingRates.push_back({TRAP::Graphics::ShadingRate::TwoXOne, "2x1", (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::TwoXOne) != TRAP::Graphics::ShadingRate::NotSupported});
-    m_shadingRates.push_back({TRAP::Graphics::ShadingRate::Half, "2x2", (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Half) != TRAP::Graphics::ShadingRate::NotSupported});
-    m_shadingRates.push_back({TRAP::Graphics::ShadingRate::TwoXFour, "2x4", (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::TwoXFour) != TRAP::Graphics::ShadingRate::NotSupported});
-    m_shadingRates.push_back({TRAP::Graphics::ShadingRate::FourXTwo, "4x2", (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::FourXTwo) != TRAP::Graphics::ShadingRate::NotSupported});
-    m_shadingRates.push_back({TRAP::Graphics::ShadingRate::Quarter, "4x4", (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Quarter) != TRAP::Graphics::ShadingRate::NotSupported});
-    m_shadingRates.push_back({TRAP::Graphics::ShadingRate::Eighth, "8x8", (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Eighth) != TRAP::Graphics::ShadingRate::NotSupported});
-
     if((TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerDraw) != TRAP::Graphics::RendererAPI::ShadingRateCaps::NotSupported)
         m_shadingRate = TRAP::Graphics::ShadingRate::Full;
 
@@ -96,10 +99,10 @@ void VRSTests::OnAttach()
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
 	TRAP::Graphics::RenderCommand::SetDepthTesting(true);
-		TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha,
-														TRAP::Graphics::BlendConstant::One,
-														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha,
-														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
+    TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha,
+                                                    TRAP::Graphics::BlendConstant::One,
+                                                    TRAP::Graphics::BlendConstant::OneMinusSrcAlpha,
+                                                    TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -131,7 +134,7 @@ void VRSTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 
     TRAP::Graphics::Renderer2D::ResetStats();
 	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
-    TRAP::Graphics::Renderer2D::DrawQuad({ {}, {0.0f, 0.0f, TRAP::Application::GetTime() * -50.0f }, {2.0f, 2.0f, 1.0f} },
+    TRAP::Graphics::Renderer2D::DrawQuad({ .Position={}, .Rotation={0.0f, 0.0f, TRAP::Application::GetTime() * -50.0f }, .Scale={2.0f, 2.0f, 1.0f} },
                                          { 0.2f, 0.8f, 0.3f, 1.0f }, TRAP::Graphics::TextureManager::Get2D("TRAP"));
 	TRAP::Graphics::Renderer2D::EndScene();
 
@@ -139,7 +142,7 @@ void VRSTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
     {
         //Fullscreen pass
         TRAP::Graphics::ShaderManager::GetGraphics("ShadingRateVisualizer")->Use();
-        TRAP::Graphics::RenderCommand::Draw(3);
+        TRAP::Graphics::RenderCommand::Draw(3u);
     }
 }
 
@@ -149,7 +152,7 @@ void VRSTests::OnEvent(TRAP::Events::Event& event)
 {
 	m_cameraController.OnEvent(event);
 
-	TRAP::Events::EventDispatcher dispatcher(event);
+	const TRAP::Events::EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&VRSTests::OnKeyPress, this));
 	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(std::bind_front(&VRSTests::OnFrameBufferResize, this));
 }
@@ -196,9 +199,9 @@ TRAP::Ref<TRAP::Graphics::RenderTarget> VRSTests::CreateShadingRateTexture(const
 	rTDesc.Format = TRAP::Graphics::API::ImageFormat::R8_UINT;
 	rTDesc.StartState = TRAP::Graphics::ResourceState::ShadingRateSource;
 	rTDesc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
-    rTDesc.Depth = 1;
-    rTDesc.ArraySize = 1;
-    rTDesc.MipLevels = 1;
+    rTDesc.Depth = 1u;
+    rTDesc.ArraySize = 1u;
+    rTDesc.MipLevels = 1u;
     rTDesc.SampleCount = TRAP::Graphics::SampleCount::One;
 	rTDesc.Name = "Shading Rate RenderTarget (VRSTests)";
 
@@ -232,30 +235,29 @@ TRAP::Ref<TRAP::Graphics::RenderTarget> VRSTests::CreateShadingRateTexture(const
 	if((TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Full) != TRAP::Graphics::ShadingRate::NotSupported)
 		supportedShadingRates.push_back({TRAP::Graphics::ShadingRate::Full, 0, 0});
 
-
     //Fill texture with lowest supported shading rate
-	std::vector<u8> pixels(NumericCast<u64>(rTDesc.Width) * rTDesc.Height, supportedShadingRates[0].V | supportedShadingRates[0].H);
+	std::vector<u8> pixels(NumericCast<u64>(rTDesc.Width) * rTDesc.Height, supportedShadingRates[0u].V | supportedShadingRates[0u].H);
 
     //Create a circular pattern from the available list of fragment shadring rates with decreasing sampling rates outwards (max. range, pattern)
     //See https://github.com/KhronosGroup/Vulkan-Samples/blob/master/samples/extensions/fragment_shading_rate/fragment_shading_rate.cpp
     std::map<f32, u8> patternLookup{};
     const f32 range = 25.0f / NumericCast<f32>(supportedShadingRates.size());
     f32 currentRange = 8.0f;
-    for(usize i = supportedShadingRates.size() - 1; i > 0; --i)
+    for(usize i = supportedShadingRates.size() - 1u; i > 0u; --i)
     {
         patternLookup[currentRange] = supportedShadingRates[i].V | supportedShadingRates[i].H;
         currentRange += range;
     }
 
     u8* pixelData = pixels.data();
-    for(u32 y = 0; y < rTDesc.Height; ++y)
+    for(u32 y = 0u; y < rTDesc.Height; ++y)
     {
-        for(u32 x = 0; x < rTDesc.Width; ++x)
+        for(u32 x = 0u; x < rTDesc.Width; ++x)
         {
             const f32 deltaX = (NumericCast<f32>(rTDesc.Width) / 2.0f - NumericCast<f32>(x)) / NumericCast<f32>(rTDesc.Width) * 100.0f;
             const f32 deltaY = (NumericCast<f32>(rTDesc.Height) / 2.0f - NumericCast<f32>(y)) / NumericCast<f32>(rTDesc.Height) * 100.0f;
-            const f32 distance = TRAP::Math::Sqrt(deltaX * deltaX + deltaY * deltaY);
-            for(auto pattern : patternLookup)
+            const f32 distance = TRAP::Math::Sqrt((deltaX * deltaX) + (deltaY * deltaY));
+            for(const auto& pattern : patternLookup)
             {
                 if(distance < pattern.first)
                 {

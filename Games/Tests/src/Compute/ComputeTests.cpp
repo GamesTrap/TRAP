@@ -1,8 +1,52 @@
 #include "ComputeTests.h"
 
+enum class ComputeShader : u8
+{
+    Off,
+    Sharpen,
+    Emboss,
+    EdgeDetection
+};
+
+template<>
+struct fmt::formatter<ComputeShader>
+{
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const ComputeShader computeShader,
+                                                fmt::format_context& ctx)
+    {
+        std::string result{};
+        switch(computeShader)
+        {
+        case ComputeShader::Off:
+            result = "Off";
+            break;
+        case ComputeShader::Sharpen:
+            result = "Sharpen";
+            break;
+        case ComputeShader::Emboss:
+            result = "Emboss";
+            break;
+        case ComputeShader::EdgeDetection:
+            result = "Edge detection";
+            break;
+        }
+
+        return fmt::format_to(ctx.out(), "{}", result);
+    }
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
 namespace
 {
-    constexpr std::array<f32, 5ull * 4> QuadVerticesIndexed
+    constexpr std::array<f32, 5ull * 4u> QuadVerticesIndexed
 	{
 		//XYZ UV
 		-0.5f, -0.5f, 0.0f,    0.0f, 1.0f,
@@ -11,10 +55,48 @@ namespace
 		-0.5f,  0.5f, 0.0f,    0.0f, 0.0f
 	};
 
-    constexpr std::array<u16, 6> QuadIndices
+    constexpr std::array<u16, 6u> QuadIndices
 	{
-		0, 1, 2, 2, 3, 0
+		0u, 1u, 2u, 2u, 3u, 0u
 	};
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] bool DrawComputeShaderComboBox(ComputeShader& outSelectedComputeShader)
+	{
+        static constexpr std::array<ComputeShader, 4u> shaders
+        {
+            ComputeShader::Off,
+            ComputeShader::Sharpen,
+            ComputeShader::Emboss,
+            ComputeShader::EdgeDetection
+        };
+
+        static ComputeShader currentShader = ComputeShader::Off;
+
+        bool hasChanged = false;
+		if(ImGui::BeginCombo("Compute shader", fmt::format("{}", currentShader).c_str()))
+		{
+			for(const auto computeShader : shaders)
+			{
+				const bool isSelected = currentShader == computeShader;
+
+				if(ImGui::Selectable(fmt::format("{}", computeShader).c_str(), isSelected))
+                {
+                    hasChanged = currentShader != computeShader;
+                    currentShader = computeShader;
+                    outSelectedComputeShader = currentShader;
+                }
+
+				if(isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+		}
+
+        return hasChanged;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -65,14 +147,16 @@ void ComputeTests::OnAttach()
     TRAP::Graphics::ShaderManager::LoadFile("ComputeEmboss", "./Assets/Shaders/emboss.compute.shader", TRAP::Graphics::ShaderType::Compute);
     TRAP::Graphics::ShaderManager::LoadFile("ComputeEdgeDetect", "./Assets/Shaders/edgedetect.compute.shader", TRAP::Graphics::ShaderType::Compute);
 
-    TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
-    samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
-	samplerDesc.AddressV = TRAP::Graphics::AddressMode::Repeat;
-	samplerDesc.AddressW = TRAP::Graphics::AddressMode::Repeat;
-	samplerDesc.MagFilter = TRAP::Graphics::FilterType::Linear;
-	samplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
-	samplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;
-    samplerDesc.EnableAnisotropy = false;
+    static constexpr TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc
+    {
+        .MinFilter = TRAP::Graphics::FilterType::Linear,
+        .MagFilter = TRAP::Graphics::FilterType::Linear,
+        .MipMapMode = TRAP::Graphics::MipMapMode::Linear,
+        .AddressU = TRAP::Graphics::AddressMode::Repeat,
+        .AddressV = TRAP::Graphics::AddressMode::Repeat,
+        .AddressW = TRAP::Graphics::AddressMode::Repeat,
+        .EnableAnisotropy = false
+    };
     m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
     //Wait for all pending resources (Just in case)
@@ -83,7 +167,7 @@ void ComputeTests::OnAttach()
 
 void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
-    TRAP::Graphics::ShaderManager::GetGraphics("Texture")->UseSampler(0, 1, *m_textureSampler);
+    TRAP::Graphics::ShaderManager::GetGraphics("Texture")->UseSampler(0u, 1u, *m_textureSampler);
 
     //-------------------------------------------------------------------------------------------------------------------//
     //Async compute Stuff------------------------------------------------------------------------------------------------//
@@ -114,8 +198,8 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
 
         //ALWAYS Bind descriptors (textures, buffers, etc) before binding the shader (pipeline)!
         //else you will get a black texture (learned this the hard way, thx NVIDIA driver :C)
-        shader->UseTexture(1, 0, *m_colTex);
-        shader->UseTexture(1, 1, *m_compTex);
+        shader->UseTexture(1u, 0u, *m_colTex);
+        shader->UseTexture(1u, 1u, *m_compTex);
         shader->Use();
 
         //Set push constants
@@ -124,7 +208,7 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
                                                         TRAP::Graphics::QueueType::Compute);
 
         //Dispatch work
-        TRAP::Graphics::RenderCommand::Dispatch({m_compTex->GetWidth(), m_compTex->GetHeight(), 1});
+        TRAP::Graphics::RenderCommand::Dispatch({m_compTex->GetWidth(), m_compTex->GetHeight(), 1u});
 
         //Transition textures (to use as sampled images)
         barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
@@ -145,9 +229,9 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
     //Use shader
     const auto texShader = TRAP::Graphics::ShaderManager::GetGraphics("Texture");
     if(m_disabled)
-        texShader->UseTexture(1, 0, *m_colTex);
+        texShader->UseTexture(1u, 0u, *m_colTex);
     else
-        texShader->UseTexture(1, 0, *m_compTex);
+        texShader->UseTexture(1u, 0u, *m_compTex);
     texShader->Use();
 
     //Render Quad
@@ -157,11 +241,11 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
     if (m_titleTimer.Elapsed() >= 0.025f)
     {
         m_titleTimer.Reset();
-        constinit static usize frameTimeIndex = 0;
-        if (frameTimeIndex < m_frameTimeHistory.size() - 1)
+        constinit static usize frameTimeIndex = 0u;
+        if (frameTimeIndex < m_frameTimeHistory.size() - 1u)
         {
             m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
-            frameTimeIndex++;
+            ++frameTimeIndex;
         }
         else
         {
@@ -185,15 +269,12 @@ void ComputeTests::OnImGuiRender()
     ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
     ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
     ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
-    ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()), 0, nullptr, 0,
-                     33, ImVec2(200, 50));
+    ImGui::PlotLines("##frametimeHistory", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()),
+                     0, nullptr, 0.0f, 33.0f, ImVec2(200.0f, 50.0f));
     ImGui::Separator();
-    static constexpr std::array<std::string_view, 4> shaders{"Disabled", "Sharpen", "Emboss", "Edge Detection"};
-    static constexpr std::array<const char*, 4> shadersC{std::get<0>(shaders).data(), std::get<1>(shaders).data(), std::get<2>(shaders).data(), std::get<3>(shaders).data()};
-    constinit static i32 currentItem = 0;
-    i32 oldItem = currentItem;
-    ImGui::Combo("##Compute shader", &currentItem, shadersC.data(), shadersC.size());
-    if(currentItem != oldItem)
+
+    ComputeShader selectedComputeShader = ComputeShader::Off;
+    if(DrawComputeShaderComboBox(selectedComputeShader))
     {
         m_reset = true;
 
@@ -202,24 +283,23 @@ void ComputeTests::OnImGuiRender()
         m_emboss = false;
         m_edgedetect = false;
 
-        if(currentItem == 0)
+        switch(selectedComputeShader)
+        {
+        case ComputeShader::Off:
             m_disabled = true;
-        else if(currentItem == 1)
+            break;
+        case ComputeShader::Sharpen:
             m_sharpen = true;
-        else if(currentItem == 2)
+            break;
+        case ComputeShader::Emboss:
             m_emboss = true;
-        else if(currentItem == 3)
+            break;
+        case ComputeShader::EdgeDetection:
             m_edgedetect = true;
+            break;
+        }
     }
     ImGui::End();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void ComputeTests::OnEvent(TRAP::Events::Event& event)
-{
-    TRAP::Events::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&ComputeTests::OnKeyPress, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

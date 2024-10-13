@@ -68,7 +68,7 @@ void RendererAPIInfo::OnImGuiRender()
     ImGui::Text("        2x1: %s", vrs2x1 ? "Supported" : "Not Supported");
     ImGui::Text("        2x4: %s", vrs2x4 ? "Supported" : "Not Supported");
     ImGui::Text("        4x2: %s", vrs4x2 ? "Supported" : "Not Supported");
-    if(TRAP::Graphics::RendererAPI::GetRenderer()->GetAllGPUs().size() > 1)
+    if(TRAP::Graphics::RendererAPI::GetRenderer()->GetAllGPUs().size() > 1u)
     {
         ImGui::Separator();
         ImGui::Text("Other supported GPUs:");
@@ -94,7 +94,7 @@ void RendererAPIInfo::OnImGuiRender()
         const std::vector<std::string> devExts = vkDev->GetUsedPhysicalDeviceExtensions();
 
         ImGui::Begin("Vulkan Info", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse |
-	                                   ImGuiWindowFlags_AlwaysAutoResize);
+	                                         ImGuiWindowFlags_AlwaysAutoResize);
         ImGui::Text("Used Instance Layers:");
         for(const std::string& str : instLayers)
         {

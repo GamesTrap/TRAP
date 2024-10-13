@@ -10,7 +10,7 @@ RenderScaleTests::RenderScaleTests()
 void RenderScaleTests::OnImGuiRender()
 {
 	ImGui::Begin("Render Scaling", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	                                                     ImGuiWindowFlags_AlwaysAutoResize);
+	                                        ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
     ImGui::Separator();
 
@@ -40,10 +40,10 @@ void RenderScaleTests::OnAttach()
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
 	TRAP::Graphics::RenderCommand::SetDepthTesting(true);
-		TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha,
-														TRAP::Graphics::BlendConstant::One,
-														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha,
-														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
+	TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha,
+													TRAP::Graphics::BlendConstant::One,
+													TRAP::Graphics::BlendConstant::OneMinusSrcAlpha,
+													TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -58,7 +58,7 @@ void RenderScaleTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 
     TRAP::Graphics::Renderer2D::ResetStats();
 	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
-    TRAP::Graphics::Renderer2D::DrawQuad({ {}, {0.0f, 0.0f, TRAP::Application::GetTime() * -50.0f }, {2.0f, 2.0f, 1.0f} },
+    TRAP::Graphics::Renderer2D::DrawQuad({ .Position={}, .Rotation={0.0f, 0.0f, TRAP::Application::GetTime() * -50.0f }, .Scale={2.0f, 2.0f, 1.0f} },
                                          { 0.2f, 0.8f, 0.3f, 1.0f }, TRAP::Graphics::TextureManager::Get2D("TRAP"));
 	TRAP::Graphics::Renderer2D::EndScene();
 }
@@ -69,9 +69,8 @@ void RenderScaleTests::OnEvent(TRAP::Events::Event& event)
 {
 	m_cameraController.OnEvent(event);
 
-	TRAP::Events::EventDispatcher dispatcher(event);
+	const TRAP::Events::EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&RenderScaleTests::OnKeyPress, this));
-	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(std::bind_front(&RenderScaleTests::OnFrameBufferResize, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -82,11 +81,4 @@ bool RenderScaleTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
         TRAP::Application::Shutdown();
 
 	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool RenderScaleTests::OnFrameBufferResize([[maybe_unused]] const TRAP::Events::FrameBufferResizeEvent& event)
-{
-    return false;
 }

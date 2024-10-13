@@ -12,7 +12,7 @@ public:
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnImGuiRender() override;
 
-	void OnEvent(TRAP::Events::Event& event) override;
+	constexpr void OnEvent(TRAP::Events::Event& event) override;
 
 private:
 	bool OnKeyPress(const TRAP::Events::KeyPressEvent& e);
@@ -40,5 +40,13 @@ private:
 
 	TRAP::Ref<TRAP::Graphics::Shader> m_shader = nullptr;
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void IcoSphereTests::OnEvent(TRAP::Events::Event& event)
+{
+	const TRAP::Events::EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&IcoSphereTests::OnKeyPress, this));
+}
 
 #endif /*GAMESTRAP_ICOSPHERETESTS_H*/

@@ -128,7 +128,7 @@ void Sandbox2D::OnEvent(TRAP::Events::Event& event)
 {
 	m_cameraController.OnEvent(event);
 
-	TRAP::Events::EventDispatcher dispatcher(event);
+	const TRAP::Events::EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&Sandbox2D::OnKeyPress, this));
 }
 

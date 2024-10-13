@@ -2,7 +2,7 @@
 
 namespace
 {
-	constexpr std::array<f32, 12ull * 6> IcoSphereVerticesIndexed
+	constexpr std::array<f32, 12ull * 6u> IcoSphereVerticesIndexed
 	{
 		//XYZ RGB
 		-1.0f,                                     (1.0f + TRAP::Math::Sqrt(5.0f)) / 2.0f,    0.0f,                                        1.0f, 0.0f, 0.0f,
@@ -21,31 +21,31 @@ namespace
 		-((1.0f + TRAP::Math::Sqrt(5.0f)) / 2.0f), 0.0f,                                      1.0f,                                        0.0f, 0.0f, 1.0f
 	};
 
-	constexpr std::array<u16, 20ull * 3> IcoSphereIndices
+	constexpr std::array<u16, 20ull * 3u> IcoSphereIndices
 	{
-		0, 11, 5,
-		0, 5, 1,
-		0, 1, 7,
-		0, 7, 10,
-		0, 10, 11,
+		0u, 11u, 5u,
+		0u, 5u, 1u,
+		0u, 1u, 7u,
+		0u, 7u, 10u,
+		0u, 10u, 11u,
 
-		1, 5, 9,
-		5, 11, 4,
-		11, 10, 2,
-		10, 7, 6,
-		7, 1, 8,
+		1u, 5u, 9u,
+		5u, 11u, 4u,
+		11u, 10u, 2u,
+		10u, 7u, 6u,
+		7u, 1u, 8u,
 
-		3, 9, 4,
-		3, 4, 2,
-		3, 2, 6,
-		3, 6, 8,
-		3, 8, 9,
+		3u, 9u, 4u,
+		3u, 4u, 2u,
+		3u, 2u, 6u,
+		3u, 6u, 8u,
+		3u, 8u, 9u,
 
-		4, 9, 5,
-		2, 4, 11,
-		6, 2, 10,
-		8, 6, 7,
-		9, 8, 1
+		4u, 9u, 5u,
+		2u, 4u, 11u,
+		6u, 2u, 10u,
+		8u, 6u, 7u,
+		9u, 8u, 1u
 	};
 }
 
@@ -116,14 +116,16 @@ void IcoSphereTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delt
 
 	//Camera UBO
 	{
-		CameraUBOData camera{};
-		camera.Projection = m_camera.GetProjectionMatrix();
-		camera.View = TRAP::Math::Inverse(m_cameraTransform.GetTransform());
-		camera.Model = TRAP::Math::Rotate(TRAP::Math::Radians(m_rotationSpeed * TRAP::Application::GetTime()),
-		                                  TRAP::Math::Vec3(1.0f, 1.0f, 1.0f));
+		const CameraUBOData camera
+		{
+			.Projection = m_camera.GetProjectionMatrix(),
+			.View = TRAP::Math::Inverse(m_cameraTransform.GetTransform()),
+			.Model = TRAP::Math::Rotate(TRAP::Math::Radians(m_rotationSpeed * TRAP::Application::GetTime()),
+		                                  TRAP::Math::Vec3(1.0f, 1.0f, 1.0f))
+		};
 
 		m_cameraUBO->SetData(&camera, sizeof(CameraUBOData));
-		m_shader->UseUBO(1, 0, *m_cameraUBO);
+		m_shader->UseUBO(1u, 0u, *m_cameraUBO);
 	}
 
 	m_vertexBuffer->Use();
@@ -154,18 +156,10 @@ void IcoSphereTests::OnImGuiRender()
 	ImGui::Text("VSync (V): %s", m_vsync ? "Enabled" : "Disabled");
 	if(ImGui::SliderFloat("Camera FoV", &fov, 45.0f, 100.0f))
         m_camera.SetPerspectiveVerticalFOV(TRAP::Math::Radians(fov));
-	if(ImGui::SliderFloat3("Camera Pos", &std::get<0>(pos), -10.0f, 10.0f))
+	if(ImGui::SliderFloat3("Camera Pos", &std::get<0u>(pos), -10.0f, 10.0f))
 		m_cameraTransform.Position = pos;
 	ImGui::SliderFloat("Rotation Speed", &m_rotationSpeed, 0.0f, 500.0f);
 	ImGui::End();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void IcoSphereTests::OnEvent(TRAP::Events::Event& event)
-{
-	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&IcoSphereTests::OnKeyPress, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

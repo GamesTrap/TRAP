@@ -1,41 +1,5 @@
 #include "FileSystemTests.h"
 
-namespace
-{
-	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event)
-	{
-		switch(event.GetKey())
-		{
-		case TRAP::Input::Key::Escape:
-			TRAP::Application::Shutdown();
-			break;
-
-		case TRAP::Input::Key::O:
-		{
-			const auto currentFolder = TRAP::FileSystem::GetCurrentWorkingFolderPath();
-			if(currentFolder)
-				TRAP::FileSystem::OpenInFileBrowser(*currentFolder);
-			break;
-		}
-
-		case TRAP::Input::Key::F:
-			TRAP::FileSystem::OpenInFileBrowser("Assets/Textures/vulkanlogo.png");
-			break;
-
-		case TRAP::Input::Key::E:
-			TRAP::FileSystem::OpenExternally("Assets/Textures/vulkanlogo.png");
-			break;
-
-		default:
-			break;
-		}
-
-		return true;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void FileSystemTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("FileSystem");
@@ -57,9 +21,33 @@ void FileSystemTests::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void FileSystemTests::OnEvent(TRAP::Events::Event& event)
+bool FileSystemTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 {
-	TRAP::Events::EventDispatcher dispatcher(event);
+	switch(event.GetKey())
+	{
+	case TRAP::Input::Key::Escape:
+		TRAP::Application::Shutdown();
+		break;
 
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(OnKeyPress);
+	case TRAP::Input::Key::O:
+	{
+		const auto currentFolder = TRAP::FileSystem::GetCurrentWorkingFolderPath();
+		if(currentFolder)
+			TRAP::FileSystem::OpenInFileBrowser(*currentFolder);
+		break;
+	}
+
+	case TRAP::Input::Key::F:
+		TRAP::FileSystem::OpenInFileBrowser("Assets/Textures/vulkanlogo.png");
+		break;
+
+	case TRAP::Input::Key::E:
+		TRAP::FileSystem::OpenExternally("Assets/Textures/vulkanlogo.png");
+		break;
+
+	default:
+		break;
+	}
+
+	return true;
 }

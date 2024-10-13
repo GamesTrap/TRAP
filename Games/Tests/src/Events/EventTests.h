@@ -9,7 +9,7 @@ public:
 	constexpr EventTests();
 
 	void OnAttach() override;
-	void OnEvent(TRAP::Events::Event& event) override;
+	constexpr void OnEvent(TRAP::Events::Event& event) override;
 };
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -17,6 +17,13 @@ public:
 constexpr EventTests::EventTests()
 	: Layer("Events")
 {
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void EventTests::OnEvent(TRAP::Events::Event& event)
+{
+	TP_TRACE(event);
 }
 
 #endif /*GAMESTRAP_EVENTTESTS_H*/

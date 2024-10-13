@@ -3355,6 +3355,62 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::ShaderType>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+template<>
+struct fmt::formatter<TRAP::Graphics::RendererAPI::ShadingRate>
+{
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Graphics::RendererAPI::ShadingRate shadingRate,
+	                                            fmt::format_context& ctx)
+    {
+        std::string enumStr{};
+
+		switch(shadingRate)
+		{
+		case TRAP::Graphics::RendererAPI::ShadingRate::NotSupported:
+			enumStr = "1x1";
+			break;
+		case TRAP::Graphics::RendererAPI::ShadingRate::Full:
+			enumStr = "1x1";
+			break;
+		case TRAP::Graphics::RendererAPI::ShadingRate::Half:
+			enumStr = "2x2";
+			break;
+		case TRAP::Graphics::RendererAPI::ShadingRate::Quarter:
+			enumStr = "4x4";
+			break;
+		case TRAP::Graphics::RendererAPI::ShadingRate::Eighth:
+			enumStr = "8x8";
+			break;
+		case TRAP::Graphics::RendererAPI::ShadingRate::OneXTwo:
+			enumStr = "1x2";
+			break;
+		case TRAP::Graphics::RendererAPI::ShadingRate::TwoXOne:
+			enumStr = "2x1";
+			break;
+		case TRAP::Graphics::RendererAPI::ShadingRate::TwoXFour:
+			enumStr = "2x4";
+			break;
+		case TRAP::Graphics::RendererAPI::ShadingRate::FourXTwo:
+			enumStr = "4x2";
+			break;
+		}
+
+		if(enumStr.empty())
+		{
+			TRAP_ASSERT(false, "fmt::formatter<TRAP::Graphics::RendererAPI::ShadingRate>: Missing enum value!");
+			enumStr = "<MISSING ENUM VALUE>";
+		}
+
+        return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 #ifndef TRAP_HEADLESS_MODE
 template<>
 [[nodiscard]] constexpr TRAP::Graphics::RendererAPI::LatencyMode TRAP::Utils::String::ConvertToType(const std::string& input)

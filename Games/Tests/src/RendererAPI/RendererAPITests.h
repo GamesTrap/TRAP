@@ -12,7 +12,7 @@ public:
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnImGuiRender() override;
 
-	void OnEvent(TRAP::Events::Event& event) override;
+	constexpr void OnEvent(TRAP::Events::Event& event) override;
 
 private:
 	bool OnKeyPress(const TRAP::Events::KeyPressEvent& e);
@@ -26,7 +26,7 @@ private:
 	bool m_quad = false;
 	bool m_indexed = false;
 	bool m_vsync = TRAP::Application::GetWindow()->GetVSync();
-	u8 m_pushConstantOrUBO = 0;
+	u8 m_pushConstantOrUBO = 0u;
 
 	struct ColorData
 	{
@@ -43,5 +43,13 @@ private:
 	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_colorUniformBuffer = nullptr;
 	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_sizeMultiplicatorUniformBuffer = nullptr;
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void RendererAPITests::OnEvent(TRAP::Events::Event& event)
+{
+	const TRAP::Events::EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&RendererAPITests::OnKeyPress, this));
+}
 
 #endif /*GAMESTRAP_RENDERERAPITESTS_H*/

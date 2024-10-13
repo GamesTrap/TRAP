@@ -959,6 +959,102 @@ struct fmt::formatter<TRAP::Input::KeyState>
 
 MAKE_ENUM_FLAG(TRAP::Input::ControllerDPad)
 
+template<>
+struct fmt::formatter<TRAP::Input::ControllerDPad>
+{
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Input::ControllerDPad dpad,
+	                                            fmt::format_context& ctx)
+    {
+        std::string enumStr{};
+        switch(dpad)
+        {
+        case TRAP::Input::ControllerDPad::Centered:
+            enumStr = "Centered";
+            break;
+        case TRAP::Input::ControllerDPad::Up:
+            enumStr = "Up";
+            break;
+        case TRAP::Input::ControllerDPad::Right:
+            enumStr = "Right";
+            break;
+        case TRAP::Input::ControllerDPad::Down:
+            enumStr = "Down";
+            break;
+        case TRAP::Input::ControllerDPad::Left:
+            enumStr = "Left";
+            break;
+        case TRAP::Input::ControllerDPad::Right_Up:
+            enumStr = "Right Up";
+            break;
+        case TRAP::Input::ControllerDPad::Right_Down:
+            enumStr = "Right Down";
+            break;
+        case TRAP::Input::ControllerDPad::Left_Up:
+            enumStr = "Left Up";
+            break;
+        case TRAP::Input::ControllerDPad::Left_Down:
+            enumStr = "Left Down";
+            break;
+        }
+
+		if(enumStr.empty())
+		{
+            TRAP_ASSERT(false, "fmt::formatter<TRAP::Input::ControllerDPad>: Missing enum value!");
+            enumStr = "<MISSING ENUM VALUE>";
+		}
+
+        return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::Input::ControllerBatteryStatus>
+{
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Input::ControllerBatteryStatus batteryStatus,
+	                                            fmt::format_context& ctx)
+    {
+        std::string enumStr{};
+        switch(batteryStatus)
+        {
+        case TRAP::Input::ControllerBatteryStatus::Wired:
+            enumStr = "Wired";
+            break;
+        case TRAP::Input::ControllerBatteryStatus::Empty:
+            enumStr = "Empty";
+            break;
+        case TRAP::Input::ControllerBatteryStatus::Low:
+            enumStr = "Low";
+            break;
+        case TRAP::Input::ControllerBatteryStatus::Medium:
+            enumStr = "Medium";
+            break;
+        case TRAP::Input::ControllerBatteryStatus::Full:
+            enumStr = "Full";
+            break;
+        }
+
+		if(enumStr.empty())
+		{
+            TRAP_ASSERT(false, "fmt::formatter<TRAP::Input::ControllerBatteryStatus>: Missing enum value!");
+            enumStr = "<MISSING ENUM VALUE>";
+		}
+
+        return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+
 #endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_INPUT_H*/

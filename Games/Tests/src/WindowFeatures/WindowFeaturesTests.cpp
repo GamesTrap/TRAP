@@ -55,7 +55,7 @@ void WindowFeaturesTests::OnImGuiRender()
 	//Window Position
 	{
 		TRAP::Math::Vec2i winPos = TRAP::Application::GetWindow()->GetPosition();
-		u32 changed = 0;
+		u32 changed = 0u;
 
 		ImGui::Text("Position");
 		ImGui::SameLine();
@@ -63,7 +63,7 @@ void WindowFeaturesTests::OnImGuiRender()
 		ImGui::SameLine();
 		changed += NumericCast<u32>(ImGui::InputInt("##PosY", &winPos.y(), 0, ImGuiInputTextFlags_EnterReturnsTrue));
 
-		if(changed != 0)
+		if(changed != 0u)
 		{
 			TRAP::Application::GetWindow()->SetPosition(NumericCast<u32>(winPos.x()), NumericCast<u32>(winPos.y()));
 			m_lastWindowPos = winPos;
@@ -72,7 +72,7 @@ void WindowFeaturesTests::OnImGuiRender()
 	//Window Size
 	{
 		TRAP::Math::Vec2ui winSize = TRAP::Application::GetWindow()->GetSize();
-		u32 changed = 0;
+		u32 changed = 0u;
 
 		ImGui::Text("Size");
 		ImGui::SameLine();
@@ -80,7 +80,7 @@ void WindowFeaturesTests::OnImGuiRender()
 		ImGui::SameLine();
 		changed += NumericCast<u32>(ImGui::InputScalar("##SizeY", ImGuiDataType_U32, &winSize.y(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
 
-		if(changed != 0)
+		if(changed != 0u)
 		{
 			TRAP::Application::GetWindow()->SetWindowed(winSize.x(), winSize.y());
 			m_lastWindowSize = winSize;
@@ -88,7 +88,7 @@ void WindowFeaturesTests::OnImGuiRender()
 	}
 	//Minimum Size
 	{
-		u32 changed = 0;
+		u32 changed = 0u;
 		bool updateSizeLimit = false;
 		if(ImGui::Checkbox("Minimum Size", &m_limitMinSize))
 			updateSizeLimit = true;
@@ -98,7 +98,7 @@ void WindowFeaturesTests::OnImGuiRender()
 		ImGui::SameLine();
 		changed += NumericCast<u32>(ImGui::InputScalar("##MinSizeY", ImGuiDataType_U32, &m_minWindowSize.y(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
 
-		if(changed != 0)
+		if(changed != 0u)
 			updateSizeLimit = true;
 
 		if(updateSizeLimit)
@@ -106,12 +106,12 @@ void WindowFeaturesTests::OnImGuiRender()
 			if(m_limitMinSize)
 				TRAP::Application::GetWindow()->SetMinimumSize(m_minWindowSize.x(), m_minWindowSize.y());
 			else
-				TRAP::Application::GetWindow()->SetMinimumSize(0, 0);
+				TRAP::Application::GetWindow()->SetMinimumSize(0u, 0u);
 		}
 	}
 	//Maximum Size
 	{
-		u32 changed = 0;
+		u32 changed = 0u;
 		bool updateSizeLimit = false;
 		if(ImGui::Checkbox("Maximum Size", &m_limitMaxSize))
 			updateSizeLimit = true;
@@ -121,7 +121,7 @@ void WindowFeaturesTests::OnImGuiRender()
 		ImGui::SameLine();
 		changed += NumericCast<u32>(ImGui::InputScalar("##MaxSizeY", ImGuiDataType_U32, &m_maxWindowSize.y(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
 
-		if(changed != 0)
+		if(changed != 0u)
 			updateSizeLimit = true;
 
 		if(updateSizeLimit)
@@ -129,7 +129,7 @@ void WindowFeaturesTests::OnImGuiRender()
 			if(m_limitMaxSize)
 				TRAP::Application::GetWindow()->SetMaximumSize(m_maxWindowSize.x(), m_maxWindowSize.y());
 			else
-				TRAP::Application::GetWindow()->SetMaximumSize(0, 0);
+				TRAP::Application::GetWindow()->SetMaximumSize(0u, 0u);
 		}
 	}
 
@@ -154,20 +154,6 @@ void WindowFeaturesTests::OnImGuiRender()
 	ImGui::Text("Minimized: %s", TRAP::Application::GetWindow()->IsMinimized() ? "true" : "false");
 	ImGui::Text("Maximized: %s", TRAP::Application::GetWindow()->IsMaximized() ? "true" : "false");
 	ImGui::End();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void WindowFeaturesTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void WindowFeaturesTests::OnEvent(TRAP::Events::Event& event)
-{
-	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&WindowFeaturesTests::OnKeyPress, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

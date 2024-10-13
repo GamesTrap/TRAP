@@ -12,18 +12,33 @@ public:
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnImGuiRender() override;
 
-	void OnEvent(TRAP::Events::Event& event) override;
+	constexpr void OnEvent(TRAP::Events::Event& event) override;
 
 private:
-	bool OnKeyPress(const TRAP::Events::KeyPressEvent& e);
-	bool OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& e);
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& e) const;
+	constexpr bool OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& e);
 
 	TRAP::Utils::Timer m_fpsTimer{};
 
 	TRAP::SceneCamera m_camera{};
-
-	u32 m_maxAnisotropyLevelIdx = 0;
-	u32 m_currAnisotropyLevelIdx = 0;
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void AnisotropyTests::OnEvent(TRAP::Events::Event& event)
+{
+	const TRAP::Events::EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&AnisotropyTests::OnKeyPress, this));
+	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(std::bind_front(&AnisotropyTests::OnFrameBufferResize, this));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr bool AnisotropyTests::OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& e)
+{
+	m_camera.SetViewportSize(e.GetWidth(), e.GetHeight());
+
+	return false;
+}
 
 #endif /*GAMESTRAP_ANISOTROPYESTS_H*/

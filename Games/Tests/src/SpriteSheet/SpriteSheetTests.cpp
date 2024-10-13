@@ -10,7 +10,7 @@ SpriteSheetTests::SpriteSheetTests()
 void SpriteSheetTests::OnImGuiRender()
 {
     ImGui::Begin("Sprite Sheet Tests", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	                                                         ImGuiWindowFlags_AlwaysAutoResize);
+	                                            ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
     ImGui::Text("Press Shift+P to pause animation");
     ImGui::Text("Press P to play/resume animation");
@@ -33,10 +33,10 @@ void SpriteSheetTests::OnAttach()
 	m_characterSheet->AwaitLoading();
 
 	TRAP::Graphics::RenderCommand::SetDepthTesting(true);
-		TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha,
-														TRAP::Graphics::BlendConstant::One,
-														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha,
-														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
+    TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha,
+                                                    TRAP::Graphics::BlendConstant::One,
+                                                    TRAP::Graphics::BlendConstant::OneMinusSrcAlpha,
+                                                    TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
 
     static constexpr TRAP::Math::Vec2 foregroundSpriteSize{18.0f, 18.0f};
     static constexpr TRAP::Math::Vec2 backgroundSpriteSize{24.0f, 24.0f};
@@ -132,30 +132,30 @@ void SpriteSheetTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
 	{
         //Render background sprites
-        for(usize y = 0; y < m_backgroundMap.size(); ++y)
+        for(usize y = 0u; y < m_backgroundMap.size(); ++y)
         {
-            for(usize x = 0; x < m_backgroundMap[y].size(); ++x)
+            for(usize x = 0u; x < m_backgroundMap[y].size(); ++x)
             {
                 if(m_backgroundMap[y][x].empty())
                     continue;
-		        TRAP::Graphics::Renderer2D::DrawQuad({ {NumericCast<f32>(x), -NumericCast<f32>(y), 0.0f}, {}, {1.0f, 1.0f, 1.0f} }, TRAP::Graphics::SpriteManager::Get(m_backgroundMap[y][x]));
+		        TRAP::Graphics::Renderer2D::DrawQuad({ .Position={NumericCast<f32>(x), -NumericCast<f32>(y), 0.0f}, .Rotation={}, .Scale={1.0f, 1.0f, 1.0f} }, TRAP::Graphics::SpriteManager::Get(m_backgroundMap[y][x]));
             }
         }
 
         //Render foreground sprites
-        for(usize y = 0; y < m_foregroundMap.size(); ++y)
+        for(usize y = 0u; y < m_foregroundMap.size(); ++y)
         {
-            for(usize x = 0; x < m_foregroundMap[y].size(); ++x)
+            for(usize x = 0u; x < m_foregroundMap[y].size(); ++x)
             {
                 if(m_foregroundMap[y][x].empty())
                     continue;
-		        TRAP::Graphics::Renderer2D::DrawQuad({ {NumericCast<f32>(x), -NumericCast<f32>(y), 0.0f}, {}, {1.0f, 1.0f, 1.0f} }, TRAP::Graphics::SpriteManager::Get(m_foregroundMap[y][x]));
+		        TRAP::Graphics::Renderer2D::DrawQuad({ .Position={NumericCast<f32>(x), -NumericCast<f32>(y), 0.0f}, .Rotation={}, .Scale={1.0f, 1.0f, 1.0f} }, TRAP::Graphics::SpriteManager::Get(m_foregroundMap[y][x]));
             }
         }
 	}
 
-    TRAP::Graphics::Renderer2D::DrawQuad({ {5.0f, -7.0f, -0.2f}, {}, {1.0f, 1.0f, 1.0f} }, m_animation->GetCurrentSprite());
-    TRAP::Graphics::Renderer2D::DrawQuad({ {3.0f, -7.0f, -0.2f}, {}, {1.0f, 1.0f, 1.0f} }, m_animation2->GetCurrentSprite());
+    TRAP::Graphics::Renderer2D::DrawQuad({ .Position={5.0f, -7.0f, -0.2f}, .Rotation={}, .Scale={1.0f, 1.0f, 1.0f} }, m_animation->GetCurrentSprite());
+    TRAP::Graphics::Renderer2D::DrawQuad({ .Position={3.0f, -7.0f, -0.2f}, .Rotation={}, .Scale={1.0f, 1.0f, 1.0f} }, m_animation2->GetCurrentSprite());
 	TRAP::Graphics::Renderer2D::EndScene();
 }
 
@@ -165,7 +165,7 @@ void SpriteSheetTests::OnEvent(TRAP::Events::Event& event)
 {
 	m_cameraController.OnEvent(event);
 
-	TRAP::Events::EventDispatcher dispatcher(event);
+	const TRAP::Events::EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&SpriteSheetTests::OnKeyPress, this));
 }
 

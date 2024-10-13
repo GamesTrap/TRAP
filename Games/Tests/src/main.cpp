@@ -1,33 +1,33 @@
 #include <TRAP.h>
 
-#include "Anisotropy/AnisotropyTests.h" // IWYU pragma: keep
-#include "AntiAliasing/AntiAliasingTests.h" // IWYU pragma: keep
-#include "Clipboard/ClipboardTests.h" // IWYU pragma: keep
-#include "Controllers/ControllerTests.h" // IWYU pragma: keep
-#include "Compute/ComputeTests.h" // IWYU pragma: keep
-#include "Cursor/CursorTests.h" // IWYU pragma: keep
-#include "DragAndDrop/DragAndDropTests.h" // IWYU pragma: keep
-#include "Events/EventTests.h" // IWYU pragma: keep
-#include "FileSystem/FileSystemTests.h" // IWYU pragma: keep
-#include "FrameBuffer/FrameBufferTests.h" // IWYU pragma: keep
-#include "Icon/IconTests.h" // IWYU pragma: keep
-#include "IcoSphere/IcoSphereTests.h" // IWYU pragma: keep
-#include "ImageLoader/ImageLoaderTests.h" // IWYU pragma: keep
-#include "InputLag/InputLagTests.h" // IWYU pragma: keep
-#include "Monitors/MonitorTests.h" // IWYU pragma: keep
-#include "MultiWindow/MultiWindowTests.h" // IWYU pragma: keep
-#include "Opacity/OpacityTests.h" // IWYU pragma: keep
-#include "RendererAPI/RendererAPIInfo.h" // IWYU pragma: keep
-#include "RendererAPI/RendererAPITests.h" // IWYU pragma: keep
-#include "RenderScale/RenderScaleTests.h" // IWYU pragma: keep
-#include "Screenshot/ScreenshotTests.h" // IWYU pragma: keep
-#include "SPIRV/SPIRVTests.h" // IWYU pragma: keep
-#include "SpriteSheet/SpriteSheetTests.h" // IWYU pragma: keep
-#include "Title/TitleTests.h" // IWYU pragma: keep
-#include "VariableRateShading/VRSTests.h" // IWYU pragma: keep
-#include "Vulkan/VulkanTextureTests.h" // IWYU pragma: keep
-#include "WindowState/WindowStateTests.h" // IWYU pragma: keep
-#include "WindowFeatures/WindowFeaturesTests.h" // IWYU pragma: keep
+#include "Anisotropy/AnisotropyTests.h"
+#include "AntiAliasing/AntiAliasingTests.h"
+#include "Clipboard/ClipboardTests.h"
+#include "Controllers/ControllerTests.h"
+#include "Compute/ComputeTests.h"
+#include "Cursor/CursorTests.h"
+#include "DragAndDrop/DragAndDropTests.h"
+#include "Events/EventTests.h"
+#include "FileSystem/FileSystemTests.h"
+#include "FrameBuffer/FrameBufferTests.h"
+#include "Icon/IconTests.h"
+#include "IcoSphere/IcoSphereTests.h"
+#include "ImageLoader/ImageLoaderTests.h"
+#include "InputLag/InputLagTests.h"
+#include "Monitors/MonitorTests.h"
+#include "MultiWindow/MultiWindowTests.h"
+#include "Opacity/OpacityTests.h"
+#include "RendererAPI/RendererAPIInfo.h"
+#include "RendererAPI/RendererAPITests.h"
+#include "RenderScale/RenderScaleTests.h"
+#include "Screenshot/ScreenshotTests.h"
+#include "SPIRV/SPIRVTests.h"
+#include "SpriteSheet/SpriteSheetTests.h"
+#include "Title/TitleTests.h"
+#include "VariableRateShading/VRSTests.h"
+#include "Vulkan/VulkanTextureTests.h"
+#include "WindowState/WindowStateTests.h"
+#include "WindowFeatures/WindowFeaturesTests.h"
 
 class Tests final : public TRAP::Application
 {

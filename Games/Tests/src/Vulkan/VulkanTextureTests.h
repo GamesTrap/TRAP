@@ -12,7 +12,7 @@ public:
     void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
     void OnImGuiRender() override;
 
-    void OnEvent(TRAP::Events::Event& event) override;
+    constexpr void OnEvent(TRAP::Events::Event& event) override;
 
 private:
     bool OnKeyPress(const TRAP::Events::KeyPressEvent& e);
@@ -22,10 +22,10 @@ private:
     TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler = nullptr;
 
     bool m_cycleMips = false;
-    u32 m_currentMipLevel = 0;
-    u32 m_maxMipLevel = 0;
+    u32 m_currentMipLevel = 0u;
+    u32 m_maxMipLevel = 0u;
     bool m_updateTexture = false;
-    u32 m_currentTexture = 0;
+    u32 m_currentTexture = 0u;
 
     TRAP::Ref<TRAP::Graphics::Shader> m_shader = nullptr;
     TRAP::Ref<TRAP::Graphics::Texture> m_texture = nullptr;
@@ -38,6 +38,14 @@ private:
 constexpr VulkanTextureTests::VulkanTextureTests()
     : Layer("VulkanTextureTests")
 {
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void VulkanTextureTests::OnEvent(TRAP::Events::Event& event)
+{
+    const TRAP::Events::EventDispatcher dispatcher(event);
+    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&VulkanTextureTests::OnKeyPress, this));
 }
 
 #endif /*GAMESTRAP_VULKANTEXTURETESTS_H*/

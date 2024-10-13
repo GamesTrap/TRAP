@@ -1,5 +1,65 @@
 #include "InputLagTests.h"
 
+namespace
+{
+	void DrawLatencyModeSelection()
+	{
+		ImGui::Text("NVIDIA Reflex:");
+		if(!TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported)
+			ImGui::Text("NVIDIA Reflex is not supported on this GPU!");
+		else
+		{
+			static constexpr std::array<TRAP::Graphics::LatencyMode, 3u> latencyModes
+			{
+				TRAP::Graphics::LatencyMode::Disabled,
+				TRAP::Graphics::LatencyMode::Enabled,
+				TRAP::Graphics::LatencyMode::EnabledBoost
+			};
+			const TRAP::Graphics::LatencyMode currentLatencyMode = TRAP::Graphics::RenderCommand::GetLatencyMode();
+
+			ImGui::Text("Current Latency Mode: %s", fmt::format("{}", currentLatencyMode).c_str());
+
+			if(ImGui::BeginCombo("Latency Mode", fmt::format("{}", currentLatencyMode).c_str()))
+			{
+				for(const auto latencyMode : latencyModes)
+				{
+					const bool isSelected = latencyMode == currentLatencyMode;
+					if(ImGui::Selectable(fmt::format("{}", latencyMode).c_str(), isSelected))
+						TRAP::Graphics::RenderCommand::SetLatencyMode(latencyMode);
+
+					if(isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+
+				ImGui::EndCombo();
+			}
+		}
+		ImGui::Separator();
+		ImGui::Text("This software contains source code provided by NVIDIA Corporation.");
+	}
+
+	void DrawNVIDIAReflexStats()
+	{
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	if(TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported)
+	{
+		ImGui::Begin("NVIDIA Reflex Latency", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+					ImGuiWindowFlags_AlwaysAutoResize);
+		ImGui::PlotLines("Total Game to Render Latency", m_totalHistory.data(), NumericCast<i32>(m_totalHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("Simulation Delta", m_simulationDeltaHistory.data(), NumericCast<i32>(m_simulationDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("Render Delta", m_renderDeltaHistory.data(), NumericCast<i32>(m_renderDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("Present Delta", m_presentDeltaHistory.data(), NumericCast<i32>(m_presentDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("Driver Delta", m_driverDeltaHistory.data(), NumericCast<i32>(m_driverDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("OS Render Queue Delta", m_OSRenderQueueDeltaHistory.data(), NumericCast<i32>(m_OSRenderQueueDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("GPU Render Delta", m_GPURenderDeltaHistory.data(), NumericCast<i32>(m_GPURenderDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::End();
+	}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 InputLagTests::InputLagTests()
 	: Layer("InputLag")
 {
@@ -10,8 +70,6 @@ InputLagTests::InputLagTests()
 void InputLagTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("InputLag");
-
-	m_latencyMode = TRAP::Graphics::RenderCommand::GetLatencyMode();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -29,15 +87,15 @@ void InputLagTests::OnImGuiRender()
 		DrawMarker(NumericCast<u32>(lead), TRAP::Math::Vec2(m_cursorPos + m_cursorVelocity * NumericCast<f32>(lead)));
 	//Draw instructions
 	ImGui::Text("Move mouse uniformly and check marker under cursor:");
-	for(u32 lead = 0; lead <= 3; ++lead)
+	for(u32 lead = 0u; lead <= 3u; ++lead)
 	{
-		if(lead == 0)
+		if(lead == 0u)
 			ImGui::Text("Red circle - Current cursor position (no input lag)");
-		else if(lead == 1)
+		else if(lead == 1u)
 			ImGui::Text("Yellow circle - %d-frame forecast (input lag is %d frame)", lead, lead);
-		else if(lead == 2)
+		else if(lead == 2u)
 			ImGui::Text("Green circle  - %d-frame forecast (input lag is %d frame)", lead, lead);
-		else if(lead == 3)
+		else if(lead == 3u)
 			ImGui::Text("Blue circle   - %d-frame forecast (input lag is %d frame)", lead, lead);
 	}
 	ImGui::Text("Current input method: %s", m_cursorMethod == CursorMethod::SyncQuery ? "Sync query" : "Latest input message");
@@ -50,7 +108,7 @@ void InputLagTests::OnImGuiRender()
 	ImGui::End();
 
 	ImGui::Begin("Latency Stats", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	             ImGuiWindowFlags_AlwaysAutoResize);
+	                                       ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Performance:");
     ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
 	ImGui::Text("GPU: %s", TRAP::Graphics::RenderCommand::GetGPUName().c_str());
@@ -60,49 +118,10 @@ void InputLagTests::OnImGuiRender()
     ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
     ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
     ImGui::Separator();
-	ImGui::Text("NVIDIA Reflex:");
-	if(!TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported)
-		ImGui::Text("NVIDIA Reflex is not supported on this GPU!");
-	else
-	{
-		ImGui::Text("Current Latency Mode: %s", fmt::format("{}", m_latencyMode).c_str());
-
-		if(ImGui::BeginCombo("Latency Mode", fmt::format("{}", m_latencyMode).c_str()))
-		{
-			for(u32 i = 0; i <= std::to_underlying(TRAP::Graphics::LatencyMode::EnabledBoost); ++i)
-			{
-				const bool isSelected = (std::to_underlying(m_latencyMode) == i);
-				if(ImGui::Selectable(fmt::format("{}", static_cast<TRAP::Graphics::LatencyMode>(i)).c_str(), isSelected))
-				{
-					TRAP::Graphics::RenderCommand::SetLatencyMode(static_cast<TRAP::Graphics::LatencyMode>(i));
-					m_latencyMode = TRAP::Graphics::RenderCommand::GetLatencyMode();
-				}
-				if(isSelected)
-					ImGui::SetItemDefaultFocus();
-			}
-
-			ImGui::EndCombo();
-		}
-	}
-	ImGui::Separator();
-	ImGui::Text("This software contains source code provided by NVIDIA Corporation.");
+	DrawLatencyModeSelection();
 	ImGui::End();
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
-	if(TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported)
-	{
-		ImGui::Begin("NVIDIA Reflex Latency", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-					ImGuiWindowFlags_AlwaysAutoResize);
-		ImGui::PlotLines("Total Game to Render Latency", m_totalHistory.data(), NumericCast<i32>(m_totalHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("Simulation Delta", m_simulationDeltaHistory.data(), NumericCast<i32>(m_simulationDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("Render Delta", m_renderDeltaHistory.data(), NumericCast<i32>(m_renderDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("Present Delta", m_presentDeltaHistory.data(), NumericCast<i32>(m_presentDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("Driver Delta", m_driverDeltaHistory.data(), NumericCast<i32>(m_driverDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("OS Render Queue Delta", m_OSRenderQueueDeltaHistory.data(), NumericCast<i32>(m_OSRenderQueueDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("GPU Render Delta", m_GPURenderDeltaHistory.data(), NumericCast<i32>(m_GPURenderDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::End();
-	}
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+	DrawNVIDIAReflexStats();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -116,7 +135,7 @@ void InputLagTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delta
 	if (TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported && m_updateLatencyTimer.Elapsed() >= 0.025f)
 	{
 		const auto latencyData = TRAP::Graphics::RendererAPI::GetRenderer()->ReflexGetLatency();
-		const auto& curr = latencyData.frameReport[63];
+		const auto& curr = latencyData.frameReport[63u];
 		const f32 totalGameToRenderLatencyMs = (curr.gpuRenderEndTime - curr.simStartTime) / 1000.0f;
 		const f32 simulationDeltaMs = (curr.simEndTime - curr.simStartTime) / 1000.0f;
 		const f32 renderDeltaMs = (curr.renderSubmitEndTime - curr.renderSubmitStartTime) / 1000.0f;
@@ -125,9 +144,9 @@ void InputLagTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delta
 		const f32 OSRenderQueueDeltaMs = (curr.osRenderQueueEndTime - curr.osRenderQueueStartTime) / 1000.0f;
 		const f32 GPURenderDeltaMs = (curr.gpuRenderEndTime - curr.gpuRenderStartTime) / 1000.0f;
 
-		constinit static usize frameTimeIndex = 0;
+		constinit static usize frameTimeIndex = 0u;
 		m_updateLatencyTimer.Reset();
-		if (frameTimeIndex < m_totalHistory.size() - 1)
+		if (frameTimeIndex < m_totalHistory.size() - 1u)
 		{
 			if(curr.gpuRenderEndTime != 0)
 			{
@@ -139,7 +158,7 @@ void InputLagTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delta
 				m_OSRenderQueueDeltaHistory[frameTimeIndex] = OSRenderQueueDeltaMs;
 				m_GPURenderDeltaHistory[frameTimeIndex] = GPURenderDeltaMs;
 			}
-			frameTimeIndex++;
+			++frameTimeIndex;
 		}
 		else
 		{
@@ -163,15 +182,6 @@ void InputLagTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delta
 		}
 	}
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void InputLagTests::OnEvent(TRAP::Events::Event& event)
-{
-	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&InputLagTests::OnKeyPress, this));
-	dispatcher.Dispatch<TRAP::Events::MouseMoveEvent>(std::bind_front(&InputLagTests::OnMouseMove, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -201,16 +211,6 @@ bool InputLagTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool InputLagTests::OnMouseMove(const TRAP::Events::MouseMoveEvent& event)
-{
-	if(m_cursorMethod == CursorMethod::InputMessage)
-		m_cursorNew = event.GetPosition();
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void InputLagTests::SampleInput()
 {
 	static constexpr f32 a = 0.25f; //Exponential smoothing factor
@@ -218,7 +218,7 @@ void InputLagTests::SampleInput()
 	if(m_cursorMethod == CursorMethod::SyncQuery)
 		m_cursorNew = TRAP::Input::GetMousePosition();
 
-	m_cursorVelocity = (m_cursorNew - m_cursorPos) * a + m_cursorVelocity * (1 - a);
+	m_cursorVelocity = (m_cursorNew - m_cursorPos) * a + m_cursorVelocity * (1.0f - a);
 	m_cursorPos = m_cursorNew;
 }
 
@@ -226,8 +226,8 @@ void InputLagTests::SampleInput()
 
 void InputLagTests::DrawMarker(const u32 lead, TRAP::Math::Vec2 pos)
 {
-	static constexpr std::array<ImColor, 4> colors{ImColor(1.0f, 0.0f, 0.0f), ImColor(1.0f, 1.0f, 0.0f), ImColor(0.0f, 1.0f, 0.0), ImColor(0.0f, 0.376f, 1.0f)};
+	static constexpr std::array<ImColor, 4u> colors{ImColor(1.0f, 0.0f, 0.0f), ImColor(1.0f, 1.0f, 0.0f), ImColor(0.0f, 1.0f, 0.0), ImColor(0.0f, 0.376f, 1.0f)};
 
 	auto* const drawList = ImGui::GetBackgroundDrawList();
-	drawList->AddCircleFilled(ImVec2(pos.x(), pos.y()), 10, colors[lead], 0);
+	drawList->AddCircleFilled(ImVec2(pos.x(), pos.y()), 10.0f, colors[lead], 0);
 }

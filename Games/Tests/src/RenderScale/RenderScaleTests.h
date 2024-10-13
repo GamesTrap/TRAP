@@ -15,7 +15,6 @@ public:
 
 private:
 	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
-	bool OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event);
 
 	TRAP::Graphics::OrthographicCameraController m_cameraController{TRAP::Application::GetWindow()->GetAspectRatio(), true};
 };

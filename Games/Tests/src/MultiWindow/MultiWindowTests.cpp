@@ -2,7 +2,7 @@
 
 namespace
 {
-	constexpr std::array<f32, 18> TriangleVertices
+	constexpr std::array<f32, 18u> TriangleVertices
 	{
 		//XYZ RGB
 		 0.0f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
@@ -10,9 +10,9 @@ namespace
 		 0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,
 	};
 
-	constexpr std::array<u16, 3> TriangleIndices
+	constexpr std::array<u16, 3u> TriangleIndices
 	{
-		0, 1, 2
+		0u, 1u, 2u
 	};
 }
 
@@ -36,9 +36,9 @@ void MultiWindowTests::OnAttach()
 
 	TRAP::WindowProps winProps{};
 	winProps.Title = "Multi-Window Test 2";
-	winProps.Width = 200;
-	winProps.Height = 200;
-	winProps.RefreshRate = 60;
+	winProps.Width = 200u;
+	winProps.Height = 200u;
+	winProps.RefreshRate = 60.0;
 	winProps.VSync = false;
 	winProps.DisplayMode = TRAP::Window::DisplayMode::Windowed;
 	winProps.Advanced = advWinProps;
@@ -48,7 +48,7 @@ void MultiWindowTests::OnAttach()
 	if(m_window)
 	{
 		m_window->SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });
-		TRAP::Graphics::RenderCommand::SetClearColor({1.0f, 0.0f, 1.0f, 1.0f}, *m_window);
+		TRAP::Graphics::RenderCommand::SetClearColor({.Red=1.0, .Green=0.0, .Blue=1.0, .Alpha=1.0}, *m_window);
 	}
 
 	//Load Triangle vertices
@@ -77,7 +77,7 @@ void MultiWindowTests::OnAttach()
 
 	//Load Shaders
 	TRAP::Graphics::ShaderManager::LoadFile("Test", "./Assets/Shaders/test.shader", TRAP::Graphics::ShaderType::Graphics);
-	const std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
+	const std::vector<TRAP::Graphics::Shader::Macro> macros{{.Definition="TEST", .Value="0.5f"}};
 	TRAP::Graphics::ShaderManager::LoadFile("TestUBO", "./Assets/Shaders/testubo.shader", TRAP::Graphics::ShaderType::Graphics, macros);
 
 	//Wait for all pending resources (just in case)
@@ -128,15 +128,15 @@ void MultiWindowTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 
 			const auto& shader = TRAP::Graphics::ShaderManager::GetGraphics("TestUBO");
 			//Use UBOs
-			shader->UseUBO(1, 0, *m_sizeMultiplicatorUniformBuffer);
-			shader->UseUBO(1, 1, *m_colorUniformBuffer);
+			shader->UseUBO(1u, 0u, *m_sizeMultiplicatorUniformBuffer);
+			shader->UseUBO(1u, 1u, *m_colorUniformBuffer);
 
 			shader->Use(*m_window);
 		}
 		else
 			TRAP::Graphics::ShaderManager::GetGraphics("Test")->Use(*m_window);
 
-		TRAP::Graphics::RenderCommand::DrawIndexed(3, 0, 0, *m_window);
+		TRAP::Graphics::RenderCommand::DrawIndexed(3u, 0u, 0, *m_window);
 
 		//Secondary Windows need to explicitly present its content
 		TRAP::Graphics::RenderCommand::Flush(*m_window);
@@ -152,7 +152,7 @@ void MultiWindowTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 		m_vertexBuffer->Use();
 		m_indexBuffer->Use();
 		TRAP::Graphics::ShaderManager::GetGraphics("Test")->Use();
-		TRAP::Graphics::RenderCommand::DrawIndexed(3);
+		TRAP::Graphics::RenderCommand::DrawIndexed(3u);
 	}
 
 	//Simple performance metrics
@@ -169,21 +169,12 @@ void MultiWindowTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 void MultiWindowTests::OnImGuiRender()
 {
 	ImGui::Begin("Multi-Window", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	                                           ImGuiWindowFlags_AlwaysAutoResize);
+	                                      ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
 	ImGui::Text("Main-Window WireFrame (F1): %s", m_wireFrameMainWindow ? "Enabled" : "Disabled");
 	ImGui::Text("Secondary-Window WireFrame (F2): %s", m_wireFrameSecondWindow ? "Enabled" : "Disabled");
 	ImGui::Text("UBO (F3): %s", m_useUBO ? "Enabled" : "Disabled");
 	ImGui::End();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void MultiWindowTests::OnEvent(TRAP::Events::Event& event)
-{
-	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::WindowCloseEvent>(std::bind_front(&MultiWindowTests::OnWindowClose, this));
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&MultiWindowTests::OnKeyPress, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
