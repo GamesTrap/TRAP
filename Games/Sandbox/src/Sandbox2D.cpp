@@ -20,9 +20,9 @@ void Sandbox2D::OnImGuiRender()
     ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
     ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
     ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
-	ImGui::PlotLines("##frameHistory", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+	ImGui::PlotLines("##frameHistory", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()), 0, nullptr, 0.0f, 33.0f, ImVec2(200.0f, 50.0f));
 	ImGui::NewLine();
-	ImGui::Image(TRAP::Graphics::TextureManager::Get2D("TRAP"), ImVec2(100, 100));
+	ImGui::Image(TRAP::Graphics::TextureManager::Get2D("TRAP"), ImVec2(100.0f, 100.0f));
 	ImGui::End();
 
 	const TRAP::Graphics::Renderer2D::Statistics stats = TRAP::Graphics::Renderer2D::GetStats();
@@ -88,19 +88,19 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		        //                                Mat4Cast(TRAP::Math::Quat(Radians(TRAP::Math::Vec3(0.0f)))) *
 				// 						       TRAP::Math::Scale(TRAP::Math::Vec3(1.0f));
 				// TRAP::Graphics::Renderer2D::DrawCircle(trans, color, 1.0f, 0.005f);
-				TRAP::Graphics::Renderer2D::DrawQuad({{x, y, 0.0f}, {}, {0.45f, 0.45f, 1.0f}}, color);
+				TRAP::Graphics::Renderer2D::DrawQuad({.Position={x, y, 0.0f}, .Rotation={}, .Scale={0.45f, 0.45f, 1.0f}}, color);
 			}
 		}
 
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, -0.1f}, {}, {0.8f, 0.8f, 1.0f} }, { 0.8f, 0.2f, 0.3f, 1.0f });
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, -0.5f, -0.1f}, {}, {0.5f, 0.75f, 1.0f} }, { 0.2f, 0.3f, 0.8f, 1.0f });
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.2f, 0.5f, -0.1f}, {0.0f, 0.0f, TRAP::Application::GetTime() * -50.0f }, {1.0f, 1.0f, 1.0f} },
+		TRAP::Graphics::Renderer2D::DrawQuad({ .Position={-1.0f, 0.0f, -0.1f}, .Rotation={}, .Scale={0.8f, 0.8f, 1.0f} }, { 0.8f, 0.2f, 0.3f, 1.0f });
+		TRAP::Graphics::Renderer2D::DrawQuad({ .Position={0.5f, -0.5f, -0.1f}, .Rotation={}, .Scale={0.5f, 0.75f, 1.0f} }, { 0.2f, 0.3f, 0.8f, 1.0f });
+		TRAP::Graphics::Renderer2D::DrawQuad({ .Position={0.2f, 0.5f, -0.1f}, .Rotation={0.0f, 0.0f, TRAP::Application::GetTime() * -50.0f }, .Scale={1.0f, 1.0f, 1.0f} },
 			                                 { 0.2f, 0.8f, 0.3f, 1.0f }, TRAP::Graphics::TextureManager::Get2D("TRAP"));
 
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-3.0f, 0.5f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("EnterKey"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-2.5f, 0.0f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("AButton"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-2.0f, 0.0f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("BButton"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-2.0f, -0.5f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("Circle"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ .Position={-3.0f, 0.5f, 0.0f}, .Rotation={}, .Scale={0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("EnterKey"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ .Position={-2.5f, 0.0f, 0.0f}, .Rotation={}, .Scale={0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("AButton"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ .Position={-2.0f, 0.0f, 0.0f}, .Rotation={}, .Scale={0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("BButton"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ .Position={-2.0f, -0.5f, 0.0f}, .Rotation={}, .Scale={0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("Circle"));
 	}
 	TRAP::Graphics::Renderer2D::EndScene();
 
@@ -108,11 +108,11 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	if (m_updateFPSTimer.Elapsed() >= 0.025f)
 	{
 		m_updateFPSTimer.Reset();
-		constinit static usize frameTimeIndex = 0;
-		if (frameTimeIndex < m_frameTimeHistory.size() - 1)
+		constinit static usize frameTimeIndex = 0u;
+		if (frameTimeIndex < m_frameTimeHistory.size() - 1u)
 		{
 			m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
-			frameTimeIndex++;
+			++frameTimeIndex;
 		}
 		else
 		{

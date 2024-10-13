@@ -25,8 +25,8 @@ public:
 		ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
 		ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
 		ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
-		ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()), 0, nullptr, 0,
-		                 33, ImVec2(200, 50));
+		ImGui::PlotLines("##frametimeHistory", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()),
+		                 0, nullptr, 0.0f, 33.0f, ImVec2(200.0f, 50.0f));
 		ImGui::End();
 
 		ImGui::Begin("Properties", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
@@ -55,7 +55,7 @@ public:
 		//    Quad   //
 		///////////////
 		//XYZ RGBA
-		constexpr std::array<f32, 9ull * 4> indexedVertices //Quad
+		static constexpr std::array<f32, 9ull * 4u> indexedVertices //Quad
 		{
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 1.0f,
 			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,    1.0f, 1.0f,
@@ -74,9 +74,9 @@ public:
 		};
 		m_indexedVertexBuffer->SetLayout(layout);
 
-		constexpr std::array<u16, 6> indices //Quad
+		static constexpr std::array<u16, 6u> indices //Quad
 		{
-			0, 1, 2, 2, 3, 0
+			0u, 1u, 2u, 2u, 3u, 0u
 		};
 		m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices, TRAP::Graphics::UpdateFrequency::Static);
 		m_indexBuffer->AwaitLoading();
@@ -86,7 +86,7 @@ public:
 		//    Quad   //
 		///////////////
 		//XYZ RGBA
-		constexpr std::array<f32, 9ull * 6> vertices //Quad
+		static constexpr std::array<f32, 9ull * 6u> vertices //Quad
 		{
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 1.0f,
 			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,    1.0f, 1.0f,
@@ -100,11 +100,13 @@ public:
 		m_vertexBuffer->AwaitLoading();
 		m_vertexBuffer->SetLayout(layout);
 
-		TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
-		samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
-		samplerDesc.AddressV = TRAP::Graphics::AddressMode::Repeat;
-		samplerDesc.AddressW = TRAP::Graphics::AddressMode::Repeat;
-		samplerDesc.EnableAnisotropy = false;
+		const TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc
+		{
+			.AddressU = TRAP::Graphics::AddressMode::Repeat,
+			.AddressV = TRAP::Graphics::AddressMode::Repeat,
+			.AddressW = TRAP::Graphics::AddressMode::Repeat,
+			.EnableAnisotropy = false
+		};
 		m_sampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
 		//Wait for all pending resources (just in case)
@@ -137,9 +139,9 @@ public:
 
 		TRAP::Graphics::Renderer::BeginScene(m_cameraController.GetCamera());
 		{
-			f32 time = TRAP::Application::GetTime();
-			m_shader->UseTexture(0, 0, *m_texture);
-			m_shader->UseSampler(0, 1, *m_sampler);
+			const f32 time = TRAP::Application::GetTime();
+			m_shader->UseTexture(0u, 0u, *m_texture);
+			m_shader->UseSampler(0u, 1u, *m_sampler);
 			if (m_indexedDrawing)
 			{
 				TRAP::Graphics::RenderCommand::SetPushConstants("TimeRootConstant", time);
@@ -157,11 +159,11 @@ public:
 		if (m_titleTimer.Elapsed() >= 0.025f)
 		{
 			m_titleTimer.Reset();
-			constinit static usize frameTimeIndex = 0;
-			if (frameTimeIndex < m_frameTimeHistory.size() - 1)
+			constinit static usize frameTimeIndex = 0u;
+			if (frameTimeIndex < m_frameTimeHistory.size() - 1u)
 			{
 				m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
-				frameTimeIndex++;
+				++frameTimeIndex;
 			}
 			else
 			{
@@ -207,7 +209,7 @@ public:
 	bool OnTextureReload(const TRAP::Events::TextureReloadEvent& event)
 	{
 		m_texture = event.GetTexture();
-		m_shader->UseTexture(0, 0, *m_texture);
+		m_shader->UseTexture(0u, 0u, *m_texture);
 		return true;
 	}
 
@@ -216,8 +218,8 @@ public:
 	bool OnShaderReload(const TRAP::Events::ShaderReloadEvent& event)
 	{
 		m_shader = event.GetShader();
-		m_shader->UseTexture(0, 0, *m_texture);
-		m_shader->UseSampler(0, 1, *m_sampler);
+		m_shader->UseTexture(0u, 0u, *m_texture);
+		m_shader->UseSampler(0u, 1u, *m_sampler);
 		m_shader->Use();
 		return true;
 	}
@@ -235,7 +237,7 @@ public:
 	}
 
 private:
-	std::array<f32, 50> m_frameTimeHistory{};
+	std::array<f32, 50u> m_frameTimeHistory{};
 	TRAP::Utils::Timer m_fpsTimer{};
 	TRAP::Utils::Timer m_titleTimer{};
 	bool m_wireFrame = false;

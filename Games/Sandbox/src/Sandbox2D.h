@@ -22,7 +22,7 @@ private:
 
 	TRAP::Ref<TRAP::Graphics::Texture> m_spriteSheet = nullptr;
 
-	std::array<f32, 50> m_frameTimeHistory{};
+	std::array<f32, 50u> m_frameTimeHistory{};
 	TRAP::Utils::Timer m_updateFPSTimer{};
 };
 

@@ -1,8 +1,8 @@
 #include <TRAP.h>
 
-#include "SandboxLayer.h" // IWYU pragma: keep
-#include "Sandbox2D.h" // IWYU pragma: keep
-#include "ParticleSystem2D/ParticleSystem2DLayer.h" // IWYU pragma: keep
+#include "SandboxLayer.h"
+#include "Sandbox2D.h"
+#include "ParticleSystem2D/ParticleSystem2DLayer.h"
 
 class Sandbox final : public TRAP::Application
 {

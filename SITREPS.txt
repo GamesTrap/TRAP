@@ -5284,3 +5284,4 @@ SITREP 10/13/2024|24w41b2
     - HTTP SetHost() added parameter to select IPv4/IPv6 or both ~<5m
     - IPv4Address/IPv6Address Changed server for public IP discovery ~<10 mins
     - HeadlessTests various changes ~<30 mins
+    - Sandbox various small changes ~<15 mins

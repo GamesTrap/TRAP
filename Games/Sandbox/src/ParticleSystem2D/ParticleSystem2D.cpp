@@ -1,26 +1,5 @@
 #include "ParticleSystem2D.h"
 
-void ParticleSystem2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
-{
-	for(Particle& particle : m_particlePool)
-	{
-		if (!particle.Active)
-			continue;
-
-		if(particle.LifeRemaining <= 0.0f)
-		{
-			particle.Active = false;
-			continue;
-		}
-
-		particle.LifeRemaining -= deltaTime;
-		particle.Position += particle.Velocity * deltaTime.GetSeconds();
-		particle.Rotation += 0.01f * deltaTime;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void ParticleSystem2D::OnRender()
 {
 	for(Particle& particle : m_particlePool)
@@ -30,12 +9,12 @@ void ParticleSystem2D::OnRender()
 
 		//Fade away particles
 		const f32 life = particle.LifeRemaining / particle.LifeTime;
-		TRAP::Math::Vec4 color = Lerp(particle.ColorEnd, particle.ColorBegin, life);
+		const TRAP::Math::Vec4 color = Lerp(particle.ColorEnd, particle.ColorBegin, life);
 
 		const f32 size = TRAP::Math::Lerp(particle.SizeEnd, particle.SizeBegin, life);
 
 		//Render
-		TRAP::Graphics::Renderer2D::DrawQuad({ {particle.Position.x(), particle.Position.y(), 0.0f}, {particle.Rotation, 0.0f, 0.0f}, {size, size, 1.0f} }, color);
+		TRAP::Graphics::Renderer2D::DrawQuad({ .Position={particle.Position.x(), particle.Position.y(), 0.0f}, .Rotation={particle.Rotation, 0.0f, 0.0f}, .Scale={size, size, 1.0f} }, color);
 	}
 }
 
@@ -63,15 +42,4 @@ void ParticleSystem2D::Emit(const ParticleProps& particleProps)
 	particle.SizeEnd = particleProps.SizeEnd;
 
 	m_poolIndex = (m_poolIndex - 1) % m_maxParticles;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void ParticleSystem2D::SetMaxParticles(const u32 maxParticles)
-{
-	if(m_particlePool.size() < maxParticles)
-		m_particlePool.resize(maxParticles);
-
-	m_maxParticles = maxParticles;
-	m_poolIndex = m_maxParticles - 1;
 }
