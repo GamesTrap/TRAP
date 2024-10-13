@@ -5285,3 +5285,4 @@ SITREP 10/13/2024|24w41b2
     - IPv4Address/IPv6Address Changed server for public IP discovery ~<10 mins
     - HeadlessTests various changes ~<30 mins
     - Sandbox various small changes ~<15 mins
+    - Input Wayland Fixed controllers not being detected when plugged in while engine is running ~<5 mins

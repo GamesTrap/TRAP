@@ -3797,6 +3797,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEventsWayland()
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::WindowingAPI) != ProfileSystems::None);
 
+	Input::DetectControllerConnectionLinux();
+
     f64 timeout = 0.0;
     HandleEventsWayland(&timeout);
 }
