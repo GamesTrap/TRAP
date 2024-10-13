@@ -11,11 +11,11 @@ public:
 	void OnAttach() override;
 	void OnImGuiRender() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
-	void OnEvent(TRAP::Events::Event& event) override;
+	constexpr void OnEvent(TRAP::Events::Event& event) override;
 
 	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 	bool OnMouseMove(const TRAP::Events::MouseMoveEvent& event);
-	bool OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event);
+	constexpr bool OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event);
 
 private:
 	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_cubeVertexBuffer = nullptr;
@@ -57,13 +57,13 @@ private:
 	TRAP::Math::Vec3 m_cubeRotation{0.0f, 0.0f, 0.0f};
 	TRAP::Math::Vec3 m_cubeScale{1.0f, 1.0f, 1.0f};
 
-	std::array<f32, 50> m_frameTimeHistory{};
+	std::array<f32, 50u> m_frameTimeHistory{};
 	TRAP::Utils::Timer m_titleTimer{};
 
 	bool m_ignoreImGui = false;
 
 	std::vector<std::string> m_shaderNames{"Base", "Color", "Texture", "Diffuse Reflection", "Phong Lightning"};
-	u32 m_currentShader = 0;
+	u32 m_currentShader = 0u;
 	bool m_wireFrame = false;
 	bool m_drawSkyBox = true;
 
@@ -73,5 +73,24 @@ private:
 	f32 m_translationSpeed = 2.5f;
 	bool m_firstMouse = true; //Camera Controls
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void Cube3D::OnEvent(TRAP::Events::Event& event)
+{
+    const TRAP::Events::EventDispatcher dispatcher(event);
+    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&Cube3D::OnKeyPress, this));
+    dispatcher.Dispatch<TRAP::Events::MouseMoveEvent>(std::bind_front(&Cube3D::OnMouseMove, this));
+    dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(std::bind_front(&Cube3D::OnFrameBufferResize, this));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr bool Cube3D::OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event)
+{
+    m_camera.SetViewportSize(event.GetWidth(), event.GetHeight());
+
+    return true;
+}
 
 #endif /*GAMESTRAP_CUBE3D_H*/

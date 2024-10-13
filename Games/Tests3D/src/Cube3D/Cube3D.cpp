@@ -36,25 +36,25 @@ namespace
          1.0f,  1.0f,  1.0f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f,     0.0f,  1.0f,  0.0f
     };
 
-    constexpr std::array<u16, 36> CubeIndices
+    constexpr std::array<u16, 36u> CubeIndices
     {
-         0,  3,  2,
-         2,  1,  0,
+         0u,  3u,  2u,
+         2u,  1u,  0u,
 
-         4,  5,  6,
-         6,  7,  4,
+         4u,  5u,  6u,
+         6u,  7u,  4u,
 
-        11,  8,  9,
-         9, 10, 11,
+        11u,  8u,  9u,
+         9u, 10u, 11u,
 
-        12, 13, 14,
-        14, 15, 12,
+        12u, 13u, 14u,
+        14u, 15u, 12u,
 
-        16, 17, 18,
-        18, 19, 16,
+        16u, 17u, 18u,
+        18u, 19u, 16u,
 
-        20, 21, 22,
-        22, 23, 20
+        20u, 21u, 22u,
+        22u, 23u, 20u
     };
 
     constexpr std::array<f32, 3ull * 36ull> SkyBoxVertices
@@ -150,13 +150,16 @@ void Cube3D::OnAttach()
     };
     m_skyBoxVertexBuffer->SetLayout(skyBoxLayout);
 
-    m_textureSamplerDesc.AddressU = TRAP::Graphics::AddressMode::ClampToEdge;
-    m_textureSamplerDesc.AddressV = TRAP::Graphics::AddressMode::ClampToEdge;
-    m_textureSamplerDesc.AddressW = TRAP::Graphics::AddressMode::ClampToEdge;
-    m_textureSamplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
-    m_textureSamplerDesc.MagFilter = TRAP::Graphics::FilterType::Linear;
-    m_textureSamplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;
-    m_textureSamplerDesc.EnableAnisotropy = true;
+    m_textureSamplerDesc = TRAP::Graphics::RendererAPI::SamplerDesc
+    {
+        .MinFilter = TRAP::Graphics::FilterType::Linear,
+        .MagFilter = TRAP::Graphics::FilterType::Linear,
+        .MipMapMode = TRAP::Graphics::MipMapMode::Linear,
+        .AddressU = TRAP::Graphics::AddressMode::ClampToEdge,
+        .AddressV = TRAP::Graphics::AddressMode::ClampToEdge,
+        .AddressW = TRAP::Graphics::AddressMode::ClampToEdge,
+        .EnableAnisotropy = true
+    };
     m_textureSampler = TRAP::Graphics::Sampler::Create(m_textureSamplerDesc);
 
 	//Camera setup
@@ -223,8 +226,8 @@ void Cube3D::OnImGuiRender()
     ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
     ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
     ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
-    ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()), 0, nullptr, 0, 33,
-                     ImVec2(200, 50));
+    ImGui::PlotLines("##frametimeHistory", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()),
+                     0, nullptr, 0.0f, 33.0f, ImVec2(200.0f, 50.0f));
     ImGui::Separator();
     ImGui::Text("Camera");
     ImGui::Text("Camera Position: %f %f %f", pos.x(), pos.y(), pos.z());
@@ -238,19 +241,19 @@ void Cube3D::OnImGuiRender()
     ImGui::Text("Press ALT to toggle Mouse Movement");
     ImGui::Separator();
     ImGui::Text("Cube");
-    ImGui::DragFloat3("Cube Position", &std::get<0>(m_cubePosition));
-    ImGui::DragFloat3("Cube Rotation", &std::get<0>(m_cubeRotation), 1, -360.0f, 360.0f);
-    ImGui::DragFloat3("Cube Scale", &std::get<0>(m_cubeScale), 1, 0.1f, 1000.0f);
+    ImGui::DragFloat3("Cube Position", &std::get<0u>(m_cubePosition));
+    ImGui::DragFloat3("Cube Rotation", &std::get<0u>(m_cubeRotation), 1, -360.0f, 360.0f);
+    ImGui::DragFloat3("Cube Scale", &std::get<0u>(m_cubeScale), 1, 0.1f, 1000.0f);
     ImGui::Separator();
 	if (m_shaderNames[m_currentShader] == "Diffuse Reflection")
 	{
         DiffuseReflectionDataBuffer diffuseReflectionDataBuffer = m_diffuseReflectionDataBuffer;
 
         ImGui::Text("Diffuse Reflection");
-        ImGui::DragFloat3("Light Position", &std::get<0>(m_lightPosition), 0.1f);
-        ImGui::SliderFloat3("Light Source Intensity", &std::get<0>(diffuseReflectionDataBuffer.LightSourceIntensity), 0.0f,
+        ImGui::DragFloat3("Light Position", &std::get<0u>(m_lightPosition), 0.1f);
+        ImGui::SliderFloat3("Light Source Intensity", &std::get<0u>(diffuseReflectionDataBuffer.LightSourceIntensity), 0.0f,
                             1.0f);
-        ImGui::SliderFloat3("Diffuse Reflectivity", &std::get<0>(diffuseReflectionDataBuffer.DiffuseReflectivity), 0.0f,
+        ImGui::SliderFloat3("Diffuse Reflectivity", &std::get<0u>(diffuseReflectionDataBuffer.DiffuseReflectivity), 0.0f,
                             1.0f);
         ImGui::Separator();
 
@@ -267,14 +270,14 @@ void Cube3D::OnImGuiRender()
 
         ImGui::Text("Phong Lightning");
         ImGui::Text("Light");
-        ImGui::DragFloat3("Light Position", &std::get<0>(m_lightPosition), 0.1f);
-        ImGui::SliderFloat3("Light Ambient", &std::get<0>(phongLightningDataBuffer.LightLa), 0.0f, 1.0f);
-        ImGui::SliderFloat3("Light Diffuse", &std::get<0>(phongLightningDataBuffer.LightLd), 0.0f, 1.0f);
-        ImGui::SliderFloat3("Light Specular", &std::get<0>(phongLightningDataBuffer.LightLs), 0.0f, 1.0f);
+        ImGui::DragFloat3("Light Position", &std::get<0u>(m_lightPosition), 0.1f);
+        ImGui::SliderFloat3("Light Ambient", &std::get<0u>(phongLightningDataBuffer.LightLa), 0.0f, 1.0f);
+        ImGui::SliderFloat3("Light Diffuse", &std::get<0u>(phongLightningDataBuffer.LightLd), 0.0f, 1.0f);
+        ImGui::SliderFloat3("Light Specular", &std::get<0u>(phongLightningDataBuffer.LightLs), 0.0f, 1.0f);
         ImGui::Text("Material");
-        ImGui::SliderFloat3("Material Ambient", &std::get<0>(phongLightningDataBuffer.MaterialKa), 0.0f, 1.0f);
-        ImGui::SliderFloat3("Material Diffuse", &std::get<0>(phongLightningDataBuffer.MaterialKd), 0.0f, 1.0f);
-        ImGui::SliderFloat3("Material Specular", &std::get<0>(phongLightningDataBuffer.MaterialKs), 0.0f, 1.0f);
+        ImGui::SliderFloat3("Material Ambient", &std::get<0u>(phongLightningDataBuffer.MaterialKa), 0.0f, 1.0f);
+        ImGui::SliderFloat3("Material Diffuse", &std::get<0u>(phongLightningDataBuffer.MaterialKd), 0.0f, 1.0f);
+        ImGui::SliderFloat3("Material Specular", &std::get<0u>(phongLightningDataBuffer.MaterialKs), 0.0f, 1.0f);
         ImGui::SliderFloat("Material Shininess", &phongLightningDataBuffer.MaterialShininess, 1.0f, 100.0f);
         ImGui::Separator();
 
@@ -315,10 +318,10 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	}
 
     //Use Textures
-    TRAP::Graphics::ShaderManager::GetGraphics("Texture")->UseTexture(0, 0, *TRAP::Graphics::TextureManager::Get2D("UVGrid"));
-    TRAP::Graphics::ShaderManager::GetGraphics("Texture")->UseSampler(0, 1, *m_textureSampler);
-    TRAP::Graphics::ShaderManager::GetGraphics("SkyBox")->UseTexture(0, 0, *TRAP::Graphics::TextureManager::GetCube("SkyBox"));
-    TRAP::Graphics::ShaderManager::GetGraphics("SkyBox")->UseSampler(0, 1, *m_textureSampler);
+    TRAP::Graphics::ShaderManager::GetGraphics("Texture")->UseTexture(0u, 0u, *TRAP::Graphics::TextureManager::Get2D("UVGrid"));
+    TRAP::Graphics::ShaderManager::GetGraphics("Texture")->UseSampler(0u, 1u, *m_textureSampler);
+    TRAP::Graphics::ShaderManager::GetGraphics("SkyBox")->UseTexture(0u, 0u, *TRAP::Graphics::TextureManager::GetCube("SkyBox"));
+    TRAP::Graphics::ShaderManager::GetGraphics("SkyBox")->UseSampler(0u, 1u, *m_textureSampler);
 
     if(m_wireFrame)
     {
@@ -346,9 +349,9 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
             m_diffuseReflectionUniformBuffer->SetData(&m_diffuseReflectionDataBuffer,
                                                       sizeof(DiffuseReflectionDataBuffer));
             m_diffuseReflectionUniformBuffer->AwaitLoading();
-            TRAP::Graphics::ShaderManager::GetGraphics("Diffuse Reflection")->UseUBO(1, 2, *m_diffuseReflectionUniformBuffer);
+            TRAP::Graphics::ShaderManager::GetGraphics("Diffuse Reflection")->UseUBO(1u, 2u, *m_diffuseReflectionUniformBuffer);
 
-            TRAP::Graphics::Renderer::Submit(*TRAP::Graphics::ShaderManager::GetGraphics(m_shaderNames[0]),
+            TRAP::Graphics::Renderer::Submit(*TRAP::Graphics::ShaderManager::GetGraphics(m_shaderNames[0u]),
                                              *m_cubeVertexBuffer, *m_cubeIndexBuffer,
                                              TRAP::Math::Translate(TRAP::Math::Vec3(m_lightPosition)) *
                                              TRAP::Math::Scale(TRAP::Math::Vec3(0.1f, 0.1f, 0.1f)));
@@ -360,9 +363,9 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
             m_phongLightningUniformBuffer->SetData(&m_phongLightningDataBuffer,
                                                    sizeof(PhongLightningDataBuffer));
             m_phongLightningUniformBuffer->AwaitLoading();
-            TRAP::Graphics::ShaderManager::GetGraphics("Phong Lightning")->UseUBO(1, 2, *m_phongLightningUniformBuffer);
+            TRAP::Graphics::ShaderManager::GetGraphics("Phong Lightning")->UseUBO(1u, 2u, *m_phongLightningUniformBuffer);
 
-            TRAP::Graphics::Renderer::Submit(*TRAP::Graphics::ShaderManager::GetGraphics(m_shaderNames[0]),
+            TRAP::Graphics::Renderer::Submit(*TRAP::Graphics::ShaderManager::GetGraphics(m_shaderNames[0u]),
                                              *m_cubeVertexBuffer, *m_cubeIndexBuffer,
                                              TRAP::Math::Translate(TRAP::Math::Vec3(m_lightPosition)) *
                                              TRAP::Math::Scale(TRAP::Math::Vec3(0.1f, 0.1f, 0.1f)));
@@ -405,11 +408,11 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     if (m_titleTimer.Elapsed() >= 0.025f)
     {
         m_titleTimer.Reset();
-        constinit static usize frameTimeIndex = 0;
-        if (frameTimeIndex < m_frameTimeHistory.size() - 1)
+        constinit static usize frameTimeIndex = 0u;
+        if (frameTimeIndex < m_frameTimeHistory.size() - 1u)
         {
             m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
-            frameTimeIndex++;
+            ++frameTimeIndex;
         }
         else
         {
@@ -417,16 +420,6 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
             m_frameTimeHistory.back() = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
         }
     }
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void Cube3D::OnEvent(TRAP::Events::Event& event)
-{
-    TRAP::Events::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(std::bind_front(&Cube3D::OnKeyPress, this));
-    dispatcher.Dispatch<TRAP::Events::MouseMoveEvent>(std::bind_front(&Cube3D::OnMouseMove, this));
-    dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(std::bind_front(&Cube3D::OnFrameBufferResize, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -477,7 +470,7 @@ bool Cube3D::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 
     if(event.GetKey() == TRAP::Input::Key::F1)
 	{
-        m_currentShader = (m_currentShader + 1) % NumericCast<u32>(m_shaderNames.size());
+        m_currentShader = (m_currentShader + 1u) % NumericCast<u32>(m_shaderNames.size());
         return true;
 	}
 
@@ -507,13 +500,4 @@ bool Cube3D::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 	}
 
     return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool Cube3D::OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event)
-{
-    m_camera.SetViewportSize(event.GetWidth(), event.GetHeight());
-
-    return true;
 }

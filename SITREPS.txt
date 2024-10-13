@@ -5288,3 +5288,4 @@ SITREP 10/13/2024|24w41b2
     - Input Wayland Fixed controllers not being detected when plugged in while engine is running ~<5 mins
     - WindowingAPILinuxWayland Fixed crash on drag and drop ~<5 mins
     - Tests various small changes ~<45 mins
+    - Tests3D various small changes ~<10 mins
