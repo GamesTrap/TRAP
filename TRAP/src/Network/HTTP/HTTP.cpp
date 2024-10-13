@@ -213,7 +213,7 @@ TRAP::Network::HTTP::HTTP(const std::string& host, const u16 port)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::HTTP::SetHost(std::string host, const u16 port)
+void TRAP::Network::HTTP::SetHost(std::string host, const u16 port, const IPVersion ipVersion)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
@@ -243,8 +243,10 @@ void TRAP::Network::HTTP::SetHost(std::string host, const u16 port)
 	if (!m_hostName.empty() && (*m_hostName.rbegin() == '/'))
 		m_hostName.erase(m_hostName.size() - 1);
 
-	m_hostIPv6 = IPv6Address(m_hostName);
-	m_host = IPv4Address(m_hostName);
+	if(std::to_underlying(ipVersion & IPVersion::IPv6) != 0u)
+		m_hostIPv6 = IPv6Address(m_hostName);
+	if(std::to_underlying(ipVersion & IPVersion::IPv4) != 0u)
+		m_host = IPv4Address(m_hostName);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

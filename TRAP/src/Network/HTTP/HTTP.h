@@ -36,6 +36,17 @@
 
 namespace TRAP::Network
 {
+	/// @brief Enum describing which IP version to use.
+	///        Defaults to both IPv6 and IPv4 (prioritizes IPv6).
+	enum class IPVersion : u8
+	{
+		IPv6 = BIT(0u), //Proritize IPv6 over IPv4
+		IPv4 = BIT(1u),
+
+		Combined = IPv6 | IPv4
+	};
+	MAKE_ENUM_FLAG(IPVersion);
+
 	/// @brief A HTTP client.
 	/// Prioritizes IPv6 over IPv4.
 	class HTTP
@@ -301,7 +312,8 @@ namespace TRAP::Network
 		/// standard one, or use an unknown protocol.
 		/// @param host Web server to connect to.
 		/// @param port Port to use for connection.
-		void SetHost(std::string host, u16 port = 0);
+		/// @param ipVersion Which version of the Internet Protocol to use.
+		void SetHost(std::string host, u16 port = 0u, IPVersion ipVersion = IPVersion::Combined);
 
 		/// @brief Send a HTTP request and return the server's response.
 		///
