@@ -136,7 +136,7 @@ namespace TRAP::Network
 			/// @return True if the field exists, false otherwise.
 			[[nodiscard]] bool HasField(const std::string& field) const;
 
-			using FieldTable = std::map<std::string, std::string, std::equal_to<>>;
+			using FieldTable = std::map<std::string, std::string, std::less<>>;
 
 			FieldTable m_fields{};         //Fields of the header associated to their value
 			Method m_method = Method::GET; //Method to use for the request
