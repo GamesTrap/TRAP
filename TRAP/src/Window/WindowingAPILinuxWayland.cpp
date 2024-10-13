@@ -587,7 +587,7 @@ void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleEnter([[maybe_unused]] void* 
         }
     }
 
-    if(s_Data.Wayland.DragOffer != nullptr)
+    if(s_Data.Wayland.DragOffer == nullptr)
     {
         wl_data_offer_accept(offer, serial, nullptr);
         wl_data_offer_destroy(offer);
