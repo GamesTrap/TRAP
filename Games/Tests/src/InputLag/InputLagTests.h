@@ -19,6 +19,20 @@ public:
 		InputMessage
 	};
 
+	//NVIDIA-Relfex stuff
+	struct ReflexData
+	{
+	#ifdef NVIDIA_REFLEX_AVAILABLE
+		std::array<f32, 50u> m_totalHistory{};
+		std::array<f32, 50u> m_simulationDeltaHistory{};
+		std::array<f32, 50u> m_renderDeltaHistory{};
+		std::array<f32, 50u> m_presentDeltaHistory{};
+		std::array<f32, 50u> m_driverDeltaHistory{};
+		std::array<f32, 50u> m_OSRenderQueueDeltaHistory{};
+		std::array<f32, 50u> m_GPURenderDeltaHistory{};
+	#endif /*NVIDIA_REFLEX_AVAILABLE*/
+	};
+
 private:
 	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 	constexpr bool OnMouseMove(const TRAP::Events::MouseMoveEvent& event);
@@ -33,16 +47,7 @@ private:
 	TRAP::Math::Vec2 m_cursorVelocity{};
 	bool m_showForecasts = true;
 
-	//NVIDIA-Relfex stuff
-#ifdef NVIDIA_REFLEX_AVAILABLE
-	std::array<f32, 50u> m_totalHistory{};
-	std::array<f32, 50u> m_simulationDeltaHistory{};
-	std::array<f32, 50u> m_renderDeltaHistory{};
-	std::array<f32, 50u> m_presentDeltaHistory{};
-	std::array<f32, 50u> m_driverDeltaHistory{};
-	std::array<f32, 50u> m_OSRenderQueueDeltaHistory{};
-	std::array<f32, 50u> m_GPURenderDeltaHistory{};
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+	ReflexData m_reflexData{};
 
 	TRAP::Utils::Timer m_updateLatencyTimer{};
 };

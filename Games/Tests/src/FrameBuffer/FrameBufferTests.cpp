@@ -70,7 +70,7 @@ void FrameBufferTests::OnAttach()
     //Load Shader
     m_shader = TRAP::Graphics::ShaderManager::LoadFile("TextureTest", "./Assets/Shaders/testtextureseperate.shader", TRAP::Graphics::ShaderType::Graphics);
 
-    static constexpr TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc
+    static const TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc
     {
         .MinFilter = TRAP::Graphics::FilterType::Linear,
         .MagFilter = TRAP::Graphics::FilterType::Linear,

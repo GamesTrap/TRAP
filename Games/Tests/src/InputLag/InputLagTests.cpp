@@ -38,20 +38,20 @@ namespace
 		ImGui::Text("This software contains source code provided by NVIDIA Corporation.");
 	}
 
-	void DrawNVIDIAReflexStats()
+	void DrawNVIDIAReflexStats([[maybe_unused]] const InputLagTests::ReflexData& reflexData)
 	{
 #ifdef NVIDIA_REFLEX_AVAILABLE
 	if(TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported)
 	{
 		ImGui::Begin("NVIDIA Reflex Latency", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 					ImGuiWindowFlags_AlwaysAutoResize);
-		ImGui::PlotLines("Total Game to Render Latency", m_totalHistory.data(), NumericCast<i32>(m_totalHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("Simulation Delta", m_simulationDeltaHistory.data(), NumericCast<i32>(m_simulationDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("Render Delta", m_renderDeltaHistory.data(), NumericCast<i32>(m_renderDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("Present Delta", m_presentDeltaHistory.data(), NumericCast<i32>(m_presentDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("Driver Delta", m_driverDeltaHistory.data(), NumericCast<i32>(m_driverDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("OS Render Queue Delta", m_OSRenderQueueDeltaHistory.data(), NumericCast<i32>(m_OSRenderQueueDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("GPU Render Delta", m_GPURenderDeltaHistory.data(), NumericCast<i32>(m_GPURenderDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("Total Game to Render Latency", reflexData.m_totalHistory.data(), NumericCast<i32>(reflexData.m_totalHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("Simulation Delta", reflexData.m_simulationDeltaHistory.data(), NumericCast<i32>(reflexData.m_simulationDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("Render Delta", reflexData.m_renderDeltaHistory.data(), NumericCast<i32>(reflexData.m_renderDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("Present Delta", reflexData.m_presentDeltaHistory.data(), NumericCast<i32>(reflexData.m_presentDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("Driver Delta", reflexData.m_driverDeltaHistory.data(), NumericCast<i32>(reflexData.m_driverDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("OS Render Queue Delta", reflexData.m_OSRenderQueueDeltaHistory.data(), NumericCast<i32>(reflexData.m_OSRenderQueueDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("GPU Render Delta", reflexData.m_GPURenderDeltaHistory.data(), NumericCast<i32>(reflexData.m_GPURenderDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
 		ImGui::End();
 	}
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
@@ -121,7 +121,7 @@ void InputLagTests::OnImGuiRender()
 	DrawLatencyModeSelection();
 	ImGui::End();
 
-	DrawNVIDIAReflexStats();
+	DrawNVIDIAReflexStats(m_reflexData);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -146,17 +146,17 @@ void InputLagTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delta
 
 		constinit static usize frameTimeIndex = 0u;
 		m_updateLatencyTimer.Reset();
-		if (frameTimeIndex < m_totalHistory.size() - 1u)
+		if (frameTimeIndex < m_reflexData.m_totalHistory.size() - 1u)
 		{
 			if(curr.gpuRenderEndTime != 0)
 			{
-				m_totalHistory[frameTimeIndex] = totalGameToRenderLatencyMs;
-				m_simulationDeltaHistory[frameTimeIndex] = simulationDeltaMs;
-				m_renderDeltaHistory[frameTimeIndex] = renderDeltaMs;
-				m_presentDeltaHistory[frameTimeIndex] = presentDeltaMs;
-				m_driverDeltaHistory[frameTimeIndex] = driverDeltaMs;
-				m_OSRenderQueueDeltaHistory[frameTimeIndex] = OSRenderQueueDeltaMs;
-				m_GPURenderDeltaHistory[frameTimeIndex] = GPURenderDeltaMs;
+				m_reflexData.m_totalHistory[frameTimeIndex] = totalGameToRenderLatencyMs;
+				m_reflexData.m_simulationDeltaHistory[frameTimeIndex] = simulationDeltaMs;
+				m_reflexData.m_renderDeltaHistory[frameTimeIndex] = renderDeltaMs;
+				m_reflexData.m_presentDeltaHistory[frameTimeIndex] = presentDeltaMs;
+				m_reflexData.m_driverDeltaHistory[frameTimeIndex] = driverDeltaMs;
+				m_reflexData.m_OSRenderQueueDeltaHistory[frameTimeIndex] = OSRenderQueueDeltaMs;
+				m_reflexData.m_GPURenderDeltaHistory[frameTimeIndex] = GPURenderDeltaMs;
 			}
 			++frameTimeIndex;
 		}
@@ -164,20 +164,20 @@ void InputLagTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delta
 		{
 			if(curr.gpuRenderEndTime != 0)
 			{
-				std::shift_left(m_totalHistory.begin(), m_totalHistory.end(), 1);
-				m_totalHistory.back() = totalGameToRenderLatencyMs;
-				std::shift_left(m_simulationDeltaHistory.begin(), m_simulationDeltaHistory.end(), 1);
-				m_simulationDeltaHistory.back() = simulationDeltaMs;
-				std::shift_left(m_renderDeltaHistory.begin(), m_renderDeltaHistory.end(), 1);
-				m_renderDeltaHistory.back() = renderDeltaMs;
-				std::shift_left(m_presentDeltaHistory.begin(), m_presentDeltaHistory.end(), 1);
-				m_presentDeltaHistory.back() = presentDeltaMs;
-				std::shift_left(m_driverDeltaHistory.begin(), m_driverDeltaHistory.end(), 1);
-				m_driverDeltaHistory.back() = driverDeltaMs;
-				std::shift_left(m_OSRenderQueueDeltaHistory.begin(), m_OSRenderQueueDeltaHistory.end(), 1);
-				m_OSRenderQueueDeltaHistory.back() = OSRenderQueueDeltaMs;
-				std::shift_left(m_GPURenderDeltaHistory.begin(), m_GPURenderDeltaHistory.end(), 1);
-				m_GPURenderDeltaHistory.back() = GPURenderDeltaMs;
+				std::shift_left(m_reflexData.m_totalHistory.begin(), m_reflexData.m_totalHistory.end(), 1);
+				m_reflexData.m_totalHistory.back() = totalGameToRenderLatencyMs;
+				std::shift_left(m_reflexData.m_simulationDeltaHistory.begin(), m_reflexData.m_simulationDeltaHistory.end(), 1);
+				m_reflexData.m_simulationDeltaHistory.back() = simulationDeltaMs;
+				std::shift_left(m_reflexData.m_renderDeltaHistory.begin(), m_reflexData.m_renderDeltaHistory.end(), 1);
+				m_reflexData.m_renderDeltaHistory.back() = renderDeltaMs;
+				std::shift_left(m_reflexData.m_presentDeltaHistory.begin(), m_reflexData.m_presentDeltaHistory.end(), 1);
+				m_reflexData.m_presentDeltaHistory.back() = presentDeltaMs;
+				std::shift_left(m_reflexData.m_driverDeltaHistory.begin(), m_reflexData.m_driverDeltaHistory.end(), 1);
+				m_reflexData.m_driverDeltaHistory.back() = driverDeltaMs;
+				std::shift_left(m_reflexData.m_OSRenderQueueDeltaHistory.begin(), m_reflexData.m_OSRenderQueueDeltaHistory.end(), 1);
+				m_reflexData.m_OSRenderQueueDeltaHistory.back() = OSRenderQueueDeltaMs;
+				std::shift_left(m_reflexData.m_GPURenderDeltaHistory.begin(), m_reflexData.m_GPURenderDeltaHistory.end(), 1);
+				m_reflexData.m_GPURenderDeltaHistory.back() = GPURenderDeltaMs;
 			}
 		}
 	}
