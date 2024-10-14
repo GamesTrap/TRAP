@@ -595,9 +595,9 @@ namespace
                 .MinFilter = TRAP::Graphics::RendererAPI::FilterType::Linear,
                 .MagFilter = TRAP::Graphics::RendererAPI::FilterType::Linear,
                 .MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode::Linear,
-                .AddressU = TRAP::Graphics::RendererAPI::AddressMode::Repeat,
-                .AddressV = TRAP::Graphics::RendererAPI::AddressMode::Repeat,
-                .AddressW = TRAP::Graphics::RendererAPI::AddressMode::Repeat,
+                .AddressU = TRAP::Graphics::RendererAPI::AddressMode::ClampToEdge,
+                .AddressV = TRAP::Graphics::RendererAPI::AddressMode::ClampToEdge,
+                .AddressW = TRAP::Graphics::RendererAPI::AddressMode::ClampToEdge,
                 .MipLodBias = 0.0f,
                 .SetLodRange = true,
                 .MinLod = -1000.0f,
@@ -1711,12 +1711,12 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
 
             for (i32 n = 0; n < draw_data.CmdListsCount; ++n)
             {
-                if(const ImDrawList* const cmd_list = draw_data.CmdLists[n]; cmd_list)
+                if(const ImDrawList* const draw_list = draw_data.CmdLists[n]; draw_list)
                 {
-                    std::ranges::copy(cmd_list->VtxBuffer, vtxDst.begin());
-                    std::ranges::copy(cmd_list->IdxBuffer, idxDst.begin());
-                    vtxDst = vtxDst.subspan(cmd_list->VtxBuffer.Size);
-                    idxDst = idxDst.subspan(cmd_list->IdxBuffer.Size);
+                    std::ranges::copy(draw_list->VtxBuffer, vtxDst.begin());
+                    std::ranges::copy(draw_list->IdxBuffer, idxDst.begin());
+                    vtxDst = vtxDst.subspan(draw_list->VtxBuffer.Size);
+                    idxDst = idxDst.subspan(draw_list->IdxBuffer.Size);
                 }
             }
             rb.IndexBuffer->UnMapBuffer();
@@ -1726,6 +1726,16 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
 
     // Setup desired Vulkan state
     SetupRenderState(draw_data, pipeline, command_buffer, rb, fb_width, fb_height);
+
+    // Setup render state structure (for callbacks and custom texture bindings)
+    ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
+    ImGui_ImplVulkan_RenderState render_state
+    {
+        .CommandBuffer = &command_buffer,
+        .Pipeline = pipeline,
+        .PipelineLayout = bd->PipelineLayout
+    };
+    platform_io.Renderer_RenderState = &render_state;
 
     // Will project scissor/clipping rectangles into framebuffer space
     const ImVec2 clip_off = draw_data.DisplayPos;         // (0,0) unless using multi-viewports
@@ -1737,13 +1747,13 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
     u32 global_idx_offset = 0u;
     for (i32 n = 0; n < draw_data.CmdListsCount; ++n)
     {
-        const ImDrawList* const cmd_list = draw_data.CmdLists[n];
-        if(cmd_list == nullptr)
+        const ImDrawList* const draw_list = draw_data.CmdLists[n];
+        if(draw_list == nullptr)
             continue;
 
-        for (i32 cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; ++cmd_i)
+        for (i32 cmd_i = 0; cmd_i < draw_list->CmdBuffer.Size; ++cmd_i)
         {
-            const ImDrawCmd& pcmd = cmd_list->CmdBuffer[cmd_i];
+            const ImDrawCmd& pcmd = draw_list->CmdBuffer[cmd_i];
             if (pcmd.UserCallback != nullptr)
             {
                 // User callback, registered via ImDrawList::AddCallback()
@@ -1751,7 +1761,7 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
                 if (pcmd.UserCallback == ImDrawCallback_ResetRenderState)
                     SetupRenderState(draw_data, pipeline, command_buffer, rb, fb_width, fb_height);
                 else
-                    pcmd.UserCallback(cmd_list, &pcmd);
+                    pcmd.UserCallback(draw_list, &pcmd);
             }
             else
             {
@@ -1789,9 +1799,10 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
                 command_buffer.DrawIndexed(pcmd.ElemCount, pcmd.IdxOffset + global_idx_offset, NumericCast<i32>(pcmd.VtxOffset) + global_vtx_offset);
             }
         }
-        global_idx_offset += NumericCast<u32>(cmd_list->IdxBuffer.Size);
-        global_vtx_offset += cmd_list->VtxBuffer.Size;
+        global_idx_offset += NumericCast<u32>(draw_list->IdxBuffer.Size);
+        global_vtx_offset += draw_list->VtxBuffer.Size;
     }
+    platform_io.Renderer_RenderState = nullptr;
 
     // Note: at this point both vkCmdSetViewport() and vkCmdSetScissor() have been called.
     // Our last values will leak into user/application rendering IF:

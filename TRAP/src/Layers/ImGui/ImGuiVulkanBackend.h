@@ -117,6 +117,15 @@ namespace ImGui::INTERNAL::Vulkan
                   void        SetMSAASamples(VkSampleCountFlagBits sampleCount);
 
                   void        RenderWindow(ImGuiViewport* viewport, [[maybe_unused]] void* render_arg);
+
+    /// @brief [BETA] Selected render state data shared with callbacks.
+    ///        This is temporarily stored in io.BackendRendererRenderState during the ImGui_ImplVulkan_RenderDrawData() call.
+    struct ImGui_ImplVulkan_RenderState
+    {
+        const TRAP::Graphics::API::VulkanCommandBuffer* CommandBuffer;
+        VkPipeline Pipeline;
+        VkPipelineLayout PipelineLayout;
+    };
 };
 
 #endif /*TRAP_HEADLESS_MODE*/
