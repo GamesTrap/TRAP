@@ -21,9 +21,10 @@ To build TRAP™ follow the guide on this page: {ref}`buildingtrap`.
 
 :::{tab} Minimum
 
-- OS: Windows 10/Ubuntu 18.04.6 or newer (64-Bit versions only)
-- Processor: Intel or AMD CPU with AVX2 support
-- Graphics Card: AMD, NVIDIA with Vulkan 1.1 support (Intel untested)
+- OS: Windows 10 / Ubuntu 18.04.6 (64-Bit versions only)
+- Processor: Intel Core series / AMD Ryzen series (with AVX2 support)
+- Graphics Card: AMD Radeon RX 5000 series / NVIDIA GeForce 10 series / Intel Arc series
+- Vulkan: Version 1.1
 - Memory: 4 GB RAM
 - Storage: 5+ GB available space
 - Additional Notes: -
@@ -31,11 +32,12 @@ To build TRAP™ follow the guide on this page: {ref}`buildingtrap`.
 :::
 :::{tab} Recommended
 
-- OS: Windows 10/Ubuntu 18.04.6 or newer (64-Bit versions only)
-- Processor: Intel or AMD CPU with AVX2 support
-- Graphics Card: AMD, NVIDIA with Vulkan 1.1 support (Intel untested)
+- OS: Windows 11 / Ubuntu 24.04 (64-Bit versions only)
+- Processor: Intel Core series / AMD Ryzen series (with AVX2 support)
+- Graphics Card: AMD Radeon RX 5000 series / NVIDIA GeForce 10 series / Intel Arc series
+- Vulkan: Version 1.3
 - Memory: 4 GB RAM
-- Storage: 10+ GB available space
+- Storage: 10+ GB available space (SSD)
 - Additional Notes: -
 
 :::

@@ -5294,3 +5294,7 @@ SITREP 10/13/2024|24w41b2
 SITREP 10/14/2024|24w42a1
     - Changed TRAP Engine version to 24w42a1(0.11.24)
     - ImGuiVulkanBackend Updated backend to match upstream ~<10 mins
+
+SITREP 10/19/2024|24w42b1
+    - Changed TRAP Engine version to 24w42b1(0.11.25)
+    - Docs Updated system requirements ~<10 mins
