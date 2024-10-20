@@ -557,7 +557,7 @@ namespace
 			if(isWindowFocused)
 			{
 				//(Optional) Set OS mouse position from Dear ImGui if requested
-				//(rarely used, only when ImGuiConfigFlags_NavEnableSetMousePos is enabled by used)
+				//(rarely used, only when io.ConfigNavMoveSetMousePos is enabled by user)
 				//When multi-viewports are enabled, all Dear ImGui positions are same as OS positions.
 				if(io.WantSetMousePos)
 					TRAP::INTERNAL::WindowingAPI::SetCursorPos(*window, NumericCast<f64>(mousePosPrev.x - viewport->Pos.x),
@@ -1147,7 +1147,7 @@ namespace
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// @brief Initialize the platform interface.
-	void InitPlatformInterface()
+	void InitMultiViewportSupport()
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
@@ -1187,7 +1187,7 @@ namespace
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// @brief Shutdown the platform interface.
-	void ShutdownPlatformInterface()
+	void ShutdownMultiViewportSupport()
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
@@ -1273,8 +1273,7 @@ namespace
 #ifdef TRAP_PLATFORM_WINDOWS
 	mainViewport->PlatformHandleRaw = WindowingAPI::GetWin32Window(*bd->Window);
 #endif /*TRAP_PLATFORM_WINDOWS*/
-	if ((io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) != 0)
-		InitPlatformInterface();
+	InitMultiViewportSupport();
 
 	bd->ClientAPI = renderAPI;
 	return true;
@@ -1290,7 +1289,7 @@ void TRAP::INTERNAL::ImGuiWindowing::Shutdown()
 	TRAP_ASSERT(bd != nullptr, "ImGuiWindowing::Shutdown(): No platform backend to shutdown, or already shutdown?!");
 	ImGuiIO& io = ImGui::GetIO();
 
-	ShutdownPlatformInterface();
+	ShutdownMultiViewportSupport();
 
 	if (bd->InstalledCallbacks)
 		RestoreCallbacks(*bd->Window);

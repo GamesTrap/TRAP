@@ -580,7 +580,7 @@ ImFont* ImGui::AddFontFromMemoryTTF(const std::span<u8> fontData, const f32 size
 
 	const auto& io = ImGui::GetIO();
 	return (io.ConfigFlags & ImGuiConfigFlags_NoMouse) == 0 &&
-	       (io.ConfigFlags & ImGuiConfigFlags_NavNoCaptureKeyboard) == 0;
+	       io.ConfigNavCaptureKeyboard;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -593,15 +593,11 @@ void ImGui::SetInputEnabled(const bool enable)
 	auto& io = ImGui::GetIO();
 
 	if(enable)
-	{
 		io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
-		io.ConfigFlags &= ~ImGuiConfigFlags_NavNoCaptureKeyboard;
-	}
 	else
-	{
 		io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
-		io.ConfigFlags |= ImGuiConfigFlags_NavNoCaptureKeyboard;
-	}
+
+	io.ConfigNavCaptureKeyboard = enable;
 }
 
 #endif /*TRAP_HEADLESS_MODE*/
