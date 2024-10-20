@@ -21,7 +21,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 298
+#define VULKANLOADER_HEADER_VERSION 299
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -320,6 +320,9 @@ struct VkDeviceTable
 #if defined(VK_AMD_buffer_marker)
 	PFN_vkCmdWriteBufferMarkerAMD vkCmdWriteBufferMarkerAMD;
 #endif /* defined(VK_AMD_buffer_marker) */
+#if defined(VK_AMD_buffer_marker) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
+	PFN_vkCmdWriteBufferMarker2AMD vkCmdWriteBufferMarker2AMD;
+#endif /* defined(VK_AMD_buffer_marker) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2)) */
 #if defined(VK_AMD_display_native_hdr)
 	PFN_vkSetLocalDimmingAMD vkSetLocalDimmingAMD;
 #endif /* defined(VK_AMD_display_native_hdr) */
@@ -743,12 +746,6 @@ struct VkDeviceTable
 	PFN_vkCmdWriteTimestamp2KHR vkCmdWriteTimestamp2KHR;
 	PFN_vkQueueSubmit2KHR vkQueueSubmit2KHR;
 #endif /* defined(VK_KHR_synchronization2) */
-#if defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker)
-	PFN_vkCmdWriteBufferMarker2AMD vkCmdWriteBufferMarker2AMD;
-#endif /* defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker) */
-#if defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints)
-	PFN_vkGetQueueCheckpointData2NV vkGetQueueCheckpointData2NV;
-#endif /* defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints) */
 #if defined(VK_KHR_timeline_semaphore)
 	PFN_vkGetSemaphoreCounterValueKHR vkGetSemaphoreCounterValueKHR;
 	PFN_vkSignalSemaphoreKHR vkSignalSemaphoreKHR;
@@ -805,6 +802,9 @@ struct VkDeviceTable
 	PFN_vkCmdSetCheckpointNV vkCmdSetCheckpointNV;
 	PFN_vkGetQueueCheckpointDataNV vkGetQueueCheckpointDataNV;
 #endif /* defined(VK_NV_device_diagnostic_checkpoints) */
+#if defined(VK_NV_device_diagnostic_checkpoints) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
+	PFN_vkGetQueueCheckpointData2NV vkGetQueueCheckpointData2NV;
+#endif /* defined(VK_NV_device_diagnostic_checkpoints) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2)) */
 #if defined(VK_NV_device_generated_commands)
 	PFN_vkCmdBindPipelineShaderGroupNV vkCmdBindPipelineShaderGroupNV;
 	PFN_vkCmdExecuteGeneratedCommandsNV vkCmdExecuteGeneratedCommandsNV;
@@ -1232,6 +1232,9 @@ extern PFN_vkAntiLagUpdateAMD vkAntiLagUpdateAMD;
 #if defined(VK_AMD_buffer_marker)
 extern PFN_vkCmdWriteBufferMarkerAMD vkCmdWriteBufferMarkerAMD;
 #endif /* defined(VK_AMD_buffer_marker) */
+#if defined(VK_AMD_buffer_marker) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
+extern PFN_vkCmdWriteBufferMarker2AMD vkCmdWriteBufferMarker2AMD;
+#endif /* defined(VK_AMD_buffer_marker) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2)) */
 #if defined(VK_AMD_display_native_hdr)
 extern PFN_vkSetLocalDimmingAMD vkSetLocalDimmingAMD;
 #endif /* defined(VK_AMD_display_native_hdr) */
@@ -1766,12 +1769,6 @@ extern PFN_vkCmdWaitEvents2KHR vkCmdWaitEvents2KHR;
 extern PFN_vkCmdWriteTimestamp2KHR vkCmdWriteTimestamp2KHR;
 extern PFN_vkQueueSubmit2KHR vkQueueSubmit2KHR;
 #endif /* defined(VK_KHR_synchronization2) */
-#if defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker)
-extern PFN_vkCmdWriteBufferMarker2AMD vkCmdWriteBufferMarker2AMD;
-#endif /* defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker) */
-#if defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints)
-extern PFN_vkGetQueueCheckpointData2NV vkGetQueueCheckpointData2NV;
-#endif /* defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints) */
 #if defined(VK_KHR_timeline_semaphore)
 extern PFN_vkGetSemaphoreCounterValueKHR vkGetSemaphoreCounterValueKHR;
 extern PFN_vkSignalSemaphoreKHR vkSignalSemaphoreKHR;
@@ -1866,6 +1863,9 @@ extern PFN_vkGetCudaModuleCacheNV vkGetCudaModuleCacheNV;
 extern PFN_vkCmdSetCheckpointNV vkCmdSetCheckpointNV;
 extern PFN_vkGetQueueCheckpointDataNV vkGetQueueCheckpointDataNV;
 #endif /* defined(VK_NV_device_diagnostic_checkpoints) */
+#if defined(VK_NV_device_diagnostic_checkpoints) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
+extern PFN_vkGetQueueCheckpointData2NV vkGetQueueCheckpointData2NV;
+#endif /* defined(VK_NV_device_diagnostic_checkpoints) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2)) */
 #if defined(VK_NV_device_generated_commands)
 extern PFN_vkCmdBindPipelineShaderGroupNV vkCmdBindPipelineShaderGroupNV;
 extern PFN_vkCmdExecuteGeneratedCommandsNV vkCmdExecuteGeneratedCommandsNV;
@@ -2647,6 +2647,9 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 #if defined(VK_AMD_buffer_marker)
 	vkCmdWriteBufferMarkerAMD = reinterpret_cast<PFN_vkCmdWriteBufferMarkerAMD>(load(context, "vkCmdWriteBufferMarkerAMD"));
 #endif /* defined(VK_AMD_buffer_marker) */
+#if defined(VK_AMD_buffer_marker) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
+	vkCmdWriteBufferMarker2AMD = reinterpret_cast<PFN_vkCmdWriteBufferMarker2AMD>(load(context, "vkCmdWriteBufferMarker2AMD"));
+#endif /* defined(VK_AMD_buffer_marker) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2)) */
 #if defined(VK_AMD_display_native_hdr)
 	vkSetLocalDimmingAMD = reinterpret_cast<PFN_vkSetLocalDimmingAMD>(load(context, "vkSetLocalDimmingAMD"));
 #endif /* defined(VK_AMD_display_native_hdr) */
@@ -3070,12 +3073,6 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkCmdWriteTimestamp2KHR = reinterpret_cast<PFN_vkCmdWriteTimestamp2KHR>(load(context, "vkCmdWriteTimestamp2KHR"));
 	vkQueueSubmit2KHR = reinterpret_cast<PFN_vkQueueSubmit2KHR>(load(context, "vkQueueSubmit2KHR"));
 #endif /* defined(VK_KHR_synchronization2) */
-#if defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker)
-	vkCmdWriteBufferMarker2AMD = reinterpret_cast<PFN_vkCmdWriteBufferMarker2AMD>(load(context, "vkCmdWriteBufferMarker2AMD"));
-#endif /* defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker) */
-#if defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints)
-	vkGetQueueCheckpointData2NV = reinterpret_cast<PFN_vkGetQueueCheckpointData2NV>(load(context, "vkGetQueueCheckpointData2NV"));
-#endif /* defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints) */
 #if defined(VK_KHR_timeline_semaphore)
 	vkGetSemaphoreCounterValueKHR = reinterpret_cast<PFN_vkGetSemaphoreCounterValueKHR>(load(context, "vkGetSemaphoreCounterValueKHR"));
 	vkSignalSemaphoreKHR = reinterpret_cast<PFN_vkSignalSemaphoreKHR>(load(context, "vkSignalSemaphoreKHR"));
@@ -3132,6 +3129,9 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkCmdSetCheckpointNV = reinterpret_cast<PFN_vkCmdSetCheckpointNV>(load(context, "vkCmdSetCheckpointNV"));
 	vkGetQueueCheckpointDataNV = reinterpret_cast<PFN_vkGetQueueCheckpointDataNV>(load(context, "vkGetQueueCheckpointDataNV"));
 #endif /* defined(VK_NV_device_diagnostic_checkpoints) */
+#if defined(VK_NV_device_diagnostic_checkpoints) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
+	vkGetQueueCheckpointData2NV = reinterpret_cast<PFN_vkGetQueueCheckpointData2NV>(load(context, "vkGetQueueCheckpointData2NV"));
+#endif /* defined(VK_NV_device_diagnostic_checkpoints) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2)) */
 #if defined(VK_NV_device_generated_commands)
 	vkCmdBindPipelineShaderGroupNV = reinterpret_cast<PFN_vkCmdBindPipelineShaderGroupNV>(load(context, "vkCmdBindPipelineShaderGroupNV"));
 	vkCmdExecuteGeneratedCommandsNV = reinterpret_cast<PFN_vkCmdExecuteGeneratedCommandsNV>(load(context, "vkCmdExecuteGeneratedCommandsNV"));
@@ -3531,6 +3531,9 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 #if defined(VK_AMD_buffer_marker)
 	table.vkCmdWriteBufferMarkerAMD = reinterpret_cast<PFN_vkCmdWriteBufferMarkerAMD>(load(device, "vkCmdWriteBufferMarkerAMD"));
 #endif /* defined(VK_AMD_buffer_marker) */
+#if defined(VK_AMD_buffer_marker) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
+	table.vkCmdWriteBufferMarker2AMD = reinterpret_cast<PFN_vkCmdWriteBufferMarker2AMD>(load(device, "vkCmdWriteBufferMarker2AMD"));
+#endif /* defined(VK_AMD_buffer_marker) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2)) */
 #if defined(VK_AMD_display_native_hdr)
 	table.vkSetLocalDimmingAMD = reinterpret_cast<PFN_vkSetLocalDimmingAMD>(load(device, "vkSetLocalDimmingAMD"));
 #endif /* defined(VK_AMD_display_native_hdr) */
@@ -3954,12 +3957,6 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkCmdWriteTimestamp2KHR = reinterpret_cast<PFN_vkCmdWriteTimestamp2KHR>(load(device, "vkCmdWriteTimestamp2KHR"));
 	table.vkQueueSubmit2KHR = reinterpret_cast<PFN_vkQueueSubmit2KHR>(load(device, "vkQueueSubmit2KHR"));
 #endif /* defined(VK_KHR_synchronization2) */
-#if defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker)
-	table.vkCmdWriteBufferMarker2AMD = reinterpret_cast<PFN_vkCmdWriteBufferMarker2AMD>(load(device, "vkCmdWriteBufferMarker2AMD"));
-#endif /* defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker) */
-#if defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints)
-	table.vkGetQueueCheckpointData2NV = reinterpret_cast<PFN_vkGetQueueCheckpointData2NV>(load(device, "vkGetQueueCheckpointData2NV"));
-#endif /* defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints) */
 #if defined(VK_KHR_timeline_semaphore)
 	table.vkGetSemaphoreCounterValueKHR = reinterpret_cast<PFN_vkGetSemaphoreCounterValueKHR>(load(device, "vkGetSemaphoreCounterValueKHR"));
 	table.vkSignalSemaphoreKHR = reinterpret_cast<PFN_vkSignalSemaphoreKHR>(load(device, "vkSignalSemaphoreKHR"));
@@ -4016,6 +4013,9 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkCmdSetCheckpointNV = reinterpret_cast<PFN_vkCmdSetCheckpointNV>(load(device, "vkCmdSetCheckpointNV"));
 	table.vkGetQueueCheckpointDataNV = reinterpret_cast<PFN_vkGetQueueCheckpointDataNV>(load(device, "vkGetQueueCheckpointDataNV"));
 #endif /* defined(VK_NV_device_diagnostic_checkpoints) */
+#if defined(VK_NV_device_diagnostic_checkpoints) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
+	table.vkGetQueueCheckpointData2NV = reinterpret_cast<PFN_vkGetQueueCheckpointData2NV>(load(device, "vkGetQueueCheckpointData2NV"));
+#endif /* defined(VK_NV_device_diagnostic_checkpoints) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2)) */
 #if defined(VK_NV_device_generated_commands)
 	table.vkCmdBindPipelineShaderGroupNV = reinterpret_cast<PFN_vkCmdBindPipelineShaderGroupNV>(load(device, "vkCmdBindPipelineShaderGroupNV"));
 	table.vkCmdExecuteGeneratedCommandsNV = reinterpret_cast<PFN_vkCmdExecuteGeneratedCommandsNV>(load(device, "vkCmdExecuteGeneratedCommandsNV"));
@@ -4451,6 +4451,9 @@ inline PFN_vkAntiLagUpdateAMD vkAntiLagUpdateAMD;
 #if defined(VK_AMD_buffer_marker)
 inline PFN_vkCmdWriteBufferMarkerAMD vkCmdWriteBufferMarkerAMD;
 #endif /* defined(VK_AMD_buffer_marker) */
+#if defined(VK_AMD_buffer_marker) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
+inline PFN_vkCmdWriteBufferMarker2AMD vkCmdWriteBufferMarker2AMD;
+#endif /* defined(VK_AMD_buffer_marker) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2)) */
 #if defined(VK_AMD_display_native_hdr)
 inline PFN_vkSetLocalDimmingAMD vkSetLocalDimmingAMD;
 #endif /* defined(VK_AMD_display_native_hdr) */
@@ -4985,12 +4988,6 @@ inline PFN_vkCmdWaitEvents2KHR vkCmdWaitEvents2KHR;
 inline PFN_vkCmdWriteTimestamp2KHR vkCmdWriteTimestamp2KHR;
 inline PFN_vkQueueSubmit2KHR vkQueueSubmit2KHR;
 #endif /* defined(VK_KHR_synchronization2) */
-#if defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker)
-inline PFN_vkCmdWriteBufferMarker2AMD vkCmdWriteBufferMarker2AMD;
-#endif /* defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker) */
-#if defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints)
-inline PFN_vkGetQueueCheckpointData2NV vkGetQueueCheckpointData2NV;
-#endif /* defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints) */
 #if defined(VK_KHR_timeline_semaphore)
 inline PFN_vkGetSemaphoreCounterValueKHR vkGetSemaphoreCounterValueKHR;
 inline PFN_vkSignalSemaphoreKHR vkSignalSemaphoreKHR;
@@ -5085,6 +5082,9 @@ inline PFN_vkGetCudaModuleCacheNV vkGetCudaModuleCacheNV;
 inline PFN_vkCmdSetCheckpointNV vkCmdSetCheckpointNV;
 inline PFN_vkGetQueueCheckpointDataNV vkGetQueueCheckpointDataNV;
 #endif /* defined(VK_NV_device_diagnostic_checkpoints) */
+#if defined(VK_NV_device_diagnostic_checkpoints) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
+inline PFN_vkGetQueueCheckpointData2NV vkGetQueueCheckpointData2NV;
+#endif /* defined(VK_NV_device_diagnostic_checkpoints) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2)) */
 #if defined(VK_NV_device_generated_commands)
 inline PFN_vkCmdBindPipelineShaderGroupNV vkCmdBindPipelineShaderGroupNV;
 inline PFN_vkCmdExecuteGeneratedCommandsNV vkCmdExecuteGeneratedCommandsNV;
