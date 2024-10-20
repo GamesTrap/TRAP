@@ -325,8 +325,8 @@ namespace
     void SetWindowSize(ImGuiViewport* viewport, ImVec2 size);
     void SwapBuffers(ImGuiViewport* viewport, [[maybe_unused]] void* render_arg);
 
-    void InitPlatformInterface();
-    void ShutdownPlatformInterface();
+    void InitMultiViewportSupport();
+    void ShutdownMultiViewportSupport();
 
     //-------------------------------------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------------------------------------//
@@ -1218,7 +1218,7 @@ namespace
 
     //-------------------------------------------------------------------------------------------------------------------//
 
-    void InitPlatformInterface()
+    void InitMultiViewportSupport()
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None &&
                                                  (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -1235,7 +1235,7 @@ namespace
 
     //-------------------------------------------------------------------------------------------------------------------//
 
-    void ShutdownPlatformInterface()
+    void ShutdownMultiViewportSupport()
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
@@ -1513,7 +1513,7 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
     bd->FontImage->Init(fontDesc);
 
     // Create the Descriptor Set:
-    bd->FontDescriptorSet = static_cast<VkDescriptorSet>(AddTexture(bd->FontSampler, bd->FontImage, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
+    bd->FontDescriptorSet = std::bit_cast<VkDescriptorSet>(AddTexture(bd->FontSampler, bd->FontImage, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
 
     // Create the Upload Buffer:
     TRAP::Ref<TRAP::Graphics::API::VulkanBuffer> uploadBuffer = nullptr;
@@ -1586,7 +1586,7 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
     }
 
     // Store our identifier
-    io.Fonts->SetTexID(static_cast<ImTextureID>(bd->FontDescriptorSet));
+    io.Fonts->SetTexID(std::bit_cast<ImTextureID>(bd->FontDescriptorSet));
 
     //End command buffer
     bd->FontCommandBuffer->End();
@@ -1609,7 +1609,7 @@ void ImGui::INTERNAL::Vulkan::DestroyFontsTexture()
     {
         RemoveTexture(bd->FontImage);
         bd->FontDescriptorSet = VK_NULL_HANDLE;
-        io.Fonts->SetTexID(nullptr);
+        io.Fonts->SetTexID(std::bit_cast<ImTextureID>(nullptr));
     }
 
     bd->FontImage.reset();
@@ -1785,12 +1785,12 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
                 command_buffer.SetScissor(NumericCast<u32>(clip_min.x), NumericCast<u32>(clip_min.y), NumericCast<u32>(TRAP::Math::Abs(clip_max.x - clip_min.x)), NumericCast<u32>(TRAP::Math::Abs(clip_max.y - clip_min.y)));
 
                 // Bind descriptorset with font or user texture
-                VkDescriptorSet descSet = static_cast<VkDescriptorSet>(pcmd.TextureId);
+                VkDescriptorSet descSet = std::bit_cast<VkDescriptorSet>(pcmd.GetTexID());
                 if constexpr(sizeof(ImTextureID) < sizeof(ImU64))
                 {
                     // We don't support texture switches if ImTextureID hasn't been redefined to be 64-bit.
                     // Do a flaky check that other textures haven't been used.
-                    TRAP_ASSERT(pcmd.TextureId == static_cast<ImTextureID>(bd->FontDescriptorSet), "ImGuiVulkanBackend::RenderDrawData(): ImTextureID must be at least 64 bits!");
+                    TRAP_ASSERT(pcmd.GetTexID() == std::bit_cast<ImTextureID>(bd->FontDescriptorSet), "ImGuiVulkanBackend::RenderDrawData(): ImTextureID must be at least 64 bits!");
                     descSet = bd->FontDescriptorSet;
                 }
                 vkCmdBindDescriptorSets(command_buffer.GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, bd->PipelineLayout, 0u, 1u, &descSet, 0u, nullptr);
@@ -1854,8 +1854,7 @@ void ImGui::INTERNAL::Vulkan::Init(const InitInfo& info)
     TRAP_ASSERT(main_viewport != nullptr, "ImGuiVulkanBackend::Init(): main_viewport is nullptr!");
     main_viewport->RendererUserData = IM_NEW(ImGui_ImplVulkan_ViewportData)();
 
-    if ((io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) != 0)
-        InitPlatformInterface();
+    InitMultiViewportSupport();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1890,7 +1889,7 @@ void ImGui::INTERNAL::Vulkan::Shutdown()
     main_viewport->RendererUserData = nullptr;
 
     // Clean up windows
-    ShutdownPlatformInterface();
+    ShutdownMultiViewportSupport();
 
     ClearCache();
 
