@@ -32,12 +32,6 @@
 #include "Utils/Utils.h"
 #include "Utils/Memory.h"
 
-constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::None{};
-constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Any(0u, 0u, 0u, 0u);
-constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::LocalHost(127u, 0u, 0u, 1u);
-constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Broadcast(255u, 255u, 255u, 255u);
-
-//-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::IPv4Address::IPv4Address(const std::string& address)
 {

@@ -67,7 +67,7 @@ namespace TRAP::Network
 		/// IPv6 address, event if it was constructed
 		/// from a host name.
 		/// @return Byte representation of the address.
-		[[nodiscard]] constexpr std::array<u8, 16> ToArray() const noexcept;
+		[[nodiscard]] constexpr std::array<u8, 16u> ToArray() const noexcept;
 
 		/// @brief Get the computer's local address.
 		///
@@ -140,6 +140,18 @@ constexpr TRAP::Network::IPv6Address::IPv6Address(const std::array<u8, 16>& addr
 {
 	return m_address;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::IPv6Address TRAP::Network::IPv6Address::None{};
+constexpr TRAP::Network::IPv6Address TRAP::Network::IPv6Address::Any(std::array<u8, 16u>
+	{
+		0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u
+	});
+constexpr TRAP::Network::IPv6Address TRAP::Network::IPv6Address::LocalHost(std::array<u8, 16u>
+    {
+		0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x01u
+	});
 
 //-------------------------------------------------------------------------------------------------------------------//
 

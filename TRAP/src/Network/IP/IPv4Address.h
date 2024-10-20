@@ -165,7 +165,6 @@ namespace TRAP::Network
 	/// @return Reference to the input stream.
 	std::istream& operator>>(std::istream& stream, TRAP::Network::IPv4Address& address);
 }
-
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr TRAP::Network::IPv4Address::IPv4Address(const u8 byte0, const u8 byte1, const u8 byte2,
@@ -197,6 +196,13 @@ constexpr TRAP::Network::IPv4Address::IPv4Address(const u32 address)
 
 	return address;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::None{};
+constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Any(0u, 0u, 0u, 0u);
+constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::LocalHost(127u, 0u, 0u, 1u);
+constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Broadcast(255u, 255u, 255u, 255u);
 
 //-------------------------------------------------------------------------------------------------------------------//
 

@@ -77,7 +77,7 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 /// @brief TRAP version number created with TRAP_MAKE_VERSION
-inline constexpr TRAP::SemanticVersion<0, 11, 26> TRAP_VERSION{};
+inline constexpr TRAP::SemanticVersion<0, 11, 27> TRAP_VERSION{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
