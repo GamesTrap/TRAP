@@ -2,7 +2,6 @@
 
 #include "AntiAliasing/AntiAliasingTests.h"
 #include "Compute/ComputeTests.h"
-#include "Hash/HashTests.h"
 #include "Headless/HeadlessTests.h"
 
 class HeadlessTestsApp final : public TRAP::Application
@@ -14,7 +13,6 @@ public:
 		// PushLayer(std::make_unique<AntiAliasingTests>());
 		PushLayer(std::make_unique<ComputeTests>());
 		// PushLayer(std::make_unique<HeadlessTests>());
-		// PushLayer(std::make_unique<HashTests>());
 	}
 };
 
