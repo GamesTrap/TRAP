@@ -5310,3 +5310,4 @@ SITREP 10/21/2024|24w43a1
     - HeadlessTests Moved IPv4Address/IPv6Address tests to UnitTests ~<15 mins
     - Removed unused hash algorithms (SHA2/3, Adler32, CRC32) ~<5 mins
     - UnitTests Disabled IPv4Address/IPv6Address GetLocalAddress() GetPublicAddress() checks ~<5 mins
+    - IPv4Address/IPv6Address Make Resolve() behaviour consistent on Windows and Linux when address is empty ~<5 mins

@@ -156,7 +156,7 @@ void TRAP::Network::IPv6Address::Resolve(const std::string& address)
 			m_address = ip;
 			m_valid = true;
 		}
-		else
+		else if(!address.empty())
 		{
 			//Not a valid address, try to convert it as a host name
 			addrinfo hints{};
