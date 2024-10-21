@@ -57,7 +57,7 @@
 	ignore = dirty
 [submodule "Dependencies/GCEM"]
 	path = Dependencies/GCEM
-	url = https://github.com/GamesTrap/gcem
+	url = https://github.com/kthohr/gcem
 	ignore = dirty
 [submodule ".modules/ninja"]
 	path = .modules/ninja

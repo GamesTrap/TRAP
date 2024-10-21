@@ -5312,3 +5312,4 @@ SITREP 10/21/2024|24w43a1
     - UnitTests Disabled IPv4Address/IPv6Address GetLocalAddress() GetPublicAddress() checks ~<5 mins
     - IPv4Address/IPv6Address Make Resolve() behaviour consistent on Windows and Linux when address is empty ~<5 mins
     - VulkanRenderer Fixed validation error for missing VK_NV_device_diagnostics_config extension on device creation ~<5 mins
+    - Dependencies Changed GCEM submodule back to upstream remote ~<5 mins
