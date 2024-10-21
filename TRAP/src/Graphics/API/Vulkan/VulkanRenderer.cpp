@@ -580,6 +580,10 @@ namespace
 			extensions.emplace_back(VK_KHR_RAY_QUERY_EXTENSION_NAME);
 		}
 
+		//NVIDIA diagnostics / Nsight Aftermath
+		if(physicalDevice.IsExtensionSupported(VK_NV_DEVICE_DIAGNOSTICS_CONFIG_EXTENSION_NAME))
+			extensions.emplace_back(VK_NV_DEVICE_DIAGNOSTICS_CONFIG_EXTENSION_NAME);
+
 		return extensions;
 	}
 }
