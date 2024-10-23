@@ -50,13 +50,6 @@ void TRAP::FileSystem::Init()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FileSystem::Shutdown()
-{
-	TP_DEBUG(Log::FileSystemPrefix, "Shutting down File System");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] TRAP::Optional<std::vector<u8>> TRAP::FileSystem::ReadFile(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);

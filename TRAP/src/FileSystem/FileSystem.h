@@ -35,6 +35,7 @@
 
 #include "Core/Types.h"
 #include "Utils/Optional.h"
+#include "Log/Log.h"
 
 namespace TRAP::FileSystem
 {
@@ -53,7 +54,7 @@ namespace TRAP::FileSystem
 	/// - Documents/TRAP/<GameName>/logs (only when not using Headless mode)
 	void Init();
 	/// @brief Shuts down the File System.
-	void Shutdown();
+	constexpr void Shutdown();
 
 	/// @brief Read the given binary file.
 	/// @param path File path.
@@ -234,6 +235,13 @@ namespace TRAP::FileSystem
 	/// @return True on success, false otherwise.
 	/// @remark @linux Linux uses xdg-open for this functionality.
 	bool OpenExternally(const std::filesystem::path& p);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::FileSystem::Shutdown()
+{
+	TP_DEBUG(TRAP::Log::FileSystemPrefix, "Shutting down File System");
 }
 
 #endif /*TRAP_FILESYSTEM_H*/

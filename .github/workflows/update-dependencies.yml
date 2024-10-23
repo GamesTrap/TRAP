@@ -9,7 +9,7 @@ jobs:
   update-dependencies:
     name: Update Dependencies
     if: github.repository == 'GamesTrap/TRAP'
-    runs-on: [self-hosted, Linux, X64, ubuntu, "23.10", cpu]
+    runs-on: [self-hosted, Linux, X64, ubuntu, cpu]
     steps:
       - name: Cleanup workspace
         if: ${{ always() }}

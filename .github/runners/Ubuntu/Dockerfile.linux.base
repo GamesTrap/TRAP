@@ -1,6 +1,6 @@
 # Shared basis for all linux based action runner images
 
-FROM ubuntu:mantic
+FROM ubuntu:24.10
 LABEL maintainer="gamestrap@trappedgames.de"
 
 ENV LANG=en_US.UTF-8
@@ -36,6 +36,7 @@ RUN echo en_US.UTF-8 UTF-8 >> /etc/locale.gen \
     python3-pip \
     python3-setuptools \
     python3 \
+    python3-venv \
     dumb-init \
     rsync \
     libpq-dev \
@@ -47,7 +48,17 @@ RUN echo en_US.UTF-8 UTF-8 >> /etc/locale.gen \
     p7zip-full \
     ninja-build \
     xz-utils \
-    nodejs \
+    doxygen \
+    graphviz \
+    g++-14 \
+    clang-19 \
+    llvm-19 \
+    mold \
+    cmake \
+    xorg-dev \
+    libwayland-dev \
+    libxkbcommon-dev \
+    wayland-protocols \
   && DPKG_ARCH="$(dpkg --print-architecture)" \
   && LSB_RELEASE_CODENAME="$(lsb_release --codename | cut -f2)" \
   && sed -e 's/Defaults.*env_reset/Defaults env_keep = "HTTP_PROXY HTTPS_PROXY NO_PROXY FTP_PROXY http_proxy https_proxy no_proxy ftp_proxy"/' -i /etc/sudoers \

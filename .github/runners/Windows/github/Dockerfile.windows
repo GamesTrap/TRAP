@@ -3,7 +3,7 @@
 FROM trappedgames/actions-runner-windows-base:latest
 LABEL maintainer="gamestrap@trappedgames.de"
 
-ARG GH_RUNNER_VERSION="2.311.0"
+ARG GH_RUNNER_VERSION="2.320.0"
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';"]
 
