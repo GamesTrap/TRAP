@@ -413,6 +413,15 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] ISteamTimeline* TRAP::Utils::Steam::GetSteamTimeline()
+{
+    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamTimeline(): SteamAPI is not initialized!");
+
+    return SteamTimeline();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] ISteamGameServer* TRAP::Utils::Steam::GetSteamGameServer()
 {
     TRAP_ASSERT(steamServerInitialized, "Steam::GetSteamGameServer(): SteamGameServer is not initialized!");

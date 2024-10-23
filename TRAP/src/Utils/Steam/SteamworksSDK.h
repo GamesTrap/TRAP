@@ -168,6 +168,10 @@ namespace TRAP::Utils::Steam
     /// @return Pointer to the SteamVideo interface.
     [[nodiscard]] ISteamVideo* GetSteamVideo();
 
+    /// @brief Retrieve the SteamTimeline interface.
+    /// @return Pointer to the SteamTimeline interface.
+    [[nodiscard]] ISteamTimeline* GetSteamTimeline();
+
     /// @brief Retrieve the SteamGameServer interface.
     /// @return Pointer to the SteamGameServer interface.
     [[nodiscard]] ISteamGameServer* GetSteamGameServer();

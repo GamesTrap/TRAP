@@ -5319,3 +5319,4 @@ SITREP 10/23/2024|24w43b1
     - GitHub Actions Linux Runner Updated and rebuild image ~<20 mins
     - GitHub Actions Windows Runner Updated and rebuild image ~<30 mins
     - Updated GitHub Action workflows (Ubuntu 24.10, GCC 14, Clang 19) ~<10 mins
+    - Updated Steamworks SDK support to v1.60 ~<10 mins
