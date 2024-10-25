@@ -1,3 +1,6 @@
+#ifndef TRAP_CRASHHANDLER_H
+#define TRAP_CRASHHANDLER_H
+
 #include <cstdint>
 #include <fmt/format.h>
 #include <type_traits>
@@ -81,3 +84,5 @@ TRAP::Utils::CrashHandler::CrashHandler(const F& crashHandler)
     m_exceptionHandler = AddVectoredExceptionHandler(1, crashHandler);
 #endif
 }
+
+#endif /*TRAP_CRASHHANDLER_H*/
