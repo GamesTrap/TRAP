@@ -222,6 +222,7 @@ jobs:
         if: ${{ always() }}
         uses: ./.github/composite/update-git-dependency
         with:
+          branch: "master"
           dependency-path: "Dependencies/QuiteOKImage"
           update-method: "latest-commit"
           pr-title: "QuiteOKImage"

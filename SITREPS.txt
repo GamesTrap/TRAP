@@ -5324,3 +5324,7 @@ SITREP 10/23/2024|24w43b1
 SITREP 10/25/2024|24w43b2
     - Changed TRAP Engine version to 24w43b2(0.11.29)
     - CrashHandler Added missing include guard ~<5 mins
+
+SITREP 10/27/2024|24w43b3
+    - Changed TRAP Engine version to 24w43b3(0.11.30)
+    - Update-Dependencies Use correct branch for QuiteOKImage ~<5 mins
