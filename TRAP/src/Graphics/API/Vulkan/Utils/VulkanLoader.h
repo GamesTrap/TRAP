@@ -21,7 +21,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 299
+#define VULKANLOADER_HEADER_VERSION 300
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -1844,6 +1844,9 @@ extern PFN_vkCmdSetViewportWScalingNV vkCmdSetViewportWScalingNV;
 #if defined(VK_NV_cooperative_matrix)
 extern PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV vkGetPhysicalDeviceCooperativeMatrixPropertiesNV;
 #endif /* defined(VK_NV_cooperative_matrix) */
+#if defined(VK_NV_cooperative_matrix2)
+extern PFN_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV;
+#endif /* defined(VK_NV_cooperative_matrix2) */
 #if defined(VK_NV_copy_memory_indirect)
 extern PFN_vkCmdCopyMemoryIndirectNV vkCmdCopyMemoryIndirectNV;
 extern PFN_vkCmdCopyMemoryToImageIndirectNV vkCmdCopyMemoryToImageIndirectNV;
@@ -2417,6 +2420,9 @@ static void VkGenLoadInstance(VkInstance instance, VkGenLoaderFunction load)
 #if defined(VK_NV_cooperative_matrix)
 	vkGetPhysicalDeviceCooperativeMatrixPropertiesNV = reinterpret_cast<PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV>(load(instance, "vkGetPhysicalDeviceCooperativeMatrixPropertiesNV"));
 #endif /* defined(VK_NV_cooperative_matrix) */
+#if defined(VK_NV_cooperative_matrix2)
+	vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV = reinterpret_cast<PFN_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV>(load(instance, "vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV"));
+#endif /* defined(VK_NV_cooperative_matrix2) */
 #if defined(VK_NV_coverage_reduction_mode)
 	vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV = reinterpret_cast<PFN_vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV>(load(instance, "vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV"));
 #endif /* defined(VK_NV_coverage_reduction_mode) */
@@ -5063,6 +5069,9 @@ inline PFN_vkCmdSetViewportWScalingNV vkCmdSetViewportWScalingNV;
 #if defined(VK_NV_cooperative_matrix)
 inline PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV vkGetPhysicalDeviceCooperativeMatrixPropertiesNV;
 #endif /* defined(VK_NV_cooperative_matrix) */
+#if defined(VK_NV_cooperative_matrix2)
+inline PFN_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV;
+#endif /* defined(VK_NV_cooperative_matrix2) */
 #if defined(VK_NV_copy_memory_indirect)
 inline PFN_vkCmdCopyMemoryIndirectNV vkCmdCopyMemoryIndirectNV;
 inline PFN_vkCmdCopyMemoryToImageIndirectNV vkCmdCopyMemoryToImageIndirectNV;
