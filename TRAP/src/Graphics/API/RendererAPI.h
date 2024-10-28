@@ -2881,6 +2881,7 @@ namespace TRAP::Graphics
 			u32 NewWidth = 1920, NewHeight = 1080; //Default RenderTargets to use Full HD
 #endif /*TRAP_HEADLESS_MODE*/
 			u32 CurrentSwapChainImageIndex{};
+			u32 PreviousSwapChainImageIndex{};
 			RendererAPI::AntiAliasing CurrentAntiAliasing = RendererAPI::AntiAliasing::Off;
 			RendererAPI::SampleCount CurrentSampleCount = RendererAPI::SampleCount::One;
 

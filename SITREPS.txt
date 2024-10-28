@@ -5332,3 +5332,4 @@ SITREP 10/27/2024|24w43b3
 SITREP 10/28/2024|24w44a1
     - Changed TRAP Engine version to 24w44a1(0.11.31)
     - VulkanRenderer Moved GetCurrentSwapChainRenderTarget() to RendererAPI::PerViewportData ~<5 mins
+    - VulkanRenderer Fixed CaptureScreenshot() sometimes not capturing the most recent frame ~<5 mins

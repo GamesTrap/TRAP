@@ -618,6 +618,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData&
 		renderCompleteFence->Wait();
 
 	//Start Recording
+	p.PreviousSwapChainImageIndex = p.CurrentSwapChainImageIndex;
 	p.CurrentSwapChainImageIndex = RetrieveNextSwapchainImageIndex(p);
 
 	//TODO Always use back buffer (InternalRenderTarget), copy/resolve final image to SwapChain RenderTargert as last step in EndGraphicRecording().
@@ -840,6 +841,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData& p) const
 			CreateOrUpdateDepthStencilTarget(p, *m_device);
 
 		p.CurrentSwapChainImageIndex = 0;
+		p.PreviousSwapChainImageIndex = 0;
 		p.ImageIndex = 0;
 	}
 	else if (presentStatus == PresentStatus::DeviceReset || presentStatus == PresentStatus::Failed)
@@ -872,6 +874,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData& p) const
 			}
 
 			p.CurrentSwapChainImageIndex = 0;
+			p.PreviousSwapChainImageIndex = 0;
 			p.ImageIndex = 0;
 
 			if(p.DepthStencilTarget)
@@ -2341,7 +2344,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u3
 
 	const PerViewportData& p = *GETPERVIEWPORTDATA;
 
-	const u32 lastFrame = (p.ImageIndex - 1) % RendererAPI::ImageCount; //BUG This must be the previous value of p.CurrentSwapChainImageIndex (#294)
+	const u32 lastFrame = p.PreviousSwapChainImageIndex;
 
 	//Wait for queues to finish
 	s_computeQueue->WaitQueueIdle();
