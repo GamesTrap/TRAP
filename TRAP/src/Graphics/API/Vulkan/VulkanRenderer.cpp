@@ -300,17 +300,6 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] TRAP::Ref<TRAP::Graphics::RenderTarget> GetCurrentSwapchainRenderTarget(const TRAP::Graphics::RendererAPI::PerViewportData& p)
-	{
-#ifndef TRAP_HEADLESS_MODE
-		return p.SwapChain->GetRenderTargets()[p.CurrentSwapChainImageIndex];
-#else
-		return p.RenderTargets[p.CurrentSwapChainImageIndex];
-#endif
-	}
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
 	//Helper function to generate screenshot data. See CaptureScreenshot.
 	template<typename T>
 	[[nodiscard]] std::vector<T> MapRenderTarget(const TRAP::Ref<TRAP::Graphics::Queue>& graphicsQueue,
@@ -636,7 +625,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData&
 	if(p.RenderScale != 1.0f || p.CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
 		bindRenderTarget = p.InternalRenderTargets[p.CurrentSwapChainImageIndex];
 	else
-		bindRenderTarget = GetCurrentSwapchainRenderTarget(p);
+		bindRenderTarget = p.GetCurrentSwapchainRenderTarget();
 
 	std::get<GraphicsPipelineDesc>(p.GraphicsPipelineDesc.Pipeline).ShadingRateTexture = GetShadingRateTexture(p);
 
@@ -648,7 +637,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData&
 	BeginGPUFrameProfile(QueueType::Graphics, p);
 
 #ifndef TRAP_HEADLESS_MODE
-	const RenderTargetBarrier swapChainBarrier{*GetCurrentSwapchainRenderTarget(p), ResourceState::Present, ResourceState::RenderTarget};
+	const RenderTargetBarrier swapChainBarrier{*p.GetCurrentSwapchainRenderTarget(), ResourceState::Present, ResourceState::RenderTarget};
 	p.GraphicCommandBuffers[p.ImageIndex]->ResourceBarrier(nullptr, nullptr, &swapChainBarrier);
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -708,7 +697,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerViewportData& p
 
 	if(p.CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA && p.RenderScale == 1.0f) //Inject MSAA resolve pass
 	{
-		const TRAP::Ref<RenderTarget> presentRenderTarget = GetCurrentSwapchainRenderTarget(p);
+		const TRAP::Ref<RenderTarget> presentRenderTarget = p.GetCurrentSwapchainRenderTarget();
 		const TRAP::Ref<RenderTarget>& MSAARenderTarget = p.InternalRenderTargets[p.CurrentSwapChainImageIndex];
 
 		Graphics::RendererAPI::GetRenderer()->MSAAResolvePass(*MSAARenderTarget, *presentRenderTarget, p.GraphicCommandBuffers[p.ImageIndex]);
@@ -719,7 +708,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerViewportData& p
 	p.GraphicCommandBuffers[p.ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
 																std::numeric_limits<u32>::max(),
 																std::numeric_limits<u32>::max(), nullptr);
-	const TRAP::Ref<RenderTarget> presentRenderTarget = GetCurrentSwapchainRenderTarget(p);
+	const TRAP::Ref<RenderTarget> presentRenderTarget = p.GetCurrentSwapchainRenderTarget();
 	const RenderTargetBarrier barrier{*presentRenderTarget, ResourceState::RenderTarget, ResourceState::Present};
 	p.GraphicCommandBuffers[p.ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
 #else
@@ -1598,7 +1587,7 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType)
 	if(p.RenderScale != 1.0f || p.CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
 		renderTarget = p.InternalRenderTargets[p.CurrentSwapChainImageIndex];
 	else
-		renderTarget = GetCurrentSwapchainRenderTarget(p);
+		renderTarget = p.GetCurrentSwapchainRenderTarget();
 
 	const CommandBuffer* const cmdBuffer = p.GraphicCommandBuffers[p.ImageIndex];
 
@@ -2352,7 +2341,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u3
 
 	const PerViewportData& p = *GETPERVIEWPORTDATA;
 
-	const u32 lastFrame = (p.ImageIndex - 1) % RendererAPI::ImageCount;
+	const u32 lastFrame = (p.ImageIndex - 1) % RendererAPI::ImageCount; //BUG This must be the previous value of p.CurrentSwapChainImageIndex (#294)
 
 	//Wait for queues to finish
 	s_computeQueue->WaitQueueIdle();

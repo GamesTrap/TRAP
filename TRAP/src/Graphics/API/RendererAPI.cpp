@@ -191,7 +191,7 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 
 		if(data->RenderScale != 1.0f)
 		{
-			TRAP::Ref<RenderTarget> outputTarget = data->SwapChain->GetRenderTargets()[data->CurrentSwapChainImageIndex];
+			TRAP::Ref<RenderTarget> outputTarget = data->GetCurrentSwapchainRenderTarget();
 
 			GetRenderer()->RenderScalePass(*data->InternalRenderTargets[data->CurrentSwapChainImageIndex],
 			                               *outputTarget, *win);
@@ -202,7 +202,7 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 
 	if(s_perViewportData->RenderScale != 1.0f)
 	{
-		TRAP::Ref<RenderTarget> outputTarget = s_perViewportData->RenderTargets[s_perViewportData->CurrentSwapChainImageIndex];
+		TRAP::Ref<RenderTarget> outputTarget = s_perViewportData->GetCurrentSwapchainRenderTarget();
 
 		GetRenderer()->RenderScalePass(*s_perViewportData->InternalRenderTargets[s_perViewportData->CurrentSwapChainImageIndex],
 									   *outputTarget);
@@ -379,7 +379,7 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(const Window& window)
 	if((viewportData->RenderScale != 1.0f || viewportData->CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA) && viewportData->State == PerWindowState::PreUpdate)
 		renderTarget = viewportData->InternalRenderTargets[viewportData->CurrentSwapChainImageIndex];
 	else
-		renderTarget = viewportData->SwapChain->GetRenderTargets()[viewportData->CurrentSwapChainImageIndex];
+		renderTarget = viewportData->GetCurrentSwapchainRenderTarget();
 
 	GetRenderer()->BindRenderTarget(renderTarget.get(), nullptr, nullptr,
 									nullptr, nullptr, std::numeric_limits<u32>::max(),
@@ -394,9 +394,9 @@ void TRAP::Graphics::RendererAPI::StartRenderPass()
 
 	//Get correct RenderTarget
 	if((s_perViewportData->RenderScale != 1.0f || s_perViewportData->CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA) && s_perViewportData->State == PerWindowState::PreUpdate)
-		renderTarget = s_perViewportData->InternalRenderTargets[s_perViewportData->ImageIndex];
+		renderTarget = s_perViewportData->InternalRenderTargets[s_perViewportData->CurrentSwapChainImageIndex];
 	else
-		renderTarget = s_perViewportData->RenderTargets[s_perViewportData->ImageIndex];
+		renderTarget = s_perViewportData->GetCurrentSwapchainRenderTarget();
 
 	GetRenderer()->BindRenderTarget(renderTarget.get(), nullptr, nullptr,
 	                                nullptr, nullptr, std::numeric_limits<u32>::max(),
@@ -779,3 +779,14 @@ TRAP::Graphics::RendererAPI::PerViewportData::~PerViewportData()
 	return s_perViewportData->ImageIndex;
 }
 #endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::RenderTarget> TRAP::Graphics::RendererAPI::PerViewportData::GetCurrentSwapchainRenderTarget() const
+{
+#ifndef TRAP_HEADLESS_MODE
+		return SwapChain->GetRenderTargets()[CurrentSwapChainImageIndex];
+#else
+		return RenderTargets[CurrentSwapChainImageIndex];
+#endif
+}

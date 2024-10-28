@@ -312,7 +312,7 @@ void TRAP::ImGuiLayer::Begin()
 		if(aaMethod == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA && viewportData.RenderScale == 1.0f) //MSAA and no RenderScale
 			rT = viewportData.InternalRenderTargets[viewportData.CurrentSwapChainImageIndex];
 		else
-			rT = viewportData.SwapChain->GetRenderTargets()[viewportData.CurrentSwapChainImageIndex];
+			rT = viewportData.GetCurrentSwapchainRenderTarget();
 
 		//Cant use TRAP::Graphics::RenderCommand::StartRenderPass() here, because it would also bind the shading rate image
 		vkCmdBuffer->BindRenderTargets({ *rT }, nullptr, nullptr, nullptr, nullptr,

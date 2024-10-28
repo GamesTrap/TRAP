@@ -2839,6 +2839,8 @@ namespace TRAP::Graphics
 			/// @brief Move assignment operator.
 			PerViewportData& operator=(PerViewportData &&) noexcept = default;
 
+			[[nodiscard]] TRAP::Ref<TRAP::Graphics::RenderTarget> GetCurrentSwapchainRenderTarget() const;
+
 #ifndef TRAP_HEADLESS_MODE
 			TRAP::Window* Window{};
 #endif /*TRAP_HEADLESS_MODE*/
