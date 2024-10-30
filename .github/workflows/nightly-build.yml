@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         compiler: [clang, gcc]
-        configuration: [Debug, Release, RelWithDebInfo, Profiling, ASan, TSan, LSan, UBSan]
+        configuration: [Debug, Release, RelWithDebInfo, Profiling, ASan_LSan_UBSan, TSan]
         clang_version: [19]
         gcc_version: [14]
     env:
@@ -282,7 +282,7 @@ jobs:
     strategy:
       matrix:
         compiler: [clang, gcc]
-        configuration: [Debug, Release, RelWithDebInfo, Profiling, ASan, TSan, LSan, UBSan]
+        configuration: [Debug, Release, RelWithDebInfo, Profiling, ASan_LSan_UBSan, TSan]
     needs: build-linux
     steps:
       - name: Cleanup workspace
