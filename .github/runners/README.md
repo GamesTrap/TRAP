@@ -6,7 +6,7 @@ This folder contains the Dockerfiles and scripts used to create the images used 
 
 ### Base Image
 
-OS: Ubuntu 23.04  
+OS: Ubuntu 24.10  
 
 Software:
 
@@ -34,6 +34,7 @@ Software:
 - python3-pip
 - python3-setuptools
 - python3
+- python3-venv
 - dumb-init
 - rsync
 - libpq-dev
@@ -41,11 +42,25 @@ Software:
 - git
 - git-man
 - git-lfs
-- NodeJS 12.22.12 (needed for actions/cache@v2)
+- btop
+- p7zip-full
+- ninja-build
+- xz-utils
+- doxygen
+- graphviz
+- g++-14
+- clang-19
+- llvm-19
+- mold
+- cmake
+- xorg-dev
+- libwayland-dev
+- libxkbcommon-dev
+- wayland-protocols
 
 ### Final Image
 
-OS: Ubuntu 23.04  
+OS: Ubuntu 24.10  
 
 Software:
 
@@ -73,7 +88,6 @@ Software:
 - CMake
 - VCRedists
 - Visual Studio 2022 Build Tools (C++ workload only)
-- NodeJS 12.22.12 (Needed for actions/cache@v2)
 - GitHub Action Runner
 
 Scripts (in execution order):

@@ -9,7 +9,7 @@ jobs:
   update-vulkan-loader:
     name: Update Controller Mappings
     if: github.repository == 'GamesTrap/TRAP'
-    runs-on: [self-hosted, Linux, X64, ubuntu, "23.10", cpu]
+    runs-on: [self-hosted, Linux, X64, ubuntu, cpu]
     steps:
       - name: Cleanup workspace
         if: ${{ always() }}
@@ -26,8 +26,6 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
           git_committer_name: TRAP CI/CD
-      - name: Install dependencies
-        run: sudo apt install -y python3 pip
       - name: Make python3 available as python
         run: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
       - name: Make pip3 available as pip

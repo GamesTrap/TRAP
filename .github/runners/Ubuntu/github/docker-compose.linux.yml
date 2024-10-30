@@ -10,7 +10,7 @@ services:
       ACCESS_TOKEN: <PAT_TOKEN>
       RUNNER_WORKDIR: /tmp/runner/work
       RUNNER_SCOPE: 'repo'
-      LABELS: linux,x64,ubuntu,"23.10",cpu
+      LABELS: linux,x64,ubuntu,"24.10",cpu
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
       - '/etc/localtime:/etc/localtime:ro'
