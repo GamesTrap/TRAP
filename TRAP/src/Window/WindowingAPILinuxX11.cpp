@@ -4379,7 +4379,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 			std::string_view Name;
 		};
 
-		constexpr std::array<Keys, 121> KeyMap =
+		static const std::array<Keys, 121u> KeyMap =
 		{
             {
                 { TRAP::Input::Key::Grave_Accent, "TLDE"}, { TRAP::Input::Key::One, "AE01"},

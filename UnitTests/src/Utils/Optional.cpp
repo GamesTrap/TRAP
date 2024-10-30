@@ -1582,11 +1582,13 @@ TEST_CASE("TRAP::Optional<T&>", "[utils][optional]")
         static constexpr i32 constexprFortyTwo = 42;
         static constexpr auto GetInt = [](i32){return 42;};
 
+#ifndef TRAP_ASAN
         static constexpr TRAP::Optional<const i32&> o16 = constexprFortyTwo;
         static constexpr auto o16r = o16.Transform(GetInt);
 
         static constexpr TRAP::Optional<const i32&> o20 = constexprFortyTwo;
         static constexpr auto o20r = std::move(o20).Transform(GetInt);
+#endif /*TRAP_ASAN*/
 
         static constexpr TRAP::Optional<i32&> o32 = TRAP::NullOpt;
         static constexpr auto o32r = o32.Transform(GetInt);

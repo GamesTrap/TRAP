@@ -53,9 +53,7 @@ workspace "TRAP"
 	filter "system:linux"
 		configurations
 		{
-			"ASan",
-			"UBSan",
-			"LSan",
+			"ASan_LSan_UBSan",
 			"TSan"
 		}
 
@@ -91,40 +89,12 @@ workspace "TRAP"
 		optimize "Full"
 		symbols "On"
 
-	filter {"language:C or C++", "configurations:ASAN"}
+	filter {"language:C or C++", "configurations:ASan_LSan_UBSan"}
 		defines
 		{
 			"TRAP_RELWITHDEBINFO",
-			"TRAP_ASAN"
-		}
-		runtime "Release"
-		optimize "Debug"
-		symbols "On"
-		buildoptions
-		{
-			"-fsanitize=address",
-			"-fno-omit-frame-pointer",
-			"-g"
-		}
-		linkoptions
-		{
-			"-fsanitize=address"
-		}
-	filter { "language:C or C++", "configurations:ASAN", "toolset:gcc"}
-		linkoptions
-		{
-			"-static-libasan"
-		}
-	filter { "language:C or C++", "configurations:ASAN", "toolset:clang"}
-		linkoptions
-		{
-			"-static-libsan"
-		}
-
-	filter {"language:C or C++", "configurations:UBSAN"}
-		defines
-		{
-			"TRAP_RELWITHDEBINFO",
+			"TRAP_ASAN",
+			"TRAP_LSAN",
 			"TRAP_UBSAN"
 		}
 		runtime "Release"
@@ -132,13 +102,13 @@ workspace "TRAP"
 		symbols "On"
 		buildoptions
 		{
-			"-fsanitize=undefined",
+			"-fsanitize=address,leak,undefined",
 			"-fno-omit-frame-pointer",
 			"-g"
 		}
 		linkoptions
 		{
-			"-fsanitize=undefined"
+			"-fsanitize=address,leak,undefined"
 		}
 	filter { "language:C or C++", "configurations:UBSAN", "toolset:gcc"}
 		linkoptions
@@ -150,23 +120,6 @@ workspace "TRAP"
 		{
 			"-static-libsan"
 		}
-
-	filter {"language:C or C++", "configurations:LSAN"}
-		defines
-		{
-			"TRAP_RELWITHDEBINFO",
-			"TRAP_LSAN"
-		}
-		runtime "Release"
-		optimize "Debug"
-		symbols "On"
-		buildoptions
-		{
-			"-fsanitize=leak",
-			"-fno-omit-frame-pointer",
-			"-g"
-		}
-		linkoptions "-fsanitize=leak"
 
 	filter {"language:C or C++", "configurations:TSAN"}
 		defines
@@ -186,16 +139,6 @@ workspace "TRAP"
 		linkoptions
 		{
 			"-fsanitize=thread"
-		}
-	filter { "language:C or C++", "configurations:TSAN", "toolset:gcc"}
-		linkoptions
-		{
-			"-static-libtsan"
-		}
-	filter { "language:C or C++", "configurations:TSAN", "toolset:clang"}
-		linkoptions
-		{
-			"-static-libsan"
 		}
 
 	filter { "language:C or C++", "toolset:gcc or clang"}
