@@ -1,0 +1,347 @@
+# Nightly Build CI. This compiles TRAP™ for Windows and Linux (Ubuntu)
+
+name: Nightly-Build-CI
+
+# Controls when the workflow will run
+on:
+  # Run the nightly build every day at 3am
+  schedule:
+    - cron: '0 3 * * *'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-linux:
+    name: Build Linux
+    runs-on: [self-hosted, Linux, X64, ubuntu, "24.10", cpu]
+    strategy:
+      matrix:
+        compiler: [clang, gcc]
+        configuration: [Debug, Release, RelWithDebInfo, Profiling, ASan, TSan, LSan, UBSan]
+        clang_version: [19]
+        gcc_version: [14]
+    env:
+      CONFIGURATION: ${{matrix.configuration}}
+      COMPILER: ${{matrix.compiler}}
+    steps:
+    - name: Cleanup workspace
+      if: ${{ always() }}
+      uses: gamestrap/gha-workspace-cleanup@v1.2.5
+    - name: Checkout repository and submodules
+      uses: actions/checkout@v4
+      with:
+        submodules: 'true'
+        ref: 'dev' #Nightly Build is always run on dev branch
+    - name: Checkout DiscordGameSDK
+      if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_DISCORDGAMESDK
+      env:
+        HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+        HAS_GIT_NDA_DEPS_DISCORDGAMESDK: ${{ secrets.GIT_NDA_DEPS_DISCORDGAMESDK }}
+      run: |
+        cd Dependencies/DiscordGameSDK
+        git init
+        git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_DISCORDGAMESDK }}
+        git pull origin main
+        cd ../..
+    - name: Checkout NVIDIA Nsight Aftermath SDK
+      if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_NSIGHTAFTERMATH
+      env:
+        HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+        HAS_GIT_NDA_DEPS_NSIGHTAFTERMATH: ${{ secrets.GIT_NDA_DEPS_NSIGHTAFTERMATH }}
+      run: |
+        cd Dependencies/Nsight-Aftermath
+        git init
+        git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_NSIGHTAFTERMATH }}
+        git pull origin main
+        cd ../..
+    - name: Checkout NVIDIA Reflex SDK
+      if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_NVIDIAREFLEX
+      env:
+        HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+        HAS_GIT_NDA_DEPS_NVIDIAREFLEX: ${{ secrets.GIT_NDA_DEPS_NVIDIAREFLEX }}
+      run: |
+        cd Dependencies/NVIDIA-Reflex
+        git init
+        git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_NVIDIAREFLEX }}
+        git pull origin main
+        cd ../..
+    - name: Checkout Steamworks SDK
+      if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_STEAMWORKSSDK
+      env:
+        HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+        HAS_GIT_NDA_DEPS_STEAMWORKSSDK: ${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
+      run: |
+        cd Dependencies/SteamworksSDK
+        git init
+        git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
+        git pull origin main
+        cd ../..
+    - name: Add toolchain ppa
+      run: sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/ppa
+    - name: Update package list
+      run: sudo apt update
+    - name: Install shared dependencies
+      run: |
+        sudo apt install -y mold xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols ninja-build
+        sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
+        sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10
+    - name: Install compiler
+      run: |
+        if [ "${{matrix.compiler}}" == "clang"]; then
+          sudo apt install -y clang-${{matrix.clang_version}} llvm-${{matrix.clang_version}};
+          sudo update-alternatives --install /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-${{matrix.clang_version}} 10;
+          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-${{matrix.clang_version}} 10;
+          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-${{matrix.clang_version}} 10;
+          export CC=clang-${{matrix.clang_version}};
+        elif [ "${{matrix.compiler}}" == "gcc" ]; then
+          sudo apt install -y g++-${{matrix.gcc_version}};
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-${{matrix.gcc_version}} 10;
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${{matrix.gcc_version}} 10;
+        fi
+    - name: Make scripts and premake executable
+      run: |
+       chmod +x libs/premake5/linux/premake5;
+       chmod +x GeneratorScripts/GenerateProjectNinjaGCC.sh
+       chmod +x GeneratorScripts/GenerateProjectNinjaClang.sh
+    - name: Generate Ninja files
+      run: |
+        cd GeneratorScripts/;
+        if [ "${{matrix.compiler}}" == "gcc" ]; then
+          ./GenerateProjectNinjaGCC.sh;
+        elif [ "${{matrix.compiler}}" == "clang" ]; then
+          ./GenerateProjectNinjaClang.sh;
+        fi
+        cd ..;
+    - name: Setup problem matchers
+      uses: ./.github/composite/problem-matchers
+    - name: Compile code
+      run: ninja ${{matrix.configuration}} -j $(nproc)
+    - name: Finalize data for artifact
+      run: |
+        cp -r Games/Headless-Tests/Assets bin/${{matrix.configuration}}-linux-x86_64/Games/Headless-Tests/
+        cp -r Games/Sandbox/Assets bin/${{matrix.configuration}}-linux-x86_64/Games/Sandbox/
+        cp -r Games/Tests/Assets bin/${{matrix.configuration}}-linux-x86_64/Games/Tests/
+        cp -r Games/Tests3D/Assets bin/${{matrix.configuration}}-linux-x86_64/Games/Tests3D/
+        cp -r Games/TRAP-Editor/Assets bin/${{matrix.configuration}}-linux-x86_64/Games/TRAP-Editor/
+        cp -r Games/TRAP-Editor/Resources bin/${{matrix.configuration}}-linux-x86_64/Games/TRAP-Editor/
+        cp -r Utility/QOIConv bin/${{matrix.configuration}}-linux-x86_64/Utility/
+        cp -r Licenses bin/${{matrix.configuration}}-linux-x86_64/Licenses
+        rm bin/${{matrix.configuration}}-linux-x86_64/Utility/QOIConv/QOIConv.exe
+    - name: Upload artifacts (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/artifact-upload
+      with:
+        target-filename: Linux ${{matrix.compiler}} ${{matrix.configuration}} Executables
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        folder-to-upload: >
+          bin/${{matrix.configuration}}-linux-x86_64/./Games
+          bin/${{matrix.configuration}}-linux-x86_64/./Utility
+          bin/${{matrix.configuration}}-linux-x86_64/./UnitTests
+          bin/${{matrix.configuration}}-linux-x86_64/./Licenses
+    - name: Upload artifacts (GitHub)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname == null
+      uses: actions/upload-artifact@v4
+      with:
+        name: Linux ${{matrix.compiler}} ${{matrix.configuration}} Executables
+        path: |
+          bin/${{matrix.configuration}}-linux-x86_64/Games
+          bin/${{matrix.configuration}}-linux-x86_64/Utility
+          bin/${{matrix.configuration}}-linux-x86_64/UnitTests
+          bin/${{matrix.configuration}}-linux-x86_64/Licenses
+
+  build-windows:
+    name: Build Windows MSVC 2022
+    runs-on: [self-hosted, windows, X64, cpu]
+    strategy:
+      matrix:
+        configuration: [Debug, Release, RelWithDebInfo, Profiling]
+    env:
+      CONFIGURATION: ${{matrix.configuration}}
+    steps:
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.5
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+          ref: 'dev' #Nightly Build is always run on dev branch
+      - name: Checkout DiscordGameSDK
+        if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_DISCORDGAMESDK
+        env:
+          HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+          HAS_GIT_NDA_DEPS_DISCORDGAMESDK: ${{ secrets.GIT_NDA_DEPS_DISCORDGAMESDK }}
+        run: |
+          cd Dependencies/DiscordGameSDK
+          git init
+          git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_DISCORDGAMESDK }}
+          git pull origin main
+          cd ../..
+      - name: Checkout NVIDIA Nsight Aftermath SDK
+        if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_NSIGHTAFTERMATH
+        env:
+          HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+          HAS_GIT_NDA_DEPS_NSIGHTAFTERMATH: ${{ secrets.GIT_NDA_DEPS_NSIGHTAFTERMATH }}
+        run: |
+          cd Dependencies/Nsight-Aftermath
+          git init
+          git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_NSIGHTAFTERMATH }}
+          git pull origin main
+          cd ../..
+      - name: Checkout NVIDIA Reflex SDK
+        if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_NVIDIAREFLEX
+        env:
+          HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+          HAS_GIT_NDA_DEPS_NVIDIAREFLEX: ${{ secrets.GIT_NDA_DEPS_NVIDIAREFLEX }}
+        run: |
+          cd Dependencies/NVIDIA-Reflex
+          git init
+          git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_NVIDIAREFLEX }}
+          git pull origin main
+          cd ../..
+      - name: Checkout Steamworks SDK
+        if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_STEAMWORKSSDK
+        env:
+          HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+          HAS_GIT_NDA_DEPS_STEAMWORKSSDK: ${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
+        run: |
+          cd Dependencies/SteamworksSDK
+          git init
+          git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
+          git pull origin main
+          cd ../..
+      - name: Setup developer console
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+      - name: Generate Ninja files
+        run: |
+          cd GeneratorScripts
+          .\GenerateProjectNinjaMSVC.bat
+          cd ..
+      - name: Setup problem matchers
+        uses: ./.github/composite/problem-matchers
+      - name: Compile code
+        run: |
+          $maxCPUCount = if($env:CONTAINER_MAX_CPUS) {$env:CONTAINER_MAX_CPUS} Else {$env:NUMBER_OF_PROCESSORS}
+          ninja ${{matrix.configuration}} -j $maxCPUCount
+      - name: Finalize data for artifact
+        run: |
+          Xcopy Games\Headless-Tests\Assets bin\${{matrix.configuration}}-windows-x86_64\Games\Headless-Tests\Assets /I /H /E /C
+          Xcopy Games\Sandbox\Assets bin\${{matrix.configuration}}-windows-x86_64\Games\Sandbox\Assets /I /H /E /C
+          Xcopy Games\Tests\Assets bin\${{matrix.configuration}}-windows-x86_64\Games\Tests\Assets /I /H /E /C
+          Xcopy Games\Tests3D\Assets bin\${{matrix.configuration}}-windows-x86_64\Games\Tests3D\Assets /I /H /E /C
+          Xcopy Games\TRAP-Editor\Assets bin\${{matrix.configuration}}-windows-x86_64\Games\TRAP-Editor\Assets /I /H /E /C
+          Xcopy Games\TRAP-Editor\Resources bin\${{matrix.configuration}}-windows-x86_64\Games\TRAP-Editor\Resources /I /H /E /C
+          Xcopy Licenses bin\${{matrix.configuration}}-windows-x86_64\Licenses /I /H /E /C
+          Xcopy Utility\QOIConv bin\${{matrix.configuration}}-windows-x86_64\Utility\QOIConv /I /H /E /C
+          Xcopy Redists bin\${{matrix.configuration}}-windows-x86_64\Redists /I /H /E /C
+          Get-ChildItem -Path "bin" -Filter "*.pdb" -Recurse | Remove-Item -Force
+          Remove-Item bin\${{matrix.configuration}}-windows-x86_64\Utility\QOIConv\QOIConv
+      - name: Upload artifacts (TrappedGames)
+        env:
+          artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+        if: env.artifact_hostname != null
+        uses: ./.github/composite/artifact-upload
+        with:
+          target-filename: Windows MSVC 2022 ${{matrix.configuration}} Executables
+          server-hostname: ${{ secrets.ARTIFACT_HOST }}
+          server-share: "artifacts"
+          server-username: ${{ secrets.ARTIFACT_USERNAME }}
+          server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+          folder-to-upload: >
+            bin/${{matrix.configuration}}-windows-x86_64/./Games
+            bin/${{matrix.configuration}}-windows-x86_64/./Utility
+            bin/${{matrix.configuration}}-windows-x86_64/./UnitTests
+            bin/${{matrix.configuration}}-windows-x86_64/./Licenses
+            bin/${{matrix.configuration}}-windows-x86_64/./Redists
+      - name: Upload artifacts (GitHub)
+        env:
+          artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+        if: env.artifact_hostname == null
+        uses: actions/upload-artifact@v4
+        with:
+          name: Windows MSVC 2022 ${{matrix.configuration}} Executables
+          path: |
+            bin/${{matrix.configuration}}-windows-x86_64/Games
+            bin/${{matrix.configuration}}-windows-x86_64/Utility
+            bin/${{matrix.configuration}}-windows-x86_64/UnitTests
+            bin/${{matrix.configuration}}-windows-x86_64/Licenses
+            bin/${{matrix.configuration}}-windows-x86_64/Redists
+
+  test-linux:
+    name: Unit-Test Linux
+    runs-on: [self-hosted, Linux, X64, ubuntu, cpu]
+    strategy:
+      matrix:
+        compiler: [clang, gcc]
+        configuration: [Debug, Release, RelWithDebInfo, Profiling, ASan, TSan, LSan, UBSan]
+    needs: build-linux
+    steps:
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.5
+      - name: Download artifact (TrappedGames)
+        env:
+          artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+        if: env.artifact_hostname != null
+        uses: gamestrap/gha-download-artifact@v1.0.4
+        with:
+          server-hostname: ${{ secrets.ARTIFACT_HOST }}
+          server-share: "artifacts"
+          server-username: ${{ secrets.ARTIFACT_USERNAME }}
+          server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+          artifact-name: "Linux ${{matrix.compiler}} ${{matrix.configuration}} Executables"
+      - name: Download artifact (GitHub)
+        env:
+          artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+        if: env.artifact_hostname == null
+        uses: actions/download-artifact@v4
+        with:
+          name: Linux ${{matrix.compiler}} ${{matrix.configuration}} Executables
+      - name: Run Tests
+        run: |
+          cd UnitTests
+          chmod +x UnitTests
+          TRACY_NO_INVARIANT_CHECK=1 ./UnitTests
+
+  test-windows:
+    name: Unit-Test Windows
+    runs-on: [self-hosted, windows, X64, cpu]
+    strategy:
+      matrix:
+        configuration: [Debug, Release, RelWithDebInfo, Profiling]
+    needs: build-windows
+    steps:
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.5
+      - name: Download artifact (TrappedGames)
+        env:
+          artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+        if: env.artifact_hostname != null
+        uses: gamestrap/gha-download-artifact@v1.0.4
+        with:
+          server-hostname: ${{ secrets.ARTIFACT_HOST }}
+          server-share: "artifacts"
+          server-username: ${{ secrets.ARTIFACT_USERNAME }}
+          server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+          artifact-name: "Windows MSVC 2022 ${{matrix.configuration}} Executables"
+      - name: Download artifact (GitHub)
+        env:
+          artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+        if: env.artifact_hostname == null
+        uses: actions/download-artifact@v4
+        with:
+          name: Windows MSVC 2022 ${{matrix.configuration}} Executables
+      - name: Run Tests
+        run: |
+          cd UnitTests
+          $env:TRACY_NO_INVARIANT_CHECK=1; .\UnitTests.exe; Remove-Item Env:\TRACY_NO_INVARIANT_CHECK
