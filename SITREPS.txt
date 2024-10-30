@@ -5337,3 +5337,4 @@ SITREP 10/28/2024|24w44a1
 SITREP 10/30/2024|24w44a2
     - Changed TRAP Engine version to 24w44a2(0.11.32)
     - GitHub Actions Added nightly build workflow ~<20 mins
+    - GitHub Actions Only trigger Build-Docs when new tag is added on master branch ~<5 mins

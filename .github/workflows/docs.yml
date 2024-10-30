@@ -4,9 +4,11 @@ name: Build-Docs
 
 # Controls when the workflow will run
 on:
-  # Run on main and master branch
+  # Run on main and master branch when a new tag is added
   push:
     branches: [ main, master ]
+    tags:
+      - '**'
   # Allow to run this action manually
   workflow_dispatch:
 
