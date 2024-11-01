@@ -88,7 +88,7 @@ jobs:
     - name: Install compiler
       run: |
         if [ "${{matrix.compiler}}" == "clang"]; then
-          sudo apt install -y clang-${{matrix.clang_version}} llvm-${{matrix.clang_version}};
+          sudo apt install -y clang-${{matrix.clang_version}} llvm-${{matrix.clang_version}} libclang-rt-${{matrix.clang_version}}-dev;
           sudo update-alternatives --install /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-${{matrix.clang_version}} 10;
           sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-${{matrix.clang_version}} 10;
           sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-${{matrix.clang_version}} 10;
