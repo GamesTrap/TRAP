@@ -87,16 +87,19 @@ jobs:
         sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10
     - name: Install compiler
       run: |
-        if [ "${{matrix.compiler}}" == "clang"]; then
+        if [ "${{matrix.compiler}}" == "clang" ]; then
           sudo apt install -y clang-${{matrix.clang_version}} llvm-${{matrix.clang_version}} libclang-rt-${{matrix.clang_version}}-dev;
           sudo update-alternatives --install /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-${{matrix.clang_version}} 10;
           sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-${{matrix.clang_version}} 10;
           sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-${{matrix.clang_version}} 10;
           export CC=clang-${{matrix.clang_version}};
+          export CXX=clang++-${{matrix.clang_version}};
         elif [ "${{matrix.compiler}}" == "gcc" ]; then
           sudo apt install -y g++-${{matrix.gcc_version}};
           sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-${{matrix.gcc_version}} 10;
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${{matrix.gcc_version}} 10;
+          export CC=gcc-${{matrix.gcc_version}};
+          export CXX=g++-${{matrix.gcc_version}};
         fi
     - name: Make scripts and premake executable
       run: |
