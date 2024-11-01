@@ -241,14 +241,12 @@ namespace TRAP::Network
 		/// reachable.
 		/// To avoid blocking your application for too long,
 		/// you can use a timeout.
-		/// The default value, Time::Zero, means that the
-		/// system timeout will be used (which is usually pretty long).
 		/// @param server Name or address of the FTP server to connect to.
 		/// @param port Port used for the connection.
-		/// @param timeout Maximum time to wait.
+		/// @param timeout Maximum time to wait. Defaul: 2 minutes.
 		/// @return Server response to the request.
 		[[nodiscard]] Response Connect(const IPv4Address& server, u16 port = 21,
-		                               Utils::TimeStep timeout = Utils::TimeStep(0.0f));
+		                               Utils::TimeStep timeout = Utils::TimeStep(120.0f));
 
 		/// @brief Close the connection with the server.
 		/// @return Server response to the request.

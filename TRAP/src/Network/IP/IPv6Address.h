@@ -91,9 +91,9 @@ namespace TRAP::Network
 		/// sever, you may use a time limit if you don't want your program
 		/// to be possibly stuck waiting in case there is a problem; this
 		/// limit is deactivated by default.
-		/// @param timeout Maximum time to wait.
+		/// @param timeout Maximum time to wait. Default: 2 minutes.
 		/// @return Public IP address of the computer.
-		[[nodiscard]] static IPv6Address GetPublicAddress(Utils::TimeStep timeout = Utils::TimeStep(0.0f));
+		[[nodiscard]] static IPv6Address GetPublicAddress(Utils::TimeStep timeout = Utils::TimeStep(120.0f));
 
 		static const IPv6Address None; //Value representing an empty/invaid address
 		static const IPv6Address Any; //Value representing any address (0000:0000:0000:0000:0000:0000:0000:0000)

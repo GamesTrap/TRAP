@@ -5344,3 +5344,4 @@ SITREP 11/01/2024|24w44a3
     - Changed TRAP Engine version to 24w44a3(0.11.33)
     - Fixed compiler errors in nightly build workflow ~<20 mins
     - Upload-Artifact Added support for 'schedule' event ~<5 mins
+    - Network Added default timeout of 2 minutes for blocking calls ~<5 mins

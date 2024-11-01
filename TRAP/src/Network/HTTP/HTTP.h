@@ -324,12 +324,12 @@ namespace TRAP::Network
 		/// A value of Utils::TimeStep(0.0f) means that the client will use the system default timeout
 		/// (which is usually pretty long).
 		/// @param request Request to send.
-		/// @param timeout Maximum time to wait.
+		/// @param timeout Maximum time to wait. Default: 2 minutes.
 		/// @return Server response.
 		/// @warning This function waits for the server's response and may not return instantly;
 		///          use a thread if you don't want to block your application, or use a
 		///          timeout to limit the time to wait.
-		[[nodiscard]] Response SendRequest(const Request& request, Utils::TimeStep timeout = Utils::TimeStep(0.0f));
+		[[nodiscard]] Response SendRequest(const Request& request, Utils::TimeStep timeout = Utils::TimeStep(120.0f));
 
 	private:
 		TCPSocket m_connection;         //Connection to the host

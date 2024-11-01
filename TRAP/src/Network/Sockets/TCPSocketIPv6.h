@@ -60,10 +60,10 @@ namespace TRAP::Network
 		/// forcibly disconnected before attempting to connect again.
 		/// @param remoteAddress Address of the remote peer.
 		/// @param remotePort Port of the remote peer.
-		/// @param timeout Optional maximum time to wait.
+		/// @param timeout Optional maximum time to wait. Default: 2 minutes.
 		/// @return Status code.
 		[[nodiscard]] Status Connect(const IPv6Address& remoteAddress, u16 remotePort,
-		                             Utils::TimeStep timeout = Utils::TimeStep(0.0f));
+		                             Utils::TimeStep timeout = Utils::TimeStep(120.0f));
 
 		/// @brief Disconnect the socket from its remote peer.
 		///
