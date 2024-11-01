@@ -218,10 +218,12 @@ void operator delete[](void* ptr, std::align_val_t) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-// void operator delete(void* ptr, const usize) noexcept
-// {
-//     FreeImpl(ptr);
-// }
+#if defined(__GNUC__) && !defined(__clang__)
+void operator delete(void* ptr, const usize) noexcept
+{
+    FreeImpl(ptr);
+}
+#endif /*defined(__GNUC__) && !defined(__clang__)*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
