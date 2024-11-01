@@ -455,15 +455,11 @@ namespace
 
     [[nodiscard]] constexpr bool IsKillEventTriggered(const DWORD waitResult)
     {
-	    ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
-
         return waitResult == (WAIT_OBJECT_0 + 1);
     }
 
     [[nodiscard]] constexpr bool IsFileEventTriggered(const DWORD waitResult)
     {
-	    ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
-
         return waitResult == (WAIT_OBJECT_0);
     }
 
