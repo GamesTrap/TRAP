@@ -165,7 +165,9 @@ void operator delete(void* ptr) noexcept;
 void operator delete[](void* ptr) noexcept;
 void operator delete(void* ptr, std::align_val_t alignment) noexcept;
 void operator delete[](void* ptr, std::align_val_t alignment) noexcept;
-// void operator delete(void* ptr, usize size) noexcept;
+#if defined(__GNUC__) && !defined(__clang__)
+void operator delete(void* ptr, usize size) noexcept;
+#endif /*defined(__GNUC__) && !defined(__clang__)*/
 void operator delete[](void* ptr, usize size) noexcept;
 void operator delete(void* ptr, usize size, std::align_val_t alignment) noexcept;
 void operator delete[](void* ptr, usize size, std::align_val_t alignment) noexcept;
