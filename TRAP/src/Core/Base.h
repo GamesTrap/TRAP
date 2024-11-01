@@ -77,7 +77,7 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 /// @brief TRAP version number created with TRAP_MAKE_VERSION
-inline constexpr TRAP::SemanticVersion<0, 11, 32> TRAP_VERSION{};
+inline constexpr TRAP::SemanticVersion<0, 11, 33> TRAP_VERSION{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -153,12 +153,26 @@ void SetTRAPProfileSystems(ProfileSystems systems) noexcept;
 #ifdef TRACY_ENABLE
 //Overloads for new and delete (only used for profiling)
 
-[[nodiscard]] void* operator new(const usize count);
-[[nodiscard]] void* operator new[](const usize count);
+[[nodiscard]] void* operator new(const usize size);
+[[nodiscard]] void* operator new(const usize size, const std::nothrow_t&) noexcept;
+[[nodiscard]] void* operator new[](const usize size);
+[[nodiscard]] void* operator new[](const usize size, const std::nothrow_t&) noexcept;
+[[nodiscard]] void* operator new(const usize size, const std::align_val_t alignment);
+[[nodiscard]] void* operator new(const usize size, const std::align_val_t alignment, const std::nothrow_t&) noexcept;
+[[nodiscard]] void* operator new[](const usize size, const std::align_val_t alignment);
+[[nodiscard]] void* operator new[](const usize size, const std::align_val_t alignment, const std::nothrow_t&) noexcept;
 void operator delete(void* ptr) noexcept;
 void operator delete[](void* ptr) noexcept;
-void operator delete(void* ptr, usize count) noexcept;
-void operator delete[](void* ptr, usize count) noexcept;
+void operator delete(void* ptr, std::align_val_t alignment) noexcept;
+void operator delete[](void* ptr, std::align_val_t alignment) noexcept;
+// void operator delete(void* ptr, usize size) noexcept;
+void operator delete[](void* ptr, usize size) noexcept;
+void operator delete(void* ptr, usize size, std::align_val_t alignment) noexcept;
+void operator delete[](void* ptr, usize size, std::align_val_t alignment) noexcept;
+void operator delete(void* ptr, const std::nothrow_t& tag) noexcept;
+void operator delete[](void* ptr, const std::nothrow_t& tag) noexcept;
+void operator delete(void* ptr, std::align_val_t alignment, const std::nothrow_t& tag) noexcept;
+void operator delete[](void* ptr, std::align_val_t alignment, const std::nothrow_t& tag) noexcept;
 #endif /*TRACY_ENABLE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
