@@ -27,6 +27,7 @@ private:
 	void OnOverlayRender();
 
 	void MousePicking();
+	void MSAAResolveMainRenderTarget();
 	void DuplicateEntity();
 	void DeleteEntity();
 	void SerializeScene(TRAP::Ref<TRAP::Scene> scene, const std::filesystem::path& path);
@@ -72,6 +73,7 @@ private:
 	TRAP::Graphics::RendererAPI::BufferDesc m_mousePickBufferDesc{};
 	TRAP::Ref<TRAP::Graphics::Buffer> m_mousePickBuffer = nullptr;
 	TRAP::Ref<TRAP::Graphics::RenderTarget> m_IDRenderTarget = nullptr;
+	TRAP::Ref<TRAP::Graphics::RenderTarget> m_IDResolveRenderTarget = nullptr;
 
 	//Panels
 	TRAP::SceneGraphPanel m_sceneGraphPanel{};
