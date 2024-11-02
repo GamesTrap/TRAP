@@ -133,14 +133,14 @@ void TRAP::Graphics::AftermathTracker::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef ENABLE_NSIGHT_AFTERMATH
     if(AftermathHandle.Get() == nullptr)
         return;
 
+#ifdef ENABLE_GRAPHICS_DEBUG
     TP_DEBUG(Log::RendererAftermathTrackerPrefix, "Destroying AftermathTracker");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
-#ifdef ENABLE_NSIGHT_AFTERMATH
     AftermathCall(AftermathDisableGPUCrashDumps());
 
     AftermathHandle.Reset();

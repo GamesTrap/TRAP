@@ -5345,3 +5345,7 @@ SITREP 11/01/2024|24w44a3
     - Fixed compiler errors in nightly build workflow ~<20 mins
     - Upload-Artifact Added support for 'schedule' event ~<5 mins
     - Network Added default timeout of 2 minutes for blocking calls ~<5 mins
+
+SITREP 11/02/2024|24w44b1
+    - Changed TRAP Engine version to 24w44b1(0.11.34)
+    - AftermathTracker Fixed compiler error when SDK is not provided ~<5 mins
