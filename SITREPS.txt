@@ -5352,3 +5352,7 @@ SITREP 11/02/2024|24w44b1
     - TRAP-Editor Added engine settings to UI ~<20 mins
     - TRAP-Editor Added support for MSAA ~<30 mins
     - Build-CI/Nightly-Build-CI Updated gha-download-artifact version ~<5 mins
+
+SITREP 11/02/2024|24w44b1
+    - Changed TRAP Engine version to 24w44b1(0.11.34)
+    - Removed NVIDIA-Reflex SDK support ~<15 mins

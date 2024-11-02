@@ -107,9 +107,6 @@ function m.IncludeTRAP()
     -- Discord Game SDK stuff
 	thirdparty.IncludeDiscordGameSDK()
 
-	-- NVIDIA Reflex SDK stuff
-	thirdparty.IncludeNVIDIAReflexSDK()
-
     filter {}
 end
 function m.LinkTRAP()
@@ -128,8 +125,6 @@ function m.LinkTRAP()
 
     -- Discord Game SDK stuff
     thirdparty.LinkDiscordGameSDK()
-	-- NVIDIA Reflex SDK stuff
-    thirdparty.LinkNVIDIAReflexSDK()
 
     filter {}
 end

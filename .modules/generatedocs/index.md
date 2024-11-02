@@ -83,7 +83,6 @@ The user is required to supply these. See the {ref}`additionallibraries` section
 
 - [Discord Game SDK](https://discord.com/developers/docs/game-sdk/sdk-starter-guide)
 - [NVIDIA® Nsight™ Aftermath SDK](https://developer.nvidia.com/nsight-aftermath)
-- [NVIDIA® Reflex SDK](https://developer.nvidia.com/performance-rendering-tools/reflex)
 - [Steamworks SDK](https://partner.steamgames.com/doc/sdk)
 :::
 

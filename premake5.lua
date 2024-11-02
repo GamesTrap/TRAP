@@ -168,14 +168,6 @@ IncludeDir["NSIGHTAFTERMATH"] = "%{wks.location}/Dependencies/Nsight-Aftermath/i
 IncludeDir["VMA"] = "%{wks.location}/Dependencies/VulkanMemoryAllocator/include"
 IncludeDir["WAYLAND"] = "%{wks.location}/Dependencies/Wayland"
 IncludeDir["STEAMWORKSSDK"] = "%{wks.location}/Dependencies/SteamworksSDK/sdk/public/steam"
-local NVReflexFiles = os.matchfiles(os.getcwd() .. "/Dependencies/NVIDIA-Reflex/**NvLowLatencyVk.h")
-if next(NVReflexFiles) ~= nil then
-	IncludeDir["NVIDIAREFLEX"] = path.getdirectory(NVReflexFiles[1])
-end
-local NVReflexStatsFiles = os.matchfiles(os.getcwd() .. "/Dependencies/NVIDIA-Reflex/**pclstats.h")
-if next(NVReflexStatsFiles) ~= nil then
-	IncludeDir["NVIDIAREFLEXSTATS"] = path.getdirectory(NVReflexStatsFiles[1])
-end
 IncludeDir["BOX2D"] = "%{wks.location}/Dependencies/Box2D/include"
 IncludeDir["TRACY"] = "%{wks.location}/Dependencies/Tracy/public"
 IncludeDir["FMT"] = "%{wks.location}/Dependencies/fmt/include"

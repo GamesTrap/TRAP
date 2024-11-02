@@ -24,7 +24,6 @@ The following classes/structs/namespaces are not available in headless mode:
 - ImGui (TRAP::Graphics::ImGuiLayer, TRAP::INTERNAL::ImGuiWindowing)
 - ImGuizmo
 - DiscordGameSDK (TRAP::Utils::Discord)
-- NVIDIA-Reflex
 - TRAP::Graphics::EditorCamera
 - TRAP::Graphics::OrthographicCameraBounds
 - TRAP::Graphics::OrthographicCameraController
