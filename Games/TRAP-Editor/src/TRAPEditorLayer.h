@@ -47,12 +47,15 @@ private:
 	TRAP::Graphics::RendererAPI::LoadActionsDesc m_renderTargetLoadActions{};
 	TRAP::Graphics::RendererAPI::RenderTargetDesc m_renderTargetDesc{};
 	TRAP::Ref<TRAP::Graphics::RenderTarget> m_renderTarget = nullptr;
+	TRAP::Ref<TRAP::Graphics::RenderTarget> m_resolveRenderTarget = nullptr;
 
 	//Viewport
 	TRAP::Math::Vec2 m_viewportSize{};
 	std::array<TRAP::Math::Vec2, 2u> m_viewportBounds{};
 	bool m_viewportFocused = false;
 	bool m_viewportHovered = false;
+	TRAP::Graphics::AntiAliasing m_cachedAAMode = TRAP::Graphics::AntiAliasing::Off;
+	TRAP::Graphics::SampleCount m_cachedAASampleCount = TRAP::Graphics::SampleCount::Two;
 
 	//Gizmo
 	i32 m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;

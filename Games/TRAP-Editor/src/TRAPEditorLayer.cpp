@@ -2,6 +2,263 @@
 
 #include <imgui_internal.h>
 
+namespace
+{
+	[[nodiscard]] constexpr std::string SampleCountToStringForUI(const TRAP::Graphics::SampleCount sample)
+	{
+		if(sample == TRAP::Graphics::SampleCount::One)
+			return "Off";
+
+		return fmt::format("{}x", sample);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] TRAP::Graphics::AntiAliasing DrawAntiAliasingMethodComboBox(TRAP::Graphics::AntiAliasing currentAAMethod)
+	{
+		static constexpr std::array<TRAP::Graphics::AntiAliasing, 2u> aaMethods
+		{
+			TRAP::Graphics::AntiAliasing::Off,
+			TRAP::Graphics::AntiAliasing::MSAA
+		};
+
+		TRAP::Graphics::AntiAliasing newAAMethod = currentAAMethod;
+		if(ImGui::BeginCombo("Anti aliasing", fmt::format("{}", currentAAMethod).c_str()))
+		{
+			for(const auto aaMethod : aaMethods)
+			{
+				const bool isSelected = aaMethod == currentAAMethod;
+
+				if(ImGui::Selectable(fmt::format("{}", aaMethod).c_str(), isSelected))
+					newAAMethod = aaMethod;
+
+				if(isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+		}
+
+		return newAAMethod;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] TRAP::Graphics::SampleCount DrawAntiAliasingSampleComboBox(const TRAP::Graphics::AntiAliasing currentAAMethod,
+	                                                                         const TRAP::Graphics::SampleCount currentSample)
+	{
+		static constexpr std::array<TRAP::Graphics::SampleCount, 4u> aaSamples
+		{
+			TRAP::Graphics::SampleCount::Two,
+			TRAP::Graphics::SampleCount::Four,
+			TRAP::Graphics::SampleCount::Eight,
+			TRAP::Graphics::SampleCount::Sixteen
+		};
+
+		const TRAP::Graphics::SampleCount maxMSAASamples = TRAP::Graphics::RendererAPI::GPUSettings.MaxMSAASampleCount;
+
+		ImGui::BeginDisabled(currentAAMethod == TRAP::Graphics::AntiAliasing::Off);
+		TRAP::Graphics::SampleCount newAASample = currentSample;
+		if(newAASample == TRAP::Graphics::SampleCount::One)
+			newAASample = TRAP::Graphics::SampleCount::Two;
+		if(ImGui::BeginCombo("Quality", SampleCountToStringForUI(currentSample).c_str()))
+		{
+			for(const auto aaSample : aaSamples)
+			{
+				const bool isSelected = aaSample == currentSample;
+
+				const bool isAASampleSupported = aaSample <= maxMSAASamples;
+				if(ImGui::Selectable(SampleCountToStringForUI(aaSample).c_str(), isSelected,
+									 isAASampleSupported ? ImGuiSelectableFlags_None : ImGuiSelectableFlags_Disabled))
+				{
+					newAASample = aaSample;
+				}
+
+				if(isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+		}
+		ImGui::EndDisabled();
+
+		return newAASample;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void DrawAntiAliasingSetting()
+	{
+		TRAP::Graphics::AntiAliasing currentAntiAliasing = TRAP::Graphics::AntiAliasing::Off;
+		TRAP::Graphics::SampleCount currentAntiAliasingSamples = TRAP::Graphics::SampleCount::Two;
+		TRAP::Graphics::RenderCommand::GetAntiAliasing(currentAntiAliasing, currentAntiAliasingSamples);
+
+		const auto newAAMethod = DrawAntiAliasingMethodComboBox(currentAntiAliasing);
+		const auto newSample = DrawAntiAliasingSampleComboBox(currentAntiAliasing, currentAntiAliasingSamples);
+
+		if(newAAMethod != currentAntiAliasing || newSample != currentAntiAliasingSamples)
+			TRAP::Graphics::RenderCommand::SetAntiAliasing(newAAMethod, newSample);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void DrawAnisotropySetting()
+	{
+		static constexpr std::array<TRAP::Graphics::SampleCount, 5u> anisotropySamples
+		{
+			TRAP::Graphics::SampleCount::One,
+			TRAP::Graphics::SampleCount::Two,
+			TRAP::Graphics::SampleCount::Four,
+			TRAP::Graphics::SampleCount::Eight,
+			TRAP::Graphics::SampleCount::Sixteen
+		};
+
+		const TRAP::Graphics::SampleCount maxSupportedAnisotropy = static_cast<TRAP::Graphics::SampleCount>(TRAP::Graphics::RendererAPI::GPUSettings.MaxAnisotropy);
+
+		if(maxSupportedAnisotropy == TRAP::Graphics::SampleCount::One)
+		{
+			ImGui::Text("Anisotropic Filtering is not supported by this device!");
+			return;
+		}
+
+		const TRAP::Graphics::SampleCount currentAnisotropy = TRAP::Graphics::RenderCommand::GetAnisotropyLevel();
+
+		if(ImGui::BeginCombo("Anisotropy Level", SampleCountToStringForUI(currentAnisotropy).c_str()))
+		{
+			for(const auto anisotropySample : anisotropySamples)
+			{
+				const bool isSelected = anisotropySample == currentAnisotropy;
+
+				const bool isAnisotropyLevelSupported = anisotropySample <= maxSupportedAnisotropy;
+				if(ImGui::Selectable(SampleCountToStringForUI(anisotropySample).c_str(), isSelected,
+									 isAnisotropyLevelSupported ? ImGuiSelectableFlags_None : ImGuiSelectableFlags_Disabled))
+				{
+					TRAP::Graphics::RenderCommand::SetAnisotropyLevel(anisotropySample);
+				}
+
+				if(isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void DrawVSyncSetting(const TRAP::Window& window)
+	{
+		bool vsync = window.GetVSync();
+		if(ImGui::Checkbox("VSync", &vsync))
+			window.SetVSync(vsync);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void DrawFPSLimiterSetting()
+	{
+		i32 FPSLimit = NumericCast<i32>(TRAP::Application::GetFPSLimit());
+		bool isFPSLimiterEnabled = FPSLimit > 0;
+
+		if(ImGui::Checkbox("Enable FPS limiter", &isFPSLimiterEnabled))
+		{
+			if(!isFPSLimiterEnabled)
+			{
+				FPSLimit = 0;
+				TRAP::Application::SetFPSLimit(0);
+			}
+			else if(FPSLimit == 0)
+			{
+				//Default to 60 FPS when enabling the FPS limiter
+				FPSLimit = 60;
+				TRAP::Application::SetFPSLimit(NumericCast<u32>(FPSLimit));
+			}
+		}
+
+		ImGui::BeginDisabled(!isFPSLimiterEnabled);
+		if(ImGui::SliderInt("FPS limiter", &FPSLimit, 25, 500))
+			TRAP::Application::SetFPSLimit(NumericCast<u32>(FPSLimit));
+		ImGui::EndDisabled();
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void DrawUnfocusedFPSLimiterSetting()
+	{
+		i32 unfocusedFPSLimit = NumericCast<i32>(TRAP::Application::GetUnfocusedFPSLimit());
+		if(ImGui::SliderInt("Unfocused FPS limiter", &unfocusedFPSLimit, 15, 30))
+			TRAP::Application::SetUnfocusedFPSLimit(NumericCast<u32>(unfocusedFPSLimit));
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void DrawRawMouseInputSetting(TRAP::Window& window)
+	{
+		bool rawMouseInput = window.GetRawMouseInput();
+		if(ImGui::Checkbox("Raw mouse input", &rawMouseInput))
+			window.SetRawMouseInput(rawMouseInput);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void DrawLatencyModeSetting()
+	{
+		static constexpr std::array<TRAP::Graphics::LatencyMode, 3u> latencyModes
+		{
+			TRAP::Graphics::LatencyMode::Disabled,
+			TRAP::Graphics::LatencyMode::Enabled,
+			TRAP::Graphics::LatencyMode::EnabledBoost
+		};
+		const TRAP::Graphics::LatencyMode currentLatencyMode = TRAP::Graphics::RenderCommand::GetLatencyMode();
+
+		ImGui::BeginDisabled(!TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported);
+		if(ImGui::BeginCombo("NVIDIA Reflex Low Latency", fmt::format("{}", currentLatencyMode).c_str()))
+		{
+			for(const auto latencyMode : latencyModes)
+			{
+				const bool isSelected = latencyMode == currentLatencyMode;
+				if(ImGui::Selectable(fmt::format("{}", latencyMode).c_str(), isSelected))
+					TRAP::Graphics::RenderCommand::SetLatencyMode(latencyMode);
+
+				if(isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+		}
+		ImGui::EndDisabled();
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void DrawRenderScaleSetting()
+	{
+		f32 renderScale = TRAP::Graphics::RenderCommand::GetRenderScale();
+		if(ImGui::SliderFloat("Render Scale", &renderScale, 0.5f, 2.0f, "%.2f"))
+			TRAP::Graphics::RenderCommand::SetRenderScale(renderScale);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void DrawEngineSettings()
+	{
+		const auto& window = TRAP::Application::GetWindow();
+		if(window == nullptr)
+			return;
+
+		DrawVSyncSetting(*window);
+		DrawFPSLimiterSetting();
+		DrawUnfocusedFPSLimiterSetting();
+		DrawAntiAliasingSetting();
+		DrawAnisotropySetting();
+		DrawRenderScaleSetting();
+		DrawLatencyModeSetting();
+		DrawRawMouseInputSetting(*window);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAPEditorLayer::TRAPEditorLayer()
 	: Layer("TRAPEditorLayer")
 {
@@ -98,7 +355,7 @@ void TRAPEditorLayer::OnImGuiRender()
 
 	m_sceneGraphPanel.OnImGuiRender();
 
-	ImGui::Begin("Settings");
+	ImGui::Begin("TRAP-Editor Settings");
     ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
 	ImGui::Text("GPU: %s", TRAP::Graphics::RenderCommand::GetGPUName().c_str());
     ImGui::Text("CPU FPS: %u", TRAP::Graphics::RenderCommand::GetCPUFPS());
@@ -116,8 +373,13 @@ void TRAPEditorLayer::OnImGuiRender()
 	ImGui::Text("Vertices: %u", stats.GetTotalVertexCount());
 	ImGui::Text("Indices: %u", stats.GetTotalIndexCount());
 	ImGui::Separator();
+	DrawEngineSettings();
+	ImGui::Separator();
 	ImGui::Checkbox("Show physics colliders", &m_showPhysicsColliders);
-
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	ImGui::Separator();
+	ImGui::Text("This software contains source code provided by NVIDIA Corporation.");
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 	ImGui::End();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 0.0f });

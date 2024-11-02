@@ -5349,3 +5349,4 @@ SITREP 11/01/2024|24w44a3
 SITREP 11/02/2024|24w44b1
     - Changed TRAP Engine version to 24w44b1(0.11.34)
     - AftermathTracker Fixed compiler error when SDK is not provided ~<5 mins
+    - TRAP-Editor Added engine settings to UI ~<20 mins
