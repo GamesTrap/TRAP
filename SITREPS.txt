@@ -5351,3 +5351,4 @@ SITREP 11/02/2024|24w44b1
     - AftermathTracker Fixed compiler error when SDK is not provided ~<5 mins
     - TRAP-Editor Added engine settings to UI ~<20 mins
     - TRAP-Editor Added support for MSAA ~<30 mins
+    - Build-CI/Nightly-Build-CI Updated gha-download-artifact version ~<5 mins
