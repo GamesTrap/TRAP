@@ -295,7 +295,7 @@ jobs:
         env:
           artifact_hostname: ${{secrets.ARTIFACT_HOST}}
         if: env.artifact_hostname != null
-        uses: gamestrap/gha-download-artifact@v1.0.4
+        uses: gamestrap/gha-download-artifact@v1.0.5
         with:
           server-hostname: ${{ secrets.ARTIFACT_HOST }}
           server-share: "artifacts"
@@ -330,7 +330,7 @@ jobs:
         env:
           artifact_hostname: ${{secrets.ARTIFACT_HOST}}
         if: env.artifact_hostname != null
-        uses: gamestrap/gha-download-artifact@v1.0.4
+        uses: gamestrap/gha-download-artifact@v1.0.5
         with:
           server-hostname: ${{ secrets.ARTIFACT_HOST }}
           server-share: "artifacts"
