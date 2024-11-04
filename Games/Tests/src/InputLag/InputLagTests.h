@@ -22,7 +22,6 @@ public:
 	//NVIDIA-Relfex stuff
 	struct ReflexData
 	{
-	#ifdef NVIDIA_REFLEX_AVAILABLE
 		std::array<f32, 50u> m_totalHistory{};
 		std::array<f32, 50u> m_simulationDeltaHistory{};
 		std::array<f32, 50u> m_renderDeltaHistory{};
@@ -30,7 +29,6 @@ public:
 		std::array<f32, 50u> m_driverDeltaHistory{};
 		std::array<f32, 50u> m_OSRenderQueueDeltaHistory{};
 		std::array<f32, 50u> m_GPURenderDeltaHistory{};
-	#endif /*NVIDIA_REFLEX_AVAILABLE*/
 	};
 
 private:

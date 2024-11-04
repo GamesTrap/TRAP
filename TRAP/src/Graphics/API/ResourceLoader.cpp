@@ -1108,7 +1108,7 @@ void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 			.Buffer = AllocateUploadMemory(size, UtilGetTextureSubresourceAlignment()).Buffer,
 			.AllocatedSpace = 0,
 			.TempBuffers = {},
-			.CopyCompletedSemaphore = Semaphore::Create(fmt::format("ResourceLoader Semaphore (Resource set: {})", desc.Type, i))
+			.CopyCompletedSemaphore = Semaphore::Create(SemaphoreType::Binary, fmt::format("ResourceLoader Semaphore (Resource set: {})", desc.Type, i))
 		};
 
 		m_copyEngine.ResourceSets.push_back(cpyResSet);

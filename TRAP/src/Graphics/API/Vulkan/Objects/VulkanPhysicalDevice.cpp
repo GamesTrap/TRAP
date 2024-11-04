@@ -73,6 +73,8 @@ namespace
 
 	void SetupRendererAPIGPUSettings(const TRAP::Graphics::API::VulkanPhysicalDevice& physicalDevice)
 	{
+		auto& gpuSettings = TRAP::Graphics::RendererAPI::GPUSettings;
+
 		// Capabilities for VulkanRenderer
 		for (u32 i = 0; i < std::to_underlying(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
 		{
@@ -95,57 +97,62 @@ namespace
 		const auto& devFeatures = physicalDevice.GetVkPhysicalDeviceFeatures();
 		const auto& devSubGroupProps = physicalDevice.GetVkPhysicalDeviceSubgroupProperties();
 
-		TRAP::Graphics::RendererAPI::GPUSettings.UniformBufferAlignment = devProps.limits.minUniformBufferOffsetAlignment;
-		TRAP::Graphics::RendererAPI::GPUSettings.MaxUniformBufferRange = devProps.limits.maxUniformBufferRange;
-		TRAP::Graphics::RendererAPI::GPUSettings.StorageBufferAlignment = devProps.limits.minStorageBufferOffsetAlignment;
-		TRAP::Graphics::RendererAPI::GPUSettings.MaxStorageBufferRange = devProps.limits.maxStorageBufferRange;
-		TRAP::Graphics::RendererAPI::GPUSettings.UploadBufferTextureAlignment = NumericCast<u32>(devProps.limits.optimalBufferCopyOffsetAlignment);
-		TRAP::Graphics::RendererAPI::GPUSettings.UploadBufferTextureRowAlignment = NumericCast<u32>(devProps.limits.optimalBufferCopyRowPitchAlignment);
-		TRAP::Graphics::RendererAPI::GPUSettings.MaxVertexInputBindings = devProps.limits.maxVertexInputBindings;
-		TRAP::Graphics::RendererAPI::GPUSettings.MaxVertexInputAttributes = devProps.limits.maxVertexInputAttributes;
-		TRAP::Graphics::RendererAPI::GPUSettings.MultiDrawIndirectSupported = devProps.limits.maxDrawIndirectCount > 1u;
-		TRAP::Graphics::RendererAPI::GPUSettings.MaxAnisotropy = devProps.limits.maxSamplerAnisotropy;
-		TRAP::Graphics::RendererAPI::GPUSettings.MaxImageDimension2D = devProps.limits.maxImageDimension2D;
-		TRAP::Graphics::RendererAPI::GPUSettings.MaxImageDimensionCube = devProps.limits.maxImageDimensionCube;
-		TRAP::Graphics::RendererAPI::GPUSettings.FillModeNonSolid = (devFeatures.fillModeNonSolid != 0u);
-		TRAP::Graphics::RendererAPI::GPUSettings.MaxPushConstantSize = devProps.limits.maxPushConstantsSize;
-		TRAP::Graphics::RendererAPI::GPUSettings.MaxSamplerAllocationCount = devProps.limits.maxSamplerAllocationCount;
-		TRAP::Graphics::RendererAPI::GPUSettings.MaxTessellationControlPoints = devProps.limits.maxTessellationPatchSize;
-		TRAP::Graphics::RendererAPI::GPUSettings.MaxMSAASampleCount = static_cast<TRAP::Graphics::RendererAPI::SampleCount>(TRAP::Math::Min(GetMaxUsableMSAASampleCount(devProps), static_cast<u32>(VK_SAMPLE_COUNT_16_BIT)));
-		TRAP::Graphics::RendererAPI::GPUSettings.MaxColorRenderTargets = devProps.limits.maxColorAttachments;
+		gpuSettings.UniformBufferAlignment = devProps.limits.minUniformBufferOffsetAlignment;
+		gpuSettings.MaxUniformBufferRange = devProps.limits.maxUniformBufferRange;
+		gpuSettings.StorageBufferAlignment = devProps.limits.minStorageBufferOffsetAlignment;
+		gpuSettings.MaxStorageBufferRange = devProps.limits.maxStorageBufferRange;
+		gpuSettings.UploadBufferTextureAlignment = NumericCast<u32>(devProps.limits.optimalBufferCopyOffsetAlignment);
+		gpuSettings.UploadBufferTextureRowAlignment = NumericCast<u32>(devProps.limits.optimalBufferCopyRowPitchAlignment);
+		gpuSettings.MaxVertexInputBindings = devProps.limits.maxVertexInputBindings;
+		gpuSettings.MaxVertexInputAttributes = devProps.limits.maxVertexInputAttributes;
+		gpuSettings.MultiDrawIndirectSupported = devProps.limits.maxDrawIndirectCount > 1u;
+		gpuSettings.MaxAnisotropy = devProps.limits.maxSamplerAnisotropy;
+		gpuSettings.MaxImageDimension2D = devProps.limits.maxImageDimension2D;
+		gpuSettings.MaxImageDimensionCube = devProps.limits.maxImageDimensionCube;
+		gpuSettings.FillModeNonSolid = (devFeatures.fillModeNonSolid != 0u);
+		gpuSettings.MaxPushConstantSize = devProps.limits.maxPushConstantsSize;
+		gpuSettings.MaxSamplerAllocationCount = devProps.limits.maxSamplerAllocationCount;
+		gpuSettings.MaxTessellationControlPoints = devProps.limits.maxTessellationPatchSize;
+		gpuSettings.MaxMSAASampleCount = static_cast<TRAP::Graphics::RendererAPI::SampleCount>(TRAP::Math::Min(GetMaxUsableMSAASampleCount(devProps), static_cast<u32>(VK_SAMPLE_COUNT_16_BIT)));
+		gpuSettings.MaxColorRenderTargets = devProps.limits.maxColorAttachments;
 
 		// maxBoundDescriptorSets not needed because engine is always limited to 4 descriptor sets
 
-		TRAP::Graphics::RendererAPI::GPUSettings.WaveLaneCount = devSubGroupProps.subgroupSize;
-		TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags = TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::None;
+		gpuSettings.WaveLaneCount = devSubGroupProps.subgroupSize;
+		gpuSettings.WaveOpsSupportFlags = TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::None;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_BASIC_BIT) != 0u)
-			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Basic;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Basic;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_VOTE_BIT) != 0u)
-			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Vote;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Vote;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_ARITHMETIC_BIT) != 0u)
-			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Arithmetic;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Arithmetic;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_BALLOT_BIT) != 0u)
-			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Ballot;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Ballot;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_SHUFFLE_BIT) != 0u)
-			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Shuffle;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Shuffle;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT) != 0u)
-			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::ShuffleRelative;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::ShuffleRelative;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_CLUSTERED_BIT) != 0u)
-			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Clustered;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Clustered;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_QUAD_BIT) != 0u)
-			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Quad;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Quad;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV) != 0u)
-			TRAP::Graphics::RendererAPI::GPUSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::PartitionedNV;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::PartitionedNV;
 
-		TRAP::Graphics::RendererAPI::GPUSettings.TessellationSupported = (devFeatures.tessellationShader != 0u);
-		TRAP::Graphics::RendererAPI::GPUSettings.GeometryShaderSupported = (devFeatures.geometryShader != 0u);
-		TRAP::Graphics::RendererAPI::GPUSettings.SampleRateShadingSupported = (devFeatures.sampleRateShading != 0u);
+		gpuSettings.TessellationSupported = (devFeatures.tessellationShader != 0u);
+		gpuSettings.GeometryShaderSupported = (devFeatures.geometryShader != 0u);
+		gpuSettings.SampleRateShadingSupported = (devFeatures.sampleRateShading != 0u);
 
 #ifndef TRAP_HEADLESS_MODE
 		//Surface and present test is a hard requirement to pass the Physical device rating.
-		TRAP::Graphics::RendererAPI::GPUSettings.SurfaceSupported = true;
-		TRAP::Graphics::RendererAPI::GPUSettings.PresentSupported = true;
+		gpuSettings.SurfaceSupported = true;
+		gpuSettings.PresentSupported = true;
 #endif /*TRAP_HEADLESS_MODE*/
+
+		gpuSettings.ReflexSupported = physicalDevice.IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME) &&
+		                              physicalDevice.IsExtensionSupported(VK_KHR_PRESENT_ID_EXTENSION_NAME) &&
+		                              physicalDevice.IsExtensionSupported(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME) &&
+		                              physicalDevice.IsExtensionSupported(VK_NV_LOW_LATENCY_2_EXTENSION_NAME);
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//

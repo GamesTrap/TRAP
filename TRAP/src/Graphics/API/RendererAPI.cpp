@@ -180,6 +180,15 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
+[[nodiscard]] std::vector<VkLatencyTimingsFrameReportNV> TRAP::Graphics::RendererAPI::ReflexGetLatency(const Window& window) const
+{
+	return ReflexGetLatency(0, window);
+}
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::RendererAPI::OnPostUpdate()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);

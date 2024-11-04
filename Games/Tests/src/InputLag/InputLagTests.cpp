@@ -9,13 +9,13 @@ namespace
 			ImGui::Text("NVIDIA Reflex is not supported on this GPU!");
 		else
 		{
-			static constexpr std::array<TRAP::Graphics::LatencyMode, 3u> latencyModes
+			static constexpr std::array<TRAP::Graphics::NVIDIAReflexLatencyMode, 3u> latencyModes
 			{
-				TRAP::Graphics::LatencyMode::Disabled,
-				TRAP::Graphics::LatencyMode::Enabled,
-				TRAP::Graphics::LatencyMode::EnabledBoost
+				TRAP::Graphics::NVIDIAReflexLatencyMode::Disabled,
+				TRAP::Graphics::NVIDIAReflexLatencyMode::Enabled,
+				TRAP::Graphics::NVIDIAReflexLatencyMode::EnabledBoost
 			};
-			const TRAP::Graphics::LatencyMode currentLatencyMode = TRAP::Graphics::RenderCommand::GetLatencyMode();
+			const TRAP::Graphics::NVIDIAReflexLatencyMode currentLatencyMode = TRAP::Graphics::RenderCommand::GetReflexLatencyMode();
 
 			ImGui::Text("Current Latency Mode: %s", fmt::format("{}", currentLatencyMode).c_str());
 
@@ -25,7 +25,7 @@ namespace
 				{
 					const bool isSelected = latencyMode == currentLatencyMode;
 					if(ImGui::Selectable(fmt::format("{}", latencyMode).c_str(), isSelected))
-						TRAP::Graphics::RenderCommand::SetLatencyMode(latencyMode);
+						TRAP::Graphics::RenderCommand::SetReflexLatencyMode(latencyMode);
 
 					if(isSelected)
 						ImGui::SetItemDefaultFocus();
@@ -34,17 +34,14 @@ namespace
 				ImGui::EndCombo();
 			}
 		}
-		ImGui::Separator();
-		ImGui::Text("This software contains source code provided by NVIDIA Corporation.");
 	}
 
 	void DrawNVIDIAReflexStats([[maybe_unused]] const InputLagTests::ReflexData& reflexData)
 	{
-#ifdef NVIDIA_REFLEX_AVAILABLE
 	if(TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported)
 	{
 		ImGui::Begin("NVIDIA Reflex Latency", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-					ImGuiWindowFlags_AlwaysAutoResize);
+					                                   ImGuiWindowFlags_AlwaysAutoResize);
 		ImGui::PlotLines("Total Game to Render Latency", reflexData.m_totalHistory.data(), NumericCast<i32>(reflexData.m_totalHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
 		ImGui::PlotLines("Simulation Delta", reflexData.m_simulationDeltaHistory.data(), NumericCast<i32>(reflexData.m_simulationDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
 		ImGui::PlotLines("Render Delta", reflexData.m_renderDeltaHistory.data(), NumericCast<i32>(reflexData.m_renderDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
@@ -54,7 +51,6 @@ namespace
 		ImGui::PlotLines("GPU Render Delta", reflexData.m_GPURenderDeltaHistory.data(), NumericCast<i32>(reflexData.m_GPURenderDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
 		ImGui::End();
 	}
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
 	}
 }
 
@@ -130,25 +126,27 @@ void InputLagTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delta
 {
 	SampleInput();
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
 	//Update latency history
 	if (TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported && m_updateLatencyTimer.Elapsed() >= 0.025f)
 	{
-		const auto latencyData = TRAP::Graphics::RendererAPI::GetRenderer()->ReflexGetLatency();
-		const auto& curr = latencyData.frameReport[63u];
-		const f32 totalGameToRenderLatencyMs = (curr.gpuRenderEndTime - curr.simStartTime) / 1000.0f;
-		const f32 simulationDeltaMs = (curr.simEndTime - curr.simStartTime) / 1000.0f;
-		const f32 renderDeltaMs = (curr.renderSubmitEndTime - curr.renderSubmitStartTime) / 1000.0f;
-		const f32 presentDeltaMs = (curr.presentEndTime - curr.presentStartTime) / 1000.0f;
-		const f32 driverDeltaMs = (curr.driverEndTime - curr.driverStartTime) / 1000.0f;
-		const f32 OSRenderQueueDeltaMs = (curr.osRenderQueueEndTime - curr.osRenderQueueStartTime) / 1000.0f;
-		const f32 GPURenderDeltaMs = (curr.gpuRenderEndTime - curr.gpuRenderStartTime) / 1000.0f;
+		const auto latencyData = TRAP::Graphics::RendererAPI::GetRenderer()->ReflexGetLatency(1, *TRAP::Application::GetWindow());
+		if(latencyData.empty())
+			return;
+
+		const auto& curr = latencyData.back();
+		const f32 totalGameToRenderLatencyMs = NumericCast<f32>(curr.gpuRenderEndTimeUs - curr.simStartTimeUs) / 1000.0f;
+		const f32 simulationDeltaMs = NumericCast<f32>(curr.simEndTimeUs - curr.simStartTimeUs) / 1000.0f;
+		const f32 renderDeltaMs = NumericCast<f32>(curr.renderSubmitEndTimeUs - curr.renderSubmitStartTimeUs) / 1000.0f;
+		const f32 presentDeltaMs = NumericCast<f32>(curr.presentEndTimeUs - curr.presentStartTimeUs) / 1000.0f;
+		const f32 driverDeltaMs = NumericCast<f32>(curr.driverEndTimeUs - curr.driverStartTimeUs) / 1000.0f;
+		const f32 OSRenderQueueDeltaMs = NumericCast<f32>(curr.osRenderQueueEndTimeUs - curr.osRenderQueueStartTimeUs) / 1000.0f;
+		const f32 GPURenderDeltaMs = NumericCast<f32>(curr.gpuRenderEndTimeUs - curr.gpuRenderStartTimeUs) / 1000.0f;
 
 		constinit static usize frameTimeIndex = 0u;
 		m_updateLatencyTimer.Reset();
 		if (frameTimeIndex < m_reflexData.m_totalHistory.size() - 1u)
 		{
-			if(curr.gpuRenderEndTime != 0)
+			if(curr.gpuRenderEndTimeUs != 0)
 			{
 				m_reflexData.m_totalHistory[frameTimeIndex] = totalGameToRenderLatencyMs;
 				m_reflexData.m_simulationDeltaHistory[frameTimeIndex] = simulationDeltaMs;
@@ -162,7 +160,7 @@ void InputLagTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delta
 		}
 		else
 		{
-			if(curr.gpuRenderEndTime != 0)
+			if(curr.gpuRenderEndTimeUs != 0)
 			{
 				std::shift_left(m_reflexData.m_totalHistory.begin(), m_reflexData.m_totalHistory.end(), 1);
 				m_reflexData.m_totalHistory.back() = totalGameToRenderLatencyMs;
@@ -181,7 +179,6 @@ void InputLagTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delta
 			}
 		}
 	}
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

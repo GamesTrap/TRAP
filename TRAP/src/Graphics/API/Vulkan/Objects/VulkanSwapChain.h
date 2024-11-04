@@ -54,12 +54,35 @@ namespace TRAP::Graphics::API
 		/// @brief Updates the framebuffer size and recreates the swap chain.
 		void UpdateFramebufferSize() override;
 
+		/// @brief Retrieve latency reports from NVIDIA-Reflex.
+		/// @param numLatencyData Number of latency data points to return. Set to 0 to retrieve the maximum queryable frame data.
+		/// @return Latency reports.
+		/// @remark @headless This function is not available in headless mode.
+		[[nodiscard]] std::vector<VkLatencyTimingsFrameReportNV> ReflexGetLatency(u32 numLatencyData) const override;
+
+		/// @brief Set a timestamp for NVIDIA-Reflex.
+		/// @param marker Enum value of the marker to set.
+		void ReflexSetMarker(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker marker) override;
+
+		/// @brief Set the latency mode for NVIDIA-Reflex.
+		/// @param latencyMode Latency mode to use.
+		/// @param fpsLimit Optional: FPS limit, use 0 to disable limiter.
+		void ReflexSetLatencyMode(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode latencyMode, u32 fpsLimit = 0u) const override;
+
+		/// @brief Delay host CPU work for low latency rendering.
+		/// @param reflexSemaphore Semaphore to use for sleep.
+		void ReflexSleep(const Semaphore& reflexSemaphore) const override;
+
 		/// @brief Retrieve the Vulkan swap chain handle.
 		/// @return Vulkan swap chain handle.
 		[[nodiscard]] constexpr VkSwapchainKHR GetVkSwapChain() const noexcept;
 		/// @brief Retrieve the Vulkan queue used for presentation.
 		/// @return Vulkan queue used for presentation.
 		[[nodiscard]] constexpr VkQueue GetPresentVkQueue() const noexcept;
+
+		/// @brief Retrieve the current present count of the swapchain. Used for PresentID and NVIDIA Reflex.
+		/// @return Current present count.
+		[[nodiscard]] constexpr u64 GetPresentCount() const noexcept;
 
 	private:
 		/// @brief Initialize the swap chain.
@@ -81,6 +104,8 @@ namespace TRAP::Graphics::API
 		VkSwapchainKHR m_swapChain = VK_NULL_HANDLE;
 		TRAP::Ref<VulkanSurface> m_surface = nullptr;
 
+		u64 m_presentCounter = 0u;
+
 		RendererAPI::SwapChainDesc m_desc{};
 	};
 }
@@ -97,6 +122,13 @@ namespace TRAP::Graphics::API
 [[nodiscard]] constexpr VkQueue TRAP::Graphics::API::VulkanSwapChain::GetPresentVkQueue() const noexcept
 {
 	return m_presentQueue;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr u64 TRAP::Graphics::API::VulkanSwapChain::GetPresentCount() const noexcept
+{
+	return m_presentCounter;
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

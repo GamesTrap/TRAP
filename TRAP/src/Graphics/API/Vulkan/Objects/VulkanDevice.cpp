@@ -46,21 +46,6 @@ namespace
 		//This needs to be done before the Vulkan device is created.
 		TRAP::Graphics::AftermathTracker::Initialize();
 	}
-
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-	void InitNVIDIAReflex(VkSemaphore& reflexSemaphore, const TRAP::Graphics::RendererAPI::GPUVendor gpuVendor, const TRAP::Graphics::API::VulkanDevice& device)
-	{
-		if (gpuVendor == TRAP::Graphics::RendererAPI::GPUVendor::NVIDIA &&
-			device.GetPhysicalDevice().IsFeatureEnabled(TRAP::Graphics::API::VulkanPhysicalDeviceFeature::TimelineSemaphore) &&
-			TRAP::Utils::IsWindows10BuildOrGreaterWin32(10240))
-		{
-			const NvLL_VK_Status status = NvLL_VK_InitLowLatencyDevice(device.GetVkDevice(), reinterpret_cast<HANDLE*>(&reflexSemaphore));
-			VkReflexCall(status);
-			if(status == NVLL_VK_OK)
-				TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported = true;
-		}
-	}
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -113,6 +98,8 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	diagnosticsCreateInfoNV.flags = VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_SHADER_DEBUG_INFO_BIT_NV |
 			                        VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_RESOURCE_TRACKING_BIT_NV |
 								    VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_AUTOMATIC_CHECKPOINTS_BIT_NV;
+	VkPhysicalDevicePresentIdFeaturesKHR presentIDFeatures{};
+	presentIDFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_ID_FEATURES_KHR;
 
 	VkBaseOutStructure* base = reinterpret_cast<VkBaseOutStructure*>(&devFeatures2);
 
@@ -137,6 +124,9 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	//Timeline semaphore
 	if(m_physicalDevice->IsExtensionSupported(VulkanPhysicalDeviceExtension::TimelineSemaphore))
 		TRAP::Graphics::API::LinkVulkanStruct(base, timelineSemaphoreFeatures);
+	//Present ID
+	if(m_physicalDevice->IsExtensionSupported(VulkanPhysicalDeviceExtension::PresentID))
+		TRAP::Graphics::API::LinkVulkanStruct(base, presentIDFeatures);
 
 	vkGetPhysicalDeviceFeatures2(m_physicalDevice->GetVkPhysicalDevice(), &devFeatures2);
 
@@ -185,9 +175,9 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 		TRAP::Graphics::API::VkSetObjectName(*this, std::bit_cast<u64>(m_device), VK_OBJECT_TYPE_DEVICE, m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-	InitNVIDIAReflex(m_reflexSemaphore, m_physicalDevice->GetVendor(), *this);
-#endif /*defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)*/
+	auto& gpuSettings = TRAP::Graphics::RendererAPI::GPUSettings;
+	gpuSettings.ReflexSupported = gpuSettings.ReflexSupported && (presentIDFeatures.presentId != 0u) &&
+	                              (timelineSemaphoreFeatures.timelineSemaphore != 0u);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -199,11 +189,6 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Destroying Device");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
-
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-	if(RendererAPI::GPUSettings.ReflexSupported)
-		vkDestroySemaphore(m_device, m_reflexSemaphore, nullptr);
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 	if(m_device != VK_NULL_HANDLE)
 		vkDestroyDevice(m_device, nullptr);

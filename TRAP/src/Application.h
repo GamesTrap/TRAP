@@ -158,14 +158,6 @@ namespace TRAP
 		/// @return Name of the game.
 		[[nodiscard]] static std::string GetGameName();
 
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-		/// @brief Get the global counter. The counter is incremented every frame.
-		/// @return Global counter value.
-		/// @remark This function is only available when NVIDIA Reflex SDK is provided.
-		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] static u64 GetGlobalCounter();
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
-
 		/// @brief Get the hot reloading filesystem watcher.
 		/// @return Reference to TRAP::FileSystem::FileSystemWatcher if filesystem watcher is running, empty optional otherwise.
 		[[nodiscard]] static std::optional<std::reference_wrapper<TRAP::FileSystem::FileSystemWatcher>> GetHotReloadingFileSystemWatcher();
@@ -237,11 +229,6 @@ namespace TRAP
 		//Main window
 		std::unique_ptr<Window> m_window = nullptr;
 #endif /*TRAP_HEADLESS_MODE*/
-
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-		//NVIDIA-Reflex
-		u64 m_globalCounter = 0;
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 		//Multithreading
 		ThreadPool m_threadPool{Utils::GetCPUInfo().LogicalCores - 1u};

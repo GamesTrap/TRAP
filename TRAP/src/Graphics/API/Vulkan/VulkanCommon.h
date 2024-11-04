@@ -45,16 +45,6 @@ namespace TRAP::Graphics::API
 	/// @param sourceLoc Source location of the function that called the error checker.
 	/// @return True for non error codes, otherwise false.
 	constexpr bool ErrorCheck(VkResult result, const std::source_location& sourceLoc);
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-	/// @brief Check the if given NvLL_VK_Status contains an error.
-	/// If the given NvLL_VK_Status contains an error, the function will log information about the error.
-	/// @param result NvLL_VK_Status to check.
-	/// @param sourceLoc Source location of the function that called the error checker.
-	/// @return True for non error codes, otherwise false.
-	/// @remark @headless This function is not available in headless mode.
-	/// @remark This function is only available when NVIDIA Reflex SDK is provided.
-	constexpr bool ReflexErrorCheck(NvLL_VK_Status result, const std::source_location& sourceLoc);
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 	/// @brief Convert the RendererAPI::QueueType to VkQueueFlags.
 	/// @param queueType QueueType to convert.
 	/// @return Converted VkQueueFlags.
@@ -455,20 +445,10 @@ namespace TRAP::Graphics::API
 	{
 		::TRAP::Graphics::API::ErrorCheck(result, loc);
 	}
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-	constexpr void VkReflexCall(const NvLL_VK_Status status, const std::source_location& loc = std::source_location::current())
-	{
-		::TRAP::Graphics::API::ReflexErrorCheck(status, loc);
-	}
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 #else
 	/// @brief Utility to check VkResult for errors and log them.
 	constexpr void VkCall(VkResult)
 	{}
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-	constexpr void VkReflexCall(NvLL_VK_Status)
-	{}
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 #endif /*TRAP_DEBUG*/
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -519,27 +499,6 @@ namespace TRAP::INTERNAL
 			}
 		}
 	};
-
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-	constexpr Utils::ConstexprMap<NvLL_VK_Status, std::string_view, 11> NvLLVKStatusToString
-	{
-		{
-			{
-				{NVLL_VK_ERROR, "NVLL_VK_ERROR"},
-				{NVLL_VK_LIBRARY_NOT_FOUND, "NVLL_VK_LIBRARY_NOT_FOUND"},
-				{NVLL_VK_NO_IMPLEMENTATION, "NVLL_VK_NO_IMPLEMENTATION"},
-				{NVLL_VK_API_NOT_INITIALIZED, "NVLL_VK_API_NOT_INITIALIZED"},
-				{NVLL_VK_INVALID_ARGUMENT, "NVLL_VK_INVALID_ARGUMENT"},
-				{NVLL_VK_INVALID_HANDLE, "NVLL_VK_INVALID_HANDLE"},
-				{NVLL_VK_INCOMPATIBLE_STRUCT_VERSION, "NVLL_VK_INCOMPATIBLE_STRUCT_VERSION"},
-				{NVLL_VK_INVALID_POINTER, "NVLL_VK_INVALID_POINTER"},
-				{NVLL_VK_OUT_OF_MEMORY, "NVLL_VK_OUT_OF_MEMORY"},
-				{NVLL_VK_API_IN_USE, "NVLL_VK_API_IN_USE"},
-				{NVLL_VK_NO_VULKAN, "NVLL_VK_NO_VULKAN"}
-			}
-		}
-	};
-#endif /*defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -554,21 +513,6 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 	return false;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result, const std::source_location& sourceLoc)
-{
-	if(result == NVLL_VK_OK)
-		return true;
-
-	TP_ERROR(Log::RendererVulkanReflexPrefix, INTERNAL::NvLLVKStatusToString.at(result).value_or("Unknown error"),
-	         ": ", sourceLoc);
-
-	return false;
-}
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

@@ -118,7 +118,7 @@ namespace
 #ifndef TRAP_HEADLESS_MODE
 		if(TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported)
 		{
-			TRAP::Graphics::RendererAPI::GetRenderer()->ReflexSleep();
+			TRAP::Graphics::RendererAPI::GetRenderer()->ReflexSleep(*TRAP::Application::GetWindow());
 			return;
 		}
 #endif /*TRAP_HEADLESS_MODE*/
@@ -260,11 +260,10 @@ namespace
 			config.Set("AnisotropyLevel", (anisotropyLevel == TRAP::Graphics::SampleCount::One) ? "Off" : fmt::format("{}", anisotropyLevel));
 			config.Set("RenderScale", TRAP::Graphics::RenderCommand::GetRenderScale());
 
+#ifndef TRAP_HEADLESS_MODE
 			//NVIDIA Reflex
-#if !defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)
-			PCLSTATS_SHUTDOWN();
-			config.Set("NVIDIAReflex", TRAP::Graphics::RenderCommand::GetLatencyMode());
-#endif /*!TRAP_HEADLESS_MODE && NVIDIA_REFLEX_AVAILABLE*/
+			config.Set("NVIDIAReflex", TRAP::Graphics::RenderCommand::GetReflexLatencyMode());
+#endif /*TRAP_HEADLESS_MODE*/
 		}
 	}
 
@@ -464,11 +463,10 @@ namespace
 		if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
 			return;
 
-#if !defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)
+#if !defined(TRAP_HEADLESS_MODE)
 		//NVIDIA Reflex
-		TRAP::Graphics::RenderCommand::SetLatencyMode(config.Get<TRAP::Graphics::LatencyMode>("NVIDIAReflex").value_or(TRAP::Graphics::LatencyMode::Disabled));
-		PCLSTATS_INIT(0);
-#endif /*!TRAP_HEADLESS_MODE && NVIDIA_REFLEX_AVAILABLE*/
+		TRAP::Graphics::RenderCommand::SetReflexLatencyMode(config.Get<TRAP::Graphics::NVIDIAReflexLatencyMode>("NVIDIAReflex").value_or(TRAP::Graphics::NVIDIAReflexLatencyMode::Disabled));
+#endif /*!TRAP_HEADLESS_MODE*/
 
 		const f32 renderScale = config.Get<f32>("RenderScale").value_or(1.0f);
 		TRAP::Graphics::RenderCommand::SetRenderScale(renderScale);
@@ -665,18 +663,19 @@ void TRAP::Application::Run()
 			LimitFPS(m_fpsLimit, limiterTimer);
 #endif
 
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, PCLSTATS_SIMULATION_START);
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
+#if !defined(TRAP_HEADLESS_MODE)
+		Graphics::RendererAPI::GetRenderer()->ReflexMarker(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker::SimulationStart, *m_window);
+#endif /*!TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
 		TRAP::Window::OnUpdate();
+		Graphics::RendererAPI::GetRenderer()->ReflexMarker(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker::InputSample, *m_window);
 #endif /*TRAP_HEADLESS_MODE*/
 
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
+#if !defined(TRAP_HEADLESS_MODE)
 		if(Input::IsMouseButtonPressed(Input::MouseButton::Left))
-			Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, PCLSTATS_TRIGGER_FLASH);
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
+			Graphics::RendererAPI::GetRenderer()->ReflexMarker(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker::TriggerFlash, *m_window);
+#endif /*!TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
 		if(Window::GetActiveWindows() > 1u || !m_window->IsMinimized())
@@ -694,15 +693,11 @@ void TRAP::Application::Run()
 		//Needed by Steamworks SDK
 		TRAP::Utils::Steam::RunCallbacks();
 
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, PCLSTATS_SIMULATION_END);
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
+#if !defined(TRAP_HEADLESS_MODE)
+		Graphics::RendererAPI::GetRenderer()->ReflexMarker(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker::SimulationEnd, *m_window);
+#endif /*!TRAP_HEADLESS_MODE*/
 
 		m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
-
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-		++m_globalCounter;
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 	}
 }
 
@@ -846,13 +841,13 @@ void TRAP::Application::SetFPSLimit(const u32 targetFPS)
 
 	s_Instance->m_fpsLimit = (targetFPS != 0u) ? TRAP::Math::Clamp(targetFPS, MinLimitedFPS, MaxLimitedFPS) : 0u;
 
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
+#if !defined(TRAP_HEADLESS_MODE)
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE &&
 	   TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported)
 	{
 		Graphics::RendererAPI::GetRenderer()->SetReflexFPSLimit(s_Instance->m_fpsLimit);
 	}
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
+#endif /*!TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1046,19 +1041,6 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 
 	return s_Instance->m_gameName;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-[[nodiscard]] u64 TRAP::Application::GetGlobalCounter()
-{
-	ZoneNamed(__tracy, (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
-	TRAP_ASSERT(s_Instance, "Application::GetGlobalCounter(): Application is nullptr!");
-
-	return s_Instance->m_globalCounter;
-}
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

@@ -13,8 +13,10 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		/// @brief Constructor.
+		/// @param semaphoreType Type of semaphore to create. Default: Binary.
 		/// @param name Optional: Debug name used in GPU-profile.
-		explicit VulkanSemaphore([[maybe_unused]] std::string_view name = "");
+		explicit VulkanSemaphore(SemaphoreType semaphoreType = SemaphoreType::Binary,
+		                         [[maybe_unused]] std::string_view name = "");
 		/// @brief Destructor.
 		~VulkanSemaphore() override;
 

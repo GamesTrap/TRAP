@@ -6,13 +6,20 @@
 
 namespace TRAP::Graphics
 {
+	enum class SemaphoreType : u8
+	{
+		Binary,
+		Timeline
+	};
+
 	class Semaphore
 	{
 	public:
 		/// @brief Create a new semaphore.
+		/// @param semaphoreType Type of semaphore to create. Default: Binary.
 		/// @param name Optional: Debug name used in GPU-profile
 		/// @return Created semaphore.
-		[[nodiscard]] static TRAP::Ref<Semaphore> Create(std::string_view name = "");
+		[[nodiscard]] static TRAP::Ref<Semaphore> Create(SemaphoreType semaphoreType = SemaphoreType::Binary, std::string_view name = "");
 
 		/// @brief Destructor.
 		virtual ~Semaphore();

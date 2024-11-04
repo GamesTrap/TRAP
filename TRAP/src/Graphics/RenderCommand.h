@@ -36,9 +36,9 @@ namespace TRAP::Graphics
 	/// @brief Different sample counts for anti aliasing.
 	using SampleCount = RendererAPI::SampleCount;
 #ifndef TRAP_HEADLESS_MODE
-	/// @brief Different latency modes.
+	/// @brief Different latency modes for NVIDIA Reflex.
 	/// @remark @headless This is not available in headless mode.
-	using LatencyMode = RendererAPI::LatencyMode;
+	using NVIDIAReflexLatencyMode = RendererAPI::NVIDIAReflexLatencyMode;
 #endif /*TRAP_HEADLESS_MODE*/
 	/// @brief Different texture filtering modes.
 	using FilterType = TRAP::Graphics::RendererAPI::FilterType;
@@ -912,19 +912,18 @@ namespace TRAP::Graphics
 		[[nodiscard]] std::string GetGPUName();
 
 #ifndef TRAP_HEADLESS_MODE
-		/// @brief Set the latency mode.
-		/// @param mode LatencyMode to set.
+		/// @brief Set the latency mode for NVIDIA Reflex.
+		/// @param mode Latency mode to set.
 		/// @param window Window to set latency mode for.
-		/// @remark Only LatencyMode::Disabled is supported everywhere.
-		/// @remark @win32 Other LatencyModes are only available on Windows 10 or newer with NVIDIA hardware.
+		/// @remark @win32 NVIDIAReflexLatencyModes are only available on Windows 10 or newer with NVIDIA hardware.
 		/// @remark @headless This function is not available in headless mode.
-		void SetLatencyMode(LatencyMode mode, const Window& window = *TRAP::Application::GetWindow());
-		/// @brief Retrieve the currently used latency mode.
+		void SetReflexLatencyMode(NVIDIAReflexLatencyMode mode, const Window& window = *TRAP::Application::GetWindow());
+		/// @brief Retrieve the currently used latency mode for NVIDIA Reflex.
 		/// @param window Window to retrieve latency mode for.
 		/// @return Used latency mode.
-		/// @note The returned value may differ from the requested mode set with SetLatencyMode().
+		/// @note The returned value may differ from the requested mode set with SetReflexLatencyMode().
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] LatencyMode GetLatencyMode(const Window& window = *TRAP::Application::GetWindow());
+		[[nodiscard]] NVIDIAReflexLatencyMode GetReflexLatencyMode(const Window& window = *TRAP::Application::GetWindow());
 #endif /*TRAP_HEADLESS_MODE*/
 	};
 }

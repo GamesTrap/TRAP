@@ -203,13 +203,13 @@ namespace
 
 	void DrawLatencyModeSetting()
 	{
-		static constexpr std::array<TRAP::Graphics::LatencyMode, 3u> latencyModes
+		static constexpr std::array<TRAP::Graphics::NVIDIAReflexLatencyMode, 3u> latencyModes
 		{
-			TRAP::Graphics::LatencyMode::Disabled,
-			TRAP::Graphics::LatencyMode::Enabled,
-			TRAP::Graphics::LatencyMode::EnabledBoost
+			TRAP::Graphics::NVIDIAReflexLatencyMode::Disabled,
+			TRAP::Graphics::NVIDIAReflexLatencyMode::Enabled,
+			TRAP::Graphics::NVIDIAReflexLatencyMode::EnabledBoost
 		};
-		const TRAP::Graphics::LatencyMode currentLatencyMode = TRAP::Graphics::RenderCommand::GetLatencyMode();
+		const TRAP::Graphics::NVIDIAReflexLatencyMode currentLatencyMode = TRAP::Graphics::RenderCommand::GetReflexLatencyMode();
 
 		ImGui::BeginDisabled(!TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported);
 		if(ImGui::BeginCombo("NVIDIA Reflex Low Latency", fmt::format("{}", currentLatencyMode).c_str()))
@@ -218,7 +218,7 @@ namespace
 			{
 				const bool isSelected = latencyMode == currentLatencyMode;
 				if(ImGui::Selectable(fmt::format("{}", latencyMode).c_str(), isSelected))
-					TRAP::Graphics::RenderCommand::SetLatencyMode(latencyMode);
+					TRAP::Graphics::RenderCommand::SetReflexLatencyMode(latencyMode);
 
 				if(isSelected)
 					ImGui::SetItemDefaultFocus();
@@ -376,10 +376,6 @@ void TRAPEditorLayer::OnImGuiRender()
 	DrawEngineSettings();
 	ImGui::Separator();
 	ImGui::Checkbox("Show physics colliders", &m_showPhysicsColliders);
-#ifdef NVIDIA_REFLEX_AVAILABLE
-	ImGui::Separator();
-	ImGui::Text("This software contains source code provided by NVIDIA Corporation.");
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
 	ImGui::End();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 0.0f });

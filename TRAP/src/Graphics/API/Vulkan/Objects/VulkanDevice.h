@@ -68,14 +68,6 @@ namespace TRAP::Graphics::API
 		/// @return Compute queue index.
 		[[nodiscard]] constexpr u8 GetComputeQueueIndex() const noexcept;
 
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-		/// @brief Retrieve the NVIDIA Reflex semaphore.
-		/// @return Semaphore.
-		/// @remark @headless This function is not available in headless mode.
-		/// @remark This function is only available when NVIDIA Reflex SDK is provided.
-		[[nodiscard]] constexpr VkSemaphore GetReflexSemaphore() const noexcept;
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
-
 	private:
 		friend VulkanQueue;
 
@@ -104,10 +96,6 @@ namespace TRAP::Graphics::API
 		u8 m_graphicsQueueIndex = 0;
 		u8 m_transferQueueIndex = 0;
 		u8 m_computeQueueIndex = 0;
-
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-		VkSemaphore m_reflexSemaphore = VK_NULL_HANDLE;
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 		VkDevice m_device = VK_NULL_HANDLE;
 	};
@@ -175,14 +163,5 @@ namespace TRAP::Graphics::API
 {
 	return m_computeQueueIndex;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-[[nodiscard]] constexpr VkSemaphore TRAP::Graphics::API::VulkanDevice::GetReflexSemaphore() const noexcept
-{
-	return m_reflexSemaphore;
-}
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_VULKANDEVICE_H*/

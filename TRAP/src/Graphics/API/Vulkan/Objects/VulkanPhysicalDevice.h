@@ -27,7 +27,8 @@ namespace TRAP::Graphics::API
 		TimelineSemaphore,
 		RenderPass2,
 		SPIRV1_4,
-		DebugMarker
+		DebugMarker,
+		PresentID
 	};
 
 	enum class VulkanPhysicalDeviceFeature
@@ -282,6 +283,9 @@ namespace TRAP::Graphics::API
 
 	case VulkanPhysicalDeviceExtension::DebugMarker:
 		return IsExtensionSupported(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
+
+	case VulkanPhysicalDeviceExtension::PresentID:
+		return IsExtensionSupported(VK_KHR_PRESENT_ID_EXTENSION_NAME);
 	}
 
 	TRAP_ASSERT(false, "VulkanPhysicalDevice::IsExtensionSupported(): Unknown Vulkan extension!");

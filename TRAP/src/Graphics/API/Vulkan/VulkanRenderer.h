@@ -97,7 +97,7 @@ namespace TRAP::Graphics::API
 		void SetVSync(bool vsync, const Window& window) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
-#if !defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)
+#if !defined(TRAP_HEADLESS_MODE)
 		/// @brief Set the FPS limit for NVIDIA-Reflex.
 		/// @param limit FPS target to limit to.
 		/// @note This function affects all windows.
@@ -105,7 +105,7 @@ namespace TRAP::Graphics::API
 		///          This function is only used internally for NVIDIA-Reflex.
 		/// @remark @headless This function is not available in headless mode.
 		void SetReflexFPSLimit(u32 limit) override;
-#endif /*!defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)*/
+#endif /*!defined(TRAP_HEADLESS_MODE)*/
 
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Set the render scale for the given window.
@@ -851,20 +851,20 @@ namespace TRAP::Graphics::API
 
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief NVIDIA-Reflex Sleep/synchronize.
+		/// @param window Window to sleep for.
 		/// @remark @headless This function is not available in headless mode.
-		void ReflexSleep() const override;
-		/// @brief NVIDIA-Reflex latency marker.
-		/// @param frame Frame to set marker for. Must be unique for each frame!
+		void ReflexSleep(const Window& window) const override;
+		/// @brief Set a timestamp for NVIDIA-Reflex.
 		/// @param marker Enum value of the marker to set.
+		/// @param window Window to set the timestamp for.
 		/// @remark @headless This function is not available in headless mode.
-		void ReflexMarker(u32 frame, u32 marker) const override;
-#ifdef NVIDIA_REFLEX_AVAILABLE
+		void ReflexMarker(NVIDIAReflexLatencyMarker marker, const Window& window) const override;
 		/// @brief Retrieve the latency report from NVIDIA-Reflex.
+		/// @param numLatencyData Number of latency data points to return. Set to 0 to retrieve the maximum queryable frame data.
+		/// @param window Window to get latency data for.
 		/// @return Latency report.
 		/// @remark @headless This function is not available in headless mode.
-		/// @remark This function is only available when NVIDIA Reflex SDK is provided.
-		[[nodiscard]] NVLL_VK_LATENCY_RESULT_PARAMS ReflexGetLatency() const override;
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+		[[nodiscard]] std::vector<VkLatencyTimingsFrameReportNV> ReflexGetLatency(u32 numLatencyData, const Window& window) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 		/// @brief Retrieve the renderer title.
@@ -941,19 +941,18 @@ namespace TRAP::Graphics::API
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// @brief Set the latency mode.
-		/// @param mode LatencyMode to set.
+		/// @brief Set the NVIDIA Reflex latency mode.
+		/// @param mode Latency mode to set.
 		/// @param window Window to set latency mode for.
-		/// @note Only LatencyMode::Disabled is supported everywhere.
-		/// @remark @win32 Other LatencyModes are only available on Windows 10 or newer with NVIDIA hardware.
+		/// @remark @win32 NVIDIAReflexLatencyModes are only available on Windows 10 or newer with NVIDIA hardware.
 		/// @remark @headless This function is not available in headless mode.
-		void SetLatencyMode(LatencyMode mode, const Window& window) override;
-		/// @brief Retrieve the currently used latency mode.
+		void SetReflexLatencyMode(NVIDIAReflexLatencyMode mode, const Window& window) override;
+		/// @brief Retrieve the currently used latency mode for NVIDIA Reflex.
 		/// @param window Window to retrieve latency mode for.
 		/// @return Used latency mode.
-		/// @note The returned value may differ from the requested mode set with SetLatencyMode().
+		/// @note The returned value may differ from the requested mode set with SetReflexLatencyMode().
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] LatencyMode GetLatencyMode(const Window& window) const override;
+		[[nodiscard]] NVIDIAReflexLatencyMode GetReflexLatencyMode(const Window& window) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE

@@ -802,8 +802,8 @@ namespace
 
         for(u32 i = 0u; i < wd.FrameSemaphores.size(); ++i)
         {
-            wd.FrameSemaphores[i].ImageAcquiredSemaphore = TRAP::MakeRef<TRAP::Graphics::API::VulkanSemaphore>(fmt::format("ImGui Window Semaphore (Image: {}, ImageAcquired)", i));
-            wd.FrameSemaphores[i].RenderCompleteSemaphore = TRAP::MakeRef<TRAP::Graphics::API::VulkanSemaphore>(fmt::format("ImGui Window Semaphore (Image: {}, RenderComplete)", i));
+            wd.FrameSemaphores[i].ImageAcquiredSemaphore = TRAP::MakeRef<TRAP::Graphics::API::VulkanSemaphore>(TRAP::Graphics::SemaphoreType::Binary, fmt::format("ImGui Window Semaphore (Image: {}, ImageAcquired)", i));
+            wd.FrameSemaphores[i].RenderCompleteSemaphore = TRAP::MakeRef<TRAP::Graphics::API::VulkanSemaphore>(TRAP::Graphics::SemaphoreType::Binary, fmt::format("ImGui Window Semaphore (Image: {}, RenderComplete)", i));
         }
     }
 

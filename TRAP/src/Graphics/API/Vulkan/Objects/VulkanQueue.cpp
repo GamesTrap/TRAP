@@ -108,7 +108,11 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 		signalSemaphore->m_signaled = true;
 	}
 
-	const VkSubmitInfo submitInfo = VulkanInits::SubmitInfo(waitSemaphores, waitMasks, cmds, signalSemaphores);
+	VkLatencySubmissionPresentIdNV latencySubmissionPresentIdNV{};
+	if(desc.ReflexPresentID)
+		 latencySubmissionPresentIdNV = VulkanInits::LatencySubmissionPresentID(*desc.ReflexPresentID);
+
+	const VkSubmitInfo submitInfo = VulkanInits::SubmitInfo(waitSemaphores, waitMasks, cmds, signalSemaphores, desc.ReflexPresentID ? &latencySubmissionPresentIdNV : nullptr);
 
 	//Lightweight lock to make sure multiple threads dont use the same queue simultaneously
 	//Many setups have just one queue family and one queue.
@@ -149,8 +153,12 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	}
 
 	const Ref<VulkanSwapChain> sChain = std::dynamic_pointer_cast<VulkanSwapChain>(desc.SwapChain);
+
+	const u64 presentCount = sChain->GetPresentCount();
+	const VkPresentIdKHR presentIDInfo = VulkanInits::PresentID(presentCount);
+
 	VkSwapchainKHR sc = sChain->GetVkSwapChain();
-	const VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sc, desc.Index);
+	const VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sc, desc.Index, TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported ? &presentIDInfo : nullptr);
 
 	//Lightweigt lock to make sure multiple threads dont use the same queue simultaneously
 	std::lock_guard lock(SubmitMutex);

@@ -97,11 +97,6 @@
 #include <GFSDK_Aftermath_GpuCrashDump.h>
 #endif /*ENABLE_NSIGHT_AFTERMATH*/
 
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-#include <NvLowLatencyVk.h>
-#include <pclstats.h>
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
-
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif /*_MSC_VER*/

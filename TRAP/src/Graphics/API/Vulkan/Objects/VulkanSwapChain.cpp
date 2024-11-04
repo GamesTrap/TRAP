@@ -453,6 +453,8 @@ void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
 
 	m_device->WaitIdle();
 	m_renderTargets.clear();
+
+	m_presentCounter = 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -593,6 +595,106 @@ void TRAP::Graphics::API::VulkanSwapChain::UpdateFramebufferSize()
 	m_desc.Height = fbSize.y();
 
 	ReInitSwapChain();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::vector<VkLatencyTimingsFrameReportNV> TRAP::Graphics::API::VulkanSwapChain::ReflexGetLatency(const u32 numLatencyData) const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+	TRAP_ASSERT(RendererAPI::GPUSettings.ReflexSupported, "VulkanSwapChain::ReflexGetLatency(): NVIDIA-Reflex is not supported by the Vulkan device!");
+	if(!RendererAPI::GPUSettings.ReflexSupported)
+		return {};
+
+	std::vector<VkLatencyTimingsFrameReportNV> latencyReports{};
+
+	VkGetLatencyMarkerInfoNV markerInfoNV
+	{
+		.sType = VK_STRUCTURE_TYPE_GET_LATENCY_MARKER_INFO_NV,
+		.pNext = nullptr,
+		.timingCount = numLatencyData,
+		.pTimings = nullptr
+	};
+
+	if(numLatencyData == 0u) //Query num of max available latency reports
+		vkGetLatencyTimingsNV(m_device->GetVkDevice(), m_swapChain, &markerInfoNV);
+
+	latencyReports.resize(markerInfoNV.timingCount);
+	for(auto& rep : latencyReports)
+		rep.sType = VK_STRUCTURE_TYPE_LATENCY_TIMINGS_FRAME_REPORT_NV;
+
+	//Retrieve the data now
+	markerInfoNV.pTimings = latencyReports.data();
+	vkGetLatencyTimingsNV(m_device->GetVkDevice(), m_swapChain, &markerInfoNV);
+
+	latencyReports.resize(markerInfoNV.timingCount);
+
+	return latencyReports;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanSwapChain::ReflexSetMarker(const TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker marker)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+	if(!RendererAPI::GPUSettings.ReflexSupported)
+		return;
+
+	const VkSetLatencyMarkerInfoNV markerInfoNV
+	{
+		.sType = VK_STRUCTURE_TYPE_SET_LATENCY_MARKER_INFO_NV,
+		.pNext = nullptr,
+		.presentID = m_presentCounter,
+		.marker = static_cast<VkLatencyMarkerNV>(marker)
+	};
+	vkSetLatencyMarkerNV(m_device->GetVkDevice(), m_swapChain, &markerInfoNV);
+
+	if(marker == TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker::SimulationEnd)
+		++m_presentCounter;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanSwapChain::ReflexSetLatencyMode(const TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode latencyMode,
+                                                                u32 fpsLimit) const
+{
+	if(fpsLimit != 0u)
+		fpsLimit = NumericCast<u32>(((1000.0f / NumericCast<f32>(fpsLimit)) * 1000.0f));
+
+	const VkLatencySleepModeInfoNV latencySleepModeInfoNV
+	{
+		.sType = VK_STRUCTURE_TYPE_LATENCY_SLEEP_MODE_INFO_NV,
+		.pNext = nullptr,
+		.lowLatencyMode = static_cast<VkBool32>(latencyMode != TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode::Disabled),
+		.lowLatencyBoost = static_cast<VkBool32>(latencyMode == TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode::EnabledBoost),
+		.minimumIntervalUs = fpsLimit
+	};
+	VkCall(vkSetLatencySleepModeNV(m_device->GetVkDevice(), m_swapChain, &latencySleepModeInfoNV));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanSwapChain::ReflexSleep(const Semaphore& reflexSemaphore) const
+{
+	const VulkanSemaphore* const vkReflexSemaphore = dynamic_cast<const VulkanSemaphore*>(&reflexSemaphore);
+
+	u64 signalValue = 0u;
+	VkCall(vkGetSemaphoreCounterValueKHR(m_device->GetVkDevice(), vkReflexSemaphore->GetVkSemaphore(), &signalValue));
+	++signalValue;
+
+	const VkLatencySleepInfoNV latencySleepInfoNV
+	{
+		.sType = VK_STRUCTURE_TYPE_LATENCY_SLEEP_INFO_NV,
+		.pNext = nullptr,
+		.signalSemaphore = vkReflexSemaphore->GetVkSemaphore(),
+		.value = signalValue
+	};
+	VkCall(vkLatencySleepNV(m_device->GetVkDevice(), m_swapChain, &latencySleepInfoNV));
+
+	const VkSemaphoreWaitInfoKHR waitInfo = VulkanInits::SemaphoreWaitInfo(vkReflexSemaphore->GetVkSemaphore(), signalValue);
+	VkCall(vkWaitSemaphoresKHR(m_device->GetVkDevice(), &waitInfo, std::numeric_limits<u64>::max()));
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

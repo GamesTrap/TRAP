@@ -3,7 +3,8 @@
 
 #include "Graphics/API/Vulkan/Objects/VulkanSemaphore.h"
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Semaphore> TRAP::Graphics::Semaphore::Create(const std::string_view name)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Semaphore> TRAP::Graphics::Semaphore::Create(const SemaphoreType semaphoreType,
+                                                                                     const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -11,7 +12,7 @@
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
-		return TRAP::MakeRef<API::VulkanSemaphore>(name);
+		return TRAP::MakeRef<API::VulkanSemaphore>(semaphoreType, name);
 
 	case RenderAPI::NONE:
 		return nullptr;

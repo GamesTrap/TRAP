@@ -64,6 +64,25 @@ namespace TRAP::Graphics
 		/// @brief Updates the framebuffer size and recreates the swap chain.
 		virtual void UpdateFramebufferSize() = 0;
 
+		/// @brief Retrieve latency reports from NVIDIA-Reflex.
+		/// @param numLatencyData Number of latency data points to return. Set to 0 to retrieve the maximum queryable frame data.
+		/// @return Latency reports.
+		/// @remark @headless This function is not available in headless mode.
+		[[nodiscard]] virtual std::vector<VkLatencyTimingsFrameReportNV> ReflexGetLatency(u32 numLatencyData) const = 0;
+
+		/// @brief Set a timestamp for NVIDIA-Reflex.
+		/// @param marker Enum value of the marker to set.
+		virtual void ReflexSetMarker(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker marker) = 0;
+
+		/// @brief Set the latency mode for NVIDIA-Reflex.
+		/// @param latencyMode Latency mode to use.
+		/// @param fpsLimit Optional: FPS limit, use 0 to disable limiter.
+		virtual void ReflexSetLatencyMode(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode latencyMode, u32 fpsLimit = 0u) const = 0;
+
+		/// @brief Delay host CPU work for low latency rendering.
+		/// @param reflexSemaphore Semaphore to use for sleep.
+		virtual void ReflexSleep(const Semaphore& reflexSemaphore) const = 0;
+
 	protected:
 		/// @brief Constructor.
 		SwapChain();

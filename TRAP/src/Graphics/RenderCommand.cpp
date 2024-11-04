@@ -871,17 +871,17 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(const RenderTarget& source,
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetLatencyMode(const LatencyMode mode, const Window& window)
+void TRAP::Graphics::RenderCommand::SetReflexLatencyMode(const NVIDIAReflexLatencyMode mode, const Window& window)
 {
-	RendererAPI::GetRenderer()->SetLatencyMode(mode, window);
+	RendererAPI::GetRenderer()->SetReflexLatencyMode(mode, window);
 }
 #endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-[[nodiscard]] TRAP::Graphics::LatencyMode TRAP::Graphics::RenderCommand::GetLatencyMode(const Window& window)
+[[nodiscard]] TRAP::Graphics::NVIDIAReflexLatencyMode TRAP::Graphics::RenderCommand::GetReflexLatencyMode(const Window& window)
 {
-	return RendererAPI::GetRenderer()->GetLatencyMode(window);
+	return RendererAPI::GetRenderer()->GetReflexLatencyMode(window);
 }
 #endif /*TRAP_HEADLESS_MODE*/

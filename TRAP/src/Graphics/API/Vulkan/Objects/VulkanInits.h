@@ -133,6 +133,12 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @return VkSemaphoreCreateInfo.
 	[[nodiscard]] constexpr VkSemaphoreCreateInfo SemaphoreCreateInfo() noexcept;
 
+	/// @brief Create a Vulkan semaphore type create info.
+	/// @param semaphoreType Type of semaphore to create.
+	/// @param initialValue Optional: Initial value of the semaphore (only for timeline semaphore, else must be 0).
+	/// @return VkSemaphoreTypeCreateInfoKHR.
+	[[nodiscard]] constexpr VkSemaphoreTypeCreateInfoKHR SemaphoreTypeCreateInfo(VkSemaphoreTypeKHR semaphoreType, u64 initialValue = 0u) noexcept;
+
 	/// @brief Create a Vulkan semaphore wait info.
 	/// @param semaphore Semaphore to wait on.
 	/// @param value Signal value to set.
@@ -521,16 +527,23 @@ namespace TRAP::Graphics::API::VulkanInits
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// @brief Create a Vulkan latency submission present ID.
+	/// @param presentID Present ID to set for the submission.
+	/// @return VkLatencySubmissionPresentIdNV
+	[[nodiscard]] constexpr VkLatencySubmissionPresentIdNV LatencySubmissionPresentID(u64 presentID) noexcept;
+
 	/// @brief Create a Vulkan submit info.
 	/// @param waitSemaphores Vulkan semaphore(s) to wait on.
 	/// @param waitMasks Vulkan pipeline stage(s) to wait on.
 	/// @param cmds Vulkan command buffer(s) to submit.
 	/// @param signalSemaphore Vulkan semaphore to signal.
+	/// @param latencySubmissionPresentID Optional Vulkan latency submission present ID. Default: nullptr.
 	/// @return VkSubmitInfo.
 	[[nodiscard]] constexpr VkSubmitInfo SubmitInfo(std::span<const VkSemaphore> waitSemaphores,
 	                                                std::span<const VkPipelineStageFlags> waitMasks,
 	                                                std::span<const VkCommandBuffer> cmds,
-	                                                std::span<const VkSemaphore> signalSemaphore) noexcept;
+	                                                std::span<const VkSemaphore> signalSemaphore,
+													const VkLatencySubmissionPresentIdNV* latencySubmissionPresentID = nullptr) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -567,14 +580,21 @@ namespace TRAP::Graphics::API::VulkanInits
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// @brief Create a Vulkan present id.
+	/// @param presentID Identifier to use for presentation.
+	/// @return VkPresentIdKHR.
+	[[nodiscard]] constexpr VkPresentIdKHR PresentID(const u64& presentID) noexcept;
+
 	/// @brief Create a Vulkan present info.
 	/// @param waitSemaphores Vulkan semaphore(s) to wait on.
 	/// @param swapChain Vulkan swapchain to present.
 	/// @param presentIndex Vulkan swapchain image index to present.
+	/// @param presentID Optional Vulkan PresentID.
 	/// @return VkPresentInfoKHR.
 	[[nodiscard]] constexpr VkPresentInfoKHR PresentInfo(std::span<const VkSemaphore> waitSemaphores,
 	                                                     const VkSwapchainKHR& swapChain,
-	                                                     const u32& presentIndex) noexcept;
+	                                                     const u32& presentIndex,
+														 const VkPresentIdKHR* presentID = nullptr) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -648,6 +668,20 @@ namespace TRAP::Graphics::API::VulkanInits
 		.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
 		.pNext = nullptr,
 		.flags = 0
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkSemaphoreTypeCreateInfoKHR TRAP::Graphics::API::VulkanInits::SemaphoreTypeCreateInfo(const VkSemaphoreTypeKHR semaphoreType,
+                                                                                                               const u64 initialValue) noexcept
+{
+	return VkSemaphoreTypeCreateInfoKHR
+	{
+		.sType = VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO_KHR,
+		.pNext = nullptr,
+		.semaphoreType = semaphoreType,
+		.initialValue = initialValue
 	};
 }
 
@@ -1015,15 +1049,28 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr VkLatencySubmissionPresentIdNV TRAP::Graphics::API::VulkanInits::LatencySubmissionPresentID(const u64 presentID) noexcept
+{
+	return VkLatencySubmissionPresentIdNV
+	{
+		.sType = VK_STRUCTURE_TYPE_LATENCY_SUBMISSION_PRESENT_ID_NV,
+		.pNext = nullptr,
+		.presentID = presentID
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr VkSubmitInfo TRAP::Graphics::API::VulkanInits::SubmitInfo(const std::span<const VkSemaphore> waitSemaphores,
                                                                                   const std::span<const VkPipelineStageFlags> waitMasks,
                                                                                   const std::span<const VkCommandBuffer> cmds,
-                                                                                  const std::span<const VkSemaphore> signalSemaphores) noexcept
+                                                                                  const std::span<const VkSemaphore> signalSemaphores,
+																				  const VkLatencySubmissionPresentIdNV* const latencySubmissionPresentID) noexcept
 {
 	return VkSubmitInfo
 	{
 		.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
-		.pNext = nullptr,
+		.pNext = latencySubmissionPresentID,
 		.waitSemaphoreCount = NumericCast<u32>(waitSemaphores.size()),
 		.pWaitSemaphores = waitSemaphores.data(),
 		.pWaitDstStageMask = waitMasks.data(),
@@ -1052,14 +1099,28 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr VkPresentIdKHR TRAP::Graphics::API::VulkanInits::PresentID(const u64& presentID) noexcept
+{
+	return VkPresentIdKHR
+	{
+		.sType = VK_STRUCTURE_TYPE_PRESENT_ID_KHR,
+		.pNext = nullptr,
+		.swapchainCount = 1,
+		.pPresentIds = &presentID
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr VkPresentInfoKHR TRAP::Graphics::API::VulkanInits::PresentInfo(const std::span<const VkSemaphore> waitSemaphores,
                                                                                        const VkSwapchainKHR& swapChain,
-															                           const u32& presentIndex) noexcept
+															                           const u32& presentIndex,
+																					   const VkPresentIdKHR* const presentID) noexcept
 {
 	return VkPresentInfoKHR
 	{
 		.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
-		.pNext = nullptr,
+		.pNext = presentID,
 		.waitSemaphoreCount = NumericCast<u32>(waitSemaphores.size()),
 		.pWaitSemaphores = !waitSemaphores.empty() ? waitSemaphores.data() : nullptr,
 		.swapchainCount = 1,

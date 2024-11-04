@@ -12,10 +12,6 @@
 #include "Maths/Vec3.h"
 #include "Utils/Optional.h"
 
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-#include <NvLowLatencyVk.h>
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
-
 namespace TRAP
 {
 	class Application;
@@ -84,7 +80,8 @@ namespace TRAP::Graphics
 		enum class SampleCount;
 		enum class QueueType : u32;
 		enum class GPUVendor;
-		enum class LatencyMode : u32;
+		enum class NVIDIAReflexLatencyMode : u32;
+		enum class NVIDIAReflexLatencyMarker : u8;
 		struct Color;
 		struct LoadActionsDesc;
 		struct BufferBarrier;
@@ -198,7 +195,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] virtual bool GetVSync(const Window& window) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
-#if !defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)
+#if !defined(TRAP_HEADLESS_MODE)
 		/// @brief Set the FPS limit for NVIDIA-Reflex.
 		/// @param limit FPS target to limit to.
 		/// @note This function affects all windows.
@@ -207,7 +204,7 @@ namespace TRAP::Graphics
 		///          This function is only used internally for NVIDIA-Reflex.
 		/// @remark @headless This function is not available in headless mode.
 		virtual void SetReflexFPSLimit(u32 limit) = 0;
-#endif /*!defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)*/
+#endif /*!defined(TRAP_HEADLESS_MODE)*/
 
 		//RenderTarget Stuff
 
@@ -943,20 +940,25 @@ namespace TRAP::Graphics
 
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief NVIDIA-Reflex Sleep/synchronize on the given window.
+		/// @param window Window to sleep for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void ReflexSleep() const = 0;
-		/// @brief NVIDIA-Reflex latency marker.
-		/// @param frame Frame to set marker for. Must be unique for each frame!
+		virtual void ReflexSleep(const Window& window) const = 0;
+		/// @brief Set a timestamp for NVIDIA-Reflex.
 		/// @param marker Enum value of the marker to set.
+		/// @param window Window to set the timestamp for.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void ReflexMarker(u32 frame, u32 marker) const = 0;
-#ifdef NVIDIA_REFLEX_AVAILABLE
-		/// @brief Retrieve the latency report from NVIDIA-Reflex.
-		/// @return Latency report.
+		virtual void ReflexMarker(NVIDIAReflexLatencyMarker marker, const Window& window) const = 0;
+		/// @brief Retrieve latency reports from NVIDIA-Reflex.
+		/// @param numLatencyData Number of latency data points to return. Set to 0 to retrieve the maximum queryable frame data.
+		/// @param window Window to get latency data for.
+		/// @return Latency reports.
 		/// @remark @headless This function is not available in headless mode.
-	    /// @remark This function is only available when NVIDIA Reflex SDK is provided.
-		[[nodiscard]] virtual NVLL_VK_LATENCY_RESULT_PARAMS ReflexGetLatency() const = 0;
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+		[[nodiscard]] virtual std::vector<VkLatencyTimingsFrameReportNV> ReflexGetLatency(u32 numLatencyData, const Window& window) const = 0;
+		/// @brief Retrieve all queryable latency reports from NVIDIA-Reflex.
+		/// @param window Window to get latency data for.
+		/// @return Latency reports.
+		/// @remark @headless This function is not available in headless mode.
+		[[nodiscard]] std::vector<VkLatencyTimingsFrameReportNV> ReflexGetLatency(const Window& window) const;
 #endif /*TRAP_HEADLESS_MODE*/
 
 		/// @brief Retrieve the renderer title.
@@ -1023,19 +1025,18 @@ namespace TRAP::Graphics
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Set the latency mode.
 		/// The actual latency mode may differ from the requested one so check
-		/// the actual used mode with GetLatencyMode().
-		/// @param mode LatencyMode to set.
+		/// the actual used mode with GetReflexLatencyMode().
+		/// @param mode Latency mode to set.
 		/// @param window Window to set latency mode for.
-		/// @note Only LatencyMode::Disabled is supported everywhere.
-		/// @remark @win32 Other LatencyModes are only available on Windows 10 or newer with NVIDIA hardware.
+		/// @remark @win32 NVIDIAReflexLatencyModes are only available on Windows 10 or newer with NVIDIA hardware.
 		/// @remark @headless This function is not available in headless mode.
-		virtual void SetLatencyMode(LatencyMode mode, const Window& window) = 0;
-		/// @brief Retrieve the currently used latency mode.
+		virtual void SetReflexLatencyMode(NVIDIAReflexLatencyMode mode, const Window& window) = 0;
+		/// @brief Retrieve the currently used latency mode for NVIDIA Reflex.
 		/// @param window Window to retrieve latency mode for.
 		/// @return Used latency mode.
-		/// @note The returned value may differ from the requested mode set with SetLatencyMode().
+		/// @note The returned value may differ from the requested mode set with SetReflexLatencyMode().
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] virtual LatencyMode GetLatencyMode(const Window& window) const = 0;
+		[[nodiscard]] virtual NVIDIAReflexLatencyMode GetReflexLatencyMode(const Window& window) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 		/// @brief Retrieve the used descriptor pool.
@@ -1480,13 +1481,29 @@ namespace TRAP::Graphics
 		};
 
 #ifndef TRAP_HEADLESS_MODE
-		/// @brief Enum describing the different latency modes.
+		/// @brief Enum describing the different latency modes for NVIDIA Reflex.
 		/// @remark @headless This function is not available in headless mode.
-		enum class LatencyMode : u32
+		enum class NVIDIAReflexLatencyMode : u32
 		{
 			Disabled,
 			Enabled,
 			EnabledBoost
+		};
+
+		enum class NVIDIAReflexLatencyMarker : u8
+		{
+			SimulationStart = 0u,
+			SimulationEnd = 1u,
+			RenderSubmitStart = 2u,
+			RenderSubmitEnd = 3u,
+			PresentStart = 4u,
+			PresentEnd = 5u,
+			InputSample = 6u,
+			TriggerFlash = 7u,
+			OutOfBandRenderSubmitStart = 8u,
+			OutOfBandRenderSubmitEnd = 9u,
+			OutOfBandPresentStart = 10u,
+			OutOfBandPresentEnd = 11u
 		};
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -2134,6 +2151,9 @@ namespace TRAP::Graphics
 			std::vector<TRAP::Ref<Semaphore>> WaitSemaphores{};
 			//Semaphores to signal
 			std::vector<TRAP::Ref<Semaphore>> SignalSemaphores{};
+
+			//NVIDIA-Reflex Present ID (Optional)
+			TRAP::Optional<u64> ReflexPresentID = TRAP::NullOpt;
 		};
 
 		/// @brief Description of a blend state.
@@ -2776,10 +2796,8 @@ namespace TRAP::Graphics
 			u32 ShadingRateTexelWidth;
 			u32 ShadingRateTexelHeight;
 
-#ifndef TRAP_HEADLESS_MODE
 			//NVIDIA Reflex
 			bool ReflexSupported;
-#endif /*TRAP_HEADLESS_MODE*/
 		} GPUSettings{};
 
 		static constexpr u32 ImageCount = 3; //Triple Buffered
@@ -2906,10 +2924,12 @@ namespace TRAP::Graphics
 			f32 ComputeFrameTime{};
 			bool RecordingCompute{};
 
+#if!defined(TRAP_HEADLESS_MODE)
 			//NVIDIA Reflex
-#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-			NVLL_VK_SET_SLEEP_MODE_PARAMS SleepModeParams{};
-#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
+			NVIDIAReflexLatencyMode ReflexLatencyMode = NVIDIAReflexLatencyMode::Disabled;
+			u32 ReflexFPSLimit = 0u;
+			TRAP::Ref<Semaphore> ReflexSemaphore{};
+#endif /*!TRAP_HEADLESS_MODE*/
 		};
 
 	protected:
@@ -2941,7 +2961,7 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRate)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCaps)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCombiner)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearBufferType)
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::LatencyMode)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::CommandPoolCreateFlags)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::MappedRangeFlags)
 
@@ -3110,26 +3130,26 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::GPUVendor>
 
 #ifndef TRAP_HEADLESS_MODE
 template<>
-struct fmt::formatter<TRAP::Graphics::RendererAPI::LatencyMode>
+struct fmt::formatter<TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode>
 {
     static constexpr auto parse(const fmt::format_parse_context& ctx)
     {
         return ctx.begin();
     }
 
-    static fmt::format_context::iterator format(const TRAP::Graphics::RendererAPI::LatencyMode latencyMode,
+    static fmt::format_context::iterator format(const TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode latencyMode,
 	                                            fmt::format_context& ctx)
     {
         std::string enumStr{};
         switch(latencyMode)
         {
-        case TRAP::Graphics::RendererAPI::LatencyMode::Disabled:
+        case TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode::Disabled:
             enumStr = "Disabled";
             break;
-        case TRAP::Graphics::RendererAPI::LatencyMode::Enabled:
+        case TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode::Enabled:
             enumStr = "Enabled";
             break;
-        case TRAP::Graphics::RendererAPI::LatencyMode::EnabledBoost:
+        case TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode::EnabledBoost:
             enumStr = "Enabled+Boost";
             break;
         }
@@ -3416,17 +3436,17 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::ShadingRate>
 
 #ifndef TRAP_HEADLESS_MODE
 template<>
-[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::LatencyMode TRAP::Utils::String::ConvertToType(const std::string& input)
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode TRAP::Utils::String::ConvertToType(const std::string& input)
 {
     if(Utils::String::CompareAnyCase("Enabled", input))
-        return Graphics::RendererAPI::LatencyMode::Enabled;
+        return Graphics::RendererAPI::NVIDIAReflexLatencyMode::Enabled;
     if(Utils::String::CompareAnyCase("Enabled+Boost", input))
-        return Graphics::RendererAPI::LatencyMode::EnabledBoost;
+        return Graphics::RendererAPI::NVIDIAReflexLatencyMode::EnabledBoost;
     if(Utils::String::CompareAnyCase("Disabled", input))
-        return Graphics::RendererAPI::LatencyMode::Disabled;
+        return Graphics::RendererAPI::NVIDIAReflexLatencyMode::Disabled;
 
-    TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::LatencyMode!");
-    return Graphics::RendererAPI::LatencyMode::Disabled;
+    TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode!");
+    return Graphics::RendererAPI::NVIDIAReflexLatencyMode::Disabled;
 }
 #endif /*TRAP_HEADLESS_MODE*/
 
