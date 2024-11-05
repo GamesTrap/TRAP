@@ -1242,6 +1242,7 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] constexpr VkLatencySleepModeInfoNV TRAP::Graphics::API::VulkanInits::LatencySleepModeInfo(const RendererAPI::NVIDIAReflexLatencyMode latencyMode,
                                                                                                         const u32 fpsLimit) noexcept
 {
@@ -1254,6 +1255,7 @@ namespace TRAP::Graphics::API::VulkanInits
 		.minimumIntervalUs = (fpsLimit == 0u) ? fpsLimit : NumericCast<u32>(((1000.0f / NumericCast<f32>(fpsLimit)) * 1000.0f)) //Convert fpsLimit to microseconds if not 0.
 	};
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
