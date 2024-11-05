@@ -753,8 +753,8 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerViewportData& p
 	//End Recording
 	p.GraphicCommandBuffers[p.ImageIndex]->End();
 
-	TRAP::Optional<u64> reflexPresentID{};
 #ifndef TRAP_HEADLESS_MODE
+	TRAP::Optional<u64> reflexPresentID{};
 	const VulkanSwapChain* const vkSwapChain = dynamic_cast<const VulkanSwapChain* const>(p.SwapChain.get());
 	if (p.ReflexLatencyMode != NVIDIAReflexLatencyMode::Disabled)
 		reflexPresentID = vkSwapChain->GetPresentCount();
