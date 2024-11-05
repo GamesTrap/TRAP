@@ -527,11 +527,6 @@ namespace TRAP::Graphics::API::VulkanInits
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// @brief Create a Vulkan latency submission present ID.
-	/// @param presentID Present ID to set for the submission.
-	/// @return VkLatencySubmissionPresentIdNV
-	[[nodiscard]] constexpr VkLatencySubmissionPresentIdNV LatencySubmissionPresentID(u64 presentID) noexcept;
-
 	/// @brief Create a Vulkan submit info.
 	/// @param waitSemaphores Vulkan semaphore(s) to wait on.
 	/// @param waitMasks Vulkan pipeline stage(s) to wait on.
@@ -607,6 +602,38 @@ namespace TRAP::Graphics::API::VulkanInits
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	[[nodiscard]] constexpr VkClearColorValue ClearColorValue(const RendererAPI::Color& color, ImageFormat format);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// @brief Create a Vulkan latency submission present ID.
+	/// @param presentID Present ID to set for the submission.
+	///                  This is used to associate the vkQueueSubmit with the presentID used for a given
+	///                  vkQueuePresentKHR via VkPresentIdKHR::pPresentIds.
+	/// @return VkLatencySubmissionPresentIdNV.
+	[[nodiscard]] constexpr VkLatencySubmissionPresentIdNV LatencySubmissionPresentID(u64 presentID) noexcept;
+
+	/// @brief Create a Vulkan set latency marker info.
+	/// @param presentID Present ID for the presentation.
+	///                  presentID is an application provided value that is used to assocaite the timestamp with a
+	///                  vkQueuePresentKHR command using VkPresentIdKHR::pPresentIds for a given present.
+	/// @param marker Marker/Timestamp to record.
+	/// @return VkSetLatencyMarkerInfoNV.
+	[[nodiscard]] constexpr VkSetLatencyMarkerInfoNV SetLatencyMarkerInfo(u64 presentID,
+	                                                                      RendererAPI::NVIDIAReflexLatencyMarker marker) noexcept;
+
+	/// @brief Create a Vulkan latency sleep mode info.
+	/// @param latencyMode Latency mode to use.
+	/// @param fpsLimit Optional: FPS limiter. Set 0 to disable limiter.
+	/// @win32 FPS limiting of the engine will be done with this extension, instead of TRAP::Application, if the VK_NV_low_latency2 is supported by the used GPU.
+	/// @return VkLatencySleepModeInfoNV.
+	[[nodiscard]] constexpr VkLatencySleepModeInfoNV LatencySleepModeInfo(RendererAPI::NVIDIAReflexLatencyMode latencyMode, u32 fpsLimit = 0u) noexcept;
+
+	/// @brief Create a Vulkan latency sleep info.
+	/// @param semaphore A semaphore that gets signaled to indicate that the application *should* resume input sampling work.
+	///                  Note: semaphore *must* be a timeline semaphore.
+	/// @param signalValue The value that semaphore is set to for resuming sampling work.
+	/// @return VkLatencySleepInfoNV.
+	[[nodiscard]] constexpr VkLatencySleepInfoNV LatencySleepInfo(VkSemaphore semaphore, u64 signalValue) noexcept;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1049,18 +1076,6 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkLatencySubmissionPresentIdNV TRAP::Graphics::API::VulkanInits::LatencySubmissionPresentID(const u64 presentID) noexcept
-{
-	return VkLatencySubmissionPresentIdNV
-	{
-		.sType = VK_STRUCTURE_TYPE_LATENCY_SUBMISSION_PRESENT_ID_NV,
-		.pNext = nullptr,
-		.presentID = presentID
-	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] constexpr VkSubmitInfo TRAP::Graphics::API::VulkanInits::SubmitInfo(const std::span<const VkSemaphore> waitSemaphores,
                                                                                   const std::span<const VkPipelineStageFlags> waitMasks,
                                                                                   const std::span<const VkCommandBuffer> cmds,
@@ -1197,6 +1212,61 @@ namespace TRAP::Graphics::API::VulkanInits
 	}
 
 	return clearColor;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkLatencySubmissionPresentIdNV TRAP::Graphics::API::VulkanInits::LatencySubmissionPresentID(const u64 presentID) noexcept
+{
+	return VkLatencySubmissionPresentIdNV
+	{
+		.sType = VK_STRUCTURE_TYPE_LATENCY_SUBMISSION_PRESENT_ID_NV,
+		.pNext = nullptr,
+		.presentID = presentID
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkSetLatencyMarkerInfoNV TRAP::Graphics::API::VulkanInits::SetLatencyMarkerInfo(const u64 presentID,
+	                                                                                                    const RendererAPI::NVIDIAReflexLatencyMarker marker) noexcept
+{
+	return VkSetLatencyMarkerInfoNV
+	{
+		.sType = VK_STRUCTURE_TYPE_SET_LATENCY_MARKER_INFO_NV,
+		.pNext = nullptr,
+		.presentID = presentID,
+		.marker = static_cast<VkLatencyMarkerNV>(marker)
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkLatencySleepModeInfoNV TRAP::Graphics::API::VulkanInits::LatencySleepModeInfo(const RendererAPI::NVIDIAReflexLatencyMode latencyMode,
+                                                                                                        const u32 fpsLimit) noexcept
+{
+	return VkLatencySleepModeInfoNV
+	{
+		.sType = VK_STRUCTURE_TYPE_LATENCY_SLEEP_MODE_INFO_NV,
+		.pNext = nullptr,
+		.lowLatencyMode = static_cast<VkBool32>(latencyMode != RendererAPI::NVIDIAReflexLatencyMode::Disabled),
+		.lowLatencyBoost = static_cast<VkBool32>(latencyMode == RendererAPI::NVIDIAReflexLatencyMode::EnabledBoost),
+		.minimumIntervalUs = (fpsLimit == 0u) ? fpsLimit : NumericCast<u32>(((1000.0f / NumericCast<f32>(fpsLimit)) * 1000.0f)) //Convert fpsLimit to microseconds if not 0.
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkLatencySleepInfoNV TRAP::Graphics::API::VulkanInits::LatencySleepInfo(VkSemaphore semaphore,
+                                                                                                const u64 signalValue) noexcept
+{
+	return VkLatencySleepInfoNV
+	{
+		.sType = VK_STRUCTURE_TYPE_LATENCY_SLEEP_INFO_NV,
+		.pNext = nullptr,
+		.signalSemaphore = semaphore,
+		.value = signalValue
+	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
