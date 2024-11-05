@@ -116,9 +116,17 @@ namespace
 			return;
 
 #ifndef TRAP_HEADLESS_MODE
+		//FPS limiting will be handled by NVIDIA Reflex / AMD Anti Lag respectively when supported.
 		if(TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported)
 		{
 			TRAP::Graphics::RendererAPI::GetRenderer()->ReflexSleep(*TRAP::Application::GetWindow());
+			return;
+		}
+
+		//AMD Anti Lag only limits FPS when set to enabled.
+		if (TRAP::Graphics::RendererAPI::GPUSettings.AntiLagSupported &&
+			TRAP::Graphics::RendererAPI::GetRenderer()->GetAntiLagMode(*TRAP::Application::GetWindow()) != TRAP::Graphics::RendererAPI::AMDAntiLagMode::Disabled)
+		{
 			return;
 		}
 #endif /*TRAP_HEADLESS_MODE*/
@@ -263,6 +271,8 @@ namespace
 #ifndef TRAP_HEADLESS_MODE
 			//NVIDIA Reflex
 			config.Set("NVIDIAReflex", TRAP::Graphics::RenderCommand::GetReflexLatencyMode());
+			//AMD Anti Lag
+			config.Set("AMDAntiLag", TRAP::Graphics::RenderCommand::GetAntiLagMode());
 #endif /*TRAP_HEADLESS_MODE*/
 		}
 	}
@@ -463,9 +473,11 @@ namespace
 		if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
 			return;
 
-#if !defined(TRAP_HEADLESS_MODE)
+#ifndef TRAP_HEADLESS_MODE
 		//NVIDIA Reflex
 		TRAP::Graphics::RenderCommand::SetReflexLatencyMode(config.Get<TRAP::Graphics::NVIDIAReflexLatencyMode>("NVIDIAReflex").value_or(TRAP::Graphics::NVIDIAReflexLatencyMode::Disabled));
+		//AMD Anti Lag
+		TRAP::Graphics::RenderCommand::SetAntiLagMode(config.Get<TRAP::Graphics::AMDAntiLagMode>("AMDAntiLag").value_or(TRAP::Graphics::AMDAntiLagMode::Disabled));
 #endif /*!TRAP_HEADLESS_MODE*/
 
 		const f32 renderScale = config.Get<f32>("RenderScale").value_or(1.0f);
@@ -664,12 +676,13 @@ void TRAP::Application::Run()
 #endif
 
 #if !defined(TRAP_HEADLESS_MODE)
+		Graphics::RendererAPI::GetRenderer()->AntiLagMarker(TRAP::Graphics::RendererAPI::AMDAntiLagMarker::InputStage, *m_window);
 		Graphics::RendererAPI::GetRenderer()->ReflexMarker(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker::SimulationStart, *m_window);
 #endif /*!TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		TRAP::Window::OnUpdate();
 		Graphics::RendererAPI::GetRenderer()->ReflexMarker(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker::InputSample, *m_window);
+		TRAP::Window::OnUpdate();
 #endif /*TRAP_HEADLESS_MODE*/
 
 #if !defined(TRAP_HEADLESS_MODE)
@@ -842,10 +855,12 @@ void TRAP::Application::SetFPSLimit(const u32 targetFPS)
 	s_Instance->m_fpsLimit = (targetFPS != 0u) ? TRAP::Math::Clamp(targetFPS, MinLimitedFPS, MaxLimitedFPS) : 0u;
 
 #if !defined(TRAP_HEADLESS_MODE)
-	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE &&
-	   TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported)
+	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
 	{
-		Graphics::RendererAPI::GetRenderer()->SetReflexFPSLimit(s_Instance->m_fpsLimit);
+		if(TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported)
+			Graphics::RendererAPI::GetRenderer()->SetReflexFPSLimit(s_Instance->m_fpsLimit);
+		else if(TRAP::Graphics::RendererAPI::GPUSettings.AntiLagSupported)
+			Graphics::RendererAPI::GetRenderer()->SetAntiLagFPSLimit(s_Instance->m_fpsLimit);
 	}
 #endif /*!TRAP_HEADLESS_MODE*/
 }

@@ -28,7 +28,8 @@ namespace TRAP::Graphics::API
 		RenderPass2,
 		SPIRV1_4,
 		DebugMarker,
-		PresentID
+		PresentID,
+		AMDAntiLag
 	};
 
 	enum class VulkanPhysicalDeviceFeature
@@ -286,6 +287,9 @@ namespace TRAP::Graphics::API
 
 	case VulkanPhysicalDeviceExtension::PresentID:
 		return IsExtensionSupported(VK_KHR_PRESENT_ID_EXTENSION_NAME);
+
+	case VulkanPhysicalDeviceExtension::AMDAntiLag:
+		return IsExtensionSupported(VK_AMD_ANTI_LAG_EXTENSION_NAME);
 	}
 
 	TRAP_ASSERT(false, "VulkanPhysicalDevice::IsExtensionSupported(): Unknown Vulkan extension!");

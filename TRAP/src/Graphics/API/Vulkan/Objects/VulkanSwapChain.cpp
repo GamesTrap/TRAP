@@ -654,6 +654,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ReflexSetMarker(const TRAP::Graphics:
 void TRAP::Graphics::API::VulkanSwapChain::ReflexSetLatencyMode(const TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode latencyMode,
                                                                 u32 fpsLimit) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 	const VkLatencySleepModeInfoNV latencySleepModeInfoNV = TRAP::Graphics::API::VulkanInits::LatencySleepModeInfo(latencyMode, fpsLimit);
 	VkCall(vkSetLatencySleepModeNV(m_device->GetVkDevice(), m_swapChain, &latencySleepModeInfoNV));
 }
@@ -662,6 +663,8 @@ void TRAP::Graphics::API::VulkanSwapChain::ReflexSetLatencyMode(const TRAP::Grap
 
 void TRAP::Graphics::API::VulkanSwapChain::ReflexSleep(const Semaphore& reflexSemaphore) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
 	const VulkanSemaphore* const vkReflexSemaphore = dynamic_cast<const VulkanSemaphore*>(&reflexSemaphore);
 
 	u64 signalValue = 0u;
@@ -673,6 +676,35 @@ void TRAP::Graphics::API::VulkanSwapChain::ReflexSleep(const Semaphore& reflexSe
 
 	const VkSemaphoreWaitInfoKHR waitInfo = VulkanInits::SemaphoreWaitInfo(vkReflexSemaphore->GetVkSemaphore(), signalValue);
 	VkCall(vkWaitSemaphoresKHR(m_device->GetVkDevice(), &waitInfo, std::numeric_limits<u64>::max()));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanSwapChain::AntiLagSetMarker(const TRAP::Graphics::RendererAPI::AMDAntiLagMarker marker,
+                                                            const RendererAPI::PerViewportData& viewportData)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+	if(!RendererAPI::GPUSettings.AntiLagSupported)
+		return;
+
+	const VkAntiLagPresentationInfoAMD antiLagPresentationInfo = TRAP::Graphics::API::VulkanInits::AntiLagPresentationInfo(m_presentCounter, marker);
+
+	const VkAntiLagDataAMD antiLagData = TRAP::Graphics::API::VulkanInits::AntiLagData(viewportData.AntiLagMode, viewportData.FPSLimit, &antiLagPresentationInfo);
+	vkAntiLagUpdateAMD(m_device->GetVkDevice(), &antiLagData);
+
+	if(marker == RendererAPI::AMDAntiLagMarker::PresentStage)
+		++m_presentCounter;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanSwapChain::AntiLagSetMode(const TRAP::Graphics::RendererAPI::AMDAntiLagMode mode, const u32 fpsLimit) const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+	const VkAntiLagDataAMD antiLagData = TRAP::Graphics::API::VulkanInits::AntiLagData(mode, fpsLimit);
+	vkAntiLagUpdateAMD(m_device->GetVkDevice(), &antiLagData);
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

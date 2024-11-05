@@ -100,6 +100,8 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 								    VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_AUTOMATIC_CHECKPOINTS_BIT_NV;
 	VkPhysicalDevicePresentIdFeaturesKHR presentIDFeatures{};
 	presentIDFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_ID_FEATURES_KHR;
+	VkPhysicalDeviceAntiLagFeaturesAMD AMDAntiLagFeatures{};
+	AMDAntiLagFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ANTI_LAG_FEATURES_AMD;
 
 	VkBaseOutStructure* base = reinterpret_cast<VkBaseOutStructure*>(&devFeatures2);
 
@@ -127,6 +129,9 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	//Present ID
 	if(m_physicalDevice->IsExtensionSupported(VulkanPhysicalDeviceExtension::PresentID))
 		TRAP::Graphics::API::LinkVulkanStruct(base, presentIDFeatures);
+	//AMD Anti lag
+	if(m_physicalDevice->IsExtensionSupported(VulkanPhysicalDeviceExtension::AMDAntiLag))
+		TRAP::Graphics::API::LinkVulkanStruct(base, AMDAntiLagFeatures);
 
 	vkGetPhysicalDeviceFeatures2(m_physicalDevice->GetVkPhysicalDevice(), &devFeatures2);
 
@@ -176,8 +181,14 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
 	auto& gpuSettings = TRAP::Graphics::RendererAPI::GPUSettings;
-	gpuSettings.ReflexSupported = gpuSettings.ReflexSupported && (presentIDFeatures.presentId != 0u) &&
+
+	gpuSettings.PresentIDSupported = gpuSettings.PresentIDSupported && (presentIDFeatures.presentId != 0u);
+
+	gpuSettings.ReflexSupported = gpuSettings.ReflexSupported && gpuSettings.PresentIDSupported &&
 	                              (timelineSemaphoreFeatures.timelineSemaphore != 0u);
+
+	gpuSettings.AntiLagSupported = gpuSettings.AntiLagSupported && /*(presentIDFeatures.presentId != 0u) &&*/
+	                               (AMDAntiLagFeatures.antiLag != 0u);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

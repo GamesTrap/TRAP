@@ -605,6 +605,7 @@ namespace TRAP::Graphics::API::VulkanInits
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 	/// @brief Create a Vulkan latency submission present ID.
 	/// @param presentID Present ID to set for the submission.
 	///                  This is used to associate the vkQueueSubmit with the presentID used for a given
@@ -614,7 +615,7 @@ namespace TRAP::Graphics::API::VulkanInits
 
 	/// @brief Create a Vulkan set latency marker info.
 	/// @param presentID Present ID for the presentation.
-	///                  presentID is an application provided value that is used to assocaite the timestamp with a
+	///                  presentID is an application provided value that is used to associate the timestamp with a
 	///                  vkQueuePresentKHR command using VkPresentIdKHR::pPresentIds for a given present.
 	/// @param marker Marker/Timestamp to record.
 	/// @return VkSetLatencyMarkerInfoNV.
@@ -634,6 +635,27 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param signalValue The value that semaphore is set to for resuming sampling work.
 	/// @return VkLatencySleepInfoNV.
 	[[nodiscard]] constexpr VkLatencySleepInfoNV LatencySleepInfo(VkSemaphore semaphore, u64 signalValue) noexcept;
+#endif /*TRAP_HEADLESS_MODE*/
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+	/// @brief Create a Vulkan AMD Anti Lag presentation info.
+	/// @param presentID Present ID for the presentation.
+	///                  presentID is an application provided value that is used to associate the timestamp with a
+	///                  vkQueuePresentKHR command using VkPresentIdKHR::pPresentIds for a given present.
+	/// @param marker Marker/Timestamp to record.
+	/// @return VkAntiLagPresentationInfoAMD.
+	[[nodiscard]] constexpr VkAntiLagPresentationInfoAMD AntiLagPresentationInfo(u64 presentID, RendererAPI::AMDAntiLagMarker marker) noexcept;
+
+	/// @brief Create a Vulkan AMD Anti Lag data.
+	/// @param mode Anti Lag mode to use.
+	/// @param fpsLimit Optional: FPS limiter. Set 0 to disable limiter.
+	/// @param antiLagPresentationInfo Optional: Anti Lag presentation info.
+	/// @return VkAntiLagDataAMD.
+	[[nodiscard]] constexpr VkAntiLagDataAMD AntiLagData(RendererAPI::AMDAntiLagMode mode, u32 fpsLimit = 0u,
+	                                                     const VkAntiLagPresentationInfoAMD* antiLagPresentationInfo = nullptr) noexcept;
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1216,6 +1238,7 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] constexpr VkLatencySubmissionPresentIdNV TRAP::Graphics::API::VulkanInits::LatencySubmissionPresentID(const u64 presentID) noexcept
 {
 	return VkLatencySubmissionPresentIdNV
@@ -1225,9 +1248,11 @@ namespace TRAP::Graphics::API::VulkanInits
 		.presentID = presentID
 	};
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] constexpr VkSetLatencyMarkerInfoNV TRAP::Graphics::API::VulkanInits::SetLatencyMarkerInfo(const u64 presentID,
 	                                                                                                    const RendererAPI::NVIDIAReflexLatencyMarker marker) noexcept
 {
@@ -1239,6 +1264,7 @@ namespace TRAP::Graphics::API::VulkanInits
 		.marker = static_cast<VkLatencyMarkerNV>(marker)
 	};
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -1259,6 +1285,7 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] constexpr VkLatencySleepInfoNV TRAP::Graphics::API::VulkanInits::LatencySleepInfo(VkSemaphore semaphore,
                                                                                                 const u64 signalValue) noexcept
 {
@@ -1270,6 +1297,41 @@ namespace TRAP::Graphics::API::VulkanInits
 		.value = signalValue
 	};
 }
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+[[nodiscard]] constexpr VkAntiLagPresentationInfoAMD TRAP::Graphics::API::VulkanInits::AntiLagPresentationInfo(const u64 presentID,
+                                                                                                               const RendererAPI::AMDAntiLagMarker marker) noexcept
+{
+	return VkAntiLagPresentationInfoAMD
+	{
+		.sType = VK_STRUCTURE_TYPE_ANTI_LAG_PRESENTATION_INFO_AMD,
+		.pNext = nullptr,
+		.stage = static_cast<VkAntiLagStageAMD>(marker),
+		.frameIndex = presentID
+	};
+}
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+[[nodiscard]] constexpr VkAntiLagDataAMD TRAP::Graphics::API::VulkanInits::AntiLagData(const RendererAPI::AMDAntiLagMode mode,
+                                                                                       const u32 fpsLimit,
+	                                                                                   const VkAntiLagPresentationInfoAMD* const antiLagPresentationInfo) noexcept
+{
+	return VkAntiLagDataAMD
+	{
+		.sType = VK_STRUCTURE_TYPE_ANTI_LAG_DATA_AMD,
+		.pNext = nullptr,
+		.mode = static_cast<VkAntiLagModeAMD>(mode),
+		.maxFPS = fpsLimit,
+		.pPresentationInfo = antiLagPresentationInfo
+	};
+}
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

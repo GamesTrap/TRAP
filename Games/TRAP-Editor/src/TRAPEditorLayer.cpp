@@ -201,7 +201,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	void DrawLatencyModeSetting()
+	void DrawNVIDIAReflexSetting()
 	{
 		static constexpr std::array<TRAP::Graphics::NVIDIAReflexLatencyMode, 3u> latencyModes
 		{
@@ -219,6 +219,36 @@ namespace
 				const bool isSelected = latencyMode == currentLatencyMode;
 				if(ImGui::Selectable(fmt::format("{}", latencyMode).c_str(), isSelected))
 					TRAP::Graphics::RenderCommand::SetReflexLatencyMode(latencyMode);
+
+				if(isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+		}
+		ImGui::EndDisabled();
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	void DrawAMDAntiLagSetting()
+	{
+		static constexpr std::array<TRAP::Graphics::AMDAntiLagMode, 3u> modes
+		{
+			TRAP::Graphics::AMDAntiLagMode::DriverControl,
+			TRAP::Graphics::AMDAntiLagMode::Disabled,
+			TRAP::Graphics::AMDAntiLagMode::Enabled
+		};
+		const TRAP::Graphics::AMDAntiLagMode currentMode = TRAP::Graphics::RenderCommand::GetAntiLagMode();
+
+		ImGui::BeginDisabled(!TRAP::Graphics::RendererAPI::GPUSettings.AntiLagSupported);
+		if(ImGui::BeginCombo("AMD Anti Lag", fmt::format("{}", currentMode).c_str()))
+		{
+			for(const auto mode : modes)
+			{
+				const bool isSelected = mode == currentMode;
+				if(ImGui::Selectable(fmt::format("{}", mode).c_str(), isSelected))
+					TRAP::Graphics::RenderCommand::SetAntiLagMode(mode);
 
 				if(isSelected)
 					ImGui::SetItemDefaultFocus();
@@ -252,7 +282,8 @@ namespace
 		DrawAntiAliasingSetting();
 		DrawAnisotropySetting();
 		DrawRenderScaleSetting();
-		DrawLatencyModeSetting();
+		DrawNVIDIAReflexSetting();
+		DrawAMDAntiLagSetting();
 		DrawRawMouseInputSetting(*window);
 	}
 }

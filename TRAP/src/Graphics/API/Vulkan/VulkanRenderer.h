@@ -105,6 +105,14 @@ namespace TRAP::Graphics::API
 		///          This function is only used internally for NVIDIA-Reflex.
 		/// @remark @headless This function is not available in headless mode.
 		void SetReflexFPSLimit(u32 limit) override;
+
+		/// @brief Set the FPS limit for AMD Anti Lag.
+		/// @param limit FPS target to limit to.
+		/// @note This function affects all windows.
+		/// @warning Do not call this function in user code! Use TRAP::Application::SetFPSLimit() instead.
+		///          This function is only used internally for AMD Anti Lag.
+		/// @remark @headless This function is not available in headless mode.
+		void SetAntiLagFPSLimit(u32 limit) override;
 #endif /*!defined(TRAP_HEADLESS_MODE)*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -865,6 +873,12 @@ namespace TRAP::Graphics::API
 		/// @return Latency report.
 		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] std::vector<VkLatencyTimingsFrameReportNV> ReflexGetLatency(u32 numLatencyData, const Window& window) const override;
+
+		/// @brief Set a timestamp for AMD Anti Lag.
+		/// @param marker Enum value of the marker to set.
+		/// @param window Window to set the timestamp for.
+		/// @remark @headless This function is not available in headless mode.
+		void AntiLagMarker(AMDAntiLagMarker marker, const Window& window) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 		/// @brief Retrieve the renderer title.
@@ -953,6 +967,18 @@ namespace TRAP::Graphics::API
 		/// @note The returned value may differ from the requested mode set with SetReflexLatencyMode().
 		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] NVIDIAReflexLatencyMode GetReflexLatencyMode(const Window& window) const override;
+
+		/// @brief Set the AMD Anti Lag latency mode.
+		/// @param mode Anti lag mode.
+		/// @param window Window to set mode for.
+		/// @remark @win32 AMDAntiLagModes are only available on AMD hardware.
+		/// @remark @headless This function is not available in headless mode.
+		void SetAntiLagMode(AMDAntiLagMode mode, const Window& window) override;
+		/// @brief Retrieve the currently used mode for AMD Anti Lag.
+		/// @param window Window to retrieve mode for.
+		/// @return Used mode.
+		/// @remark @headless This function is not available in headless mode.
+		[[nodiscard]] AMDAntiLagMode GetAntiLagMode(const Window& window) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE

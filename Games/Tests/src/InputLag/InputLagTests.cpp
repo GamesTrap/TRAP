@@ -2,7 +2,7 @@
 
 namespace
 {
-	void DrawLatencyModeSelection()
+	void DrawNVIDIAReflexModeSelection()
 	{
 		ImGui::Text("NVIDIA Reflex:");
 		if(!TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported)
@@ -26,6 +26,39 @@ namespace
 					const bool isSelected = latencyMode == currentLatencyMode;
 					if(ImGui::Selectable(fmt::format("{}", latencyMode).c_str(), isSelected))
 						TRAP::Graphics::RenderCommand::SetReflexLatencyMode(latencyMode);
+
+					if(isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+
+				ImGui::EndCombo();
+			}
+		}
+	}
+	void DrawAMDAntiLagModeSelection()
+	{
+		ImGui::Text("AMD Anti Lag:");
+		if(!TRAP::Graphics::RendererAPI::GPUSettings.AntiLagSupported)
+			ImGui::Text("AMD Anti Lag is not supported on this GPU!");
+		else
+		{
+			static constexpr std::array<TRAP::Graphics::AMDAntiLagMode, 3u> modes
+			{
+				TRAP::Graphics::AMDAntiLagMode::DriverControl,
+				TRAP::Graphics::AMDAntiLagMode::Disabled,
+				TRAP::Graphics::AMDAntiLagMode::Enabled
+			};
+			const TRAP::Graphics::AMDAntiLagMode currentMode = TRAP::Graphics::RenderCommand::GetAntiLagMode();
+
+			ImGui::Text("Current Mode: %s", fmt::format("{}", currentMode).c_str());
+
+			if(ImGui::BeginCombo("Mode", fmt::format("{}", currentMode).c_str()))
+			{
+				for(const auto mode : modes)
+				{
+					const bool isSelected = mode == currentMode;
+					if(ImGui::Selectable(fmt::format("{}", mode).c_str(), isSelected))
+						TRAP::Graphics::RenderCommand::SetAntiLagMode(mode);
 
 					if(isSelected)
 						ImGui::SetItemDefaultFocus();
@@ -114,7 +147,8 @@ void InputLagTests::OnImGuiRender()
     ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
     ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
     ImGui::Separator();
-	DrawLatencyModeSelection();
+	DrawNVIDIAReflexModeSelection();
+	DrawAMDAntiLagModeSelection();
 	ImGui::End();
 
 	DrawNVIDIAReflexStats(m_reflexData);

@@ -486,6 +486,7 @@ namespace
 	/// 15. NVIDIA Nsight AfterMath (Device diagnostic) (if supported).
 	/// 16. Present ID (if supported).
 	/// 17. NVIDIA Reflex (low latency 2) (if supported).
+	/// 18. AMD Anti Lag (if supported).
 	/// @param physicalDevice Physical device to use.
 	/// @return List of device extensions.
 	[[nodiscard]] std::vector<std::string> SetupDeviceExtensions(const TRAP::Graphics::API::VulkanPhysicalDevice& physicalDevice)
@@ -594,6 +595,12 @@ namespace
 		   physicalDevice.IsExtensionSupported(VK_NV_LOW_LATENCY_2_EXTENSION_NAME))
 		{
 			extensions.emplace_back(VK_NV_LOW_LATENCY_2_EXTENSION_NAME);
+		}
+
+		//AMD Anti Lag
+		if(physicalDevice.IsExtensionSupported(VK_AMD_ANTI_LAG_EXTENSION_NAME))
+		{
+			extensions.emplace_back(VK_AMD_ANTI_LAG_EXTENSION_NAME);
 		}
 
 		return extensions;
@@ -746,6 +753,13 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerViewportData& p
 	//End Recording
 	p.GraphicCommandBuffers[p.ImageIndex]->End();
 
+	TRAP::Optional<u64> reflexPresentID{};
+#ifndef TRAP_HEADLESS_MODE
+	const VulkanSwapChain* const vkSwapChain = dynamic_cast<const VulkanSwapChain* const>(p.SwapChain.get());
+	if (p.ReflexLatencyMode != NVIDIAReflexLatencyMode::Disabled)
+		reflexPresentID = vkSwapChain->GetPresentCount();
+#endif /*TRAP_HEADLESS_MODE*/
+
 	const QueueSubmitDesc submitDesc
 	{
 		.Cmds = { *p.GraphicCommandBuffers[p.ImageIndex] },
@@ -753,7 +767,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerViewportData& p
 #ifndef TRAP_HEADLESS_MODE
 		.WaitSemaphores = { p.ImageAcquiredSemaphores[p.ImageIndex], p.ComputeCompleteSemaphores[p.ImageIndex] },
 		.SignalSemaphores = { p.RenderCompleteSemaphores[p.ImageIndex] },
-		.ReflexPresentID = dynamic_cast<const VulkanSwapChain* const>(p.SwapChain.get())->GetPresentCount()
+		.ReflexPresentID = reflexPresentID
 #else
 		.WaitSemaphores = { p.ComputeCompleteSemaphores[p.ImageIndex] },
 		.SignalSemaphores = {}
@@ -833,6 +847,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData& p) const
 
 #ifndef TRAP_HEADLESS_MODE
 
+	p.SwapChain->AntiLagSetMarker(TRAP::Graphics::RendererAPI::AMDAntiLagMarker::PresentStage, p);
 	p.SwapChain->ReflexSetMarker(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker::PresentStart);
 
 	const QueuePresentDesc presentDesc
@@ -1075,7 +1090,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetVSync(const bool vsync, const Windo
 
 //------------------------------------------------------------------------------------------------------------------//
 
-#if !defined(TRAP_HEADLESS_MODE)
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit(const u32 limit)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -1085,12 +1100,31 @@ void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit(const u32 limit)
 
 	for(const auto& [win, viewportData] : s_perViewportDataMap)
 	{
-		viewportData->ReflexFPSLimit = limit;
+		viewportData->FPSLimit = limit;
 		SetReflexLatencyMode(viewportData->ReflexLatencyMode, *win);
 	}
 }
-#endif /*!defined(TRAP_HEADLESS_MODE)*/
+#endif /*TRAP_HEADLESS_MODE*/
 
+//------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+
+void TRAP::Graphics::API::VulkanRenderer::SetAntiLagFPSLimit(const u32 limit)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+	if(!GPUSettings.AntiLagSupported)
+		return;
+
+	for(const auto& [win, viewportData] : s_perViewportDataMap)
+	{
+		viewportData->FPSLimit = limit;
+		SetAntiLagMode(viewportData->AntiLagMode, *win);
+	}
+}
+
+#endif /*TRAP_HEADLESS_MODE*/
 //------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
@@ -2231,6 +2265,8 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexSleep(const Window& window) cons
 		return;
 
 	const auto& viewportData = s_perViewportDataMap.at(&window);
+	if(viewportData->ReflexLatencyMode == NVIDIAReflexLatencyMode::Disabled)
+		return;
 
 	if(viewportData->ReflexSemaphore == nullptr)
 		viewportData->ReflexSemaphore = TRAP::Graphics::Semaphore::Create(SemaphoreType::Timeline, "NVIDIA-Reflex Semaphore");
@@ -2254,8 +2290,8 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker(const NVIDIAReflexLatency
 		return;
 
 	const auto& viewportData = s_perViewportDataMap.at(&window);
-	const auto& swapChain = viewportData->SwapChain;
 
+	const auto& swapChain = viewportData->SwapChain;
 	if(swapChain == nullptr)
 		return;
 
@@ -2282,6 +2318,26 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker(const NVIDIAReflexLatency
 		return {};
 
 	return swapChain->ReflexGetLatency(numLatencyData);
+}
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+void TRAP::Graphics::API::VulkanRenderer::AntiLagMarker(const AMDAntiLagMarker marker, const Window& window) const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+	if(!GPUSettings.AntiLagSupported)
+		return;
+
+	const auto& viewportData = s_perViewportDataMap.at(&window);
+
+	const auto& swapChain = viewportData->SwapChain;
+	if(swapChain == nullptr)
+		return;
+
+	swapChain->AntiLagSetMarker(marker, *viewportData);
 }
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -2696,7 +2752,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetReflexLatencyMode([[maybe_unused]] 
 
 	const auto& swapChain = p->SwapChain;
 	if(swapChain != nullptr)
-		swapChain->ReflexSetLatencyMode(p->ReflexLatencyMode, p->ReflexFPSLimit);
+		swapChain->ReflexSetLatencyMode(p->ReflexLatencyMode, p->FPSLimit);
 }
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -2713,6 +2769,44 @@ void TRAP::Graphics::API::VulkanRenderer::SetReflexLatencyMode([[maybe_unused]] 
 	const PerViewportData* const p = s_perViewportDataMap.at(&window).get();
 
 	return p->ReflexLatencyMode;
+}
+
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+void TRAP::Graphics::API::VulkanRenderer::SetAntiLagMode([[maybe_unused]] const AMDAntiLagMode mode,
+                                                         [[maybe_unused]] const Window& window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+	if(!GPUSettings.AntiLagSupported)
+		return;
+
+	PerViewportData* p = s_perViewportDataMap.at(&window).get();
+
+	p->AntiLagMode = mode;
+
+	const auto& swapChain = p->SwapChain;
+	if(swapChain != nullptr)
+		swapChain->AntiLagSetMode(p->AntiLagMode, p->FPSLimit);
+}
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+[[nodiscard]] TRAP::Graphics::RendererAPI::AMDAntiLagMode TRAP::Graphics::API::VulkanRenderer::GetAntiLagMode([[maybe_unused]] const Window& window) const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
+
+	if(!GPUSettings.AntiLagSupported)
+		return AMDAntiLagMode::Disabled;
+
+	const PerViewportData* const p = s_perViewportDataMap.at(&window).get();
+
+	return p->AntiLagMode;
 }
 
 #endif /*TRAP_HEADLESS_MODE*/
@@ -2739,7 +2833,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 	TRAP::Scope<PerViewportData> p = TRAP::MakeScope<PerViewportData>();
 
 #if !defined(TRAP_HEADLESS_MODE)
-	p->ReflexFPSLimit = Application::GetFPSLimit();
+	p->FPSLimit = Application::GetFPSLimit();
 #endif /*!TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE

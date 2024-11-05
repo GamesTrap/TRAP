@@ -149,10 +149,14 @@ namespace
 		gpuSettings.PresentSupported = true;
 #endif /*TRAP_HEADLESS_MODE*/
 
+		gpuSettings.PresentIDSupported = physicalDevice.IsExtensionSupported(VK_KHR_PRESENT_ID_EXTENSION_NAME);
+
 		gpuSettings.ReflexSupported = physicalDevice.IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME) &&
 		                              physicalDevice.IsExtensionSupported(VK_KHR_PRESENT_ID_EXTENSION_NAME) &&
 		                              physicalDevice.IsExtensionSupported(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME) &&
 		                              physicalDevice.IsExtensionSupported(VK_NV_LOW_LATENCY_2_EXTENSION_NAME);
+
+		gpuSettings.AntiLagSupported = physicalDevice.IsExtensionSupported(VK_AMD_ANTI_LAG_EXTENSION_NAME);
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//

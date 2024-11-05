@@ -80,8 +80,12 @@ namespace TRAP::Graphics
 		enum class SampleCount;
 		enum class QueueType : u32;
 		enum class GPUVendor;
+#ifndef TRAP_HEADLESS_MODE
 		enum class NVIDIAReflexLatencyMode : u32;
 		enum class NVIDIAReflexLatencyMarker : u8;
+		enum class AMDAntiLagMode : u8;
+		enum class AMDAntiLagMarker : u8;
+#endif /*TRAP_HEADLESS_MODE*/
 		struct Color;
 		struct LoadActionsDesc;
 		struct BufferBarrier;
@@ -204,6 +208,15 @@ namespace TRAP::Graphics
 		///          This function is only used internally for NVIDIA-Reflex.
 		/// @remark @headless This function is not available in headless mode.
 		virtual void SetReflexFPSLimit(u32 limit) = 0;
+
+		/// @brief Set the FPS limit for AMD Anti Lag.
+		/// @param limit FPS target to limit to.
+		/// @note This function affects all windows.
+		/// @warning Do not call this function in user code!
+		///          Use TRAP::Applicaton::SetFPSLimit() instead.
+		///          This function is only used internally for AMD Anti Lag.
+		/// @remark @headless This function is not available in headless mode.
+		virtual void SetAntiLagFPSLimit(u32 limit) = 0;
 #endif /*!defined(TRAP_HEADLESS_MODE)*/
 
 		//RenderTarget Stuff
@@ -959,6 +972,12 @@ namespace TRAP::Graphics
 		/// @return Latency reports.
 		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] std::vector<VkLatencyTimingsFrameReportNV> ReflexGetLatency(const Window& window) const;
+
+		/// @brief Set a timestamp for AMD Anti Lag.
+		/// @param marker Enum value of the marker to set.
+		/// @param window Window to set the timestamp for.
+		/// @remark @headless This function is not available in headless mode.
+		virtual void AntiLagMarker(AMDAntiLagMarker marker, const Window& window) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 		/// @brief Retrieve the renderer title.
@@ -1023,9 +1042,7 @@ namespace TRAP::Graphics
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		/// @brief Set the latency mode.
-		/// The actual latency mode may differ from the requested one so check
-		/// the actual used mode with GetReflexLatencyMode().
+		/// @brief Set the NVIDIA-Reflex latency mode.
 		/// @param mode Latency mode to set.
 		/// @param window Window to set latency mode for.
 		/// @remark @win32 NVIDIAReflexLatencyModes are only available on Windows 10 or newer with NVIDIA hardware.
@@ -1037,6 +1054,18 @@ namespace TRAP::Graphics
 		/// @note The returned value may differ from the requested mode set with SetReflexLatencyMode().
 		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] virtual NVIDIAReflexLatencyMode GetReflexLatencyMode(const Window& window) const = 0;
+
+		/// @brief Set the AMD Anti Lag latency mode.
+		/// @param mode Anti lag mode.
+		/// @param window Window to set mode for.
+		/// @remark @win32 AMDAntiLagModes are only available on AMD hardware.
+		/// @remark @headless This function is not available in headless mode.
+		virtual void SetAntiLagMode(AMDAntiLagMode mode, const Window& window) = 0;
+		/// @brief Retrieve the currently used mode for AMD Anti Lag.
+		/// @param window Window to retrieve mode for.
+		/// @return Used mode.
+		/// @remark @headless This function is not available in headless mode.
+		[[nodiscard]] virtual AMDAntiLagMode GetAntiLagMode(const Window& window) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 		/// @brief Retrieve the used descriptor pool.
@@ -1504,6 +1533,19 @@ namespace TRAP::Graphics
 			OutOfBandRenderSubmitEnd = 9u,
 			OutOfBandPresentStart = 10u,
 			OutOfBandPresentEnd = 11u
+		};
+
+		enum class AMDAntiLagMode : u8
+		{
+			DriverControl = 0u, //AMD Anti Lag will be enabled/disabled based on driver settings
+			Enabled = 1u,
+			Disabled = 2u
+		};
+
+		enum class AMDAntiLagMarker : u8
+		{
+			InputStage, //Specifies the stage before processing input
+			PresentStage //Specifies the stage before calling vkQueuePresentKHR().
 		};
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -2796,8 +2838,12 @@ namespace TRAP::Graphics
 			u32 ShadingRateTexelWidth;
 			u32 ShadingRateTexelHeight;
 
+			bool PresentIDSupported;
+
 			//NVIDIA Reflex
 			bool ReflexSupported;
+			//AMD Anti Lag
+			bool AntiLagSupported;
 		} GPUSettings{};
 
 		static constexpr u32 ImageCount = 3; //Triple Buffered
@@ -2927,8 +2973,11 @@ namespace TRAP::Graphics
 #if!defined(TRAP_HEADLESS_MODE)
 			//NVIDIA Reflex
 			NVIDIAReflexLatencyMode ReflexLatencyMode = NVIDIAReflexLatencyMode::Disabled;
-			u32 ReflexFPSLimit = 0u;
 			TRAP::Ref<Semaphore> ReflexSemaphore{};
+			//AMD Anti Lag
+			AMDAntiLagMode AntiLagMode = AMDAntiLagMode::DriverControl;
+			//NVIDIA Reflex / AMD Anti Lag
+			u32 FPSLimit = 0u;
 #endif /*!TRAP_HEADLESS_MODE*/
 		};
 
@@ -2961,7 +3010,6 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRate)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCaps)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCombiner)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearBufferType)
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::CommandPoolCreateFlags)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::MappedRangeFlags)
 
@@ -3151,6 +3199,39 @@ struct fmt::formatter<TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode>
             break;
         case TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode::EnabledBoost:
             enumStr = "Enabled+Boost";
+            break;
+        }
+
+        return fmt::format_to(ctx.out(), "{}", enumStr);
+    }
+};
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+template<>
+struct fmt::formatter<TRAP::Graphics::RendererAPI::AMDAntiLagMode>
+{
+    static constexpr auto parse(const fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    static fmt::format_context::iterator format(const TRAP::Graphics::RendererAPI::AMDAntiLagMode mode,
+	                                            fmt::format_context& ctx)
+    {
+        std::string enumStr{};
+        switch(mode)
+        {
+		case TRAP::Graphics::RendererAPI::AMDAntiLagMode::DriverControl:
+			enumStr = "DriverControl";
+			break;
+        case TRAP::Graphics::RendererAPI::AMDAntiLagMode::Disabled:
+            enumStr = "Disabled";
+            break;
+        case TRAP::Graphics::RendererAPI::AMDAntiLagMode::Enabled:
+            enumStr = "Enabled";
             break;
         }
 
@@ -3447,6 +3528,22 @@ template<>
 
     TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode!");
     return Graphics::RendererAPI::NVIDIAReflexLatencyMode::Disabled;
+}
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+template<>
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::AMDAntiLagMode TRAP::Utils::String::ConvertToType(const std::string& input)
+{
+    if(Utils::String::CompareAnyCase("Enabled", input))
+        return Graphics::RendererAPI::AMDAntiLagMode::Enabled;
+    if(Utils::String::CompareAnyCase("Disabled", input))
+        return Graphics::RendererAPI::AMDAntiLagMode::Disabled;
+
+    TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::AMDAntiLagMode!");
+    return Graphics::RendererAPI::AMDAntiLagMode::Disabled;
 }
 #endif /*TRAP_HEADLESS_MODE*/
 

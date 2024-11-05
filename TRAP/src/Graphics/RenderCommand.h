@@ -39,6 +39,9 @@ namespace TRAP::Graphics
 	/// @brief Different latency modes for NVIDIA Reflex.
 	/// @remark @headless This is not available in headless mode.
 	using NVIDIAReflexLatencyMode = RendererAPI::NVIDIAReflexLatencyMode;
+	/// @brief Different latency modes for AMD Anti Lag.
+	/// @remark @headless This is not available in headless mode.
+	using AMDAntiLagMode = RendererAPI::AMDAntiLagMode;
 #endif /*TRAP_HEADLESS_MODE*/
 	/// @brief Different texture filtering modes.
 	using FilterType = TRAP::Graphics::RendererAPI::FilterType;
@@ -924,6 +927,18 @@ namespace TRAP::Graphics
 		/// @note The returned value may differ from the requested mode set with SetReflexLatencyMode().
 		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] NVIDIAReflexLatencyMode GetReflexLatencyMode(const Window& window = *TRAP::Application::GetWindow());
+
+		/// @brief Set the AMD Anti Lag mode.
+		/// @param mode Mode to set.
+		/// @param window Window to set mode for.
+		/// @remark @win32 AMDAntiLagModes are only available on AMD hardware.
+		/// @remark @headless This function is not available in headless mode.
+		void SetAntiLagMode(AMDAntiLagMode mode, const Window& window = *TRAP::Application::GetWindow());
+		/// @brief Retrieve the currently used mode for AMD Anti Lag.
+		/// @param window Window to retrieve mode for.
+		/// @return Used mode.
+		/// @remark @headless This function is not available in headless mode.
+		[[nodiscard]] AMDAntiLagMode GetAntiLagMode(const Window& window = *TRAP::Application::GetWindow());
 #endif /*TRAP_HEADLESS_MODE*/
 	};
 }

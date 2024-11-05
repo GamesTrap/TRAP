@@ -885,3 +885,21 @@ void TRAP::Graphics::RenderCommand::SetReflexLatencyMode(const NVIDIAReflexLaten
 	return RendererAPI::GetRenderer()->GetReflexLatencyMode(window);
 }
 #endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+void TRAP::Graphics::RenderCommand::SetAntiLagMode(const AMDAntiLagMode mode, const Window& window)
+{
+	RendererAPI::GetRenderer()->SetAntiLagMode(mode, window);
+}
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+[[nodiscard]] TRAP::Graphics::AMDAntiLagMode TRAP::Graphics::RenderCommand::GetAntiLagMode(const Window& window)
+{
+	return RendererAPI::GetRenderer()->GetAntiLagMode(window);
+}
+#endif /*TRAP_HEADLESS_MODE*/

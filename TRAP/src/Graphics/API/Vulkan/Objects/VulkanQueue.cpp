@@ -109,8 +109,10 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	}
 
 	VkLatencySubmissionPresentIdNV latencySubmissionPresentIdNV{};
+#ifndef TRAP_HEADLESS_MODE
 	if(desc.ReflexPresentID)
 		 latencySubmissionPresentIdNV = VulkanInits::LatencySubmissionPresentID(*desc.ReflexPresentID);
+#endif /*TRAP_HEADLESS_MODE*/
 
 	const VkSubmitInfo submitInfo = VulkanInits::SubmitInfo(waitSemaphores, waitMasks, cmds, signalSemaphores, desc.ReflexPresentID ? &latencySubmissionPresentIdNV : nullptr);
 
@@ -158,7 +160,8 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	const VkPresentIdKHR presentIDInfo = VulkanInits::PresentID(presentCount);
 
 	VkSwapchainKHR sc = sChain->GetVkSwapChain();
-	const VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sc, desc.Index, TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported ? &presentIDInfo : nullptr);
+	const bool shouldSetPresentID = TRAP::Graphics::RendererAPI::GPUSettings.PresentIDSupported;
+	const VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sc, desc.Index, shouldSetPresentID ? &presentIDInfo : nullptr);
 
 	//Lightweigt lock to make sure multiple threads dont use the same queue simultaneously
 	std::lock_guard lock(SubmitMutex);
