@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Configure UnitTests project with code coverage generation
+exec="../libs/premake5/linux/./premake5 --file=../premake5.lua ninja --cc=gcc --gencodecoverage"
+$exec
+
 if [ -d "../bin-int/Debug-linux-x86_64/UnitTests" ] && [ -d "../bin-int/Debug-linux-x86_64/TRAP-UnitTests" ]; then
     lcov --directory ../bin-int/Debug-linux-x86_64/UnitTests --directory ../bin-int/Debug-linux-x86_64/TRAP-UnitTests --zerocounters
 fi

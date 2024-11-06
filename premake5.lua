@@ -2,6 +2,12 @@ require "ecc"
 require "vscode"
 require "ninja"
 
+newoption
+{
+	trigger = "gencodecoverage",
+	description = "Enable code coverage generation through the UnitTests project. This will make STATIC_REQUIRE and STATIC_CHECK run at run time instead of compile time."
+}
+
 workspace "TRAP"
 	startproject "Sandbox"
 	architecture "x86_64"

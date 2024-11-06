@@ -101,16 +101,8 @@ project "TRAP-UnitTests"
 
 	firstparty.IncludeTRAPUnitTests()
 
-	filter { "system:linux", "configurations:Debug", "toolset:gcc" }
-		buildoptions
-		{
-			"--coverage"
-		}
-		links
-		{
-			"gcov"
-		}
-
+	filter { "options:gencodecoverage" }
+		defines "CATCH_CONFIG_RUNTIME_STATIC_REQUIRE"
 
 	filter { "toolset:gcc" }
 		buildoptions
@@ -118,10 +110,29 @@ project "TRAP-UnitTests"
 			"-Wpedantic", "-Wconversion", "-Wshadow"
 		}
 
-	filter { "system:linux", "configurations:Debug", "toolset:gcc" }
+	filter { "options:gencodecoverage", "system:linux", "toolset:gcc" }
 		buildoptions
 		{
 			"-fdeclone-ctor-dtor"
+		}
+
+	filter { "options:gencodecoverage", "system:linux", "toolset:clang" }
+		buildoptions
+		{
+			"-fprofile-instr-generate",
+			"-fcoverage-mapping"
+		}
+
+	filter { "options:gencodecoverage", "system:linux", "toolset:gcc or clang" }
+		buildoptions
+		{
+			"--coverage"
+		}
+
+	filter {"options:gencodecoverage", "system:linux"}
+		buildoptions
+		{
+			"-fprofile-update=atomic"
 		}
 
 project "TRAP-Headless"

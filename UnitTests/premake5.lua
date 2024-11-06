@@ -25,24 +25,43 @@ project "UnitTests"
 
 	postbuildcommands ("{COPYDIR} " .. path.join(_MAIN_SCRIPT_DIR, "UnitTests/Testfiles") .. " %{cfg.targetdir}/Testfiles")
 
+	filter { "options:gencodecoverage" }
+		defines "CATCH_CONFIG_RUNTIME_STATIC_REQUIRE"
+
 	filter { "toolset:gcc" }
 		buildoptions
 		{
 			"-Wpedantic", "-Wconversion", "-Wshadow"
 		}
 
-	filter { "system:linux", "configurations:Debug", "toolset:gcc" }
+	filter { "options:gencodecoverage", "system:linux", "toolset:gcc" }
 		buildoptions
 		{
-			"--coverage",
 			"-fdeclone-ctor-dtor"
+		}
+
+	filter { "options:gencodecoverage", "system:linux", "toolset:clang" }
+		buildoptions
+		{
+			"-fprofile-instr-generate",
+			"-fcoverage-mapping"
+		}
+
+	filter { "options:gencodecoverage", "system:linux", "toolset:gcc or clang" }
+		buildoptions
+		{
+			"--coverage"
+		}
+		linkoptions
+		{
+			"--coverage"
 		}
 		links
 		{
 			"gcov"
 		}
 
-	filter {"system:linux", "configurations:Debug"}
+	filter {"options:gencodecoverage", "system:linux"}
 		buildoptions
 		{
 			"-fprofile-update=atomic"

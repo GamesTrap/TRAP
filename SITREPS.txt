@@ -5365,3 +5365,7 @@ SITREP 11/05/2024|24w45a2
     - Changed TRAP Engine version to 24w45a2(0.11.37)
     - Cleaned up Vulkan VK_NV_low_latency2 code ~<10 mins
     - RendererAPI/VulkanRenderer Added support for AMD Anti Lag 2 (VK_AMD_anti_lag) ~>60 mins
+
+SITREP 11/06/2024|24w45a3
+    - Changed TRAP Engine version to 24w45a3(0.11.38)
+    - Code Coverage Changed generation script ~<10 mins
