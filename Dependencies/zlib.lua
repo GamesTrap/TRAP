@@ -3,6 +3,9 @@ project "zlib"
     language "C"
     warnings "off"
 
+if os.getenv("RUN_CICD_PIPELINE") ~= nil and not table.isempty(os.matchfiles(_MAIN_SCRIPT_DIR .. "/bin/**/*zlib.*")) then
+    -- Using CICD Pipeline cache
+else
     files
     {
         "zlib/adler32.c",
@@ -21,6 +24,7 @@ project "zlib"
         "zlib/uncompr.c",
         "zlib/zutil.c",
     }
+end
 
     includedirs
     {

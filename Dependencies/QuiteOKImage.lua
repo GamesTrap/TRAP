@@ -16,10 +16,14 @@ project "QuiteOKImage"
 
     GenerateQOICpp()
 
+if os.getenv("RUN_CICD_PIPELINE") ~= nil and not table.isempty(os.matchfiles(_MAIN_SCRIPT_DIR .. "/bin/**/*QuiteOKImage.*")) then
+    -- Using CICD Pipeline cache
+else
     files
     {
         "QuiteOKImage/qoi.cpp",
     }
+end
 
     includedirs
     {

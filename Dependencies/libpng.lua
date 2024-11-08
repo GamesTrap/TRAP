@@ -24,6 +24,9 @@ project "libpng"
 
     GeneratePNGLibConfig()
 
+if os.getenv("RUN_CICD_PIPELINE") ~= nil and not table.isempty(os.matchfiles(_MAIN_SCRIPT_DIR .. "/bin/**/*libpng.*")) then
+    -- Using CICD Pipeline cache
+else
     files
     {
         "libpng/png.c",
@@ -42,6 +45,7 @@ project "libpng"
         "libpng/pngwtran.c",
         "libpng/pngwutil.c",
     }
+end
 
     includedirs
     {

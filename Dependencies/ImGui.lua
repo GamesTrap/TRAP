@@ -3,6 +3,9 @@ project "ImGui"
     language "C++"
     warnings "off"
 
+if os.getenv("RUN_CICD_PIPELINE") ~= nil and not table.isempty(os.matchfiles(_MAIN_SCRIPT_DIR .. "/bin/**/*ImGui.*")) then
+    -- Using CICD Pipeline cache
+else
     files
     {
         "ImGui/imconfig.h",
@@ -17,3 +20,4 @@ project "ImGui"
         "ImGui/imstb_truetype.h",
         "ImGui/imgui_demo.cpp"
     }
+end

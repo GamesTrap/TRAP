@@ -8,6 +8,9 @@ project "SPIRV-Cross"
     language "C++"
     warnings "off"
 
+if os.getenv("RUN_CICD_PIPELINE") ~= nil and not table.isempty(os.matchfiles(_MAIN_SCRIPT_DIR .. "/bin/**/*SPIRV-Cross.*")) then
+    -- Using CICD Pipeline cache
+else
     files
     {
         "SPIRV-Cross/GLSL.std.450.h",
@@ -35,5 +38,6 @@ project "SPIRV-Cross"
         "SPIRV-Cross/spirv_hlsl.cpp",
         "SPIRV-Cross/spirv_hlsl.hpp"
     }
+end
 
     includedirs "%{IncludeDir.SPIRV}"

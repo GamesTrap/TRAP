@@ -5369,3 +5369,7 @@ SITREP 11/05/2024|24w45a2
 SITREP 11/06/2024|24w45a3
     - Changed TRAP Engine version to 24w45a3(0.11.38)
     - Code Coverage Changed generation script ~<10 mins
+
+SITREP 11/08/2024|24w45a4
+    - Changed TRAP Engine version to 24w45a4(0.11.39)
+    - Build-CI Added cache actions ~>45 mins

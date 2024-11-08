@@ -1,0 +1,83 @@
+name: "Restore Cache"
+author: Jan Schürkamp <gamestrap@trappedgames.de>
+description: "Restore a previously saved cache (from save-cache action) via the key"
+inputs:
+  key:
+    description: "An explicit key for a cache entry"
+    required: true
+  folder-path:
+    description: "A directory to restore from cache"
+    required: true
+  server-hostname:
+    description: ""
+    required: true
+  server-share:
+    description: ""
+    required: true
+  server-username:
+    description: ""
+    required: true
+  server-password:
+    description: ""
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Build destination path
+      shell: bash
+      id: build-dest-path
+      run: |
+          echo "TARGET_PATH=${{ github.event.repository.name }}/cache/${{inputs.key}}.7z" >> "$GITHUB_OUTPUT"
+          echo "TARGET_FOLDER_PATH=${{ github.event.repository.name }}/cache" >> "$GITHUB_OUTPUT"
+    - name: Check cache (Linux)
+      shell: bash
+      id: check-cache-linux
+      if: runner.os == 'Linux'
+      run: |
+          set +e
+          sudo apt install -y smbclient
+          smbclient //${{inputs.server-hostname}}/${{inputs.server-share}} -U ${{inputs.server-username}}%${{inputs.server-password}} -c 'prompt; recurse; mkdir "${{steps.build-dest-path.outputs.TARGET_FOLDER_PATH}}"'
+          smbResult=$(smbclient //${{inputs.server-hostname}}/${{inputs.server-share}} -U ${{inputs.server-username}}%${{inputs.server-password}} -c 'ls "${{steps.build-dest-path.outputs.TARGET_PATH}}"')
+          if echo "$smbResult" | grep -q "NT_STATUS_NO_SUCH_FILE"; then
+            echo "CACHE_HIT=false" >> "$GITHUB_OUTPUT";
+          elif echo "$smbResult" | grep -q "NT_STATUS_OBJECT_NAME_NOT_FOUND"; then
+            echo "CACHE_HIT=false" >> "$GITHUB_OUTPUT";
+          else
+            echo "Found matching cache";
+            echo "CACHE_HIT=true" >> "$GITHUB_OUTPUT";
+          fi
+    - name: Check cache (Windows)
+      id: check-cache-windows
+      shell: powershell
+      if: runner.os == 'Windows'
+      run: |
+          New-PSDrive -Name "X" -PSProvider FileSystem -Root "\\${{inputs.server-hostname}}\${{inputs.server-share}}" -Persist -Credential (New-Object System.Management.Automation.PSCredential ("${{inputs.server-username}}", (ConvertTo-SecureString "${{inputs.server-password}}" -AsPlainText -Force)))
+          if (Test-Path "X:\${{steps.build-dest-path.outputs.TARGET_PATH}}") {
+            echo "Found matching cache"
+            echo "CACHE_HIT=true" >> $ENV:GITHUB_OUTPUT
+          } else {
+            echo "CACHE_HIT=false" >> $ENV:GITHUB_OUTPUT
+          }
+          Remove-PSDrive -Name "X"
+    - name: Restore cache (Linux)
+      shell: bash
+      if: runner.os == 'Linux' && steps.check-cache-linux.outputs.CACHE_HIT == 'true'
+      run: |
+          smbclient //${{inputs.server-hostname}}/${{inputs.server-share}} -U ${{inputs.server-username}}%${{inputs.server-password}} -c 'prompt; recurse; get "${{steps.build-dest-path.outputs.TARGET_PATH}}" "${{inputs.key}}.7z"'
+    - name: Restore cache (Windows)
+      shell: powershell
+      if: runner.os == 'Windows' && steps.check-cache-windows.outputs.CACHE_HIT == 'true'
+      run: |
+          New-PSDrive -Name "X" -PSProvider FileSystem -Root "\\${{inputs.server-hostname}}\${{inputs.server-share}}" -Persist -Credential (New-Object System.Management.Automation.PSCredential ("${{inputs.server-username}}", (ConvertTo-SecureString "${{inputs.server-password}}" -AsPlainText -Force)))
+          Copy-Item -Path "X:\${{steps.build-dest-path.outputs.TARGET_PATH}}" -Destination ".\${{inputs.key}}.7z"
+          Remove-PSDrive -Name "X"
+    - name: Extract cache (7z)
+      shell: bash
+      if: steps.check-cache-linux.outputs.CACHE_HIT == 'true' || steps.check-cache-windows.outputs.CACHE_HIT == 'true'
+      run: |
+          7z x -aos -bb0 -bse0 -bsp2 -pdefault -sccUTF-8 -o${{inputs.folder-path}} '${{inputs.key}}.7z'
+    - name: Cleanup cache
+      shell: bash
+      if: steps.check-cache-linux.outputs.CACHE_HIT == 'true' || steps.check-cache-windows.outputs.CACHE_HIT == 'true'
+      run: |
+          rm '${{inputs.key}}.7z'

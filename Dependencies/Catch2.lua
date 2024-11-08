@@ -48,6 +48,9 @@ project "Catch2"
 
     GenerateCatchUserConfigHPP()
 
+if os.getenv("RUN_CICD_PIPELINE") ~= nil and not table.isempty(os.matchfiles(_MAIN_SCRIPT_DIR .. "/bin/**/*Catch2.*")) then
+    -- Using CICD Pipeline cache
+else
     files
     {
         "Catch2/src/**.h",
@@ -55,6 +58,7 @@ project "Catch2"
         "Catch2/src/**.c",
         "Catch2/src/**.cpp"
     }
+end
 
     includedirs
     {

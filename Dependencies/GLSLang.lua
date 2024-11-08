@@ -69,6 +69,9 @@ project "GLSLang"
 
     GenerateBuildInfoH() --Generate build_info.h
 
+if os.getenv("RUN_CICD_PIPELINE") ~= nil and not table.isempty(os.matchfiles(_MAIN_SCRIPT_DIR .. "/bin/**/*GLSLang.*")) then
+    -- Using CICD Pipeline cache
+else
     files
     {
         "GLSLang/glslang/GenericCodeGen/*.cpp",
@@ -115,6 +118,7 @@ project "GLSLang"
         "GLSLang/glslang/MachineIndependent/pch.h",
         "GLSLang/SPIRV/SpvTools.cpp"
     }
+end
 
     includedirs
     {
@@ -128,7 +132,11 @@ project "GLSLang"
     }
 
     filter "system:windows"
+if os.getenv("RUN_CICD_PIPELINE") ~= nil and not table.isempty(os.matchfiles(_MAIN_SCRIPT_DIR .. "/bin/**/*GLSLang.*")) then
+    -- Using CICD Pipeline cache
+else
         files "GLSLang/glslang/OSDependent/Windows/ossource.cpp"
+end
 
         defines
         {
@@ -137,7 +145,11 @@ project "GLSLang"
         }
 
     filter "system:linux"
+if os.getenv("RUN_CICD_PIPELINE") ~= nil and not table.isempty(os.matchfiles(_MAIN_SCRIPT_DIR .. "/bin/**/*GLSLang.*")) then
+    -- Using CICD Pipeline cache
+else
         files "GLSLang/glslang/OSDependent/Unix/ossource.cpp"
+end
 
         defines
         {

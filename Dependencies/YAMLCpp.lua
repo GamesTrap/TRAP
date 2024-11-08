@@ -3,6 +3,9 @@ project "YAMLCpp"
     language "C++"
     warnings "off"
 
+if os.getenv("RUN_CICD_PIPELINE") ~= nil and not table.isempty(os.matchfiles(_MAIN_SCRIPT_DIR .. "/bin/**/*YAMLCpp.*")) then
+	-- Using CICD Pipeline cache
+else
     files
 	{
 		"YAMLCpp/src/**.h",
@@ -10,5 +13,6 @@ project "YAMLCpp"
 
 		"YAMLCpp/include/**.h"
 	}
+end
 
 	includedirs "%{IncludeDir.YAMLCPP}"

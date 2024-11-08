@@ -60,6 +60,182 @@ jobs:
         git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
         git pull origin main
         cd ../..
+    - name: Retrieve keys for cache
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      shell: bash
+      id: cache-keys
+      run: |
+        echo "Box2D=$(git -C Dependencies/Box2D rev-parse HEAD)_GCC-14_Release" >> "$GITHUB_OUTPUT"
+        echo "Catch2=$(git -C Dependencies/Catch2 rev-parse HEAD)_GCC-14_Release" >> "$GITHUB_OUTPUT"
+        echo "fmt=$(git -C Dependencies/fmt rev-parse HEAD)_GCC-14_Release" >> "$GITHUB_OUTPUT"
+        echo "GLSLang=$(git -C Dependencies/GLSLang rev-parse HEAD)_GCC-14_Release" >> "$GITHUB_OUTPUT"
+        echo "ImGui=$(git -C Dependencies/ImGui rev-parse HEAD)_GCC-14_Release" >> "$GITHUB_OUTPUT"
+        echo "ImGuizmo=$(git -C Dependencies/ImGuizmo rev-parse HEAD)_GCC-14_Release" >> "$GITHUB_OUTPUT"
+        echo "libpng=$(git -C Dependencies/libpng rev-parse HEAD)_GCC-14_Release" >> "$GITHUB_OUTPUT"
+        echo "ModernDialogs=$(git -C Dependencies/ModernDialogs rev-parse HEAD)_GCC-14_Release" >> "$GITHUB_OUTPUT"
+        echo "QuiteOKImage=$(git -C Dependencies/QuiteOKImage rev-parse HEAD)_GCC-14_Release" >> "$GITHUB_OUTPUT"
+        echo "SPIRVCross=$(git -C Dependencies/SPIRV-Cross rev-parse HEAD)_GCC-14_Release" >> "$GITHUB_OUTPUT"
+        echo "TracyClient=$(git -C Dependencies/Tracy rev-parse HEAD)_GCC-14_Release" >> "$GITHUB_OUTPUT"
+        echo "YAMLCpp=$(git -C Dependencies/YAMLCpp rev-parse HEAD)_GCC-14_Release" >> "$GITHUB_OUTPUT"
+        echo "zlib=$(git -C Dependencies/zlib rev-parse HEAD)_GCC-14_Release" >> "$GITHUB_OUTPUT"
+    - name: Restore Box2D cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.Box2D}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/Box2D/
+    - name: Restore Catch2 cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.Catch2}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/Catch2/
+    - name: Restore fmt cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.fmt}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/fmt/
+    - name: Restore GLSLang cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.GLSLang}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/GLSLang/
+    - name: Restore ImGui cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ImGui}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/ImGui/
+    - name: Restore ImGuizmo cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ImGuizmo}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/ImGuizmo/
+    - name: Restore libpng cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.libpng}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/libpng/
+    - name: Restore ModernDialogs cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ModernDialogs}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/ModernDialogs/
+    - name: Restore QuiteOKImage cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.QuiteOKImage}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/QuiteOKImage/
+    - name: Restore SPIRV-Cross cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.SPIRVCross}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/SPIRV-Cross/
+    - name: Restore TracyClient cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.TracyClient}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/TracyClient/
+    - name: Restore YAMLCpp cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.YAMLCpp}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/YAMLCpp/
+    - name: Restore zlib cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.zlib}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/zlib/
     - name: Add toolchain ppa
       run: sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/ppa
     - name: Update package list
@@ -81,12 +257,168 @@ jobs:
     - name: Generate Ninja files
       run: |
        cd GeneratorScripts/
-       ./GenerateProjectNinjaGCC.sh
+       RUN_CICD_PIPELINE=1 ./GenerateProjectNinjaGCC.sh
        cd ..
     - name: Setup problem matchers
       uses: ./.github/composite/problem-matchers
     - name: Compile code
       run: ninja Release -j $(nproc)
+    - name: Save Box2D cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.Box2D}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/Box2D/./
+    - name: Save Catch2 cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.Catch2}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/Catch2/./
+    - name: Save fmt cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.fmt}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/fmt/./
+    - name: Save GLSLang cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.GLSLang}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/GLSLang/./
+    - name: Save ImGui cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ImGui}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/ImGui/./
+    - name: Save ImGuizmo cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ImGuizmo}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/ImGuizmo/./
+    - name: Save libpng cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.libpng}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/libpng/./
+    - name: Save ModernDialogs cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ModernDialogs}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/ModernDialogs/./
+    - name: Save QuiteOKImage cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.QuiteOKImage}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/QuiteOKImage/./
+    - name: Save SPIRV-Cross cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.SPIRVCross}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/SPIRV-Cross/./
+    - name: Save TracyClient cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.TracyClient}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/TracyClient/./
+    - name: Save YAMLCpp cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.YAMLCpp}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/YAMLCpp/./
+    - name: Save zlib cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.zlib}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/zlib/./
     - name: Finalize data for artifact
       run: |
         cp -r Games/Headless-Tests/Assets bin/Release-linux-x86_64/Games/Headless-Tests/
@@ -173,6 +505,182 @@ jobs:
         git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
         git pull origin main
         cd ../..
+    - name: Retrieve keys for cache
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      shell: bash
+      id: cache-keys
+      run: |
+        echo "Box2D=$(git -C Dependencies/Box2D rev-parse HEAD)_Clang-19_Release" >> "$GITHUB_OUTPUT"
+        echo "Catch2=$(git -C Dependencies/Catch2 rev-parse HEAD)_Clang-19_Release" >> "$GITHUB_OUTPUT"
+        echo "fmt=$(git -C Dependencies/fmt rev-parse HEAD)_Clang-19_Release" >> "$GITHUB_OUTPUT"
+        echo "GLSLang=$(git -C Dependencies/GLSLang rev-parse HEAD)_Clang-19_Release" >> "$GITHUB_OUTPUT"
+        echo "ImGui=$(git -C Dependencies/ImGui rev-parse HEAD)_Clang-19_Release" >> "$GITHUB_OUTPUT"
+        echo "ImGuizmo=$(git -C Dependencies/ImGuizmo rev-parse HEAD)_Clang-19_Release" >> "$GITHUB_OUTPUT"
+        echo "libpng=$(git -C Dependencies/libpng rev-parse HEAD)_Clang-19_Release" >> "$GITHUB_OUTPUT"
+        echo "ModernDialogs=$(git -C Dependencies/ModernDialogs rev-parse HEAD)_Clang-19_Release" >> "$GITHUB_OUTPUT"
+        echo "QuiteOKImage=$(git -C Dependencies/QuiteOKImage rev-parse HEAD)_Clang-19_Release" >> "$GITHUB_OUTPUT"
+        echo "SPIRVCross=$(git -C Dependencies/SPIRV-Cross rev-parse HEAD)_Clang-19_Release" >> "$GITHUB_OUTPUT"
+        echo "TracyClient=$(git -C Dependencies/Tracy rev-parse HEAD)_Clang-19_Release" >> "$GITHUB_OUTPUT"
+        echo "YAMLCpp=$(git -C Dependencies/YAMLCpp rev-parse HEAD)_Clang-19_Release" >> "$GITHUB_OUTPUT"
+        echo "zlib=$(git -C Dependencies/zlib rev-parse HEAD)_Clang-19_Release" >> "$GITHUB_OUTPUT"
+    - name: Restore Box2D cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.Box2D}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/Box2D/
+    - name: Restore Catch2 cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.Catch2}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/Catch2/
+    - name: Restore fmt cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.fmt}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/fmt/
+    - name: Restore GLSLang cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.GLSLang}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/GLSLang/
+    - name: Restore ImGui cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ImGui}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/ImGui/
+    - name: Restore ImGuizmo cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ImGuizmo}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/ImGuizmo/
+    - name: Restore libpng cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.libpng}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/libpng/
+    - name: Restore ModernDialogs cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ModernDialogs}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/ModernDialogs/
+    - name: Restore QuiteOKImage cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.QuiteOKImage}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/QuiteOKImage/
+    - name: Restore SPIRV-Cross cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.SPIRVCross}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/SPIRV-Cross/
+    - name: Restore TracyClient cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.TracyClient}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/TracyClient/
+    - name: Restore YAMLCpp cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.YAMLCpp}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/YAMLCpp/
+    - name: Restore zlib cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.zlib}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/zlib/
     - name: Add toolchain ppa
       run: sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/ppa
     - name: Update package list
@@ -196,12 +704,168 @@ jobs:
     - name: Generate Ninja files
       run: |
         cd GeneratorScripts/
-        ./GenerateProjectNinjaClang.sh
+        RUN_CICD_PIPELINE=1 ./GenerateProjectNinjaClang.sh
         cd ..
     - name: Setup problem matchers
       uses: ./.github/composite/problem-matchers
     - name: Compile code
       run: ninja Release -j $(nproc)
+    - name: Save Box2D cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.Box2D}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/Box2D/./
+    - name: Save Catch2 cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.Catch2}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/Catch2/./
+    - name: Save fmt cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.fmt}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/fmt/./
+    - name: Save GLSLang cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.GLSLang}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/GLSLang/./
+    - name: Save ImGui cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ImGui}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/ImGui/./
+    - name: Save ImGuizmo cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ImGuizmo}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/ImGuizmo/./
+    - name: Save libpng cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.libpng}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/libpng/./
+    - name: Save ModernDialogs cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ModernDialogs}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/ModernDialogs/./
+    - name: Save QuiteOKImage cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.QuiteOKImage}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/QuiteOKImage/./
+    - name: Save SPIRV-Cross cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.SPIRVCross}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/SPIRV-Cross/./
+    - name: Save TracyClient cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.TracyClient}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/TracyClient/./
+    - name: Save YAMLCpp cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.YAMLCpp}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/YAMLCpp/./
+    - name: Save zlib cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.zlib}}
+        folder-path: bin/Release-linux-x86_64/Dependencies/zlib/./
     - name: Finalize data for artifact
       run: |
         cp -r Games/Headless-Tests/Assets bin/Release-linux-x86_64/Games/Headless-Tests/
@@ -285,6 +949,182 @@ jobs:
         git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
         git pull origin main
         cd ../..
+    - name: Retrieve keys for cache
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      shell: bash
+      id: cache-keys
+      run: |
+        echo "Box2D=$(git -C Dependencies/Box2D rev-parse HEAD)_Windows_Release" >> "$GITHUB_OUTPUT"
+        echo "Catch2=$(git -C Dependencies/Catch2 rev-parse HEAD)_Windows_Release" >> "$GITHUB_OUTPUT"
+        echo "fmt=$(git -C Dependencies/fmt rev-parse HEAD)_Windows_Release" >> "$GITHUB_OUTPUT"
+        echo "GLSLang=$(git -C Dependencies/GLSLang rev-parse HEAD)_Windows_Release" >> "$GITHUB_OUTPUT"
+        echo "ImGui=$(git -C Dependencies/ImGui rev-parse HEAD)_Windows_Release" >> "$GITHUB_OUTPUT"
+        echo "ImGuizmo=$(git -C Dependencies/ImGuizmo rev-parse HEAD)_Windows_Release" >> "$GITHUB_OUTPUT"
+        echo "libpng=$(git -C Dependencies/libpng rev-parse HEAD)_Windows_Release" >> "$GITHUB_OUTPUT"
+        echo "ModernDialogs=$(git -C Dependencies/ModernDialogs rev-parse HEAD)_Windows_Release" >> "$GITHUB_OUTPUT"
+        echo "QuiteOKImage=$(git -C Dependencies/QuiteOKImage rev-parse HEAD)_Windows_Release" >> "$GITHUB_OUTPUT"
+        echo "SPIRVCross=$(git -C Dependencies/SPIRV-Cross rev-parse HEAD)_Windows_Release" >> "$GITHUB_OUTPUT"
+        echo "TracyClient=$(git -C Dependencies/Tracy rev-parse HEAD)_Windows_Release" >> "$GITHUB_OUTPUT"
+        echo "YAMLCpp=$(git -C Dependencies/YAMLCpp rev-parse HEAD)_Windows_Release" >> "$GITHUB_OUTPUT"
+        echo "zlib=$(git -C Dependencies/zlib rev-parse HEAD)_Windows_Release" >> "$GITHUB_OUTPUT"
+    - name: Restore Box2D cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.Box2D}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/Box2D/
+    - name: Restore Catch2 cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.Catch2}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/Catch2/
+    - name: Restore fmt cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.fmt}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/fmt/
+    - name: Restore GLSLang cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.GLSLang}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/GLSLang/
+    - name: Restore ImGui cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ImGui}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/ImGui/
+    - name: Restore ImGuizmo cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ImGuizmo}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/ImGuizmo/
+    - name: Restore libpng cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.libpng}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/libpng/
+    - name: Restore ModernDialogs cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ModernDialogs}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/ModernDialogs/
+    - name: Restore QuiteOKImage cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.QuiteOKImage}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/QuiteOKImage/
+    - name: Restore SPIRV-Cross cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.SPIRVCross}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/SPIRV-Cross/
+    - name: Restore TracyClient cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.TracyClient}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/TracyClient/
+    - name: Restore YAMLCpp cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.YAMLCpp}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/YAMLCpp/
+    - name: Restore zlib cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/restore-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.zlib}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/zlib/
     - name: Setup developer console
       uses: ilammy/msvc-dev-cmd@v1
       with:
@@ -292,6 +1132,7 @@ jobs:
     - name: Generate Visual Studio 2022 Project files
       run: |
         cd GeneratorScripts
+        $ENV:RUN_CICD_PIPELINE=1
         .\GenerateProjectNinjaMSVC.bat
         cd ..
     - name: Setup problem matchers
@@ -300,6 +1141,162 @@ jobs:
       run: |
         $maxCPUCount = if($env:CONTAINER_MAX_CPUS) {$env:CONTAINER_MAX_CPUS} Else {$env:NUMBER_OF_PROCESSORS}
         ninja Release -j $maxCPUCount
+    - name: Save Box2D cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.Box2D}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/Box2D/./
+    - name: Save Catch2 cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.Catch2}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/Catch2/./
+    - name: Save fmt cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.fmt}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/fmt/./
+    - name: Save GLSLang cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.GLSLang}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/GLSLang/./
+    - name: Save ImGui cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ImGui}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/ImGui/./
+    - name: Save ImGuizmo cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ImGuizmo}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/ImGuizmo/./
+    - name: Save libpng cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.libpng}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/libpng/./
+    - name: Save ModernDialogs cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.ModernDialogs}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/ModernDialogs/./
+    - name: Save QuiteOKImage cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.QuiteOKImage}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/QuiteOKImage/./
+    - name: Save SPIRV-Cross cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.SPIRVCross}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/SPIRV-Cross/./
+    - name: Save TracyClient cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.TracyClient}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/TracyClient/./
+    - name: Save YAMLCpp cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.YAMLCpp}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/YAMLCpp/./
+    - name: Save zlib cache (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/save-cache
+      with:
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        key: ${{steps.cache-keys.outputs.zlib}}
+        folder-path: bin/Release-windows-x86_64/Dependencies/zlib/./
     - name: Finalize data for artifact
       run: |
         Xcopy Games\Headless-Tests\Assets bin\Release-windows-x86_64\Games\Headless-Tests\Assets /I /H /E /C
