@@ -1,155 +1,137 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Angle()", "[math][generic][angle][quat]", TRAP::Math::Quatd, TRAP::Math::Quatf)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunAngleCompileTimeTests()
+    using Scalar = TestType::value_type;
+    using Vec3Scalar = TRAP::Math::tVec3<Scalar>;
+
+    SECTION("Normal cases - GCEM")
     {
         {
-            constexpr TRAP::Math::tQuat<T> q(TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f), TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f));
-            constexpr T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
-            static_assert(TRAP::Math::Equal(a, T(90.0f), T(0.0000000000001f)));
+            static constexpr TestType q(Vec3Scalar(1.0f, 0.0f, 0.0f), Vec3Scalar(0.0f, 1.0f, 0.0f));
+            static constexpr Scalar a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
+            static_assert(TRAP::Math::Equal(a, Scalar(90.0f), Scalar(0.0000000000001f)));
         }
         {
-            constexpr TRAP::Math::tQuat<T> q(TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f), TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f));
-            constexpr T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
-            static_assert(TRAP::Math::Equal(a, T(90.0f), T(0.0000000000001f)));
+            static constexpr TestType q(Vec3Scalar(0.0f, 1.0f, 0.0f), Vec3Scalar(1.0f, 0.0f, 0.0f));
+            static constexpr Scalar a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
+            static_assert(TRAP::Math::Equal(a, Scalar(90.0f), Scalar(0.0000000000001f)));
         }
-        if constexpr(std::same_as<T, f32>)
+        if constexpr(std::same_as<TestType, TRAP::Math::Quatf>)
         {
-            constexpr TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::TwoPI<T>() - T(1.0f), TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f));
-            constexpr f32 a = TRAP::Math::Angle(q);
+            static constexpr TestType q = TRAP::Math::AngleAxis(TRAP::Math::TwoPI<Scalar>() - Scalar(1.0f), Vec3Scalar(1.0f, 0.0f, 0.0f));
+            static constexpr f32 a = TRAP::Math::Angle(q);
             static_assert(TRAP::Math::Equal(a, 5.28f, 0.01f));
         }
 
         {
-            constexpr TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::PI<T>() * T(0.25f), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));
-            constexpr TRAP::Math::tQuat<T> n = TRAP::Math::Normalize(q);
-            constexpr T l = TRAP::Math::Length(n);
-            static_assert(TRAP::Math::Equal(l, T(1.0f), T(0.01f)));
-            constexpr T a = TRAP::Math::Angle(n);
-            static_assert(TRAP::Math::Equal(a, TRAP::Math::PI<T>() * T(0.25f), T(0.01f)));
+            static constexpr TestType q = TRAP::Math::AngleAxis(TRAP::Math::PI<Scalar>() * Scalar(0.25f), Vec3Scalar(0.0f, 0.0f, 1.0f));
+            static constexpr TestType n = TRAP::Math::Normalize(q);
+            static constexpr Scalar l = TRAP::Math::Length(n);
+            static_assert(TRAP::Math::Equal(l, Scalar(1.0f), Scalar(0.01f)));
+            static constexpr Scalar a = TRAP::Math::Angle(n);
+            static_assert(TRAP::Math::Equal(a, TRAP::Math::PI<Scalar>() * Scalar(0.25f), Scalar(0.01f)));
         }
         {
-            constexpr TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::PI<T>() * T(0.25f), TRAP::Math::Normalize(TRAP::Math::tVec3<T>(0.0f, 1.0f, 1.0f)));
-            constexpr TRAP::Math::tQuat<T> n = TRAP::Math::Normalize(q);
-            constexpr T l = TRAP::Math::Length(n);
-            static_assert(TRAP::Math::Equal(l, T(1.0f), T(0.01f)));
-            constexpr T a = TRAP::Math::Angle(n);
-            static_assert(TRAP::Math::Equal(a, TRAP::Math::PI<T>() * T(0.25f), T(0.01f)));
+            static constexpr TestType q = TRAP::Math::AngleAxis(TRAP::Math::PI<Scalar>() * Scalar(0.25f), TRAP::Math::Normalize(Vec3Scalar(0.0f, 1.0f, 1.0f)));
+            static constexpr TestType n = TRAP::Math::Normalize(q);
+            static constexpr Scalar l = TRAP::Math::Length(n);
+            static_assert(TRAP::Math::Equal(l, Scalar(1.0f), Scalar(0.01f)));
+            static constexpr Scalar a = TRAP::Math::Angle(n);
+            static_assert(TRAP::Math::Equal(a, TRAP::Math::PI<Scalar>() * Scalar(0.25f), Scalar(0.01f)));
         }
         {
-            constexpr TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::PI<T>() * T(0.25f), TRAP::Math::Normalize(TRAP::Math::tVec3<T>(1.0f, 2.0f, 3.0f)));
-            constexpr TRAP::Math::tQuat<T> n = TRAP::Math::Normalize(q);
-            constexpr T l = TRAP::Math::Length(n);
-            static_assert(TRAP::Math::Equal(l, T(1.0f), T(0.01f)));
-            constexpr T a = TRAP::Math::Angle(n);
-            static_assert(TRAP::Math::Equal(a, TRAP::Math::PI<T>() * T(0.25f), T(0.01f)));
+            static constexpr TestType q = TRAP::Math::AngleAxis(TRAP::Math::PI<Scalar>() * Scalar(0.25f), TRAP::Math::Normalize(Vec3Scalar(1.0f, 2.0f, 3.0f)));
+            static constexpr TestType n = TRAP::Math::Normalize(q);
+            static constexpr Scalar l = TRAP::Math::Length(n);
+            static_assert(TRAP::Math::Equal(l, Scalar(1.0f), Scalar(0.01f)));
+            static constexpr Scalar a = TRAP::Math::Angle(n);
+            static_assert(TRAP::Math::Equal(a, TRAP::Math::PI<Scalar>() * Scalar(0.25f), Scalar(0.01f)));
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunAngleRunTimeTests()
+    SECTION("Normal cases - std")
     {
         {
-            const TRAP::Math::tQuat<T> q(TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f), TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f));
-            const T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
-            REQUIRE(TRAP::Math::Equal(a, T(90.0f), T(0.0000000000001f)));
+            static constexpr TestType q(Vec3Scalar(1.0f, 0.0f, 0.0f), Vec3Scalar(0.0f, 1.0f, 0.0f));
+            const Scalar a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
+            REQUIRE(TRAP::Math::Equal(a, Scalar(90.0f), Scalar(0.0000000000001f)));
         }
         {
-            const TRAP::Math::tQuat<T> q(TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f), TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f));
-            const T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
-            REQUIRE(TRAP::Math::Equal(a, T(90.0f), T(0.0000000000001f)));
+            static constexpr TestType q(Vec3Scalar(0.0f, 1.0f, 0.0f), Vec3Scalar(1.0f, 0.0f, 0.0f));
+            const Scalar a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
+            REQUIRE(TRAP::Math::Equal(a, Scalar(90.0f), Scalar(0.0000000000001f)));
         }
-        if constexpr(std::same_as<T, f32>)
+        if constexpr(std::same_as<Scalar, f32>)
         {
-            const TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::TwoPI<T>() - T(1.0f), TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f));
-            const T a = TRAP::Math::Angle(q);
-            REQUIRE(TRAP::Math::Equal(a, T(5.28319f), T(0.00001f)));
+            static constexpr TestType q = TRAP::Math::AngleAxis(TRAP::Math::TwoPI<Scalar>() - Scalar(1.0f), Vec3Scalar(1.0f, 0.0f, 0.0f));
+            const Scalar a = TRAP::Math::Angle(q);
+            REQUIRE(TRAP::Math::Equal(a, Scalar(5.28319f), Scalar(0.00001f)));
         }
 
         {
-            const TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::PI<T>() * T(0.25f), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));
-            const TRAP::Math::tQuat<T> n = TRAP::Math::Normalize(q);
-            const T l = TRAP::Math::Length(n);
-            REQUIRE(TRAP::Math::Equal(l, T(1.0f), T(0.01f)));
-            const T a = TRAP::Math::Angle(n);
-            REQUIRE(TRAP::Math::Equal(a, TRAP::Math::PI<T>() * T(0.25f), T(0.01f)));
+            static constexpr TestType q = TRAP::Math::AngleAxis(TRAP::Math::PI<Scalar>() * Scalar(0.25f), Vec3Scalar(0.0f, 0.0f, 1.0f));
+            static constexpr TestType n = TRAP::Math::Normalize(q);
+            static constexpr Scalar l = TRAP::Math::Length(n);
+            REQUIRE(TRAP::Math::Equal(l, Scalar(1.0f), Scalar(0.01f)));
+            const Scalar a = TRAP::Math::Angle(n);
+            REQUIRE(TRAP::Math::Equal(a, TRAP::Math::PI<Scalar>() * Scalar(0.25f), Scalar(0.01f)));
         }
         {
-            const TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::PI<T>() * T(0.25f), TRAP::Math::Normalize(TRAP::Math::tVec3<T>(0.0f, 1.0f, 1.0f)));
-            const TRAP::Math::tQuat<T> n = TRAP::Math::Normalize(q);
-            const T l = TRAP::Math::Length(n);
-            REQUIRE(TRAP::Math::Equal(l, T(1.0f), T(0.01f)));
-            const T a = TRAP::Math::Angle(n);
-            REQUIRE(TRAP::Math::Equal(a, TRAP::Math::PI<T>() * T(0.25f), T(0.01f)));
+            static constexpr TestType q = TRAP::Math::AngleAxis(TRAP::Math::PI<Scalar>() * Scalar(0.25f), TRAP::Math::Normalize(Vec3Scalar(0.0f, 1.0f, 1.0f)));
+            static constexpr TestType n = TRAP::Math::Normalize(q);
+            static constexpr Scalar l = TRAP::Math::Length(n);
+            REQUIRE(TRAP::Math::Equal(l, Scalar(1.0f), Scalar(0.01f)));
+            const Scalar a = TRAP::Math::Angle(n);
+            REQUIRE(TRAP::Math::Equal(a, TRAP::Math::PI<Scalar>() * Scalar(0.25f), Scalar(0.01f)));
         }
         {
-            const TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::PI<T>() * T(0.25f), TRAP::Math::Normalize(TRAP::Math::tVec3<T>(1.0f, 2.0f, 3.0f)));
-            const TRAP::Math::tQuat<T> n = TRAP::Math::Normalize(q);
-            const T l = TRAP::Math::Length(n);
-            REQUIRE(TRAP::Math::Equal(l, T(1.0f), T(0.01f)));
-            const T a = TRAP::Math::Angle(n);
-            REQUIRE(TRAP::Math::Equal(a, TRAP::Math::PI<T>() * T(0.25f), T(0.01f)));
+            static constexpr TestType q = TRAP::Math::AngleAxis(TRAP::Math::PI<Scalar>() * Scalar(0.25f), TRAP::Math::Normalize(Vec3Scalar(1.0f, 2.0f, 3.0f)));
+            static constexpr TestType n = TRAP::Math::Normalize(q);
+            static constexpr Scalar l = TRAP::Math::Length(n);
+            REQUIRE(TRAP::Math::Equal(l, Scalar(1.0f), Scalar(0.01f)));
+            const Scalar a = TRAP::Math::Angle(n);
+            REQUIRE(TRAP::Math::Equal(a, TRAP::Math::PI<Scalar>() * Scalar(0.25f), Scalar(0.01f)));
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunAngleEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr T min = std::numeric_limits<T>::lowest();
-        static constexpr T max = std::numeric_limits<T>::max();
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        static constexpr Scalar min = std::numeric_limits<Scalar>::lowest();
+        static constexpr Scalar max = std::numeric_limits<Scalar>::max();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = -std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
 
         {
-            const TRAP::Math::tQuat<T> q(min, min, min, min);
-            const T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
+            const TestType q(min, min, min, min);
+            const Scalar a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
             REQUIRE(TRAP::Math::IsNaN(a));
         }
         {
-            const TRAP::Math::tQuat<T> q(max, max, max, max);
-            const T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
+            const TestType q(max, max, max, max);
+            const Scalar a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
             REQUIRE(TRAP::Math::IsNaN(a));
         }
         {
-            static constexpr TRAP::Math::tQuat<T> q(inf, inf, inf, inf);
-            const T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
+            static constexpr TestType q(inf, inf, inf, inf);
+            const Scalar a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
             REQUIRE(TRAP::Math::IsNaN(a));
         }
         {
-            static constexpr TRAP::Math::tQuat<T> q(ninf, ninf, ninf, ninf);
-            const T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
+            static constexpr TestType q(ninf, ninf, ninf, ninf);
+            const Scalar a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
             REQUIRE(TRAP::Math::IsNaN(a));
         }
         {
-            static constexpr TRAP::Math::tQuat<T> q(nan, nan, nan, nan);
-            const T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
+            static constexpr TestType q(nan, nan, nan, nan);
+            const Scalar a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
             REQUIRE(TRAP::Math::IsNaN(a));
         }
-    }
-}
-
-TEST_CASE("TRAP::Math::Angle()", "[math][generic][angle]")
-{
-    SECTION("Quat - f64")
-    {
-        RunAngleRunTimeTests<f64>();
-        RunAngleCompileTimeTests<f64>();
-        RunAngleEdgeTests<f64>();
-    }
-    SECTION("Quat - f32")
-    {
-        RunAngleRunTimeTests<f32>();
-        RunAngleCompileTimeTests<f32>();
-        RunAngleEdgeTests<f32>();
     }
 }

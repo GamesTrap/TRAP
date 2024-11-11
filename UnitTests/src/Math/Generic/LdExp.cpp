@@ -3,61 +3,46 @@
 #include <array>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::LdExp()", "[math][generic][ldexp][scalar]", f32, f64)
 {
-    template<typename T>
-    requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
-    void RunLdExpTests()
+    SECTION("Normal cases")
     {
-        if constexpr(std::floating_point<T>)
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
+
+        static constexpr std::array<std::tuple<TestType, i32, TestType>, 4u> values
         {
-            static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+            std::tuple(TestType(0.5f), 11, TestType(1024.0f)),
+            std::tuple(TestType(0.96f), -2, TestType(0.24f)),
+            std::tuple(TestType(0.0f), 0, TestType(0.0f)),
+            std::tuple(TestType(-0.665f), 1, TestType(-1.33f)),
+        };
 
-            static constexpr std::array<std::tuple<T, i32, T>, 4> values
-            {
-                std::tuple(T(0.5f), 11, T(1024.0f)),
-                std::tuple(T(0.96f), -2, T(0.24f)),
-                std::tuple(T(0.0f), 0, T(0.0f)),
-                std::tuple(T(-0.665f), 1, T(-1.33f)),
-            };
-
-            for(const auto& [x, exp, expected] : values)
-            {
-                const T res = TRAP::Math::LdExp(x, exp);
-                REQUIRE(TRAP::Math::Equal(res, expected, Epsilon));
-            }
-        }
-        else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
+        for(const auto& [x, exp, expected] : values)
         {
-            static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-
-            static constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(0.5f, 0.96f, 0.0f, -0.665f));
-            static constexpr TRAP::Math::Vec<T::Length(), i32> exp(TRAP::Math::Vec<4, i32>(11, -2, 0, 1));
-            const T res = TRAP::Math::LdExp(x, exp);
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, T(TRAP::Math::Vec<4, typename T::value_type>(1024.0f, 0.24f, 0.0f, -1.33f)), Epsilon)));
+            const TestType res = TRAP::Math::LdExp(x, exp);
+            REQUIRE(TRAP::Math::Equal(res, expected, Epsilon));
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunLdExpEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-        static constexpr T max = std::numeric_limits<T>::max();
-        static constexpr T min = std::numeric_limits<T>::denorm_min();
-        static constexpr T nmin = -std::numeric_limits<T>::denorm_min();
+        static constexpr TestType inf = std::numeric_limits<TestType>::infinity();
+        static constexpr TestType ninf = -std::numeric_limits<TestType>::infinity();
+        static constexpr TestType nan = std::numeric_limits<TestType>::quiet_NaN();
+        static constexpr TestType max = std::numeric_limits<TestType>::max();
+        static constexpr TestType min = std::numeric_limits<TestType>::denorm_min();
+        static constexpr TestType nmin = -std::numeric_limits<TestType>::denorm_min();
 
-        T res{};
+        TestType res{};
 
-        res = TRAP::Math::LdExp(T(0.0f), 5);
-        REQUIRE(TRAP::Math::Equal(res, T(0.0f), Epsilon));
+        res = TRAP::Math::LdExp(TestType(0.0f), 5);
+        REQUIRE(TRAP::Math::Equal(res, TestType(0.0f), Epsilon));
 
         res = TRAP::Math::LdExp(inf, 10);
         REQUIRE(TRAP::Math::IsInf(res));
@@ -68,7 +53,7 @@ namespace
         res = TRAP::Math::LdExp(nan, 0);
         REQUIRE(TRAP::Math::IsNaN(res));
 
-        if constexpr(std::same_as<T, f64>)
+        if constexpr(std::same_as<TestType, f64>)
         {
             res = TRAP::Math::LdExp(max, 1);
             REQUIRE(TRAP::Math::IsInf(res));
@@ -79,7 +64,7 @@ namespace
             res = TRAP::Math::LdExp(nmin, -0);
             REQUIRE(TRAP::Math::Equal(res, nmin, Epsilon));
         }
-        else if constexpr(std::same_as<T, f32>)
+        else if constexpr(std::same_as<TestType, f32>)
         {
             res = TRAP::Math::LdExp(max, 1);
             REQUIRE(TRAP::Math::IsInf(res));
@@ -93,43 +78,16 @@ namespace
     }
 }
 
-TEST_CASE("TRAP::Math::LdExp()", "[math][generic][ldexp]")
+TEMPLATE_TEST_CASE("TRAP::Math::LdExp()", "[math][generic][ldexp][vec]",
+                   TRAP::Math::Vec2f, TRAP::Math::Vec2d, TRAP::Math::Vec3f, TRAP::Math::Vec3d, TRAP::Math::Vec4f, TRAP::Math::Vec4d)
 {
-    SECTION("Scalar - f64")
-    {
-        RunLdExpTests<f64>();
-        RunLdExpEdgeTests<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunLdExpTests<f32>();
-        RunLdExpEdgeTests<f32>();
-    }
+    using Scalar = TestType::value_type;
+    using Vec4Scalar = TRAP::Math::tVec4<Scalar>;
 
-    SECTION("Vec2 - f64")
-    {
-        RunLdExpTests<TRAP::Math::Vec2d>();
-    }
-    SECTION("Vec2 - f32")
-    {
-        RunLdExpTests<TRAP::Math::Vec2f>();
-    }
+    static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
-    SECTION("Vec3 - f64")
-    {
-        RunLdExpTests<TRAP::Math::Vec3d>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunLdExpTests<TRAP::Math::Vec3f>();
-    }
-
-    SECTION("Vec4 - f64")
-    {
-        RunLdExpTests<TRAP::Math::Vec4d>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunLdExpTests<TRAP::Math::Vec4f>();
-    }
+    static constexpr TestType x(Vec4Scalar(0.5f, 0.96f, 0.0f, -0.665f));
+    static constexpr TRAP::Math::Vec<TestType::Length(), i32> exp(TRAP::Math::Vec<4, i32>(11, -2, 0, 1));
+    const TestType res = TRAP::Math::LdExp(x, exp);
+    REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, TestType(Vec4Scalar(1024.0f, 0.24f, 0.0f, -1.33f)), Epsilon)));
 }

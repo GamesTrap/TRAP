@@ -1,30 +1,13 @@
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::All()", "[math][generic][all][vec]", TRAP::Math::Vec2b, TRAP::Math::Vec3b, TRAP::Math::Vec4b)
 {
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::same_as<typename T::value_type, bool>
-    consteval void RunCompileTimeAllVecTests()
-    {
-        static_assert(TRAP::Math::All(T(TRAP::Math::tVec4<typename T::value_type>(true, true, true, true))));
-        static_assert(TRAP::Math::All(TRAP::Math::Not(T(TRAP::Math::tVec4<typename T::value_type>(false, false, false, false)))));
-    }
-}
+    using Scalar = TestType::value_type;
+    using Vec4Scalar = TRAP::Math::tVec4<Scalar>;
 
-TEST_CASE("TRAP::Math::All()", "[math][generic][all]")
-{
-    SECTION("Vec2 - bool")
-    {
-        RunCompileTimeAllVecTests<TRAP::Math::Vec2b>();
-    }
-    SECTION("Vec3 - bool")
-    {
-        RunCompileTimeAllVecTests<TRAP::Math::Vec3b>();
-    }
-    SECTION("Vec4 - bool")
-    {
-        RunCompileTimeAllVecTests<TRAP::Math::Vec4b>();
-    }
+    STATIC_REQUIRE(TRAP::Math::All(TestType(Vec4Scalar(true, true, true, true))));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Not(TestType(Vec4Scalar(false, false, false, false)))));
 }

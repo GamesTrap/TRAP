@@ -8,21 +8,20 @@
 namespace
 {
     std::vector<TRAP::Events::FileSystemChangeEvent> recordedEvents{};
+
+    [[nodiscard]] constexpr bool Equals(const TRAP::Events::FileSystemChangeEvent& lhs, const TRAP::Events::FileSystemChangeEvent& rhs)
+    {
+        return lhs.GetStatus() == rhs.GetStatus() && lhs.GetPath() == rhs.GetPath() && lhs.GetOldPath() == rhs.GetOldPath();
+    }
+
     void CheckForDuplicateEvents()
     {
-        for(usize i = 0; i < recordedEvents.size(); ++i)
-        {
-            const auto& currEvent = recordedEvents[i];
-            const auto found = std::ranges::find_if(recordedEvents, [&currEvent](const auto& e)
-            {
-                return e.GetStatus() == currEvent.GetStatus() &&
-                       e.GetPath() == currEvent.GetPath() &&
-                       e.GetOldPath() == currEvent.GetOldPath();
-            });
-            const bool isSameIndex = i == std::distance(recordedEvents.begin(), found);
-            if(!isSameIndex)
-                REQUIRE(found == std::ranges::end(recordedEvents));
-        }
+        std::ranges::sort(recordedEvents, Equals);
+        const auto uniqueRange = std::ranges::unique(recordedEvents, Equals);
+
+        //Check that recordedEvents contains no duplicate events
+        const usize recordedEventsUniqueSize = std::distance(recordedEvents.begin(), uniqueRange.begin());
+        REQUIRE(recordedEvents.size() == recordedEventsUniqueSize);
     }
 
     void FileSystemChangeEventCallback(TRAP::Events::Event& event)
@@ -229,8 +228,8 @@ TEST_CASE("TRAP::FileSystem::FileSystemWatcher", "[filesystem][filesystemwatcher
 {
     TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
     const std::filesystem::path BasePath = "Testfiles/FileSystemWatcher";
-    const bool Recursive = false;
-    TRAP::FileSystem::FileSystemWatcher fsWatcher(false, "UnitTest Watcher (non recursive)");
+    static constexpr bool Recursive = false;
+    TRAP::FileSystem::FileSystemWatcher fsWatcher(Recursive, "UnitTest Watcher (non recursive)");
 
     SECTION("SetEventCallback()")
     {
@@ -277,8 +276,8 @@ TEST_CASE("TRAP::FileSystem::FileSystemWatcher - Recursive", "[filesystem][files
 {
     TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
     const std::filesystem::path BasePath = "Testfiles/FileSystemWatcher_Recursive";
-    const bool Recursive = true;
-    TRAP::FileSystem::FileSystemWatcher fsWatcher(true, "UnitTest Watcher (recursive)");
+    static constexpr bool Recursive = true;
+    TRAP::FileSystem::FileSystemWatcher fsWatcher(Recursive, "UnitTest Watcher (recursive)");
 
     SECTION("SetEventCallback()")
     {

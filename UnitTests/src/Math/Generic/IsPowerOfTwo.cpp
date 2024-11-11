@@ -2,215 +2,62 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::IsPowerOfTwo()", "[math][generic][ispoweroftwo][scalar]", u8, u16, u32, u64)
 {
-    template<typename T>
-    requires std::unsigned_integral<T>
-    consteval void RunCompileTimeIsPowerOfTwoTests()
+    SECTION("Normal cases")
     {
-        static_assert(!TRAP::Math::IsPowerOfTwo(T(0x00)));
-        static_assert( TRAP::Math::IsPowerOfTwo(T(0x01)));
-        static_assert( TRAP::Math::IsPowerOfTwo(T(0x02)));
-        static_assert(!TRAP::Math::IsPowerOfTwo(T(0x03)));
-        static_assert( TRAP::Math::IsPowerOfTwo(T(0x04)));
-        static_assert(!TRAP::Math::IsPowerOfTwo(T(0x0F)));
+        STATIC_REQUIRE(!TRAP::Math::IsPowerOfTwo(TestType(0x00)));
+        STATIC_REQUIRE( TRAP::Math::IsPowerOfTwo(TestType(0x01)));
+        STATIC_REQUIRE( TRAP::Math::IsPowerOfTwo(TestType(0x02)));
+        STATIC_REQUIRE(!TRAP::Math::IsPowerOfTwo(TestType(0x03)));
+        STATIC_REQUIRE( TRAP::Math::IsPowerOfTwo(TestType(0x04)));
+        STATIC_REQUIRE(!TRAP::Math::IsPowerOfTwo(TestType(0x0F)));
 
-        if constexpr(sizeof(T) > 32 || std::same_as<T, u32>)
+        if constexpr(sizeof(TestType) > 32u || std::same_as<TestType, u32>)
         {
-            static_assert( TRAP::Math::IsPowerOfTwo(T(0x80)));
-            static_assert( TRAP::Math::IsPowerOfTwo(T(0x80000000)));
+            STATIC_REQUIRE( TRAP::Math::IsPowerOfTwo(TestType(0x80)));
+            STATIC_REQUIRE( TRAP::Math::IsPowerOfTwo(TestType(0x80000000)));
         }
-        else if constexpr(sizeof(T) > 8 || std::same_as<T, u8>)
+        else if constexpr(sizeof(TestType) > 8u || std::same_as<TestType, u8>)
         {
-            static_assert( TRAP::Math::IsPowerOfTwo(T(0x80)));
+            STATIC_REQUIRE( TRAP::Math::IsPowerOfTwo(TestType(0x80)));
         }
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::unsigned_integral<typename T::value_type>
-    consteval void RunCompileTimeIsPowerOfTwoVecTests()
+    SECTION("Edge cases")
     {
-        static_assert(!TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x00))));
-        static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x01))));
-        static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x02))));
-        static_assert(!TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x03))));
-        static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x04))));
-        static_assert(!TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x0F))));
+        static constexpr TestType max = std::numeric_limits<TestType>::max();
+        static constexpr TestType min = std::numeric_limits<TestType>::min();
 
-        if constexpr(sizeof(T) > 32 || std::same_as<T, u32>)
-        {
-            static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x80))));
-            static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x80000000))));
-        }
-        else if constexpr(sizeof(T) > 8 || std::same_as<T, u8>)
-        {
-            static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x80))));
-        }
-    }
-
-    template<typename T>
-    requires std::unsigned_integral<T>
-    consteval void RunCompileTimeIsPowerOfTwoEdgeTests()
-    {
-        constexpr T max = std::numeric_limits<T>::max();
-        constexpr T min = std::numeric_limits<T>::min();
-
-        static_assert(!TRAP::Math::IsPowerOfTwo(0u));
-        static_assert(!TRAP::Math::IsPowerOfTwo(max));
-        static_assert(!TRAP::Math::IsPowerOfTwo(min));
-    }
-
-    template<typename T>
-    requires std::unsigned_integral<T>
-    void RunRunTimeIsPowerOfTwoTests()
-    {
-        REQUIRE(!TRAP::Math::IsPowerOfTwo(T(0x00)));
-        REQUIRE( TRAP::Math::IsPowerOfTwo(T(0x01)));
-        REQUIRE( TRAP::Math::IsPowerOfTwo(T(0x02)));
-        REQUIRE(!TRAP::Math::IsPowerOfTwo(T(0x03)));
-        REQUIRE( TRAP::Math::IsPowerOfTwo(T(0x04)));
-        REQUIRE(!TRAP::Math::IsPowerOfTwo(T(0x0F)));
-
-        if constexpr(sizeof(T) > 32 || std::same_as<T, u32>)
-        {
-            REQUIRE( TRAP::Math::IsPowerOfTwo(T(0x80)));
-            REQUIRE( TRAP::Math::IsPowerOfTwo(T(0x80000000)));
-        }
-        else if constexpr(sizeof(T) > 8 || std::same_as<T, u8>)
-        {
-            REQUIRE( TRAP::Math::IsPowerOfTwo(T(0x80)));
-        }
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::unsigned_integral<typename T::value_type>
-    void RunRunTimeIsPowerOfTwoVecTests()
-    {
-        REQUIRE(!TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x00))));
-        REQUIRE( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x01))));
-        REQUIRE( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x02))));
-        REQUIRE(!TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x03))));
-        REQUIRE( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x04))));
-        REQUIRE(!TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x0F))));
-
-        if constexpr(sizeof(T) > 32 || std::same_as<T, u32>)
-        {
-            REQUIRE( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x80))));
-            REQUIRE( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x80000000))));
-        }
-        else if constexpr(sizeof(T) > 8 || std::same_as<T, u8>)
-        {
-            REQUIRE( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x80))));
-        }
-    }
-
-    template<typename T>
-    requires std::unsigned_integral<T>
-    void RunRunTimeIsPowerOfTwoEdgeTests()
-    {
-        constexpr T max = std::numeric_limits<T>::max();
-        constexpr T min = std::numeric_limits<T>::min();
-
-        REQUIRE(!TRAP::Math::IsPowerOfTwo(0u));
-        REQUIRE(!TRAP::Math::IsPowerOfTwo(max));
-        REQUIRE(!TRAP::Math::IsPowerOfTwo(min));
+        STATIC_REQUIRE(!TRAP::Math::IsPowerOfTwo(0u));
+        STATIC_REQUIRE(!TRAP::Math::IsPowerOfTwo(max));
+        STATIC_REQUIRE(!TRAP::Math::IsPowerOfTwo(min));
     }
 }
 
-TEST_CASE("TRAP::Math::IsPowerOfTwo()", "[math][generic][ispoweroftwo]")
+TEMPLATE_TEST_CASE("TRAP::Math::IsPowerOfTwo()", "[math][generic][ispoweroftwo][vec]",
+                   TRAP::Math::Vec2ui8, TRAP::Math::Vec2ui16, TRAP::Math::Vec2ui32, TRAP::Math::Vec2ui64,
+                   TRAP::Math::Vec3ui8, TRAP::Math::Vec3ui16, TRAP::Math::Vec3ui32, TRAP::Math::Vec3ui64,
+                   TRAP::Math::Vec4ui8, TRAP::Math::Vec4ui16, TRAP::Math::Vec4ui32, TRAP::Math::Vec4ui64)
 {
-    SECTION("Scalar - u8")
-    {
-        RunCompileTimeIsPowerOfTwoTests<u8>();
-        RunRunTimeIsPowerOfTwoTests<u8>();
-        RunCompileTimeIsPowerOfTwoEdgeTests<u8>();
-        RunRunTimeIsPowerOfTwoEdgeTests<u8>();
-    }
-    SECTION("Scalar - u16")
-    {
-        RunCompileTimeIsPowerOfTwoTests<u16>();
-        RunRunTimeIsPowerOfTwoTests<u16>();
-        RunCompileTimeIsPowerOfTwoEdgeTests<u16>();
-        RunRunTimeIsPowerOfTwoEdgeTests<u16>();
-    }
-    SECTION("Scalar - u32")
-    {
-        RunCompileTimeIsPowerOfTwoTests<u32>();
-        RunRunTimeIsPowerOfTwoTests<u32>();
-        RunCompileTimeIsPowerOfTwoEdgeTests<u32>();
-        RunRunTimeIsPowerOfTwoEdgeTests<u32>();
-    }
-    SECTION("Scalar - u64")
-    {
-        RunCompileTimeIsPowerOfTwoTests<u64>();
-        RunRunTimeIsPowerOfTwoTests<u64>();
-        RunCompileTimeIsPowerOfTwoEdgeTests<u64>();
-        RunRunTimeIsPowerOfTwoEdgeTests<u64>();
-    }
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::IsPowerOfTwo(TestType(0x00))));
+    STATIC_REQUIRE( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(TestType(0x01))));
+    STATIC_REQUIRE( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(TestType(0x02))));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::IsPowerOfTwo(TestType(0x03))));
+    STATIC_REQUIRE( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(TestType(0x04))));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::IsPowerOfTwo(TestType(0x0F))));
 
-    SECTION("Vec2 - u8")
+    if constexpr(sizeof(TestType) > 32u || std::same_as<TestType, u32>)
     {
-        RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec2ui8>();
-        RunRunTimeIsPowerOfTwoVecTests<TRAP::Math::Vec2ui8>();
+        STATIC_REQUIRE( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(TestType(0x80))));
+        STATIC_REQUIRE( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(TestType(0x80000000))));
     }
-    SECTION("Vec2 - u16")
+    else if constexpr(sizeof(TestType) > 8u || std::same_as<TestType, u8>)
     {
-        RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec2ui16>();
-        RunRunTimeIsPowerOfTwoVecTests<TRAP::Math::Vec2ui16>();
-    }
-    SECTION("Vec2 - u32")
-    {
-        RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec2ui32>();
-        RunRunTimeIsPowerOfTwoVecTests<TRAP::Math::Vec2ui32>();
-    }
-    SECTION("Vec2 - u64")
-    {
-        RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec2ui64>();
-        RunRunTimeIsPowerOfTwoVecTests<TRAP::Math::Vec2ui64>();
-    }
-
-    SECTION("Vec3 - u8")
-    {
-        RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec3ui8>();
-        RunRunTimeIsPowerOfTwoVecTests<TRAP::Math::Vec3ui8>();
-    }
-    SECTION("Vec3 - u16")
-    {
-        RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec3ui16>();
-        RunRunTimeIsPowerOfTwoVecTests<TRAP::Math::Vec3ui16>();
-    }
-    SECTION("Vec3 - u32")
-    {
-        RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec3ui32>();
-        RunRunTimeIsPowerOfTwoVecTests<TRAP::Math::Vec3ui32>();
-    }
-    SECTION("Vec3 - u64")
-    {
-        RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec3ui64>();
-        RunRunTimeIsPowerOfTwoVecTests<TRAP::Math::Vec3ui64>();
-    }
-
-    SECTION("Vec4 - u8")
-    {
-        RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec4ui8>();
-        RunRunTimeIsPowerOfTwoVecTests<TRAP::Math::Vec4ui8>();
-    }
-    SECTION("Vec4 - u16")
-    {
-        RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec4ui16>();
-        RunRunTimeIsPowerOfTwoVecTests<TRAP::Math::Vec4ui16>();
-    }
-    SECTION("Vec4 - u32")
-    {
-        RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec4ui32>();
-        RunRunTimeIsPowerOfTwoVecTests<TRAP::Math::Vec4ui32>();
-    }
-    SECTION("Vec4 - u64")
-    {
-        RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec4ui64>();
-        RunRunTimeIsPowerOfTwoVecTests<TRAP::Math::Vec4ui64>();
+        STATIC_REQUIRE( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(TestType(0x80))));
     }
 }

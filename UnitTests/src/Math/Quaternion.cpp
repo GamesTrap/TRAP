@@ -2,956 +2,526 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Quat", "[math][quat]", TRAP::Math::Quatf, TRAP::Math::Quatd)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunQuatTypedefsCompileTimeTests()
-    {
-        using Quat = TRAP::Math::tQuat<T>;
+    using Scalar = TestType::value_type;
+    using Vec3Scalar = TRAP::Math::tVec3<Scalar>;
 
-        static_assert(std::same_as<typename Quat::value_type, T>);
-        static_assert(std::same_as<typename Quat::pointer, T*>);
-        static_assert(std::same_as<typename Quat::const_pointer, const T*>);
-        static_assert(std::same_as<typename Quat::reference, T&>);
-        static_assert(std::same_as<typename Quat::const_reference, const T&>);
-        static_assert(std::same_as<typename Quat::size_type, u32>);
-        static_assert(std::same_as<typename Quat::difference_type, isize>);
+    SECTION("Typedefs")
+    {
+        STATIC_REQUIRE(std::same_as<typename TestType::value_type, Scalar>);
+        STATIC_REQUIRE(std::same_as<typename TestType::pointer, Scalar*>);
+        STATIC_REQUIRE(std::same_as<typename TestType::const_pointer, const Scalar*>);
+        STATIC_REQUIRE(std::same_as<typename TestType::reference, Scalar&>);
+        STATIC_REQUIRE(std::same_as<typename TestType::const_reference, const Scalar&>);
+        STATIC_REQUIRE(std::same_as<typename TestType::size_type, u32>);
+        STATIC_REQUIRE(std::same_as<typename TestType::difference_type, isize>);
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunQuatConstructorCompileTimeTests()
+    SECTION("Constructors")
     {
-        using Quat = TRAP::Math::tQuat<T>;
-
         //Default constructor
         {
-            constexpr Quat q{};
+            static constexpr TestType q{};
 
-            static_assert(q.x() == T(0));
-            static_assert(q.y() == T(0));
-            static_assert(q.z() == T(0));
-            static_assert(q.w() == T(0));
+            STATIC_REQUIRE(q.x() == Scalar(0));
+            STATIC_REQUIRE(q.y() == Scalar(0));
+            STATIC_REQUIRE(q.z() == Scalar(0));
+            STATIC_REQUIRE(q.w() == Scalar(0));
         }
 
         //Move constructor
         {
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            TestType q1(std::move(q));
+
+            REQUIRE(q1.x() == Scalar(2));
+            REQUIRE(q1.y() == Scalar(3));
+            REQUIRE(q1.z() == Scalar(4));
+            REQUIRE(q1.w() == Scalar(1));
         }
 
         //Copy constructor
         {
-            constexpr Quat q(T(1), T(2), T(3), T(4));
-            constexpr Quat q1(q);
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            static constexpr TestType q1(q);
 
-            static_assert(q1.x() == T(2));
-            static_assert(q1.y() == T(3));
-            static_assert(q1.z() == T(4));
-            static_assert(q1.w() == T(1));
+            STATIC_REQUIRE(q1.x() == Scalar(2));
+            STATIC_REQUIRE(q1.y() == Scalar(3));
+            STATIC_REQUIRE(q1.z() == Scalar(4));
+            STATIC_REQUIRE(q1.w() == Scalar(1));
         }
 
         {
-            constexpr Quat q(T(5), TRAP::Math::tVec3<T>(T(1), T(2), T(3)));
+            static constexpr TestType q(Scalar(5), Vec3Scalar(Scalar(1), Scalar(2), Scalar(3)));
 
-            static_assert(q.x() == T(1));
-            static_assert(q.y() == T(2));
-            static_assert(q.z() == T(3));
-            static_assert(q.w() == T(5));
+            STATIC_REQUIRE(q.x() == Scalar(1));
+            STATIC_REQUIRE(q.y() == Scalar(2));
+            STATIC_REQUIRE(q.z() == Scalar(3));
+            STATIC_REQUIRE(q.w() == Scalar(5));
         }
 
         {
-            constexpr Quat q(T(1), T(2), T(3), T(4));
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
 
-            static_assert(q.x() == T(2));
-            static_assert(q.y() == T(3));
-            static_assert(q.z() == T(4));
-            static_assert(q.w() == T(1));
+            STATIC_REQUIRE(q.x() == Scalar(2));
+            STATIC_REQUIRE(q.y() == Scalar(3));
+            STATIC_REQUIRE(q.z() == Scalar(4));
+            STATIC_REQUIRE(q.w() == Scalar(1));
         }
 
         {
-            constexpr Quat q(TRAP::Math::tQuat<f64>(f64(1.0), f64(2.0), f64(3.0), f64(4.0)));
+            static constexpr TestType q(TRAP::Math::tQuat<f64>(f64(1.0), f64(2.0), f64(3.0), f64(4.0)));
 
-            static_assert(q.x() == T(2));
-            static_assert(q.y() == T(3));
-            static_assert(q.z() == T(4));
-            static_assert(q.w() == T(1));
+            STATIC_REQUIRE(q.x() == Scalar(2));
+            STATIC_REQUIRE(q.y() == Scalar(3));
+            STATIC_REQUIRE(q.z() == Scalar(4));
+            STATIC_REQUIRE(q.w() == Scalar(1));
         }
 
         {
-            constexpr Quat q(TRAP::Math::tVec3<T>(T(1), T(2), T(3)), TRAP::Math::tVec3<T>(T(3), T(2), T(1)));
+            static constexpr TestType q(Vec3Scalar(Scalar(1), Scalar(2), Scalar(3)), Vec3Scalar(Scalar(3), Scalar(2), Scalar(1)));
 
-            static_assert(TRAP::Math::Equal(q.x(), T(-0.154303), T(0.000001)));
-            static_assert(TRAP::Math::Equal(q.y(), T(0.308607), T(0.000001)));
-            static_assert(TRAP::Math::Equal(q.z(), T(-0.154303), T(0.000001)));
-            static_assert(TRAP::Math::Equal(q.w(), T(0.925820), T(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(q.x(), Scalar(-0.154303), Scalar(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(q.y(), Scalar(0.308607), Scalar(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(q.z(), Scalar(-0.154303), Scalar(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(q.w(), Scalar(0.925820), Scalar(0.000001)));
 
-            constexpr Quat q1(TRAP::Math::tVec3<T>(T(1), T(0), T(0)), TRAP::Math::tVec3<T>(T(-1), T(0), T(0)));
+            static constexpr TestType q1(Vec3Scalar(Scalar(1), Scalar(0), Scalar(0)), Vec3Scalar(Scalar(-1), Scalar(0), Scalar(0)));
 
-            static_assert(q1.x() == T(0));
-            static_assert(q1.y() == T(1));
-            static_assert(q1.z() == T(0));
-            static_assert(q1.w() == T(0));
+            STATIC_REQUIRE(q1.x() == Scalar(0));
+            STATIC_REQUIRE(q1.y() == Scalar(1));
+            STATIC_REQUIRE(q1.z() == Scalar(0));
+            STATIC_REQUIRE(q1.w() == Scalar(0));
+
+            const TestType q2(Vec3Scalar(Scalar(1), Scalar(0), Scalar(0)), Vec3Scalar(Scalar(-1), Scalar(0), Scalar(0)));
+
+            REQUIRE(q2.x() == Scalar(0));
+            REQUIRE(q2.y() == Scalar(1));
+            REQUIRE(q2.z() == Scalar(0));
+            REQUIRE(q2.w() == Scalar(0));
         }
 
         {
-            constexpr Quat q(TRAP::Math::tVec3<T>(T(1), T(2), T(3)));
+            static constexpr TestType q(Vec3Scalar(Scalar(1), Scalar(2), Scalar(3)));
 
-            static_assert(TRAP::Math::Equal(q.x(), T(-0.718287), T(0.0000001)));
-            static_assert(TRAP::Math::Equal(q.y(), T(0.310622), T(0.000001)));
-            static_assert(TRAP::Math::Equal(q.z(), T(0.444435), T(0.000001)));
-            static_assert(TRAP::Math::Equal(q.w(), T(0.435953), T(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(q.x(), Scalar(-0.718287), Scalar(0.0000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(q.y(), Scalar(0.310622), Scalar(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(q.z(), Scalar(0.444435), Scalar(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(q.w(), Scalar(0.435953), Scalar(0.000001)));
         }
 
         {
-            constexpr TRAP::Math::tMat3<T> m(T(1), T(2), T(3), T(4), T(5), T(6), T(7), T(8), T(9));
-            constexpr Quat q(m);
+            static constexpr TRAP::Math::tMat3<Scalar> m(Scalar(1), Scalar(2), Scalar(3), Scalar(4), Scalar(5), Scalar(6), Scalar(7), Scalar(8), Scalar(9));
+            static constexpr TestType q(m);
 
-            static_assert(q.x() == T(-0.25));
-            static_assert(q.y() == T(0.5));
-            static_assert(q.z() == T(-0.25));
-            static_assert(q.w() == T(2.0));
+            STATIC_REQUIRE(q.x() == Scalar(-0.25));
+            STATIC_REQUIRE(q.y() == Scalar(0.5));
+            STATIC_REQUIRE(q.z() == Scalar(-0.25));
+            STATIC_REQUIRE(q.w() == Scalar(2.0));
         }
 
         {
-            constexpr TRAP::Math::tMat4<T> m(T(1), T(2), T(3), T(4), T(5), T(6), T(7), T(8), T(9), T(10), T(11), T(12), T(13), T(14), T(15), T(16));
-            constexpr Quat q(m);
+            static constexpr TRAP::Math::tMat4<Scalar> m(Scalar(1), Scalar(2), Scalar(3), Scalar(4), Scalar(5), Scalar(6), Scalar(7), Scalar(8), Scalar(9), Scalar(10), Scalar(11), Scalar(12), Scalar(13), Scalar(14), Scalar(15), Scalar(16));
+            static constexpr TestType q(m);
 
-            static_assert(TRAP::Math::Equal(q.x(), T(-0.344124), T(0.000001)));
-            static_assert(TRAP::Math::Equal(q.y(), T(0.688247), T(0.000001)));
-            static_assert(TRAP::Math::Equal(q.z(), T(-0.344124), T(0.000001)));
-            static_assert(TRAP::Math::Equal(q.w(), T(2.179450), T(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(q.x(), Scalar(-0.344124), Scalar(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(q.y(), Scalar(0.688247), Scalar(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(q.z(), Scalar(-0.344124), Scalar(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(q.w(), Scalar(2.179450), Scalar(0.000001)));
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunQuatConstructorRunTimeTests()
+    SECTION("Assignments")
     {
-        using Quat = TRAP::Math::tQuat<T>;
-
-        //Default constructor
-        {
-            Quat q{};
-
-            REQUIRE(q.x() == T(0));
-            REQUIRE(q.y() == T(0));
-            REQUIRE(q.z() == T(0));
-            REQUIRE(q.w() == T(0));
-        }
-
-        //Move constructor
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-            Quat q1(std::move(q));
-
-            REQUIRE(q1.x() == T(2));
-            REQUIRE(q1.y() == T(3));
-            REQUIRE(q1.z() == T(4));
-            REQUIRE(q1.w() == T(1));
-        }
-
-        //Copy constructor
-        {
-            const Quat q(T(1), T(2), T(3), T(4));
-            Quat q1(q);
-
-            REQUIRE(q1.x() == T(2));
-            REQUIRE(q1.y() == T(3));
-            REQUIRE(q1.z() == T(4));
-            REQUIRE(q1.w() == T(1));
-        }
-
-        //Copy conversion constructor
-        {
-            const TRAP::Math::tQuat<f64> q(T(1), T(2), T(3), T(4));
-            Quat q1(q);
-
-            REQUIRE(q1.x() == T(2));
-            REQUIRE(q1.y() == T(3));
-            REQUIRE(q1.z() == T(4));
-            REQUIRE(q1.w() == T(1));
-        }
-
-        {
-            Quat q(T(5), TRAP::Math::tVec3<T>(T(1), T(2), T(3)));
-
-            REQUIRE(q.x() == T(1));
-            REQUIRE(q.y() == T(2));
-            REQUIRE(q.z() == T(3));
-            REQUIRE(q.w() == T(5));
-        }
-
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-
-            REQUIRE(q.x() == T(2));
-            REQUIRE(q.y() == T(3));
-            REQUIRE(q.z() == T(4));
-            REQUIRE(q.w() == T(1));
-        }
-
-        {
-            Quat q(TRAP::Math::tQuat<f64>(f64(1.0), f64(2.0), f64(3.0), f64(4.0)));
-
-            REQUIRE(q.x() == T(2));
-            REQUIRE(q.y() == T(3));
-            REQUIRE(q.z() == T(4));
-            REQUIRE(q.w() == T(1));
-        }
-
-        {
-            Quat q(TRAP::Math::tVec3<T>(T(1), T(2), T(3)), TRAP::Math::tVec3<T>(T(3), T(2), T(1)));
-
-            REQUIRE(TRAP::Math::Equal(q.x(), T(-0.154303), T(0.000001)));
-            REQUIRE(TRAP::Math::Equal(q.y(), T(0.308607), T(0.000001)));
-            REQUIRE(TRAP::Math::Equal(q.z(), T(-0.154303), T(0.000001)));
-            REQUIRE(TRAP::Math::Equal(q.w(), T(0.925820), T(0.000001)));
-
-            Quat q1(TRAP::Math::tVec3<T>(T(1), T(0), T(0)), TRAP::Math::tVec3<T>(T(-1), T(0), T(0)));
-
-            REQUIRE(q1.x() == T(0));
-            REQUIRE(q1.y() == T(1));
-            REQUIRE(q1.z() == T(0));
-            REQUIRE(q1.w() == T(0));
-        }
-
-        {
-            Quat q(TRAP::Math::tVec3<T>(T(1), T(2), T(3)));
-
-            REQUIRE(TRAP::Math::Equal(q.x(), T(-0.718287), T(0.0000001)));
-            REQUIRE(TRAP::Math::Equal(q.y(), T(0.310622), T(0.000001)));
-            REQUIRE(TRAP::Math::Equal(q.z(), T(0.444435), T(0.000001)));
-            REQUIRE(TRAP::Math::Equal(q.w(), T(0.435953), T(0.000001)));
-        }
-
-        {
-            TRAP::Math::tMat3<T> m(T(1), T(2), T(3), T(4), T(5), T(6), T(7), T(8), T(9));
-            Quat q(m);
-
-            REQUIRE(q.x() == T(-0.25));
-            REQUIRE(q.y() == T(0.5));
-            REQUIRE(q.z() == T(-0.25));
-            REQUIRE(q.w() == T(2.0));
-        }
-
-        {
-            TRAP::Math::tMat4<T> m(T(1), T(2), T(3), T(4), T(5), T(6), T(7), T(8), T(9), T(10), T(11), T(12), T(13), T(14), T(15), T(16));
-            Quat q(m);
-
-            REQUIRE(TRAP::Math::Equal(q.x(), T(-0.344124), T(0.000001)));
-            REQUIRE(TRAP::Math::Equal(q.y(), T(0.688247), T(0.000001)));
-            REQUIRE(TRAP::Math::Equal(q.z(), T(-0.344124), T(0.000001)));
-            REQUIRE(TRAP::Math::Equal(q.w(), T(2.179450), T(0.000001)));
-        }
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    void RunQuatAssignmentsRunTimeTests()
-    {
-        using Quat = TRAP::Math::tQuat<T>;
-
         //Move assignment
         {
-            Quat q(T(1), T(2), T(3), T(4));
-            Quat qMove{};
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            TestType qMove{};
             qMove = std::move(q);
 
-            REQUIRE(qMove.x() == T(2));
-            REQUIRE(qMove.y() == T(3));
-            REQUIRE(qMove.z() == T(4));
-            REQUIRE(qMove.w() == T(1));
+            REQUIRE(qMove.x() == Scalar(2));
+            REQUIRE(qMove.y() == Scalar(3));
+            REQUIRE(qMove.z() == Scalar(4));
+            REQUIRE(qMove.w() == Scalar(1));
         }
 
         //Copy assignment
         {
-            const Quat q(T(1), T(2), T(3), T(4));
-            Quat qCopy{};
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            TestType qCopy{};
             qCopy = q;
 
-            REQUIRE(qCopy.x() == T(2));
-            REQUIRE(qCopy.y() == T(3));
-            REQUIRE(qCopy.z() == T(4));
-            REQUIRE(qCopy.w() == T(1));
+            REQUIRE(qCopy.x() == Scalar(2));
+            REQUIRE(qCopy.y() == Scalar(3));
+            REQUIRE(qCopy.z() == Scalar(4));
+            REQUIRE(qCopy.w() == Scalar(1));
         }
 
         //Conversion assignment
         {
-            TRAP::Math::tQuat<f64> q(f64(1), f64(2), f64(3), f64(4));
-            Quat qConversion{};
+            static constexpr TRAP::Math::tQuat<f64> q(f64(1), f64(2), f64(3), f64(4));
+            TestType qConversion{};
             qConversion = q;
 
-            REQUIRE(qConversion.x() == T(2));
-            REQUIRE(qConversion.y() == T(3));
-            REQUIRE(qConversion.z() == T(4));
-            REQUIRE(qConversion.w() == T(1));
+            REQUIRE(qConversion.x() == Scalar(2));
+            REQUIRE(qConversion.y() == Scalar(3));
+            REQUIRE(qConversion.z() == Scalar(4));
+            REQUIRE(qConversion.w() == Scalar(1));
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunQuatAccessorCompileTimeTests()
+    SECTION("Accessors")
     {
-        using Quat = TRAP::Math::tQuat<T>;
-
         //Length
         {
-            static_assert(Quat::Length() == 4);
+            STATIC_REQUIRE(TestType::Length() == 4u);
         }
 
         //Component access
         {
-            constexpr Quat v(T(1), T(2), T(3), T(4));
+            static constexpr TestType v(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
 
-            static_assert(v.x() == T(2));
-            static_assert(v.y() == T(3));
-            static_assert(v.z() == T(4));
-            static_assert(v.w() == T(1));
+            STATIC_REQUIRE(v.x() == Scalar(2));
+            STATIC_REQUIRE(v.y() == Scalar(3));
+            STATIC_REQUIRE(v.z() == Scalar(4));
+            STATIC_REQUIRE(v.w() == Scalar(1));
             //Check that v.x() returns const T&
-            static_assert(std::is_reference_v<decltype(v.x())> && std::is_const_v<std::remove_reference_t<decltype(v.x())>>);
-        }
+            STATIC_REQUIRE((std::is_reference_v<decltype(v.x())> && std::is_const_v<std::remove_reference_t<decltype(v.x())>>));
 
-        //operator[]
-        {
-            constexpr Quat v(T(1), T(2), T(3), T(4));
+            TestType v2(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
 
-            static_assert(v[0] == T(1));
-            static_assert(v[1] == T(2));
-            static_assert(v[2] == T(3));
-            static_assert(v[3] == T(4));
-            //Check that v[0] returns const T&
-            static_assert(std::is_reference_v<decltype(v[0])> && std::is_const_v<std::remove_reference_t<decltype(v[0])>>);
-        }
-
-        //at()
-        {
-            constexpr Quat v(T(1), T(2), T(3), T(4));
-
-            static_assert(v.at(0) == T(1));
-            static_assert(v.at(1) == T(2));
-            static_assert(v.at(2) == T(3));
-            static_assert(v.at(3) == T(4));
-            //Check that v.at(0) returns const T&
-            static_assert(std::is_reference_v<decltype(v.at(0))> && std::is_const_v<std::remove_reference_t<decltype(v.at(0))>>);
-        }
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    void RunQuatAccessorRunTimeTests()
-    {
-        using Quat = TRAP::Math::tQuat<T>;
-
-        //Length
-        {
-            REQUIRE(Quat::Length() == 4);
-        }
-
-        //Component access
-        {
-            const Quat v(T(1), T(2), T(3), T(4));
-
-            REQUIRE(v.x() == T(2));
-            REQUIRE(v.y() == T(3));
-            REQUIRE(v.z() == T(4));
-            REQUIRE(v.w() == T(1));
-            //Check that v.x() returns const T&
-            static_assert(std::is_reference_v<decltype(v.x())> && std::is_const_v<std::remove_reference_t<decltype(v.x())>>);
-
-            Quat v2(T(1), T(2), T(3), T(4));
-
-            REQUIRE(v2.x() == T(2));
-            REQUIRE(v2.y() == T(3));
-            REQUIRE(v2.z() == T(4));
-            REQUIRE(v2.w() == T(1));
+            REQUIRE(v2.x() == Scalar(2));
+            REQUIRE(v2.y() == Scalar(3));
+            REQUIRE(v2.z() == Scalar(4));
+            REQUIRE(v2.w() == Scalar(1));
             //Check that v2.x() returns T&
-            static_assert(std::is_reference_v<decltype(v2.x())> && !std::is_const_v<std::remove_reference_t<decltype(v2.x())>>);
+            STATIC_REQUIRE((std::is_reference_v<decltype(v2.x())> && !std::is_const_v<std::remove_reference_t<decltype(v2.x())>>));
         }
 
         //operator[]
         {
-            const Quat v(T(1), T(2), T(3), T(4));
+            static constexpr TestType v(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
 
-            REQUIRE(v[0] == T(1));
-            REQUIRE(v[1] == T(2));
-            REQUIRE(v[2] == T(3));
-            REQUIRE(v[3] == T(4));
+            STATIC_REQUIRE(v[0] == Scalar(1));
+            STATIC_REQUIRE(v[1] == Scalar(2));
+            STATIC_REQUIRE(v[2] == Scalar(3));
+            STATIC_REQUIRE(v[3] == Scalar(4));
             //Check that v[0] returns const T&
-            static_assert(std::is_reference_v<decltype(v[0])> && std::is_const_v<std::remove_reference_t<decltype(v[0])>>);
+            STATIC_REQUIRE((std::is_reference_v<decltype(v[0])> && std::is_const_v<std::remove_reference_t<decltype(v[0])>>));
 
-            Quat v2(T(1), T(2), T(3), T(4));
+            TestType v2(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
 
-            REQUIRE(v2[0] == T(1));
-            REQUIRE(v2[1] == T(2));
-            REQUIRE(v2[2] == T(3));
-            REQUIRE(v2[3] == T(4));
+            REQUIRE(v2[0] == Scalar(1));
+            REQUIRE(v2[1] == Scalar(2));
+            REQUIRE(v2[2] == Scalar(3));
+            REQUIRE(v2[3] == Scalar(4));
             //Check that v2[0] returns T&
-            static_assert(std::is_reference_v<decltype(v2[0])> && !std::is_const_v<std::remove_reference_t<decltype(v2[0])>>);
+            STATIC_REQUIRE((std::is_reference_v<decltype(v2[0])> && !std::is_const_v<std::remove_reference_t<decltype(v2[0])>>));
         }
 
         //at()
         {
-            const Quat v(T(1), T(2), T(3), T(4));
+            static constexpr TestType v(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
 
-            REQUIRE(v.at(0) == T(1));
-            REQUIRE(v.at(1) == T(2));
-            REQUIRE(v.at(2) == T(3));
-            REQUIRE(v.at(3) == T(4));
+            STATIC_REQUIRE(v.at(0) == Scalar(1));
+            STATIC_REQUIRE(v.at(1) == Scalar(2));
+            STATIC_REQUIRE(v.at(2) == Scalar(3));
+            STATIC_REQUIRE(v.at(3) == Scalar(4));
             REQUIRE_THROWS_AS(v.at(10), std::out_of_range);
             //Check that v.at(0) returns const T&
-            static_assert(std::is_reference_v<decltype(v.at(0))> && std::is_const_v<std::remove_reference_t<decltype(v.at(0))>>);
+            STATIC_REQUIRE((std::is_reference_v<decltype(v.at(0))> && std::is_const_v<std::remove_reference_t<decltype(v.at(0))>>));
 
-            Quat v2(T(1), T(2), T(3), T(4));
+            TestType v2(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
 
-            REQUIRE(v2.at(0) == T(1));
-            REQUIRE(v2.at(1) == T(2));
-            REQUIRE(v2.at(2) == T(3));
-            REQUIRE(v2.at(3) == T(4));
+            REQUIRE(v2.at(0) == Scalar(1));
+            REQUIRE(v2.at(1) == Scalar(2));
+            REQUIRE(v2.at(2) == Scalar(3));
+            REQUIRE(v2.at(3) == Scalar(4));
             REQUIRE_THROWS_AS(v2.at(10), std::out_of_range);
             //Check that v2.at(0) returns T&
-            static_assert(std::is_reference_v<decltype(v2.at(0))> && !std::is_const_v<std::remove_reference_t<decltype(v2.at(0))>>);
+            STATIC_REQUIRE((std::is_reference_v<decltype(v2.at(0))> && !std::is_const_v<std::remove_reference_t<decltype(v2.at(0))>>));
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunQuatOperatorCompileTimeTests()
+    SECTION("Operators")
     {
-        using Quat = TRAP::Math::tQuat<T>;
-
         //Unary operator+
         {
-            constexpr Quat q(T(1), T(2), T(3), T(4));
-            constexpr Quat q1 = +q;
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            static constexpr TestType q1 = +q;
 
-            static_assert(q1.x() == T(2));
-            static_assert(q1.y() == T(3));
-            static_assert(q1.z() == T(4));
-            static_assert(q1.w() == T(1));
+            STATIC_REQUIRE(q1.x() == Scalar(2));
+            STATIC_REQUIRE(q1.y() == Scalar(3));
+            STATIC_REQUIRE(q1.z() == Scalar(4));
+            STATIC_REQUIRE(q1.w() == Scalar(1));
         }
 
         //Unary operator-
         {
-            constexpr Quat q(T(1), T(2), T(3), T(4));
-            constexpr Quat q1 = -q;
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            static constexpr TestType q1 = -q;
 
-            static_assert(q1.x() == T(-2));
-            static_assert(q1.y() == T(-3));
-            static_assert(q1.z() == T(-4));
-            static_assert(q1.w() == T(-1));
+            STATIC_REQUIRE(q1.x() == Scalar(-2));
+            STATIC_REQUIRE(q1.y() == Scalar(-3));
+            STATIC_REQUIRE(q1.z() == Scalar(-4));
+            STATIC_REQUIRE(q1.w() == Scalar(-1));
         }
 
         //Binary operator+
         {
-            constexpr Quat q(T(1), T(2), T(3), T(4));
-            constexpr Quat q1 = q + q;
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            static constexpr TestType q1 = q + q;
 
-            static_assert(q1.x() == T(4));
-            static_assert(q1.y() == T(6));
-            static_assert(q1.z() == T(8));
-            static_assert(q1.w() == T(2));
+            STATIC_REQUIRE(q1.x() == Scalar(4));
+            STATIC_REQUIRE(q1.y() == Scalar(6));
+            STATIC_REQUIRE(q1.z() == Scalar(8));
+            STATIC_REQUIRE(q1.w() == Scalar(2));
         }
 
         //Binary operator-
         {
-            constexpr Quat q(T(1), T(2), T(3), T(4));
-            constexpr Quat q1 = q - q;
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            static constexpr TestType q1 = q - q;
 
-            static_assert(q1.x() == T(0));
-            static_assert(q1.y() == T(0));
-            static_assert(q1.z() == T(0));
-            static_assert(q1.w() == T(0));
+            STATIC_REQUIRE(q1.x() == Scalar(0));
+            STATIC_REQUIRE(q1.y() == Scalar(0));
+            STATIC_REQUIRE(q1.z() == Scalar(0));
+            STATIC_REQUIRE(q1.w() == Scalar(0));
         }
 
         //Binary operator*
         {
-            constexpr Quat q(T(1), T(2), T(3), T(4));
-            constexpr Quat q1 = q * q;
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            static constexpr TestType q1 = q * q;
 
-            static_assert(q1.x() == T(4));
-            static_assert(q1.y() == T(6));
-            static_assert(q1.z() == T(8));
-            static_assert(q1.w() == T(-28));
+            STATIC_REQUIRE(q1.x() == Scalar(4));
+            STATIC_REQUIRE(q1.y() == Scalar(6));
+            STATIC_REQUIRE(q1.z() == Scalar(8));
+            STATIC_REQUIRE(q1.w() == Scalar(-28));
         }
 
         //Binary operator*
         {
-            constexpr Quat q(T(1), T(2), T(3), T(4));
-            constexpr TRAP::Math::tVec3<T> v = q * TRAP::Math::tVec3<T>(T(1), T(2), T(3));
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            static constexpr Vec3Scalar v = q * Vec3Scalar(Scalar(1), Scalar(2), Scalar(3));
 
-            static_assert(v.x() == T(25));
-            static_assert(v.y() == T(2));
-            static_assert(v.z() == T(-9));
+            STATIC_REQUIRE(v.x() == Scalar(25));
+            STATIC_REQUIRE(v.y() == Scalar(2));
+            STATIC_REQUIRE(v.z() == Scalar(-9));
+
+            const TestType q1(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            const Vec3Scalar v1 = q1 * Vec3Scalar(Scalar(1), Scalar(2), Scalar(3));
+
+            REQUIRE(v1.x() == Scalar(25));
+            REQUIRE(v1.y() == Scalar(2));
+            REQUIRE(v1.z() == Scalar(-9));
         }
 
         //Binary operator*
         {
-            constexpr Quat q(T(1), T(2), T(3), T(4));
-            constexpr TRAP::Math::tVec3<T> v = TRAP::Math::tVec3<T>(T(1), T(2), T(3)) * q;
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            static constexpr Vec3Scalar v = Vec3Scalar(Scalar(1), Scalar(2), Scalar(3)) * q;
 
-            static_assert(TRAP::Math::Equal(v.x(), T(1.022222), T(0.000001)));
-            static_assert(TRAP::Math::Equal(v.y(), T(2.008889), T(0.000001)));
-            static_assert(TRAP::Math::Equal(v.z(), T(2.982222), T(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(v.x(), Scalar(1.022222), Scalar(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(v.y(), Scalar(2.008889), Scalar(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(v.z(), Scalar(2.982222), Scalar(0.000001)));
         }
 
         //Binary operator*
         {
-            constexpr Quat q(T(1), T(2), T(3), T(4));
-            constexpr TRAP::Math::tVec4<T> v = q * TRAP::Math::tVec4<T>(T(1), T(2), T(3), T(4));
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            static constexpr TRAP::Math::tVec4<Scalar> v = q * TRAP::Math::tVec4<Scalar>(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
 
-            static_assert(v.x() == T(25));
-            static_assert(v.y() == T(2));
-            static_assert(v.z() == T(-9));
-            static_assert(v.w() == T(4));
+            STATIC_REQUIRE(v.x() == Scalar(25));
+            STATIC_REQUIRE(v.y() == Scalar(2));
+            STATIC_REQUIRE(v.z() == Scalar(-9));
+            STATIC_REQUIRE(v.w() == Scalar(4));
         }
 
         //Binary operator*
         {
-            constexpr Quat q(T(1), T(2), T(3), T(4));
-            constexpr TRAP::Math::tVec4<T> v = TRAP::Math::tVec4<T>(T(1), T(2), T(3), T(4)) * q;
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            static constexpr TRAP::Math::tVec4<Scalar> v = TRAP::Math::tVec4<Scalar>(Scalar(1), Scalar(2), Scalar(3), Scalar(4)) * q;
 
-            static_assert(TRAP::Math::Equal(v.x(), T(1.022222), T(0.000001)));
-            static_assert(TRAP::Math::Equal(v.y(), T(2.008889), T(0.000001)));
-            static_assert(TRAP::Math::Equal(v.z(), T(2.982222), T(0.000001)));
-            static_assert(TRAP::Math::Equal(v.w(), T(4.0), T(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(v.x(), Scalar(1.022222), Scalar(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(v.y(), Scalar(2.008889), Scalar(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(v.z(), Scalar(2.982222), Scalar(0.000001)));
+            STATIC_REQUIRE(TRAP::Math::Equal(v.w(), Scalar(4.0), Scalar(0.000001)));
         }
 
         //Binary operator*
         {
-            constexpr Quat q(T(1), T(2), T(3), T(4));
-            constexpr Quat q1 = q * T(2);
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            static constexpr TestType q1 = q * Scalar(2);
 
-            static_assert(q1.x() == T(4));
-            static_assert(q1.y() == T(6));
-            static_assert(q1.z() == T(8));
-            static_assert(q1.w() == T(2));
+            STATIC_REQUIRE(q1.x() == Scalar(4));
+            STATIC_REQUIRE(q1.y() == Scalar(6));
+            STATIC_REQUIRE(q1.z() == Scalar(8));
+            STATIC_REQUIRE(q1.w() == Scalar(2));
         }
 
         //Binary operator*
         {
-            constexpr Quat q(T(1), T(2), T(3), T(4));
-            constexpr Quat q1 = T(2) * q;
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            static constexpr TestType q1 = Scalar(2) * q;
 
-            static_assert(q1.x() == T(4));
-            static_assert(q1.y() == T(6));
-            static_assert(q1.z() == T(8));
-            static_assert(q1.w() == T(2));
+            STATIC_REQUIRE(q1.x() == Scalar(4));
+            STATIC_REQUIRE(q1.y() == Scalar(6));
+            STATIC_REQUIRE(q1.z() == Scalar(8));
+            STATIC_REQUIRE(q1.w() == Scalar(2));
         }
 
         //Binary operator/
         {
-            constexpr Quat q(T(1), T(2), T(3), T(4));
-            constexpr Quat q1 = q / T(2);
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            static constexpr TestType q1 = q / Scalar(2);
 
-            static_assert(q1.x() == T(1));
-            static_assert(q1.y() == T(1.5));
-            static_assert(q1.z() == T(2));
-            static_assert(q1.w() == T(0.5));
+            STATIC_REQUIRE(q1.x() == Scalar(1));
+            STATIC_REQUIRE(q1.y() == Scalar(1.5));
+            STATIC_REQUIRE(q1.z() == Scalar(2));
+            STATIC_REQUIRE(q1.w() == Scalar(0.5));
         }
 
         //operator==
         {
-            constexpr Quat q(T(1), T(2), T(3), T(4));
-            constexpr Quat q1(T(4), T(3), T(2), T(1));
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            static constexpr TestType q1(Scalar(4), Scalar(3), Scalar(2), Scalar(1));
 
-            static_assert(!(q == q1));
-            static_assert(q == q);
+            STATIC_REQUIRE(!(q == q1));
+            STATIC_REQUIRE(q == q);
         }
 
         //operator!=
         {
-            constexpr Quat q(T(1), T(2), T(3), T(4));
-            constexpr Quat q1(T(4), T(3), T(2), T(1));
+            static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            static constexpr TestType q1(Scalar(4), Scalar(3), Scalar(2), Scalar(1));
 
-            static_assert(q != q1);
-            static_assert(!(q != q));
+            STATIC_REQUIRE(q != q1);
+            STATIC_REQUIRE(!(q != q));
         }
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    void RunQuatOperatorRunTimeTests()
-    {
-        using Quat = TRAP::Math::tQuat<T>;
 
         //operator +=
         {
-            Quat q(T(1), T(2), T(3), T(4));
-            q += Quat(T(4), T(3), T(2), T(1));
+            TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            q += TestType(Scalar(4), Scalar(3), Scalar(2), Scalar(1));
 
-            REQUIRE(q.x() == T(5));
-            REQUIRE(q.y() == T(5));
-            REQUIRE(q.z() == T(5));
-            REQUIRE(q.w() == T(5));
+            REQUIRE(q.x() == Scalar(5));
+            REQUIRE(q.y() == Scalar(5));
+            REQUIRE(q.z() == Scalar(5));
+            REQUIRE(q.w() == Scalar(5));
         }
 
         //operator -=
         {
-            Quat q(T(1), T(2), T(3), T(4));
-            q -= Quat(T(4), T(3), T(2), T(1));
+            TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            q -= TestType(Scalar(4), Scalar(3), Scalar(2), Scalar(1));
 
-            REQUIRE(q.x() == T(-1));
-            REQUIRE(q.y() == T(1));
-            REQUIRE(q.z() == T(3));
-            REQUIRE(q.w() == T(-3));
+            REQUIRE(q.x() == Scalar(-1));
+            REQUIRE(q.y() == Scalar(1));
+            REQUIRE(q.z() == Scalar(3));
+            REQUIRE(q.w() == Scalar(-3));
         }
 
         //operator *=
         {
-            Quat q(T(1), T(2), T(3), T(4));
-            q *= Quat(T(4), T(3), T(2), T(1));
+            TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            q *= TestType(Scalar(4), Scalar(3), Scalar(2), Scalar(1));
 
-            REQUIRE(q.x() == T(6));
-            REQUIRE(q.y() == T(24));
-            REQUIRE(q.z() == T(12));
-            REQUIRE(q.w() == T(-12));
+            REQUIRE(q.x() == Scalar(6));
+            REQUIRE(q.y() == Scalar(24));
+            REQUIRE(q.z() == Scalar(12));
+            REQUIRE(q.w() == Scalar(-12));
         }
 
         //operator *=
         {
-            Quat q(T(1), T(2), T(3), T(4));
+            TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
             q *= 2.0;
 
-            REQUIRE(q.x() == T(4));
-            REQUIRE(q.y() == T(6));
-            REQUIRE(q.z() == T(8));
-            REQUIRE(q.w() == T(2));
+            REQUIRE(q.x() == Scalar(4));
+            REQUIRE(q.y() == Scalar(6));
+            REQUIRE(q.z() == Scalar(8));
+            REQUIRE(q.w() == Scalar(2));
         }
 
         //operator /=
         {
-            Quat q(T(1), T(2), T(3), T(4));
+            TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
             q /= 2.0;
 
-            REQUIRE(q.x() == T(1));
-            REQUIRE(q.y() == T(1.5));
-            REQUIRE(q.z() == T(2));
-            REQUIRE(q.w() == T(0.5));
-        }
-
-        //Unary operator+
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-            Quat q1 = +q;
-
-            REQUIRE(q1.x() == T(2));
-            REQUIRE(q1.y() == T(3));
-            REQUIRE(q1.z() == T(4));
-            REQUIRE(q1.w() == T(1));
-        }
-
-        //Unary operator-
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-            Quat q1 = -q;
-
-            REQUIRE(q1.x() == T(-2));
-            REQUIRE(q1.y() == T(-3));
-            REQUIRE(q1.z() == T(-4));
-            REQUIRE(q1.w() == T(-1));
-        }
-
-        //Binary operator+
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-            Quat q1 = q + q;
-
-            REQUIRE(q1.x() == T(4));
-            REQUIRE(q1.y() == T(6));
-            REQUIRE(q1.z() == T(8));
-            REQUIRE(q1.w() == T(2));
-        }
-
-        //Binary operator-
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-            Quat q1 = q - q;
-
-            REQUIRE(q1.x() == T(0));
-            REQUIRE(q1.y() == T(0));
-            REQUIRE(q1.z() == T(0));
-            REQUIRE(q1.w() == T(0));
-        }
-
-        //Binary operator*
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-            Quat q1 = q * q;
-
-            REQUIRE(q1.x() == T(4));
-            REQUIRE(q1.y() == T(6));
-            REQUIRE(q1.z() == T(8));
-            REQUIRE(q1.w() == T(-28));
-        }
-
-        //Binary operator*
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-            TRAP::Math::tVec3<T> v = q * TRAP::Math::tVec3<T>(T(1), T(2), T(3));
-
-            REQUIRE(v.x() == T(25));
-            REQUIRE(v.y() == T(2));
-            REQUIRE(v.z() == T(-9));
-        }
-
-        //Binary operator*
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-            TRAP::Math::tVec3<T> v = TRAP::Math::tVec3<T>(T(1), T(2), T(3)) * q;
-
-            REQUIRE(TRAP::Math::Equal(v.x(), T(1.022222), T(0.000001)));
-            REQUIRE(TRAP::Math::Equal(v.y(), T(2.008889), T(0.000001)));
-            REQUIRE(TRAP::Math::Equal(v.z(), T(2.982222), T(0.000001)));
-        }
-
-        //Binary operator*
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-            TRAP::Math::tVec4<T> v = q * TRAP::Math::tVec4<T>(T(1), T(2), T(3), T(4));
-
-            REQUIRE(v.x() == T(25));
-            REQUIRE(v.y() == T(2));
-            REQUIRE(v.z() == T(-9));
-            REQUIRE(v.w() == T(4));
-        }
-
-        //Binary operator*
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-            TRAP::Math::tVec4<T> v = TRAP::Math::tVec4<T>(T(1), T(2), T(3), T(4)) * q;
-
-            REQUIRE(TRAP::Math::Equal(v.x(), T(1.022222), T(0.000001)));
-            REQUIRE(TRAP::Math::Equal(v.y(), T(2.008889), T(0.000001)));
-            REQUIRE(TRAP::Math::Equal(v.z(), T(2.982222), T(0.000001)));
-            REQUIRE(TRAP::Math::Equal(v.w(), T(4.0), T(0.000001)));
-        }
-
-        //Binary operator*
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-            Quat q1 = q * T(2);
-
-            REQUIRE(q1.x() == T(4));
-            REQUIRE(q1.y() == T(6));
-            REQUIRE(q1.z() == T(8));
-            REQUIRE(q1.w() == T(2));
-        }
-
-        //Binary operator*
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-            Quat q1 = T(2) * q;
-
-            REQUIRE(q1.x() == T(4));
-            REQUIRE(q1.y() == T(6));
-            REQUIRE(q1.z() == T(8));
-            REQUIRE(q1.w() == T(2));
-        }
-
-        //Binary operator/
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-            Quat q1 = q / T(2);
-
-            REQUIRE(q1.x() == T(1));
-            REQUIRE(q1.y() == T(1.5));
-            REQUIRE(q1.z() == T(2));
-            REQUIRE(q1.w() == T(0.5));
-        }
-
-        //operator==
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-            Quat q1(T(4), T(3), T(2), T(1));
-
-            REQUIRE(!(q == q1));
-            REQUIRE(q == q);
-        }
-
-        //operator!=
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-            Quat q1(T(4), T(3), T(2), T(1));
-
-            REQUIRE(q != q1);
-            REQUIRE(!(q != q));
+            REQUIRE(q.x() == Scalar(1));
+            REQUIRE(q.y() == Scalar(1.5));
+            REQUIRE(q.z() == Scalar(2));
+            REQUIRE(q.w() == Scalar(0.5));
         }
     }
 
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    void RunQuatHashRunTimeTests()
+    SECTION("std::hash")
     {
-        using Quat = TRAP::Math::tQuat<T>;
-
-        usize hash = std::hash<Quat>()(Quat(T(1), T(2), T(3), T(4)));
+        usize hash = std::hash<TestType>()(TestType(Scalar(1), Scalar(2), Scalar(3), Scalar(4)));
     }
 
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    void RunQuatFormatRunTimeTests()
+    SECTION("fmt::format")
     {
-        using Quat = TRAP::Math::tQuat<T>;
-
-        Quat q(T(1), T(2), T(3), T(4));
+        static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
         std::string str = fmt::format("{}", q);
 
-		if constexpr(std::same_as<T, f32>)
+		if constexpr(std::same_as<Scalar, f32>)
         {
             REQUIRE(str == fmt::format("Quatf({}, {{{}, {}, {}}})", q.w(), q.x(), q.y(), q.z()));
         }
-		else if constexpr(std::same_as<T, f64>)
+		else if constexpr(std::same_as<Scalar, f64>)
         {
             REQUIRE(str == fmt::format("Quatd({}, {{{}, {}, {}}})", q.w(), q.x(), q.y(), q.z()));
         }
     }
 
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    consteval void RunQuatGetCompileTimeTests()
-    {
-        using Quat = TRAP::Math::tQuat<T>;
-
-        constexpr Quat q(T(1), T(2), T(3), T(4));
-
-        static_assert(std::get<0>(q) == T(1));
-        static_assert(std::get<1>(q) == T(2));
-        static_assert(std::get<2>(q) == T(3));
-        static_assert(std::get<3>(q) == T(4));
-    }
-
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    void RunQuatGetRunTimeTests()
-    {
-        using Quat = TRAP::Math::tQuat<T>;
-
-        const Quat q(T(1), T(2), T(3), T(4));
-
-        REQUIRE(std::get<0>(q) == T(1));
-        REQUIRE(std::get<1>(q) == T(2));
-        REQUIRE(std::get<2>(q) == T(3));
-        REQUIRE(std::get<3>(q) == T(4));
-
-        REQUIRE(std::get<0>(std::move(q)) == T(1));
-
-        Quat q1(T(1), T(2), T(3), T(4));
-
-        REQUIRE(std::get<0>(q1) == T(1));
-        REQUIRE(std::get<1>(q1) == T(2));
-        REQUIRE(std::get<2>(q1) == T(3));
-        REQUIRE(std::get<3>(q1) == T(4));
-
-        REQUIRE(std::get<0>(std::move(q1)) == T(1));
-    }
-
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    void RunQuatSwapRunTimeTests()
-    {
-        using Quat = TRAP::Math::tQuat<T>;
-
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-            Quat q1(T(4), T(3), T(2), T(1));
-
-            q.Swap(q1);
-
-            REQUIRE(q.w() == T(4));
-            REQUIRE(q.x() == T(3));
-            REQUIRE(q.y() == T(2));
-            REQUIRE(q.z() == T(1));
-            REQUIRE(q1.w() == T(1));
-            REQUIRE(q1.x() == T(2));
-            REQUIRE(q1.y() == T(3));
-            REQUIRE(q1.z() == T(4));
-        }
-        {
-            Quat q(T(1), T(2), T(3), T(4));
-            Quat q1(T(4), T(3), T(2), T(1));
-
-            std::swap(q, q1);
-
-            REQUIRE(q.w() == T(4));
-            REQUIRE(q.x() == T(3));
-            REQUIRE(q.y() == T(2));
-            REQUIRE(q.z() == T(1));
-            REQUIRE(q1.w() == T(1));
-            REQUIRE(q1.x() == T(2));
-            REQUIRE(q1.y() == T(3));
-            REQUIRE(q1.z() == T(4));
-        }
-    }
-}
-
-TEST_CASE("TRAP::Math::Quat", "[math][quat]")
-{
-    SECTION("Typedefs")
-    {
-        RunQuatTypedefsCompileTimeTests<f32>();
-        RunQuatTypedefsCompileTimeTests<f64>();
-    }
-
-    SECTION("Constructors")
-    {
-        RunQuatConstructorCompileTimeTests<f32>();
-        RunQuatConstructorCompileTimeTests<f64>();
-
-        RunQuatConstructorRunTimeTests<f32>();
-        RunQuatConstructorRunTimeTests<f64>();
-    }
-
-    SECTION("Assignments")
-    {
-        RunQuatAssignmentsRunTimeTests<f32>();
-        RunQuatAssignmentsRunTimeTests<f64>();
-    }
-
-    SECTION("Accessors")
-    {
-        RunQuatAccessorCompileTimeTests<f32>();
-        RunQuatAccessorCompileTimeTests<f64>();
-
-        RunQuatAccessorRunTimeTests<f32>();
-        RunQuatAccessorRunTimeTests<f64>();
-    }
-
-    SECTION("Operators")
-    {
-        RunQuatOperatorCompileTimeTests<f32>();
-        RunQuatOperatorCompileTimeTests<f64>();
-
-        RunQuatOperatorRunTimeTests<f32>();
-        RunQuatOperatorRunTimeTests<f64>();
-    }
-
-    SECTION("std::hash")
-    {
-        RunQuatHashRunTimeTests<f32>();
-        RunQuatHashRunTimeTests<f64>();
-    }
-
-    SECTION("fmt::format")
-    {
-        RunQuatFormatRunTimeTests<f32>();
-        RunQuatFormatRunTimeTests<f64>();
-    }
-
     SECTION("std::get")
     {
-        RunQuatGetCompileTimeTests<f32>();
-        RunQuatGetCompileTimeTests<f64>();
+        static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
 
-        RunQuatGetRunTimeTests<f32>();
-        RunQuatGetRunTimeTests<f64>();
+        STATIC_REQUIRE(std::get<0u>(q) == Scalar(1));
+        STATIC_REQUIRE(std::get<1u>(q) == Scalar(2));
+        STATIC_REQUIRE(std::get<2u>(q) == Scalar(3));
+        STATIC_REQUIRE(std::get<3u>(q) == Scalar(4));
     }
 
     SECTION("std::swap")
     {
-        RunQuatSwapRunTimeTests<f32>();
-        RunQuatSwapRunTimeTests<f64>();
+        {
+            TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            TestType q1(Scalar(4), Scalar(3), Scalar(2), Scalar(1));
+
+            q.Swap(q1);
+
+            REQUIRE(q.w() == Scalar(4));
+            REQUIRE(q.x() == Scalar(3));
+            REQUIRE(q.y() == Scalar(2));
+            REQUIRE(q.z() == Scalar(1));
+            REQUIRE(q1.w() == Scalar(1));
+            REQUIRE(q1.x() == Scalar(2));
+            REQUIRE(q1.y() == Scalar(3));
+            REQUIRE(q1.z() == Scalar(4));
+        }
+        {
+            TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+            TestType q1(Scalar(4), Scalar(3), Scalar(2), Scalar(1));
+
+            std::swap(q, q1);
+
+            REQUIRE(q.w() == Scalar(4));
+            REQUIRE(q.x() == Scalar(3));
+            REQUIRE(q.y() == Scalar(2));
+            REQUIRE(q.z() == Scalar(1));
+            REQUIRE(q1.w() == Scalar(1));
+            REQUIRE(q1.x() == Scalar(2));
+            REQUIRE(q1.y() == Scalar(3));
+            REQUIRE(q1.z() == Scalar(4));
+        }
     }
 }

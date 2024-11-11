@@ -1,25 +1,24 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::FMA()", "[math][generic][fma][scalar]", f32, f64)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    void RunFMATest()
+    SECTION("Normal cases")
     {
-        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
-        static constexpr std::array<std::tuple<T, T, T, T>, 6> values
+        static constexpr std::array<std::tuple<TestType, TestType, TestType, TestType>, 6u> values
         {
-            std::tuple{T( 2.0f), T( 3.5f), T( 1.25f), T( 8.25f)},
-            std::tuple{T(-4.5f), T(-2.0f), T(-1.75f), T( 7.25f)},
-            std::tuple{T( 5.0f), T(-1.5f), T( 0.75f), T(-6.75f)},
-            std::tuple{T( 0.0f), T( 2.5f), T( 3.0f ), T( 3.0f)},
-            std::tuple{T( 2.0f), T( 0.0f), T( 3.0f ), T( 3.0f)},
-            std::tuple{T( 2.0f), T( 2.5f), T( 0.0f ), T( 5.0f)},
+            std::tuple{TestType( 2.0f), TestType( 3.5f), TestType( 1.25f), TestType( 8.25f)},
+            std::tuple{TestType(-4.5f), TestType(-2.0f), TestType(-1.75f), TestType( 7.25f)},
+            std::tuple{TestType( 5.0f), TestType(-1.5f), TestType( 0.75f), TestType(-6.75f)},
+            std::tuple{TestType( 0.0f), TestType( 2.5f), TestType( 3.0f ), TestType( 3.0f)},
+            std::tuple{TestType( 2.0f), TestType( 0.0f), TestType( 3.0f ), TestType( 3.0f)},
+            std::tuple{TestType( 2.0f), TestType( 2.5f), TestType( 0.0f ), TestType( 5.0f)},
         };
 
         for(const auto& [a, b, c, expected] : values)
@@ -28,56 +27,36 @@ namespace
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunFMAEdgeTest()
+    SECTION("Edge cases")
     {
-        static constexpr T max = std::numeric_limits<T>::max();
-        static constexpr T min = std::numeric_limits<T>::lowest();
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        static constexpr TestType max = std::numeric_limits<TestType>::max();
+        static constexpr TestType min = std::numeric_limits<TestType>::lowest();
+        static constexpr TestType inf = std::numeric_limits<TestType>::infinity();
+        static constexpr TestType nan = std::numeric_limits<TestType>::quiet_NaN();
 
-        static constexpr std::array<std::tuple<T, T, T>, 7> values
+        static constexpr std::array<std::tuple<TestType, TestType, TestType>, 7u> values
         {
             std::tuple{ max,  max,  max},
             std::tuple{ min,  min,  min},
             std::tuple{-max, -max, -max},
             std::tuple{-min, -min, -min},
 
-            std::tuple{inf, T(3.0f), T(2.5f)},
-            std::tuple{T(2.0f), inf, T(3.0f)},
-            std::tuple{T(2.0f), T(3.0f), inf},
+            std::tuple{inf, TestType(3.0f), TestType(2.5f)},
+            std::tuple{TestType(2.0f), inf, TestType(3.0f)},
+            std::tuple{TestType(2.0f), TestType(3.0f), inf},
         };
 
         for(const auto& [a, b, c] : values)
-        {
             REQUIRE(TRAP::Math::IsInf(TRAP::Math::FMA(a, b, c)));
-        }
 
-        static constexpr std::array<std::tuple<T, T, T>, 3> values2
+        static constexpr std::array<std::tuple<TestType, TestType, TestType>, 3u> values2
         {
-            std::tuple{T(2.0f), nan, T(3.0f)},
-            std::tuple{nan, T(2.5f), T(3.0f)},
-            std::tuple{T(2.0f), T(3.0f), nan},
+            std::tuple{TestType(2.0f), nan, TestType(3.0f)},
+            std::tuple{nan, TestType(2.5f), TestType(3.0f)},
+            std::tuple{TestType(2.0f), TestType(3.0f), nan},
         };
 
         for(const auto& [a, b, c] : values2)
-        {
             REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMA(a, b, c)));
-        }
-    }
-}
-
-TEST_CASE("TRAP::Math::FMA()", "[math][generic][fma]")
-{
-    SECTION("Scalar - f64")
-    {
-        RunFMATest<f64>();
-        RunFMAEdgeTest<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunFMATest<f32>();
-        RunFMAEdgeTest<f32>();
     }
 }

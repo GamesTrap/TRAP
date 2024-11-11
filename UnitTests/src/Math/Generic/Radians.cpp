@@ -1,122 +1,75 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Radians()", "[math][generic][radians][scalar]", f32, f64)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunCompileTimeRadiansScalarTests()
+    SECTION("Normal cases")
     {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
-        static_assert(TRAP::Math::Equal(TRAP::Math::Radians(T(0.0f)), T(0.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Radians(T(45.0f)), T(0.785398f), T(0.000001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Radians(T(90.0f)), T(1.5708f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Radians(T(180.0f)), T(3.14159f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Radians(T(270.0f)), T(4.71239f), T(0.000001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Radians(T(-45.0f)), T(-0.785398f), T(0.000001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Radians(T(-90.0f)), T(-1.5708f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Radians(T(-180.0f)), T(-3.14159f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Radians(T(-270.0f)), T(-4.71239f), T(0.000001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Radians(T(360.0f)), T(6.28319f), T(0.00001f)));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Radians(TestType(0.0f)), TestType(0.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Radians(TestType(45.0f)), TestType(0.785398f), TestType(0.000001f)));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Radians(TestType(90.0f)), TestType(1.5708f), TestType(0.00001f)));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Radians(TestType(180.0f)), TestType(3.14159f), TestType(0.00001f)));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Radians(TestType(270.0f)), TestType(4.71239f), TestType(0.000001f)));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Radians(TestType(-45.0f)), TestType(-0.785398f), TestType(0.000001f)));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Radians(TestType(-90.0f)), TestType(-1.5708f), TestType(0.00001f)));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Radians(TestType(-180.0f)), TestType(-3.14159f), TestType(0.00001f)));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Radians(TestType(-270.0f)), TestType(-4.71239f), TestType(0.000001f)));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Radians(TestType(360.0f)), TestType(6.28319f), TestType(0.00001f)));
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunCompileTimeRadiansScalarEdgeTests()
+    SECTION("Edge cases")
     {
-        constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-        constexpr T inf = std::numeric_limits<T>::infinity();
-        constexpr T ninf = -std::numeric_limits<T>::infinity();
+        static constexpr TestType nan = std::numeric_limits<TestType>::quiet_NaN();
+        static constexpr TestType inf = std::numeric_limits<TestType>::infinity();
+        static constexpr TestType ninf = -std::numeric_limits<TestType>::infinity();
 
-        static_assert(TRAP::Math::IsInf(inf));
-        static_assert(TRAP::Math::IsInf(ninf));
-        static_assert(TRAP::Math::IsNaN(nan));
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    consteval void RunCompileTimeRadiansVecTests()
-    {
-        {
-            constexpr T degrees(TRAP::Math::tVec4<typename T::value_type>(0.0f, 45.0f, 90.0f, 180.0f));
-            constexpr T expected(TRAP::Math::tVec4<typename T::value_type>(0.0f, 0.785398f, 1.5708f, 3.14159f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Radians(degrees), expected, typename T::value_type(0.00001f))));
-        }
-        {
-            constexpr T degrees(TRAP::Math::tVec4<typename T::value_type>(270.0f, -45.0f, -90.0f, -180.0f));
-            constexpr T expected(TRAP::Math::tVec4<typename T::value_type>(4.71239f, -0.785398f, -1.5708f, -3.14159f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Radians(degrees), expected, typename T::value_type(0.00001f))));
-        }
-        {
-            constexpr T degrees(TRAP::Math::tVec4<typename T::value_type>(-270.0f, 360.0f, 85.0f, -99.0f));
-            constexpr T expected(TRAP::Math::tVec4<typename T::value_type>(-4.71239f, 6.28319f, 1.48353f, -1.72788f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Radians(degrees), expected, typename T::value_type(0.00001f))));
-        }
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    void RunCompileTimeRadiansVecEdgeTests()
-    {
-        static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
-        static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-        static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
-
-        {
-            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Radians(T(inf)))));
-            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Radians(T(ninf)))));
-            REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Radians(T(nan)))));
-        }
+        STATIC_REQUIRE(TRAP::Math::IsInf(inf));
+        STATIC_REQUIRE(TRAP::Math::IsInf(ninf));
+        STATIC_REQUIRE(TRAP::Math::IsNaN(nan));
     }
 }
 
-TEST_CASE("TRAP::Math::Radians()", "[math][generic][radians]")
+TEMPLATE_TEST_CASE("TRAP::Math::Radians()", "[math][generic][radians][vec]",
+                   TRAP::Math::Vec2f, TRAP::Math::Vec2d, TRAP::Math::Vec3f, TRAP::Math::Vec3d, TRAP::Math::Vec4f, TRAP::Math::Vec4d)
 {
-    SECTION("Scalar - f64")
+    using Scalar = TestType::value_type;
+    using Vec4Scalar = TRAP::Math::tVec4<Scalar>;
+
+    SECTION("Normal cases")
     {
-        RunCompileTimeRadiansScalarTests<f64>();
-        RunCompileTimeRadiansScalarEdgeTests<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunCompileTimeRadiansScalarTests<f32>();
-        RunCompileTimeRadiansScalarEdgeTests<f32>();
+        {
+            static constexpr TestType degrees(Vec4Scalar(0.0f, 45.0f, 90.0f, 180.0f));
+            static constexpr TestType expected(Vec4Scalar(0.0f, 0.785398f, 1.5708f, 3.14159f));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Radians(degrees), expected, Scalar(0.00001f))));
+        }
+        {
+            static constexpr TestType degrees(Vec4Scalar(270.0f, -45.0f, -90.0f, -180.0f));
+            static constexpr TestType expected(Vec4Scalar(4.71239f, -0.785398f, -1.5708f, -3.14159f));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Radians(degrees), expected, Scalar(0.00001f))));
+        }
+        {
+            static constexpr TestType degrees(Vec4Scalar(-270.0f, 360.0f, 85.0f, -99.0f));
+            static constexpr TestType expected(Vec4Scalar(-4.71239f, 6.28319f, 1.48353f, -1.72788f));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Radians(degrees), expected, Scalar(0.00001f))));
+        }
     }
 
-    SECTION("Vec2 - f64")
+    SECTION("Edge cases")
     {
-        RunCompileTimeRadiansVecTests<TRAP::Math::Vec2d>();
-        RunCompileTimeRadiansVecEdgeTests<TRAP::Math::Vec2d>();
-    }
-    SECTION("Vec2 - f32")
-    {
-        RunCompileTimeRadiansVecTests<TRAP::Math::Vec2f>();
-        RunCompileTimeRadiansVecEdgeTests<TRAP::Math::Vec2f>();
-    }
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = -std::numeric_limits<Scalar>::infinity();
 
-    SECTION("Vec3 - f64")
-    {
-        RunCompileTimeRadiansVecTests<TRAP::Math::Vec3d>();
-        RunCompileTimeRadiansVecEdgeTests<TRAP::Math::Vec3d>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunCompileTimeRadiansVecTests<TRAP::Math::Vec3f>();
-        RunCompileTimeRadiansVecEdgeTests<TRAP::Math::Vec3f>();
-    }
-
-    SECTION("Vec4 - f64")
-    {
-        RunCompileTimeRadiansVecTests<TRAP::Math::Vec4d>();
-        RunCompileTimeRadiansVecEdgeTests<TRAP::Math::Vec4d>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunCompileTimeRadiansVecTests<TRAP::Math::Vec4f>();
-        RunCompileTimeRadiansVecEdgeTests<TRAP::Math::Vec4f>();
+        {
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Radians(TestType(inf)))));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Radians(TestType(ninf)))));
+            REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Radians(TestType(nan)))));
+        }
     }
 }

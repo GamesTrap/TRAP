@@ -1,100 +1,82 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::QuaternionLookAt()", "[math][generic][quaternionlookat][quat]", TRAP::Math::Quatf, TRAP::Math::Quatd)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunQuaternionLookAtCompileTimeTests()
+    using Scalar = TestType::value_type;
+    using Vec3Scalar = TRAP::Math::tVec3<Scalar>;
+
+    SECTION("Normal cases - GCEM")
     {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
-        constexpr TRAP::Math::tVec3<T> eye(0.0f);
-        constexpr TRAP::Math::tVec3<T> center(1.1f, -2.0f, 3.1416f);
-        constexpr TRAP::Math::tVec3<T> up(-0.17f, 7.23f, -1.744f);
+        static constexpr Vec3Scalar eye(0.0f);
+        static constexpr Vec3Scalar center(1.1f, -2.0f, 3.1416f);
+        static constexpr Vec3Scalar up(-0.17f, 7.23f, -1.744f);
 
-        constexpr TRAP::Math::tQuat<T> q = TRAP::Math::QuaternionLookAt(TRAP::Math::Normalize(center - eye), up);
-        constexpr TRAP::Math::tQuat<T> m = TRAP::Math::Conjugate(TRAP::Math::QuaternionCast(TRAP::Math::LookAt(eye, center, up)));
+        static constexpr TestType q = TRAP::Math::QuaternionLookAt(TRAP::Math::Normalize(center - eye), up);
+        static constexpr TestType m = TRAP::Math::Conjugate(TRAP::Math::QuaternionCast(TRAP::Math::LookAt(eye, center, up)));
 
-        static_assert(TRAP::Math::Equal(TRAP::Math::Length(q), T(1.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Length(q), Scalar(1.0f), Epsilon));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(-q, m, Epsilon)));
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunQuaternionLookAtRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
-        static constexpr TRAP::Math::tVec3<T> eye(0.0f);
-        static constexpr TRAP::Math::tVec3<T> center(1.1f, -2.0f, 3.1416f);
-        static constexpr TRAP::Math::tVec3<T> up(-0.17f, 7.23f, -1.744f);
+        static constexpr Vec3Scalar eye(0.0f);
+        static constexpr Vec3Scalar center(1.1f, -2.0f, 3.1416f);
+        static constexpr Vec3Scalar up(-0.17f, 7.23f, -1.744f);
 
-        const TRAP::Math::tQuat<T> q = TRAP::Math::QuaternionLookAt(TRAP::Math::Normalize(center - eye), up);
-        const TRAP::Math::tQuat<T> m = TRAP::Math::Conjugate(TRAP::Math::QuaternionCast(TRAP::Math::LookAt(eye, center, up)));
+        const TestType q = TRAP::Math::QuaternionLookAt(TRAP::Math::Normalize(center - eye), up);
+        static constexpr TestType m = TRAP::Math::Conjugate(TRAP::Math::QuaternionCast(TRAP::Math::LookAt(eye, center, up)));
 
-        REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(q), T(1.0f), Epsilon));
+        REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(q), Scalar(1.0f), Epsilon));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(-q, m, Epsilon)));
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunQuaternionLookAtEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr T min = std::numeric_limits<T>::lowest();
-        static constexpr T max = std::numeric_limits<T>::max();
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        static constexpr Scalar min = std::numeric_limits<Scalar>::lowest();
+        static constexpr Scalar max = std::numeric_limits<Scalar>::max();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = -std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
 
         {
-            static constexpr TRAP::Math::tVec3<T> eye(min);
-            static constexpr TRAP::Math::tVec3<T> target(min);
-            const TRAP::Math::tQuat<T> res = TRAP::Math::QuaternionLookAt(eye, target);
+            static constexpr Vec3Scalar eye(min);
+            static constexpr Vec3Scalar target(min);
+            const TestType res = TRAP::Math::QuaternionLookAt(eye, target);
             REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(res)));
         }
         {
-            static constexpr TRAP::Math::tVec3<T> eye(max);
-            static constexpr TRAP::Math::tVec3<T> target(max);
-            const TRAP::Math::tQuat<T> res = TRAP::Math::QuaternionLookAt(eye, target);
+            static constexpr Vec3Scalar eye(max);
+            static constexpr Vec3Scalar target(max);
+            const TestType res = TRAP::Math::QuaternionLookAt(eye, target);
             REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(res)));
         }
         {
-            static constexpr TRAP::Math::tVec3<T> eye(inf);
-            static constexpr TRAP::Math::tVec3<T> target(inf);
-            const TRAP::Math::tQuat<T> res = TRAP::Math::QuaternionLookAt(eye, target);
+            static constexpr Vec3Scalar eye(inf);
+            static constexpr Vec3Scalar target(inf);
+            const TestType res = TRAP::Math::QuaternionLookAt(eye, target);
             REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(res)));
         }
         {
-            static constexpr TRAP::Math::tVec3<T> eye(ninf);
-            static constexpr TRAP::Math::tVec3<T> target(ninf);
-            const TRAP::Math::tQuat<T> res = TRAP::Math::QuaternionLookAt(eye, target);
+            static constexpr Vec3Scalar eye(ninf);
+            static constexpr Vec3Scalar target(ninf);
+            const TestType res = TRAP::Math::QuaternionLookAt(eye, target);
             REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(res)));
         }
         {
-            static constexpr TRAP::Math::tVec3<T> eye(nan);
-            static constexpr TRAP::Math::tVec3<T> target(nan);
-            const TRAP::Math::tQuat<T> res = TRAP::Math::QuaternionLookAt(eye, target);
+            static constexpr Vec3Scalar eye(nan);
+            static constexpr Vec3Scalar target(nan);
+            const TestType res = TRAP::Math::QuaternionLookAt(eye, target);
             REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(res)));
         }
-    }
-}
-
-TEST_CASE("TRAP::Math::QuaternionLookAt()", "[math][generic][quaternionlookat]")
-{
-    SECTION("Quat - f64")
-    {
-        RunQuaternionLookAtRunTimeTests<f64>();
-        RunQuaternionLookAtCompileTimeTests<f64>();
-        RunQuaternionLookAtEdgeTests<f64>();
-    }
-    SECTION("Quat - f32")
-    {
-        RunQuaternionLookAtRunTimeTests<f32>();
-        RunQuaternionLookAtCompileTimeTests<f32>();
-        RunQuaternionLookAtEdgeTests<f32>();
     }
 }

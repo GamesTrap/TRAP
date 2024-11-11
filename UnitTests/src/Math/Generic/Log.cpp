@@ -2,199 +2,118 @@
 #include <array>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Log()", "[math][generic][log][scalar]", f32, f64)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunLogCompileTimeTests()
+    SECTION("Normal cases - GCEM")
     {
-        static_assert(TRAP::Math::Equal(TRAP::Math::Log(T(0.5f)), T(-0.69314718055994529f), T(0.000001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Log(T(1.0f)), T(0.0f), T(0.000001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Log(T(1.5f)), T(0.405465f), T(0.000001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Log(T(41.5f)), T(3.72569346f), T(0.000001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Log(TestType(0.5f)), TestType(-0.69314718055994529f), TestType(0.000001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Log(TestType(1.0f)), TestType(0.0f), TestType(0.000001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Log(TestType(1.5f)), TestType(0.405465f), TestType(0.000001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Log(TestType(41.5f)), TestType(3.72569346f), TestType(0.000001f)));
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunLogRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        static constexpr std::array<std::tuple<T, T>, 4> values
+        static constexpr std::array<std::tuple<TestType, TestType>, 4u> values
         {
-            std::tuple(T(0.5f), T(-0.69314718055994529f)),
-            std::tuple(T(1.0f), T(0.0f)),
-            std::tuple(T(1.5f), T(0.405465f)),
-            std::tuple(T(41.5f), T(3.72569346f))
+            std::tuple(TestType(0.5f), TestType(-0.69314718055994529f)),
+            std::tuple(TestType(1.0f), TestType(0.0f)),
+            std::tuple(TestType(1.5f), TestType(0.405465f)),
+            std::tuple(TestType(41.5f), TestType(3.72569346f))
         };
 
         for(const auto& [x, expected] : values)
-        {
-            REQUIRE(TRAP::Math::Equal(TRAP::Math::Log(x), expected, T(0.000001f)));
-        }
+            REQUIRE(TRAP::Math::Equal(TRAP::Math::Log(x), expected, TestType(0.000001f)));
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    consteval void RunLogVecCompileTimeTests()
+    SECTION("Edge cases")
     {
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(T(TRAP::Math::e<typename T::value_type>())), T(1.0f), T(0.01f))));
-    }
+        static constexpr TestType nan = std::numeric_limits<TestType>::quiet_NaN();
+        static constexpr TestType inf = std::numeric_limits<TestType>::infinity();
+        static constexpr TestType ninf = -std::numeric_limits<TestType>::infinity();
+        static constexpr TestType min = std::numeric_limits<TestType>::lowest();
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    void RunLogVecRunTimeTests()
-    {
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(T(TRAP::Math::e<typename T::value_type>())), T(1.0f), T(0.01f))));
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsQuat<T>
-    consteval void RunLogQuatCompileTimeTests()
-    {
-        constexpr typename T::value_type Epsilon = typename T::value_type(0.001f);
-        constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-
-        {
-            constexpr T q(TRAP::Math::Vec<3, typename T::value_type>(1.0f, 0.0f, 0.0f), TRAP::Math::Vec<3, typename T::value_type>(0.0f, 1.0f, 0.0f));
-            constexpr T p = TRAP::Math::Log(q);
-            static_assert(TRAP::Math::Any(TRAP::Math::NotEqual(q, p, Epsilon)));
-        }
-        {
-            constexpr T input(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-            constexpr T expected(TRAP::Math::Log(input.w()), input.x(), input.y(), input.z());
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(input), expected, Epsilon)));
-        }
-        {
-            constexpr T input(typename T::value_type(-1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-            constexpr T expected(TRAP::Math::Log(-input.w()), TRAP::Math::PI<typename T::value_type>(), input.y(), input.z());
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(input), expected, Epsilon)));
-        }
-        {
-            constexpr T input(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-            static_assert(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Log(input))));
-        }
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsQuat<T>
-    void RunLogQuatRunTimeTests()
-    {
-        static constexpr typename T::value_type Epsilon = typename T::value_type(0.001f);
-
-        {
-            const T q(TRAP::Math::Vec<3, typename T::value_type>(1.0f, 0.0f, 0.0f), TRAP::Math::Vec<3, typename T::value_type>(0.0f, 1.0f, 0.0f));
-            const T p = TRAP::Math::Log(q);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::NotEqual(q, p, Epsilon)));
-        }
-        {
-            const T input(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-            const T expected(TRAP::Math::Log(input.w()), input.x(), input.y(), input.z());
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(input), expected, Epsilon)));
-        }
-        {
-            const T input(typename T::value_type(-1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-            const T expected(TRAP::Math::Log(-input.w()), TRAP::Math::PI<typename T::value_type>(), input.y(), input.z());
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(input), expected, Epsilon)));
-        }
-        {
-            const T input(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-            REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Log(input))));
-        }
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunLogEdgeCompileTimeTests()
-    {
-        constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-        constexpr T inf = std::numeric_limits<T>::infinity();
-        constexpr T ninf = -std::numeric_limits<T>::infinity();
-        constexpr T min = std::numeric_limits<T>::lowest();
-
-        static_assert(TRAP::Math::IsInf(TRAP::Math::Log(T(0.0f))));
+        static_assert(TRAP::Math::IsInf(TRAP::Math::Log(TestType(0.0f))));
         static_assert(TRAP::Math::IsNaN(TRAP::Math::Log(min)));
         static_assert(TRAP::Math::IsInf(TRAP::Math::Log(inf)));
         static_assert(TRAP::Math::IsNaN(TRAP::Math::Log(ninf)));
         static_assert(TRAP::Math::IsNaN(TRAP::Math::Log(nan)));
     }
+}
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunLogEdgeRunTimeTests()
+TEMPLATE_TEST_CASE("TRAP::Math::Log()", "[math][generic][log][vec]",
+                   TRAP::Math::Vec2f, TRAP::Math::Vec2d, TRAP::Math::Vec3f, TRAP::Math::Vec3d, TRAP::Math::Vec4f, TRAP::Math::Vec4d)
+{
+    using Scalar = TestType::value_type;
+
+    SECTION("Normal cases - GCEM")
     {
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
-        static constexpr T min = std::numeric_limits<T>::lowest();
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(TestType(TRAP::Math::e<Scalar>())), TestType(1.0f), TestType(0.01f))));
+    }
 
-        REQUIRE(TRAP::Math::IsInf(TRAP::Math::Log(T(0.0f))));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Log(min)));
-        REQUIRE(TRAP::Math::IsInf(TRAP::Math::Log(inf)));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Log(ninf)));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Log(nan)));
+    SECTION("Normal cases - std")
+    {
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(TestType(TRAP::Math::e<Scalar>())), TestType(1.0f), TestType(0.01f))));
     }
 }
 
-TEST_CASE("TRAP::Math::Log()", "[math][generic][log]")
+TEMPLATE_TEST_CASE("TRAP::Math::Log()", "[math][generic][log][quat]", TRAP::Math::Quatf, TRAP::Math::Quatd)
 {
-    SECTION("Scalar - f64")
+    using Scalar = TestType::value_type;
+    using Vec3Scalar = TRAP::Math::tVec3<Scalar>;
+
+    SECTION("Normal cases - GCEM")
     {
-        RunLogRunTimeTests<f64>();
-        RunLogCompileTimeTests<f64>();
-        RunLogEdgeRunTimeTests<f64>();
-        RunLogEdgeCompileTimeTests<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunLogRunTimeTests<f32>();
-        RunLogCompileTimeTests<f32>();
-        RunLogEdgeRunTimeTests<f32>();
-        RunLogEdgeCompileTimeTests<f32>();
+        static constexpr Scalar Epsilon = Scalar(0.001f);
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+
+        {
+            static constexpr TestType q(Vec3Scalar(1.0f, 0.0f, 0.0f), Vec3Scalar(0.0f, 1.0f, 0.0f));
+            static constexpr TestType p = TRAP::Math::Log(q);
+            static_assert(TRAP::Math::Any(TRAP::Math::NotEqual(q, p, Epsilon)));
+        }
+        {
+            static constexpr TestType input(Scalar(1.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+            static constexpr TestType expected(TRAP::Math::Log(input.w()), input.x(), input.y(), input.z());
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(input), expected, Epsilon)));
+        }
+        {
+            static constexpr TestType input(Scalar(-1.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+            static constexpr TestType expected(TRAP::Math::Log(-input.w()), TRAP::Math::PI<Scalar>(), input.y(), input.z());
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(input), expected, Epsilon)));
+        }
+        {
+            static constexpr TestType input(Scalar(0.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+            static_assert(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Log(input))));
+        }
     }
 
-    SECTION("Vec2 - f64")
+    SECTION("Normal cases - std")
     {
-        RunLogVecRunTimeTests<TRAP::Math::Vec2d>();
-        RunLogVecCompileTimeTests<TRAP::Math::Vec2d>();
-    }
-    SECTION("Vec2 - f32")
-    {
-        RunLogVecRunTimeTests<TRAP::Math::Vec2f>();
-        RunLogVecCompileTimeTests<TRAP::Math::Vec2f>();
-    }
+        static constexpr Scalar Epsilon = Scalar(0.001f);
 
-    SECTION("Vec3 - f64")
-    {
-        RunLogVecRunTimeTests<TRAP::Math::Vec3d>();
-        RunLogVecCompileTimeTests<TRAP::Math::Vec3d>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunLogVecRunTimeTests<TRAP::Math::Vec3f>();
-        RunLogVecCompileTimeTests<TRAP::Math::Vec3f>();
-    }
-
-    SECTION("Vec4 - f64")
-    {
-        RunLogVecRunTimeTests<TRAP::Math::Vec4d>();
-        RunLogVecCompileTimeTests<TRAP::Math::Vec4d>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunLogVecRunTimeTests<TRAP::Math::Vec4f>();
-        RunLogVecCompileTimeTests<TRAP::Math::Vec4f>();
-    }
-
-    SECTION("Quat - f64")
-    {
-        RunLogQuatRunTimeTests<TRAP::Math::Quatd>();
-        RunLogQuatCompileTimeTests<TRAP::Math::Quatd>();
-    }
-    SECTION("Quat - f32")
-    {
-        RunLogQuatRunTimeTests<TRAP::Math::Quatf>();
-        RunLogQuatCompileTimeTests<TRAP::Math::Quatf>();
+        {
+            const TestType q(Vec3Scalar(1.0f, 0.0f, 0.0f), Vec3Scalar(0.0f, 1.0f, 0.0f));
+            const TestType p = TRAP::Math::Log(q);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::NotEqual(q, p, Epsilon)));
+        }
+        {
+            const TestType input(Scalar(1.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+            const TestType expected(TRAP::Math::Log(input.w()), input.x(), input.y(), input.z());
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(input), expected, Epsilon)));
+        }
+        {
+            const TestType input(Scalar(-1.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+            const TestType expected(TRAP::Math::Log(-input.w()), TRAP::Math::PI<Scalar>(), input.y(), input.z());
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(input), expected, Epsilon)));
+        }
+        {
+            const TestType input(Scalar(0.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+            REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Log(input))));
+        }
     }
 }

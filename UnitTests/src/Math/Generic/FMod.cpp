@@ -3,236 +3,152 @@
 #include <array>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::FMod()", "[math][generic][fmod][scalar]", f32, f64)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunFModCompileTimeTests()
+    SECTION("Normal cases - GCEM")
     {
-        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(T(  5.3f), T(  2.0f)), T( 1.3f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(T(- 5.3f), T(  2.0f)), T(-1.3f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(T(  5.3f), T(- 2.0f)), T( 1.3f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(T(- 5.3f), T(- 2.0f)), T(-1.3f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(T( 18.5f), T(  4.2f)), T( 1.7f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(T(-18.5f), T(  4.2f)), T(-1.7f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(T( 18.5f), T(- 4.2f)), T( 1.7f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(T(-18.5f), T(- 4.2f)), T(-1.7f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(T(  3.0f), T(  2.0f)), T( 1.0f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(T( 22.0f), T(-10.0f)), T( 2.0f), T(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(TestType(  5.3f), TestType(  2.0f)), TestType( 1.3f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(TestType(- 5.3f), TestType(  2.0f)), TestType(-1.3f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(TestType(  5.3f), TestType(- 2.0f)), TestType( 1.3f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(TestType(- 5.3f), TestType(- 2.0f)), TestType(-1.3f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(TestType( 18.5f), TestType(  4.2f)), TestType( 1.7f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(TestType(-18.5f), TestType(  4.2f)), TestType(-1.7f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(TestType( 18.5f), TestType(- 4.2f)), TestType( 1.7f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(TestType(-18.5f), TestType(- 4.2f)), TestType(-1.7f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(TestType(  3.0f), TestType(  2.0f)), TestType( 1.0f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::FMod(TestType( 22.0f), TestType(-10.0f)), TestType( 2.0f), TestType(0.00001f)));
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunFModRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        static constexpr std::array<std::tuple<T, T, T>, 10> values
+        static constexpr std::array<std::tuple<TestType, TestType, TestType>, 10u> values
         {
-            std::tuple(T( 5.3f), T( 2.0f), T( 1.3f)),
-            std::tuple(T(-5.3f), T( 2.0f), T(-1.3f)),
-            std::tuple(T( 5.3f), T(-2.0f), T( 1.3f)),
-            std::tuple(T(-5.3f), T(-2.0f), T(-1.3f)),
-            std::tuple(T( 18.5f), T( 4.2f), T( 1.7f)),
-            std::tuple(T(-18.5f), T( 4.2f), T(-1.7f)),
-            std::tuple(T( 18.5f), T(-4.2f), T( 1.7f)),
-            std::tuple(T(-18.5f), T(-4.2f), T(-1.7f)),
-            std::tuple(T(  3.0f), T(  2.0f), T(1.0f)),
-            std::tuple(T( 22.0f), T(-10.0f), T(2.0f)),
+            std::tuple(TestType( 5.3f), TestType( 2.0f), TestType( 1.3f)),
+            std::tuple(TestType(-5.3f), TestType( 2.0f), TestType(-1.3f)),
+            std::tuple(TestType( 5.3f), TestType(-2.0f), TestType( 1.3f)),
+            std::tuple(TestType(-5.3f), TestType(-2.0f), TestType(-1.3f)),
+            std::tuple(TestType( 18.5f), TestType( 4.2f), TestType( 1.7f)),
+            std::tuple(TestType(-18.5f), TestType( 4.2f), TestType(-1.7f)),
+            std::tuple(TestType( 18.5f), TestType(-4.2f), TestType( 1.7f)),
+            std::tuple(TestType(-18.5f), TestType(-4.2f), TestType(-1.7f)),
+            std::tuple(TestType(  3.0f), TestType(  2.0f), TestType(1.0f)),
+            std::tuple(TestType( 22.0f), TestType(-10.0f), TestType(2.0f)),
         };
 
         for(const auto& [x, y, expected] : values)
         {
-            const T res = TRAP::Math::FMod(x, y);
-            REQUIRE(TRAP::Math::Equal(res, expected, T(0.00001f)));
+            const TestType res = TRAP::Math::FMod(x, y);
+            REQUIRE(TRAP::Math::Equal(res, expected, TestType(0.00001f)));
         }
 
         //http://stackoverflow.com/questions/7610631/glsl-mod-vs-hlsl-fmod
-        for(T y = T(-10.0f); y < T(10.0f); y += T(0.1f))
+        for(TestType y = TestType(-10.0f); y < TestType(10.0f); y += TestType(0.1f))
         {
-            for(T x = T(-10.0f); x < T(10.0f); x += T(0.1f))
+            for(TestType x = TestType(-10.0f); x < TestType(10.0f); x += TestType(0.1f))
             {
-                const T A = std::fmod(x, y);
-                // const T B = std::remainder(x, y);
-                const T C = TRAP::Math::FMod(x, y);
-                const T D = (x - y * TRAP::Math::Trunc(x / y));
+                const TestType A = std::fmod(x, y);
+                // const TestType B = std::remainder(x, y);
+                const TestType C = TRAP::Math::FMod(x, y);
+                const TestType D = (x - y * TRAP::Math::Trunc(x / y));
 
-                // REQUIRE(TRAP::Math::Equal(A, B, T(0.0001f)));
-                REQUIRE(TRAP::Math::Equal(A, C, T(0.0001f)));
-                REQUIRE(TRAP::Math::Equal(A, D, T(0.00001f)));
+                // REQUIRE(TRAP::Math::Equal(A, B, TestType(0.0001f)));
+                REQUIRE(TRAP::Math::Equal(A, C, TestType(0.0001f)));
+                REQUIRE(TRAP::Math::Equal(A, D, TestType(0.00001f)));
             }
         }
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    consteval void RunFModVecCompileTimeTests()
+    SECTION("Edge cases")
     {
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T( 5.3f ), typename T::value_type(  2.0f)), T( 1.3f), typename T::value_type(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T(-5.3f ), typename T::value_type(  2.0f)), T(-1.3f), typename T::value_type(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T( 5.3f ), typename T::value_type(- 2.0f)), T( 1.3f), typename T::value_type(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T(-5.3f ), typename T::value_type(- 2.0f)), T(-1.3f), typename T::value_type(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T( 18.5f), typename T::value_type(  4.2f)), T( 1.7f), typename T::value_type(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T(-18.5f), typename T::value_type(  4.2f)), T(-1.7f), typename T::value_type(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T( 18.5f), typename T::value_type(- 4.2f)), T( 1.7f), typename T::value_type(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T(-18.5f), typename T::value_type(- 4.2f)), T(-1.7f), typename T::value_type(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T(  3.0f), typename T::value_type(  2.0f)), T( 1.0f), typename T::value_type(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T( 22.0f), typename T::value_type(-10.0f)), T( 2.0f), typename T::value_type(0.00001f))));
+        static constexpr TestType inf = std::numeric_limits<TestType>::infinity();
+        static constexpr TestType ninf = -std::numeric_limits<TestType>::infinity();
+        static constexpr TestType nan = std::numeric_limits<TestType>::quiet_NaN();
 
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T( 5.3f ), T(  2.0f)), T( 1.3f), T(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T(-5.3f ), T(  2.0f)), T(-1.3f), T(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T( 5.3f ), T(- 2.0f)), T( 1.3f), T(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T(-5.3f ), T(- 2.0f)), T(-1.3f), T(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T( 18.5f), T(  4.2f)), T( 1.7f), T(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T(-18.5f), T(  4.2f)), T(-1.7f), T(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T( 18.5f), T(- 4.2f)), T( 1.7f), T(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T(-18.5f), T(- 4.2f)), T(-1.7f), T(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T(  3.0f), T(  2.0f)), T( 1.0f), T(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(T( 22.0f), T(-10.0f)), T( 2.0f), T(0.00001f))));
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, TestType( 0.0f))));
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, TestType(-1.0f))));
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, TestType( 1.0f))));
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, inf)));
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, ninf)));
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, nan)));
+
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, TestType( 0.0f))));
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, TestType(-1.0f))));
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, TestType( 1.0f))));
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, inf)));
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, ninf)));
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, nan)));
+
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, TestType( 0.0f))));
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, TestType(-1.0f))));
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, TestType( 1.0f))));
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, inf)));
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, ninf)));
+        STATIC_REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, nan)));
+
+        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(TestType( 0.0f), TestType( 0.0f))));
+        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(TestType(-0.0f), TestType( 0.0f))));
+        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(TestType( 0.0f), TestType(-0.0f))));
+        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(TestType(-0.0f), TestType(-0.0f))));
+    }
+}
+
+TEMPLATE_TEST_CASE("TRAP::Math::FMod()", "[math][generic][fmod][vec]",
+                   TRAP::Math::Vec2f, TRAP::Math::Vec2d, TRAP::Math::Vec3f, TRAP::Math::Vec3d, TRAP::Math::Vec4f, TRAP::Math::Vec4d)
+{
+    using Scalar = TestType::value_type;
+
+    SECTION("Normal cases - GCEM")
+    {
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType( 5.3f ), Scalar(  2.0f)), TestType( 1.3f), Scalar(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType(-5.3f ), Scalar(  2.0f)), TestType(-1.3f), Scalar(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType( 5.3f ), Scalar(- 2.0f)), TestType( 1.3f), Scalar(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType(-5.3f ), Scalar(- 2.0f)), TestType(-1.3f), Scalar(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType( 18.5f), Scalar(  4.2f)), TestType( 1.7f), Scalar(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType(-18.5f), Scalar(  4.2f)), TestType(-1.7f), Scalar(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType( 18.5f), Scalar(- 4.2f)), TestType( 1.7f), Scalar(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType(-18.5f), Scalar(- 4.2f)), TestType(-1.7f), Scalar(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType(  3.0f), Scalar(  2.0f)), TestType( 1.0f), Scalar(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType( 22.0f), Scalar(-10.0f)), TestType( 2.0f), Scalar(0.00001f))));
+
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType( 5.3f ), TestType(  2.0f)), TestType( 1.3f), TestType(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType(-5.3f ), TestType(  2.0f)), TestType(-1.3f), TestType(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType( 5.3f ), TestType(- 2.0f)), TestType( 1.3f), TestType(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType(-5.3f ), TestType(- 2.0f)), TestType(-1.3f), TestType(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType( 18.5f), TestType(  4.2f)), TestType( 1.7f), TestType(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType(-18.5f), TestType(  4.2f)), TestType(-1.7f), TestType(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType( 18.5f), TestType(- 4.2f)), TestType( 1.7f), TestType(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType(-18.5f), TestType(- 4.2f)), TestType(-1.7f), TestType(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType(  3.0f), TestType(  2.0f)), TestType( 1.0f), TestType(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::FMod(TestType( 22.0f), TestType(-10.0f)), TestType( 2.0f), TestType(0.00001f))));
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    void RunFModVecRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        static constexpr std::array<std::tuple<typename T::value_type, typename T::value_type, typename T::value_type>, 10> values
+        static constexpr std::array<std::tuple<Scalar, Scalar, Scalar>, 10u> values
         {
-            std::tuple(typename T::value_type( 5.3f), typename T::value_type( 2.0f), typename T::value_type( 1.3f)),
-            std::tuple(typename T::value_type(-5.3f), typename T::value_type( 2.0f), typename T::value_type(-1.3f)),
-            std::tuple(typename T::value_type( 5.3f), typename T::value_type(-2.0f), typename T::value_type( 1.3f)),
-            std::tuple(typename T::value_type(-5.3f), typename T::value_type(-2.0f), typename T::value_type(-1.3f)),
-            std::tuple(typename T::value_type( 18.5f), typename T::value_type( 4.2f), typename T::value_type( 1.7f)),
-            std::tuple(typename T::value_type(-18.5f), typename T::value_type( 4.2f), typename T::value_type(-1.7f)),
-            std::tuple(typename T::value_type( 18.5f), typename T::value_type(-4.2f), typename T::value_type( 1.7f)),
-            std::tuple(typename T::value_type(-18.5f), typename T::value_type(-4.2f), typename T::value_type(-1.7f)),
-            std::tuple(typename T::value_type(  3.0f), typename T::value_type(  2.0f), typename T::value_type(1.0f)),
-            std::tuple(typename T::value_type( 22.0f), typename T::value_type(-10.0f), typename T::value_type(2.0f)),
+            std::tuple(Scalar( 5.3f), Scalar( 2.0f), Scalar( 1.3f)),
+            std::tuple(Scalar(-5.3f), Scalar( 2.0f), Scalar(-1.3f)),
+            std::tuple(Scalar( 5.3f), Scalar(-2.0f), Scalar( 1.3f)),
+            std::tuple(Scalar(-5.3f), Scalar(-2.0f), Scalar(-1.3f)),
+            std::tuple(Scalar( 18.5f), Scalar( 4.2f), Scalar( 1.7f)),
+            std::tuple(Scalar(-18.5f), Scalar( 4.2f), Scalar(-1.7f)),
+            std::tuple(Scalar( 18.5f), Scalar(-4.2f), Scalar( 1.7f)),
+            std::tuple(Scalar(-18.5f), Scalar(-4.2f), Scalar(-1.7f)),
+            std::tuple(Scalar(  3.0f), Scalar(  2.0f), Scalar(1.0f)),
+            std::tuple(Scalar( 22.0f), Scalar(-10.0f), Scalar(2.0f)),
         };
 
         for(const auto& [x, y, expected] : values)
         {
-            const T res = TRAP::Math::FMod(T(x), y);
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, T(expected), typename T::value_type(0.00001f))));
+            const TestType res = TRAP::Math::FMod(TestType(x), y);
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, TestType(expected), Scalar(0.00001f))));
 
-            const T res1 = TRAP::Math::FMod(T(x), T(y));
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res1, T(expected), T(0.00001f))));
+            const TestType res1 = TRAP::Math::FMod(TestType(x), TestType(y));
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res1, TestType(expected), TestType(0.00001f))));
         }
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunFModEdgeCompileTimeTests()
-    {
-        constexpr T inf = std::numeric_limits<T>::infinity();
-        constexpr T ninf = -std::numeric_limits<T>::infinity();
-        constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, T( 0.0f))));
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, T(-1.0f))));
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, T( 1.0f))));
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, inf)));
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, ninf)));
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, nan)));
-
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, T( 0.0f))));
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, T(-1.0f))));
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, T( 1.0f))));
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, inf)));
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, ninf)));
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, nan)));
-
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, T( 0.0f))));
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, T(-1.0f))));
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, T( 1.0f))));
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, inf)));
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, ninf)));
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, nan)));
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    void RunFModEdgeRunTimeTests()
-    {
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, T( 0.0f))));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, T(-1.0f))));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, T( 1.0f))));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, inf)));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, ninf)));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, nan)));
-
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, T( 0.0f))));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, T(-1.0f))));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, T( 1.0f))));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, inf)));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, ninf)));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(ninf, nan)));
-
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, T( 0.0f))));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, T(-1.0f))));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, T( 1.0f))));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, inf)));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, ninf)));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(nan, nan)));
-
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(T( 0.0f), T( 0.0f))));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(T(-0.0f), T( 0.0f))));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(T( 0.0f), T(-0.0f))));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(T(-0.0f), T(-0.0f))));
-    }
-}
-
-TEST_CASE("TRAP::Math::FMod()", "[math][generic][fmod]")
-{
-    SECTION("Scalar - f64")
-    {
-        RunFModRunTimeTests<f64>();
-        RunFModCompileTimeTests<f64>();
-        RunFModEdgeRunTimeTests<f64>();
-        RunFModEdgeCompileTimeTests<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunFModRunTimeTests<f32>();
-        RunFModCompileTimeTests<f32>();
-        RunFModEdgeRunTimeTests<f32>();
-        RunFModEdgeCompileTimeTests<f32>();
-    }
-
-    SECTION("Vec2 - f64")
-    {
-        RunFModVecRunTimeTests<TRAP::Math::Vec2d>();
-        RunFModVecCompileTimeTests<TRAP::Math::Vec2d>();
-    }
-    SECTION("Vec2 - f32")
-    {
-        RunFModVecRunTimeTests<TRAP::Math::Vec2f>();
-        RunFModVecCompileTimeTests<TRAP::Math::Vec2f>();
-    }
-
-    SECTION("Vec3 - f64")
-    {
-        RunFModVecRunTimeTests<TRAP::Math::Vec3d>();
-        RunFModVecCompileTimeTests<TRAP::Math::Vec3d>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunFModVecRunTimeTests<TRAP::Math::Vec3f>();
-        RunFModVecCompileTimeTests<TRAP::Math::Vec3f>();
-    }
-
-    SECTION("Vec4 - f64")
-    {
-        RunFModVecRunTimeTests<TRAP::Math::Vec4d>();
-        RunFModVecCompileTimeTests<TRAP::Math::Vec4d>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunFModVecRunTimeTests<TRAP::Math::Vec4f>();
-        RunFModVecCompileTimeTests<TRAP::Math::Vec4f>();
     }
 }

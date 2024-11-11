@@ -1,614 +1,360 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Mix()", "[math][generic][mix][scalar]", i8, i16, i32, i64, u8, u16, u32, u64, f32, f64)
 {
-    template<typename T, typename X>
-    requires (std::is_arithmetic_v<T> || (TRAP::Math::IsVec<T> && std::is_arithmetic_v<typename T::value_type>)) &&
-            (std::floating_point<X> || (TRAP::Math::IsVec<X> && std::same_as<typename X::value_type, bool>) || std::same_as<X, bool>)
-    consteval void RunCompileTimeMixTest()
+
+    SECTION("Normal cases")
     {
-        if constexpr(TRAP::Math::IsVec<T>)
+        static constexpr TestType Epsilon = TRAP::Math::Epsilon<TestType>();
+
         {
-            constexpr typename T::value_type Epsilon = TRAP::Math::Epsilon<typename T::value_type>();
+            using X = bool;
 
-            constexpr T res1 = TRAP::Math::Mix(T(0), T(1), X(0.0f));
-            constexpr T res2 = TRAP::Math::Mix(T(0), T(1), X(1.0f));
-
-            if constexpr(std::signed_integral<typename T::value_type> || std::floating_point<typename T::value_type>)
+            STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(TestType(0.0f), TestType(1.0f), X(0.0f)), TestType(0.0f), Epsilon));
+            STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(TestType(0.0f), TestType(1.0f), X(1.0f)), TestType(1.0f), Epsilon));
+            if constexpr(std::floating_point<TestType> || std::signed_integral<TestType>)
             {
-                constexpr T res3 = TRAP::Math::Mix(T(-1), T(1), X(0.0f));
-                constexpr T res4 = TRAP::Math::Mix(T(-1), T(1), X(1.0f));
-
-                if constexpr(T::Length() == 2)
-                {
-                    static_assert(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
-
-                    static_assert(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
-
-                    static_assert(TRAP::Math::Equal(res3.x(), T(-1).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res3.y(), T(-1).y(), Epsilon));
-
-                    static_assert(TRAP::Math::Equal(res4.x(), T(1).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res4.y(), T(1).y(), Epsilon));
-                }
-                else if constexpr(T::Length() == 3)
-                {
-                    static_assert(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res1.z(), T(0).z(), Epsilon));
-
-                    static_assert(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res2.z(), T(1).z(), Epsilon));
-
-                    static_assert(TRAP::Math::Equal(res3.x(), T(-1).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res3.y(), T(-1).y(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res3.z(), T(-1).z(), Epsilon));
-
-                    static_assert(TRAP::Math::Equal(res4.x(), T(1).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res4.y(), T(1).y(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res4.z(), T(1).z(), Epsilon));
-                }
-                else if constexpr(T::Length() == 4)
-                {
-                    static_assert(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res1.z(), T(0).z(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res1.w(), T(0).w(), Epsilon));
-
-                    static_assert(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res2.z(), T(1).z(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res2.w(), T(1).w(), Epsilon));
-
-                    static_assert(TRAP::Math::Equal(res3.x(), T(-1).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res3.y(), T(-1).y(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res3.z(), T(-1).z(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res3.w(), T(-1).w(), Epsilon));
-
-                    static_assert(TRAP::Math::Equal(res4.x(), T(1).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res4.y(), T(1).y(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res4.z(), T(1).z(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res4.w(), T(1).w(), Epsilon));
-                }
-            }
-            else
-            {
-                if constexpr(T::Length() == 2)
-                {
-                    static_assert(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
-
-                    static_assert(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
-                }
-                else if constexpr(T::Length() == 3)
-                {
-                    static_assert(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res1.z(), T(0).z(), Epsilon));
-
-                    static_assert(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res2.z(), T(1).z(), Epsilon));
-                }
-                else if constexpr(T::Length() == 4)
-                {
-                    static_assert(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res1.z(), T(0).z(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res1.w(), T(0).w(), Epsilon));
-
-                    static_assert(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res2.z(), T(1).z(), Epsilon));
-                    static_assert(TRAP::Math::Equal(res2.w(), T(1).w(), Epsilon));
-                }
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(TestType(-1.0f), TestType(1.0f), X(0.0f)), TestType(-1.0f), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(TestType(-1.0f), TestType(1.0f), X(1.0f)), TestType(1.0f), Epsilon));
             }
         }
-        else
         {
-            constexpr T Epsilon = TRAP::Math::Epsilon<T>();
+            using X = f32;
 
-            static_assert(TRAP::Math::Equal(TRAP::Math::Mix(T(0.0f), T(1.0f), X(0.0f)), T(0.0f), Epsilon));
-            static_assert(TRAP::Math::Equal(TRAP::Math::Mix(T(0.0f), T(1.0f), X(1.0f)), T(1.0f), Epsilon));
-            if constexpr(std::floating_point<T> || std::signed_integral<T>)
+            STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(TestType(0.0f), TestType(1.0f), X(0.0f)), TestType(0.0f), Epsilon));
+            STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(TestType(0.0f), TestType(1.0f), X(1.0f)), TestType(1.0f), Epsilon));
+            if constexpr(std::floating_point<TestType> || std::signed_integral<TestType>)
             {
-                static_assert(TRAP::Math::Equal(TRAP::Math::Mix(T(-1.0f), T(1.0f), X(0.0f)), T(-1.0f), Epsilon));
-                static_assert(TRAP::Math::Equal(TRAP::Math::Mix(T(-1.0f), T(1.0f), X(1.0f)), T(1.0f), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(TestType(-1.0f), TestType(1.0f), X(0.0f)), TestType(-1.0f), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(TestType(-1.0f), TestType(1.0f), X(1.0f)), TestType(1.0f), Epsilon));
+            }
+        }
+        {
+            using X = f64;
+
+            STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(TestType(0.0f), TestType(1.0f), X(0.0f)), TestType(0.0f), Epsilon));
+            STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(TestType(0.0f), TestType(1.0f), X(1.0f)), TestType(1.0f), Epsilon));
+            if constexpr(std::floating_point<TestType> || std::signed_integral<TestType>)
+            {
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(TestType(-1.0f), TestType(1.0f), X(0.0f)), TestType(-1.0f), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(TestType(-1.0f), TestType(1.0f), X(1.0f)), TestType(1.0f), Epsilon));
             }
         }
     }
 
-    template<typename T, typename X>
-    requires (std::is_arithmetic_v<T> || (TRAP::Math::IsVec<T> && std::is_arithmetic_v<typename T::value_type>)) &&
-            (std::floating_point<X> || (TRAP::Math::IsVec<X> && std::same_as<typename X::value_type, bool>) || std::same_as<X, bool>)
-    void RunRunTimeMixTest()
+    SECTION("Edge cases")
     {
-        if constexpr(TRAP::Math::IsVec<T>)
+        if constexpr(std::floating_point<TestType>)
         {
-            typename T::value_type Epsilon = TRAP::Math::Epsilon<typename T::value_type>();
+            static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
-            T res1 = TRAP::Math::Mix(T(0), T(1), X(0.0f));
-            T res2 = TRAP::Math::Mix(T(0), T(1), X(1.0f));
+            static constexpr TestType max = std::numeric_limits<TestType>::max();
+            static constexpr TestType min = std::numeric_limits<TestType>::lowest();
+            static constexpr TestType inf = std::numeric_limits<TestType>::infinity();
+            static constexpr TestType ninf = -std::numeric_limits<TestType>::infinity();
 
-            if constexpr(std::signed_integral<typename T::value_type> || std::floating_point<typename T::value_type>)
-            {
-                T res3 = TRAP::Math::Mix(T(-1), T(1), X(0.0f));
-                T res4 = TRAP::Math::Mix(T(-1), T(1), X(1.0f));
-
-                if constexpr(T::Length() == 2)
-                {
-                    REQUIRE(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
-
-                    REQUIRE(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
-
-                    REQUIRE(TRAP::Math::Equal(res3.x(), T(-1).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res3.y(), T(-1).y(), Epsilon));
-
-                    REQUIRE(TRAP::Math::Equal(res4.x(), T(1).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res4.y(), T(1).y(), Epsilon));
-                }
-                else if constexpr(T::Length() == 3)
-                {
-                    REQUIRE(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res1.z(), T(0).z(), Epsilon));
-
-                    REQUIRE(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res2.z(), T(1).z(), Epsilon));
-
-                    REQUIRE(TRAP::Math::Equal(res3.x(), T(-1).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res3.y(), T(-1).y(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res3.z(), T(-1).z(), Epsilon));
-
-                    REQUIRE(TRAP::Math::Equal(res4.x(), T(1).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res4.y(), T(1).y(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res4.z(), T(1).z(), Epsilon));
-                }
-                else if constexpr(T::Length() == 4)
-                {
-                    REQUIRE(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res1.z(), T(0).z(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res1.w(), T(0).w(), Epsilon));
-
-                    REQUIRE(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res2.z(), T(1).z(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res2.w(), T(1).w(), Epsilon));
-
-                    REQUIRE(TRAP::Math::Equal(res3.x(), T(-1).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res3.y(), T(-1).y(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res3.z(), T(-1).z(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res3.w(), T(-1).w(), Epsilon));
-
-                    REQUIRE(TRAP::Math::Equal(res4.x(), T(1).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res4.y(), T(1).y(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res4.z(), T(1).z(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res4.w(), T(1).w(), Epsilon));
-                }
-            }
-            else
-            {
-                if constexpr(T::Length() == 2)
-                {
-                    REQUIRE(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
-
-                    REQUIRE(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
-                }
-                else if constexpr(T::Length() == 3)
-                {
-                    REQUIRE(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res1.z(), T(0).z(), Epsilon));
-
-                    REQUIRE(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res2.z(), T(1).z(), Epsilon));
-                }
-                else if constexpr(T::Length() == 4)
-                {
-                    REQUIRE(TRAP::Math::Equal(res1.x(), T(0).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res1.y(), T(0).y(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res1.z(), T(0).z(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res1.w(), T(0).w(), Epsilon));
-
-                    REQUIRE(TRAP::Math::Equal(res2.x(), T(1).x(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res2.y(), T(1).y(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res2.z(), T(1).z(), Epsilon));
-                    REQUIRE(TRAP::Math::Equal(res2.w(), T(1).w(), Epsilon));
-                }
-            }
+            STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(min, max, TestType(0.0f)), min, Epsilon));
+            STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(min, max, TestType(1.0f)), max, Epsilon));
+            STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(max, max, TestType(0.5f)), max, Epsilon));
+            STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(min, min, TestType(0.5f)), min, Epsilon));
+            STATIC_REQUIRE(TRAP::Math::IsInf(TRAP::Math::Mix(min, inf, TestType(1.0f))));
+            STATIC_REQUIRE(TRAP::Math::IsInf(TRAP::Math::Mix(min, ninf, TestType(1.0f))));
         }
-        else
-        {
-            T Epsilon = TRAP::Math::Epsilon<T>();
-
-            REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(T(0.0f), T(1.0f), X(0.0f)), T(0.0f), Epsilon));
-            REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(T(0.0f), T(1.0f), X(1.0f)), T(1.0f), Epsilon));
-            if constexpr(std::floating_point<T> || std::signed_integral<T>)
-            {
-                REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(T(-1.0f), T(1.0f), X(0.0f)), T(-1.0f), Epsilon));
-                REQUIRE(TRAP::Math::Equal(TRAP::Math::Mix(T(-1.0f), T(1.0f), X(1.0f)), T(1.0f), Epsilon));
-            }
-        }
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunCompileTimeMixEdgeTest()
-    {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-
-        constexpr T max = std::numeric_limits<T>::max();
-        constexpr T min = std::numeric_limits<T>::lowest();
-        constexpr T inf = std::numeric_limits<T>::infinity();
-        constexpr T ninf = -std::numeric_limits<T>::infinity();
-
-        static_assert(TRAP::Math::Equal(TRAP::Math::Mix(min, max, T(0.0f)), min, Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Mix(min, max, T(1.0f)), max, Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Mix(max, max, T(0.5f)), max, Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Mix(min, min, T(0.5f)), min, Epsilon));
-        static_assert(TRAP::Math::IsInf(TRAP::Math::Mix(min, inf, T(1.0f))));
-        static_assert(TRAP::Math::IsInf(TRAP::Math::Mix(min, ninf, T(1.0f))));
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsMat<T> && std::floating_point<typename T::value_type>
-    consteval void RunCompileTimeMixMatTest()
-    {
-        constexpr T A(static_cast<T::value_type>(2));
-        constexpr T B(static_cast<T::value_type>(4));
-        constexpr T C = TRAP::Math::Mix(A, B, 0.5);
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(C, T(static_cast<T::value_type>(3)), static_cast<T::value_type>(1))));
-        constexpr T D = TRAP::Math::Mix(A, B, 0.5f);
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(D, T(static_cast<T::value_type>(3)), static_cast<T::value_type>(1))));
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>
-    consteval void RunCompileTimeMixQuatTest()
-    {
-        constexpr T Q1(TRAP::Math::Vec<3, typename T::value_type>(1, 0, 0), TRAP::Math::Vec<3, typename T::value_type>(1, 0, 0));
-        constexpr T Q2(TRAP::Math::Vec<3, typename T::value_type>(1, 0, 0), TRAP::Math::Vec<3, typename T::value_type>(0, 1, 0));
-
-        constexpr T Q3 = TRAP::Math::Mix(Q1, Q2, static_cast<T::value_type>(0.5f));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Angle(Q3)), static_cast<T::value_type>(45.0f), static_cast<T::value_type>(0.001f)));
-
-        constexpr T Q4 = TRAP::Math::Mix(Q2, Q1, static_cast<T::value_type>(0.5f));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Angle(Q4)), static_cast<T::value_type>(45.0f), static_cast<T::value_type>(0.001f)));
-
-        constexpr T A = TRAP::Math::AngleAxis(static_cast<T::value_type>(0.0f), TRAP::Math::Vec<3, typename T::value_type>(static_cast<T::value_type>(0.0f), static_cast<T::value_type>(0.0f), static_cast<T::value_type>(1.0f)));
-        constexpr T B = TRAP::Math::AngleAxis(TRAP::Math::PI<typename T::value_type>() * static_cast<T::value_type>(0.5f), TRAP::Math::Vec<3, typename T::value_type>(static_cast<T::value_type>(0.0f), static_cast<T::value_type>(0.0f), static_cast<T::value_type>(1.0f)));
-        constexpr T C = TRAP::Math::Mix(A, B, static_cast<T::value_type>(0.5f));
-        constexpr T D = TRAP::Math::AngleAxis(TRAP::Math::PI<typename T::value_type>() * static_cast<T::value_type>(0.25f), TRAP::Math::Vec<3, typename T::value_type>(static_cast<T::value_type>(0.0f), static_cast<T::value_type>(0.0f), static_cast<T::value_type>(1.0f)));
-
-        static_assert(TRAP::Math::Equal(C.x(), D.x(), static_cast<T::value_type>(0.01f)));
-        static_assert(TRAP::Math::Equal(C.y(), D.y(), static_cast<T::value_type>(0.01f)));
-        static_assert(TRAP::Math::Equal(C.z(), D.z(), static_cast<T::value_type>(0.01f)));
-        static_assert(TRAP::Math::Equal(C.w(), D.w(), static_cast<T::value_type>(0.01f)));
-
-        constexpr T e(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-        constexpr T f(typename T::value_type(1.0f), typename T::value_type(0.1f), typename T::value_type(0.1f), typename T::value_type(0.1f));
-        constexpr typename T::value_type a = typename T::value_type(0.5f) * (typename T::value_type(1.0f) + TRAP::Math::Epsilon<typename T::value_type>());
-        constexpr T expected(typename T::value_type(1.0f), typename T::value_type(0.05f), typename T::value_type(0.05f), typename T::value_type(0.05f));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mix(e, f, a), expected, TRAP::Math::Epsilon<typename T::value_type>())));
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>
-    void RunRunTimeMixQuatTest()
-    {
-        const T Q1(TRAP::Math::Vec<3, typename T::value_type>(1, 0, 0), TRAP::Math::Vec<3, typename T::value_type>(1, 0, 0));
-        const T Q2(TRAP::Math::Vec<3, typename T::value_type>(1, 0, 0), TRAP::Math::Vec<3, typename T::value_type>(0, 1, 0));
-
-        const T Q3 = TRAP::Math::Mix(Q1, Q2, static_cast<T::value_type>(0.5f));
-        REQUIRE(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Angle(Q3)), static_cast<T::value_type>(45.0f), static_cast<T::value_type>(0.001f)));
-
-        const T Q4 = TRAP::Math::Mix(Q2, Q1, static_cast<T::value_type>(0.5f));
-        REQUIRE(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Angle(Q4)), static_cast<T::value_type>(45.0f), static_cast<T::value_type>(0.001f)));
-
-        const T A = TRAP::Math::AngleAxis(static_cast<T::value_type>(0.0f), TRAP::Math::Vec<3, typename T::value_type>(static_cast<T::value_type>(0.0f), static_cast<T::value_type>(0.0f), static_cast<T::value_type>(1.0f)));
-        const T B = TRAP::Math::AngleAxis(TRAP::Math::PI<typename T::value_type>() * static_cast<T::value_type>(0.5f), TRAP::Math::Vec<3, typename T::value_type>(static_cast<T::value_type>(0.0f), static_cast<T::value_type>(0.0f), static_cast<T::value_type>(1.0f)));
-        const T C = TRAP::Math::Mix(A, B, static_cast<T::value_type>(0.5f));
-        const T D = TRAP::Math::AngleAxis(TRAP::Math::PI<typename T::value_type>() * static_cast<T::value_type>(0.25f), TRAP::Math::Vec<3, typename T::value_type>(static_cast<T::value_type>(0.0f), static_cast<T::value_type>(0.0f), static_cast<T::value_type>(1.0f)));
-
-        REQUIRE(TRAP::Math::Equal(C.x(), D.x(), static_cast<T::value_type>(0.01f)));
-        REQUIRE(TRAP::Math::Equal(C.y(), D.y(), static_cast<T::value_type>(0.01f)));
-        REQUIRE(TRAP::Math::Equal(C.z(), D.z(), static_cast<T::value_type>(0.01f)));
-        REQUIRE(TRAP::Math::Equal(C.w(), D.w(), static_cast<T::value_type>(0.01f)));
-
-        //Linear interpolation
-        const T e(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-        const T f(typename T::value_type(1.0f), typename T::value_type(0.1f), typename T::value_type(0.1f), typename T::value_type(0.1f));
-        const typename T::value_type a = typename T::value_type(0.5f) * (typename T::value_type(1.0f) + TRAP::Math::Epsilon<typename T::value_type>());
-        constexpr T expected(typename T::value_type(1.0f), typename T::value_type(0.05f), typename T::value_type(0.05f), typename T::value_type(0.05f));
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mix(e, f, a), expected, TRAP::Math::Epsilon<typename T::value_type>())));
     }
 }
 
-TEST_CASE("TRAP::Math::Mix()", "[math][generic][mix]")
+TEMPLATE_TEST_CASE("TRAP::Math::Mix()", "[math][generic][mix][vec]",
+                   TRAP::Math::Vec2i8, TRAP::Math::Vec2i16, TRAP::Math::Vec2i32, TRAP::Math::Vec2i64,
+                   TRAP::Math::Vec2ui8, TRAP::Math::Vec2ui16, TRAP::Math::Vec2ui32, TRAP::Math::Vec2ui64, TRAP::Math::Vec2f, TRAP::Math::Vec2d,
+                   TRAP::Math::Vec3i8, TRAP::Math::Vec3i16, TRAP::Math::Vec3i32, TRAP::Math::Vec3i64,
+                   TRAP::Math::Vec3ui8, TRAP::Math::Vec3ui16, TRAP::Math::Vec3ui32, TRAP::Math::Vec3ui64, TRAP::Math::Vec3f, TRAP::Math::Vec3d,
+                   TRAP::Math::Vec4i8, TRAP::Math::Vec4i16, TRAP::Math::Vec4i32, TRAP::Math::Vec4i64,
+                   TRAP::Math::Vec4ui8, TRAP::Math::Vec4ui16, TRAP::Math::Vec4ui32, TRAP::Math::Vec4ui64, TRAP::Math::Vec4f, TRAP::Math::Vec4d)
 {
-    SECTION("Scalar - i8")
+    using ScalarT = TestType::value_type;
+
+    static constexpr ScalarT Epsilon = TRAP::Math::Epsilon<ScalarT>();
+
     {
-        RunCompileTimeMixTest<i8, bool>();
-        RunCompileTimeMixTest<i8, f32>();
-        RunCompileTimeMixTest<i8, f64>();
-        RunRunTimeMixTest<i8, bool>();
-        RunRunTimeMixTest<i8, f32>();
-        RunRunTimeMixTest<i8, f64>();
+        using X = bool;
+
+        static constexpr TestType res1 = TRAP::Math::Mix(TestType(0), TestType(1), X(0.0f));
+        static constexpr TestType res2 = TRAP::Math::Mix(TestType(0), TestType(1), X(1.0f));
+
+        if constexpr(std::signed_integral<ScalarT> || std::floating_point<ScalarT>)
+        {
+            static constexpr TestType res3 = TRAP::Math::Mix(TestType(-1), TestType(1), X(0.0f));
+            static constexpr TestType res4 = TRAP::Math::Mix(TestType(-1), TestType(1), X(1.0f));
+
+            if constexpr(TestType::Length() == 2u)
+            {
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.x(), TestType(0).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.y(), TestType(0).y(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.y(), TestType(1).y(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.x(), TestType(-1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.y(), TestType(-1).y(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.y(), TestType(1).y(), Epsilon));
+            }
+            else if constexpr(TestType::Length() == 3u)
+            {
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.x(), TestType(0).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.y(), TestType(0).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.z(), TestType(0).z(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.y(), TestType(1).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.z(), TestType(1).z(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.x(), TestType(-1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.y(), TestType(-1).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.z(), TestType(-1).z(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.y(), TestType(1).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.z(), TestType(1).z(), Epsilon));
+            }
+            else if constexpr(TestType::Length() == 4u)
+            {
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.x(), TestType(0).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.y(), TestType(0).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.z(), TestType(0).z(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.w(), TestType(0).w(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.y(), TestType(1).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.z(), TestType(1).z(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.w(), TestType(1).w(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.x(), TestType(-1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.y(), TestType(-1).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.z(), TestType(-1).z(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.w(), TestType(-1).w(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.y(), TestType(1).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.z(), TestType(1).z(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.w(), TestType(1).w(), Epsilon));
+            }
+        }
+        else
+        {
+            if constexpr(TestType::Length() == 2u)
+            {
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.x(), TestType(0).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.y(), TestType(0).y(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.y(), TestType(1).y(), Epsilon));
+            }
+            else if constexpr(TestType::Length() == 3u)
+            {
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.x(), TestType(0).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.y(), TestType(0).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.z(), TestType(0).z(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.y(), TestType(1).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.z(), TestType(1).z(), Epsilon));
+            }
+            else if constexpr(TestType::Length() == 4u)
+            {
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.x(), TestType(0).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.y(), TestType(0).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.z(), TestType(0).z(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.w(), TestType(0).w(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.y(), TestType(1).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.z(), TestType(1).z(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.w(), TestType(1).w(), Epsilon));
+            }
+        }
     }
-    SECTION("Scalar - u8")
     {
-        RunCompileTimeMixTest<u8, bool>();
-        RunCompileTimeMixTest<u8, f32>();
-        RunCompileTimeMixTest<u8, f64>();
-        RunRunTimeMixTest<u8, bool>();
-        RunRunTimeMixTest<u8, f32>();
-        RunRunTimeMixTest<u8, f64>();
+        using X = TRAP::Math::Vec<TestType::Length(), bool>;
+
+        static constexpr TestType res1 = TRAP::Math::Mix(TestType(0), TestType(1), X(0.0f));
+        static constexpr TestType res2 = TRAP::Math::Mix(TestType(0), TestType(1), X(1.0f));
+
+        if constexpr(std::signed_integral<ScalarT> || std::floating_point<ScalarT>)
+        {
+            static constexpr TestType res3 = TRAP::Math::Mix(TestType(-1), TestType(1), X(0.0f));
+            static constexpr TestType res4 = TRAP::Math::Mix(TestType(-1), TestType(1), X(1.0f));
+
+            if constexpr(TestType::Length() == 2u)
+            {
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.x(), TestType(0).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.y(), TestType(0).y(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.y(), TestType(1).y(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.x(), TestType(-1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.y(), TestType(-1).y(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.y(), TestType(1).y(), Epsilon));
+            }
+            else if constexpr(TestType::Length() == 3u)
+            {
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.x(), TestType(0).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.y(), TestType(0).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.z(), TestType(0).z(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.y(), TestType(1).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.z(), TestType(1).z(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.x(), TestType(-1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.y(), TestType(-1).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.z(), TestType(-1).z(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.y(), TestType(1).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.z(), TestType(1).z(), Epsilon));
+            }
+            else if constexpr(TestType::Length() == 4u)
+            {
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.x(), TestType(0).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.y(), TestType(0).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.z(), TestType(0).z(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.w(), TestType(0).w(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.y(), TestType(1).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.z(), TestType(1).z(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.w(), TestType(1).w(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.x(), TestType(-1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.y(), TestType(-1).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.z(), TestType(-1).z(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res3.w(), TestType(-1).w(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.y(), TestType(1).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.z(), TestType(1).z(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res4.w(), TestType(1).w(), Epsilon));
+            }
+        }
+        else
+        {
+            if constexpr(TestType::Length() == 2u)
+            {
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.x(), TestType(0).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.y(), TestType(0).y(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.y(), TestType(1).y(), Epsilon));
+            }
+            else if constexpr(TestType::Length() == 3u)
+            {
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.x(), TestType(0).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.y(), TestType(0).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.z(), TestType(0).z(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.y(), TestType(1).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.z(), TestType(1).z(), Epsilon));
+            }
+            else if constexpr(TestType::Length() == 4u)
+            {
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.x(), TestType(0).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.y(), TestType(0).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.z(), TestType(0).z(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res1.w(), TestType(0).w(), Epsilon));
+
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.x(), TestType(1).x(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.y(), TestType(1).y(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.z(), TestType(1).z(), Epsilon));
+                STATIC_REQUIRE(TRAP::Math::Equal(res2.w(), TestType(1).w(), Epsilon));
+            }
+        }
     }
-    SECTION("Scalar - i16")
+}
+
+TEMPLATE_TEST_CASE("TRAP::Math::Mix()", "[math][generic][mix][mat]",
+                   TRAP::Math::Mat3f, TRAP::Math::Mat3d, TRAP::Math::Mat4f, TRAP::Math::Mat4d)
+{
+    using Scalar = TestType::value_type;
+
+    static constexpr TestType A(static_cast<Scalar>(2));
+    static constexpr TestType B(static_cast<Scalar>(4));
+    static constexpr TestType C = TRAP::Math::Mix(A, B, 0.5);
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(C, TestType(static_cast<Scalar>(3)), static_cast<Scalar>(1))));
+    static constexpr TestType D = TRAP::Math::Mix(A, B, 0.5f);
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(D, TestType(static_cast<Scalar>(3)), static_cast<Scalar>(1))));
+}
+
+TEMPLATE_TEST_CASE("TRAP::Math::Mix()", "[math][generic][mix][quat]",
+                   TRAP::Math::Quatf, TRAP::Math::Quatd)
+{
+    using Scalar = TestType::value_type;
+    using Vec3Scalar = TRAP::Math::tVec3<Scalar>;
+
+    SECTION("Normal cases - GCEM")
     {
-        RunCompileTimeMixTest<i16, bool>();
-        RunCompileTimeMixTest<i16, f32>();
-        RunCompileTimeMixTest<i16, f64>();
-        RunRunTimeMixTest<i16, bool>();
-        RunRunTimeMixTest<i16, f32>();
-        RunRunTimeMixTest<i16, f64>();
-    }
-    SECTION("Scalar - u16")
-    {
-        RunCompileTimeMixTest<u16, bool>();
-        RunCompileTimeMixTest<u16, f32>();
-        RunCompileTimeMixTest<u16, f64>();
-        RunRunTimeMixTest<u16, bool>();
-        RunRunTimeMixTest<u16, f32>();
-        RunRunTimeMixTest<u16, f64>();
-    }
-    SECTION("Scalar - i32")
-    {
-        RunCompileTimeMixTest<i32, bool>();
-        RunCompileTimeMixTest<i32, f32>();
-        RunCompileTimeMixTest<i32, f64>();
-        RunRunTimeMixTest<i32, bool>();
-        RunRunTimeMixTest<i32, f32>();
-        RunRunTimeMixTest<i32, f64>();
-    }
-    SECTION("Scalar - u32")
-    {
-        RunCompileTimeMixTest<u32, bool>();
-        RunCompileTimeMixTest<u32, f32>();
-        RunCompileTimeMixTest<u32, f64>();
-        RunRunTimeMixTest<u32, bool>();
-        RunRunTimeMixTest<u32, f32>();
-        RunRunTimeMixTest<u32, f64>();
-    }
-    SECTION("Scalar - i64")
-    {
-        RunCompileTimeMixTest<i64, bool>();
-        RunCompileTimeMixTest<i64, f32>();
-        RunCompileTimeMixTest<i64, f64>();
-        RunRunTimeMixTest<i64, bool>();
-        RunRunTimeMixTest<i64, f32>();
-        RunRunTimeMixTest<i64, f64>();
-    }
-    SECTION("Scalar - u64")
-    {
-        RunCompileTimeMixTest<u64, bool>();
-        RunCompileTimeMixTest<u64, f32>();
-        RunCompileTimeMixTest<u64, f64>();
-        RunRunTimeMixTest<u64, bool>();
-        RunRunTimeMixTest<u64, f32>();
-        RunRunTimeMixTest<u64, f64>();
-    }
-    SECTION("Scalar - f64")
-    {
-        RunCompileTimeMixTest<f64, bool>();
-        RunCompileTimeMixTest<f64, f64>();
-        RunCompileTimeMixEdgeTest<f64>();
-        RunRunTimeMixTest<f64, bool>();
-        RunRunTimeMixTest<f64, f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunCompileTimeMixTest<f32, bool>();
-        RunCompileTimeMixTest<f32, f32>();
-        RunCompileTimeMixEdgeTest<f32>();
-        RunRunTimeMixTest<f32, bool>();
-        RunRunTimeMixTest<f32, f32>();
+        static constexpr TestType Q1(Vec3Scalar(1, 0, 0), Vec3Scalar(1, 0, 0));
+        static constexpr TestType Q2(Vec3Scalar(1, 0, 0), Vec3Scalar(0, 1, 0));
+
+        static constexpr TestType Q3 = TRAP::Math::Mix(Q1, Q2, static_cast<Scalar>(0.5f));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Angle(Q3)), static_cast<Scalar>(45.0f), static_cast<Scalar>(0.001f)));
+
+        static constexpr TestType Q4 = TRAP::Math::Mix(Q2, Q1, static_cast<Scalar>(0.5f));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Angle(Q4)), static_cast<Scalar>(45.0f), static_cast<Scalar>(0.001f)));
+
+        static constexpr TestType A = TRAP::Math::AngleAxis(static_cast<Scalar>(0.0f), Vec3Scalar(static_cast<Scalar>(0.0f), static_cast<Scalar>(0.0f), static_cast<Scalar>(1.0f)));
+        static constexpr TestType B = TRAP::Math::AngleAxis(TRAP::Math::PI<Scalar>() * static_cast<Scalar>(0.5f), Vec3Scalar(static_cast<Scalar>(0.0f), static_cast<Scalar>(0.0f), static_cast<Scalar>(1.0f)));
+        static constexpr TestType C = TRAP::Math::Mix(A, B, static_cast<Scalar>(0.5f));
+        static constexpr TestType D = TRAP::Math::AngleAxis(TRAP::Math::PI<Scalar>() * static_cast<Scalar>(0.25f), Vec3Scalar(static_cast<Scalar>(0.0f), static_cast<Scalar>(0.0f), static_cast<Scalar>(1.0f)));
+
+        static_assert(TRAP::Math::Equal(C.x(), D.x(), static_cast<Scalar>(0.01f)));
+        static_assert(TRAP::Math::Equal(C.y(), D.y(), static_cast<Scalar>(0.01f)));
+        static_assert(TRAP::Math::Equal(C.z(), D.z(), static_cast<Scalar>(0.01f)));
+        static_assert(TRAP::Math::Equal(C.w(), D.w(), static_cast<Scalar>(0.01f)));
+
+        static constexpr TestType e(Scalar(1.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+        static constexpr TestType f(Scalar(1.0f), Scalar(0.1f), Scalar(0.1f), Scalar(0.1f));
+        static constexpr Scalar a = Scalar(0.5f) * (Scalar(1.0f) + TRAP::Math::Epsilon<Scalar>());
+        static constexpr TestType expected(Scalar(1.0f), Scalar(0.05f), Scalar(0.05f), Scalar(0.05f));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mix(e, f, a), expected, TRAP::Math::Epsilon<Scalar>())));
     }
 
-    SECTION("Vec2 - i8")
+    SECTION("Normal cases - std")
     {
-        RunCompileTimeMixTest<TRAP::Math::Vec2i8, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec2i8, TRAP::Math::Vec2b>();
-    }
-    SECTION("Vec2 - u8")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec2ui8, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec2ui8, TRAP::Math::Vec2b>();
-    }
-    SECTION("Vec2 - i16")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec2i16, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec2i16, TRAP::Math::Vec2b>();
-    }
-    SECTION("Vec2 - u16")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec2ui16, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec2ui16, TRAP::Math::Vec2b>();
-    }
-    SECTION("Vec2 - i32")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec2i32, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec2i32, TRAP::Math::Vec2b>();
-    }
-    SECTION("Vec2 - u32")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec2ui32, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec2ui32, TRAP::Math::Vec2b>();
-    }
-    SECTION("Vec2 - i64")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec2i64, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec2i64, TRAP::Math::Vec2b>();
-    }
-    SECTION("Vec2 - u64")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec2ui64, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec2ui64, TRAP::Math::Vec2b>();
-    }
-    SECTION("Vec2 - f64")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec2d, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec2d, TRAP::Math::Vec2b>();
-    }
-    SECTION("Vec2 - f32")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec2f, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec2f, TRAP::Math::Vec2b>();
-    }
+        static constexpr TestType Q1(Vec3Scalar(1, 0, 0), Vec3Scalar(1, 0, 0));
+        static constexpr TestType Q2(Vec3Scalar(1, 0, 0), Vec3Scalar(0, 1, 0));
 
-    SECTION("Vec3 - i8")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec3i8, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec3i8, TRAP::Math::Vec3b>();
-    }
-    SECTION("Vec3 - u8")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec3ui8, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec3ui8, TRAP::Math::Vec3b>();
-    }
-    SECTION("Vec3 - i16")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec3i16, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec3i16, TRAP::Math::Vec3b>();
-    }
-    SECTION("Vec3 - u16")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec3ui16, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec3ui16, TRAP::Math::Vec3b>();
-    }
-    SECTION("Vec3 - i32")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec3i32, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec3i32, TRAP::Math::Vec3b>();
-    }
-    SECTION("Vec3 - u32")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec3ui32, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec3ui32, TRAP::Math::Vec3b>();
-    }
-    SECTION("Vec3 - i64")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec3i64, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec3i64, TRAP::Math::Vec3b>();
-    }
-    SECTION("Vec3 - u64")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec3ui64, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec3ui64, TRAP::Math::Vec3b>();
-    }
-    SECTION("Vec3 - f64")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec3d, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec3d, TRAP::Math::Vec3b>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec4f, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec4f, TRAP::Math::Vec4b>();
-    }
+        const TestType Q3 = TRAP::Math::Mix(Q1, Q2, static_cast<Scalar>(0.5f));
+        REQUIRE(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Angle(Q3)), static_cast<Scalar>(45.0f), static_cast<Scalar>(0.001f)));
 
-    SECTION("Vec4 - i8")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec4i8, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec4i8, TRAP::Math::Vec4b>();
-    }
-    SECTION("Vec4 - u8")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec4ui8, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec4ui8, TRAP::Math::Vec4b>();
-    }
-    SECTION("Vec4 - i16")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec4i16, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec4i16, TRAP::Math::Vec4b>();
-    }
-    SECTION("Vec4 - u16")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec4ui16, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec4ui16, TRAP::Math::Vec4b>();
-    }
-    SECTION("Vec4 - i32")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec4i32, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec4i32, TRAP::Math::Vec4b>();
-    }
-    SECTION("Vec4 - u32")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec4ui32, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec4ui32, TRAP::Math::Vec4b>();
-    }
-    SECTION("Vec4 - i64")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec4i64, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec4i64, TRAP::Math::Vec4b>();
-    }
-    SECTION("Vec4 - u64")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec4ui64, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec4ui64, TRAP::Math::Vec4b>();
-    }
-    SECTION("Vec4 - f64")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec4d, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec4d, TRAP::Math::Vec4b>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunCompileTimeMixTest<TRAP::Math::Vec4f, bool>();
-        RunCompileTimeMixTest<TRAP::Math::Vec4f, TRAP::Math::Vec4b>();
-    }
+        const TestType Q4 = TRAP::Math::Mix(Q2, Q1, static_cast<Scalar>(0.5f));
+        REQUIRE(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Angle(Q4)), static_cast<Scalar>(45.0f), static_cast<Scalar>(0.001f)));
 
-    SECTION("Mat3 - f64")
-    {
-        RunCompileTimeMixMatTest<TRAP::Math::Mat3d>();
-    }
-    SECTION("Mat3 - f32")
-    {
-        RunCompileTimeMixMatTest<TRAP::Math::Mat3f>();
-    }
+        static constexpr TestType A = TRAP::Math::AngleAxis(static_cast<Scalar>(0.0f), Vec3Scalar(static_cast<Scalar>(0.0f), static_cast<Scalar>(0.0f), static_cast<Scalar>(1.0f)));
+        static constexpr TestType B = TRAP::Math::AngleAxis(TRAP::Math::PI<Scalar>() * static_cast<Scalar>(0.5f), Vec3Scalar(static_cast<Scalar>(0.0f), static_cast<Scalar>(0.0f), static_cast<Scalar>(1.0f)));
+        const TestType C = TRAP::Math::Mix(A, B, static_cast<Scalar>(0.5f));
+        static constexpr TestType D = TRAP::Math::AngleAxis(TRAP::Math::PI<Scalar>() * static_cast<Scalar>(0.25f), Vec3Scalar(static_cast<Scalar>(0.0f), static_cast<Scalar>(0.0f), static_cast<Scalar>(1.0f)));
 
-    SECTION("Mat4 - f64")
-    {
-        RunCompileTimeMixMatTest<TRAP::Math::Mat4d>();
-    }
-    SECTION("Mat4 - f32")
-    {
-        RunCompileTimeMixMatTest<TRAP::Math::Mat4f>();
-    }
+        REQUIRE(TRAP::Math::Equal(C.x(), D.x(), static_cast<Scalar>(0.01f)));
+        REQUIRE(TRAP::Math::Equal(C.y(), D.y(), static_cast<Scalar>(0.01f)));
+        REQUIRE(TRAP::Math::Equal(C.z(), D.z(), static_cast<Scalar>(0.01f)));
+        REQUIRE(TRAP::Math::Equal(C.w(), D.w(), static_cast<Scalar>(0.01f)));
 
-    SECTION("Quat - f64")
-    {
-        RunRunTimeMixQuatTest<TRAP::Math::Quatd>();
-        RunCompileTimeMixQuatTest<TRAP::Math::Quatd>();
-    }
-    SECTION("Quat - f32")
-    {
-        RunRunTimeMixQuatTest<TRAP::Math::Quatf>();
-        RunCompileTimeMixQuatTest<TRAP::Math::Quatf>();
+        //Linear interpolation
+        static constexpr TestType e(Scalar(1.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+        static constexpr TestType f(Scalar(1.0f), Scalar(0.1f), Scalar(0.1f), Scalar(0.1f));
+        static constexpr Scalar a = Scalar(0.5f) * (Scalar(1.0f) + TRAP::Math::Epsilon<Scalar>());
+        static constexpr TestType expected(Scalar(1.0f), Scalar(0.05f), Scalar(0.05f), Scalar(0.05f));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mix(e, f, a), expected, TRAP::Math::Epsilon<Scalar>())));
     }
 }

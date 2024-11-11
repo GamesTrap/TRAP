@@ -2,210 +2,138 @@
 #include <array>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Exp()", "[math][generic][exp][scalar]", f32, f64)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunExpCompileTimeTests()
+    SECTION("Normal cases - GCEM")
     {
-        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(T(-40.0f)), T(0.0f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(T(- 4.0f)), T(0.0183156393f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(T(0.0001f)), T(1.0001000049976403f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(T(1.0f)), T(2.71828175f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(T(1.75f)), T(5.75460291f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(T(1.9991f)), T(7.382409f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(T(2.1f)), T(8.166169f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(T(4.0f)), T(54.598150033144236f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(T(0.0f)), T(1.0f), T(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(TestType(-40.0f)), TestType(0.0f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(TestType(- 4.0f)), TestType(0.0183156393f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(TestType(0.0001f)), TestType(1.0001000049976403f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(TestType(1.0f)), TestType(2.71828175f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(TestType(1.75f)), TestType(5.75460291f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(TestType(1.9991f)), TestType(7.382409f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(TestType(2.1f)), TestType(8.166169f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(TestType(4.0f)), TestType(54.598150033144236f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(TestType(0.0f)), TestType(1.0f), TestType(0.00001f)));
+
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
+        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(TestType(1.0f)), TestType(TRAP::Math::e<TestType>()), TestType(0.000001f)));
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunExpRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        const std::array<std::tuple<T, T>, 9> values
+        static constexpr std::array<std::tuple<TestType, TestType>, 9u> values
         {
-            std::tuple(T(-40.0f), T(0.0f)),
-            std::tuple(T(-4.0f), T(0.0183156393f)),
-            std::tuple(T(0.0001f), T(1.0001000049976403f)),
-            std::tuple(T(1.0f), T(2.71828175f)),
-            std::tuple(T(1.75f), T(5.75460291f)),
-            std::tuple(T(1.9991f), T(7.382409f)),
-            std::tuple(T(2.1f), T(8.166169f)),
-            std::tuple(T(4.0f), T(54.598150033144236f)),
-            std::tuple(T(0.0f), T(1.0f)),
+            std::tuple(TestType(-40.0f), TestType(0.0f)),
+            std::tuple(TestType(-4.0f), TestType(0.0183156393f)),
+            std::tuple(TestType(0.0001f), TestType(1.0001000049976403f)),
+            std::tuple(TestType(1.0f), TestType(2.71828175f)),
+            std::tuple(TestType(1.75f), TestType(5.75460291f)),
+            std::tuple(TestType(1.9991f), TestType(7.382409f)),
+            std::tuple(TestType(2.1f), TestType(8.166169f)),
+            std::tuple(TestType(4.0f), TestType(54.598150033144236f)),
+            std::tuple(TestType(0.0f), TestType(1.0f)),
         };
 
         for(const auto& [num, expected] : values)
         {
-            const T res = TRAP::Math::Exp(num);
-            REQUIRE(TRAP::Math::Equal(res, expected, T(0.00001f)));
+            const TestType res = TRAP::Math::Exp(num);
+            REQUIRE(TRAP::Math::Equal(res, expected, TestType(0.00001f)));
         }
+
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
+        REQUIRE(TRAP::Math::Equal(TRAP::Math::Exp(TestType(1.0f)), TestType(TRAP::Math::e<TestType>()), Epsilon));
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    consteval void RunExpVecCompileTimeTests()
+    SECTION("Edge cases")
     {
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(T(1.0f)), T(TRAP::Math::e<typename T::value_type>()), T(0.000001f))));
-    }
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    void RunExpVecRunTimeTests()
-    {
-        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(T(1.0f)), T(TRAP::Math::e<typename T::value_type>()), Epsilon)));
-    }
+        static constexpr TestType nan = std::numeric_limits<TestType>::quiet_NaN();
+        static constexpr TestType inf = std::numeric_limits<TestType>::infinity();
+        static constexpr TestType ninf = -std::numeric_limits<TestType>::infinity();
+        static constexpr TestType max = std::numeric_limits<TestType>::max();
+        static constexpr TestType min = std::numeric_limits<TestType>::lowest();
 
-    template<typename T>
-    requires TRAP::Math::IsQuat<T>
-    consteval void RunExpQuatCompileTimeTests()
-    {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-
-        constexpr T q(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-        constexpr T res(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q), res, Epsilon)));
-
-        constexpr T q2(typename T::value_type(0.0f), typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-        constexpr T res2(TRAP::Math::Cos(typename T::value_type(1.0f)), TRAP::Math::Sin(typename T::value_type(1.0f)), typename T::value_type(0.0f), typename T::value_type(0.0f));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q2), res2, Epsilon)));
-
-        constexpr T q3(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(1.0f), typename T::value_type(0.0f));
-        constexpr T res3(TRAP::Math::Cos(typename T::value_type(1.0f)), typename T::value_type(0.0f), TRAP::Math::Sin(typename T::value_type(1.0f)), typename T::value_type(0.0f));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q3), res3, Epsilon)));
-
-        constexpr T q4(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(1.0f));
-        constexpr T res4(TRAP::Math::Cos(typename T::value_type(1.0f)), typename T::value_type(0.0f), typename T::value_type(0.0f), TRAP::Math::Sin(typename T::value_type(1.0f)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q4), res4, Epsilon)));
-
-        constexpr T q6(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q6), q6, Epsilon)));
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsQuat<T>
-    void RunExpQuatRunTimeTests()
-    {
-        static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-
-        const T q(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-        const T res(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q), res, Epsilon)));
-
-        const T q2(typename T::value_type(0.0f), typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-        const T res2(TRAP::Math::Cos(typename T::value_type(1.0f)), TRAP::Math::Sin(typename T::value_type(1.0f)), typename T::value_type(0.0f), typename T::value_type(0.0f));
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q2), res2, Epsilon)));
-
-        const T q3(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(1.0f), typename T::value_type(0.0f));
-        const T res3(TRAP::Math::Cos(typename T::value_type(1.0f)), typename T::value_type(0.0f), TRAP::Math::Sin(typename T::value_type(1.0f)), typename T::value_type(0.0f));
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q3), res3, Epsilon)));
-
-        const T q4(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(1.0f));
-        const T res4(TRAP::Math::Cos(typename T::value_type(1.0f)), typename T::value_type(0.0f), typename T::value_type(0.0f), TRAP::Math::Sin(typename T::value_type(1.0f)));
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q4), res4, Epsilon)));
-
-        const T q6(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q6), q6, Epsilon)));
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunExpEdgeCompileTimeTests()
-    {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-
-        constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-        constexpr T inf = std::numeric_limits<T>::infinity();
-        constexpr T ninf = -std::numeric_limits<T>::infinity();
-
-        static_assert(TRAP::Math::Equal(TRAP::Math::Exp(ninf), T(0.0f), Epsilon));
-        static_assert(TRAP::Math::IsInf(TRAP::Math::Exp(inf)));
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::Exp(nan)));
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    void RunExpEdgeRunTimeTests()
-    {
-        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
-        static constexpr T max = std::numeric_limits<T>::max();
-        static constexpr T min = std::numeric_limits<T>::lowest();
-
-        REQUIRE(TRAP::Math::Equal(TRAP::Math::Exp(ninf), T(0.0f), Epsilon));
+        REQUIRE(TRAP::Math::Equal(TRAP::Math::Exp(ninf), TestType(0.0f), Epsilon));
         REQUIRE(TRAP::Math::IsInf(TRAP::Math::Exp(inf)));
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Exp(nan)));
         REQUIRE(TRAP::Math::IsInf(TRAP::Math::Exp(max)));
-        REQUIRE(TRAP::Math::Equal(TRAP::Math::Exp(min), T(0.0f), Epsilon));
+        REQUIRE(TRAP::Math::Equal(TRAP::Math::Exp(min), TestType(0.0f), Epsilon));
     }
 }
 
-TEST_CASE("TRAP::Math::Exp()", "[math][generic][exp]")
+TEMPLATE_TEST_CASE("TRAP::Math::Exp()", "[math][generic][exp][vec]",
+                   TRAP::Math::Vec2d, TRAP::Math::Vec2f, TRAP::Math::Vec3d, TRAP::Math::Vec3f, TRAP::Math::Vec4d, TRAP::Math::Vec4f)
 {
-    SECTION("Scalar - f64")
+    using Scalar = TestType::value_type;
+
+    SECTION("Normal cases - GCEM")
     {
-        RunExpRunTimeTests<f64>();
-        RunExpCompileTimeTests<f64>();
-        RunExpEdgeRunTimeTests<f64>();
-        RunExpEdgeCompileTimeTests<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunExpRunTimeTests<f32>();
-        RunExpCompileTimeTests<f32>();
-        RunExpEdgeRunTimeTests<f32>();
-        RunExpEdgeCompileTimeTests<f32>();
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(TestType(1.0f)), TestType(TRAP::Math::e<Scalar>()), TestType(0.000001f))));
     }
 
-    SECTION("Vec2 - f64")
+    SECTION("Normal cases - std")
     {
-        RunExpVecRunTimeTests<TRAP::Math::Vec2d>();
-        RunExpVecCompileTimeTests<TRAP::Math::Vec2d>();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(TestType(1.0f)), TestType(TRAP::Math::e<Scalar>()), Epsilon)));
     }
-    SECTION("Vec2 - f32")
+}
+
+TEMPLATE_TEST_CASE("TRAP::Math::Exp()", "[math][generic][exp][quat]",
+                   TRAP::Math::Quatd, TRAP::Math::Quatf)
+{
+    using Scalar = TestType::value_type;
+
+    SECTION("Normal cases - GCEM")
     {
-        RunExpVecRunTimeTests<TRAP::Math::Vec2f>();
-        RunExpVecCompileTimeTests<TRAP::Math::Vec2f>();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
+
+        static constexpr TestType q(Scalar(1.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+        static constexpr TestType res(Scalar(0.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q), res, Epsilon)));
+
+        static constexpr TestType q2(Scalar(0.0f), Scalar(1.0f), Scalar(0.0f), Scalar(0.0f));
+        static constexpr TestType res2(TRAP::Math::Cos(Scalar(1.0f)), TRAP::Math::Sin(Scalar(1.0f)), Scalar(0.0f), Scalar(0.0f));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q2), res2, Epsilon)));
+
+        static constexpr TestType q3(Scalar(0.0f), Scalar(0.0f), Scalar(1.0f), Scalar(0.0f));
+        static constexpr TestType res3(TRAP::Math::Cos(Scalar(1.0f)), Scalar(0.0f), TRAP::Math::Sin(Scalar(1.0f)), Scalar(0.0f));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q3), res3, Epsilon)));
+
+        static constexpr TestType q4(Scalar(0.0f), Scalar(0.0f), Scalar(0.0f), Scalar(1.0f));
+        static constexpr TestType res4(TRAP::Math::Cos(Scalar(1.0f)), Scalar(0.0f), Scalar(0.0f), TRAP::Math::Sin(Scalar(1.0f)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q4), res4, Epsilon)));
+
+        static constexpr TestType q6(Scalar(0.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q6), q6, Epsilon)));
     }
 
-    SECTION("Vec3 - f64")
+    SECTION("Normal cases - std")
     {
-        RunExpVecRunTimeTests<TRAP::Math::Vec3d>();
-        RunExpVecCompileTimeTests<TRAP::Math::Vec3d>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunExpVecRunTimeTests<TRAP::Math::Vec3f>();
-        RunExpVecCompileTimeTests<TRAP::Math::Vec3f>();
-    }
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
-    SECTION("Vec4 - f64")
-    {
-        RunExpVecRunTimeTests<TRAP::Math::Vec4d>();
-        RunExpVecCompileTimeTests<TRAP::Math::Vec4d>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunExpVecRunTimeTests<TRAP::Math::Vec4f>();
-        RunExpVecCompileTimeTests<TRAP::Math::Vec4f>();
-    }
+        static constexpr TestType q(Scalar(1.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+        static constexpr TestType res(Scalar(0.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q), res, Epsilon)));
 
-    SECTION("Quat - f64")
-    {
-        RunExpQuatRunTimeTests<TRAP::Math::Quatd>();
-        RunExpQuatCompileTimeTests<TRAP::Math::Quatd>();
-    }
-    SECTION("Quat - f32")
-    {
-        RunExpQuatRunTimeTests<TRAP::Math::Quatf>();
-        RunExpQuatCompileTimeTests<TRAP::Math::Quatf>();
+        static constexpr TestType q2(Scalar(0.0f), Scalar(1.0f), Scalar(0.0f), Scalar(0.0f));
+        static constexpr TestType res2(TRAP::Math::Cos(Scalar(1.0f)), TRAP::Math::Sin(Scalar(1.0f)), Scalar(0.0f), Scalar(0.0f));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q2), res2, Epsilon)));
+
+        static constexpr TestType q3(Scalar(0.0f), Scalar(0.0f), Scalar(1.0f), Scalar(0.0f));
+        static constexpr TestType res3(TRAP::Math::Cos(Scalar(1.0f)), Scalar(0.0f), TRAP::Math::Sin(Scalar(1.0f)), Scalar(0.0f));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q3), res3, Epsilon)));
+
+        static constexpr TestType q4(Scalar(0.0f), Scalar(0.0f), Scalar(0.0f), Scalar(1.0f));
+        static constexpr TestType res4(TRAP::Math::Cos(Scalar(1.0f)), Scalar(0.0f), Scalar(0.0f), TRAP::Math::Sin(Scalar(1.0f)));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q4), res4, Epsilon)));
+
+        static constexpr TestType q6(Scalar(0.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q6), q6, Epsilon)));
     }
 }

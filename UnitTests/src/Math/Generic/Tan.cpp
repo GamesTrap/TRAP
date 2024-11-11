@@ -2,158 +2,96 @@
 #include <cmath>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Tan()", "[math][generic][tan][scalar]", f32, f64)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunTanCompileTimeTests()
+    SECTION("Normal cases - GCEM")
     {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
-        static_assert(TRAP::Math::Equal(TRAP::Math::Tan(T(-1.5)), T(-14.1014), T(0.0001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Tan(T(0.0)), T(0.0), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Tan(T(0.001)), T(0.001), T(0.000000001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Tan(T(1.001)), T(1.56084), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Tan(T(1.5)), T(14.1014), T(0.0001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Tan(T(11.1)), T(-9.54135), T(0.0001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Tan(T(50.0)), T(-0.271901), T(0.000001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Tan(T(150.0)), T(-1.02235), T(0.0001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Tan(TestType(-1.5)), TestType(-14.1014), TestType(0.0001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Tan(TestType(0.0)), TestType(0.0), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Tan(TestType(0.001)), TestType(0.001), TestType(0.000000001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Tan(TestType(1.001)), TestType(1.56084), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Tan(TestType(1.5)), TestType(14.1014), TestType(0.0001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Tan(TestType(11.1)), TestType(-9.54135), TestType(0.0001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Tan(TestType(50.0)), TestType(-0.271901), TestType(0.000001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Tan(TestType(150.0)), TestType(-1.02235), TestType(0.0001f)));
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunTanRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
-        static constexpr std::array<T, 8> values
+        static constexpr std::array<TestType, 8u> values
         {
-            T(-1.5), T(0.0), T(0.001), T(1.001), T(1.5), T(11.1), T(50.0), T(150.0)
+            TestType(-1.5), TestType(0.0), TestType(0.001), TestType(1.001), TestType(1.5), TestType(11.1), TestType(50.0), TestType(150.0)
         };
 
-        for(const T val : values)
-        {
+        for(const TestType val : values)
             REQUIRE(TRAP::Math::Equal(TRAP::Math::Tan(val), std::tan(val), Epsilon));
-        }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunTanEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
+        static constexpr TestType nan = std::numeric_limits<TestType>::quiet_NaN();
+        static constexpr TestType inf = std::numeric_limits<TestType>::infinity();
+        static constexpr TestType ninf = -std::numeric_limits<TestType>::infinity();
 
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Tan(nan)));
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Tan(inf)));
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Tan(ninf)));
     }
+}
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    consteval void RunTanVecCompileTimeTests()
+TEMPLATE_TEST_CASE("TRAP::Math::Tan()", "[math][generic][tan][vec]",
+                   TRAP::Math::Vec2f, TRAP::Math::Vec2d, TRAP::Math::Vec3f, TRAP::Math::Vec3d, TRAP::Math::Vec4f, TRAP::Math::Vec4d)
+{
+    using Scalar = TestType::value_type;
+
+    SECTION("Normal cases - GCEM")
     {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(-1.5f))), T(-14.1014f), T(0.0001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(0.0f))), T(0.0f), Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(0.001f))), T(0.001f), T(0.000000001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(1.001f))), T(1.56084f), T(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(1.5f))), T(14.1014f), T(0.0001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(11.1f))), T(-9.54135f), T(0.0001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(50.0f))), T(-0.271901f), T(0.000001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(150.0f))), T(-1.02235f), T(0.0001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(TestType(Scalar(-1.5f))), TestType(-14.1014f), TestType(0.0001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(TestType(Scalar(0.0f))), TestType(0.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(TestType(Scalar(0.001f))), TestType(0.001f), TestType(0.000000001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(TestType(Scalar(1.001f))), TestType(1.56084f), TestType(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(TestType(Scalar(1.5f))), TestType(14.1014f), TestType(0.0001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(TestType(Scalar(11.1f))), TestType(-9.54135f), TestType(0.0001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(TestType(Scalar(50.0f))), TestType(-0.271901f), TestType(0.000001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(TestType(Scalar(150.0f))), TestType(-1.02235f), TestType(0.0001f))));
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    void RunTanVecRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
-        static constexpr std::array<T, 8> values
+        static constexpr std::array<TestType, 8u> values
         {
-            T(typename T::value_type(-1.5)), T(typename T::value_type(0.0)), T(typename T::value_type(0.001)), T(typename T::value_type(1.001)),
-            T(typename T::value_type(1.5)), T(typename T::value_type(11.1)), T(typename T::value_type(50.0)), T(typename T::value_type(150.0))
+            TestType(Scalar(-1.5)), TestType(Scalar(0.0)), TestType(Scalar(0.001)), TestType(Scalar(1.001)),
+            TestType(Scalar(1.5)), TestType(Scalar(11.1)), TestType(Scalar(50.0)), TestType(Scalar(150.0))
         };
 
-        for(const T val : values)
+        for(const TestType& val : values)
         {
-            const T s = TRAP::Math::Tan(val);
-            for(u32 l = 0; l < val.Length(); ++l)
+            const TestType s = TRAP::Math::Tan(val);
+            for(u32 l = 0u; l < val.Length(); ++l)
                 REQUIRE(TRAP::Math::Equal(s[l], std::tan(val[l]), Epsilon));
         }
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    void RunTanVecEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
-        static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-        static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = -std::numeric_limits<Scalar>::infinity();
 
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Tan(T(nan)))));
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Tan(T(inf)))));
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Tan(T(ninf)))));
-    }
-}
-
-TEST_CASE("TRAP::Math::Tan()", "[math][generic][tan]")
-{
-    SECTION("Scalar - f64")
-    {
-        RunTanRunTimeTests<f64>();
-        RunTanCompileTimeTests<f64>();
-        RunTanEdgeTests<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunTanRunTimeTests<f32>();
-        RunTanCompileTimeTests<f32>();
-        RunTanEdgeTests<f32>();
-    }
-
-    SECTION("Vec2 - f64")
-    {
-        RunTanVecRunTimeTests<TRAP::Math::Vec2d>();
-        RunTanVecCompileTimeTests<TRAP::Math::Vec2d>();
-        RunTanVecEdgeTests<TRAP::Math::Vec2d>();
-    }
-    SECTION("Vec2 - f32")
-    {
-        RunTanVecRunTimeTests<TRAP::Math::Vec2f>();
-        RunTanVecCompileTimeTests<TRAP::Math::Vec2f>();
-        RunTanVecEdgeTests<TRAP::Math::Vec2f>();
-    }
-
-    SECTION("Vec3 - f64")
-    {
-        RunTanVecRunTimeTests<TRAP::Math::Vec3d>();
-        RunTanVecCompileTimeTests<TRAP::Math::Vec3d>();
-        RunTanVecEdgeTests<TRAP::Math::Vec3d>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunTanVecRunTimeTests<TRAP::Math::Vec3f>();
-        RunTanVecCompileTimeTests<TRAP::Math::Vec3f>();
-        RunTanVecEdgeTests<TRAP::Math::Vec3f>();
-    }
-
-    SECTION("Vec4 - f64")
-    {
-        RunTanVecRunTimeTests<TRAP::Math::Vec4d>();
-        RunTanVecCompileTimeTests<TRAP::Math::Vec4d>();
-        RunTanVecEdgeTests<TRAP::Math::Vec4d>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunTanVecRunTimeTests<TRAP::Math::Vec4f>();
-        RunTanVecCompileTimeTests<TRAP::Math::Vec4f>();
-        RunTanVecEdgeTests<TRAP::Math::Vec4f>();
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Tan(TestType(nan)))));
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Tan(TestType(inf)))));
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Tan(TestType(ninf)))));
     }
 }

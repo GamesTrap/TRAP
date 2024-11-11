@@ -1,125 +1,107 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::EulerAngles()", "[math][generic][eulerangles][quat]", TRAP::Math::Quatd, TRAP::Math::Quatf)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunEulerAnglesCompileTimeTests()
+    using Scalar = TestType::value_type;
+    using Vec3Scalar = TRAP::Math::tVec3<Scalar>;
+
+    SECTION("Normal cases - GCEM")
     {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
         {
-            constexpr TRAP::Math::tQuat<T> q(1.0f, 0.0f, 0.0f, 1.0f);
-            constexpr T roll = TRAP::Math::Roll(q);
-            constexpr T pitch = TRAP::Math::Pitch(q);
-            constexpr T yaw = TRAP::Math::Yaw(q);
-            constexpr TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(angles, TRAP::Math::tVec3<T>(pitch, yaw, roll), Epsilon)));
+            static constexpr TestType q(1.0f, 0.0f, 0.0f, 1.0f);
+            static constexpr Scalar roll = TRAP::Math::Roll(q);
+            static constexpr Scalar pitch = TRAP::Math::Pitch(q);
+            static constexpr Scalar yaw = TRAP::Math::Yaw(q);
+            static constexpr Vec3Scalar angles = TRAP::Math::EulerAngles(q);
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(angles, Vec3Scalar(pitch, yaw, roll), Epsilon)));
         }
         {
-            constexpr TRAP::Math::tQuat<T> q(1.0f, 1.0f, 1.0f, 1.0f);
-            constexpr T roll = TRAP::Math::Roll(q);
-            constexpr T pitch = TRAP::Math::Pitch(q);
-            constexpr T yaw = TRAP::Math::Yaw(q);
-            constexpr TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(angles, TRAP::Math::tVec3<T>(pitch, yaw, roll), Epsilon)));
+            static constexpr TestType q(1.0f, 1.0f, 1.0f, 1.0f);
+            static constexpr Scalar roll = TRAP::Math::Roll(q);
+            static constexpr Scalar pitch = TRAP::Math::Pitch(q);
+            static constexpr Scalar yaw = TRAP::Math::Yaw(q);
+            static constexpr Vec3Scalar angles = TRAP::Math::EulerAngles(q);
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(angles, Vec3Scalar(pitch, yaw, roll), Epsilon)));
         }
         {
-            constexpr TRAP::Math::tQuat<T> q(1.0f, 1.0f, 1.0f, 0.5f);
-            constexpr T roll = TRAP::Math::Roll(q);
-            constexpr T pitch = TRAP::Math::Pitch(q);
-            constexpr T yaw = TRAP::Math::Yaw(q);
-            constexpr TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(angles, TRAP::Math::tVec3<T>(pitch, yaw, roll), Epsilon)));
+            static constexpr TestType q(1.0f, 1.0f, 1.0f, 0.5f);
+            static constexpr Scalar roll = TRAP::Math::Roll(q);
+            static constexpr Scalar pitch = TRAP::Math::Pitch(q);
+            static constexpr Scalar yaw = TRAP::Math::Yaw(q);
+            static constexpr Vec3Scalar angles = TRAP::Math::EulerAngles(q);
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(angles, Vec3Scalar(pitch, yaw, roll), Epsilon)));
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunEulerAnglesRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
         {
-            static constexpr TRAP::Math::tQuat<T> q(1.0f, 0.0f, 0.0f, 1.0f);
-            const T roll = TRAP::Math::Roll(q);
-            const T pitch = TRAP::Math::Pitch(q);
-            const T yaw = TRAP::Math::Yaw(q);
-            const TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(angles, TRAP::Math::tVec3<T>(pitch, yaw, roll), Epsilon)));
+            static constexpr TestType q(1.0f, 0.0f, 0.0f, 1.0f);
+            static constexpr Scalar roll = TRAP::Math::Roll(q);
+            static constexpr Scalar pitch = TRAP::Math::Pitch(q);
+            static constexpr Scalar yaw = TRAP::Math::Yaw(q);
+            const Vec3Scalar angles = TRAP::Math::EulerAngles(q);
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(angles, Vec3Scalar(pitch, yaw, roll), Epsilon)));
         }
         {
-            static constexpr TRAP::Math::tQuat<T> q(1.0f, 1.0f, 1.0f, 1.0f);
-            const T roll = TRAP::Math::Roll(q);
-            const T pitch = TRAP::Math::Pitch(q);
-            const T yaw = TRAP::Math::Yaw(q);
-            const TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(angles, TRAP::Math::tVec3<T>(pitch, yaw, roll), Epsilon)));
+            static constexpr TestType q(1.0f, 1.0f, 1.0f, 1.0f);
+            static constexpr Scalar roll = TRAP::Math::Roll(q);
+            static constexpr Scalar pitch = TRAP::Math::Pitch(q);
+            static constexpr Scalar yaw = TRAP::Math::Yaw(q);
+            const Vec3Scalar angles = TRAP::Math::EulerAngles(q);
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(angles, Vec3Scalar(pitch, yaw, roll), Epsilon)));
         }
         {
-            static constexpr TRAP::Math::tQuat<T> q(1.0f, 1.0f, 1.0f, 0.5f);
-            const T roll = TRAP::Math::Roll(q);
-            const T pitch = TRAP::Math::Pitch(q);
-            const T yaw = TRAP::Math::Yaw(q);
-            const TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(angles, TRAP::Math::tVec3<T>(pitch, yaw, roll), Epsilon)));
+            static constexpr TestType q(1.0f, 1.0f, 1.0f, 0.5f);
+            static constexpr Scalar roll = TRAP::Math::Roll(q);
+            static constexpr Scalar pitch = TRAP::Math::Pitch(q);
+            static constexpr Scalar yaw = TRAP::Math::Yaw(q);
+            const Vec3Scalar angles = TRAP::Math::EulerAngles(q);
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(angles, Vec3Scalar(pitch, yaw, roll), Epsilon)));
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunEulerAnglesEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr T min = std::numeric_limits<T>::lowest();
-        static constexpr T max = std::numeric_limits<T>::max();
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        static constexpr Scalar min = std::numeric_limits<Scalar>::lowest();
+        static constexpr Scalar max = std::numeric_limits<Scalar>::max();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = -std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
 
         {
-            static constexpr TRAP::Math::tQuat<T> q(min, min, 1.0f, 0.5f);
-            const TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
+            static constexpr TestType q(min, min, 1.0f, 0.5f);
+            const Vec3Scalar angles = TRAP::Math::EulerAngles(q);
             REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(angles)));
         }
         {
-            static constexpr TRAP::Math::tQuat<T> q(max, max, 1.0f, 0.5f);
-            const TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
+            static constexpr TestType q(max, max, 1.0f, 0.5f);
+            const Vec3Scalar angles = TRAP::Math::EulerAngles(q);
             REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(angles)));
         }
         {
-            static constexpr TRAP::Math::tQuat<T> q(inf, inf, 1.0f, 0.5f);
-            const TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
+            static constexpr TestType q(inf, inf, 1.0f, 0.5f);
+            const Vec3Scalar angles = TRAP::Math::EulerAngles(q);
             REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(angles)));
         }
         {
-            static constexpr TRAP::Math::tQuat<T> q(ninf, ninf, 1.0f, 0.5f);
-            const TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
+            static constexpr TestType q(ninf, ninf, 1.0f, 0.5f);
+            const Vec3Scalar angles = TRAP::Math::EulerAngles(q);
             REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(angles)));
         }
         {
-            static constexpr TRAP::Math::tQuat<T> q(nan, nan, 1.0f, 0.5f);
-            const TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
+            static constexpr TestType q(nan, nan, 1.0f, 0.5f);
+            const Vec3Scalar angles = TRAP::Math::EulerAngles(q);
             REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(angles)));
         }
-    }
-}
-
-TEST_CASE("TRAP::Math::EulerAngles()", "[math][generic][eulerangles]")
-{
-    SECTION("Quat - f64")
-    {
-        RunEulerAnglesRunTimeTests<f64>();
-        RunEulerAnglesCompileTimeTests<f64>();
-        RunEulerAnglesEdgeTests<f64>();
-    }
-    SECTION("Quat - f32")
-    {
-        RunEulerAnglesRunTimeTests<f32>();
-        RunEulerAnglesCompileTimeTests<f32>();
-        RunEulerAnglesEdgeTests<f32>();
     }
 }

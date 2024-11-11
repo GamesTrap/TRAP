@@ -1,159 +1,72 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Row()", "[math][generic][row][mat]",
+                   TRAP::Math::Mat3f, TRAP::Math::Mat3d, TRAP::Math::Mat4f, TRAP::Math::Mat4d)
 {
-    template<typename T>
-    requires TRAP::Math::IsMat<T>
-    consteval void RunRowCompileTimeTests()
+    using Scalar = TestType::value_type;
+    using Vec4Scalar = TRAP::Math::tVec4<Scalar>;
+    using Row = TestType::row_type;
+
+    static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
+
+    //Get
     {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr TestType m(1.0f);
+        static constexpr Row expectedA(Vec4Scalar(1.0f, 0.0f, 0.0f, 0.0f));
+        static constexpr Row expectedB(Vec4Scalar(0.0f, 1.0f, 0.0f, 0.0f));
+        static constexpr Row expectedC(Vec4Scalar(0.0f, 0.0f, 1.0f, 0.0f));
+        static constexpr Row expectedD(Vec4Scalar(0.0f, 0.0f, 0.0f, 1.0f));
 
-        //Get
+        if constexpr(TRAP::Math::IsMat3<TestType>)
         {
-            constexpr T m(1.0f);
-            constexpr typename T::row_type expectedA(TRAP::Math::tVec4<typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f));
-            constexpr typename T::row_type expectedB(TRAP::Math::tVec4<typename T::value_type>(0.0f, 1.0f, 0.0f, 0.0f));
-            constexpr typename T::row_type expectedC(TRAP::Math::tVec4<typename T::value_type>(0.0f, 0.0f, 1.0f, 0.0f));
-            constexpr typename T::row_type expectedD(TRAP::Math::tVec4<typename T::value_type>(0.0f, 0.0f, 0.0f, 1.0f));
-
-            if constexpr(TRAP::Math::IsMat3<T>)
-            {
-                static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 0), expectedA, Epsilon)));
-                static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 1), expectedB, Epsilon)));
-                static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 2), expectedC, Epsilon)));
-            }
-            else if constexpr(TRAP::Math::IsMat4<T>)
-            {
-                static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 0), expectedA, Epsilon)));
-                static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 1), expectedB, Epsilon)));
-                static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 2), expectedC, Epsilon)));
-                static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 3), expectedD, Epsilon)));
-            }
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 0), expectedA, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 1), expectedB, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 2), expectedC, Epsilon)));
         }
-
-        //Set
+        else if constexpr(TRAP::Math::IsMat4<TestType>)
         {
-            constexpr typename T::row_type expectedA(TRAP::Math::tVec4<typename T::value_type>(0.0f, 1.0f, 2.0f, 3.0f));
-            constexpr typename T::row_type expectedB(TRAP::Math::tVec4<typename T::value_type>(4.0f, 5.0f, 6.0f, 7.0f));
-            constexpr typename T::row_type expectedC(TRAP::Math::tVec4<typename T::value_type>(8.0f, 9.0f, 10.0f, 11.0f));
-            constexpr typename T::row_type expectedD(TRAP::Math::tVec4<typename T::value_type>(12.0f, 13.0f, 14.0f, 15.0f));
-
-            constexpr T m(1.0f);
-
-            if constexpr(TRAP::Math::IsMat3<T>)
-            {
-                constexpr T a = TRAP::Math::Row(m, 0, expectedA);
-                constexpr T b = TRAP::Math::Row(a, 1, expectedB);
-                constexpr T c = TRAP::Math::Row(b, 2, expectedC);
-
-                static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(c, 0), expectedA, Epsilon)));
-                static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(c, 1), expectedB, Epsilon)));
-                static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(c, 2), expectedC, Epsilon)));
-            }
-            else if constexpr(TRAP::Math::IsMat4<T>)
-            {
-                constexpr T a = TRAP::Math::Row(m, 0, expectedA);
-                constexpr T b = TRAP::Math::Row(a, 1, expectedB);
-                constexpr T c = TRAP::Math::Row(b, 2, expectedC);
-                constexpr T d = TRAP::Math::Row(c, 3, expectedD);
-
-                static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(d, 0), expectedA, Epsilon)));
-                static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(d, 1), expectedB, Epsilon)));
-                static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(d, 2), expectedC, Epsilon)));
-                static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(d, 3), expectedD, Epsilon)));
-            }
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 0), expectedA, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 1), expectedB, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 2), expectedC, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 3), expectedD, Epsilon)));
         }
     }
 
-    template<typename T>
-    requires TRAP::Math::IsMat<T>
-    void RunRowRunTimeTests()
+    //Set
     {
-        static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr Row expectedA(Vec4Scalar(0.0f, 1.0f, 2.0f, 3.0f));
+        static constexpr Row expectedB(Vec4Scalar(4.0f, 5.0f, 6.0f, 7.0f));
+        static constexpr Row expectedC(Vec4Scalar(8.0f, 9.0f, 10.0f, 11.0f));
+        static constexpr Row expectedD(Vec4Scalar(12.0f, 13.0f, 14.0f, 15.0f));
 
-        //Get
+        static constexpr TestType m(1.0f);
+
+        if constexpr(TRAP::Math::IsMat3<TestType>)
         {
-            static constexpr T m(1.0f);
-            static constexpr typename T::row_type expectedA(TRAP::Math::tVec4<typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f));
-            static constexpr typename T::row_type expectedB(TRAP::Math::tVec4<typename T::value_type>(0.0f, 1.0f, 0.0f, 0.0f));
-            static constexpr typename T::row_type expectedC(TRAP::Math::tVec4<typename T::value_type>(0.0f, 0.0f, 1.0f, 0.0f));
-            static constexpr typename T::row_type expectedD(TRAP::Math::tVec4<typename T::value_type>(0.0f, 0.0f, 0.0f, 1.0f));
+            static constexpr TestType a = TRAP::Math::Row(m, 0, expectedA);
+            static constexpr TestType b = TRAP::Math::Row(a, 1, expectedB);
+            static constexpr TestType c = TRAP::Math::Row(b, 2, expectedC);
 
-            if constexpr(TRAP::Math::IsMat3<T>)
-            {
-                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 0), expectedA, Epsilon)));
-                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 1), expectedB, Epsilon)));
-                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 2), expectedC, Epsilon)));
-            }
-            else if constexpr(TRAP::Math::IsMat4<T>)
-            {
-                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 0), expectedA, Epsilon)));
-                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 1), expectedB, Epsilon)));
-                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 2), expectedC, Epsilon)));
-                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP ::Math::Row(m, 3), expectedD, Epsilon)));
-            }
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(c, 0), expectedA, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(c, 1), expectedB, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(c, 2), expectedC, Epsilon)));
         }
-
-        //Set
+        else if constexpr(TRAP::Math::IsMat4<TestType>)
         {
-            T m(1.0f);
+            static constexpr TestType a = TRAP::Math::Row(m, 0, expectedA);
+            static constexpr TestType b = TRAP::Math::Row(a, 1, expectedB);
+            static constexpr TestType c = TRAP::Math::Row(b, 2, expectedC);
+            static constexpr TestType d = TRAP::Math::Row(c, 3, expectedD);
 
-            static constexpr typename T::row_type expectedA(TRAP::Math::tVec4<typename T::value_type>(0.0f, 1.0f, 2.0f, 3.0f));
-            static constexpr typename T::row_type expectedB(TRAP::Math::tVec4<typename T::value_type>(4.0f, 5.0f, 6.0f, 7.0f));
-            static constexpr typename T::row_type expectedC(TRAP::Math::tVec4<typename T::value_type>(8.0f, 9.0f, 10.0f, 11.0f));
-            static constexpr typename T::row_type expectedD(TRAP::Math::tVec4<typename T::value_type>(12.0f, 13.0f, 14.0f, 15.0f));
-
-            if constexpr(TRAP::Math::IsMat3<T>)
-            {
-                m = TRAP::Math::Row(m, 0, expectedA);
-                m = TRAP::Math::Row(m, 1, expectedB);
-                m = TRAP::Math::Row(m, 2, expectedC);
-
-                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(m, 0), expectedA, Epsilon)));
-                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(m, 1), expectedB, Epsilon)));
-                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(m, 2), expectedC, Epsilon)));
-            }
-            else if constexpr(TRAP::Math::IsMat4<T>)
-            {
-                m = TRAP::Math::Row(m, 0, expectedA);
-                m = TRAP::Math::Row(m, 1, expectedB);
-                m = TRAP::Math::Row(m, 2, expectedC);
-                m = TRAP::Math::Row(m, 3, expectedD);
-
-                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(m, 0), expectedA, Epsilon)));
-                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(m, 1), expectedB, Epsilon)));
-                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(m, 2), expectedC, Epsilon)));
-                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(m, 3), expectedD, Epsilon)));
-            }
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(d, 0), expectedA, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(d, 1), expectedB, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(d, 2), expectedC, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Row(d, 3), expectedD, Epsilon)));
         }
-    }
-}
-
-TEST_CASE("TRAP::Math::Row()", "[math][generic][row]")
-{
-    SECTION("Mat4 - f64")
-    {
-        RunRowRunTimeTests<TRAP::Math::Mat4d>();
-        RunRowCompileTimeTests<TRAP::Math::Mat4d>();
-    }
-    SECTION("Mat4 - f32")
-    {
-        RunRowRunTimeTests<TRAP::Math::Mat4f>();
-        RunRowCompileTimeTests<TRAP::Math::Mat4f>();
-    }
-
-    SECTION("Mat3 - f64")
-    {
-        RunRowRunTimeTests<TRAP::Math::Mat3d>();
-        RunRowCompileTimeTests<TRAP::Math::Mat3d>();
-    }
-    SECTION("Mat3 - f32")
-    {
-        RunRowRunTimeTests<TRAP::Math::Mat3f>();
-        RunRowCompileTimeTests<TRAP::Math::Mat3f>();
     }
 }

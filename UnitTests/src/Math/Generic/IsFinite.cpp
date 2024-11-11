@@ -1,82 +1,39 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::IsFinite()", "[math][generic][isfinite][scalar]", f32, f64)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunCompileTimeIsFiniteTests()
+    SECTION("Normal cases")
     {
-        static_assert(TRAP::Math::IsFinite(T(1.0)));
-        static_assert(TRAP::Math::IsFinite(T(-1.0)));
+        STATIC_REQUIRE(TRAP::Math::IsFinite(TestType(1.0)));
+        STATIC_REQUIRE(TRAP::Math::IsFinite(TestType(-1.0)));
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunCompileTimeIsEvenEdgeTests()
+    SECTION("Edge cases")
     {
-        constexpr T min = std::numeric_limits<T>::min();
-        constexpr T max = std::numeric_limits<T>::max();
-        constexpr T inf = std::numeric_limits<T>::infinity();
-        constexpr T ninf = -std::numeric_limits<T>::infinity();
-        constexpr T nan = -std::numeric_limits<T>::quiet_NaN();
+        static constexpr TestType min = std::numeric_limits<TestType>::min();
+        static constexpr TestType max = std::numeric_limits<TestType>::max();
+        static constexpr TestType inf = std::numeric_limits<TestType>::infinity();
+        static constexpr TestType ninf = -std::numeric_limits<TestType>::infinity();
+        static constexpr TestType nan = -std::numeric_limits<TestType>::quiet_NaN();
 
-        static_assert( TRAP::Math::IsFinite(min));
-        static_assert( TRAP::Math::IsFinite(max));
-        static_assert(!TRAP::Math::IsFinite(inf));
-        static_assert(!TRAP::Math::IsFinite(ninf));
-        static_assert(!TRAP::Math::IsFinite(nan));
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    consteval void RunCompileTimeIsFiniteVecTests()
-    {
-        static_assert(TRAP::Math::All(TRAP::Math::IsFinite(T(typename T::value_type(1.0)))));
-        static_assert(TRAP::Math::All(TRAP::Math::IsFinite(T(typename T::value_type(-1.0)))));
+        STATIC_REQUIRE( TRAP::Math::IsFinite(min));
+        STATIC_REQUIRE( TRAP::Math::IsFinite(max));
+        STATIC_REQUIRE(!TRAP::Math::IsFinite(inf));
+        STATIC_REQUIRE(!TRAP::Math::IsFinite(ninf));
+        STATIC_REQUIRE(!TRAP::Math::IsFinite(nan));
     }
 }
 
-TEST_CASE("TRAP::Math::IsFinite()", "[math][generic][isfinite]")
+TEMPLATE_TEST_CASE("TRAP::Math::IsFinite()", "[math][generic][isfinite][vec]",
+                   TRAP::Math::Vec2f, TRAP::Math::Vec2d, TRAP::Math::Vec3f, TRAP::Math::Vec3d, TRAP::Math::Vec4f, TRAP::Math::Vec4d)
 {
-    SECTION("Scalar - f32")
-    {
-        RunCompileTimeIsEvenEdgeTests<f32>();
-        RunCompileTimeIsFiniteTests<f32>();
-    }
-    SECTION("Scalar - f64")
-    {
-        RunCompileTimeIsEvenEdgeTests<f64>();
-        RunCompileTimeIsFiniteTests<f64>();
-    }
+    using Scalar = TestType::value_type;
 
-    SECTION("Vec2 - f32")
-    {
-        RunCompileTimeIsFiniteVecTests<TRAP::Math::Vec2f>();
-    }
-    SECTION("Vec2 - f64")
-    {
-        RunCompileTimeIsFiniteVecTests<TRAP::Math::Vec2d>();
-    }
-
-    SECTION("Vec3 - f32")
-    {
-        RunCompileTimeIsFiniteVecTests<TRAP::Math::Vec3f>();
-    }
-    SECTION("Vec3 - f64")
-    {
-        RunCompileTimeIsFiniteVecTests<TRAP::Math::Vec3d>();
-    }
-
-    SECTION("Vec4 - f32")
-    {
-        RunCompileTimeIsFiniteVecTests<TRAP::Math::Vec4f>();
-    }
-    SECTION("Vec4 - f64")
-    {
-        RunCompileTimeIsFiniteVecTests<TRAP::Math::Vec4d>();
-    }
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::IsFinite(TestType(Scalar(1.0)))));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::IsFinite(TestType(Scalar(-1.0)))));
 }

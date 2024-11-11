@@ -1,243 +1,180 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Dot()", "[math][generic][dot][vec]",
+                   TRAP::Math::Vec2d, TRAP::Math::Vec2f, TRAP::Math::Vec3d, TRAP::Math::Vec3f, TRAP::Math::Vec4d, TRAP::Math::Vec4f)
 {
-    template<typename T>
-    requires TRAP::Math::IsVec4<T> && std::floating_point<typename T::value_type>
-    consteval void RunCompileTimeDotVec4Tests()
+    using Scalar = TestType::value_type;
+    using Vec4Scalar = TRAP::Math::tVec4<Scalar>;
+
+    SECTION("Normal cases")
     {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
+
+        if constexpr(std::same_as<TestType, TRAP::Math::tVec2<Scalar>>)
+        {
+            {
+                static constexpr TestType x(1.0f, 2.0f);
+                static constexpr TestType y(5.0f, 6.0f);
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(x, y), Scalar(17.0f), Epsilon));
+            }
+            {
+                static constexpr TestType x(1.0f, 2.0f);
+                static constexpr TestType y(2.0f, 4.0f);
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(x, y), Scalar(10.0f), Epsilon));
+            }
+            {
+                static constexpr TestType x(-1.0f, -2.0f);
+                static constexpr TestType y(5.0f, 6.0f);
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(x, y), Scalar(-17.0f), Epsilon));
+            }
+            {
+                static constexpr TestType x(-1.0f, 2.0f);
+                static constexpr TestType y(5.0f, -6.0f);
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(x, y), Scalar(-17.0f), Epsilon));
+            }
+        }
+        else if constexpr(std::same_as<TestType, TRAP::Math::tVec3<Scalar>>)
+        {
+            {
+                static constexpr TestType x(1.0f, 2.0f, 3.0f);
+                static constexpr TestType y(5.0f, 6.0f, 7.0f);
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(x, y), Scalar(38.0f), Epsilon));
+            }
+            {
+                static constexpr TestType x(1.0f, 2.0f, 3.0f);
+                static constexpr TestType y(2.0f, 4.0f, 6.0f);
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(x, y), Scalar(28.0f), Epsilon));
+            }
+            {
+                static constexpr TestType x(-1.0f, -2.0f, -3.0f);
+                static constexpr TestType y(5.0f, 6.0f, 7.0f);
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(x, y), Scalar(-38.0f), Epsilon));
+            }
+            {
+                static constexpr TestType x(-1.0f, 2.0f, -3.0f);
+                static constexpr TestType y(5.0f, -6.0f, 7.0f);
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(x, y), Scalar(-38.0f), Epsilon));
+            }
+        }
+        else if constexpr(std::same_as<TestType, TRAP::Math::tVec4<Scalar>>)
+        {
+            {
+                static constexpr TestType x(1.0f, 2.0f, 3.0f, 4.0f);
+                static constexpr TestType y(5.0f, 6.0f, 7.0f, 8.0f);
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(x, y), Scalar(70.0f), Epsilon));
+            }
+            {
+                static constexpr TestType x(1.0f, 2.0f, 3.0f, 4.0f);
+                static constexpr TestType y(2.0f, 4.0f, 6.0f, 8.0f);
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(x, y), Scalar(60.0f), Epsilon));
+            }
+            {
+                static constexpr TestType x(-1.0f, -2.0f, -3.0f, -4.0f);
+                static constexpr TestType y(5.0f, 6.0f, 7.0f, 8.0f);
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(x, y), Scalar(-70.0f), Epsilon));
+            }
+            {
+                static constexpr TestType x(-1.0f, 2.0f, -3.0f, 4.0f);
+                static constexpr TestType y(5.0f, -6.0f, 7.0f, -8.0f);
+                STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(x, y), Scalar(-70.0f), Epsilon));
+            }
+        }
 
         {
-            constexpr T x(1.0f, 2.0f, 3.0f, 4.0f);
-            constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(70.0f), Epsilon));
+            static constexpr TestType x(Vec4Scalar(0.0f, 0.0f, 0.0f, 0.0f));
+            static constexpr TestType y(Vec4Scalar(5.0f, 6.0f, 7.0f, 8.0f));
+            STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(x, y), Scalar(0.0f), Epsilon));
         }
         {
-            constexpr T x(0.0f, 0.0f, 0.0f, 0.0f);
-            constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(0.0f), Epsilon));
-        }
-        {
-            constexpr T x(1.0f, 2.0f, 3.0f, 4.0f);
-            constexpr T y(2.0f, 4.0f, 6.0f, 8.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(60.0f), Epsilon));
-        }
-        {
-            constexpr T x(1.0f, 0.0f, 0.0f, 0.0f);
-            constexpr T y(0.0f, 1.0f, 0.0f, 0.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(0.0f), Epsilon));
-        }
-        {
-            constexpr T x(-1.0f, -2.0f, -3.0f, -4.0f);
-            constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(-70.0f), Epsilon));
-        }
-        {
-            constexpr T x(-1.0f, 2.0f, -3.0f, 4.0f);
-            constexpr T y(5.0f, -6.0f, 7.0f, -8.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(-70.0f), Epsilon));
+            static constexpr TestType x(Vec4Scalar(1.0f, 0.0f, 0.0f, 0.0f));
+            static constexpr TestType y(Vec4Scalar(0.0f, 1.0f, 0.0f, 0.0f));
+            STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(x, y), Scalar(0.0f), Epsilon));
         }
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec3<T> && std::floating_point<typename T::value_type>
-    consteval void RunCompileTimeDotVec3Tests()
+    SECTION("Edge cases")
     {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr Scalar max = std::numeric_limits<Scalar>::max();
+        static constexpr Scalar min = std::numeric_limits<Scalar>::lowest();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = -std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar nan = -std::numeric_limits<Scalar>::quiet_NaN();
 
+        if constexpr(std::same_as<TestType, TRAP::Math::tVec4<Scalar>>)
         {
-            constexpr T x(1.0f, 2.0f, 3.0f);
-            constexpr T y(5.0f, 6.0f, 7.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(38.0f), Epsilon));
-        }
-        {
-            constexpr T x(0.0f, 0.0f, 0.0f);
-            constexpr T y(5.0f, 6.0f, 7.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(0.0f), Epsilon));
-        }
-        {
-            constexpr T x(1.0f, 2.0f, 3.0f);
-            constexpr T y(2.0f, 4.0f, 6.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(28.0f), Epsilon));
-        }
-        {
-            constexpr T x(1.0f, 0.0f, 0.0f);
-            constexpr T y(0.0f, 1.0f, 0.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(0.0f), Epsilon));
-        }
-        {
-            constexpr T x(-1.0f, -2.0f, -3.0f);
-            constexpr T y(5.0f, 6.0f, 7.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(-38.0f), Epsilon));
-        }
-        {
-            constexpr T x(-1.0f, 2.0f, -3.0f);
-            constexpr T y(5.0f, -6.0f, 7.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(-38.0f), Epsilon));
-        }
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsVec2<T> && std::floating_point<typename T::value_type>
-    consteval void RunCompileTimeDotVec2Tests()
-    {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-
-        {
-            constexpr T x(1.0f, 2.0f);
-            constexpr T y(5.0f, 6.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(17.0f), Epsilon));
-        }
-        {
-            constexpr T x(0.0f, 0.0f);
-            constexpr T y(5.0f, 6.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(0.0f), Epsilon));
-        }
-        {
-            constexpr T x(1.0f, 2.0f);
-            constexpr T y(2.0f, 4.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(10.0f), Epsilon));
-        }
-        {
-            constexpr T x(1.0f, 0.0f);
-            constexpr T y(0.0f, 1.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(0.0f), Epsilon));
-        }
-        {
-            constexpr T x(-1.0f, -2.0f);
-            constexpr T y(5.0f, 6.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(-17.0f), Epsilon));
-        }
-        {
-            constexpr T x(-1.0f, 2.0f);
-            constexpr T y(5.0f, -6.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(x, y), typename T::value_type(-17.0f), Epsilon));
-        }
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsVec4<T> && std::floating_point<typename T::value_type>
-    void RunDotVecEdgeTests()
-    {
-        static constexpr typename T::value_type max = std::numeric_limits<typename T::value_type>::max();
-        static constexpr typename T::value_type min = std::numeric_limits<typename T::value_type>::lowest();
-        static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-        static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
-        static constexpr typename T::value_type nan = -std::numeric_limits<typename T::value_type>::quiet_NaN();
-
-        {
-            static constexpr T x(max, 2.0f, 3.0f, 4.0f);
-            static constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
-            REQUIRE(TRAP::Math::IsInf(TRAP::Math::Dot(x, y)));
-        }
-        {
-            static constexpr T x(min, 2.0f, 3.0f, 4.0f);
-            static constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
-            REQUIRE(TRAP::Math::IsInf(TRAP::Math::Dot(x, y)));
-        }
-        {
-            static constexpr T x(inf, 2.0f, 3.0f, 4.0f);
-            static constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
-            STATIC_REQUIRE(TRAP::Math::IsInf(TRAP::Math::Dot(x, y)));
-        }
-        {
-            static constexpr T x(ninf, 2.0f, 3.0f, 4.0f);
-            static constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
-            STATIC_REQUIRE(TRAP::Math::IsInf(TRAP::Math::Dot(x, y)));
-        }
-        {
-            static constexpr T x(nan, 2.0f, 3.0f, 4.0f);
-            static constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
-            REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Dot(x, y)));
-        }
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsQuat<T>
-    consteval void RunCompileTimeDotQuatTests()
-    {
-        constexpr typename T::value_type Epsilon = typename T::value_type(0.001f);
-
-        {
-            constexpr T q1(0.5f, 0.2f, 0.7f, 0.9f);
-            constexpr T q2(0.3f, 0.4f, 0.1f, 0.6f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(q1, q2), typename T::value_type(0.84f), Epsilon));
-        }
-        {
-            constexpr T q1(0.0f, 0.0f, 0.0f, 0.0f);
-            constexpr T q2(0.3f, 0.4f, 0.1f, 0.6f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(q1, q2), typename T::value_type(0.0f), Epsilon));
-        }
-        {
-            constexpr T q1(0.5f, 0.2f, 0.7f, 0.9f);
-            constexpr T q2(1.0f, 0.4f, 1.4f, 1.8f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(q1, q2), typename T::value_type(3.18f), Epsilon));
-        }
-        {
-            constexpr T q1(-0.5f, -0.2f, -0.7f, -0.9f);
-            constexpr T q2(0.3f, 0.4f, 0.1f, 0.6f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(q1, q2), typename T::value_type(-0.84f), Epsilon));
-        }
-        {
-            constexpr T q1(-0.5f, 0.2f, -0.7f, 0.9f);
-            constexpr T q2(0.3f, -0.4f, 0.1f, -0.6f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(q1, q2), typename T::value_type(-0.84f), Epsilon));
-        }
-        {
-            constexpr T q1(1.0f, 0.0f, 0.0f, 0.0f);
-            constexpr T q2(0.3f, 0.4f, 0.1f, 0.6f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(q1, q2), typename T::value_type(0.3f), Epsilon));
-        }
-        {
-            constexpr T q1(1.0f, 0.0f, 0.0f, 0.0f);
-            constexpr T q2(1.0f, 0.0f, 0.0f, 0.0f);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Dot(q1, q2), typename T::value_type(1.0f), Epsilon));
+            {
+                static constexpr TestType x(max, 2.0f, 3.0f, 4.0f);
+                static constexpr TestType y(5.0f, 6.0f, 7.0f, 8.0f);
+                REQUIRE(TRAP::Math::IsInf(TRAP::Math::Dot(x, y)));
+            }
+            {
+                static constexpr TestType x(min, 2.0f, 3.0f, 4.0f);
+                static constexpr TestType y(5.0f, 6.0f, 7.0f, 8.0f);
+                REQUIRE(TRAP::Math::IsInf(TRAP::Math::Dot(x, y)));
+            }
+            {
+                static constexpr TestType x(inf, 2.0f, 3.0f, 4.0f);
+                static constexpr TestType y(5.0f, 6.0f, 7.0f, 8.0f);
+                STATIC_REQUIRE(TRAP::Math::IsInf(TRAP::Math::Dot(x, y)));
+            }
+            {
+                static constexpr TestType x(ninf, 2.0f, 3.0f, 4.0f);
+                static constexpr TestType y(5.0f, 6.0f, 7.0f, 8.0f);
+                STATIC_REQUIRE(TRAP::Math::IsInf(TRAP::Math::Dot(x, y)));
+            }
+            {
+                static constexpr TestType x(nan, 2.0f, 3.0f, 4.0f);
+                static constexpr TestType y(5.0f, 6.0f, 7.0f, 8.0f);
+                REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Dot(x, y)));
+            }
         }
     }
 }
 
-TEST_CASE("TRAP::Math::Dot()", "[math][generic][dot]")
+TEMPLATE_TEST_CASE("TRAP::Math::Dot()", "[math][generic][dot][quat]", TRAP::Math::Quatd, TRAP::Math::Quatf)
 {
-    SECTION("Vec2 - f64")
-    {
-        RunCompileTimeDotVec2Tests<TRAP::Math::Vec2d>();
-    }
-    SECTION("Vec2 - f32")
-    {
-        RunCompileTimeDotVec2Tests<TRAP::Math::Vec2f>();
-    }
+    using Scalar = TestType::value_type;
 
-    SECTION("Vec3 - f64")
-    {
-        RunCompileTimeDotVec3Tests<TRAP::Math::Vec3d>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunCompileTimeDotVec3Tests<TRAP::Math::Vec3f>();
-    }
+    static constexpr Scalar Epsilon = Scalar(0.001f);
 
-    SECTION("Vec4 - f64")
     {
-        RunCompileTimeDotVec4Tests<TRAP::Math::Vec4d>();
-        RunDotVecEdgeTests<TRAP::Math::Vec4d>();
+        static constexpr TestType q1(0.5f, 0.2f, 0.7f, 0.9f);
+        static constexpr TestType q2(0.3f, 0.4f, 0.1f, 0.6f);
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(q1, q2), Scalar(0.84f), Epsilon));
     }
-    SECTION("Vec4 - f32")
     {
-        RunCompileTimeDotVec4Tests<TRAP::Math::Vec4f>();
-        RunDotVecEdgeTests<TRAP::Math::Vec4f>();
+        static constexpr TestType q1(0.0f, 0.0f, 0.0f, 0.0f);
+        static constexpr TestType q2(0.3f, 0.4f, 0.1f, 0.6f);
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(q1, q2), Scalar(0.0f), Epsilon));
     }
-
-    SECTION("Quat - f64")
     {
-        RunCompileTimeDotQuatTests<TRAP::Math::Quatd>();
+        static constexpr TestType q1(0.5f, 0.2f, 0.7f, 0.9f);
+        static constexpr TestType q2(1.0f, 0.4f, 1.4f, 1.8f);
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(q1, q2), Scalar(3.18f), Epsilon));
     }
-    SECTION("Quat - f32")
     {
-        RunCompileTimeDotQuatTests<TRAP::Math::Quatf>();
+        static constexpr TestType q1(-0.5f, -0.2f, -0.7f, -0.9f);
+        static constexpr TestType q2(0.3f, 0.4f, 0.1f, 0.6f);
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(q1, q2), Scalar(-0.84f), Epsilon));
+    }
+    {
+        static constexpr TestType q1(-0.5f, 0.2f, -0.7f, 0.9f);
+        static constexpr TestType q2(0.3f, -0.4f, 0.1f, -0.6f);
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(q1, q2), Scalar(-0.84f), Epsilon));
+    }
+    {
+        static constexpr TestType q1(1.0f, 0.0f, 0.0f, 0.0f);
+        static constexpr TestType q2(0.3f, 0.4f, 0.1f, 0.6f);
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(q1, q2), Scalar(0.3f), Epsilon));
+    }
+    {
+        static constexpr TestType q1(1.0f, 0.0f, 0.0f, 0.0f);
+        static constexpr TestType q2(1.0f, 0.0f, 0.0f, 0.0f);
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Dot(q1, q2), Scalar(1.0f), Epsilon));
     }
 }

@@ -1,146 +1,128 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::LookAt()", "[math][generic][lookat][scalar]", f32, f64)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunLookAtCompileTimeTests()
+    using Vec3Scalar = TRAP::Math::tVec3<TestType>;
+    using Mat4Scalar = TRAP::Math::tMat4<TestType>;
+
+    SECTION("Normal cases - GCEM")
     {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
         {
-            constexpr TRAP::Math::tVec3<T> eye(0.0f);
-            constexpr TRAP::Math::tVec3<T> center(0.0f, 0.0f, -1.0f);
-            constexpr TRAP::Math::tVec3<T> up(0.0f, 1.0f, 0.0f);
+            static constexpr Vec3Scalar eye(0.0f);
+            static constexpr Vec3Scalar center(0.0f, 0.0f, -1.0f);
+            static constexpr Vec3Scalar up(0.0f, 1.0f, 0.0f);
 
-            constexpr TRAP::Math::tMat4<T> res = TRAP::Math::LookAt(eye, center, up);
-            constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+            static constexpr Mat4Scalar res = TRAP::Math::LookAt(eye, center, up);
+            static constexpr Mat4Scalar expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
             static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
         }
         {
-            constexpr TRAP::Math::tVec3<T> eye(2.0f);
-            constexpr TRAP::Math::tVec3<T> center(0.0f);
-            constexpr TRAP::Math::tVec3<T> up(0.0f, 1.0f, 0.0f);
+            static constexpr Vec3Scalar eye(2.0f);
+            static constexpr Vec3Scalar center(0.0f);
+            static constexpr Vec3Scalar up(0.0f, 1.0f, 0.0f);
 
-            constexpr TRAP::Math::tMat4<T> res = TRAP::Math::LookAt(eye, center, up);
-            constexpr TRAP::Math::tMat4<T> expected(0.707107f, -0.408248f, 0.577350f, 0.0f, 0.0f, 0.816497f, 0.577350f, 0.0f, -0.707107f, -0.408248f, 0.577350f, 0.0f, 0.0f, 0.0f, -3.464102f, 1.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, T(0.000001f))));
+            static constexpr Mat4Scalar res = TRAP::Math::LookAt(eye, center, up);
+            static constexpr Mat4Scalar expected(0.707107f, -0.408248f, 0.577350f, 0.0f, 0.0f, 0.816497f, 0.577350f, 0.0f, -0.707107f, -0.408248f, 0.577350f, 0.0f, 0.0f, 0.0f, -3.464102f, 1.0f);
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, TestType(0.000001f))));
         }
         {
-            constexpr TRAP::Math::tVec3<T> eye(-1.0f, 1.0f, 1.0f);
-            constexpr TRAP::Math::tVec3<T> center(1.0f, -1.0f, -1.0f);
-            constexpr TRAP::Math::tVec3<T> up(0.0f, 1.0f, 0.0f);
+            static constexpr Vec3Scalar eye(-1.0f, 1.0f, 1.0f);
+            static constexpr Vec3Scalar center(1.0f, -1.0f, -1.0f);
+            static constexpr Vec3Scalar up(0.0f, 1.0f, 0.0f);
 
-            constexpr TRAP::Math::tMat4<T> res = TRAP::Math::LookAt(eye, center, up);
-            constexpr TRAP::Math::tMat4<T> expected(0.707107f, 0.408248f, -0.577350f, 0.0f, 0.0f, 0.816497f, 0.577350f, 0.0f, 0.707107f, -0.408248f, 0.577350, 0.0f, 0.0f, 0.0f, -1.732051f, 1.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, T(0.000001f))));
+            static constexpr Mat4Scalar res = TRAP::Math::LookAt(eye, center, up);
+            static constexpr Mat4Scalar expected(0.707107f, 0.408248f, -0.577350f, 0.0f, 0.0f, 0.816497f, 0.577350f, 0.0f, 0.707107f, -0.408248f, 0.577350, 0.0f, 0.0f, 0.0f, -1.732051f, 1.0f);
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, TestType(0.000001f))));
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunLookAtRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
         {
-            static constexpr TRAP::Math::tVec3<T> eye(0.0f);
-            static constexpr TRAP::Math::tVec3<T> center(0.0f, 0.0f, -1.0f);
-            static constexpr TRAP::Math::tVec3<T> up(0.0f, 1.0f, 0.0f);
+            static constexpr Vec3Scalar eye(0.0f);
+            static constexpr Vec3Scalar center(0.0f, 0.0f, -1.0f);
+            static constexpr Vec3Scalar up(0.0f, 1.0f, 0.0f);
 
-            const TRAP::Math::tMat4<T> res = TRAP::Math::LookAt(eye, center, up);
-            static constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+            const Mat4Scalar res = TRAP::Math::LookAt(eye, center, up);
+            static constexpr Mat4Scalar expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
         }
         {
-            static constexpr TRAP::Math::tVec3<T> eye(2.0f);
-            static constexpr TRAP::Math::tVec3<T> center(0.0f);
-            static constexpr TRAP::Math::tVec3<T> up(0.0f, 1.0f, 0.0f);
+            static constexpr Vec3Scalar eye(2.0f);
+            static constexpr Vec3Scalar center(0.0f);
+            static constexpr Vec3Scalar up(0.0f, 1.0f, 0.0f);
 
-            const TRAP::Math::tMat4<T> res = TRAP::Math::LookAt(eye, center, up);
-            static constexpr TRAP::Math::tMat4<T> expected(0.707107f, -0.408248f, 0.577350f, 0.0f, 0.0f, 0.816497f, 0.577350f, 0.0f, -0.707107f, -0.408248f, 0.577350f, 0.0f, 0.0f, 0.0f, -3.464102f, 1.0f);
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, T(0.000001f))));
+            const Mat4Scalar res = TRAP::Math::LookAt(eye, center, up);
+            static constexpr Mat4Scalar expected(0.707107f, -0.408248f, 0.577350f, 0.0f, 0.0f, 0.816497f, 0.577350f, 0.0f, -0.707107f, -0.408248f, 0.577350f, 0.0f, 0.0f, 0.0f, -3.464102f, 1.0f);
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, TestType(0.000001f))));
         }
         {
-            static constexpr TRAP::Math::tVec3<T> eye(-1.0f, 1.0f, 1.0f);
-            static constexpr TRAP::Math::tVec3<T> center(1.0f, -1.0f, -1.0f);
-            static constexpr TRAP::Math::tVec3<T> up(0.0f, 1.0f, 0.0f);
+            static constexpr Vec3Scalar eye(-1.0f, 1.0f, 1.0f);
+            static constexpr Vec3Scalar center(1.0f, -1.0f, -1.0f);
+            static constexpr Vec3Scalar up(0.0f, 1.0f, 0.0f);
 
-            const TRAP::Math::tMat4<T> res = TRAP::Math::LookAt(eye, center, up);
-            static constexpr TRAP::Math::tMat4<T> expected(0.707107f, 0.408248f, -0.577350f, 0.0f, 0.0f, 0.816497f, 0.577350f, 0.0f, 0.707107f, -0.408248f, 0.577350, 0.0f, 0.0f, 0.0f, -1.732051f, 1.0f);
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, T(0.000001f))));
+            const Mat4Scalar res = TRAP::Math::LookAt(eye, center, up);
+            static constexpr Mat4Scalar expected(0.707107f, 0.408248f, -0.577350f, 0.0f, 0.0f, 0.816497f, 0.577350f, 0.0f, 0.707107f, -0.408248f, 0.577350, 0.0f, 0.0f, 0.0f, -1.732051f, 1.0f);
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, TestType(0.000001f))));
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunLookAtEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr T min = std::numeric_limits<T>::lowest();
-        static constexpr T max = std::numeric_limits<T>::max();
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        static constexpr TestType min = std::numeric_limits<TestType>::lowest();
+        static constexpr TestType max = std::numeric_limits<TestType>::max();
+        static constexpr TestType inf = std::numeric_limits<TestType>::infinity();
+        static constexpr TestType ninf = -std::numeric_limits<TestType>::infinity();
+        static constexpr TestType nan = std::numeric_limits<TestType>::quiet_NaN();
 
         {
-            static constexpr TRAP::Math::tVec3<T> eye(min, 0.0f, 0.0f);
-            static constexpr TRAP::Math::tVec3<T> center(0.0f, 0.0f, -1.0f);
-            static constexpr TRAP::Math::tVec3<T> up(0.0f, 1.0f, 0.0f);
+            static constexpr Vec3Scalar eye(min, 0.0f, 0.0f);
+            static constexpr Vec3Scalar center(0.0f, 0.0f, -1.0f);
+            static constexpr Vec3Scalar up(0.0f, 1.0f, 0.0f);
 
-            const TRAP::Math::tMat4<T> res = TRAP::Math::LookAt(eye, center, up);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
+            const Mat4Scalar res = TRAP::Math::LookAt(eye, center, up);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(res))));
         }
         {
-            static constexpr TRAP::Math::tVec3<T> eye(max, 0.0f, 0.0f);
-            static constexpr TRAP::Math::tVec3<T> center(0.0f, 0.0f, -1.0f);
-            static constexpr TRAP::Math::tVec3<T> up(0.0f, 1.0f, 0.0f);
+            static constexpr Vec3Scalar eye(max, 0.0f, 0.0f);
+            static constexpr Vec3Scalar center(0.0f, 0.0f, -1.0f);
+            static constexpr Vec3Scalar up(0.0f, 1.0f, 0.0f);
 
-            const TRAP::Math::tMat4<T> res = TRAP::Math::LookAt(eye, center, up);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
+            const Mat4Scalar res = TRAP::Math::LookAt(eye, center, up);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(res))));
         }
         {
-            static constexpr TRAP::Math::tVec3<T> eye(inf, 0.0f, 0.0f);
-            static constexpr TRAP::Math::tVec3<T> center(0.0f, 0.0f, -1.0f);
-            static constexpr TRAP::Math::tVec3<T> up(0.0f, 1.0f, 0.0f);
+            static constexpr Vec3Scalar eye(inf, 0.0f, 0.0f);
+            static constexpr Vec3Scalar center(0.0f, 0.0f, -1.0f);
+            static constexpr Vec3Scalar up(0.0f, 1.0f, 0.0f);
 
-            const TRAP::Math::tMat4<T> res = TRAP::Math::LookAt(eye, center, up);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
+            const Mat4Scalar res = TRAP::Math::LookAt(eye, center, up);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(res))));
         }
         {
-            static constexpr TRAP::Math::tVec3<T> eye(ninf, 0.0f, 0.0f);
-            static constexpr TRAP::Math::tVec3<T> center(0.0f, 0.0f, -1.0f);
-            static constexpr TRAP::Math::tVec3<T> up(0.0f, 1.0f, 0.0f);
+            static constexpr Vec3Scalar eye(ninf, 0.0f, 0.0f);
+            static constexpr Vec3Scalar center(0.0f, 0.0f, -1.0f);
+            static constexpr Vec3Scalar up(0.0f, 1.0f, 0.0f);
 
-            const TRAP::Math::tMat4<T> res = TRAP::Math::LookAt(eye, center, up);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
+            const Mat4Scalar res = TRAP::Math::LookAt(eye, center, up);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(res))));
         }
         {
-            static constexpr TRAP::Math::tVec3<T> eye(nan, 0.0f, 0.0f);
-            static constexpr TRAP::Math::tVec3<T> center(0.0f, 0.0f, -1.0f);
-            static constexpr TRAP::Math::tVec3<T> up(0.0f, 1.0f, 0.0f);
+            static constexpr Vec3Scalar eye(nan, 0.0f, 0.0f);
+            static constexpr Vec3Scalar center(0.0f, 0.0f, -1.0f);
+            static constexpr Vec3Scalar up(0.0f, 1.0f, 0.0f);
 
-            const TRAP::Math::tMat4<T> res = TRAP::Math::LookAt(eye, center, up);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
+            const Mat4Scalar res = TRAP::Math::LookAt(eye, center, up);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(res))));
         }
-    }
-}
-
-TEST_CASE("TRAP::Math::LookAt()", "[math][generic][lookat]")
-{
-    SECTION("Scalar - f64")
-    {
-        RunLookAtRunTimeTests<f64>();
-        RunLookAtCompileTimeTests<f64>();
-        RunLookAtEdgeTests<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunLookAtRunTimeTests<f32>();
-        RunLookAtCompileTimeTests<f32>();
-        RunLookAtEdgeTests<f32>();
     }
 }

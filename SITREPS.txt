@@ -5369,3 +5369,7 @@ SITREP 11/05/2024|24w45a2
 SITREP 11/06/2024|24w45a3
     - Changed TRAP Engine version to 24w45a3(0.11.38)
     - Code Coverage Changed generation script ~<10 mins
+
+SITREP 11/11/2024|24w46a1
+    - Changed TRAP Engine version to 24w46a1(0.11.39)
+    - UnitTests Refactored tests to use type parameter tests from Catch2 ~>120 mins

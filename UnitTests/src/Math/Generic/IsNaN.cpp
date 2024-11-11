@@ -1,82 +1,33 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::IsNaN()", "[math][generic][isnan][scalar]", f32, f64)
 {
-    template<typename T>
-    requires (std::floating_point<T> ||
-            (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>) ||
-            (TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>))
-    consteval void RunCompileTimeIsNaNTest()
-    {
-        if constexpr(std::floating_point<T>)
-        {
-            constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-            static_assert(TRAP::Math::IsNaN(nan));
-            static_assert(TRAP::Math::IsNaN(-nan));
-        }
-        else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
-        {
-            constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
-            static_assert(TRAP::Math::Any(TRAP::Math::IsNaN(T(nan))));
-            static_assert(TRAP::Math::Any(TRAP::Math::IsNaN(T(-nan))));
-        }
-        else if constexpr(TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>)
-        {
-            constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
-            static_assert(TRAP::Math::Any(TRAP::Math::IsNaN(T(nan, nan, nan, nan))));
-            static_assert(TRAP::Math::Any(TRAP::Math::IsNaN(T(-nan, -nan, -nan, -nan))));
-        }
-    }
+    static constexpr TestType nan = std::numeric_limits<TestType>::quiet_NaN();
+    STATIC_REQUIRE(TRAP::Math::IsNaN(nan));
+    STATIC_REQUIRE(TRAP::Math::IsNaN(-nan));
 }
 
-TEST_CASE("TRAP::Math::IsNaN()", "[math][generic][isnan]")
+TEMPLATE_TEST_CASE("TRAP::Math::IsNaN()", "[math][generic][isnan][vec]",
+                   TRAP::Math::Vec2f, TRAP::Math::Vec2d, TRAP::Math::Vec3f, TRAP::Math::Vec3d, TRAP::Math::Vec4f, TRAP::Math::Vec4d)
 {
-    SECTION("Scalar - f64")
-    {
-        RunCompileTimeIsNaNTest<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunCompileTimeIsNaNTest<f32>();
-    }
+    using Scalar = TestType::value_type;
 
-    SECTION("Vec2 - f64")
-    {
-        RunCompileTimeIsNaNTest<TRAP::Math::Vec2d>();
-    }
-    SECTION("Vec2 - f32")
-    {
-        RunCompileTimeIsNaNTest<TRAP::Math::Vec2f>();
-    }
+    static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
+    STATIC_REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(TestType(nan))));
+    STATIC_REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(TestType(-nan))));
+}
 
-    SECTION("Vec3 - f64")
-    {
-        RunCompileTimeIsNaNTest<TRAP::Math::Vec3d>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunCompileTimeIsNaNTest<TRAP::Math::Vec3f>();
-    }
+TEMPLATE_TEST_CASE("TRAP::Math::IsNaN()", "[math][generic][isnan][quat]",
+                   TRAP::Math::Quatf, TRAP::Math::Quatd)
+{
+    using Scalar = TestType::value_type;
 
-    SECTION("Vec4 - f64")
-    {
-        RunCompileTimeIsNaNTest<TRAP::Math::Vec4d>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunCompileTimeIsNaNTest<TRAP::Math::Vec4f>();
-    }
-
-    SECTION("Quat - f64")
-    {
-        RunCompileTimeIsNaNTest<TRAP::Math::Quatd>();
-    }
-    SECTION("Quat - f32")
-    {
-        RunCompileTimeIsNaNTest<TRAP::Math::Quatf>();
-    }
+    static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
+    STATIC_REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(TestType(nan, nan, nan, nan))));
+    STATIC_REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(TestType(-nan, -nan, -nan, -nan))));
 }

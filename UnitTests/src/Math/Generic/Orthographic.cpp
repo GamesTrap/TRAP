@@ -1,138 +1,83 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Orthographic()", "[math][generic][orthographic][mat]", TRAP::Math::Mat4f, TRAP::Math::Mat4d)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunCompileTimeOrthographicTests()
+    using Scalar = TestType::value_type;
+
+    SECTION("Normal cases")
     {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
         {
-            constexpr TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 1.0f);
-            constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ<T>(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 0.0f), Epsilon)));
-        }
-        {
-            constexpr TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 1000.0f);
-            constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.001000f, 0.0f, 0.0f, 0.0f, -0.001000f, 1.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, T(0.001f))));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ<T>(-1.0f, 1.0f, -1.0f, 1.0f, 1000.0f, 0.1f), T(0.001f))));
-        }
-        {
-            constexpr TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(0.0f, 800.0f, 0.0f, 600.0f, -10.0f, 10.0f);
-            constexpr TRAP::Math::tMat4<T> expected(0.002500f, 0.0f, 0.0f, 0.0f, 0.0f, 0.003333f, 0.0f, 0.0f, 0.0f, 0.0f, -0.050000f, 0.0f, -1.0f, -1.0f, 0.5f, 1.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, T(0.000001f))));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ<T>(0.0f, 800.0f, 0.0f, 600.0f, 10.0f, -10.0f), T(0.000001f))));
-        }
-        {
-            constexpr TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(-10.0f, 10.0f, -5.0f, 5.0f, 0.0f, 100.0f);
-            constexpr TRAP::Math::tMat4<T> expected(0.1f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, 0.0f, -0.01f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, T(0.00000001f))));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ<T>(-10.0f, 10.0f, -5.0f, 5.0f, 100.0f, 0.0f), T(0.00000001f))));
-        }
-        {
-            constexpr TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(-5.0f, 5.0f, -5.0f, 5.0f, 1.0f, 10.0f);
-            constexpr TRAP::Math::tMat4<T> expected(0.2f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, 0.0f, -0.111111f, 0.0f, 0.0f, 0.0f, -0.111111f, 1.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, T(0.000001f))));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ<T>(-5.0f, 5.0f, -5.0f, 5.0f, 10.0f, 1.0f), T(0.00000001f))));
-        }
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    void RunRunTimeOrthographicTests()
-    {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-
-        {
-            TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 1.0f);
-            TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, Epsilon)));
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ<T>(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 0.0f), Epsilon)));
-        }
-        {
-            TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 1000.0f);
-            TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.001000f, 0.0f, 0.0f, 0.0f, -0.001000f, 1.0f);
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, T(0.001f))));
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ<T>(-1.0f, 1.0f, -1.0f, 1.0f, 1000.0f, 0.1f), T(0.001f))));
-        }
-        {
-            TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(0.0f, 800.0f, 0.0f, 600.0f, -10.0f, 10.0f);
-            TRAP::Math::tMat4<T> expected(0.002500f, 0.0f, 0.0f, 0.0f, 0.0f, 0.003333f, 0.0f, 0.0f, 0.0f, 0.0f, -0.050000f, 0.0f, -1.0f, -1.0f, 0.5f, 1.0f);
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, T(0.000001f))));
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ<T>(0.0f, 800.0f, 0.0f, 600.0f, 10.0f, -10.0f), T(0.000001f))));
-        }
-        {
-            TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(-10.0f, 10.0f, -5.0f, 5.0f, 0.0f, 100.0f);
-            TRAP::Math::tMat4<T> expected(0.1f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, 0.0f, -0.01f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, T(0.00000001f))));
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ<T>(-10.0f, 10.0f, -5.0f, 5.0f, 100.0f, 0.0f), T(0.00000001f))));
-        }
-        {
-            TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(-5.0f, 5.0f, -5.0f, 5.0f, 1.0f, 10.0f);
-            TRAP::Math::tMat4<T> expected(0.2f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, 0.0f, -0.111111f, 0.0f, 0.0f, 0.0f, -0.111111f, 1.0f);
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, T(0.000001f))));
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ<T>(-5.0f, 5.0f, -5.0f, 5.0f, 10.0f, 1.0f), T(0.00000001f))));
-        }
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    void RunOrthographicEdgeTests()
-    {
-        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-
-        static constexpr T min = std::numeric_limits<T>::lowest();
-        static constexpr T max = std::numeric_limits<T>::max();
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-
-        {
-            static constexpr TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(min, 1.0f, min, 1.0f, 0.0f, 1.0f);
-            static constexpr TRAP::Math::tMat4<T> expected(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f);
+            static constexpr TestType ortho = TRAP::Math::Orthographic<Scalar>(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 1.0f);
+            static constexpr TestType expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
             STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, Epsilon)));
-            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ(T(min), T(5.0f), T(min), T(5.0f), T(1.0f), T(0.0f)), Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ<Scalar>(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 0.0f), Epsilon)));
         }
         {
-            static constexpr TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(max, 1.0f, max, 1.0f, 0.0f, 1.0f);
-            static constexpr TRAP::Math::tMat4<T> expected(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f);
-            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, Epsilon)));
-            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ(T(max), T(5.0f), T(max), T(5.0f), T(1.0f), T(0.0f)), Epsilon)));
+            static constexpr TestType ortho = TRAP::Math::Orthographic<Scalar>(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 1000.0f);
+            static constexpr TestType expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.001000f, 0.0f, 0.0f, 0.0f, -0.001000f, 1.0f);
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, Scalar(0.001f))));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ<Scalar>(-1.0f, 1.0f, -1.0f, 1.0f, 1000.0f, 0.1f), Scalar(0.001f))));
         }
         {
-            const TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(inf, 1.0f, inf, 1.0f, 0.0f, 1.0f);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3>(ortho))));
+            static constexpr TestType ortho = TRAP::Math::Orthographic<Scalar>(0.0f, 800.0f, 0.0f, 600.0f, -10.0f, 10.0f);
+            static constexpr TestType expected(0.002500f, 0.0f, 0.0f, 0.0f, 0.0f, 0.003333f, 0.0f, 0.0f, 0.0f, 0.0f, -0.050000f, 0.0f, -1.0f, -1.0f, 0.5f, 1.0f);
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, Scalar(0.000001f))));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ<Scalar>(0.0f, 800.0f, 0.0f, 600.0f, 10.0f, -10.0f), Scalar(0.000001f))));
         }
         {
-            const TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(ninf, 1.0f, ninf, 1.0f, 0.0f, 1.0f);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3>(ortho))));
+            static constexpr TestType ortho = TRAP::Math::Orthographic<Scalar>(-10.0f, 10.0f, -5.0f, 5.0f, 0.0f, 100.0f);
+            static constexpr TestType expected(0.1f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, 0.0f, -0.01f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, Scalar(0.00000001f))));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ<Scalar>(-10.0f, 10.0f, -5.0f, 5.0f, 100.0f, 0.0f), Scalar(0.00000001f))));
         }
         {
-            const TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(nan, 1.0f, nan, 1.0f, 0.0f, 1.0f);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3>(ortho))));
+            static constexpr TestType ortho = TRAP::Math::Orthographic<Scalar>(-5.0f, 5.0f, -5.0f, 5.0f, 1.0f, 10.0f);
+            static constexpr TestType expected(0.2f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, 0.0f, -0.111111f, 0.0f, 0.0f, 0.0f, -0.111111f, 1.0f);
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, Scalar(0.000001f))));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ<Scalar>(-5.0f, 5.0f, -5.0f, 5.0f, 10.0f, 1.0f), Scalar(0.00000001f))));
         }
     }
-}
 
-TEST_CASE("TRAP::Math::Orthographic()", "[math][generic][orthographic]")
-{
-    SECTION("Mat4 - f64")
+    SECTION("Edge cases")
     {
-        RunCompileTimeOrthographicTests<f64>();
-        RunRunTimeOrthographicTests<f64>();
-        RunOrthographicEdgeTests<f64>();
-    }
-    SECTION("Mat4 - f32")
-    {
-        RunCompileTimeOrthographicTests<f32>();
-        RunRunTimeOrthographicTests<f32>();
-        RunOrthographicEdgeTests<f32>();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
+
+        static constexpr Scalar min = std::numeric_limits<Scalar>::lowest();
+        static constexpr Scalar max = std::numeric_limits<Scalar>::max();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = -std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
+
+        {
+            static constexpr TestType ortho = TRAP::Math::Orthographic<Scalar>(min, 1.0f, min, 1.0f, 0.0f, 1.0f);
+            static constexpr TestType expected(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f);
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ(Scalar(min), Scalar(5.0f), Scalar(min), Scalar(5.0f), Scalar(1.0f), Scalar(0.0f)), Epsilon)));
+        }
+        {
+            static constexpr TestType ortho = TRAP::Math::Orthographic<Scalar>(max, 1.0f, max, 1.0f, 0.0f, 1.0f);
+            static constexpr TestType expected(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f);
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, Epsilon)));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ(Scalar(max), Scalar(5.0f), Scalar(max), Scalar(5.0f), Scalar(1.0f), Scalar(0.0f)), Epsilon)));
+        }
+        {
+            const TestType ortho = TRAP::Math::Orthographic<Scalar>(inf, 1.0f, inf, 1.0f, 0.0f, 1.0f);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3u>(ortho))));
+        }
+        {
+            const TestType ortho = TRAP::Math::Orthographic<Scalar>(ninf, 1.0f, ninf, 1.0f, 0.0f, 1.0f);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3u>(ortho))));
+        }
+        {
+            const TestType ortho = TRAP::Math::Orthographic<Scalar>(nan, 1.0f, nan, 1.0f, 0.0f, 1.0f);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3u>(ortho))));
+        }
     }
 }

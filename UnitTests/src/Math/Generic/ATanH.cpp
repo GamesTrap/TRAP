@@ -2,145 +2,83 @@
 #include <cmath>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::ATanH()", "[math][generic][atanh][scalar]", f64, f32)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunATanHCompileTimeTests()
+    SECTION("Normal cases - GCEM")
     {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
-        static_assert(TRAP::Math::Equal(TRAP::Math::ATanH(T(-0.99)), T(-2.64665), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::ATanH(T(0.0)), T(0.0), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::ATanH(T(0.001)), T(0.001), T(0.000000001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::ATanH(TestType(-0.99)), TestType(-2.64665), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::ATanH(TestType(0.0)), TestType(0.0), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::ATanH(TestType(0.001)), TestType(0.001), TestType(0.000000001f)));
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunATanHRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
-        static constexpr std::array<T, 3> values
+        static constexpr std::array<TestType, 3u> values
         {
-            T(-0.99), T(0.0), T(0.001)
+            TestType(-0.99), TestType(0.0), TestType(0.001)
         };
 
-        for(const T val : values)
-        {
+        for(const TestType val : values)
             REQUIRE(TRAP::Math::Equal(TRAP::Math::ATanH(val), std::atanh(val), Epsilon));
-        }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunATanHEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        static constexpr TestType nan = std::numeric_limits<TestType>::quiet_NaN();
 
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::ATanH(nan)));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::ATanH(T(1.1))));
-        REQUIRE(TRAP::Math::IsInf(TRAP::Math::ATanH(T(-1.0))));
-        REQUIRE(TRAP::Math::IsInf(TRAP::Math::ATanH(T(1.0))));
+        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::ATanH(TestType(1.1))));
+        REQUIRE(TRAP::Math::IsInf(TRAP::Math::ATanH(TestType(-1.0))));
+        REQUIRE(TRAP::Math::IsInf(TRAP::Math::ATanH(TestType(1.0))));
+    }
+}
+
+TEMPLATE_TEST_CASE("TRAP::Math::ATanH()", "[math][generic][atanh][vec]",
+                   TRAP::Math::Vec2d, TRAP::Math::Vec2f, TRAP::Math::Vec3d, TRAP::Math::Vec3f, TRAP::Math::Vec4d, TRAP::Math::Vec4f)
+{
+    using Scalar = TestType::value_type;
+
+    SECTION("Normal cases - GCEM")
+    {
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
+
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATanH(TestType(-0.99f)), TestType(-2.64665f), TestType(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATanH(TestType(0.0f)), TestType(0.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATanH(TestType(0.001f)), TestType(0.001f), TestType(0.000000001f))));
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    consteval void RunATanHVecCompileTimeTests()
+    SECTION("Normal cases - std")
     {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATanH(T(-0.99f)), T(-2.64665f), T(0.00001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATanH(T(0.0f)), T(0.0f), Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATanH(T(0.001f)), T(0.001f), T(0.000000001f))));
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    void RunATanHVecRunTimeTests()
-    {
-        static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-
-        static constexpr std::array<T, 3> values
+        static constexpr std::array<TestType, 3u> values
         {
-            T(typename T::value_type(-0.99)), T(typename T::value_type(0.0)), T(typename T::value_type(0.001))
+            TestType(Scalar(-0.99)), TestType(Scalar(0.0)), TestType(Scalar(0.001))
         };
 
-        for(const T val : values)
+        for(const TestType& val : values)
         {
-            const T s = TRAP::Math::ATanH(val);
-            for(u32 l = 0; l < val.Length(); ++l)
+            const TestType s = TRAP::Math::ATanH(val);
+            for(u32 l = 0u; l < val.Length(); ++l)
                 REQUIRE(TRAP::Math::Equal(s[l], std::atanh(val[l]), Epsilon));
         }
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    void RunATanHVecEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
 
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::ATanH(T(nan)))));
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::ATanH(T(typename T::value_type(1.1))))));
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::ATanH(T(typename T::value_type(-1.0))))));
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::ATanH(T(typename T::value_type(1.0))))));
-    }
-}
-
-TEST_CASE("TRAP::Math::ATanH()", "[math][generic][atanh]")
-{
-    SECTION("Scalar - f64")
-    {
-        RunATanHRunTimeTests<f64>();
-        RunATanHCompileTimeTests<f64>();
-        RunATanHEdgeTests<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunATanHRunTimeTests<f32>();
-        RunATanHCompileTimeTests<f32>();
-        RunATanHEdgeTests<f32>();
-    }
-
-    SECTION("Vec2 - f64")
-    {
-        RunATanHVecRunTimeTests<TRAP::Math::Vec2d>();
-        RunATanHVecCompileTimeTests<TRAP::Math::Vec2d>();
-        RunATanHVecEdgeTests<TRAP::Math::Vec2d>();
-    }
-    SECTION("Vec2 - f32")
-    {
-        RunATanHVecRunTimeTests<TRAP::Math::Vec2f>();
-        RunATanHVecCompileTimeTests<TRAP::Math::Vec2f>();
-        RunATanHVecEdgeTests<TRAP::Math::Vec2f>();
-    }
-
-    SECTION("Vec3 - f64")
-    {
-        RunATanHVecRunTimeTests<TRAP::Math::Vec3d>();
-        RunATanHVecCompileTimeTests<TRAP::Math::Vec3d>();
-        RunATanHVecEdgeTests<TRAP::Math::Vec3d>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunATanHVecRunTimeTests<TRAP::Math::Vec3f>();
-        RunATanHVecCompileTimeTests<TRAP::Math::Vec3f>();
-        RunATanHVecEdgeTests<TRAP::Math::Vec3f>();
-    }
-
-    SECTION("Vec4 - f64")
-    {
-        RunATanHVecRunTimeTests<TRAP::Math::Vec4d>();
-        RunATanHVecCompileTimeTests<TRAP::Math::Vec4d>();
-        RunATanHVecEdgeTests<TRAP::Math::Vec4d>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunATanHVecRunTimeTests<TRAP::Math::Vec4f>();
-        RunATanHVecCompileTimeTests<TRAP::Math::Vec4f>();
-        RunATanHVecEdgeTests<TRAP::Math::Vec4f>();
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::ATanH(TestType(nan)))));
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::ATanH(TestType(Scalar(1.1))))));
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::ATanH(TestType(Scalar(-1.0))))));
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::ATanH(TestType(Scalar(1.0))))));
     }
 }

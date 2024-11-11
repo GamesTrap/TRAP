@@ -1,91 +1,44 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::SmoothStep()", "[math][generic][smoothstep][scalar]", f32, f64)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunCompileTimeSmoothStepTests()
-    {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
-        static_assert(TRAP::Math::Equal(TRAP::Math::SmoothStep(T( 0.0f), T( 1.0f), T( 0.5f)), T(0.5f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::SmoothStep(T( 2.0f), T( 5.0f), T( 1.0f)), T(0.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::SmoothStep(T( 0.0f), T(10.0f), T(15.0f)), T(1.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::SmoothStep(T(10.0f), T(20.0f), T(10.0f)), T(0.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::SmoothStep(T( 5.0f), T( 8.0f), T( 8.0f)), T(1.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::SmoothStep(T( 0.0f), T( 1.0f), T(-1.0f)), T(0.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::SmoothStep(T( 0.0f), T( 1.0f), T( 2.0f)), T(1.0f), Epsilon));
-    }
-
-    template<typename EDGE, typename VEC>
-    requires (std::floating_point<EDGE> || (TRAP::Math::IsVec<EDGE> && std::floating_point<typename  EDGE::value_type>)) && TRAP::Math::IsVec<VEC>
-    consteval void RunCompileTimeSmoothStepVecTests()
-    {
-        if constexpr(std::floating_point<EDGE>)
-        {
-            constexpr EDGE Epsilon = std::numeric_limits<EDGE>::epsilon();
-
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(EDGE(1.0f), VEC(TRAP::Math::Vec<4, typename VEC::value_type>( 1.0f,  2.0f,  3.0f,  4.0f))), VEC(1.0f), Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(EDGE(0.0f), VEC(TRAP::Math::Vec<4, typename VEC::value_type>( 1.0f,  2.0f,  3.0f,  4.0f))), VEC(1.0f), Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(EDGE(0.0f), VEC(TRAP::Math::Vec<4, typename VEC::value_type>(-1.0f, -2.0f, -3.0f, -4.0f))), VEC(0.0f), Epsilon)));
-        }
-        else if constexpr(TRAP::Math::IsVec<EDGE> && std::floating_point<typename EDGE::value_type>)
-        {
-            constexpr typename EDGE::value_type Epsilon = std::numeric_limits<typename EDGE::value_type>::epsilon();
-
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::SmoothStep(EDGE(TRAP::Math::Vec<4, typename EDGE::value_type>(0.0f, 0.0f, 0.0f, 1.0f)), EDGE(TRAP::Math::Vec<4, typename EDGE::value_type>(1.0f, 1.0f, 1.0f, 2.0f)), VEC(TRAP::Math::Vec<4, typename VEC::value_type>(0.5f, 0.5f, 0.5f, 1.5f))), VEC(0.5f), Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::SmoothStep(EDGE(TRAP::Math::Vec<4, typename EDGE::value_type>(1.0f, 1.0f, 1.0f, 1.0f)), EDGE(TRAP::Math::Vec<4, typename EDGE::value_type>(5.0f, 5.0f, 5.0f, 5.0f)), VEC(TRAP::Math::Vec<4, typename VEC::value_type>(0.5f, 2.0f, 3.0f, 4.0f))), VEC(TRAP::Math::Vec<4, typename VEC::value_type>(0.0f, 0.156250f, 0.5f, 0.843750f)), Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::SmoothStep(EDGE(TRAP::Math::Vec<4, typename EDGE::value_type>(0.0f, 0.0f, 0.0f, 0.0f)), EDGE(TRAP::Math::Vec<4, typename EDGE::value_type>(10.0f, 10.0f, 10.0f, 10.0f)), VEC(TRAP::Math::Vec<4, typename VEC::value_type>(15.0f, 11.0f, 12.0f, 10.5f))), VEC(1.0f), Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::SmoothStep(EDGE(TRAP::Math::Vec<4, typename EDGE::value_type>(10.0f, 10.0f, 10.0f, 10.0f)), EDGE(TRAP::Math::Vec<4, typename EDGE::value_type>(20.0f, 20.0f, 20.0f, 20.0f)), VEC(TRAP::Math::Vec<4, typename VEC::value_type>(10.0f, 20.0f, 15.0f, 10.0f))), VEC(TRAP::Math::Vec<4, typename VEC::value_type>(0.0f, 1.0f, 0.5f, 0.0f)), Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::SmoothStep(EDGE(TRAP::Math::Vec<4, typename EDGE::value_type>(0.0f, 0.0f, 0.0f, 0.0f)), EDGE(TRAP::Math::Vec<4, typename EDGE::value_type>(1.0f, 1.0f, 1.0f, 1.0f)), VEC(TRAP::Math::Vec<4, typename VEC::value_type>(-1.0f, 2.0f, 3.0f, 0.5f))), VEC(TRAP::Math::Vec<4, typename VEC::value_type>(0.0f, 1.0f, 1.0f, 0.5f)), Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::SmoothStep(EDGE(TRAP::Math::Vec<4, typename EDGE::value_type>(0.0f, 0.0f, 0.0f, 0.0f)), EDGE(TRAP::Math::Vec<4, typename EDGE::value_type>(1.0f, 1.0f, 1.0f, 1.0f)), VEC(TRAP::Math::Vec<4, typename VEC::value_type>(2.0f, 1.0f, 0.0f, 1.5f))), VEC(TRAP::Math::Vec<4, typename VEC::value_type>(1.0f, 1.0f, 0.0f, 1.0f)), Epsilon)));
-        }
-    }
+    STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::SmoothStep(TestType( 0.0f), TestType( 1.0f), TestType( 0.5f)), TestType(0.5f), Epsilon));
+    STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::SmoothStep(TestType( 2.0f), TestType( 5.0f), TestType( 1.0f)), TestType(0.0f), Epsilon));
+    STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::SmoothStep(TestType( 0.0f), TestType(10.0f), TestType(15.0f)), TestType(1.0f), Epsilon));
+    STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::SmoothStep(TestType(10.0f), TestType(20.0f), TestType(10.0f)), TestType(0.0f), Epsilon));
+    STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::SmoothStep(TestType( 5.0f), TestType( 8.0f), TestType( 8.0f)), TestType(1.0f), Epsilon));
+    STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::SmoothStep(TestType( 0.0f), TestType( 1.0f), TestType(-1.0f)), TestType(0.0f), Epsilon));
+    STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::SmoothStep(TestType( 0.0f), TestType( 1.0f), TestType( 2.0f)), TestType(1.0f), Epsilon));
 }
 
-TEST_CASE("TRAP::Math::SmoothStep()", "[math][generic][smoothstep]")
+TEMPLATE_TEST_CASE("TRAP::Math::SmoothStep()", "[math][generic][smoothstep][vec]",
+                   TRAP::Math::Vec2f, TRAP::Math::Vec2d, TRAP::Math::Vec3f, TRAP::Math::Vec3d, TRAP::Math::Vec4f, TRAP::Math::Vec4d)
 {
-    SECTION("Scalar - f64")
-    {
-        RunCompileTimeSmoothStepTests<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunCompileTimeSmoothStepTests<f32>();
-    }
+    using Scalar = TestType::value_type;
+    using Vec4Scalar = TRAP::Math::tVec4<Scalar>;
 
-    SECTION("Vec2 - f64")
     {
-        RunCompileTimeSmoothStepVecTests<f64, TRAP::Math::Vec2d>();
-        RunCompileTimeSmoothStepVecTests<TRAP::Math::Vec2d, TRAP::Math::Vec2d>();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
+
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::SmoothStep(TestType(Vec4Scalar(0.0f, 0.0f, 0.0f, 1.0f)), TestType(Vec4Scalar(1.0f, 1.0f, 1.0f, 2.0f)), TestType(Vec4Scalar(0.5f, 0.5f, 0.5f, 1.5f))), TestType(0.5f), Epsilon)));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::SmoothStep(TestType(Vec4Scalar(1.0f, 1.0f, 1.0f, 1.0f)), TestType(Vec4Scalar(5.0f, 5.0f, 5.0f, 5.0f)), TestType(Vec4Scalar(0.5f, 2.0f, 3.0f, 4.0f))), TestType(Vec4Scalar(0.0f, 0.156250f, 0.5f, 0.843750f)), Epsilon)));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::SmoothStep(TestType(Vec4Scalar(0.0f, 0.0f, 0.0f, 0.0f)), TestType(Vec4Scalar(10.0f, 10.0f, 10.0f, 10.0f)), TestType(Vec4Scalar(15.0f, 11.0f, 12.0f, 10.5f))), TestType(1.0f), Epsilon)));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::SmoothStep(TestType(Vec4Scalar(10.0f, 10.0f, 10.0f, 10.0f)), TestType(Vec4Scalar(20.0f, 20.0f, 20.0f, 20.0f)), TestType(Vec4Scalar(10.0f, 20.0f, 15.0f, 10.0f))), TestType(Vec4Scalar(0.0f, 1.0f, 0.5f, 0.0f)), Epsilon)));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::SmoothStep(TestType(Vec4Scalar(0.0f, 0.0f, 0.0f, 0.0f)), TestType(Vec4Scalar(1.0f, 1.0f, 1.0f, 1.0f)), TestType(Vec4Scalar(-1.0f, 2.0f, 3.0f, 0.5f))), TestType(Vec4Scalar(0.0f, 1.0f, 1.0f, 0.5f)), Epsilon)));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::SmoothStep(TestType(Vec4Scalar(0.0f, 0.0f, 0.0f, 0.0f)), TestType(Vec4Scalar(1.0f, 1.0f, 1.0f, 1.0f)), TestType(Vec4Scalar(2.0f, 1.0f, 0.0f, 1.5f))), TestType(Vec4Scalar(1.0f, 1.0f, 0.0f, 1.0f)), Epsilon)));
     }
-    SECTION("Vec2 - f32")
     {
-        RunCompileTimeSmoothStepVecTests<f32, TRAP::Math::Vec2f>();
-        RunCompileTimeSmoothStepVecTests<TRAP::Math::Vec2f, TRAP::Math::Vec2f>();
-    }
-    SECTION("Vec3 - f64")
-    {
-        RunCompileTimeSmoothStepVecTests<f64, TRAP::Math::Vec3d>();
-        RunCompileTimeSmoothStepVecTests<TRAP::Math::Vec3d, TRAP::Math::Vec3d>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunCompileTimeSmoothStepVecTests<f32, TRAP::Math::Vec3f>();
-        RunCompileTimeSmoothStepVecTests<TRAP::Math::Vec3f, TRAP::Math::Vec3f>();
-    }
-    SECTION("Vec4 - f64")
-    {
-        RunCompileTimeSmoothStepVecTests<f64, TRAP::Math::Vec4d>();
-        RunCompileTimeSmoothStepVecTests<TRAP::Math::Vec4d, TRAP::Math::Vec4d>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunCompileTimeSmoothStepVecTests<f32, TRAP::Math::Vec4f>();
-        RunCompileTimeSmoothStepVecTests<TRAP::Math::Vec4f, TRAP::Math::Vec4f>();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
+
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(Scalar(1.0f), TestType(Vec4Scalar( 1.0f,  2.0f,  3.0f,  4.0f))), TestType(1.0f), Epsilon)));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(Scalar(0.0f), TestType(Vec4Scalar( 1.0f,  2.0f,  3.0f,  4.0f))), TestType(1.0f), Epsilon)));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(Scalar(0.0f), TestType(Vec4Scalar(-1.0f, -2.0f, -3.0f, -4.0f))), TestType(0.0f), Epsilon)));
     }
 }

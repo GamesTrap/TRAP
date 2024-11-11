@@ -1,50 +1,25 @@
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Not()", "[math][generic][not][scalar]", bool)
 {
-    consteval void RunCompileTimeNotTests()
-    {
-        static_assert(!TRAP::Math::Not(true));
-        static_assert( TRAP::Math::Not(false));
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::same_as<typename T::value_type, bool>
-    consteval void RunCompileTimeNotVecTests()
-    {
-        constexpr T A(false);
-        constexpr T B(true);
-        constexpr T C(TRAP::Math::Vec4b(true, false, false, false));
-        constexpr T D(TRAP::Math::Vec4b(true, true, false, false));
-        constexpr T E(TRAP::Math::Vec4b(true, true, true, false));
-
-        static_assert( TRAP::Math::All(TRAP::Math::Not(A)));
-        static_assert(!TRAP::Math::All(TRAP::Math::Not(B)));
-        static_assert(!TRAP::Math::All(TRAP::Math::Not(C)));
-        static_assert(!TRAP::Math::All(TRAP::Math::Not(D)));
-        static_assert(!TRAP::Math::All(TRAP::Math::Not(E)));
-    }
+    STATIC_REQUIRE(!TRAP::Math::Not(true));
+    STATIC_REQUIRE( TRAP::Math::Not(false));
 }
 
-TEST_CASE("TRAP::Math::Not()", "[math][generic][not]")
+TEMPLATE_TEST_CASE("TRAP::Math::Not()", "[math][generic][not][vec]", TRAP::Math::Vec2b, TRAP::Math::Vec3b, TRAP::Math::Vec4b)
 {
-    SECTION("Scalar - bool")
-    {
-        RunCompileTimeNotTests();
-    }
+    static constexpr TestType A(false);
+    static constexpr TestType B(true);
+    static constexpr TestType C(TRAP::Math::Vec4b(true, false, false, false));
+    static constexpr TestType D(TRAP::Math::Vec4b(true, true, false, false));
+    static constexpr TestType E(TRAP::Math::Vec4b(true, true, true, false));
 
-    SECTION("Vec2 - bool")
-    {
-        RunCompileTimeNotVecTests<TRAP::Math::Vec2b>();
-    }
-    SECTION("Vec3 - bool")
-    {
-        RunCompileTimeNotVecTests<TRAP::Math::Vec3b>();
-    }
-    SECTION("Vec4 - bool")
-    {
-        RunCompileTimeNotVecTests<TRAP::Math::Vec4b>();
-    }
+    STATIC_REQUIRE( TRAP::Math::All(TRAP::Math::Not(A)));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Not(B)));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Not(C)));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Not(D)));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Not(E)));
 }

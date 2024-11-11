@@ -1,103 +1,85 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::InfinitePerspectiveReverseZ()", "[math][generic][infiniteperspectivereversez][mat]",
+                   TRAP::Math::Mat4f, TRAP::Math::Mat4d)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunInfinitePerspectiveReverseZCompileTimeTests()
+    using Scalar = TestType::value_type;
+
+    SECTION("Normal cases - GCEM")
     {
         {
-            constexpr auto p = TRAP::Math::InfinitePerspectiveReverseZ<T>(TRAP::Math::Radians<T>(45.0f), 1.0f, 0.1f);
-            constexpr TRAP::Math::tMat4<T> expected(2.414213f, 0.0f, 0.0f, 0.0f, 0.0f, 2.414213f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.1f, 0.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(p, expected, T(0.000001f))));
+            static constexpr auto p = TRAP::Math::InfinitePerspectiveReverseZ<Scalar>(TRAP::Math::Radians<Scalar>(45.0f), 1.0f, 0.1f);
+            static constexpr TestType expected(2.414213f, 0.0f, 0.0f, 0.0f, 0.0f, 2.414213f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.1f, 0.0f);
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(p, expected, Scalar(0.000001f))));
         }
         {
-            constexpr auto p = TRAP::Math::InfinitePerspectiveReverseZ<T>(TRAP::Math::Radians<T>(90.0f), 16.0f / 9.0f, 0.01f);
-            constexpr TRAP::Math::tMat4<T> expected(0.562500f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.01f, 0.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(p, expected, T(0.000001f))));
+            static constexpr auto p = TRAP::Math::InfinitePerspectiveReverseZ<Scalar>(TRAP::Math::Radians<Scalar>(90.0f), 16.0f / 9.0f, 0.01f);
+            static constexpr TestType expected(0.562500f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.01f, 0.0f);
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(p, expected, Scalar(0.000001f))));
         }
         {
-            constexpr auto p = TRAP::Math::InfinitePerspectiveReverseZ<T>(TRAP::Math::Radians<T>(30.0f), 2.0f, 1.0f);
-            constexpr TRAP::Math::tMat4<T> expected(1.866025f, 0.0f, 0.0f, 0.0f, 0.0f, 3.732051f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(p, expected, T(0.000001f))));
+            static constexpr auto p = TRAP::Math::InfinitePerspectiveReverseZ<Scalar>(TRAP::Math::Radians<Scalar>(30.0f), 2.0f, 1.0f);
+            static constexpr TestType expected(1.866025f, 0.0f, 0.0f, 0.0f, 0.0f, 3.732051f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(p, expected, Scalar(0.000001f))));
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunInfinitePerspectiveReverseZRunTimeTests()
+    SECTION("Normal cases - std")
     {
         {
-            const auto p = TRAP::Math::InfinitePerspectiveReverseZ<T>(TRAP::Math::Radians<T>(45.0f), 1.0f, 0.1f);
-            static constexpr TRAP::Math::tMat4<T> expected(2.414213f, 0.0f, 0.0f, 0.0f, 0.0f, 2.414213f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.1f, 0.0f);
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(p, expected, T(0.000001f))));
+            const auto p = TRAP::Math::InfinitePerspectiveReverseZ<Scalar>(TRAP::Math::Radians<Scalar>(45.0f), 1.0f, 0.1f);
+            static constexpr TestType expected(2.414213f, 0.0f, 0.0f, 0.0f, 0.0f, 2.414213f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.1f, 0.0f);
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(p, expected, Scalar(0.000001f))));
         }
         {
-            const auto p = TRAP::Math::InfinitePerspectiveReverseZ<T>(TRAP::Math::Radians<T>(90.0f), 16.0f / 9.0f, 0.01f);
-            static constexpr TRAP::Math::tMat4<T> expected(0.562500f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.01f, 0.0f);
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(p, expected, T(0.000001f))));
+            const auto p = TRAP::Math::InfinitePerspectiveReverseZ<Scalar>(TRAP::Math::Radians<Scalar>(90.0f), 16.0f / 9.0f, 0.01f);
+            static constexpr TestType expected(0.562500f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.01f, 0.0f);
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(p, expected, Scalar(0.000001f))));
         }
         {
-            const auto p = TRAP::Math::InfinitePerspectiveReverseZ<T>(TRAP::Math::Radians<T>(30.0f), 2.0f, 1.0f);
-            static constexpr TRAP::Math::tMat4<T> expected(1.866025f, 0.0f, 0.0f, 0.0f, 0.0f, 3.732051f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(p, expected, T(0.000001f))));
+            const auto p = TRAP::Math::InfinitePerspectiveReverseZ<Scalar>(TRAP::Math::Radians<Scalar>(30.0f), 2.0f, 1.0f);
+            static constexpr TestType expected(1.866025f, 0.0f, 0.0f, 0.0f, 0.0f, 3.732051f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(p, expected, Scalar(0.000001f))));
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunInfinitePerspectiveReverseZEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr T min = std::numeric_limits<T>::lowest();
-        static constexpr T max = std::numeric_limits<T>::max();
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        static constexpr Scalar min = std::numeric_limits<Scalar>::lowest();
+        static constexpr Scalar max = std::numeric_limits<Scalar>::max();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = -std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
 
         {
-            // const auto p = TRAP::Math::InfinitePerspectiveReverseZ<T>(min, min, min);
-            // REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(p))));
-            // REQUIRE(TRAP::Math::Any(TRAP::Math::IsInf(std::get<3>(p))));
+            // const auto p = TRAP::Math::InfinitePerspectiveReverseZ<Scalar>(min, min, min);
+            // REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(p))));
+            // REQUIRE(TRAP::Math::Any(TRAP::Math::IsInf(std::get<3u>(p))));
         }
         {
-            // const auto p = TRAP::Math::InfinitePerspectiveReverseZ<T>(max, max, max);
-            // REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(p))));
-            // REQUIRE(TRAP::Math::Any(TRAP::Math::IsInf(std::get<3>(p))));
+            // const auto p = TRAP::Math::InfinitePerspectiveReverseZ<Scalar>(max, max, max);
+            // REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(p))));
+            // REQUIRE(TRAP::Math::Any(TRAP::Math::IsInf(std::get<3u>(p))));
         }
         {
-            const auto p = TRAP::Math::InfinitePerspectiveReverseZ<T>(inf, 1.0f, 0.1f);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(p))));
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<1>(p))));
+            const auto p = TRAP::Math::InfinitePerspectiveReverseZ<Scalar>(inf, 1.0f, 0.1f);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(p))));
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<1u>(p))));
         }
         {
-            const auto p = TRAP::Math::InfinitePerspectiveReverseZ<T>(ninf, 1.0f, 0.1f);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(p))));
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<1>(p))));
+            const auto p = TRAP::Math::InfinitePerspectiveReverseZ<Scalar>(ninf, 1.0f, 0.1f);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(p))));
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<1u>(p))));
         }
         {
-            // const auto p = TRAP::Math::InfinitePerspectiveReverseZ<T>(TRAP::Math::Radians(90.0f), 1.0f, nan);
-            // REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(p))));
-            // REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<1>(p))));
+            // const auto p = TRAP::Math::InfinitePerspectiveReverseZ<Scalar>(TRAP::Math::Radians(90.0f), 1.0f, nan);
+            // REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(p))));
+            // REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<1u>(p))));
         }
-    }
-}
-
-TEST_CASE("TRAP::Math::InfinitePerspectiveReverseZ()", "[math][generic][infiniteperspectivereversez]")
-{
-    SECTION("Mat4 - f64")
-    {
-        RunInfinitePerspectiveReverseZRunTimeTests<f64>();
-        RunInfinitePerspectiveReverseZCompileTimeTests<f64>();
-        RunInfinitePerspectiveReverseZEdgeTests<f64>();
-    }
-    SECTION("Mat4 - f32")
-    {
-        RunInfinitePerspectiveReverseZRunTimeTests<f32>();
-        RunInfinitePerspectiveReverseZCompileTimeTests<f32>();
-        RunInfinitePerspectiveReverseZEdgeTests<f32>();
     }
 }

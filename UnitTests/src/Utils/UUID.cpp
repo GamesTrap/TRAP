@@ -20,12 +20,12 @@ TEST_CASE("TRAP::Utils::UUIDToString()", "[utils][uuid]")
 {
     SECTION("Valid")
     {
-        REQUIRE(TRAP::Utils::UUIDToString(testUUID) == testUUIDStr);
+        STATIC_REQUIRE(TRAP::Utils::UUIDToString(testUUID) == testUUIDStr);
     }
 
     SECTION("Empty")
     {
-        REQUIRE(TRAP::Utils::UUIDToString(TRAP::Utils::EMPTY_UUID) == "00000000-0000-0000-0000-000000000000");
+        STATIC_REQUIRE(TRAP::Utils::UUIDToString(TRAP::Utils::EMPTY_UUID) == "00000000-0000-0000-0000-000000000000");
     }
 }
 

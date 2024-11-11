@@ -2,1548 +2,853 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Vec3", "[math][vec][vec3]", i8, i16, i32, i64, u8, u16, u32, u64, f32, f64)
 {
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    consteval void RunVec3TypedefsCompileTimeTests()
-    {
-        using Vec = TRAP::Math::Vec<3, T>;
+    using Vec3 = TRAP::Math::tVec3<TestType>;
 
-        static_assert(std::same_as<typename Vec::value_type, T>);
-        static_assert(std::same_as<typename Vec::pointer, T*>);
-        static_assert(std::same_as<typename Vec::const_pointer, const T*>);
-        static_assert(std::same_as<typename Vec::reference, T&>);
-        static_assert(std::same_as<typename Vec::const_reference, const T&>);
-        static_assert(std::same_as<typename Vec::iterator, typename std::array<T, 3>::iterator>);
-        static_assert(std::same_as<typename Vec::const_iterator, typename std::array<T, 3>::const_iterator>);
-        static_assert(std::same_as<typename Vec::size_type, u32>);
-        static_assert(std::same_as<typename Vec::difference_type, isize>);
-        static_assert(std::same_as<typename Vec::reverse_iterator, typename std::array<T, 3>::reverse_iterator>);
-        static_assert(std::same_as<typename Vec::const_reverse_iterator, typename std::array<T, 3>::const_reverse_iterator>);
+    SECTION("Typedefs")
+    {
+        static_assert(std::same_as<typename Vec3::value_type, TestType>);
+        static_assert(std::same_as<typename Vec3::pointer, TestType*>);
+        static_assert(std::same_as<typename Vec3::const_pointer, const TestType*>);
+        static_assert(std::same_as<typename Vec3::reference, TestType&>);
+        static_assert(std::same_as<typename Vec3::const_reference, const TestType&>);
+        static_assert(std::same_as<typename Vec3::iterator, typename std::array<TestType, 3u>::iterator>);
+        static_assert(std::same_as<typename Vec3::const_iterator, typename std::array<TestType, 3u>::const_iterator>);
+        static_assert(std::same_as<typename Vec3::size_type, u32>);
+        static_assert(std::same_as<typename Vec3::difference_type, isize>);
+        static_assert(std::same_as<typename Vec3::reverse_iterator, typename std::array<TestType, 3u>::reverse_iterator>);
+        static_assert(std::same_as<typename Vec3::const_reverse_iterator, typename std::array<TestType, 3u>::const_reverse_iterator>);
     }
 
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    consteval void RunVec3ConstructorsCompileTimeTests()
+    SECTION("Constructors")
     {
-        using Vec = TRAP::Math::Vec<3, T>;
-
         //Default constructor
         {
-            constexpr Vec v{};
+            static constexpr Vec3 v{};
 
-            static_assert(v.x() == T(0));
-            static_assert(v.y() == T(0));
-            static_assert(v.z() == T(0));
+            STATIC_REQUIRE(v.x() == TestType(0));
+            STATIC_REQUIRE(v.y() == TestType(0));
+            STATIC_REQUIRE(v.z() == TestType(0));
         }
 
         //Copy constructor
         {
-            constexpr Vec v{T(2), T(5), T(8)};
-            constexpr Vec vCopy(v);
+            static constexpr Vec3 v{TestType(2), TestType(5), TestType(8)};
+            static constexpr Vec3 vCopy(v);
 
-            static_assert(vCopy.x() == T(2));
-            static_assert(vCopy.y() == T(5));
-            static_assert(vCopy.z() == T(8));
+            STATIC_REQUIRE(vCopy.x() == TestType(2));
+            STATIC_REQUIRE(vCopy.y() == TestType(5));
+            STATIC_REQUIRE(vCopy.z() == TestType(8));
         }
 
         //Move constructor
         {
+            Vec3 v(TestType(5), TestType(10), TestType(15));
+            Vec3 vMove(v);
+
+            REQUIRE(vMove.x() == TestType(5));
+            REQUIRE(vMove.y() == TestType(10));
+            REQUIRE(vMove.z() == TestType(15));
         }
 
         //Scalar constructor
         {
-            constexpr Vec v(T(5));
+            static constexpr Vec3 v(TestType(5));
 
-            static_assert(v.x() == T(5));
-            static_assert(v.y() == T(5));
-            static_assert(v.z() == T(5));
+            STATIC_REQUIRE(v.x() == TestType(5));
+            STATIC_REQUIRE(v.y() == TestType(5));
+            STATIC_REQUIRE(v.z() == TestType(5));
         }
 
         //Value constructor
         {
-            constexpr Vec v(T(5), T(10), T(15));
+            static constexpr Vec3 v(TestType(5), TestType(10), TestType(15));
 
-            static_assert(v.x() == T(5));
-            static_assert(v.y() == T(10));
-            static_assert(v.z() == T(15));
+            STATIC_REQUIRE(v.x() == TestType(5));
+            STATIC_REQUIRE(v.y() == TestType(10));
+            STATIC_REQUIRE(v.z() == TestType(15));
         }
 
         //Conversion constructor
         {
-            constexpr Vec v(u64(100), u8(5), u16(8));
+            static constexpr Vec3 v(u64(100), u8(5), u16(8));
 
-            static_assert(v.x() == T(100));
-            static_assert(v.y() == T(5));
-            static_assert(v.z() == T(8));
+            STATIC_REQUIRE(v.x() == TestType(100));
+            STATIC_REQUIRE(v.y() == TestType(5));
+            STATIC_REQUIRE(v.z() == TestType(8));
         }
 
         //Conversion Vec2 constructor
         {
             {
-                constexpr Vec v(TRAP::Math::tVec2<f64>(f64(10.0), f64(127.0)), f32(3.0f));
+                static constexpr Vec3 v(TRAP::Math::tVec2<f64>(f64(10.0), f64(127.0)), f32(3.0f));
 
-                static_assert(v.x() == T(10));
-                static_assert(v.y() == T(127));
-                static_assert(v.z() == T(3));
+                STATIC_REQUIRE(v.x() == TestType(10));
+                STATIC_REQUIRE(v.y() == TestType(127));
+                STATIC_REQUIRE(v.z() == TestType(3));
             }
             {
-                constexpr Vec v(f32(3.0f), TRAP::Math::tVec2<f64>(f64(10.0), f64(127.0)));
+                static constexpr Vec3 v(f32(3.0f), TRAP::Math::tVec2<f64>(f64(10.0), f64(127.0)));
 
-                static_assert(v.x() == T(3));
-                static_assert(v.y() == T(10));
-                static_assert(v.z() == T(127));
+                STATIC_REQUIRE(v.x() == TestType(3));
+                STATIC_REQUIRE(v.y() == TestType(10));
+                STATIC_REQUIRE(v.z() == TestType(127));
             }
         }
 
         //Conversion Vec3 constructor
         {
-            constexpr Vec v(TRAP::Math::tVec3<f64>(f64(10.0), f64(127.0), f64(80.0)));
+            static constexpr Vec3 v(TRAP::Math::tVec3<f64>(f64(10.0), f64(127.0), f64(80.0)));
 
-            static_assert(v.x() == T(10));
-            static_assert(v.y() == T(127));
-            static_assert(v.z() == T(80));
+            STATIC_REQUIRE(v.x() == TestType(10));
+            STATIC_REQUIRE(v.y() == TestType(127));
+            STATIC_REQUIRE(v.z() == TestType(80));
         }
 
         //Conversion Vec4 constructor
         {
-            constexpr Vec v(TRAP::Math::tVec4<f64>(f64(10.0), f64(127.0), f64(80.0), f64(1.0)));
+            static constexpr Vec3 v(TRAP::Math::tVec4<f64>(f64(10.0), f64(127.0), f64(80.0), f64(1.0)));
 
-            static_assert(v.x() == T(10));
-            static_assert(v.y() == T(127));
-            static_assert(v.z() == T(80));
+            STATIC_REQUIRE(v.x() == TestType(10));
+            STATIC_REQUIRE(v.y() == TestType(127));
+            STATIC_REQUIRE(v.z() == TestType(80));
         }
     }
 
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    void RunVec3ConstructorsRunTimeTests()
+    SECTION("Assignments")
     {
-        using Vec = TRAP::Math::Vec<3, T>;
-
-        //Default constructor
-        {
-            Vec v{};
-
-            REQUIRE(v.x() == T(0));
-            REQUIRE(v.y() == T(0));
-            REQUIRE(v.z() == T(0));
-        }
-
-        //Copy constructor
-        {
-            Vec v{T(2), T(5), T(8)};
-            Vec vCopy(v);
-
-            REQUIRE(vCopy.x() == T(2));
-            REQUIRE(vCopy.y() == T(5));
-            REQUIRE(vCopy.z() == T(8));
-        }
-
-        //Move constructor
-        {
-            Vec v(T(5), T(10), T(15));
-            Vec vMove(v);
-
-            REQUIRE(vMove.x() == T(5));
-            REQUIRE(vMove.y() == T(10));
-            REQUIRE(vMove.z() == T(15));
-        }
-
-        //Scalar constructor
-        {
-            Vec v(T(5));
-
-            REQUIRE(v.x() == T(5));
-            REQUIRE(v.y() == T(5));
-            REQUIRE(v.z() == T(5));
-        }
-
-        //Value constructor
-        {
-            Vec v(T(5), T(10), T(15));
-
-            REQUIRE(v.x() == T(5));
-            REQUIRE(v.y() == T(10));
-            REQUIRE(v.z() == T(15));
-        }
-
-        //Conversion constructor
-        {
-            Vec v(u64(100), u8(5), u16(99));
-
-            REQUIRE(v.x() == T(100));
-            REQUIRE(v.y() == T(5));
-            REQUIRE(v.z() == T(99));
-        }
-
-        //Conversion Vec2 constructor
-        {
-            {
-                TRAP::Math::tVec2<f64> in(f64(10.0), f64(127.0));
-                Vec v(in, u8(9));
-
-                REQUIRE(v.x() == T(10));
-                REQUIRE(v.y() == T(127));
-                REQUIRE(v.z() == T(9));
-            }
-            {
-                TRAP::Math::tVec2<f64> in(f64(10.0), f64(127.0));
-                Vec v(f32(3.0f), in);
-
-                REQUIRE(v.x() == T(3));
-                REQUIRE(v.y() == T(10));
-                REQUIRE(v.z() == T(127));
-            }
-        }
-
-        //Conversion Vec3 constructor
-        {
-            TRAP::Math::tVec3<f64> in(f64(10.0), f64(127.0), f64(80.0));
-            Vec v(in);
-
-            REQUIRE(v.x() == T(10));
-            REQUIRE(v.y() == T(127));
-            REQUIRE(v.z() == T(80));
-        }
-
-        //Conversion Vec4 constructor
-        {
-            TRAP::Math::tVec4<f64> in(f64(10.0), f64(127.0), f64(80.0), f64(1.0));
-            Vec v(in);
-
-            REQUIRE(v.x() == T(10));
-            REQUIRE(v.y() == T(127));
-            REQUIRE(v.z() == T(80));
-        }
-    }
-
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    void RunVec3AssignmentsRunTimeTests()
-    {
-        using Vec = TRAP::Math::Vec<3, T>;
-
         //Move assignment operator
         {
-            Vec v(T(5), T(10), T(15));
-            Vec vMove{};
+            Vec3 v(TestType(5), TestType(10), TestType(15));
+            Vec3 vMove{};
             vMove = std::move(v);
 
-            REQUIRE(vMove.x() == T(5));
-            REQUIRE(vMove.y() == T(10));
-            REQUIRE(vMove.z() == T(15));
+            REQUIRE(vMove.x() == TestType(5));
+            REQUIRE(vMove.y() == TestType(10));
+            REQUIRE(vMove.z() == TestType(15));
         }
 
         //Copy assignment operator
         {
-            const Vec v(T(5), T(10), T(15));
-            Vec vCopy{};
+            static constexpr Vec3 v(TestType(5), TestType(10), TestType(15));
+            Vec3 vCopy{};
             vCopy = v;
 
-            REQUIRE(vCopy.x() == T(5));
-            REQUIRE(vCopy.y() == T(10));
-            REQUIRE(vCopy.z() == T(15));
+            REQUIRE(vCopy.x() == TestType(5));
+            REQUIRE(vCopy.y() == TestType(10));
+            REQUIRE(vCopy.z() == TestType(15));
         }
 
         //Conversion copy assignment operator
         {
-            TRAP::Math::tVec3<f64> v(f64(5.0), f64(10.0), f64(9.0));
-            Vec vConversion{};
+            static constexpr TRAP::Math::tVec3<f64> v(f64(5.0), f64(10.0), f64(9.0));
+            Vec3 vConversion{};
             vConversion = v;
 
-            REQUIRE(vConversion.x() == T(5));
-            REQUIRE(vConversion.y() == T(10));
-            REQUIRE(vConversion.z() == T(9));
+            REQUIRE(vConversion.x() == TestType(5));
+            REQUIRE(vConversion.y() == TestType(10));
+            REQUIRE(vConversion.z() == TestType(9));
         }
     }
 
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    consteval void RunVec3AccessorCompileTimeTests()
-    {
-        using Vec = TRAP::Math::Vec<3, T>;
 
+    SECTION("Accessors")
+    {
         //Length
         {
-            static_assert(Vec::Length() == 3);
+            STATIC_REQUIRE(Vec3::Length() == 3u);
         }
 
         //Component access
         {
-            constexpr Vec v(T(10), T(5), T(15));
+            static constexpr Vec3 v(TestType(10), TestType(5), TestType(15));
 
-            static_assert(v.x() == T(10));
-            static_assert(v.y() == T(5));
-            static_assert(v.z() == T(15));
+            STATIC_REQUIRE(v.x() == TestType(10));
+            STATIC_REQUIRE(v.y() == TestType(5));
+            STATIC_REQUIRE(v.z() == TestType(15));
             //Check that v.x() returns const T&
-            static_assert(std::is_reference_v<decltype(v.x())> && std::is_const_v<std::remove_reference_t<decltype(v.x())>>);
-        }
+            STATIC_REQUIRE((std::is_reference_v<decltype(v.x())> && std::is_const_v<std::remove_reference_t<decltype(v.x())>>));
 
-        //operator[]
-        {
-            constexpr Vec v(T(10), T(5), T(15));
+            Vec3 v2(TestType(10), TestType(5), TestType(15));
 
-            static_assert(v[0] == T(10));
-            static_assert(v[1] == T(5));
-            static_assert(v[2] == T(15));
-            //Check that v[0] returns const T&
-            static_assert(std::is_reference_v<decltype(v[0])> && std::is_const_v<std::remove_reference_t<decltype(v[0])>>);
-        }
-
-        //at()
-        {
-            constexpr Vec v(T(10), T(5), T(15));
-
-            static_assert(v.at(0) == T(10));
-            static_assert(v.at(1) == T(5));
-            static_assert(v.at(2) == T(15));
-            //Check that v.at(0) returns const T&
-            static_assert(std::is_reference_v<decltype(v.at(0))> && std::is_const_v<std::remove_reference_t<decltype(v.at(0))>>);
-        }
-
-#ifndef TRAP_PLATFORM_WINDOWS
-        //iterators
-        {
-            constexpr Vec v(T(10), T(5), T(15));
-
-            static_assert(v.begin() == &v.x());
-            static_assert(v.cbegin() == &v.x());
-            static_assert(v.rbegin() == std::reverse_iterator<typename Vec::const_pointer>((&v.z()) + 1));
-            static_assert(v.crbegin() == std::reverse_iterator<typename Vec::const_pointer>((&v.z()) + 1));
-            static_assert(v.end() == ((&v.z()) + 1));
-            static_assert(v.cend() == ((&v.z()) + 1));
-            static_assert(v.rend() == std::reverse_iterator<typename Vec::const_pointer>(&v.x()));
-            static_assert(v.crend() == std::reverse_iterator<typename Vec::const_pointer>(&v.x()));
-        }
-#endif
-    }
-
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    void RunVec3AccessorRunTimeTests()
-    {
-        using Vec = TRAP::Math::Vec<3, T>;
-
-        //Length
-        {
-            REQUIRE(Vec::Length() == 3);
-        }
-
-        //Component access
-        {
-            const Vec v(T(10), T(5), T(15));
-
-            REQUIRE(v.x() == T(10));
-            REQUIRE(v.y() == T(5));
-            REQUIRE(v.z() == T(15));
-            //Check that v.x() returns const T&
-            static_assert(std::is_reference_v<decltype(v.x())> && std::is_const_v<std::remove_reference_t<decltype(v.x())>>);
-
-            Vec v2(T(10), T(5), T(15));
-
-            REQUIRE(v2.x() == T(10));
-            REQUIRE(v2.y() == T(5));
-            REQUIRE(v2.z() == T(15));
+            REQUIRE(v2.x() == TestType(10));
+            REQUIRE(v2.y() == TestType(5));
+            REQUIRE(v2.z() == TestType(15));
             //Check that v2.x() returns T&
-            static_assert(std::is_reference_v<decltype(v2.x())> && !std::is_const_v<std::remove_reference_t<decltype(v2.x())>>);
+            STATIC_REQUIRE((std::is_reference_v<decltype(v2.x())> && !std::is_const_v<std::remove_reference_t<decltype(v2.x())>>));
         }
 
         //operator[]
         {
-            const Vec v(T(10), T(5), T(15));
+            static constexpr Vec3 v(TestType(10), TestType(5), TestType(15));
 
-            REQUIRE(v[0] == T(10));
-            REQUIRE(v[1] == T(5));
-            REQUIRE(v[2] == T(15));
+            STATIC_REQUIRE(v[0] == TestType(10));
+            STATIC_REQUIRE(v[1] == TestType(5));
+            STATIC_REQUIRE(v[2] == TestType(15));
             //Check that v[0] returns const T&
-            static_assert(std::is_reference_v<decltype(v[0])> && std::is_const_v<std::remove_reference_t<decltype(v[0])>>);
+            STATIC_REQUIRE((std::is_reference_v<decltype(v[0])> && std::is_const_v<std::remove_reference_t<decltype(v[0])>>));
 
-            Vec v2(T(10), T(5), T(15));
+            Vec3 v2(TestType(10), TestType(5), TestType(15));
 
-            REQUIRE(v2[0] == T(10));
-            REQUIRE(v2[1] == T(5));
-            REQUIRE(v2[2] == T(15));
+            REQUIRE(v2[0] == TestType(10));
+            REQUIRE(v2[1] == TestType(5));
+            REQUIRE(v2[2] == TestType(15));
             //Check that v2[0] returns T&
-            static_assert(std::is_reference_v<decltype(v2[0])> && !std::is_const_v<std::remove_reference_t<decltype(v2[0])>>);
+            STATIC_REQUIRE((std::is_reference_v<decltype(v2[0])> && !std::is_const_v<std::remove_reference_t<decltype(v2[0])>>));
         }
 
         //at()
         {
-            const Vec v(T(10), T(5), T(15));
+            static constexpr Vec3 v(TestType(10), TestType(5), TestType(15));
 
-            REQUIRE(v.at(0) == T(10));
-            REQUIRE(v.at(1) == T(5));
-            REQUIRE(v.at(2) == T(15));
+            STATIC_REQUIRE(v.at(0) == TestType(10));
+            STATIC_REQUIRE(v.at(1) == TestType(5));
+            STATIC_REQUIRE(v.at(2) == TestType(15));
             REQUIRE_THROWS_AS(v.at(10), std::out_of_range);
             //Check that v.at(0) returns const T&
-            static_assert(std::is_reference_v<decltype(v.at(0))> && std::is_const_v<std::remove_reference_t<decltype(v.at(0))>>);
+            STATIC_REQUIRE((std::is_reference_v<decltype(v.at(0))> && std::is_const_v<std::remove_reference_t<decltype(v.at(0))>>));
 
-            Vec v2(T(10), T(5), T(15));
+            Vec3 v2(TestType(10), TestType(5), TestType(15));
 
-            REQUIRE(v2.at(0) == T(10));
-            REQUIRE(v2.at(1) == T(5));
-            REQUIRE(v2.at(2) == T(15));
+            REQUIRE(v2.at(0) == TestType(10));
+            REQUIRE(v2.at(1) == TestType(5));
+            REQUIRE(v2.at(2) == TestType(15));
             REQUIRE_THROWS_AS(v2.at(10), std::out_of_range);
             //Check that v2.at(0) returns T&
-            static_assert(std::is_reference_v<decltype(v2.at(0))> && !std::is_const_v<std::remove_reference_t<decltype(v2.at(0))>>);
+            STATIC_REQUIRE((std::is_reference_v<decltype(v2.at(0))> && !std::is_const_v<std::remove_reference_t<decltype(v2.at(0))>>));
         }
 
 #ifndef TRAP_PLATFORM_WINDOWS
         //iterators
         {
-            Vec v(T(10), T(5), T(15));
+            static constexpr Vec3 v(TestType(10), TestType(5), TestType(15));
 
-            REQUIRE(v.begin() == &v.x());
-            REQUIRE(v.cbegin() == &v.x());
-            REQUIRE(v.rbegin() == std::reverse_iterator<typename Vec::const_pointer>((&v.z()) + 1));
-            REQUIRE(v.crbegin() == std::reverse_iterator<typename Vec::const_pointer>((&v.z()) + 1));
-            REQUIRE(v.end() == ((&v.z()) + 1));
-            REQUIRE(v.cend() == ((&v.z()) + 1));
-            REQUIRE(v.rend() == std::reverse_iterator<typename Vec::const_pointer>(&v.x()));
-            REQUIRE(v.crend() == std::reverse_iterator<typename Vec::const_pointer>(&v.x()));
+            STATIC_REQUIRE(v.begin() == &v.x());
+            STATIC_REQUIRE(v.cbegin() == &v.x());
+            STATIC_REQUIRE(v.rbegin() == std::reverse_iterator<typename Vec3::const_pointer>((&v.z()) + 1));
+            STATIC_REQUIRE(v.crbegin() == std::reverse_iterator<typename Vec3::const_pointer>((&v.z()) + 1));
+            STATIC_REQUIRE(v.end() == ((&v.z()) + 1));
+            STATIC_REQUIRE(v.cend() == ((&v.z()) + 1));
+            STATIC_REQUIRE(v.rend() == std::reverse_iterator<typename Vec3::const_pointer>(&v.x()));
+            STATIC_REQUIRE(v.crend() == std::reverse_iterator<typename Vec3::const_pointer>(&v.x()));
 
-            const Vec v2(T(10), T(5), T(15));
+            Vec3 v1(TestType(10), TestType(5), TestType(15));
 
-            REQUIRE(v2.begin() == &v2.x());
-            REQUIRE(v2.cbegin() == &v2.x());
-            REQUIRE(v2.rbegin() == std::reverse_iterator<typename Vec::const_pointer>((&v2.z()) + 1));
-            REQUIRE(v2.crbegin() == std::reverse_iterator<typename Vec::const_pointer>((&v2.z()) + 1));
-            REQUIRE(v2.end() == ((&v2.z()) + 1));
-            REQUIRE(v2.cend() == ((&v2.z()) + 1));
-            REQUIRE(v2.rend() == std::reverse_iterator<typename Vec::const_pointer>(&v2.x()));
-            REQUIRE(v2.crend() == std::reverse_iterator<typename Vec::const_pointer>(&v2.x()));
+            REQUIRE(v1.begin() == &v1.x());
+            REQUIRE(v1.cbegin() == &v1.x());
+            REQUIRE(v1.rbegin() == std::reverse_iterator<typename Vec3::const_pointer>((&v1.z()) + 1));
+            REQUIRE(v1.crbegin() == std::reverse_iterator<typename Vec3::const_pointer>((&v1.z()) + 1));
+            REQUIRE(v1.end() == ((&v1.z()) + 1));
+            REQUIRE(v1.cend() == ((&v1.z()) + 1));
+            REQUIRE(v1.rend() == std::reverse_iterator<typename Vec3::const_pointer>(&v1.x()));
+            REQUIRE(v1.crend() == std::reverse_iterator<typename Vec3::const_pointer>(&v1.x()));
         }
 #endif
     }
 
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    consteval void RunVec3OperatorCompileTimeTests()
+    SECTION("Operators")
     {
-        using Vec = TRAP::Math::Vec<3, T>;
-
         //operator==
         {
-            constexpr Vec v(T(10), T(5), T(15));
-            constexpr Vec v2(T(15), T(5), T(10));
-            constexpr Vec v3(T(10), T(5), T(15));
+            static constexpr Vec3 v(TestType(10), TestType(5), TestType(15));
+            static constexpr Vec3 v2(TestType(15), TestType(5), TestType(10));
+            static constexpr Vec3 v3(TestType(10), TestType(5), TestType(15));
 
-            static_assert(!(v == v2));
-            static_assert(v == v3);
+            STATIC_REQUIRE(!(v == v2));
+            STATIC_REQUIRE(v == v3);
         }
 
         //operator!=
         {
-            constexpr Vec v(T(10), T(5), T(15));
-            constexpr Vec v2(T(15), T(5), T(10));
-            constexpr Vec v3(T(10), T(5), T(15));
+            static constexpr Vec3 v(TestType(10), TestType(5), TestType(15));
+            static constexpr Vec3 v2(TestType(15), TestType(5), TestType(10));
+            static constexpr Vec3 v3(TestType(10), TestType(5), TestType(15));
 
-            static_assert(v != v2);
-            static_assert(!(v != v3));
+            STATIC_REQUIRE(v != v2);
+            STATIC_REQUIRE(!(v != v3));
         }
 
         //Unary operator+
         {
-            constexpr Vec v(T(10), T(5), T(15));
-            constexpr Vec v2 = +v;
+            static constexpr Vec3 v(TestType(10), TestType(5), TestType(15));
+            static constexpr Vec3 v2 = +v;
 
-            static_assert(v2.x() == T(10));
-            static_assert(v2.y() == T(5));
-            static_assert(v2.z() == T(15));
+            STATIC_REQUIRE(v2.x() == TestType(10));
+            STATIC_REQUIRE(v2.y() == TestType(5));
+            STATIC_REQUIRE(v2.z() == TestType(15));
         }
 
         //Unary operator-
-        if constexpr(std::signed_integral<T> || std::floating_point<T>)
+        if constexpr(std::signed_integral<TestType> || std::floating_point<TestType>)
         {
-            constexpr Vec v(T(10), T(5), T(15));
-            constexpr Vec v2 = -v;
+            static constexpr Vec3 v(TestType(10), TestType(5), TestType(15));
+            static constexpr Vec3 v2 = -v;
 
-            static_assert(v2.x() == T(-10));
-            static_assert(v2.y() == T(-5));
-            static_assert(v2.z() == T(-15));
+            STATIC_REQUIRE(v2.x() == TestType(-10));
+            STATIC_REQUIRE(v2.y() == TestType(-5));
+            STATIC_REQUIRE(v2.z() == TestType(-15));
         }
 
         //Unary operator~
-        if constexpr(std::integral<T>)
+        if constexpr(std::integral<TestType>)
         {
-            constexpr Vec v(T(8), T(5), T(10));
+            static constexpr Vec3 v(TestType(8), TestType(5), TestType(10));
 
-            constexpr Vec v1{~v};
-            static_assert(v1.x() == T(~v.x()));
-            static_assert(v1.y() == T(~v.y()));
-            static_assert(v1.z() == T(~v.z()));
+            static constexpr Vec3 v1{~v};
+            STATIC_REQUIRE(v1.x() == TestType(~v.x()));
+            STATIC_REQUIRE(v1.y() == TestType(~v.y()));
+            STATIC_REQUIRE(v1.z() == TestType(~v.z()));
         }
 
         //Binary operator+
         {
-            constexpr Vec v(T(10), T(5), T(15));
+            static constexpr Vec3 v(TestType(10), TestType(5), TestType(15));
 
-            constexpr Vec v1{v + T(20)};
-            static_assert(v1.x() == T(30));
-            static_assert(v1.y() == T(25));
-            static_assert(v1.z() == T(35));
+            static constexpr Vec3 v1{v + TestType(20)};
+            STATIC_REQUIRE(v1.x() == TestType(30));
+            STATIC_REQUIRE(v1.y() == TestType(25));
+            STATIC_REQUIRE(v1.z() == TestType(35));
 
-            constexpr Vec v2{T(20) + v};
-            static_assert(v2.x() == T(30));
-            static_assert(v2.y() == T(25));
-            static_assert(v2.z() == T(35));
+            static constexpr Vec3 v2{TestType(20) + v};
+            STATIC_REQUIRE(v2.x() == TestType(30));
+            STATIC_REQUIRE(v2.y() == TestType(25));
+            STATIC_REQUIRE(v2.z() == TestType(35));
 
-            constexpr Vec v3{v + v};
-            static_assert(v3.x() == T(20));
-            static_assert(v3.y() == T(10));
-            static_assert(v3.z() == T(30));
+            static constexpr Vec3 v3{v + v};
+            STATIC_REQUIRE(v3.x() == TestType(20));
+            STATIC_REQUIRE(v3.y() == TestType(10));
+            STATIC_REQUIRE(v3.z() == TestType(30));
         }
 
         //Binary operator-
         {
-            constexpr Vec v(T(10), T(5), T(15));
+            static constexpr Vec3 v(TestType(10), TestType(5), TestType(15));
 
-            constexpr Vec v1{v - T(5)};
-            static_assert(v1.x() == T(5));
-            static_assert(v1.y() == T(0));
-            static_assert(v1.z() == T(10));
+            static constexpr Vec3 v1{v - TestType(5)};
+            STATIC_REQUIRE(v1.x() == TestType(5));
+            STATIC_REQUIRE(v1.y() == TestType(0));
+            STATIC_REQUIRE(v1.z() == TestType(10));
 
-            constexpr Vec v2{T(20) - v};
-            static_assert(v2.x() == T(10));
-            static_assert(v2.y() == T(15));
-            static_assert(v2.z() == T(5));
+            static constexpr Vec3 v2{TestType(20) - v};
+            STATIC_REQUIRE(v2.x() == TestType(10));
+            STATIC_REQUIRE(v2.y() == TestType(15));
+            STATIC_REQUIRE(v2.z() == TestType(5));
 
-            constexpr Vec v3{v - v};
-            static_assert(v3.x() == T(0));
-            static_assert(v3.y() == T(0));
-            static_assert(v3.z() == T(0));
+            static constexpr Vec3 v3{v - v};
+            STATIC_REQUIRE(v3.x() == TestType(0));
+            STATIC_REQUIRE(v3.y() == TestType(0));
+            STATIC_REQUIRE(v3.z() == TestType(0));
         }
 
         //Binary operator*
         {
-            constexpr Vec v(T(10), T(5), T(2));
+            static constexpr Vec3 v(TestType(10), TestType(5), TestType(2));
 
-            constexpr Vec v1{v * T(2)};
-            static_assert(v1.x() == T(20));
-            static_assert(v1.y() == T(10));
-            static_assert(v1.z() == T(4));
+            static constexpr Vec3 v1{v * TestType(2)};
+            STATIC_REQUIRE(v1.x() == TestType(20));
+            STATIC_REQUIRE(v1.y() == TestType(10));
+            STATIC_REQUIRE(v1.z() == TestType(4));
 
-            constexpr Vec v2{T(2) * v};
-            static_assert(v2.x() == T(20));
-            static_assert(v2.y() == T(10));
-            static_assert(v2.z() == T(4));
+            static constexpr Vec3 v2{TestType(2) * v};
+            STATIC_REQUIRE(v2.x() == TestType(20));
+            STATIC_REQUIRE(v2.y() == TestType(10));
+            STATIC_REQUIRE(v2.z() == TestType(4));
 
-            constexpr Vec v3{v * v};
-            static_assert(v3.x() == T(100));
-            static_assert(v3.y() == T(25));
-            static_assert(v3.z() == T(4));
+            static constexpr Vec3 v3{v * v};
+            STATIC_REQUIRE(v3.x() == TestType(100));
+            STATIC_REQUIRE(v3.y() == TestType(25));
+            STATIC_REQUIRE(v3.z() == TestType(4));
         }
 
         //Binary operator/
         {
-            constexpr Vec v(T(10), T(5), T(20));
+            static constexpr Vec3 v(TestType(10), TestType(5), TestType(20));
 
-            constexpr Vec v1{v / T(2)};
-            static_assert(v1.x() == T(5));
-            static_assert(v1.y() == T(2.5));
-            static_assert(v1.z() == T(10));
+            static constexpr Vec3 v1{v / TestType(2)};
+            STATIC_REQUIRE(v1.x() == TestType(5));
+            STATIC_REQUIRE(v1.y() == TestType(2.5));
+            STATIC_REQUIRE(v1.z() == TestType(10));
 
-            constexpr Vec v2{T(20) / v};
-            static_assert(v2.x() == T(2));
-            static_assert(v2.y() == T(4));
-            static_assert(v2.z() == T(1));
+            static constexpr Vec3 v2{TestType(20) / v};
+            STATIC_REQUIRE(v2.x() == TestType(2));
+            STATIC_REQUIRE(v2.y() == TestType(4));
+            STATIC_REQUIRE(v2.z() == TestType(1));
 
-            constexpr Vec v3{v / v};
-            static_assert(v3.x() == T(1));
-            static_assert(v3.y() == T(1));
-            static_assert(v3.z() == T(1));
+            static constexpr Vec3 v3{v / v};
+            STATIC_REQUIRE(v3.x() == TestType(1));
+            STATIC_REQUIRE(v3.y() == TestType(1));
+            STATIC_REQUIRE(v3.z() == TestType(1));
         }
 
         //Binary operator%
         {
-            constexpr Vec v(T(10), T(5), T(15));
+            static constexpr Vec3 v(TestType(10), TestType(5), TestType(15));
 
-            constexpr Vec v1{v % T(2)};
-            static_assert(v1.x() == T(0));
-            static_assert(v1.y() == T(1));
-            static_assert(v1.z() == T(1));
+            static constexpr Vec3 v1{v % TestType(2)};
+            STATIC_REQUIRE(v1.x() == TestType(0));
+            STATIC_REQUIRE(v1.y() == TestType(1));
+            STATIC_REQUIRE(v1.z() == TestType(1));
 
-            constexpr Vec v2{T(20) % v};
-            static_assert(v2.x() == T(0));
-            static_assert(v2.y() == T(0));
-            static_assert(v2.z() == T(5));
+            static constexpr Vec3 v2{TestType(20) % v};
+            STATIC_REQUIRE(v2.x() == TestType(0));
+            STATIC_REQUIRE(v2.y() == TestType(0));
+            STATIC_REQUIRE(v2.z() == TestType(5));
 
-            constexpr Vec v3{v % v};
-            static_assert(v3.x() == T(0));
-            static_assert(v3.y() == T(0));
-            static_assert(v3.z() == T(0));
+            static constexpr Vec3 v3{v % v};
+            STATIC_REQUIRE(v3.x() == TestType(0));
+            STATIC_REQUIRE(v3.y() == TestType(0));
+            STATIC_REQUIRE(v3.z() == TestType(0));
         }
 
         //Binary operator&
-        if constexpr(std::integral<T>)
+        if constexpr(std::integral<TestType>)
         {
-            constexpr Vec v(T(10), T(5), T(15));
+            static constexpr Vec3 v(TestType(10), TestType(5), TestType(15));
 
-            constexpr Vec v1{v & T(2)};
-            static_assert(v1.x() == T(2));
-            static_assert(v1.y() == T(0));
-            static_assert(v1.z() == T(2));
+            static constexpr Vec3 v1{v & TestType(2)};
+            STATIC_REQUIRE(v1.x() == TestType(2));
+            STATIC_REQUIRE(v1.y() == TestType(0));
+            STATIC_REQUIRE(v1.z() == TestType(2));
 
-            constexpr Vec v2{T(20) & v};
-            static_assert(v2.x() == T(0));
-            static_assert(v2.y() == T(4));
-            static_assert(v2.z() == T(4));
+            static constexpr Vec3 v2{TestType(20) & v};
+            STATIC_REQUIRE(v2.x() == TestType(0));
+            STATIC_REQUIRE(v2.y() == TestType(4));
+            STATIC_REQUIRE(v2.z() == TestType(4));
 
-            constexpr Vec v3{v & v};
-            static_assert(v3.x() == T(10));
-            static_assert(v3.y() == T(5));
-            static_assert(v3.z() == T(15));
+            static constexpr Vec3 v3{v & v};
+            STATIC_REQUIRE(v3.x() == TestType(10));
+            STATIC_REQUIRE(v3.y() == TestType(5));
+            STATIC_REQUIRE(v3.z() == TestType(15));
         }
 
         //Binary operator|
-        if constexpr(std::integral<T>)
+        if constexpr(std::integral<TestType>)
         {
-            constexpr Vec v(T(10), T(5), T(15));
+            static constexpr Vec3 v(TestType(10), TestType(5), TestType(15));
 
-            constexpr Vec v1{v | T(2)};
-            static_assert(v1.x() == T(10));
-            static_assert(v1.y() == T(7));
-            static_assert(v1.z() == T(15));
+            static constexpr Vec3 v1{v | TestType(2)};
+            STATIC_REQUIRE(v1.x() == TestType(10));
+            STATIC_REQUIRE(v1.y() == TestType(7));
+            STATIC_REQUIRE(v1.z() == TestType(15));
 
-            constexpr Vec v2{T(20) | v};
-            static_assert(v2.x() == T(30));
-            static_assert(v2.y() == T(21));
-            static_assert(v2.z() == T(31));
+            static constexpr Vec3 v2{TestType(20) | v};
+            STATIC_REQUIRE(v2.x() == TestType(30));
+            STATIC_REQUIRE(v2.y() == TestType(21));
+            STATIC_REQUIRE(v2.z() == TestType(31));
 
-            constexpr Vec v3{v | v};
-            static_assert(v3.x() == T(10));
-            static_assert(v3.y() == T(5));
-            static_assert(v3.z() == T(15));
+            static constexpr Vec3 v3{v | v};
+            STATIC_REQUIRE(v3.x() == TestType(10));
+            STATIC_REQUIRE(v3.y() == TestType(5));
+            STATIC_REQUIRE(v3.z() == TestType(15));
         }
 
         //Binary operator^
-        if constexpr(std::integral<T>)
+        if constexpr(std::integral<TestType>)
         {
-            constexpr Vec v(T(10), T(5), T(15));
+            static constexpr Vec3 v(TestType(10), TestType(5), TestType(15));
 
-            constexpr Vec v1{v ^ T(2)};
-            static_assert(v1.x() == T(8));
-            static_assert(v1.y() == T(7));
-            static_assert(v1.z() == T(13));
+            static constexpr Vec3 v1{v ^ TestType(2)};
+            STATIC_REQUIRE(v1.x() == TestType(8));
+            STATIC_REQUIRE(v1.y() == TestType(7));
+            STATIC_REQUIRE(v1.z() == TestType(13));
 
-            constexpr Vec v2{T(20) ^ v};
-            static_assert(v2.x() == T(30));
-            static_assert(v2.y() == T(17));
-            static_assert(v2.z() == T(27));
+            static constexpr Vec3 v2{TestType(20) ^ v};
+            STATIC_REQUIRE(v2.x() == TestType(30));
+            STATIC_REQUIRE(v2.y() == TestType(17));
+            STATIC_REQUIRE(v2.z() == TestType(27));
 
-            constexpr Vec v3{v ^ v};
-            static_assert(v3.x() == T(0));
-            static_assert(v3.y() == T(0));
-            static_assert(v3.z() == T(0));
+            static constexpr Vec3 v3{v ^ v};
+            STATIC_REQUIRE(v3.x() == TestType(0));
+            STATIC_REQUIRE(v3.y() == TestType(0));
+            STATIC_REQUIRE(v3.z() == TestType(0));
         }
 
         //Binary operator<<
-        if constexpr(std::integral<T>)
+        if constexpr(std::integral<TestType>)
         {
-            constexpr Vec v(T(1), T(2), T(3));
+            static constexpr Vec3 v(TestType(1), TestType(2), TestType(3));
 
-            constexpr Vec v1{v << T(2)};
-            static_assert(v1.x() == T(4));
-            static_assert(v1.y() == T(8));
-            static_assert(v1.z() == T(12));
+            static constexpr Vec3 v1{v << TestType(2)};
+            STATIC_REQUIRE(v1.x() == TestType(4));
+            STATIC_REQUIRE(v1.y() == TestType(8));
+            STATIC_REQUIRE(v1.z() == TestType(12));
 
-            constexpr Vec v2{T(2) << v};
-            static_assert(v2.x() == T(4));
-            static_assert(v2.y() == T(8));
-            static_assert(v2.z() == T(16));
+            static constexpr Vec3 v2{TestType(2) << v};
+            STATIC_REQUIRE(v2.x() == TestType(4));
+            STATIC_REQUIRE(v2.y() == TestType(8));
+            STATIC_REQUIRE(v2.z() == TestType(16));
 
-            constexpr Vec v3{v << v};
-            static_assert(v3.x() == T(2));
-            static_assert(v3.y() == T(8));
-            static_assert(v3.z() == T(24));
+            static constexpr Vec3 v3{v << v};
+            STATIC_REQUIRE(v3.x() == TestType(2));
+            STATIC_REQUIRE(v3.y() == TestType(8));
+            STATIC_REQUIRE(v3.z() == TestType(24));
         }
 
         //Binary operator>>
-        if constexpr(std::integral<T>)
+        if constexpr(std::integral<TestType>)
         {
-            constexpr Vec v(T(8), T(5), T(15));
+            static constexpr Vec3 v(TestType(8), TestType(5), TestType(15));
 
-            constexpr Vec v1{v >> T(2)};
-            static_assert(v1.x() == T(2));
-            static_assert(v1.y() == T(1));
-            static_assert(v1.z() == T(3));
+            static constexpr Vec3 v1{v >> TestType(2)};
+            STATIC_REQUIRE(v1.x() == TestType(2));
+            STATIC_REQUIRE(v1.y() == TestType(1));
+            STATIC_REQUIRE(v1.z() == TestType(3));
 
-            constexpr Vec v2{T(2) >> v};
-            static_assert(v2.x() == T(0));
-            static_assert(v2.y() == T(0));
-            static_assert(v2.z() == T(0));
+            static constexpr Vec3 v2{TestType(2) >> v};
+            STATIC_REQUIRE(v2.x() == TestType(0));
+            STATIC_REQUIRE(v2.y() == TestType(0));
+            STATIC_REQUIRE(v2.z() == TestType(0));
 
-            constexpr Vec v3{v >> v};
-            static_assert(v3.x() == T(0));
-            static_assert(v3.y() == T(0));
-            static_assert(v3.z() == T(0));
+            static constexpr Vec3 v3{v >> v};
+            STATIC_REQUIRE(v3.x() == TestType(0));
+            STATIC_REQUIRE(v3.y() == TestType(0));
+            STATIC_REQUIRE(v3.z() == TestType(0));
         }
 
         //Binary operator&&
         {
-            constexpr TRAP::Math::tVec3<bool> v(true, true, true);
-            constexpr TRAP::Math::tVec3<bool> v1(false, false, false);
-            constexpr TRAP::Math::tVec3<bool> v2(true, false, true);
-            constexpr TRAP::Math::tVec3<bool> v3(false, true, false);
+            static constexpr TRAP::Math::tVec3<bool> v(true, true, true);
+            static constexpr TRAP::Math::tVec3<bool> v1(false, false, false);
+            static constexpr TRAP::Math::tVec3<bool> v2(true, false, true);
+            static constexpr TRAP::Math::tVec3<bool> v3(false, true, false);
 
-            static_assert((v && v) == v);
-            static_assert((v1 && v1) == v1);
-            static_assert((v2 && v2) == v2);
-            static_assert((v3 && v3) == v3);
+            STATIC_REQUIRE((v && v) == v);
+            STATIC_REQUIRE((v1 && v1) == v1);
+            STATIC_REQUIRE((v2 && v2) == v2);
+            STATIC_REQUIRE((v3 && v3) == v3);
         }
 
         //Binary operator||
         {
-            constexpr TRAP::Math::tVec3<bool> v(true, true, true);
-            constexpr TRAP::Math::tVec3<bool> v1(false, false, false);
-            constexpr TRAP::Math::tVec3<bool> v2(true, false, true);
-            constexpr TRAP::Math::tVec3<bool> v3(false, true, false);
+            static constexpr TRAP::Math::tVec3<bool> v(true, true, true);
+            static constexpr TRAP::Math::tVec3<bool> v1(false, false, false);
+            static constexpr TRAP::Math::tVec3<bool> v2(true, false, true);
+            static constexpr TRAP::Math::tVec3<bool> v3(false, true, false);
 
-            static_assert((v || v) == v);
-            static_assert((v1 || v1) == v1);
-            static_assert((v2 || v2) == v2);
-            static_assert((v3 || v3) == v3);
+            STATIC_REQUIRE((v || v) == v);
+            STATIC_REQUIRE((v1 || v1) == v1);
+            STATIC_REQUIRE((v2 || v2) == v2);
+            STATIC_REQUIRE((v3 || v3) == v3);
         }
-    }
-
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    void RunVec3OperatorRunTimeTests()
-    {
-        using Vec = TRAP::Math::Vec<3, T>;
 
         //operator+=
         {
-            Vec v(T(10), T(5), T(15));
+            Vec3 v(TestType(10), TestType(5), TestType(15));
             v += f64(9.0);
 
-            REQUIRE(v.x() == T(19));
-            REQUIRE(v.y() == T(14));
-            REQUIRE(v.z() == T(24));
+            REQUIRE(v.x() == TestType(19));
+            REQUIRE(v.y() == TestType(14));
+            REQUIRE(v.z() == TestType(24));
         }
         {
-            Vec v(T(10), T(5), T(15));
-            TRAP::Math::tVec3<f64> v2(f64(9.0));
+            Vec3 v(TestType(10), TestType(5), TestType(15));
+            static constexpr TRAP::Math::tVec3<f64> v2(f64(9.0));
             v += v2;
 
-            REQUIRE(v.x() == T(19));
-            REQUIRE(v.y() == T(14));
-            REQUIRE(v.z() == T(24));
+            REQUIRE(v.x() == TestType(19));
+            REQUIRE(v.y() == TestType(14));
+            REQUIRE(v.z() == TestType(24));
         }
 
         //operator-=
         {
-            Vec v(T(10), T(5), T(15));
+            Vec3 v(TestType(10), TestType(5), TestType(15));
             v -= f64(4.0);
 
-            REQUIRE(v.x() == T(6));
-            REQUIRE(v.y() == T(1));
-            REQUIRE(v.z() == T(11));
+            REQUIRE(v.x() == TestType(6));
+            REQUIRE(v.y() == TestType(1));
+            REQUIRE(v.z() == TestType(11));
         }
         {
-            Vec v(T(10), T(5), T(15));
-            TRAP::Math::tVec3<f64> v2(f64(4.0));
+            Vec3 v(TestType(10), TestType(5), TestType(15));
+            static constexpr TRAP::Math::tVec3<f64> v2(f64(4.0));
             v -= v2;
 
-            REQUIRE(v.x() == T(6));
-            REQUIRE(v.y() == T(1));
-            REQUIRE(v.z() == T(11));
+            REQUIRE(v.x() == TestType(6));
+            REQUIRE(v.y() == TestType(1));
+            REQUIRE(v.z() == TestType(11));
         }
 
         //operator*=
         {
-            Vec v(T(10), T(5), T(15));
+            Vec3 v(TestType(10), TestType(5), TestType(15));
             v *= f64(2.0);
 
-            REQUIRE(v.x() == T(20));
-            REQUIRE(v.y() == T(10));
-            REQUIRE(v.z() == T(30));
+            REQUIRE(v.x() == TestType(20));
+            REQUIRE(v.y() == TestType(10));
+            REQUIRE(v.z() == TestType(30));
         }
         {
-            Vec v(T(10), T(5), T(15));
-            TRAP::Math::tVec3<f64> v2(f64(2.0));
+            Vec3 v(TestType(10), TestType(5), TestType(15));
+            static constexpr TRAP::Math::tVec3<f64> v2(f64(2.0));
             v *= v2;
 
-            REQUIRE(v.x() == T(20));
-            REQUIRE(v.y() == T(10));
-            REQUIRE(v.z() == T(30));
+            REQUIRE(v.x() == TestType(20));
+            REQUIRE(v.y() == TestType(10));
+            REQUIRE(v.z() == TestType(30));
         }
 
         //operator/=
         {
-            Vec v(T(10), T(5), T(15));
+            Vec3 v(TestType(10), TestType(5), TestType(15));
             v /= f64(2.0);
 
-            REQUIRE(v.x() == T(5));
-            REQUIRE(v.y() == T(2.5));
-            REQUIRE(v.z() == T(7.5));
+            REQUIRE(v.x() == TestType(5));
+            REQUIRE(v.y() == TestType(2.5));
+            REQUIRE(v.z() == TestType(7.5));
         }
         {
-            Vec v(T(10), T(5), T(15));
-            TRAP::Math::tVec3<f64> v2(f64(2.0));
+            Vec3 v(TestType(10), TestType(5), TestType(15));
+            static constexpr TRAP::Math::tVec3<f64> v2(f64(2.0));
             v /= v2;
 
-            REQUIRE(v.x() == T(5));
-            REQUIRE(v.y() == T(2.5));
-            REQUIRE(v.z() == T(7.5));
+            REQUIRE(v.x() == TestType(5));
+            REQUIRE(v.y() == TestType(2.5));
+            REQUIRE(v.z() == TestType(7.5));
         }
 
         //operator++
         {
-            Vec v(T(10), T(5), T(15));
+            Vec3 v(TestType(10), TestType(5), TestType(15));
             v++;
 
-            REQUIRE(v.x() == T(11));
-            REQUIRE(v.y() == T(6));
-            REQUIRE(v.z() == T(16));
+            REQUIRE(v.x() == TestType(11));
+            REQUIRE(v.y() == TestType(6));
+            REQUIRE(v.z() == TestType(16));
         }
         {
-            Vec v(T(10), T(5), T(15));
+            Vec3 v(TestType(10), TestType(5), TestType(15));
             ++v;
 
-            REQUIRE(v.x() == T(11));
-            REQUIRE(v.y() == T(6));
-            REQUIRE(v.z() == T(16));
+            REQUIRE(v.x() == TestType(11));
+            REQUIRE(v.y() == TestType(6));
+            REQUIRE(v.z() == TestType(16));
         }
 
         //operator--
         {
-            Vec v(T(10), T(5), T(15));
+            Vec3 v(TestType(10), TestType(5), TestType(15));
             v--;
 
-            REQUIRE(v.x() == T(9));
-            REQUIRE(v.y() == T(4));
-            REQUIRE(v.z() == T(14));
+            REQUIRE(v.x() == TestType(9));
+            REQUIRE(v.y() == TestType(4));
+            REQUIRE(v.z() == TestType(14));
         }
         {
-            Vec v(T(10), T(5), T(15));
+            Vec3 v(TestType(10), TestType(5), TestType(15));
             --v;
 
-            REQUIRE(v.x() == T(9));
-            REQUIRE(v.y() == T(4));
-            REQUIRE(v.z() == T(14));
+            REQUIRE(v.x() == TestType(9));
+            REQUIRE(v.y() == TestType(4));
+            REQUIRE(v.z() == TestType(14));
         }
 
         //operator%=
         {
-            Vec v(T(10), T(5), T(15));
+            Vec3 v(TestType(10), TestType(5), TestType(15));
             v %= f64(2.0);
 
-            REQUIRE(v.x() == T(0));
-            REQUIRE(v.y() == T(1));
-            REQUIRE(v.z() == T(1));
+            REQUIRE(v.x() == TestType(0));
+            REQUIRE(v.y() == TestType(1));
+            REQUIRE(v.z() == TestType(1));
         }
         {
-            Vec v(T(10), T(5), T(15));
-            TRAP::Math::tVec3<f64> v2(f64(2.0));
+            Vec3 v(TestType(10), TestType(5), TestType(15));
+            static constexpr TRAP::Math::tVec3<f64> v2(f64(2.0));
             v %= v2;
 
-            REQUIRE(v.x() == T(0));
-            REQUIRE(v.y() == T(1));
-            REQUIRE(v.z() == T(1));
+            REQUIRE(v.x() == TestType(0));
+            REQUIRE(v.y() == TestType(1));
+            REQUIRE(v.z() == TestType(1));
         }
 
         //operator&=
-        if constexpr(std::is_integral_v<T>)
+        if constexpr(std::is_integral_v<TestType>)
         {
             {
-                Vec v(T(10), T(5), T(15));
+                Vec3 v(TestType(10), TestType(5), TestType(15));
                 v &= u8(2);
 
-                REQUIRE(v.x() == T(2));
-                REQUIRE(v.y() == T(0));
-                REQUIRE(v.z() == T(2));
+                REQUIRE(v.x() == TestType(2));
+                REQUIRE(v.y() == TestType(0));
+                REQUIRE(v.z() == TestType(2));
             }
             {
-                Vec v(T(10), T(5), T(15));
-                TRAP::Math::tVec3<u8> v2(u8(2));
+                Vec3 v(TestType(10), TestType(5), TestType(15));
+                static constexpr TRAP::Math::tVec3<u8> v2(u8(2));
                 v &= v2;
 
-                REQUIRE(v.x() == T(2));
-                REQUIRE(v.y() == T(0));
-                REQUIRE(v.z() == T(2));
+                REQUIRE(v.x() == TestType(2));
+                REQUIRE(v.y() == TestType(0));
+                REQUIRE(v.z() == TestType(2));
             }
         }
 
         //operator|=
-        if constexpr(std::is_integral_v<T>)
+        if constexpr(std::is_integral_v<TestType>)
         {
             {
-                Vec v(T(10), T(5), T(15));
+                Vec3 v(TestType(10), TestType(5), TestType(15));
                 v |= u8(2);
 
-                REQUIRE(v.x() == T(10));
-                REQUIRE(v.y() == T(7));
-                REQUIRE(v.z() == T(15));
+                REQUIRE(v.x() == TestType(10));
+                REQUIRE(v.y() == TestType(7));
+                REQUIRE(v.z() == TestType(15));
             }
             {
-                Vec v(T(10), T(5), T(15));
-                TRAP::Math::tVec3<u8> v2(u8(2));
+                Vec3 v(TestType(10), TestType(5), TestType(15));
+                static constexpr TRAP::Math::tVec3<u8> v2(u8(2));
                 v |= v2;
 
-                REQUIRE(v.x() == T(10));
-                REQUIRE(v.y() == T(7));
-                REQUIRE(v.z() == T(15));
+                REQUIRE(v.x() == TestType(10));
+                REQUIRE(v.y() == TestType(7));
+                REQUIRE(v.z() == TestType(15));
             }
         }
 
         //operator^=
-        if constexpr(std::is_integral_v<T>)
+        if constexpr(std::is_integral_v<TestType>)
         {
             {
-                Vec v(T(10), T(5), T(15));
+                Vec3 v(TestType(10), TestType(5), TestType(15));
                 v ^= u8(2.0);
 
-                REQUIRE(v.x() == T(8));
-                REQUIRE(v.y() == T(7));
-                REQUIRE(v.z() == T(13));
+                REQUIRE(v.x() == TestType(8));
+                REQUIRE(v.y() == TestType(7));
+                REQUIRE(v.z() == TestType(13));
             }
             {
-                Vec v(T(10), T(5), T(15));
-                TRAP::Math::tVec3<u8> v2(u8(2.0));
+                Vec3 v(TestType(10), TestType(5), TestType(15));
+                static constexpr TRAP::Math::tVec3<u8> v2(u8(2.0));
                 v ^= v2;
 
-                REQUIRE(v.x() == T(8));
-                REQUIRE(v.y() == T(7));
-                REQUIRE(v.z() == T(13));
+                REQUIRE(v.x() == TestType(8));
+                REQUIRE(v.y() == TestType(7));
+                REQUIRE(v.z() == TestType(13));
             }
         }
 
         //operator<<=
-        if constexpr(std::is_integral_v<T>)
+        if constexpr(std::is_integral_v<TestType>)
         {
             {
-                Vec v(T(10), T(5), T(15));
+                Vec3 v(TestType(10), TestType(5), TestType(15));
                 v <<= u8(2.0);
 
-                REQUIRE(v.x() == T(40));
-                REQUIRE(v.y() == T(20));
-                REQUIRE(v.z() == T(60));
+                REQUIRE(v.x() == TestType(40));
+                REQUIRE(v.y() == TestType(20));
+                REQUIRE(v.z() == TestType(60));
             }
             {
-                Vec v(T(10), T(5), T(15));
-                TRAP::Math::tVec3<u8> v2(u8(2.0));
+                Vec3 v(TestType(10), TestType(5), TestType(15));
+                static constexpr TRAP::Math::tVec3<u8> v2(u8(2.0));
                 v <<= v2;
 
-                REQUIRE(v.x() == T(40));
-                REQUIRE(v.y() == T(20));
-                REQUIRE(v.z() == T(60));
+                REQUIRE(v.x() == TestType(40));
+                REQUIRE(v.y() == TestType(20));
+                REQUIRE(v.z() == TestType(60));
             }
         }
 
         //operator>>=
-        if constexpr(std::is_integral_v<T>)
+        if constexpr(std::is_integral_v<TestType>)
         {
             {
-                Vec v(T(10), T(5), T(15));
+                Vec3 v(TestType(10), TestType(5), TestType(15));
                 v >>= u8(2.0);
 
-                REQUIRE(v.x() == T(2));
-                REQUIRE(v.y() == T(1));
-                REQUIRE(v.z() == T(3));
+                REQUIRE(v.x() == TestType(2));
+                REQUIRE(v.y() == TestType(1));
+                REQUIRE(v.z() == TestType(3));
             }
             {
-                Vec v(T(10), T(5), T(15));
-                TRAP::Math::tVec3<u8> v2(u8(2.0));
+                Vec3 v(TestType(10), TestType(5), TestType(15));
+                static constexpr TRAP::Math::tVec3<u8> v2(u8(2.0));
                 v >>= v2;
 
-                REQUIRE(v.x() == T(2));
-                REQUIRE(v.y() == T(1));
-                REQUIRE(v.z() == T(3));
+                REQUIRE(v.x() == TestType(2));
+                REQUIRE(v.y() == TestType(1));
+                REQUIRE(v.z() == TestType(3));
             }
         }
-
-        //operator==
-        {
-            Vec v(T(10), T(5), T(15));
-            Vec v2(T(15), T(5), T(10));
-
-            REQUIRE(!(v == v2));
-            REQUIRE(v == v);
-        }
-
-        //operator!=
-        {
-            Vec v(T(10), T(5), T(15));
-            Vec v2(T(15), T(5), T(10));
-
-            REQUIRE(v != v2);
-            REQUIRE(!(v != v));
-        }
-
-        //Unary operator+
-        {
-            Vec v(T(10), T(5), T(15));
-            Vec v2 = +v;
-
-            REQUIRE(v2.x() == T(10));
-            REQUIRE(v2.y() == T(5));
-            REQUIRE(v2.z() == T(15));
-        }
-
-        //Unary operator-
-        if constexpr(std::signed_integral<T> || std::floating_point<T>)
-        {
-            Vec v(T(10), T(5), T(15));
-            Vec v2 = -v;
-
-            REQUIRE(v2.x() == T(-10));
-            REQUIRE(v2.y() == T(-5));
-            REQUIRE(v2.z() == T(-15));
-        }
-
-        //Unary operator~
-        if constexpr(std::integral<T>)
-        {
-            Vec v(T(8), T(5), T(15));
-
-            Vec v1{~v};
-            REQUIRE(v1.x() == T(~v.x()));
-            REQUIRE(v1.y() == T(~v.y()));
-            REQUIRE(v1.z() == T(~v.z()));
-        }
-
-        //Binary operator+
-        {
-            Vec v(T(10), T(5), T(15));
-
-            Vec v1{v + T(20)};
-            REQUIRE(v1.x() == T(30));
-            REQUIRE(v1.y() == T(25));
-            REQUIRE(v1.z() == T(35));
-
-            Vec v2{T(20) + v};
-            REQUIRE(v2.x() == T(30));
-            REQUIRE(v2.y() == T(25));
-            REQUIRE(v2.z() == T(35));
-
-            Vec v3{v + v};
-            REQUIRE(v3.x() == T(20));
-            REQUIRE(v3.y() == T(10));
-            REQUIRE(v3.z() == T(30));
-        }
-
-        //Binary operator-
-        {
-            Vec v(T(10), T(5), T(15));
-
-            Vec v1{v - T(5)};
-            REQUIRE(v1.x() == T(5));
-            REQUIRE(v1.y() == T(0));
-            REQUIRE(v1.z() == T(10));
-
-            Vec v2{T(20) - v};
-            REQUIRE(v2.x() == T(10));
-            REQUIRE(v2.y() == T(15));
-            REQUIRE(v2.z() == T(5));
-
-            Vec v3{v - v};
-            REQUIRE(v3.x() == T(0));
-            REQUIRE(v3.y() == T(0));
-            REQUIRE(v3.z() == T(0));
-        }
-
-        //Binary operator*
-        {
-            Vec v(T(10), T(5), T(2));
-
-            Vec v1{v * T(2)};
-            REQUIRE(v1.x() == T(20));
-            REQUIRE(v1.y() == T(10));
-            REQUIRE(v1.z() == T(4));
-
-            Vec v2{T(2) * v};
-            REQUIRE(v2.x() == T(20));
-            REQUIRE(v2.y() == T(10));
-            REQUIRE(v2.z() == T(4));
-
-            Vec v3{v * v};
-            REQUIRE(v3.x() == T(100));
-            REQUIRE(v3.y() == T(25));
-            REQUIRE(v3.z() == T(4));
-        }
-
-        //Binary operator/
-        {
-            Vec v(T(10), T(5), T(20));
-
-            Vec v1{v / T(2)};
-            REQUIRE(v1.x() == T(5));
-            REQUIRE(v1.y() == T(2.5));
-            REQUIRE(v1.z() == T(10));
-
-            Vec v2{T(20) / v};
-            REQUIRE(v2.x() == T(2));
-            REQUIRE(v2.y() == T(4));
-            REQUIRE(v2.z() == T(1));
-
-            Vec v3{v / v};
-            REQUIRE(v3.x() == T(1));
-            REQUIRE(v3.y() == T(1));
-            REQUIRE(v3.z() == T(1));
-        }
-
-        //Binary operator%
-        {
-            Vec v(T(10), T(5), T(15));
-
-            Vec v1{v % T(2)};
-            REQUIRE(v1.x() == T(0));
-            REQUIRE(v1.y() == T(1));
-            REQUIRE(v1.z() == T(1));
-
-            Vec v2{T(20) % v};
-            REQUIRE(v2.x() == T(0));
-            REQUIRE(v2.y() == T(0));
-            REQUIRE(v2.z() == T(5));
-
-            Vec v3{v % v};
-            REQUIRE(v3.x() == T(0));
-            REQUIRE(v3.y() == T(0));
-            REQUIRE(v3.z() == T(0));
-        }
-
-        //Binary operator&
-        if constexpr(std::integral<T>)
-        {
-            Vec v(T(10), T(5), T(15));
-
-            Vec v1{v & T(2)};
-            REQUIRE(v1.x() == T(2));
-            REQUIRE(v1.y() == T(0));
-            REQUIRE(v1.z() == T(2));
-
-            Vec v2{T(20) & v};
-            REQUIRE(v2.x() == T(0));
-            REQUIRE(v2.y() == T(4));
-            REQUIRE(v2.z() == T(4));
-
-            Vec v3{v & v};
-            REQUIRE(v3.x() == T(10));
-            REQUIRE(v3.y() == T(5));
-            REQUIRE(v3.z() == T(15));
-        }
-
-        //Binary operator|
-        if constexpr(std::integral<T>)
-        {
-            Vec v(T(10), T(5), T(15));
-
-            Vec v1{v | T(2)};
-            REQUIRE(v1.x() == T(10));
-            REQUIRE(v1.y() == T(7));
-            REQUIRE(v1.z() == T(15));
-
-            Vec v2{T(20) | v};
-            REQUIRE(v2.x() == T(30));
-            REQUIRE(v2.y() == T(21));
-            REQUIRE(v2.z() == T(31));
-
-            Vec v3{v | v};
-            REQUIRE(v3.x() == T(10));
-            REQUIRE(v3.y() == T(5));
-            REQUIRE(v3.z() == T(15));
-        }
-
-        //Binary operator^
-        if constexpr(std::integral<T>)
-        {
-            Vec v(T(10), T(5), T(15));
-
-            Vec v1{v ^ T(2)};
-            REQUIRE(v1.x() == T(8));
-            REQUIRE(v1.y() == T(7));
-            REQUIRE(v1.z() == T(13));
-
-            Vec v2{T(20) ^ v};
-            REQUIRE(v2.x() == T(30));
-            REQUIRE(v2.y() == T(17));
-            REQUIRE(v2.z() == T(27));
-
-            Vec v3{v ^ v};
-            REQUIRE(v3.x() == T(0));
-            REQUIRE(v3.y() == T(0));
-            REQUIRE(v3.z() == T(0));
-        }
-
-        //Binary operator<<
-        if constexpr(std::integral<T>)
-        {
-            Vec v(T(1), T(2), T(3));
-
-            Vec v1{v << T(2)};
-            REQUIRE(v1.x() == T(4));
-            REQUIRE(v1.y() == T(8));
-            REQUIRE(v1.z() == T(12));
-
-            Vec v2{T(2) << v};
-            REQUIRE(v2.x() == T(4));
-            REQUIRE(v2.y() == T(8));
-            REQUIRE(v2.z() == T(16));
-
-            Vec v3{v << v};
-            REQUIRE(v3.x() == T(2));
-            REQUIRE(v3.y() == T(8));
-            REQUIRE(v3.z() == T(24));
-        }
-
-        //Binary operator>>
-        if constexpr(std::integral<T>)
-        {
-            Vec v(T(8), T(5), T(15));
-
-            Vec v1{v >> T(2)};
-            REQUIRE(v1.x() == T(2));
-            REQUIRE(v1.y() == T(1));
-            REQUIRE(v1.z() == T(3));
-
-            Vec v2{T(2) >> v};
-            REQUIRE(v2.x() == T(0));
-            REQUIRE(v2.y() == T(0));
-            REQUIRE(v2.z() == T(0));
-
-            Vec v3{v >> v};
-            REQUIRE(v3.x() == T(0));
-            REQUIRE(v3.y() == T(0));
-            REQUIRE(v3.z() == T(0));
-        }
-
-        //Binary operator&&
-        {
-            TRAP::Math::tVec3<bool> v(true, true, true);
-            TRAP::Math::tVec3<bool> v1(false, false, false);
-            TRAP::Math::tVec3<bool> v2(true, false, true);
-            TRAP::Math::tVec3<bool> v3(false, true, false);
-
-            REQUIRE((v && v) == v);
-            REQUIRE((v1 && v1) == v1);
-            REQUIRE((v2 && v2) == v2);
-            REQUIRE((v3 && v3) == v3);
-        }
-
-        //Binary operator||
-        {
-            TRAP::Math::tVec3<bool> v(true, true, true);
-            TRAP::Math::tVec3<bool> v1(false, false, false);
-            TRAP::Math::tVec3<bool> v2(true, false, true);
-            TRAP::Math::tVec3<bool> v3(false, true, false);
-
-            REQUIRE((v || v) == v);
-            REQUIRE((v1 || v1) == v1);
-            REQUIRE((v2 || v2) == v2);
-            REQUIRE((v3 || v3) == v3);
-        }
     }
 
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    void RunVec3HashRunTimeTests()
+    SECTION("std::hash")
     {
-        using Vec = TRAP::Math::Vec<3, T>;
-
-        usize hash = std::hash<Vec>()(Vec(T(5), T(10), T(15)));
+        usize hash = std::hash<Vec3>()(Vec3(TestType(5), TestType(10), TestType(15)));
     }
 
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    void RunVec3FormatRunTimeTests()
+    SECTION("fmt::format")
     {
-        using Vec = TRAP::Math::Vec<3, T>;
-
-        Vec v(T(5), T(10), T(15));
+        static constexpr Vec3 v(TestType(5), TestType(10), TestType(15));
         std::string str = fmt::format("{}", v);
 
-		if constexpr(std::same_as<T, f32>)
+		if constexpr(std::same_as<TestType, f32>)
             REQUIRE(str == fmt::format("Vec3f({}, {}, {})", v.x(), v.y(), v.z()));
-		else if constexpr(std::same_as<T, f64>)
+		else if constexpr(std::same_as<TestType, f64>)
             REQUIRE(str == fmt::format("Vec3d({}, {}, {})", v.x(), v.y(), v.z()));
-		else if constexpr(std::same_as<T, bool>)
+		else if constexpr(std::same_as<TestType, bool>)
             REQUIRE(str == fmt::format("Vec3b({}, {}, {})", v.x(), v.y(), v.z()));
-		else if constexpr(std::same_as<T, i8>)
+		else if constexpr(std::same_as<TestType, i8>)
             REQUIRE(str == fmt::format("Vec3i8({}, {}, {})", v.x(), v.y(), v.z()));
-		else if constexpr(std::same_as<T, i16>)
+		else if constexpr(std::same_as<TestType, i16>)
             REQUIRE(str == fmt::format("Vec3i16({}, {}, {})", v.x(), v.y(), v.z()));
-		else if constexpr(std::same_as<T, i32>)
+		else if constexpr(std::same_as<TestType, i32>)
             REQUIRE(str == fmt::format("Vec3i32({}, {}, {})", v.x(), v.y(), v.z()));
-		else if constexpr(std::same_as<T, i64>)
+		else if constexpr(std::same_as<TestType, i64>)
             REQUIRE(str == fmt::format("Vec3i64({}, {}, {})", v.x(), v.y(), v.z()));
-		else if constexpr(std::same_as<T, u8>)
+		else if constexpr(std::same_as<TestType, u8>)
             REQUIRE(str == fmt::format("Vec3u8({}, {}, {})", v.x(), v.y(), v.z()));
-		else if constexpr(std::same_as<T, u16>)
+		else if constexpr(std::same_as<TestType, u16>)
             REQUIRE(str == fmt::format("Vec3u16({}, {}, {})", v.x(), v.y(), v.z()));
-		else if constexpr(std::same_as<T, u32>)
+		else if constexpr(std::same_as<TestType, u32>)
             REQUIRE(str == fmt::format("Vec3u32({}, {}, {})", v.x(), v.y(), v.z()));
-		else if constexpr(std::same_as<T, u64>)
+		else if constexpr(std::same_as<TestType, u64>)
             REQUIRE(str == fmt::format("Vec3u64({}, {}, {})", v.x(), v.y(), v.z()));
 		else
 			REQUIRE(str == "Unknown type");
     }
 
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    consteval void RunVec3GetCompileTimeTests()
-    {
-        using Vec = TRAP::Math::Vec<3, T>;
-
-        constexpr Vec v(T(5), T(10), T(15));
-
-        static_assert(std::get<0>(v) == T(5));
-        static_assert(std::get<1>(std::move(v)) == T(10));
-    }
-
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    void RunVec3GetRunTimeTests()
-    {
-        using Vec = TRAP::Math::Vec<3, T>;
-
-        {
-            const Vec v(T(5), T(10), T(15));
-
-            REQUIRE(std::get<0>(v) == T(5));
-            REQUIRE(std::get<1>(v) == T(10));
-            REQUIRE(std::get<2>(v) == T(15));
-            REQUIRE(std::get<1>(std::move(v)) == T(10));
-        }
-        {
-            const Vec v(T(5), T(10), T(15));
-
-            REQUIRE(std::get<0>(std::move(v)) == T(5));
-        }
-        {
-            Vec v(T(5), T(10), T(15));
-
-            REQUIRE(std::get<0>(v) == T(5));
-            REQUIRE(std::get<1>(v) == T(10));
-            REQUIRE(std::get<2>(v) == T(15));
-            REQUIRE(std::get<1>(std::move(v)) == T(10));
-        }
-        {
-            Vec v(T(5), T(10), T(15));
-
-            REQUIRE(std::get<0>(std::move(v)) == T(5));
-        }
-        {
-            Vec v(T(5), T(10), T(15));
-
-            REQUIRE(std::get<2>(std::move(v)) == T(15));
-        }
-        {
-            const Vec v(T(5), T(10), T(15));
-
-            REQUIRE(std::get<2>(std::move(v)) == T(15));
-        }
-    }
-
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    void RunVec3SwapRunTimeTests()
-    {
-        using Vec = TRAP::Math::Vec<3, T>;
-
-        {
-            Vec v(T(5), T(10), T(15));
-            Vec v1(T(15), T(10), T(5));
-
-            v.Swap(v1);
-
-            REQUIRE(v.x() == T(15));
-            REQUIRE(v.y() == T(10));
-            REQUIRE(v.z() == T(5));
-            REQUIRE(v1.x() == T(5));
-            REQUIRE(v1.y() == T(10));
-            REQUIRE(v1.z() == T(15));
-        }
-        {
-            Vec v(T(5), T(10), T(15));
-            Vec v1(T(15), T(10), T(5));
-
-            std::swap(v, v1);
-
-            REQUIRE(v.x() == T(15));
-            REQUIRE(v.y() == T(10));
-            REQUIRE(v.z() == T(5));
-            REQUIRE(v1.x() == T(5));
-            REQUIRE(v1.y() == T(10));
-            REQUIRE(v1.z() == T(15));
-        }
-    }
-}
-
-TEST_CASE("TRAP::Math::Vec3", "[math][vec][vec3]")
-{
-    SECTION("Typedefs")
-    {
-        RunVec3TypedefsCompileTimeTests<u8>();
-        RunVec3TypedefsCompileTimeTests<u16>();
-        RunVec3TypedefsCompileTimeTests<u32>();
-        RunVec3TypedefsCompileTimeTests<u64>();
-        RunVec3TypedefsCompileTimeTests<i8>();
-        RunVec3TypedefsCompileTimeTests<i16>();
-        RunVec3TypedefsCompileTimeTests<i32>();
-        RunVec3TypedefsCompileTimeTests<i64>();
-        RunVec3TypedefsCompileTimeTests<f32>();
-        RunVec3TypedefsCompileTimeTests<f64>();
-    }
-
-    SECTION("Constructors")
-    {
-        RunVec3ConstructorsCompileTimeTests<u8>();
-        RunVec3ConstructorsCompileTimeTests<u16>();
-        RunVec3ConstructorsCompileTimeTests<u32>();
-        RunVec3ConstructorsCompileTimeTests<u64>();
-        RunVec3ConstructorsCompileTimeTests<i8>();
-        RunVec3ConstructorsCompileTimeTests<i16>();
-        RunVec3ConstructorsCompileTimeTests<i32>();
-        RunVec3ConstructorsCompileTimeTests<i64>();
-        RunVec3ConstructorsCompileTimeTests<f32>();
-        RunVec3ConstructorsCompileTimeTests<f64>();
-
-        RunVec3ConstructorsRunTimeTests<u8>();
-        RunVec3ConstructorsRunTimeTests<u16>();
-        RunVec3ConstructorsRunTimeTests<u32>();
-        RunVec3ConstructorsRunTimeTests<u64>();
-        RunVec3ConstructorsRunTimeTests<i8>();
-        RunVec3ConstructorsRunTimeTests<i16>();
-        RunVec3ConstructorsRunTimeTests<i32>();
-        RunVec3ConstructorsRunTimeTests<i64>();
-        RunVec3ConstructorsRunTimeTests<f32>();
-        RunVec3ConstructorsRunTimeTests<f64>();
-    }
-
-    SECTION("Assignments")
-    {
-        RunVec3AssignmentsRunTimeTests<u8>();
-        RunVec3AssignmentsRunTimeTests<u16>();
-        RunVec3AssignmentsRunTimeTests<u32>();
-        RunVec3AssignmentsRunTimeTests<u64>();
-        RunVec3AssignmentsRunTimeTests<i8>();
-        RunVec3AssignmentsRunTimeTests<i16>();
-        RunVec3AssignmentsRunTimeTests<i32>();
-        RunVec3AssignmentsRunTimeTests<i64>();
-        RunVec3AssignmentsRunTimeTests<f32>();
-        RunVec3AssignmentsRunTimeTests<f64>();
-    }
-
-    SECTION("Accessors")
-    {
-        RunVec3AccessorCompileTimeTests<u8>();
-        RunVec3AccessorCompileTimeTests<u16>();
-        RunVec3AccessorCompileTimeTests<u32>();
-        RunVec3AccessorCompileTimeTests<u64>();
-        RunVec3AccessorCompileTimeTests<i8>();
-        RunVec3AccessorCompileTimeTests<i16>();
-        RunVec3AccessorCompileTimeTests<i32>();
-        RunVec3AccessorCompileTimeTests<i64>();
-        RunVec3AccessorCompileTimeTests<f32>();
-        RunVec3AccessorCompileTimeTests<f64>();
-
-        RunVec3AccessorRunTimeTests<u8>();
-        RunVec3AccessorRunTimeTests<u16>();
-        RunVec3AccessorRunTimeTests<u32>();
-        RunVec3AccessorRunTimeTests<u64>();
-        RunVec3AccessorRunTimeTests<i8>();
-        RunVec3AccessorRunTimeTests<i16>();
-        RunVec3AccessorRunTimeTests<i32>();
-        RunVec3AccessorRunTimeTests<i64>();
-        RunVec3AccessorRunTimeTests<f32>();
-        RunVec3AccessorRunTimeTests<f64>();
-    }
-
-    SECTION("Operators")
-    {
-        RunVec3OperatorCompileTimeTests<u8>();
-        RunVec3OperatorCompileTimeTests<u16>();
-        RunVec3OperatorCompileTimeTests<u32>();
-        RunVec3OperatorCompileTimeTests<u64>();
-        RunVec3OperatorCompileTimeTests<i8>();
-        RunVec3OperatorCompileTimeTests<i16>();
-        RunVec3OperatorCompileTimeTests<i32>();
-        RunVec3OperatorCompileTimeTests<i64>();
-        RunVec3OperatorCompileTimeTests<f32>();
-        RunVec3OperatorCompileTimeTests<f64>();
-
-        RunVec3OperatorRunTimeTests<u8>();
-        RunVec3OperatorRunTimeTests<u16>();
-        RunVec3OperatorRunTimeTests<u32>();
-        RunVec3OperatorRunTimeTests<u64>();
-        RunVec3OperatorRunTimeTests<i8>();
-        RunVec3OperatorRunTimeTests<i16>();
-        RunVec3OperatorRunTimeTests<i32>();
-        RunVec3OperatorRunTimeTests<i64>();
-        RunVec3OperatorRunTimeTests<f32>();
-        RunVec3OperatorRunTimeTests<f64>();
-    }
-
-    SECTION("std::hash")
-    {
-        RunVec3HashRunTimeTests<u8>();
-        RunVec3HashRunTimeTests<u16>();
-        RunVec3HashRunTimeTests<u32>();
-        RunVec3HashRunTimeTests<u64>();
-        RunVec3HashRunTimeTests<i8>();
-        RunVec3HashRunTimeTests<i16>();
-        RunVec3HashRunTimeTests<i32>();
-        RunVec3HashRunTimeTests<i64>();
-        RunVec3HashRunTimeTests<f32>();
-        RunVec3HashRunTimeTests<f64>();
-    }
-
-    SECTION("fmt::format")
-    {
-        RunVec3FormatRunTimeTests<u8>();
-        RunVec3FormatRunTimeTests<u16>();
-        RunVec3FormatRunTimeTests<u32>();
-        RunVec3FormatRunTimeTests<u64>();
-        RunVec3FormatRunTimeTests<i8>();
-        RunVec3FormatRunTimeTests<i16>();
-        RunVec3FormatRunTimeTests<i32>();
-        RunVec3FormatRunTimeTests<i64>();
-        RunVec3FormatRunTimeTests<f32>();
-        RunVec3FormatRunTimeTests<f64>();
-    }
-
     SECTION("std::get")
     {
-        RunVec3GetCompileTimeTests<u8>();
-        RunVec3GetCompileTimeTests<u16>();
-        RunVec3GetCompileTimeTests<u32>();
-        RunVec3GetCompileTimeTests<u64>();
-        RunVec3GetCompileTimeTests<i8>();
-        RunVec3GetCompileTimeTests<i16>();
-        RunVec3GetCompileTimeTests<i32>();
-        RunVec3GetCompileTimeTests<i64>();
-        RunVec3GetCompileTimeTests<f32>();
-        RunVec3GetCompileTimeTests<f64>();
+        static constexpr Vec3 v(TestType(5), TestType(10), TestType(15));
 
-        RunVec3GetRunTimeTests<u8>();
-        RunVec3GetRunTimeTests<u16>();
-        RunVec3GetRunTimeTests<u32>();
-        RunVec3GetRunTimeTests<u64>();
-        RunVec3GetRunTimeTests<i8>();
-        RunVec3GetRunTimeTests<i16>();
-        RunVec3GetRunTimeTests<i32>();
-        RunVec3GetRunTimeTests<i64>();
-        RunVec3GetRunTimeTests<f32>();
-        RunVec3GetRunTimeTests<f64>();
+        STATIC_REQUIRE(std::get<0u>(v) == TestType(5));
+        STATIC_REQUIRE(std::get<1u>(std::move(v)) == TestType(10));
     }
 
     SECTION("std::swap")
     {
-        RunVec3SwapRunTimeTests<u8>();
-        RunVec3SwapRunTimeTests<u16>();
-        RunVec3SwapRunTimeTests<u32>();
-        RunVec3SwapRunTimeTests<u64>();
-        RunVec3SwapRunTimeTests<i8>();
-        RunVec3SwapRunTimeTests<i16>();
-        RunVec3SwapRunTimeTests<i32>();
-        RunVec3SwapRunTimeTests<i64>();
-        RunVec3SwapRunTimeTests<f32>();
-        RunVec3SwapRunTimeTests<f64>();
+        {
+            Vec3 v(TestType(5), TestType(10), TestType(15));
+            Vec3 v1(TestType(15), TestType(10), TestType(5));
+
+            v.Swap(v1);
+
+            REQUIRE(v.x() == TestType(15));
+            REQUIRE(v.y() == TestType(10));
+            REQUIRE(v.z() == TestType(5));
+            REQUIRE(v1.x() == TestType(5));
+            REQUIRE(v1.y() == TestType(10));
+            REQUIRE(v1.z() == TestType(15));
+        }
+        {
+            Vec3 v(TestType(5), TestType(10), TestType(15));
+            Vec3 v1(TestType(15), TestType(10), TestType(5));
+
+            std::swap(v, v1);
+
+            REQUIRE(v.x() == TestType(15));
+            REQUIRE(v.y() == TestType(10));
+            REQUIRE(v.z() == TestType(5));
+            REQUIRE(v1.x() == TestType(5));
+            REQUIRE(v1.y() == TestType(10));
+            REQUIRE(v1.z() == TestType(15));
+        }
     }
 }

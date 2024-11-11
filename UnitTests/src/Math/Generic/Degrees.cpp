@@ -1,119 +1,72 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Degrees()", "[math][generic][degrees][scalar]", f64, f32)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunCompileTimeDegreesScalarTests()
+    SECTION("Normal cases")
     {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
-        static_assert(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(T(0.0f))), T(0.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(T(45.0f))), T(45.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(T(90.0f))), T(90.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(T(180.0f))), T(180.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(T(270.0f))), T(270.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(T(-45.0f))), T(-45.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(T(-90.0f))), T(-90.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(T(-180.0f))), T(-180.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(T(-270.0f))), T(-270.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(T(360.0f))), T(360.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(TestType(0.0f))), TestType(0.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(TestType(45.0f))), TestType(45.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(TestType(90.0f))), TestType(90.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(TestType(180.0f))), TestType(180.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(TestType(270.0f))), TestType(270.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(TestType(-45.0f))), TestType(-45.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(TestType(-90.0f))), TestType(-90.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(TestType(-180.0f))), TestType(-180.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(TestType(-270.0f))), TestType(-270.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(TestType(360.0f))), TestType(360.0f), Epsilon));
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunCompileTimeDegreesScalarEdgeTests()
+    SECTION("Edge cases")
     {
-        constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-        constexpr T inf = std::numeric_limits<T>::infinity();
-        constexpr T ninf = -std::numeric_limits<T>::infinity();
+        static constexpr TestType nan = std::numeric_limits<TestType>::quiet_NaN();
+        static constexpr TestType inf = std::numeric_limits<TestType>::infinity();
+        static constexpr TestType ninf = -std::numeric_limits<TestType>::infinity();
 
         static_assert(TRAP::Math::IsInf(inf));
         static_assert(TRAP::Math::IsInf(ninf));
         static_assert(TRAP::Math::IsNaN(nan));
     }
-
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    consteval void RunCompileTimeDegreesVecTests()
-    {
-        {
-            constexpr T degrees(TRAP::Math::tVec4<typename T::value_type>(0.0f, 45.0f, 90.0f, 180.0f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(degrees)), degrees, typename T::value_type(0.00001f))));
-        }
-        {
-            constexpr T degrees(TRAP::Math::tVec4<typename T::value_type>(270.0f, -45.0f, -90.0f, -180.0f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(degrees)), degrees, typename T::value_type(0.00001f))));
-        }
-        {
-            constexpr T degrees(TRAP::Math::tVec4<typename T::value_type>(-270.0f, 360.0f, 85.0f, -99.0f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(degrees)), degrees, typename T::value_type(0.00001f))));
-        }
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    void RunCompileTimeDegreesVecEdgeTests()
-    {
-        static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
-        static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-        static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
-
-        {
-            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Degrees(T(inf)))));
-            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Degrees(T(ninf)))));
-            REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Degrees(T(nan)))));
-        }
-    }
 }
 
-TEST_CASE("TRAP::Math::Degrees()", "[math][generic][degrees]")
+TEMPLATE_TEST_CASE("TRAP::Math::Degrees()", "[math][generic][degrees][vec]",
+                   TRAP::Math::Vec2d, TRAP::Math::Vec2f, TRAP::Math::Vec3d, TRAP::Math::Vec3f, TRAP::Math::Vec4d, TRAP::Math::Vec4f)
 {
-    SECTION("Scalar - f64")
+    using Scalar = TestType::value_type;
+    using Vec4Scalar = TRAP::Math::tVec4<Scalar>;
+
+    SECTION("Normal cases")
     {
-        RunCompileTimeDegreesScalarTests<f64>();
-        RunCompileTimeDegreesScalarEdgeTests<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunCompileTimeDegreesScalarTests<f32>();
-        RunCompileTimeDegreesScalarEdgeTests<f32>();
+        {
+            static constexpr TestType degrees(Vec4Scalar(0.0f, 45.0f, 90.0f, 180.0f));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(degrees)), degrees, Scalar(0.00001f))));
+        }
+        {
+            static constexpr TestType degrees(Vec4Scalar(270.0f, -45.0f, -90.0f, -180.0f));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(degrees)), degrees, Scalar(0.00001f))));
+        }
+        {
+            static constexpr TestType degrees(Vec4Scalar(-270.0f, 360.0f, 85.0f, -99.0f));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Radians(degrees)), degrees, Scalar(0.00001f))));
+        }
     }
 
-    SECTION("Vec2 - f64")
+    SECTION("Edge cases")
     {
-        RunCompileTimeDegreesVecTests<TRAP::Math::Vec2d>();
-        RunCompileTimeDegreesVecEdgeTests<TRAP::Math::Vec2d>();
-    }
-    SECTION("Vec2 - f32")
-    {
-        RunCompileTimeDegreesVecTests<TRAP::Math::Vec2f>();
-        RunCompileTimeDegreesVecEdgeTests<TRAP::Math::Vec2f>();
-    }
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = -std::numeric_limits<Scalar>::infinity();
 
-    SECTION("Vec3 - f64")
-    {
-        RunCompileTimeDegreesVecTests<TRAP::Math::Vec3d>();
-        RunCompileTimeDegreesVecEdgeTests<TRAP::Math::Vec3d>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunCompileTimeDegreesVecTests<TRAP::Math::Vec3f>();
-        RunCompileTimeDegreesVecEdgeTests<TRAP::Math::Vec3f>();
-    }
-
-    SECTION("Vec4 - f64")
-    {
-        RunCompileTimeDegreesVecTests<TRAP::Math::Vec4d>();
-        RunCompileTimeDegreesVecEdgeTests<TRAP::Math::Vec4d>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunCompileTimeDegreesVecTests<TRAP::Math::Vec4f>();
-        RunCompileTimeDegreesVecEdgeTests<TRAP::Math::Vec4f>();
+        {
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Degrees(TestType(inf)))));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Degrees(TestType(ninf)))));
+            REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Degrees(TestType(nan)))));
+        }
     }
 }

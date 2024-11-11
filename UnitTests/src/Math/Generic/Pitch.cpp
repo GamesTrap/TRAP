@@ -1,134 +1,116 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Pitch()", "[math][generic][pitch][quat]", TRAP::Math::Quatf, TRAP::Math::Quatd)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunPitchCompileTimeTests()
+    using Scalar = TestType::value_type;
+    using Vec3Scalar = TRAP::Math::tVec3<Scalar>;
+
+    SECTION("Normal cases - GCEM")
     {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
         {
-            constexpr T expected = 0.0f;
-            constexpr TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(expected, 0.0f, 0.0f)));
-            constexpr T pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
+            static constexpr Scalar expected = 0.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(expected, 0.0f, 0.0f)));
+            static constexpr Scalar pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
             static_assert(TRAP::Math::Equal(pitch, expected, Epsilon));
         }
         {
-            constexpr T expected = 90.0f;
-            constexpr TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(expected, 0.0f, 0.0f)));
-            constexpr T pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
-            static_assert(TRAP::Math::Equal(pitch, expected, T(0.0000000000001f)));
+            static constexpr Scalar expected = 90.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(expected, 0.0f, 0.0f)));
+            static constexpr Scalar pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
+            static_assert(TRAP::Math::Equal(pitch, expected, Scalar(0.0000000000001f)));
         }
         {
-            constexpr T expected = 45.0f;
-            constexpr TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(expected, 0.0f, 0.0f)));
-            constexpr T pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
-            static_assert(TRAP::Math::Equal(pitch, expected, T(0.00001f)));
+            static constexpr Scalar expected = 45.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(expected, 0.0f, 0.0f)));
+            static constexpr Scalar pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
+            static_assert(TRAP::Math::Equal(pitch, expected, Scalar(0.00001f)));
         }
         {
-            constexpr T expected = 180.0f;
-            constexpr TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(expected, 0.0f, 0.0f)));
-            constexpr T pitch = TRAP::Math::Abs(TRAP::Math::Degrees(TRAP::Math::Pitch(q)));
+            static constexpr Scalar expected = 180.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(expected, 0.0f, 0.0f)));
+            static constexpr Scalar pitch = TRAP::Math::Abs(TRAP::Math::Degrees(TRAP::Math::Pitch(q)));
             static_assert(TRAP::Math::Equal(pitch, expected, Epsilon));
         }
         {
-            constexpr T expected = -45.0f;
-            constexpr TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(expected, 0.0f, 0.0f)));
-            constexpr T pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
-            static_assert(TRAP::Math::Equal(pitch, expected, T(0.00001f)));
+            static constexpr Scalar expected = -45.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(expected, 0.0f, 0.0f)));
+            static constexpr Scalar pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
+            static_assert(TRAP::Math::Equal(pitch, expected, Scalar(0.00001f)));
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunPitchRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
         {
-            const T expected = 0.0f;
-            const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(expected, 0.0f, 0.0f)));
-            const T pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
+            static constexpr Scalar expected = 0.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(expected, 0.0f, 0.0f)));
+            const Scalar pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
             REQUIRE(TRAP::Math::Equal(pitch, expected, Epsilon));
         }
         {
-            const T expected = 90.0f;
-            const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(expected, 0.0f, 0.0f)));
-            const T pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
-            REQUIRE(TRAP::Math::Equal(pitch, expected, T(0.0000000000001f)));
+            static constexpr Scalar expected = 90.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(expected, 0.0f, 0.0f)));
+            const Scalar pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
+            REQUIRE(TRAP::Math::Equal(pitch, expected, Scalar(0.0000000000001f)));
         }
         {
-            const T expected = 45.0f;
-            const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(expected, 0.0f, 0.0f)));
-            const T pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
-            REQUIRE(TRAP::Math::Equal(pitch, expected, T(0.00001f)));
+            static constexpr Scalar expected = 45.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(expected, 0.0f, 0.0f)));
+            const Scalar pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
+            REQUIRE(TRAP::Math::Equal(pitch, expected, Scalar(0.00001f)));
         }
         {
-            const T expected = 180.0f;
-            const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(expected, 0.0f, 0.0f)));
-            const T pitch = TRAP::Math::Abs(TRAP::Math::Degrees(TRAP::Math::Pitch(q)));
+            static constexpr Scalar expected = 180.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(expected, 0.0f, 0.0f)));
+            const Scalar pitch = TRAP::Math::Abs(TRAP::Math::Degrees(TRAP::Math::Pitch(q)));
             REQUIRE(TRAP::Math::Equal(pitch, expected, Epsilon));
         }
         {
-            const T expected = -45.0f;
-            const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(expected, 0.0f, 0.0f)));
-            const T pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
-            REQUIRE(TRAP::Math::Equal(pitch, expected, T(0.00001f)));
+            static constexpr Scalar expected = -45.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(expected, 0.0f, 0.0f)));
+            const Scalar pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
+            REQUIRE(TRAP::Math::Equal(pitch, expected, Scalar(0.00001f)));
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunPitchEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-        static constexpr T epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = -std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
+        static constexpr Scalar epsilon = std::numeric_limits<Scalar>::epsilon();
 
         {
-            const T expected = inf;
-            const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(expected, 0.0f, 0.0f)));
-            const T pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
+            static constexpr Scalar expected = inf;
+            const TestType q(TRAP::Math::Radians(Vec3Scalar(expected, 0.0f, 0.0f)));
+            const Scalar pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
             REQUIRE(TRAP::Math::IsNaN(pitch));
         }
         {
-            const T expected = ninf;
-            const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(expected, 0.0f, 0.0f)));
-            const T pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
+            static constexpr Scalar expected = ninf;
+            const TestType q(TRAP::Math::Radians(Vec3Scalar(expected, 0.0f, 0.0f)));
+            const Scalar pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
             REQUIRE(TRAP::Math::IsNaN(pitch));
         }
         {
-            const T expected = nan;
-            const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(expected, 0.0f, 0.0f)));
-            const T pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
+            const Scalar expected = nan;
+            const TestType q(TRAP::Math::Radians(Vec3Scalar(expected, 0.0f, 0.0f)));
+            const Scalar pitch = TRAP::Math::Degrees(TRAP::Math::Pitch(q));
             REQUIRE(TRAP::Math::IsNaN(pitch));
         }
         {
-            const TRAP::Math::tQuat<T> input{};
-            const T expected = T(0.0f);
+            static constexpr TestType input{};
+            static constexpr Scalar expected = Scalar(0.0f);
             REQUIRE(TRAP::Math::Equal(TRAP::Math::Pitch(input), expected, epsilon));
         }
-    }
-}
-
-TEST_CASE("TRAP::Math::Pitch()", "[math][generic][pitch]")
-{
-    SECTION("Quat - f64")
-    {
-        RunPitchRunTimeTests<f64>();
-        RunPitchCompileTimeTests<f64>();
-        RunPitchEdgeTests<f64>();
-    }
-    SECTION("Quat - f32")
-    {
-        RunPitchRunTimeTests<f32>();
-        RunPitchCompileTimeTests<f32>();
-        RunPitchEdgeTests<f32>();
     }
 }

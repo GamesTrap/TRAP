@@ -1,255 +1,202 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Normalize()", "[math][generic][normalize][vec]",
+                   TRAP::Math::Vec2f, TRAP::Math::Vec2d, TRAP::Math::Vec3f, TRAP::Math::Vec3d, TRAP::Math::Vec4f, TRAP::Math::Vec4d)
 {
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    consteval void RunNormalizeVecCompileTimeTests()
+    using Scalar = TestType::value_type;
+    using Vec2Scalar = TRAP::Math::tVec2<Scalar>;
+    using Vec3Scalar = TRAP::Math::tVec3<Scalar>;
+    using Vec4Scalar = TRAP::Math::tVec4<Scalar>;
+
+    SECTION("Normal cases - GCEM")
     {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
-        constexpr T normalize1 = TRAP::Math::Normalize(T(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(normalize1, T(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f)), T(Epsilon))));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Length(normalize1), typename T::value_type(1.0f), Epsilon));
+        static constexpr TestType normalize1 = TRAP::Math::Normalize(TestType(Vec4Scalar(1.0f, 0.0f, 0.0f, 0.0f)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(normalize1, TestType(Vec4Scalar(1.0f, 0.0f, 0.0f, 0.0f)), TestType(Epsilon))));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Length(normalize1), Scalar(1.0f), Epsilon));
 
-        constexpr T normalize2 = TRAP::Math::Normalize(T(TRAP::Math::Vec<4, typename T::value_type>(2.0f, 0.0f, 0.0f, 0.0f)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(normalize2, T(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f)), T(Epsilon))));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Length(normalize2), typename T::value_type(1.0f), Epsilon));
+        static constexpr TestType normalize2 = TRAP::Math::Normalize(TestType(Vec4Scalar(2.0f, 0.0f, 0.0f, 0.0f)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(normalize2, TestType(Vec4Scalar(1.0f, 0.0f, 0.0f, 0.0f)), TestType(Epsilon))));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Length(normalize2), Scalar(1.0f), Epsilon));
 
-        constexpr T normalize3 = TRAP::Math::Normalize(T(TRAP::Math::Vec<4, typename T::value_type>(-0.6f, 0.7f, -0.5f, 0.8f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Length(normalize3), typename T::value_type(1.0f), Epsilon));
+        static constexpr TestType normalize3 = TRAP::Math::Normalize(TestType(Vec4Scalar(-0.6f, 0.7f, -0.5f, 0.8f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Length(normalize3), Scalar(1.0f), Epsilon));
 
-        if constexpr(TRAP::Math::IsVec4<T>)
+        if constexpr(TRAP::Math::IsVec4<TestType>)
         {
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(normalize3, T(TRAP::Math::Vec<4, typename T::value_type>(-0.45485884017063427f, 0.53066861674163057f, -0.37904901841347383f, 0.60647843849879091f)), T(0.0000001f))));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(normalize3, TestType(Vec4Scalar(-0.45485884017063427f, 0.53066861674163057f, -0.37904901841347383f, 0.60647843849879091f)), TestType(0.0000001f))));
         }
-        else if constexpr(TRAP::Math::IsVec3<T>)
+        else if constexpr(TRAP::Math::IsVec3<TestType>)
         {
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(normalize3, T(TRAP::Math::Vec<3, typename T::value_type>(-0.57207757317981289f, 0.66742379748924929f, -0.47673129203957787f)), T(0.0000001f))));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(normalize3, TestType(Vec3Scalar(-0.57207757317981289f, 0.66742379748924929f, -0.47673129203957787f)), TestType(0.0000001f))));
         }
-        else if constexpr(TRAP::Math::IsVec2<T>)
+        else if constexpr(TRAP::Math::IsVec2<TestType>)
         {
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(normalize3, T(TRAP::Math::Vec<2, typename T::value_type>(-0.65079139475254222f, 0.75925658411108998f)), T(0.0000001f))));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(normalize3, TestType(Vec2Scalar(-0.65079139475254222f, 0.75925658411108998f)), TestType(0.0000001f))));
         }
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    void RunNormalizeVecRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
-        const T normalize1 = TRAP::Math::Normalize(T(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f)));
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(normalize1, T(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f)), T(Epsilon))));
-        REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(normalize1), typename T::value_type(1.0f), Epsilon));
+        const TestType normalize1 = TRAP::Math::Normalize(TestType(Vec4Scalar(1.0f, 0.0f, 0.0f, 0.0f)));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(normalize1, TestType(Vec4Scalar(1.0f, 0.0f, 0.0f, 0.0f)), TestType(Epsilon))));
+        REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(normalize1), Scalar(1.0f), Epsilon));
 
-        const T normalize2 = TRAP::Math::Normalize(T(TRAP::Math::Vec<4, typename T::value_type>(2.0f, 0.0f, 0.0f, 0.0f)));
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(normalize2, T(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f)), T(Epsilon))));
-        REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(normalize2), typename T::value_type(1.0f), Epsilon));
+        const TestType normalize2 = TRAP::Math::Normalize(TestType(Vec4Scalar(2.0f, 0.0f, 0.0f, 0.0f)));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(normalize2, TestType(Vec4Scalar(1.0f, 0.0f, 0.0f, 0.0f)), TestType(Epsilon))));
+        REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(normalize2), Scalar(1.0f), Epsilon));
 
-        const T normalize3 = TRAP::Math::Normalize(T(TRAP::Math::Vec<4, typename T::value_type>(-0.6f, 0.7f, -0.5f, 0.8f)));
-        REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(normalize3), typename T::value_type(1.0f), Epsilon));
+        const TestType normalize3 = TRAP::Math::Normalize(TestType(TRAP::Math::Vec<4, Scalar>(-0.6f, 0.7f, -0.5f, 0.8f)));
+        REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(normalize3), Scalar(1.0f), Epsilon));
 
-        if constexpr(TRAP::Math::IsVec4<T>)
+        if constexpr(TRAP::Math::IsVec4<TestType>)
         {
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(normalize3, T(TRAP::Math::Vec<4, typename T::value_type>(-0.45485884017063427f, 0.53066861674163057f, -0.37904901841347383f, 0.60647843849879091f)), T(0.0000001f))));
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(normalize3, TestType(Vec4Scalar(-0.45485884017063427f, 0.53066861674163057f, -0.37904901841347383f, 0.60647843849879091f)), TestType(0.0000001f))));
         }
-        else if constexpr(TRAP::Math::IsVec3<T>)
+        else if constexpr(TRAP::Math::IsVec3<TestType>)
         {
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(normalize3, T(TRAP::Math::Vec<3, typename T::value_type>(-0.57207757317981289f, 0.66742379748924929f, -0.47673129203957787f)), T(0.0000001f))));
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(normalize3, TestType(Vec3Scalar(-0.57207757317981289f, 0.66742379748924929f, -0.47673129203957787f)), TestType(0.0000001f))));
         }
-        else if constexpr(TRAP::Math::IsVec2<T>)
+        else if constexpr(TRAP::Math::IsVec2<TestType>)
         {
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(normalize3, T(TRAP::Math::Vec<2, typename T::value_type>(-0.65079139475254222f, 0.75925658411108998f)), T(0.0000001f))));
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(normalize3, TestType(Vec2Scalar(-0.65079139475254222f, 0.75925658411108998f)), TestType(0.0000001f))));
         }
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    void RunNormalizeVecEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-        static constexpr typename T::value_type ninf = std::numeric_limits<typename T::value_type>::infinity();
-        static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
 
-        const T normalize1 = TRAP::Math::Normalize(T(TRAP::Math::Vec<4, typename T::value_type>(0.0f, 0.0f, 0.0f, 0.0f)));
+        const TestType normalize1 = TRAP::Math::Normalize(TestType(Vec4Scalar(0.0f, 0.0f, 0.0f, 0.0f)));
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Length(normalize1)));
         REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(normalize1)));
 
-        const T normalize2 = TRAP::Math::Normalize(T(TRAP::Math::Vec<4, typename T::value_type>(inf)));
+        const TestType normalize2 = TRAP::Math::Normalize(TestType(Vec4Scalar(inf)));
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Length(normalize2)));
         REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(normalize2)));
 
-        const T normalize3 = TRAP::Math::Normalize(T(TRAP::Math::Vec<4, typename T::value_type>(ninf)));
+        const TestType normalize3 = TRAP::Math::Normalize(TestType(Vec4Scalar(ninf)));
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Length(normalize3)));
         REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(normalize3)));
 
-        const T normalize4 = TRAP::Math::Normalize(T(TRAP::Math::Vec<4, typename T::value_type>(nan)));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Length(normalize4)));
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(normalize4)));
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>
-    consteval void RunNormalizeQuatCompileTimeTests()
-    {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-        constexpr typename T::value_type PI = TRAP::Math::PI<typename T::value_type>();
-
-        {
-            constexpr T a(1.0f, 0.0f, 0.0f, 0.0f);
-            constexpr T n = TRAP::Math::Normalize(a);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(a, n, Epsilon)));
-        }
-        {
-            constexpr T a(1.0f, TRAP::Math::Vec<3, typename T::value_type>(0.0f));
-            constexpr T n = TRAP::Math::Normalize(a);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(a, n, Epsilon)));
-        }
-        {
-            constexpr T q = TRAP::Math::AngleAxis(PI * typename T::value_type(0.25f), TRAP::Math::Vec<3, typename T::value_type>(0.0f, 0.0f, 1.0f));
-            constexpr T n = TRAP::Math::Normalize(q);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Length(n), typename T::value_type(1.0f), Epsilon));
-        }
-        {
-            constexpr T q = TRAP::Math::AngleAxis(PI * typename T::value_type(0.25f), TRAP::Math::Vec<3, typename T::value_type>(0.0f, 0.0f, 2.0f));
-            constexpr T n = TRAP::Math::Normalize(q);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Length(n), typename T::value_type(1.0f), Epsilon));
-        }
-        {
-            constexpr T q = TRAP::Math::AngleAxis(PI * typename T::value_type(0.25f), TRAP::Math::Vec<3, typename T::value_type>(1.0f, 2.0f, 3.0f));
-            constexpr T n = TRAP::Math::Normalize(q);
-            static_assert(TRAP::Math::Equal(TRAP::Math::Length(n), typename T::value_type(1.0f), Epsilon));
-        }
-        {
-            constexpr T input(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-            constexpr T expected(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Normalize(input), expected, Epsilon)));
-        }
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>
-    void RunNormalizeQuatRunTimeTests()
-    {
-        static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-        static constexpr typename T::value_type PI = TRAP::Math::PI<typename T::value_type>();
-
-        {
-            static constexpr T a(1.0f, 0.0f, 0.0f, 0.0f);
-            const T n = TRAP::Math::Normalize(a);
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(a, n, Epsilon)));
-        }
-        {
-            static constexpr T a(1.0f, TRAP::Math::Vec<3, typename T::value_type>(0.0f));
-            const T n = TRAP::Math::Normalize(a);
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(a, n, Epsilon)));
-        }
-        {
-            const T q = TRAP::Math::AngleAxis(PI * typename T::value_type(0.25f), TRAP::Math::Vec<3, typename T::value_type>(0.0f, 0.0f, 1.0f));
-            const T n = TRAP::Math::Normalize(q);
-            REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(n), typename T::value_type(1.0f), Epsilon));
-        }
-        {
-            const T q = TRAP::Math::AngleAxis(PI * typename T::value_type(0.25f), TRAP::Math::Vec<3, typename T::value_type>(0.0f, 0.0f, 2.0f));
-            const T n = TRAP::Math::Normalize(q);
-            REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(n), typename T::value_type(1.0f), Epsilon));
-        }
-        {
-            const T q = TRAP::Math::AngleAxis(PI * typename T::value_type(0.25f), TRAP::Math::Vec<3, typename T::value_type>(1.0f, 2.0f, 3.0f));
-            const T n = TRAP::Math::Normalize(q);
-            REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(n), typename T::value_type(1.0f), Epsilon));
-        }
-        {
-            const T input(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-            const T expected(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Normalize(input), expected, Epsilon)));
-        }
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>
-    void RunNormalizeQuatEdgeTests()
-    {
-        static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-
-        static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-        static constexpr typename T::value_type ninf = std::numeric_limits<typename T::value_type>::infinity();
-        static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
-
-        const T normalize1 = TRAP::Math::Normalize(T(0.0f, 0.0f, 0.0f, 0.0f));
-        REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(normalize1), typename T::value_type(1.0f), Epsilon));
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(T(1.0f, 0.0f, 0.0f, 0.0f), normalize1, Epsilon)));
-
-        const T normalize2 = TRAP::Math::Normalize(T(inf, inf, inf, inf));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Length(normalize2)));
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(normalize2)));
-
-        const T normalize3 = TRAP::Math::Normalize(T(ninf, ninf, ninf, ninf));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Length(normalize3)));
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(normalize3)));
-
-        const T normalize4 = TRAP::Math::Normalize(T(nan, nan, nan, nan));
+        const TestType normalize4 = TRAP::Math::Normalize(TestType(Vec4Scalar(nan)));
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Length(normalize4)));
         REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(normalize4)));
     }
 }
 
-TEST_CASE("TRAP::Math::Normalize()", "[math][generic][normalize]")
+TEMPLATE_TEST_CASE("TRAP::Math::Normalize()", "[math][generic][normalize][quat]",
+                   TRAP::Math::Quatf, TRAP::Math::Quatd)
 {
-    SECTION("Vec4 - f64")
+    using Scalar = TestType::value_type;
+    using Vec3Scalar = TRAP::Math::tVec3<Scalar>;
+
+    SECTION("Normal cases - GCEM")
     {
-        RunNormalizeVecRunTimeTests<TRAP::Math::Vec4d>();
-        RunNormalizeVecCompileTimeTests<TRAP::Math::Vec4d>();
-        RunNormalizeVecEdgeTests<TRAP::Math::Vec4d>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunNormalizeVecRunTimeTests<TRAP::Math::Vec4f>();
-        RunNormalizeVecCompileTimeTests<TRAP::Math::Vec4f>();
-        RunNormalizeVecEdgeTests<TRAP::Math::Vec4f>();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
+        static constexpr Scalar PI = TRAP::Math::PI<Scalar>();
+
+        {
+            static constexpr TestType a(1.0f, 0.0f, 0.0f, 0.0f);
+            static constexpr TestType n = TRAP::Math::Normalize(a);
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(a, n, Epsilon)));
+        }
+        {
+            static constexpr TestType a(1.0f, Vec3Scalar(0.0f));
+            static constexpr TestType n = TRAP::Math::Normalize(a);
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(a, n, Epsilon)));
+        }
+        {
+            static constexpr TestType q = TRAP::Math::AngleAxis(PI * Scalar(0.25f), Vec3Scalar(0.0f, 0.0f, 1.0f));
+            static constexpr TestType n = TRAP::Math::Normalize(q);
+            static_assert(TRAP::Math::Equal(TRAP::Math::Length(n), Scalar(1.0f), Epsilon));
+        }
+        {
+            static constexpr TestType q = TRAP::Math::AngleAxis(PI * Scalar(0.25f), Vec3Scalar(0.0f, 0.0f, 2.0f));
+            static constexpr TestType n = TRAP::Math::Normalize(q);
+            static_assert(TRAP::Math::Equal(TRAP::Math::Length(n), Scalar(1.0f), Epsilon));
+        }
+        {
+            static constexpr TestType q = TRAP::Math::AngleAxis(PI * Scalar(0.25f), Vec3Scalar(1.0f, 2.0f, 3.0f));
+            static constexpr TestType n = TRAP::Math::Normalize(q);
+            static_assert(TRAP::Math::Equal(TRAP::Math::Length(n), Scalar(1.0f), Epsilon));
+        }
+        {
+            static constexpr TestType input(Scalar(0.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+            static constexpr TestType expected(Scalar(1.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Normalize(input), expected, Epsilon)));
+        }
     }
 
-    SECTION("Vec3 - f64")
+    SECTION("Normal cases - std")
     {
-        RunNormalizeVecRunTimeTests<TRAP::Math::Vec3d>();
-        RunNormalizeVecCompileTimeTests<TRAP::Math::Vec3d>();
-        RunNormalizeVecEdgeTests<TRAP::Math::Vec3d>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunNormalizeVecRunTimeTests<TRAP::Math::Vec3f>();
-        RunNormalizeVecCompileTimeTests<TRAP::Math::Vec3f>();
-        RunNormalizeVecEdgeTests<TRAP::Math::Vec3f>();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
+        static constexpr Scalar PI = TRAP::Math::PI<Scalar>();
+
+        {
+            static constexpr TestType a(1.0f, 0.0f, 0.0f, 0.0f);
+            const TestType n = TRAP::Math::Normalize(a);
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(a, n, Epsilon)));
+        }
+        {
+            static constexpr TestType a(1.0f, Vec3Scalar(0.0f));
+            const TestType n = TRAP::Math::Normalize(a);
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(a, n, Epsilon)));
+        }
+        {
+            static constexpr TestType q = TRAP::Math::AngleAxis(PI * Scalar(0.25f), Vec3Scalar(0.0f, 0.0f, 1.0f));
+            const TestType n = TRAP::Math::Normalize(q);
+            REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(n), Scalar(1.0f), Epsilon));
+        }
+        {
+            static constexpr TestType q = TRAP::Math::AngleAxis(PI * Scalar(0.25f), Vec3Scalar(0.0f, 0.0f, 2.0f));
+            const TestType n = TRAP::Math::Normalize(q);
+            REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(n), Scalar(1.0f), Epsilon));
+        }
+        {
+            static constexpr TestType q = TRAP::Math::AngleAxis(PI * Scalar(0.25f), Vec3Scalar(1.0f, 2.0f, 3.0f));
+            const TestType n = TRAP::Math::Normalize(q);
+            REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(n), Scalar(1.0f), Epsilon));
+        }
+        {
+            static constexpr TestType input(Scalar(0.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+            static constexpr TestType expected(Scalar(1.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Normalize(input), expected, Epsilon)));
+        }
     }
 
-    SECTION("Vec2 - f64")
+    SECTION("Edge cases")
     {
-        RunNormalizeVecRunTimeTests<TRAP::Math::Vec2d>();
-        RunNormalizeVecCompileTimeTests<TRAP::Math::Vec2d>();
-        RunNormalizeVecEdgeTests<TRAP::Math::Vec2d>();
-    }
-    SECTION("Vec2 - f32")
-    {
-        RunNormalizeVecRunTimeTests<TRAP::Math::Vec2f>();
-        RunNormalizeVecCompileTimeTests<TRAP::Math::Vec2f>();
-        RunNormalizeVecEdgeTests<TRAP::Math::Vec2f>();
-    }
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
-    SECTION("Quat - f64")
-    {
-        RunNormalizeQuatRunTimeTests<TRAP::Math::Quatd>();
-        RunNormalizeQuatCompileTimeTests<TRAP::Math::Quatd>();
-        RunNormalizeQuatEdgeTests<TRAP::Math::Quatd>();
-    }
-    SECTION("Quat - f32")
-    {
-        RunNormalizeQuatRunTimeTests<TRAP::Math::Quatf>();
-        RunNormalizeQuatCompileTimeTests<TRAP::Math::Quatf>();
-        RunNormalizeQuatEdgeTests<TRAP::Math::Quatf>();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
+
+        const TestType normalize1 = TRAP::Math::Normalize(TestType(0.0f, 0.0f, 0.0f, 0.0f));
+        REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(normalize1), Scalar(1.0f), Epsilon));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TestType(1.0f, 0.0f, 0.0f, 0.0f), normalize1, Epsilon)));
+
+        const TestType normalize2 = TRAP::Math::Normalize(TestType(inf, inf, inf, inf));
+        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Length(normalize2)));
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(normalize2)));
+
+        const TestType normalize3 = TRAP::Math::Normalize(TestType(ninf, ninf, ninf, ninf));
+        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Length(normalize3)));
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(normalize3)));
+
+        const TestType normalize4 = TRAP::Math::Normalize(TestType(nan, nan, nan, nan));
+        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Length(normalize4)));
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(normalize4)));
     }
 }

@@ -1,76 +1,58 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::AngleAxis()", "[math][generic][angleaxis][scalar]", f64, f32)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunAngleAxisCompileTimeTests()
-    {
-        constexpr TRAP::Math::tQuat<T> a = TRAP::Math::AngleAxis(T(0.0f), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));
-        constexpr TRAP::Math::tQuat<T> b = TRAP::Math::AngleAxis(TRAP::Math::PI<T>() * T(0.5f), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));
-        constexpr TRAP::Math::tQuat<T> c = TRAP::Math::Mix(a, b, T(0.5f));
-        constexpr TRAP::Math::tQuat<T> d = TRAP::Math::AngleAxis(TRAP::Math::PI<T>() * T(0.25f), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));
+    using QuatScalar = TRAP::Math::tQuat<TestType>;
+    using Vec3Scalar = TRAP::Math::tVec3<TestType>;
 
-        static_assert(TRAP::Math::Equal(c.x(), d.x(), T(0.01f)));
-        static_assert(TRAP::Math::Equal(c.y(), d.y(), T(0.01f)));
-        static_assert(TRAP::Math::Equal(c.z(), d.z(), T(0.01f)));
-        static_assert(TRAP::Math::Equal(c.w(), d.w(), T(0.01f)));
+    SECTION("Normal cases - GCEM")
+    {
+        static constexpr QuatScalar a = TRAP::Math::AngleAxis(TestType(0.0f), Vec3Scalar(0.0f, 0.0f, 1.0f));
+        static constexpr QuatScalar b = TRAP::Math::AngleAxis(TRAP::Math::PI<TestType>() * TestType(0.5f), Vec3Scalar(0.0f, 0.0f, 1.0f));
+        static constexpr QuatScalar c = TRAP::Math::Mix(a, b, TestType(0.5f));
+        static constexpr QuatScalar d = TRAP::Math::AngleAxis(TRAP::Math::PI<TestType>() * TestType(0.25f), Vec3Scalar(0.0f, 0.0f, 1.0f));
+
+        static_assert(TRAP::Math::Equal(c.x(), d.x(), TestType(0.01f)));
+        static_assert(TRAP::Math::Equal(c.y(), d.y(), TestType(0.01f)));
+        static_assert(TRAP::Math::Equal(c.z(), d.z(), TestType(0.01f)));
+        static_assert(TRAP::Math::Equal(c.w(), d.w(), TestType(0.01f)));
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunAngleAxisRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        const TRAP::Math::tQuat<T> a = TRAP::Math::AngleAxis(T(0.0f), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));
-        const TRAP::Math::tQuat<T> b = TRAP::Math::AngleAxis(TRAP::Math::PI<T>() * T(0.5f), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));
-        const TRAP::Math::tQuat<T> c = TRAP::Math::Mix(a, b, T(0.5f));
-        const TRAP::Math::tQuat<T> d = TRAP::Math::AngleAxis(TRAP::Math::PI<T>() * T(0.25f), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));
+        const QuatScalar a = TRAP::Math::AngleAxis(TestType(0.0f), Vec3Scalar(0.0f, 0.0f, 1.0f));
+        const QuatScalar b = TRAP::Math::AngleAxis(TRAP::Math::PI<TestType>() * TestType(0.5f), Vec3Scalar(0.0f, 0.0f, 1.0f));
+        const QuatScalar c = TRAP::Math::Mix(a, b, TestType(0.5f));
+        const QuatScalar d = TRAP::Math::AngleAxis(TRAP::Math::PI<TestType>() * TestType(0.25f), Vec3Scalar(0.0f, 0.0f, 1.0f));
 
-        REQUIRE(TRAP::Math::Equal(c.x(), d.x(), T(0.01f)));
-        REQUIRE(TRAP::Math::Equal(c.y(), d.y(), T(0.01f)));
-        REQUIRE(TRAP::Math::Equal(c.z(), d.z(), T(0.01f)));
-        REQUIRE(TRAP::Math::Equal(c.w(), d.w(), T(0.01f)));
+        REQUIRE(TRAP::Math::Equal(c.x(), d.x(), TestType(0.01f)));
+        REQUIRE(TRAP::Math::Equal(c.y(), d.y(), TestType(0.01f)));
+        REQUIRE(TRAP::Math::Equal(c.z(), d.z(), TestType(0.01f)));
+        REQUIRE(TRAP::Math::Equal(c.w(), d.w(), TestType(0.01f)));
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunAngleAxisEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        static constexpr TestType inf = std::numeric_limits<TestType>::infinity();
+        static constexpr TestType ninf = -std::numeric_limits<TestType>::infinity();
+        static constexpr TestType nan = std::numeric_limits<TestType>::quiet_NaN();
 
         {
-            const TRAP::Math::tQuat<T> res = TRAP::Math::AngleAxis(inf, TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));
+            const QuatScalar res = TRAP::Math::AngleAxis(inf, Vec3Scalar(0.0f, 0.0f, 1.0f));
             REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(res)));
         }
         {
-            const TRAP::Math::tQuat<T> res = TRAP::Math::AngleAxis(ninf, TRAP::Math::tVec3<T>(1.0f, 1.0f, 0.0f));
+            const QuatScalar res = TRAP::Math::AngleAxis(ninf, Vec3Scalar(1.0f, 1.0f, 0.0f));
             REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(res)));
         }
         {
-            const TRAP::Math::tQuat<T> res = TRAP::Math::AngleAxis(nan, TRAP::Math::tVec3<T>(0.0f, 1.0f, 1.0f));
+            const QuatScalar res = TRAP::Math::AngleAxis(nan, Vec3Scalar(0.0f, 1.0f, 1.0f));
             REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(res)));
         }
-    }
-}
-
-TEST_CASE("TRAP::Math::AngleAxis()", "[math][generic][angleaxis]")
-{
-    SECTION("Scalar - f64")
-    {
-        RunAngleAxisRunTimeTests<f64>();
-        RunAngleAxisCompileTimeTests<f64>();
-        RunAngleAxisEdgeTests<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunAngleAxisRunTimeTests<f32>();
-        RunAngleAxisCompileTimeTests<f32>();
-        RunAngleAxisEdgeTests<f32>();
     }
 }

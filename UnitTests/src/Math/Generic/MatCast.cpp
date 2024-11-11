@@ -1,162 +1,139 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Mat3Cast()", "[math][generic][mat3cast][quat]", TRAP::Math::Quatf, TRAP::Math::Quatd)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    void RunMat3CastTests()
+    using Scalar = TestType::value_type;
+    using Mat3Scalar = TRAP::Math::tMat3<Scalar>;
+    using Mat4Scalar = TRAP::Math::tMat4<Scalar>;
+    using Vec3Scalar = TRAP::Math::tVec3<Scalar>;
+
+    SECTION("Normal cases")
     {
-        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
         {
-            static constexpr TRAP::Math::tQuat<T> q1(1.0f, 0.0f, 0.0f, 0.0f);
-            static constexpr TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
-            static constexpr TRAP::Math::tMat3<T> expected(1.0f);
+            static constexpr TestType q1(1.0f, 0.0f, 0.0f, 0.0f);
+            static constexpr Mat3Scalar res = TRAP::Math::Mat3Cast(q1);
+            static constexpr Mat3Scalar expected(1.0f);
             STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
         }
         {
-            const TRAP::Math::tQuat<T> q1 = TRAP::Math::AngleAxis(TRAP::Math::Radians(T(45.0f)), TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f));
-            const TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
-            const TRAP::Math::tMat3<T> expected = TRAP::Math::Rotate(TRAP::Math::tMat4<T>(T(1.0f)), TRAP::Math::Radians(T(45.0f)), TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f));
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
-        }
-        {
-            static constexpr TRAP::Math::tQuat<T> q1(0.7071f, 0.0f, 0.0f, 0.7071f);
-            static constexpr TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
-            static constexpr TRAP::Math::tMat3<T> expected(0.000019f, 0.999981f, 0.0f, -0.999981f, 0.000019f, 0.0f, 0.0f, 0.0f, 1.0f);
-            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, T(0.000001f))));
-        }
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    void RunMat3CastEdgeTests()
-    {
-        static constexpr T min = std::numeric_limits<T>::lowest();
-        static constexpr T max = std::numeric_limits<T>::max();
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-
-        {
-            static constexpr TRAP::Math::tQuat<T> q1(min, min, min, min);
-            const TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
-        }
-        {
-            static constexpr TRAP::Math::tQuat<T> q1(max, max, max, max);
-            const TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
-        }
-        {
-            static constexpr TRAP::Math::tQuat<T> q1(inf, inf, inf, inf);
-            const TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
-        }
-        {
-            static constexpr TRAP::Math::tQuat<T> q1(ninf, ninf, ninf, ninf);
-            const TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
-        }
-        {
-            static constexpr TRAP::Math::tQuat<T> q1(nan, nan, nan, nan);
-            const TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
-        }
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    void RunMat4CastTests()
-    {
-        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-
-        {
-            static constexpr TRAP::Math::tQuat<T> q1(1.0f, 0.0f, 0.0f, 0.0f);
-            static constexpr TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
-            static constexpr TRAP::Math::tMat4<T> expected(1.0f);
+            static constexpr TestType q1 = TRAP::Math::AngleAxis(TRAP::Math::Radians(Scalar(45.0f)), Vec3Scalar(0.0f, 1.0f, 0.0f));
+            static constexpr Mat3Scalar res = TRAP::Math::Mat3Cast(q1);
+            static constexpr Mat3Scalar expected = TRAP::Math::Rotate(Mat4Scalar(Scalar(1.0f)), TRAP::Math::Radians(Scalar(45.0f)), Vec3Scalar(0.0f, 1.0f, 0.0f));
             STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
         }
         {
-            const TRAP::Math::tQuat<T> q1 = TRAP::Math::AngleAxis(TRAP::Math::Radians(T(45.0f)), TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f));
-            const TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
-            const TRAP::Math::tMat4<T> expected = TRAP::Math::Rotate(TRAP::Math::tMat4<T>(T(1.0f)), TRAP::Math::Radians(T(45.0f)), TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f));
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
-        }
-        {
-            static constexpr TRAP::Math::tQuat<T> q1(0.7071f, 0.0f, 0.0f, 0.7071f);
-            static constexpr TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
-            static constexpr TRAP::Math::tMat4<T> expected(0.000019f, 0.999981f, 0.0f, 0.0f, -0.999981f, 0.000019f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, T(0.000001f))));
+            static constexpr TestType q1(0.7071f, 0.0f, 0.0f, 0.7071f);
+            static constexpr Mat3Scalar res = TRAP::Math::Mat3Cast(q1);
+            static constexpr Mat3Scalar expected(0.000019f, 0.999981f, 0.0f, -0.999981f, 0.000019f, 0.0f, 0.0f, 0.0f, 1.0f);
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, Scalar(0.000001f))));
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunMat4CastEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr T min = std::numeric_limits<T>::lowest();
-        static constexpr T max = std::numeric_limits<T>::max();
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        static constexpr Scalar min = std::numeric_limits<Scalar>::lowest();
+        static constexpr Scalar max = std::numeric_limits<Scalar>::max();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = -std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
 
         {
-            static constexpr TRAP::Math::tQuat<T> q1(min, min, min, min);
-            const TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
+            static constexpr TestType q1(min, min, min, min);
+            const Mat3Scalar res = TRAP::Math::Mat3Cast(q1);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(res))));
         }
         {
-            static constexpr TRAP::Math::tQuat<T> q1(max, max, max, max);
-            const TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
+            static constexpr TestType q1(max, max, max, max);
+            const Mat3Scalar res = TRAP::Math::Mat3Cast(q1);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(res))));
         }
         {
-            static constexpr TRAP::Math::tQuat<T> q1(inf, inf, inf, inf);
-            const TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
+            static constexpr TestType q1(inf, inf, inf, inf);
+            const Mat3Scalar res = TRAP::Math::Mat3Cast(q1);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(res))));
         }
         {
-            static constexpr TRAP::Math::tQuat<T> q1(ninf, ninf, ninf, ninf);
-            const TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
+            static constexpr TestType q1(ninf, ninf, ninf, ninf);
+            const Mat3Scalar res = TRAP::Math::Mat3Cast(q1);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(res))));
         }
         {
-            static constexpr TRAP::Math::tQuat<T> q1(nan, nan, nan, nan);
-            const TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
-            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
+            static constexpr TestType q1(nan, nan, nan, nan);
+            const Mat3Scalar res = TRAP::Math::Mat3Cast(q1);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(res))));
         }
     }
 }
 
-TEST_CASE("TRAP::Math::Mat3Cast()", "[math][generic][mat3cast]")
+TEMPLATE_TEST_CASE("TRAP::Math::Mat4Cast()", "[math][generic][mat4cast][quat]", TRAP::Math::Quatf, TRAP::Math::Quatd)
 {
-    SECTION("Quat - f64")
-    {
-        RunMat3CastTests<f64>();
-        RunMat3CastEdgeTests<f64>();
-    }
-    SECTION("Quat - f32")
-    {
-        RunMat3CastTests<f32>();
-        RunMat3CastEdgeTests<f32>();
-    }
-}
+    using Scalar = TestType::value_type;
+    using Mat4Scalar = TRAP::Math::tMat4<Scalar>;
+    using Vec3Scalar = TRAP::Math::tVec3<Scalar>;
 
-TEST_CASE("TRAP::Math::Mat4Cast()", "[math][generic][mat4cast]")
-{
-    SECTION("Quat - f64")
+    SECTION("Normal cases")
     {
-        RunMat4CastTests<f64>();
-        RunMat4CastEdgeTests<f64>();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
+
+        {
+            static constexpr TestType q1(1.0f, 0.0f, 0.0f, 0.0f);
+            static constexpr Mat4Scalar res = TRAP::Math::Mat4Cast(q1);
+            static constexpr Mat4Scalar expected(1.0f);
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
+        }
+        {
+            static constexpr TestType q1 = TRAP::Math::AngleAxis(TRAP::Math::Radians(Scalar(45.0f)), Vec3Scalar(0.0f, 1.0f, 0.0f));
+            static constexpr Mat4Scalar res = TRAP::Math::Mat4Cast(q1);
+            static constexpr Mat4Scalar expected = TRAP::Math::Rotate(Mat4Scalar(Scalar(1.0f)), TRAP::Math::Radians(Scalar(45.0f)), Vec3Scalar(0.0f, 1.0f, 0.0f));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
+        }
+        {
+            static constexpr TestType q1(0.7071f, 0.0f, 0.0f, 0.7071f);
+            static constexpr Mat4Scalar res = TRAP::Math::Mat4Cast(q1);
+            static constexpr Mat4Scalar expected(0.000019f, 0.999981f, 0.0f, 0.0f, -0.999981f, 0.000019f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, Scalar(0.000001f))));
+        }
     }
-    SECTION("Quat - f32")
+
+    SECTION("Edge cases")
     {
-        RunMat4CastTests<f32>();
-        RunMat4CastEdgeTests<f32>();
+        static constexpr Scalar min = std::numeric_limits<Scalar>::lowest();
+        static constexpr Scalar max = std::numeric_limits<Scalar>::max();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = -std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
+
+        {
+            static constexpr TestType q1(min, min, min, min);
+            const Mat4Scalar res = TRAP::Math::Mat4Cast(q1);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(res))));
+        }
+        {
+            static constexpr TestType q1(max, max, max, max);
+            const Mat4Scalar res = TRAP::Math::Mat4Cast(q1);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(res))));
+        }
+        {
+            static constexpr TestType q1(inf, inf, inf, inf);
+            const Mat4Scalar res = TRAP::Math::Mat4Cast(q1);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(res))));
+        }
+        {
+            static constexpr TestType q1(ninf, ninf, ninf, ninf);
+            const Mat4Scalar res = TRAP::Math::Mat4Cast(q1);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(res))));
+        }
+        {
+            static constexpr TestType q1(nan, nan, nan, nan);
+            const Mat4Scalar res = TRAP::Math::Mat4Cast(q1);
+            REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0u>(res))));
+        }
     }
 }

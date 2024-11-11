@@ -1,188 +1,145 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Refract()", "[math][generic][refract][vec]",
+                   TRAP::Math::Vec2f, TRAP::Math::Vec2d, TRAP::Math::Vec3f, TRAP::Math::Vec3d, TRAP::Math::Vec4f, TRAP::Math::Vec4d)
 {
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    consteval void RunRefractVecCompileTimeTests()
+    using Scalar = TestType::value_type;
+    using Vec4Scalar = TRAP::Math::tVec4<Scalar>;
+
+    SECTION("Normal cases - GCEM")
     {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
         {
-            constexpr T incident(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f));
-            constexpr T normal(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f));
-            constexpr typename T::value_type eta = 1.5f;
-            constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(-1.0f, 0.0f, 0.0f, 0.0f));
+            static constexpr TestType incident(Vec4Scalar(1.0f, 0.0f, 0.0f, 0.0f));
+            static constexpr TestType normal(Vec4Scalar(1.0f, 0.0f, 0.0f, 0.0f));
+            static constexpr Scalar eta = 1.5f;
+            static constexpr TestType expected(Vec4Scalar(-1.0f, 0.0f, 0.0f, 0.0f));
             static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Refract(incident, normal, eta), expected, Epsilon)));
         }
         {
-            constexpr T incident(TRAP::Math::Vec<4, typename T::value_type>(0.0f, 1.0f, 0.0f, 0.0f));
-            constexpr T normal(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f));
-            constexpr typename T::value_type eta = 1.5f;
-            constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(0.0f));
+            static constexpr TestType incident(Vec4Scalar(0.0f, 1.0f, 0.0f, 0.0f));
+            static constexpr TestType normal(Vec4Scalar(1.0f, 0.0f, 0.0f, 0.0f));
+            static constexpr Scalar eta = 1.5f;
+            static constexpr TestType expected(Vec4Scalar(0.0f));
             static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Refract(incident, normal, eta), expected, Epsilon)));
         }
         {
-            constexpr T incident(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 1.0f, 0.0f, 0.0f));
-            constexpr T normal(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 1.0f, 0.0f, 0.0f));
-            constexpr typename T::value_type eta = 1.5f;
-            constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(-4.2838823f, -4.2838823f, 0.0f, 0.0f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Refract(incident, normal, eta), expected, typename T::value_type(0.0000001f))));
+            static constexpr TestType incident(Vec4Scalar(1.0f, 1.0f, 0.0f, 0.0f));
+            static constexpr TestType normal(Vec4Scalar(1.0f, 1.0f, 0.0f, 0.0f));
+            static constexpr Scalar eta = 1.5f;
+            static constexpr TestType expected(Vec4Scalar(-4.2838823f, -4.2838823f, 0.0f, 0.0f));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Refract(incident, normal, eta), expected, Scalar(0.0000001f))));
         }
         {
-            constexpr T incident(TRAP::Math::Vec<4, typename T::value_type>(-1.0f, 1.0f, 0.0f, 0.0f));
-            constexpr T normal(TRAP::Math::Vec<4, typename T::value_type>(-1.0f, -1.0f, 0.0f, 0.0f));
-            constexpr typename T::value_type eta = 1.5f;
-            constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(0.0f));
+            static constexpr TestType incident(Vec4Scalar(-1.0f, 1.0f, 0.0f, 0.0f));
+            static constexpr TestType normal(Vec4Scalar(-1.0f, -1.0f, 0.0f, 0.0f));
+            static constexpr Scalar eta = 1.5f;
+            static constexpr TestType expected(Vec4Scalar(0.0f));
             static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Refract(incident, normal, eta), expected, Epsilon)));
         }
         {
-            constexpr T incident(TRAP::Math::Vec<4, typename T::value_type>(0.0f, 0.0f, 1.0f, 0.0f));
-            constexpr T normal(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f));
-            constexpr typename T::value_type eta = 1.5f;
-            constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(0.0f));
+            static constexpr TestType incident(Vec4Scalar(0.0f, 0.0f, 1.0f, 0.0f));
+            static constexpr TestType normal(Vec4Scalar(1.0f, 0.0f, 0.0f, 0.0f));
+            static constexpr Scalar eta = 1.5f;
+            static constexpr TestType expected(Vec4Scalar(0.0f));
             static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Refract(incident, normal, eta), expected, Epsilon)));
         }
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    void RunRefractVecRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
         {
-            static constexpr T incident(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f));
-            static constexpr T normal(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f));
-            static constexpr typename T::value_type eta = 1.5f;
-            static constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(-1.0f, 0.0f, 0.0f, 0.0f));
+            static constexpr TestType incident(Vec4Scalar(1.0f, 0.0f, 0.0f, 0.0f));
+            static constexpr TestType normal(Vec4Scalar(1.0f, 0.0f, 0.0f, 0.0f));
+            static constexpr Scalar eta = 1.5f;
+            static constexpr TestType expected(Vec4Scalar(-1.0f, 0.0f, 0.0f, 0.0f));
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Refract(incident, normal, eta), expected, Epsilon)));
         }
         {
-            static constexpr T incident(TRAP::Math::Vec<4, typename T::value_type>(0.0f, 1.0f, 0.0f, 0.0f));
-            static constexpr T normal(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f));
-            static constexpr typename T::value_type eta = 1.5f;
-            static constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(0.0f));
+            static constexpr TestType incident(Vec4Scalar(0.0f, 1.0f, 0.0f, 0.0f));
+            static constexpr TestType normal(Vec4Scalar(1.0f, 0.0f, 0.0f, 0.0f));
+            static constexpr Scalar eta = 1.5f;
+            static constexpr TestType expected(Vec4Scalar(0.0f));
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Refract(incident, normal, eta), expected, Epsilon)));
         }
         {
-            static constexpr T incident(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 1.0f, 0.0f, 0.0f));
-            static constexpr T normal(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 1.0f, 0.0f, 0.0f));
-            static constexpr typename T::value_type eta = 1.5f;
-            static constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(-4.2838823f, -4.2838823f, 0.0f, 0.0f));
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Refract(incident, normal, eta), expected, typename T::value_type(0.0000001f))));
+            static constexpr TestType incident(Vec4Scalar(1.0f, 1.0f, 0.0f, 0.0f));
+            static constexpr TestType normal(Vec4Scalar(1.0f, 1.0f, 0.0f, 0.0f));
+            static constexpr Scalar eta = 1.5f;
+            static constexpr TestType expected(Vec4Scalar(-4.2838823f, -4.2838823f, 0.0f, 0.0f));
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Refract(incident, normal, eta), expected, Scalar(0.0000001f))));
         }
         {
-            static constexpr T incident(TRAP::Math::Vec<4, typename T::value_type>(-1.0f, 1.0f, 0.0f, 0.0f));
-            static constexpr T normal(TRAP::Math::Vec<4, typename T::value_type>(-1.0f, -1.0f, 0.0f, 0.0f));
-            static constexpr typename T::value_type eta = 1.5f;
-            static constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(0.0f));
+            static constexpr TestType incident(Vec4Scalar(-1.0f, 1.0f, 0.0f, 0.0f));
+            static constexpr TestType normal(Vec4Scalar(-1.0f, -1.0f, 0.0f, 0.0f));
+            static constexpr Scalar eta = 1.5f;
+            static constexpr TestType expected(Vec4Scalar(0.0f));
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Refract(incident, normal, eta), expected, Epsilon)));
         }
         {
-            static constexpr T incident(TRAP::Math::Vec<4, typename T::value_type>(0.0f, 0.0f, 1.0f, 0.0f));
-            static constexpr T normal(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f));
-            static constexpr typename T::value_type eta = 1.5f;
-            static constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(0.0f));
+            static constexpr TestType incident(Vec4Scalar(0.0f, 0.0f, 1.0f, 0.0f));
+            static constexpr TestType normal(Vec4Scalar(1.0f, 0.0f, 0.0f, 0.0f));
+            static constexpr Scalar eta = 1.5f;
+            static constexpr TestType expected(Vec4Scalar(0.0f));
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Refract(incident, normal, eta), expected, Epsilon)));
         }
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    void RunRefractVecEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
-        static constexpr typename T::value_type max = std::numeric_limits<typename T::value_type>::max();
-        static constexpr typename T::value_type min = std::numeric_limits<typename T::value_type>::lowest();
-        static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-        static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
-        static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+        static constexpr Scalar max = std::numeric_limits<Scalar>::max();
+        static constexpr Scalar min = std::numeric_limits<Scalar>::lowest();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = -std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
 
         {
-            static constexpr T incident(TRAP::Math::Vec<4, typename T::value_type>(min, min, min, 0.0f));
-            static constexpr T normal(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 1.0f, 1.0f, 0.0f));
-            static constexpr typename T::value_type eta = 1.5f;
+            static constexpr TestType incident(Vec4Scalar(min, min, min, 0.0f));
+            static constexpr TestType normal(Vec4Scalar(1.0f, 1.0f, 1.0f, 0.0f));
+            static constexpr Scalar eta = 1.5f;
             REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Refract(incident, normal, eta))));
         }
         {
-            static constexpr T incident(TRAP::Math::Vec<4, typename T::value_type>(max, max, max, 0.0f));
-            static constexpr T normal(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 1.0f, 1.0f, 0.0f));
-            static constexpr typename T::value_type eta = 1.5f;
+            static constexpr TestType incident(Vec4Scalar(max, max, max, 0.0f));
+            static constexpr TestType normal(Vec4Scalar(1.0f, 1.0f, 1.0f, 0.0f));
+            static constexpr Scalar eta = 1.5f;
             REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Refract(incident, normal, eta))));
         }
         {
-            static constexpr T incident(TRAP::Math::Vec<4, typename T::value_type>(inf, inf, inf, 0.0f));
-            static constexpr T normal(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 1.0f, 1.0f, 0.0f));
-            static constexpr typename T::value_type eta = 1.5f;
+            static constexpr TestType incident(Vec4Scalar(inf, inf, inf, 0.0f));
+            static constexpr TestType normal(Vec4Scalar(1.0f, 1.0f, 1.0f, 0.0f));
+            static constexpr Scalar eta = 1.5f;
             REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Refract(incident, normal, eta))));
         }
         {
-            static constexpr T incident(TRAP::Math::Vec<4, typename T::value_type>(ninf, ninf, ninf, 0.0f));
-            static constexpr T normal(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 1.0f, 1.0f, 0.0f));
-            static constexpr typename T::value_type eta = 1.5f;
+            static constexpr TestType incident(Vec4Scalar(ninf, ninf, ninf, 0.0f));
+            static constexpr TestType normal(Vec4Scalar(1.0f, 1.0f, 1.0f, 0.0f));
+            static constexpr Scalar eta = 1.5f;
             REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Refract(incident, normal, eta))));
         }
         {
-            static constexpr T incident(TRAP::Math::Vec<4, typename T::value_type>(nan, nan, nan, 0.0f));
-            static constexpr T normal(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 1.0f, 1.0f, 0.0f));
-            static constexpr typename T::value_type eta = 1.5f;
-            static constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(0.0f));
+            static constexpr TestType incident(Vec4Scalar(nan, nan, nan, 0.0f));
+            static constexpr TestType normal(Vec4Scalar(1.0f, 1.0f, 1.0f, 0.0f));
+            static constexpr Scalar eta = 1.5f;
+            static constexpr TestType expected(Vec4Scalar(0.0f));
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Refract(incident, normal, eta), expected, Epsilon)));
         }
         {
-            static constexpr T incident(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 2.0f, 3.0f, 0.0f));
-            static constexpr T normal(TRAP::Math::Vec<4, typename T::value_type>(nan, nan, nan, 0.0f));
-            static constexpr typename T::value_type eta = 1.5f;
-            static constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(0.0f));
+            static constexpr TestType incident(Vec4Scalar(1.0f, 2.0f, 3.0f, 0.0f));
+            static constexpr TestType normal(Vec4Scalar(nan, nan, nan, 0.0f));
+            static constexpr Scalar eta = 1.5f;
+            static constexpr TestType expected(Vec4Scalar(0.0f));
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Refract(incident, normal, eta), expected, Epsilon)));
         }
-    }
-}
-
-TEST_CASE("TRAP::Math::Refract()", "[math][generic][refract]")
-{
-    SECTION("Vec4 - f64")
-    {
-        RunRefractVecRunTimeTests<TRAP::Math::Vec4d>();
-        RunRefractVecCompileTimeTests<TRAP::Math::Vec4d>();
-        RunRefractVecEdgeTests<TRAP::Math::Vec4d>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunRefractVecRunTimeTests<TRAP::Math::Vec4f>();
-        RunRefractVecCompileTimeTests<TRAP::Math::Vec4f>();
-        RunRefractVecEdgeTests<TRAP::Math::Vec4f>();
-    }
-
-    SECTION("Vec3 - f64")
-    {
-        RunRefractVecRunTimeTests<TRAP::Math::Vec3d>();
-        RunRefractVecCompileTimeTests<TRAP::Math::Vec3d>();
-        RunRefractVecEdgeTests<TRAP::Math::Vec3d>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunRefractVecRunTimeTests<TRAP::Math::Vec3f>();
-        RunRefractVecCompileTimeTests<TRAP::Math::Vec3f>();
-        RunRefractVecEdgeTests<TRAP::Math::Vec3f>();
-    }
-
-    SECTION("Vec2 - f64")
-    {
-        RunRefractVecRunTimeTests<TRAP::Math::Vec2d>();
-        RunRefractVecCompileTimeTests<TRAP::Math::Vec2d>();
-        RunRefractVecEdgeTests<TRAP::Math::Vec2d>();
-    }
-    SECTION("Vec2 - f32")
-    {
-        RunRefractVecRunTimeTests<TRAP::Math::Vec2f>();
-        RunRefractVecCompileTimeTests<TRAP::Math::Vec2f>();
-        RunRefractVecEdgeTests<TRAP::Math::Vec2f>();
     }
 }

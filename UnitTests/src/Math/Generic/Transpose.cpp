@@ -1,101 +1,77 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Transpose()", "[math][generic][transpose][mat]",
+                   TRAP::Math::Mat3f, TRAP::Math::Mat3d, TRAP::Math::Mat4f, TRAP::Math::Mat4d)
 {
-    template<typename T>
-    requires ((TRAP::Math::IsMat3<T> || TRAP::Math::IsMat4<T>) && std::floating_point<typename T::value_type>)
-    consteval void RunCompileTimeTransposeTests()
+    using Scalar = TestType::value_type;
+    using Mat4Scalar = TRAP::Math::tMat4<Scalar>;
+
+    SECTION("Normal cases")
     {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
         {
-            constexpr T m(TRAP::Math::tMat4<typename T::value_type>(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f));
-            constexpr T t = TRAP::Math::Transpose(m);
-            constexpr T expected(TRAP::Math::tMat4<typename T::value_type>(0.0f, 4.0f, 8.0f, 12.0f, 1.0f, 5.0f, 9.0f, 13.0f, 2.0f, 6.0f, 10.0f, 14.0f, 3.0f, 7.0f, 11.0f, 15.0f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
+            static constexpr TestType m(Mat4Scalar(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f));
+            static constexpr TestType t = TRAP::Math::Transpose(m);
+            static constexpr TestType expected(Mat4Scalar(0.0f, 4.0f, 8.0f, 12.0f, 1.0f, 5.0f, 9.0f, 13.0f, 2.0f, 6.0f, 10.0f, 14.0f, 3.0f, 7.0f, 11.0f, 15.0f));
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
         }
         {
-            constexpr T m(TRAP::Math::tMat4<typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 4.0f));
-            constexpr T t = TRAP::Math::Transpose(m);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(t, m, Epsilon)));
+            static constexpr TestType m(Mat4Scalar(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 4.0f));
+            static constexpr TestType t = TRAP::Math::Transpose(m);
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, m, Epsilon)));
         }
         {
-            constexpr T m(TRAP::Math::tMat4<typename T::value_type>(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f));
-            constexpr T t = TRAP::Math::Transpose(m);
-            constexpr T t2 = TRAP::Math::Transpose(t);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(m, t2, Epsilon)));
+            static constexpr TestType m(Mat4Scalar(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f));
+            static constexpr TestType t = TRAP::Math::Transpose(m);
+            static constexpr TestType t2 = TRAP::Math::Transpose(t);
+            STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(m, t2, Epsilon)));
         }
     }
 
-    template<typename T>
-    requires ((TRAP::Math::IsMat3<T> || TRAP::Math::IsMat4<T>) && std::floating_point<typename T::value_type>)
-    void RunTransposeEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
-        static constexpr typename T::value_type min = std::numeric_limits<typename T::value_type>::lowest();
-        static constexpr typename T::value_type max = std::numeric_limits<typename T::value_type>::max();
-        static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-        static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
-        static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+        static constexpr Scalar min = std::numeric_limits<Scalar>::lowest();
+        static constexpr Scalar max = std::numeric_limits<Scalar>::max();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = -std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
 
         {
-            static constexpr T m(TRAP::Math::tMat4<typename T::value_type>(max, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
-            static constexpr T t = TRAP::Math::Transpose(m);
-            static constexpr T expected(TRAP::Math::tMat4<typename T::value_type>(max, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+            static constexpr TestType m(Mat4Scalar(max, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+            static constexpr TestType t = TRAP::Math::Transpose(m);
+            static constexpr TestType expected(Mat4Scalar(max, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
             STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
         }
         {
-            static constexpr T m(TRAP::Math::tMat4<typename T::value_type>(min, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
-            static constexpr T t = TRAP::Math::Transpose(m);
-            static constexpr T expected(TRAP::Math::tMat4<typename T::value_type>(min, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+            static constexpr TestType m(Mat4Scalar(min, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+            static constexpr TestType t = TRAP::Math::Transpose(m);
+            static constexpr TestType expected(Mat4Scalar(min, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
             STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
         }
         {
-            static constexpr T m(TRAP::Math::tMat4<typename T::value_type>(inf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
-            static constexpr T t = TRAP::Math::Transpose(m);
-            static constexpr T expected(TRAP::Math::tMat4<typename T::value_type>(inf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+            static constexpr TestType m(Mat4Scalar(inf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+            static constexpr TestType t = TRAP::Math::Transpose(m);
+            static constexpr TestType expected(Mat4Scalar(inf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
             STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected)));
         }
         {
-            static constexpr T m(TRAP::Math::tMat4<typename T::value_type>(ninf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
-            static constexpr T t = TRAP::Math::Transpose(m);
-            static constexpr T expected(TRAP::Math::tMat4<typename T::value_type>(ninf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+            static constexpr TestType m(Mat4Scalar(ninf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+            static constexpr TestType t = TRAP::Math::Transpose(m);
+            static constexpr TestType expected(Mat4Scalar(ninf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
             STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected)));
         }
         {
-            static constexpr T m(TRAP::Math::tMat4<typename T::value_type>(nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan));
-            static constexpr T t = TRAP::Math::Transpose(m);
+            static constexpr TestType m(Mat4Scalar(nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan));
+            static constexpr TestType t = TRAP::Math::Transpose(m);
             REQUIRE(TRAP::Math::All(TRAP::Math::Not(TRAP::Math::Equal(t, m))));
         }
-    }
-}
-
-TEST_CASE("TRAP::Math::Transpose()", "[math][generic][transpose]")
-{
-    SECTION("Mat3 - f64")
-    {
-        RunCompileTimeTransposeTests<TRAP::Math::Mat3d>();
-        RunTransposeEdgeTests<TRAP::Math::Mat3d>();
-    }
-    SECTION("Mat3 - f32")
-    {
-        RunCompileTimeTransposeTests<TRAP::Math::Mat3f>();
-        RunTransposeEdgeTests<TRAP::Math::Mat3f>();
-    }
-
-    SECTION("Mat4 - f64")
-    {
-        RunCompileTimeTransposeTests<TRAP::Math::Mat4d>();
-        RunTransposeEdgeTests<TRAP::Math::Mat4d>();
-    }
-    SECTION("Mat4 - f32")
-    {
-        RunCompileTimeTransposeTests<TRAP::Math::Mat4f>();
-        RunTransposeEdgeTests<TRAP::Math::Mat4f>();
     }
 }

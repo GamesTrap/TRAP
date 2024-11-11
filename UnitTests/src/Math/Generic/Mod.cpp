@@ -3,222 +3,130 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Mod()", "[math][generic][mod][scalar]", i8, i16, i32, i64, u8, u16, u32, u64, f32, f64)
 {
-    template<typename T, typename X = T>
-    requires (std::is_arithmetic_v<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)) &&
-            (std::is_arithmetic_v<X> || (TRAP::Math::IsVec<X> && std::floating_point<typename X::value_type>))
-    consteval void RunModCompileTimeTests()
+    SECTION("Normal cases - GCEM")
     {
-        if constexpr(std::is_arithmetic_v<T>)
+        if constexpr(std::floating_point<TestType>)
         {
-            if constexpr(std::floating_point<T>)
-            {
-                constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-                static_assert(TRAP::Math::Equal(TRAP::Math::Mod(T( 1.5f), X(1.0f)), T( 0.5f), Epsilon));
-                static_assert(TRAP::Math::Equal(TRAP::Math::Mod(T(-0.2f), X(1.0f)), T(-0.2f), Epsilon));
-                static_assert(TRAP::Math::Equal(TRAP::Math::Mod(T( 3.0f), X(2.0f)), T( 1.0f), Epsilon));
-            }
-            else if constexpr(std::integral<T>)
-            {
-                static_assert(TRAP::Math::Mod(T( 1.5f), X(1.0f)) == T( 0.5f));
-                static_assert(TRAP::Math::Mod(T(-0.2f), X(1.0f)) == T(-0.2f));
-                static_assert(TRAP::Math::Mod(T( 3.0f), X(2.0f)) == T( 1.0f));
-            }
+            static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
+            static_assert(TRAP::Math::Equal(TRAP::Math::Mod(TestType( 1.5f), TestType(1.0f)), TestType( 0.5f), Epsilon));
+            static_assert(TRAP::Math::Equal(TRAP::Math::Mod(TestType(-0.2f), TestType(1.0f)), TestType(-0.2f), Epsilon));
+            static_assert(TRAP::Math::Equal(TRAP::Math::Mod(TestType( 3.0f), TestType(2.0f)), TestType( 1.0f), Epsilon));
         }
-        else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type> && TRAP::Math::IsVec<X>)
+        else if constexpr(std::integral<TestType>)
         {
-            constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(T( 1.5f), X(1.0f)), T( 0.5f), Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(T(-0.2f), X(1.0f)), T(-0.2f), Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(T( 3.0f), X(2.0f)), T( 1.0f), Epsilon)));
-        }
-        else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type> && std::floating_point<X>)
-        {
-            constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(T( 1.5f), X(1.0f)), T( 0.5f), Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(T(-0.2f), X(1.0f)), T(-0.2f), Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(T( 3.0f), X(2.0f)), T( 1.0f), Epsilon)));
+            static_assert(TRAP::Math::Mod(TestType( 1.5f), TestType(1.0f)) == TestType( 0.5f));
+            static_assert(TRAP::Math::Mod(TestType(-0.2f), TestType(1.0f)) == TestType(-0.2f));
+            static_assert(TRAP::Math::Mod(TestType( 3.0f), TestType(2.0f)) == TestType( 1.0f));
         }
     }
 
-    template<typename T, typename X = T>
-    requires (std::is_arithmetic_v<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)) &&
-            (std::is_arithmetic_v<X> || (TRAP::Math::IsVec<X> && std::floating_point<typename X::value_type>))
-    void RunModRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        static constexpr std::array<std::tuple<T, X, T>, 3> values
+        static constexpr std::array<std::tuple<TestType, TestType, TestType>, 3u> values
         {
-            std::tuple<T, X, T>{T( 1.5f), X(1.0f), T( 0.5f)},
-            std::tuple<T, X, T>{T(-0.2f), X(1.0f), T(-0.2f)},
-            std::tuple<T, X, T>{T( 3.0f), X(2.0f), T( 1.0f)},
+            std::tuple<TestType, TestType, TestType>{TestType( 1.5f), TestType(1.0f), TestType( 0.5f)},
+            std::tuple<TestType, TestType, TestType>{TestType(-0.2f), TestType(1.0f), TestType(-0.2f)},
+            std::tuple<TestType, TestType, TestType>{TestType( 3.0f), TestType(2.0f), TestType( 1.0f)},
         };
 
         for(const auto& [val1, val2, expected] : values)
         {
-            if constexpr(std::is_arithmetic_v<T>)
+            if constexpr(std::floating_point<TestType>)
             {
-                if constexpr(std::floating_point<T>)
-                {
-                    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-                    REQUIRE(TRAP::Math::Equal(TRAP::Math::Mod(val1, val2), expected, Epsilon));
-                }
-                else if constexpr(std::integral<T>)
-                {
-                    REQUIRE(TRAP::Math::Mod(val1, val2) == expected);
-                }
+                static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
+                REQUIRE(TRAP::Math::Equal(TRAP::Math::Mod(val1, val2), expected, Epsilon));
             }
-            else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type> && TRAP::Math::IsVec<X>)
+            else if constexpr(std::integral<TestType>)
             {
-                static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(val1, T(val2)), expected, Epsilon)));
-            }
-            else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type> && std::floating_point<X>)
-            {
-                constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(val1, val2), expected, Epsilon)));
+                REQUIRE(TRAP::Math::Mod(val1, val2) == expected);
             }
         }
     }
 
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    void RunModEdgeRunTimeTests()
+    SECTION("Edge cases")
     {
-        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
-        static constexpr T max = std::numeric_limits<T>::max();
-        static constexpr T min = std::numeric_limits<T>::lowest();
+        static constexpr TestType max = std::numeric_limits<TestType>::max();
+        static constexpr TestType min = std::numeric_limits<TestType>::lowest();
 
-        if constexpr(std::floating_point<T>)
+        if constexpr(std::floating_point<TestType>)
         {
-            REQUIRE(TRAP::Math::Equal(TRAP::Math::Mod(max, T(100.0)), static_cast<T>(std::fmod(max, T(100))), Epsilon));
-            REQUIRE(TRAP::Math::Equal(TRAP::Math::Mod(min, T(-50.0)), static_cast<T>(std::fmod(min, T(-50.0))), Epsilon));
+            REQUIRE(TRAP::Math::Equal(TRAP::Math::Mod(max, TestType(100.0)), static_cast<TestType>(std::fmod(max, TestType(100))), Epsilon));
+            REQUIRE(TRAP::Math::Equal(TRAP::Math::Mod(min, TestType(-50.0)), static_cast<TestType>(std::fmod(min, TestType(-50.0))), Epsilon));
 
-            static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-            REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Mod(T(15), T(0))));
-            REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Mod(T(2.0), nan)));
+            static constexpr TestType nan = std::numeric_limits<TestType>::quiet_NaN();
+            REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Mod(TestType(15), TestType(0))));
+            REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Mod(TestType(2.0), nan)));
         }
-        else if constexpr(std::integral<T>)
+        else if constexpr(std::integral<TestType>)
         {
-            REQUIRE(TRAP::Math::Mod(max, T(100.0)) == static_cast<T>(max % T(100)));
+            REQUIRE(TRAP::Math::Mod(max, TestType(100.0)) == static_cast<TestType>(max % TestType(100)));
 
-            if constexpr(std::signed_integral<T>)
+            if constexpr(std::signed_integral<TestType>)
             {
-                REQUIRE(TRAP::Math::Mod(min, T(-50.0)) == static_cast<T>(min % T(-50.0)));
+                REQUIRE(TRAP::Math::Mod(min, TestType(-50.0)) == static_cast<TestType>(min % TestType(-50.0)));
             }
         }
     }
 }
 
-TEST_CASE("TRAP::Math::Mod()", "[math][generic][mod]")
+TEMPLATE_TEST_CASE("TRAP::Math::Mod()", "[math][generic][mod][vec]",
+                   TRAP::Math::Vec2f, TRAP::Math::Vec2d, TRAP::Math::Vec3f, TRAP::Math::Vec3d, TRAP::Math::Vec4f, TRAP::Math::Vec4d)
 {
-    SECTION("Scalar - i8")
+    SECTION("Normal cases - GCEM")
     {
-        RunModRunTimeTests<i8>();
-        RunModCompileTimeTests<i8>();
-        RunModEdgeRunTimeTests<i8>();
-    }
-    SECTION("Scalar - u8")
-    {
-        RunModRunTimeTests<u8>();
-        RunModCompileTimeTests<u8>();
-        RunModEdgeRunTimeTests<u8>();
-    }
-    SECTION("Scalar - i16")
-    {
-        RunModRunTimeTests<i16>();
-        RunModCompileTimeTests<i16>();
-        RunModEdgeRunTimeTests<i16>();
-    }
-    SECTION("Scalar - u16")
-    {
-        RunModRunTimeTests<u16>();
-        RunModCompileTimeTests<u16>();
-        RunModEdgeRunTimeTests<u16>();
-    }
-    SECTION("Scalar - i32")
-    {
-        RunModRunTimeTests<i32>();
-        RunModCompileTimeTests<i32>();
-        RunModEdgeRunTimeTests<i32>();
-    }
-    SECTION("Scalar - u32")
-    {
-        RunModRunTimeTests<u32>();
-        RunModCompileTimeTests<u32>();
-        RunModEdgeRunTimeTests<u32>();
-    }
-    SECTION("Scalar - i64")
-    {
-        RunModRunTimeTests<i64>();
-        RunModCompileTimeTests<i64>();
-        RunModEdgeRunTimeTests<i64>();
-    }
-    SECTION("Scalar - u64")
-    {
-        RunModRunTimeTests<u64>();
-        RunModCompileTimeTests<u64>();
-        RunModEdgeRunTimeTests<u64>();
-    }
-    SECTION("Scalar - f64")
-    {
-        RunModRunTimeTests<f64>();
-        RunModCompileTimeTests<f64>();
-        RunModEdgeRunTimeTests<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunModRunTimeTests<f32>();
-        RunModCompileTimeTests<f32>();
-        RunModEdgeRunTimeTests<f32>();
+        {
+            constexpr typename TestType::value_type Epsilon = std::numeric_limits<typename TestType::value_type>::epsilon();
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(TestType( 1.5f), TestType(1.0f)), TestType( 0.5f), Epsilon)));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(TestType(-0.2f), TestType(1.0f)), TestType(-0.2f), Epsilon)));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(TestType( 3.0f), TestType(2.0f)), TestType( 1.0f), Epsilon)));
+        }
+        {
+            using X = typename TestType::value_type;
+
+            constexpr typename TestType::value_type Epsilon = std::numeric_limits<typename TestType::value_type>::epsilon();
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(TestType( 1.5f), X(1.0f)), TestType( 0.5f), Epsilon)));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(TestType(-0.2f), X(1.0f)), TestType(-0.2f), Epsilon)));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(TestType( 3.0f), X(2.0f)), TestType( 1.0f), Epsilon)));
+        }
     }
 
-    SECTION("Vec2 - f64")
+    SECTION("Normal cases - std")
     {
-        RunModRunTimeTests<TRAP::Math::Vec2d>();
-        RunModCompileTimeTests<TRAP::Math::Vec2d>();
-        RunModRunTimeTests<TRAP::Math::Vec2d, f64>();
-        RunModCompileTimeTests<TRAP::Math::Vec2d, f64>();
-    }
-    SECTION("Vec2 - f32")
-    {
-        RunModRunTimeTests<TRAP::Math::Vec2f>();
-        RunModCompileTimeTests<TRAP::Math::Vec2f>();
-        RunModRunTimeTests<TRAP::Math::Vec2f, f32>();
-        RunModCompileTimeTests<TRAP::Math::Vec2f, f32>();
-    }
+        {
+            static constexpr std::array<std::tuple<TestType, TestType, TestType>, 3u> values
+            {
+                std::tuple<TestType, TestType, TestType>{TestType( 1.5f), TestType(1.0f), TestType( 0.5f)},
+                std::tuple<TestType, TestType, TestType>{TestType(-0.2f), TestType(1.0f), TestType(-0.2f)},
+                std::tuple<TestType, TestType, TestType>{TestType( 3.0f), TestType(2.0f), TestType( 1.0f)},
+            };
 
-    SECTION("Vec3 - f64")
-    {
-        RunModRunTimeTests<TRAP::Math::Vec3d>();
-        RunModCompileTimeTests<TRAP::Math::Vec3d>();
-        RunModRunTimeTests<TRAP::Math::Vec3d, f64>();
-        RunModCompileTimeTests<TRAP::Math::Vec3d, f64>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunModRunTimeTests<TRAP::Math::Vec3f>();
-        RunModCompileTimeTests<TRAP::Math::Vec3f>();
-        RunModRunTimeTests<TRAP::Math::Vec3f, f32>();
-        RunModCompileTimeTests<TRAP::Math::Vec3f, f32>();
-    }
+            static constexpr typename TestType::value_type Epsilon = std::numeric_limits<typename TestType::value_type>::epsilon();
+            for(const auto& [val1, val2, expected] : values)
+                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(val1, TestType(val2)), expected, Epsilon)));
+        }
+        {
+            using X = typename TestType::value_type;
 
-    SECTION("Vec4 - f64")
-    {
-        RunModRunTimeTests<TRAP::Math::Vec4d>();
-        RunModCompileTimeTests<TRAP::Math::Vec4d>();
-        RunModRunTimeTests<TRAP::Math::Vec4d, f64>();
-        RunModCompileTimeTests<TRAP::Math::Vec4d, f64>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunModRunTimeTests<TRAP::Math::Vec4f>();
-        RunModCompileTimeTests<TRAP::Math::Vec4f>();
-        RunModRunTimeTests<TRAP::Math::Vec4f, f32>();
-        RunModCompileTimeTests<TRAP::Math::Vec4f, f32>();
+            static constexpr std::array<std::tuple<TestType, X, TestType>, 3u> values
+            {
+                std::tuple<TestType, X, TestType>{TestType( 1.5f), X(1.0f), TestType( 0.5f)},
+                std::tuple<TestType, X, TestType>{TestType(-0.2f), X(1.0f), TestType(-0.2f)},
+                std::tuple<TestType, X, TestType>{TestType( 3.0f), X(2.0f), TestType( 1.0f)},
+            };
+
+            for(const auto& [val1, val2, expected] : values)
+            {
+                constexpr typename TestType::value_type Epsilon = std::numeric_limits<typename TestType::value_type>::epsilon();
+                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(val1, val2), expected, Epsilon)));
+            }
+        }
     }
 }

@@ -1,364 +1,178 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Equal()", "[math][generic][equal][scalar]",
+                   i8, i16, i32, i64, u8, u16, u32, u64, f32, f64)
 {
-    template<typename T>
-    requires std::is_arithmetic_v<T>
-    consteval void RunCompileTimeEqualTests()
+    SECTION("Normal cases")
     {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
-        constexpr T A(T(0.0f));
-        constexpr T B(T(5.0f));
+        static constexpr TestType A(TestType(0.0f));
+        static constexpr TestType B(TestType(5.0f));
 
-        static_assert(TRAP::Math::Equal(A, A));
-        static_assert(TRAP::Math::Equal(B, B));
-        static_assert(!TRAP::Math::Equal(A, B));
-        static_assert(!TRAP::Math::Equal(B, A));
+        STATIC_REQUIRE(TRAP::Math::Equal(A, A));
+        STATIC_REQUIRE(TRAP::Math::Equal(B, B));
+        STATIC_REQUIRE(!TRAP::Math::Equal(A, B));
+        STATIC_REQUIRE(!TRAP::Math::Equal(B, A));
 
-        static_assert(TRAP::Math::Equal(A, A, Epsilon));
-        static_assert(TRAP::Math::Equal(B, B, Epsilon));
-        static_assert(!TRAP::Math::Equal(A, B, Epsilon));
-        static_assert(!TRAP::Math::Equal(B, A, Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(A, A, Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(B, B, Epsilon));
+        STATIC_REQUIRE(!TRAP::Math::Equal(A, B, Epsilon));
+        STATIC_REQUIRE(!TRAP::Math::Equal(B, A, Epsilon));
 
-        if constexpr(std::floating_point<T> || std::signed_integral<T>)
+        if constexpr(std::floating_point<TestType> || std::signed_integral<TestType>)
         {
-            constexpr T C(T(-1.0f));
-            constexpr T D(T(-5.0f));
+            static constexpr TestType C(TestType(-1.0f));
+            static constexpr TestType D(TestType(-5.0f));
 
-            static_assert(TRAP::Math::Equal(C, C));
-            static_assert(TRAP::Math::Equal(D, D));
-            static_assert(!TRAP::Math::Equal(C, D));
-            static_assert(!TRAP::Math::Equal(D, C));
+            STATIC_REQUIRE(TRAP::Math::Equal(C, C));
+            STATIC_REQUIRE(TRAP::Math::Equal(D, D));
+            STATIC_REQUIRE(!TRAP::Math::Equal(C, D));
+            STATIC_REQUIRE(!TRAP::Math::Equal(D, C));
 
-            static_assert(TRAP::Math::Equal(C, C, Epsilon));
-            static_assert(TRAP::Math::Equal(D, D, Epsilon));
-            static_assert(!TRAP::Math::Equal(C, D, Epsilon));
-            static_assert(!TRAP::Math::Equal(D, C, Epsilon));
+            STATIC_REQUIRE(TRAP::Math::Equal(C, C, Epsilon));
+            STATIC_REQUIRE(TRAP::Math::Equal(D, D, Epsilon));
+            STATIC_REQUIRE(!TRAP::Math::Equal(C, D, Epsilon));
+            STATIC_REQUIRE(!TRAP::Math::Equal(D, C, Epsilon));
         }
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T>
-    consteval void RunCompileTimeEqualVecTests()
+    SECTION("Edge cases")
     {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-
-        constexpr T A(T(0));
-        constexpr T B(T(5));
-
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(A, A)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(B, B)));
-        static_assert(!TRAP::Math::All(TRAP::Math::Equal(A, B)));
-        static_assert(!TRAP::Math::All(TRAP::Math::Equal(B, A)));
-
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(A, A, Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(B, B, Epsilon)));
-        static_assert(!TRAP::Math::All(TRAP::Math::Equal(A, B, Epsilon)));
-        static_assert(!TRAP::Math::All(TRAP::Math::Equal(B, A, Epsilon)));
-
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(A, A, T(Epsilon))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(B, B, T(Epsilon))));
-        static_assert(!TRAP::Math::All(TRAP::Math::Equal(A, B, T(Epsilon))));
-        static_assert(!TRAP::Math::All(TRAP::Math::Equal(B, A, T(Epsilon))));
-
-        if constexpr(std::floating_point<typename T::value_type> || std::signed_integral<typename T::value_type>)
+        if constexpr(std::floating_point<TestType>)
         {
-            constexpr T C(T(-1));
-            constexpr T D(T(-5));
+            static constexpr TestType max = std::numeric_limits<TestType>::max();
+            static constexpr TestType min = std::numeric_limits<TestType>::lowest();
+            static constexpr TestType nan = std::numeric_limits<TestType>::quiet_NaN();
+            static constexpr TestType inf = std::numeric_limits<TestType>::infinity();
+            static constexpr TestType ninf = -std::numeric_limits<TestType>::infinity();
 
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(C, C)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(D, D)));
-            static_assert(!TRAP::Math::All(TRAP::Math::Equal(C, D)));
-            static_assert(!TRAP::Math::All(TRAP::Math::Equal(D, C)));
-
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(C, C, Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(D, D, Epsilon)));
-            static_assert(!TRAP::Math::All(TRAP::Math::Equal(C, D, Epsilon)));
-            static_assert(!TRAP::Math::All(TRAP::Math::Equal(D, C, Epsilon)));
-
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(C, C, T(Epsilon))));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(D, D, T(Epsilon))));
-            static_assert(!TRAP::Math::All(TRAP::Math::Equal(C, D, T(Epsilon))));
-            static_assert(!TRAP::Math::All(TRAP::Math::Equal(D, C, T(Epsilon))));
+            STATIC_REQUIRE(TRAP::Math::Equal(max, max));
+            STATIC_REQUIRE(TRAP::Math::Equal(min, min));
+            STATIC_REQUIRE(!TRAP::Math::Equal(max, min));
+            STATIC_REQUIRE(!TRAP::Math::Equal(min, max));
+            STATIC_REQUIRE(!TRAP::Math::Equal(nan, nan));
+            STATIC_REQUIRE(TRAP::Math::Equal(inf, inf));
+            STATIC_REQUIRE(TRAP::Math::Equal(ninf, ninf));
         }
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsMat<T>
-    consteval void RunCompileTimeEqualMatTests()
-    {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-
-        constexpr T A(0.0f);
-        constexpr T B(5.0f);
-        constexpr T C(-1.0f);
-        constexpr T D(-5.0f);
-
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(A, A)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(B, B)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(C, C)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(D, D)));
-        static_assert(!TRAP::Math::All(TRAP::Math::Equal(A, B)));
-        static_assert(!TRAP::Math::All(TRAP::Math::Equal(B, A)));
-
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(A, A, Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(B, B, Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(C, C, Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(D, D, Epsilon)));
-        static_assert(!TRAP::Math::All(TRAP::Math::Equal(A, B, Epsilon)));
-        static_assert(!TRAP::Math::All(TRAP::Math::Equal(B, A, Epsilon)));
-
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(A, A, typename T::col_type(Epsilon))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(B, B, typename T::col_type(Epsilon))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(C, C, typename T::col_type(Epsilon))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(D, D, typename T::col_type(Epsilon))));
-        static_assert(!TRAP::Math::All(TRAP::Math::Equal(A, B, typename T::col_type(Epsilon))));
-        static_assert(!TRAP::Math::All(TRAP::Math::Equal(B, A, typename T::col_type(Epsilon))));
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsQuat<T>
-    consteval void RunCompileTimeEqualQuatTests()
-    {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-
-        constexpr T A(0.0f, 0.0f, 0.0f, 0.0f);
-        constexpr T B(5.0f, 5.0f, 5.0f, 5.0f);
-        constexpr T C(-1.0f, -1.0f, -1.0f, -1.0f);
-        constexpr T D(-5.0f, -5.0f, -5.0f, -5.0f);
-
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(A, A)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(B, B)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(C, C)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(D, D)));
-        static_assert(!TRAP::Math::All(TRAP::Math::Equal(A, B)));
-        static_assert(!TRAP::Math::All(TRAP::Math::Equal(B, A)));
-
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(A, A, Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(B, B, Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(C, C, Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(D, D, Epsilon)));
-        static_assert(!TRAP::Math::All(TRAP::Math::Equal(A, B, Epsilon)));
-        static_assert(!TRAP::Math::All(TRAP::Math::Equal(B, A, Epsilon)));
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunCompileTimeEqualEdgeTests()
-    {
-        constexpr T max = std::numeric_limits<T>::max();
-        constexpr T min = std::numeric_limits<T>::lowest();
-        constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-        constexpr T inf = std::numeric_limits<T>::infinity();
-        constexpr T ninf = -std::numeric_limits<T>::infinity();
-
-        static_assert(TRAP::Math::Equal(max, max));
-        static_assert(TRAP::Math::Equal(min, min));
-        static_assert(!TRAP::Math::Equal(max, min));
-        static_assert(!TRAP::Math::Equal(min, max));
-        static_assert(!TRAP::Math::Equal(nan, nan));
-        static_assert(TRAP::Math::Equal(inf, inf));
-        static_assert(TRAP::Math::Equal(ninf, ninf));
     }
 }
 
-TEST_CASE("TRAP::Math::Equal()", "[math][generic][equal]")
+TEMPLATE_TEST_CASE("TRAP::Math::Equal()", "[math][generic][equal][vec]",
+                   TRAP::Math::Vec2i8, TRAP::Math::Vec2i16, TRAP::Math::Vec2i32, TRAP::Math::Vec2i64,
+                   TRAP::Math::Vec2ui8, TRAP::Math::Vec2ui16, TRAP::Math::Vec2ui32, TRAP::Math::Vec2ui64, TRAP::Math::Vec2f, TRAP::Math::Vec2d,
+                   TRAP::Math::Vec3i8, TRAP::Math::Vec3i16, TRAP::Math::Vec3i32, TRAP::Math::Vec3i64,
+                   TRAP::Math::Vec3ui8, TRAP::Math::Vec3ui16, TRAP::Math::Vec3ui32, TRAP::Math::Vec3ui64, TRAP::Math::Vec3f, TRAP::Math::Vec3d,
+                   TRAP::Math::Vec4i8, TRAP::Math::Vec4i16, TRAP::Math::Vec4i32, TRAP::Math::Vec4i64,
+                   TRAP::Math::Vec4ui8, TRAP::Math::Vec4ui16, TRAP::Math::Vec4ui32, TRAP::Math::Vec4ui64, TRAP::Math::Vec4f, TRAP::Math::Vec4d)
 {
-    SECTION("Scalar - i8")
-    {
-        RunCompileTimeEqualTests<i8>();
-    }
-    SECTION("Scalar - u8")
-    {
-        RunCompileTimeEqualTests<u8>();
-    }
-    SECTION("Scalar - i16")
-    {
-        RunCompileTimeEqualTests<i16>();
-    }
-    SECTION("Scalar - u16")
-    {
-        RunCompileTimeEqualTests<u16>();
-    }
-    SECTION("Scalar - i32")
-    {
-        RunCompileTimeEqualTests<i32>();
-    }
-    SECTION("Scalar - u32")
-    {
-        RunCompileTimeEqualTests<u32>();
-    }
-    SECTION("Scalar - i64")
-    {
-        RunCompileTimeEqualTests<i64>();
-    }
-    SECTION("Scalar - u64")
-    {
-        RunCompileTimeEqualTests<u64>();
-    }
-    SECTION("Scalar - f64")
-    {
-        RunCompileTimeEqualTests<f64>();
-        RunCompileTimeEqualEdgeTests<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunCompileTimeEqualTests<f32>();
-        RunCompileTimeEqualEdgeTests<f32>();
-    }
+    using Scalar = TestType::value_type;
 
-    SECTION("Vec2 - i8")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec2i8>();
-    }
-    SECTION("Vec2 - u8")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec2ui8>();
-    }
-    SECTION("Vec2 - i16")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec2i16>();
-    }
-    SECTION("Vec2 - u16")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec2ui16>();
-    }
-    SECTION("Vec2 - i32")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec2i32>();
-    }
-    SECTION("Vec2 - u32")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec2ui32>();
-    }
-    SECTION("Vec2 - i64")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec2i64>();
-    }
-    SECTION("Vec2 - u64")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec2ui64>();
-    }
-    SECTION("Vec2 - f64")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec2d>();
-    }
-    SECTION("Vec2 - f32")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec2f>();
-    }
+    static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
-    SECTION("Vec3 - i8")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec3i8>();
-    }
-    SECTION("Vec3 - u8")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec3ui8>();
-    }
-    SECTION("Vec3 - i16")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec3i16>();
-    }
-    SECTION("Vec3 - u16")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec3ui16>();
-    }
-    SECTION("Vec3 - i32")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec3i32>();
-    }
-    SECTION("Vec3 - u32")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec3ui32>();
-    }
-    SECTION("Vec3 - i64")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec3i64>();
-    }
-    SECTION("Vec3 - u64")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec3ui64>();
-    }
-    SECTION("Vec3 - f64")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec3d>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec3f>();
-    }
+    static constexpr TestType A(TestType(0));
+    static constexpr TestType B(TestType(5));
 
-    SECTION("Vec4 - i8")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec4i8>();
-    }
-    SECTION("Vec4 - u8")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec4ui8>();
-    }
-    SECTION("Vec4 - i16")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec4i16>();
-    }
-    SECTION("Vec4 - u16")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec4ui16>();
-    }
-    SECTION("Vec4 - i32")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec4i32>();
-    }
-    SECTION("Vec4 - u32")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec4ui32>();
-    }
-    SECTION("Vec4 - i64")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec4i64>();
-    }
-    SECTION("Vec4 - u64")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec4ui64>();
-    }
-    SECTION("Vec4 - f64")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec4d>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunCompileTimeEqualVecTests<TRAP::Math::Vec4f>();
-    }
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(A, A)));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(B, B)));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(A, B)));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(B, A)));
 
-    SECTION("Mat3 - f64")
-    {
-        RunCompileTimeEqualMatTests<TRAP::Math::Mat3d>();
-    }
-    SECTION("Mat3 - f32")
-    {
-        RunCompileTimeEqualMatTests<TRAP::Math::Mat3f>();
-    }
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(A, A, Epsilon)));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(B, B, Epsilon)));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(A, B, Epsilon)));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(B, A, Epsilon)));
 
-    SECTION("Mat4 - f64")
-    {
-        RunCompileTimeEqualMatTests<TRAP::Math::Mat4d>();
-    }
-    SECTION("Mat4 - f32")
-    {
-        RunCompileTimeEqualMatTests<TRAP::Math::Mat4f>();
-    }
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(A, A, TestType(Epsilon))));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(B, B, TestType(Epsilon))));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(A, B, TestType(Epsilon))));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(B, A, TestType(Epsilon))));
 
-    SECTION("Quat - f64")
+    if constexpr(std::floating_point<Scalar> || std::signed_integral<Scalar>)
     {
-        RunCompileTimeEqualQuatTests<TRAP::Math::Quatd>();
+        static constexpr TestType C(TestType(-1));
+        static constexpr TestType D(TestType(-5));
+
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(C, C)));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(D, D)));
+        STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(C, D)));
+        STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(D, C)));
+
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(C, C, Epsilon)));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(D, D, Epsilon)));
+        STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(C, D, Epsilon)));
+        STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(D, C, Epsilon)));
+
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(C, C, TestType(Epsilon))));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(D, D, TestType(Epsilon))));
+        STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(C, D, TestType(Epsilon))));
+        STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(D, C, TestType(Epsilon))));
     }
-    SECTION("Quat - f32")
-    {
-        RunCompileTimeEqualQuatTests<TRAP::Math::Quatf>();
-    }
+}
+
+TEMPLATE_TEST_CASE("TRAP::Math::Equal()", "[math][generic][equal][mat]",
+                   TRAP::Math::Mat3d, TRAP::Math::Mat3f, TRAP::Math::Mat4d, TRAP::Math::Mat4f)
+{
+    using Scalar = TestType::value_type;
+    using Col = TestType::col_type;
+
+    static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
+
+    static constexpr TestType A(0.0f);
+    static constexpr TestType B(5.0f);
+    static constexpr TestType C(-1.0f);
+    static constexpr TestType D(-5.0f);
+
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(A, A)));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(B, B)));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(C, C)));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(D, D)));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(A, B)));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(B, A)));
+
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(A, A, Epsilon)));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(B, B, Epsilon)));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(C, C, Epsilon)));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(D, D, Epsilon)));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(A, B, Epsilon)));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(B, A, Epsilon)));
+
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(A, A, Col(Epsilon))));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(B, B, Col(Epsilon))));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(C, C, Col(Epsilon))));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(D, D, Col(Epsilon))));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(A, B, Col(Epsilon))));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(B, A, Col(Epsilon))));
+}
+
+TEMPLATE_TEST_CASE("TRAP::Math::Equal()", "[math][generic][equal][quat]",
+                   TRAP::Math::Quatd, TRAP::Math::Quatf)
+{
+    using Scalar = TestType::value_type;
+
+    static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
+
+    static constexpr TestType A(0.0f, 0.0f, 0.0f, 0.0f);
+    static constexpr TestType B(5.0f, 5.0f, 5.0f, 5.0f);
+    static constexpr TestType C(-1.0f, -1.0f, -1.0f, -1.0f);
+    static constexpr TestType D(-5.0f, -5.0f, -5.0f, -5.0f);
+
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(A, A)));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(B, B)));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(C, C)));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(D, D)));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(A, B)));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(B, A)));
+
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(A, A, Epsilon)));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(B, B, Epsilon)));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(C, C, Epsilon)));
+    STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(D, D, Epsilon)));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(A, B, Epsilon)));
+    STATIC_REQUIRE(!TRAP::Math::All(TRAP::Math::Equal(B, A, Epsilon)));
 }

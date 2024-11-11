@@ -2,158 +2,96 @@
 #include <cmath>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Cos()", "[math][generic][cos][scalar]", f64, f32)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunCosCompileTimeTests()
+    SECTION("Normal cases - GCEM")
     {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
-        static_assert(TRAP::Math::Equal(TRAP::Math::Cos(T(-1.5)), T(0.0707372), T(0.0000001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Cos(T(0.0)), T(1.0), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Cos(T(0.001)), T(1.0), T(0.000001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Cos(T(1.001)), T(0.539461), T(0.000001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Cos(T(1.5)), T(0.0707372), T(0.0000001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Cos(T(11.1)), T(0.104236), T(0.000001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Cos(T(50.0)), T(0.964966), T(0.000001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Cos(T(150.0)), T(0.699251), T(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Cos(TestType(-1.5)), TestType(0.0707372), TestType(0.0000001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Cos(TestType(0.0)), TestType(1.0), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Cos(TestType(0.001)), TestType(1.0), TestType(0.000001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Cos(TestType(1.001)), TestType(0.539461), TestType(0.000001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Cos(TestType(1.5)), TestType(0.0707372), TestType(0.0000001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Cos(TestType(11.1)), TestType(0.104236), TestType(0.000001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Cos(TestType(50.0)), TestType(0.964966), TestType(0.000001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Cos(TestType(150.0)), TestType(0.699251), TestType(0.00001f)));
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunCosRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
-        static constexpr std::array<T, 8> values
+        static constexpr std::array<TestType, 8u> values
         {
-            T(-1.5), T(0.0), T(0.001), T(1.001), T(1.5), T(11.1), T(50.0), T(150.0)
+            TestType(-1.5), TestType(0.0), TestType(0.001), TestType(1.001), TestType(1.5), TestType(11.1), TestType(50.0), TestType(150.0)
         };
 
-        for(const T val : values)
-        {
+        for(const TestType val : values)
             REQUIRE(TRAP::Math::Equal(TRAP::Math::Cos(val), std::cos(val), Epsilon));
-        }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunCosEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
+        static constexpr TestType nan = std::numeric_limits<TestType>::quiet_NaN();
+        static constexpr TestType inf = std::numeric_limits<TestType>::infinity();
+        static constexpr TestType ninf = -std::numeric_limits<TestType>::infinity();
 
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Cos(nan)));
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Cos(inf)));
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Cos(ninf)));
     }
+}
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    consteval void RunCosVecCompileTimeTests()
+TEMPLATE_TEST_CASE("TRAP::Math::Cos()", "[math][generic][cos][vec]",
+                   TRAP::Math::Vec2d, TRAP::Math::Vec2f, TRAP::Math::Vec3d, TRAP::Math::Vec3f, TRAP::Math::Vec4d, TRAP::Math::Vec4f)
+{
+    using Scalar = TestType::value_type;
+
+    SECTION("Normal cases - GCEM")
     {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(-1.5f))), T(0.0707372f), T(0.0000001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(0.0f))), T(1.0f), Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(0.001f))), T(1.0f), T(0.000001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(1.001f))), T(0.539461f), T(0.000001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(1.5f))), T(0.0707372f), T(0.0000001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(11.1f))), T(0.104236f), T(0.000001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(50.0f))), T(0.964966f), T(0.000001f))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(150.0f))), T(0.699251f), T(0.00001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(TestType(Scalar(-1.5f))), TestType(0.0707372f), TestType(0.0000001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(TestType(Scalar(0.0f))), TestType(1.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(TestType(Scalar(0.001f))), TestType(1.0f), TestType(0.000001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(TestType(Scalar(1.001f))), TestType(0.539461f), TestType(0.000001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(TestType(Scalar(1.5f))), TestType(0.0707372f), TestType(0.0000001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(TestType(Scalar(11.1f))), TestType(0.104236f), TestType(0.000001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(TestType(Scalar(50.0f))), TestType(0.964966f), TestType(0.000001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(TestType(Scalar(150.0f))), TestType(0.699251f), TestType(0.00001f))));
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    void RunCosVecRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
-        static constexpr std::array<T, 8> values
+        static constexpr std::array<TestType, 8u> values
         {
-            T(typename T::value_type(-1.5)), T(typename T::value_type(0.0)), T(typename T::value_type(0.001)), T(typename T::value_type(1.001)),
-            T(typename T::value_type(1.5)), T(typename T::value_type(11.1)), T(typename T::value_type(50.0)), T(typename T::value_type(150.0))
+            TestType(Scalar(-1.5)), TestType(Scalar(0.0)), TestType(Scalar(0.001)), TestType(Scalar(1.001)),
+            TestType(Scalar(1.5)), TestType(Scalar(11.1)), TestType(Scalar(50.0)), TestType(Scalar(150.0))
         };
 
-        for(const T val : values)
+        for(const TestType& val : values)
         {
-            const T s = TRAP::Math::Cos(val);
-            for(u32 l = 0; l < val.Length(); ++l)
+            const TestType s = TRAP::Math::Cos(val);
+            for(u32 l = 0u; l < val.Length(); ++l)
                 REQUIRE(TRAP::Math::Equal(s[l], std::cos(val[l]), Epsilon));
         }
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    void RunCosVecEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
-        static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-        static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = -std::numeric_limits<Scalar>::infinity();
 
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Cos(T(nan)))));
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Cos(T(inf)))));
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Cos(T(ninf)))));
-    }
-}
-
-TEST_CASE("TRAP::Math::Cos()", "[math][generic][cos]")
-{
-    SECTION("Scalar - f64")
-    {
-        RunCosRunTimeTests<f64>();
-        RunCosCompileTimeTests<f64>();
-        RunCosEdgeTests<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunCosRunTimeTests<f32>();
-        RunCosCompileTimeTests<f32>();
-        RunCosEdgeTests<f32>();
-    }
-
-    SECTION("Vec2 - f64")
-    {
-        RunCosVecRunTimeTests<TRAP::Math::Vec2d>();
-        RunCosVecCompileTimeTests<TRAP::Math::Vec2d>();
-        RunCosVecEdgeTests<TRAP::Math::Vec2d>();
-    }
-    SECTION("Vec2 - f32")
-    {
-        RunCosVecRunTimeTests<TRAP::Math::Vec2f>();
-        RunCosVecCompileTimeTests<TRAP::Math::Vec2f>();
-        RunCosVecEdgeTests<TRAP::Math::Vec2f>();
-    }
-
-    SECTION("Vec3 - f64")
-    {
-        RunCosVecRunTimeTests<TRAP::Math::Vec3d>();
-        RunCosVecCompileTimeTests<TRAP::Math::Vec3d>();
-        RunCosVecEdgeTests<TRAP::Math::Vec3d>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunCosVecRunTimeTests<TRAP::Math::Vec3f>();
-        RunCosVecCompileTimeTests<TRAP::Math::Vec3f>();
-        RunCosVecEdgeTests<TRAP::Math::Vec3f>();
-    }
-
-    SECTION("Vec4 - f64")
-    {
-        RunCosVecRunTimeTests<TRAP::Math::Vec4d>();
-        RunCosVecCompileTimeTests<TRAP::Math::Vec4d>();
-        RunCosVecEdgeTests<TRAP::Math::Vec4d>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunCosVecRunTimeTests<TRAP::Math::Vec4f>();
-        RunCosVecCompileTimeTests<TRAP::Math::Vec4f>();
-        RunCosVecEdgeTests<TRAP::Math::Vec4f>();
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Cos(TestType(nan)))));
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Cos(TestType(inf)))));
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Cos(TestType(ninf)))));
     }
 }

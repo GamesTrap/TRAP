@@ -2,194 +2,111 @@
 #include <array>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Sqrt()", "[math][generic][sqrt][scalar]", f32, f64)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunSqrtCompileTimeTests()
+    SECTION("Normal cases - GCEM")
     {
-        static_assert(TRAP::Math::Equal(TRAP::Math::Sqrt(T(0.5f)), T(0.707107f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Sqrt(T(1.5f)), T(1.22474f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Sqrt(T(2.0f)), T(1.41421f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Sqrt(T(41.5f)), T(6.44205f), T(0.00001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Sqrt(T(0.0f)), T(0.0f), T(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Sqrt(TestType(0.5f)), TestType(0.707107f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Sqrt(TestType(1.5f)), TestType(1.22474f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Sqrt(TestType(2.0f)), TestType(1.41421f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Sqrt(TestType(41.5f)), TestType(6.44205f), TestType(0.00001f)));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Sqrt(TestType(0.0f)), TestType(0.0f), TestType(0.00001f)));
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunSqrtRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        static constexpr std::array<std::tuple<T, T>, 5> values
+        static constexpr std::array<std::tuple<TestType, TestType>, 5u> values
         {
-            std::tuple(T(0.5f), T(0.707107f)),
-            std::tuple(T(1.5f), T(1.22474f)),
-            std::tuple(T(2.0f), T(1.41421f)),
-            std::tuple(T(41.5f), T(6.44205f)),
-            std::tuple(T(0.0f), T(0.0f)),
+            std::tuple(TestType(0.5f), TestType(0.707107f)),
+            std::tuple(TestType(1.5f), TestType(1.22474f)),
+            std::tuple(TestType(2.0f), TestType(1.41421f)),
+            std::tuple(TestType(41.5f), TestType(6.44205f)),
+            std::tuple(TestType(0.0f), TestType(0.0f)),
         };
 
         for(const auto& [x, expected] : values)
-        {
-            REQUIRE(TRAP::Math::Equal(TRAP::Math::Sqrt(x), expected, T(0.00001f)));
-        }
+            REQUIRE(TRAP::Math::Equal(TRAP::Math::Sqrt(x), expected, TestType(0.00001f)));
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    consteval void RunSqrtVecCompileTimeTests()
+    SECTION("Edge cases")
     {
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(T(4.0f)), T(2.0f), T(0.01f))));
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    void RunSqrtVecRunTimeTests()
-    {
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(T(4.0f)), T(2.0f), T(0.01f))));
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsQuat<T>
-    consteval void RunSqrtQuatCompileTimeTests()
-    {
-        constexpr typename T::value_type Epsilon = typename T::value_type(0.001f);
-
-        {
-            constexpr T x(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-            constexpr T res(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
-        }
-        {
-            constexpr T x(typename T::value_type(2.0f), typename T::value_type(3.0f), typename T::value_type(4.0f), typename T::value_type(5.0f));
-            constexpr T res(typename T::value_type(2.162f), typename T::value_type(0.693803f), typename T::value_type(0.92507f), typename T::value_type(1.15634f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
-        }
-        {
-            constexpr T x(typename T::value_type(-2.0f), typename T::value_type(-3.0f), typename T::value_type(-4.0f), typename T::value_type(-5.0f));
-            constexpr T res(typename T::value_type(1.63531f), typename T::value_type(-0.917258f), typename T::value_type(-1.22301f), typename T::value_type(-1.52876f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
-        }
-    }
-
-    template<typename T>
-    requires TRAP::Math::IsQuat<T>
-    void RunSqrtQuatRunTimeTests()
-    {
-        static constexpr typename T::value_type Epsilon = typename T::value_type(0.001f);
-
-        {
-            static constexpr T x(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-            static constexpr T res(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
-        }
-        {
-            static constexpr T x(typename T::value_type(2.0f), typename T::value_type(3.0f), typename T::value_type(4.0f), typename T::value_type(5.0f));
-            static constexpr T res(typename T::value_type(2.162f), typename T::value_type(0.693803f), typename T::value_type(0.92507f), typename T::value_type(1.15634f));
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
-        }
-        {
-            static constexpr T x(typename T::value_type(-2.0f), typename T::value_type(-3.0f), typename T::value_type(-4.0f), typename T::value_type(-5.0f));
-            static constexpr T res(typename T::value_type(1.63531f), typename T::value_type(-0.917258f), typename T::value_type(-1.22301f), typename T::value_type(-1.52876f));
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
-        }
-        {
-            static constexpr T x(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-            REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Sqrt(x))));
-        }
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunSqrtEdgeCompileTimeTests()
-    {
-        constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-        constexpr T inf = std::numeric_limits<T>::infinity();
-        constexpr T ninf = -std::numeric_limits<T>::infinity();
-        constexpr T min = std::numeric_limits<T>::lowest();
+        static constexpr TestType nan = std::numeric_limits<TestType>::quiet_NaN();
+        static constexpr TestType inf = std::numeric_limits<TestType>::infinity();
+        static constexpr TestType ninf = -std::numeric_limits<TestType>::infinity();
+        static constexpr TestType min = std::numeric_limits<TestType>::lowest();
 
         static_assert(TRAP::Math::IsNaN(TRAP::Math::Sqrt(min)));
         static_assert(TRAP::Math::IsInf(TRAP::Math::Sqrt(inf)));
         static_assert(TRAP::Math::IsNaN(TRAP::Math::Sqrt(ninf)));
         static_assert(TRAP::Math::IsNaN(TRAP::Math::Sqrt(nan)));
     }
+}
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunSqrtEdgeRunTimeTests()
+TEMPLATE_TEST_CASE("TRAP::Math::Sqrt()", "[math][generic][sqrt][vec]",
+                   TRAP::Math::Vec2f, TRAP::Math::Vec2d, TRAP::Math::Vec3f, TRAP::Math::Vec3d, TRAP::Math::Vec4f, TRAP::Math::Vec4d)
+{
+    SECTION("Normal cases - GCEM")
     {
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
-        static constexpr T min = std::numeric_limits<T>::lowest();
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(TestType(4.0f)), TestType(2.0f), TestType(0.01f))));
+    }
 
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Sqrt(min)));
-        REQUIRE(TRAP::Math::IsInf(TRAP::Math::Sqrt(inf)));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Sqrt(ninf)));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Sqrt(nan)));
+    SECTION("Normal cases - std")
+    {
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(TestType(4.0f)), TestType(2.0f), TestType(0.01f))));
     }
 }
 
-TEST_CASE("TRAP::Math::Sqrt()", "[math][generic][sqrt]")
+TEMPLATE_TEST_CASE("TRAP::Math::Sqrt()", "[math][generic][sqrt][quat]", TRAP::Math::Quatf, TRAP::Math::Quatd)
 {
-    SECTION("Scalar - f64")
+    using Scalar = TestType::value_type;
+
+    SECTION("Normal cases - GCEM")
     {
-        RunSqrtRunTimeTests<f64>();
-        RunSqrtCompileTimeTests<f64>();
-        RunSqrtEdgeRunTimeTests<f64>();
-        RunSqrtEdgeCompileTimeTests<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunSqrtRunTimeTests<f32>();
-        RunSqrtCompileTimeTests<f32>();
-        RunSqrtEdgeRunTimeTests<f32>();
-        RunSqrtEdgeCompileTimeTests<f32>();
+        static constexpr Scalar Epsilon = Scalar(0.001f);
+
+        {
+            static constexpr TestType x(Scalar(1.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+            static constexpr TestType res(Scalar(1.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
+        }
+        {
+            static constexpr TestType x(Scalar(2.0f), Scalar(3.0f), Scalar(4.0f), Scalar(5.0f));
+            static constexpr TestType res(Scalar(2.162f), Scalar(0.693803f), Scalar(0.92507f), Scalar(1.15634f));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
+        }
+        {
+            static constexpr TestType x(Scalar(-2.0f), Scalar(-3.0f), Scalar(-4.0f), Scalar(-5.0f));
+            static constexpr TestType res(Scalar(1.63531f), Scalar(-0.917258f), Scalar(-1.22301f), Scalar(-1.52876f));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
+        }
     }
 
-    SECTION("Vec2 - f64")
+    SECTION("Normal cases - std")
     {
-        RunSqrtVecRunTimeTests<TRAP::Math::Vec2d>();
-        RunSqrtVecCompileTimeTests<TRAP::Math::Vec2d>();
-    }
-    SECTION("Vec2 - f32")
-    {
-        RunSqrtVecRunTimeTests<TRAP::Math::Vec2f>();
-        RunSqrtVecCompileTimeTests<TRAP::Math::Vec2f>();
-    }
+        static constexpr Scalar Epsilon = Scalar(0.001f);
 
-    SECTION("Vec3 - f64")
-    {
-        RunSqrtVecRunTimeTests<TRAP::Math::Vec3d>();
-        RunSqrtVecCompileTimeTests<TRAP::Math::Vec3d>();
-    }
-    SECTION("Vec3 - f32")
-    {
-        RunSqrtVecRunTimeTests<TRAP::Math::Vec3f>();
-        RunSqrtVecCompileTimeTests<TRAP::Math::Vec3f>();
-    }
-
-    SECTION("Vec4 - f64")
-    {
-        RunSqrtVecRunTimeTests<TRAP::Math::Vec4d>();
-        RunSqrtVecCompileTimeTests<TRAP::Math::Vec4d>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunSqrtVecRunTimeTests<TRAP::Math::Vec4f>();
-        RunSqrtVecCompileTimeTests<TRAP::Math::Vec4f>();
-    }
-
-    SECTION("Quat - f64")
-    {
-        RunSqrtQuatRunTimeTests<TRAP::Math::Quatd>();
-        RunSqrtQuatCompileTimeTests<TRAP::Math::Quatd>();
-    }
-    SECTION("Quat - f32")
-    {
-        RunSqrtQuatRunTimeTests<TRAP::Math::Quatf>();
-        RunSqrtQuatCompileTimeTests<TRAP::Math::Quatf>();
+        {
+            static constexpr TestType x(Scalar(1.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+            static constexpr TestType res(Scalar(1.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
+        }
+        {
+            static constexpr TestType x(Scalar(2.0f), Scalar(3.0f), Scalar(4.0f), Scalar(5.0f));
+            static constexpr TestType res(Scalar(2.162f), Scalar(0.693803f), Scalar(0.92507f), Scalar(1.15634f));
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
+        }
+        {
+            static constexpr TestType x(Scalar(-2.0f), Scalar(-3.0f), Scalar(-4.0f), Scalar(-5.0f));
+            static constexpr TestType res(Scalar(1.63531f), Scalar(-0.917258f), Scalar(-1.22301f), Scalar(-1.52876f));
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
+        }
+        {
+            static constexpr TestType x(Scalar(0.0f), Scalar(0.0f), Scalar(0.0f), Scalar(0.0f));
+            REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Sqrt(x))));
+        }
     }
 }

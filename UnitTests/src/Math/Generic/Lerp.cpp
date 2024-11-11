@@ -1,165 +1,115 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Lerp()", "[math][generic][lerp][scalar]", f32, f64)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunCompileTimeLerpTests()
+    SECTION("Normal cases")
     {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
-        static_assert(TRAP::Math::Equal(TRAP::Math::Lerp(T(5.0f), T(15.0f), T(0.5f)), T(10.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Lerp(T(2.5f), T(7.8f), T(0.75f)), T(6.475f), T(0.000001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Lerp(T(-10.0f), T(20.0f), T(0.2f)), T(-4.0f), T(0.0000001f)));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Lerp(T(8.0f), T(13.0f), T(0.0f)), T(8.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Lerp(T(8.0f), T(13.0f), T(1.0f)), T(13.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Lerp(TestType(5.0f), TestType(15.0f), TestType(0.5f)), TestType(10.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Lerp(TestType(2.5f), TestType(7.8f), TestType(0.75f)), TestType(6.475f), TestType(0.000001f)));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Lerp(TestType(-10.0f), TestType(20.0f), TestType(0.2f)), TestType(-4.0f), TestType(0.0000001f)));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Lerp(TestType(8.0f), TestType(13.0f), TestType(0.0f)), TestType(8.0f), Epsilon));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Lerp(TestType(8.0f), TestType(13.0f), TestType(1.0f)), TestType(13.0f), Epsilon));
     }
 
-    template<typename T>
-    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-    consteval void RunCompileTimeLerpVecTests()
+    SECTION("Edge cases")
     {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
 
-        {
-            constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 2.0f, 3.0f, 4.0f));
-            constexpr T y(TRAP::Math::Vec<4, typename T::value_type>(5.0f, 6.0f, 7.0f, 8.0f));
-            constexpr typename T::value_type a = 0.3f;
-            constexpr T a2(a);
-            constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(2.2f, 3.2f, 4.2f, 5.2f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a), expected, T(0.000001f))));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a2), expected, T(0.000001f))));
-        }
-        {
-            constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(-1.0f, -2.0f, -3.0f, -4.0f));
-            constexpr T y(TRAP::Math::Vec<4, typename T::value_type>(-5.0f, -6.0f, -7.0f, -8.0f));
-            constexpr typename T::value_type a = 0.5f;
-            constexpr T a2(a);
-            constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(-3.0f, -4.0f, -5.0f, -6.0f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a), expected, Epsilon)));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a2), expected, Epsilon)));
-        }
-        {
-            constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(-1.0f,  2.0f, -3.5f,  4.0f));
-            constexpr T y(TRAP::Math::Vec<4, typename T::value_type>( 4.0f, -3.0f,  1.5f, -2.0f));
-            constexpr typename T::value_type a = 0.6f;
-            constexpr T a2(a);
-            constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(2.0f, -1.0f, -0.5f, 0.4f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a), expected, T(0.000001f))));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a2), expected, T(0.000001f))));
-        }
-        {
-            constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(0.0f, 0.0f, 0.0f, 0.0f));
-            constexpr T y(TRAP::Math::Vec<4, typename T::value_type>(5.0f, 3.0f, 10.0f, 2.0f));
-            constexpr typename T::value_type a = 0.8f;
-            constexpr T a2(a);
-            constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(4.0f, 2.4f, 8.0f, 1.6f));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a), expected, T(0.000001f))));
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a2), expected, T(0.000001f))));
-        }
-    }
+        static constexpr TestType max = std::numeric_limits<TestType>::max();
+        static constexpr TestType nan = std::numeric_limits<TestType>::quiet_NaN();
+        static constexpr TestType inf = std::numeric_limits<TestType>::infinity();
+        static constexpr TestType ninf = -std::numeric_limits<TestType>::infinity();
 
-    template<typename T>
-    requires TRAP::Math::IsQuat<T>
-    consteval void RunCompileTimeLerpQuatTests()
-    {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-
-        {
-            constexpr T q1(1.0f, 2.0f, 3.0f, 4.0f);
-            constexpr T q2(5.0f, 6.0f, 7.0f, 8.0f);
-            constexpr T res(3.0f, 4.0f, 5.0f, 6.0f);
-            constexpr typename T::value_type a(0.5f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(q1, q2, a), res, Epsilon)));
-        }
-        {
-            constexpr T q(1.0f, 0.0f, 0.0f, 0.0f);
-            constexpr typename T::value_type a(0.3f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(q, q, a), q, Epsilon)));
-        }
-        {
-            constexpr T q1(1.0f, 0.0f, 0.0f, 0.0f);
-            constexpr T q2(0.5f, 0.5f, 0.5f, 0.5f);
-            constexpr T res(0.65f, 0.35f, 0.35f, 0.35f);
-            constexpr typename T::value_type a(0.7f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(q1, q2, a), res, typename T::value_type(0.0000001f))));
-        }
-        {
-            constexpr T q1(-1.0f, -2.0f, -3.0f, -4.0f);
-            constexpr T q2(-5.0f, -6.0f, -7.0f, -8.0f);
-            constexpr T res(-2.0f, -3.0f, -4.0f, -5.0f);
-            constexpr typename T::value_type a(0.25f);
-            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(q1, q2, a), res, Epsilon)));
-        }
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    void RunLerpEdgeTests()
-    {
-        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-
-        static constexpr T max = std::numeric_limits<T>::max();
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
-
-        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Lerp(max, T(100.0f), T(0.5f)), (max / 2.0f), Epsilon));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Lerp(nan, T(10.0f), T(0.3f))));
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Lerp(ninf, inf, T(0.6f))));
+        STATIC_REQUIRE(TRAP::Math::Equal(TRAP::Math::Lerp(max, TestType(100.0f), TestType(0.5f)), (max / 2.0f), Epsilon));
+        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Lerp(nan, TestType(10.0f), TestType(0.3f))));
+        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Lerp(ninf, inf, TestType(0.6f))));
     }
 }
 
-TEST_CASE("TRAP::Math::Lerp()", "[math][generic][lerp]")
+TEMPLATE_TEST_CASE("TRAP::Math::Lerp()", "[math][generic][lerp][vec]",
+                   TRAP::Math::Vec2f, TRAP::Math::Vec2d, TRAP::Math::Vec3f, TRAP::Math::Vec3d, TRAP::Math::Vec4f, TRAP::Math::Vec4d)
 {
-    SECTION("Scalar - f64")
-    {
-        RunCompileTimeLerpTests<f64>();
-        RunLerpEdgeTests<f64>();
-    }
-    SECTION("Scalar - f32")
-    {
-        RunCompileTimeLerpTests<f32>();
-        RunLerpEdgeTests<f32>();
-    }
+    using Scalar = TestType::value_type;
+    using Vec4Scalar = TRAP::Math::tVec4<Scalar>;
 
-    SECTION("Vec2 - f64")
-    {
-        RunCompileTimeLerpVecTests<TRAP::Math::Vec2d>();
-    }
-    SECTION("Vec2 - f32")
-    {
-        RunCompileTimeLerpVecTests<TRAP::Math::Vec2f>();
-    }
+    static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
-    SECTION("Vec3 - f64")
     {
-        RunCompileTimeLerpVecTests<TRAP::Math::Vec3d>();
+        static constexpr TestType x(Vec4Scalar(1.0f, 2.0f, 3.0f, 4.0f));
+        static constexpr TestType y(Vec4Scalar(5.0f, 6.0f, 7.0f, 8.0f));
+        static constexpr Scalar a = 0.3f;
+        static constexpr TestType a2(a);
+        static constexpr TestType expected(Vec4Scalar(2.2f, 3.2f, 4.2f, 5.2f));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a), expected, TestType(0.000001f))));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a2), expected, TestType(0.000001f))));
     }
-    SECTION("Vec3 - f32")
     {
-        RunCompileTimeLerpVecTests<TRAP::Math::Vec3f>();
+        static constexpr TestType x(Vec4Scalar(-1.0f, -2.0f, -3.0f, -4.0f));
+        static constexpr TestType y(Vec4Scalar(-5.0f, -6.0f, -7.0f, -8.0f));
+        static constexpr Scalar a = 0.5f;
+        static constexpr TestType a2(a);
+        static constexpr TestType expected(Vec4Scalar(-3.0f, -4.0f, -5.0f, -6.0f));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a), expected, Epsilon)));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a2), expected, Epsilon)));
     }
+    {
+        static constexpr TestType x(Vec4Scalar(-1.0f,  2.0f, -3.5f,  4.0f));
+        static constexpr TestType y(Vec4Scalar( 4.0f, -3.0f,  1.5f, -2.0f));
+        static constexpr Scalar a = 0.6f;
+        static constexpr TestType a2(a);
+        static constexpr TestType expected(Vec4Scalar(2.0f, -1.0f, -0.5f, 0.4f));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a), expected, TestType(0.000001f))));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a2), expected, TestType(0.000001f))));
+    }
+    {
+        static constexpr TestType x(Vec4Scalar(0.0f, 0.0f, 0.0f, 0.0f));
+        static constexpr TestType y(Vec4Scalar(5.0f, 3.0f, 10.0f, 2.0f));
+        static constexpr Scalar a = 0.8f;
+        static constexpr TestType a2(a);
+        static constexpr TestType expected(Vec4Scalar(4.0f, 2.4f, 8.0f, 1.6f));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a), expected, TestType(0.000001f))));
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a2), expected, TestType(0.000001f))));
+    }
+}
 
-    SECTION("Vec4 - f64")
-    {
-        RunCompileTimeLerpVecTests<TRAP::Math::Vec4d>();
-    }
-    SECTION("Vec4 - f32")
-    {
-        RunCompileTimeLerpVecTests<TRAP::Math::Vec4f>();
-    }
+TEMPLATE_TEST_CASE("TRAP::Math::Lerp()", "[math][generic][lerp][quat]",
+                   TRAP::Math::Quatf, TRAP::Math::Quatd)
+{
+    using Scalar = TestType::value_type;
 
-    SECTION("Quat - f64")
+    constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
+
     {
-        RunCompileTimeLerpQuatTests<TRAP::Math::Quatd>();
+        static constexpr TestType q1(1.0f, 2.0f, 3.0f, 4.0f);
+        static constexpr TestType q2(5.0f, 6.0f, 7.0f, 8.0f);
+        static constexpr TestType res(3.0f, 4.0f, 5.0f, 6.0f);
+        static constexpr Scalar a(0.5f);
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(q1, q2, a), res, Epsilon)));
     }
-    SECTION("Quat - f32")
     {
-        RunCompileTimeLerpQuatTests<TRAP::Math::Quatf>();
+        static constexpr TestType q(1.0f, 0.0f, 0.0f, 0.0f);
+        static constexpr Scalar a(0.3f);
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(q, q, a), q, Epsilon)));
+    }
+    {
+        static constexpr TestType q1(1.0f, 0.0f, 0.0f, 0.0f);
+        static constexpr TestType q2(0.5f, 0.5f, 0.5f, 0.5f);
+        static constexpr TestType res(0.65f, 0.35f, 0.35f, 0.35f);
+        static constexpr Scalar a(0.7f);
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(q1, q2, a), res, Scalar(0.0000001f))));
+    }
+    {
+        static constexpr TestType q1(-1.0f, -2.0f, -3.0f, -4.0f);
+        static constexpr TestType q2(-5.0f, -6.0f, -7.0f, -8.0f);
+        static constexpr TestType res(-2.0f, -3.0f, -4.0f, -5.0f);
+        static constexpr Scalar a(0.25f);
+        STATIC_REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(q1, q2, a), res, Epsilon)));
     }
 }

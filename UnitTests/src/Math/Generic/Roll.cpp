@@ -1,134 +1,116 @@
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-namespace
+TEMPLATE_TEST_CASE("TRAP::Math::Roll()", "[math][generic][roll][quat]", TRAP::Math::Quatf, TRAP::Math::Quatd)
 {
-    template<typename T>
-    requires std::floating_point<T>
-    consteval void RunRollCompileTimeTests()
+    using Scalar = TestType::value_type;
+    using Vec3Scalar = TRAP::Math::tVec3<Scalar>;
+
+    SECTION("Normal cases - GCEM")
     {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
         {
-            constexpr T expected = 0.0f;
-            constexpr TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, 0.0f, expected)));
-            constexpr T roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
+            static constexpr Scalar expected = 0.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(0.0f, 0.0f, expected)));
+            static constexpr Scalar roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
             static_assert(TRAP::Math::Equal(roll, expected, Epsilon));
         }
         {
-            constexpr T expected = 90.0f;
-            constexpr TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, 0.0f, expected)));
-            constexpr T roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
-            static_assert(TRAP::Math::Equal(roll, expected, T(0.0000000000001f)));
+            static constexpr Scalar expected = 90.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(0.0f, 0.0f, expected)));
+            static constexpr Scalar roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
+            static_assert(TRAP::Math::Equal(roll, expected, Scalar(0.0000000000001f)));
         }
         {
-            constexpr T expected = 45.0f;
-            constexpr TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, 0.0f, expected)));
-            constexpr T roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
-            static_assert(TRAP::Math::Equal(roll, expected, T(0.00001f)));
+            static constexpr Scalar expected = 45.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(0.0f, 0.0f, expected)));
+            static constexpr Scalar roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
+            static_assert(TRAP::Math::Equal(roll, expected, Scalar(0.00001f)));
         }
         {
-            constexpr T expected = 180.0f;
-            constexpr TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, 0.0f, expected)));
-            constexpr T roll = TRAP::Math::Abs(TRAP::Math::Degrees(TRAP::Math::Roll(q)));
+            static constexpr Scalar expected = 180.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(0.0f, 0.0f, expected)));
+            static constexpr Scalar roll = TRAP::Math::Abs(TRAP::Math::Degrees(TRAP::Math::Roll(q)));
             static_assert(TRAP::Math::Equal(roll, expected, Epsilon));
         }
         {
-            constexpr T expected = -45.0f;
-            constexpr TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, 0.0f, expected)));
-            constexpr T roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
-            static_assert(TRAP::Math::Equal(roll, expected, T(0.00001f)));
+            static constexpr Scalar expected = -45.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(0.0f, 0.0f, expected)));
+            static constexpr Scalar roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
+            static_assert(TRAP::Math::Equal(roll, expected, Scalar(0.00001f)));
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunRollRunTimeTests()
+    SECTION("Normal cases - std")
     {
-        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr Scalar Epsilon = std::numeric_limits<Scalar>::epsilon();
 
         {
-            const T expected = 0.0f;
-            const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, 0.0f, expected)));
-            const T roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
+            static constexpr Scalar expected = 0.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(0.0f, 0.0f, expected)));
+            const Scalar roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
             REQUIRE(TRAP::Math::Equal(roll, expected, Epsilon));
         }
         {
-            const T expected = 90.0f;
-            const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, 0.0f, expected)));
-            const T roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
-            REQUIRE(TRAP::Math::Equal(roll, expected, T(0.0000000000001f)));
+            static constexpr Scalar expected = 90.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(0.0f, 0.0f, expected)));
+            const Scalar roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
+            REQUIRE(TRAP::Math::Equal(roll, expected, Scalar(0.0000000000001f)));
         }
         {
-            const T expected = 45.0f;
-            const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, 0.0f, expected)));
-            const T roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
-            REQUIRE(TRAP::Math::Equal(roll, expected, T(0.00001f)));
+            static const Scalar expected = 45.0f;
+            static const TestType q(TRAP::Math::Radians(Vec3Scalar(0.0f, 0.0f, expected)));
+            const Scalar roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
+            REQUIRE(TRAP::Math::Equal(roll, expected, Scalar(0.00001f)));
         }
         {
-            const T expected = 180.0f;
-            const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, 0.0f, expected)));
-            const T roll = TRAP::Math::Abs(TRAP::Math::Degrees(TRAP::Math::Roll(q)));
+            static constexpr Scalar expected = 180.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(0.0f, 0.0f, expected)));
+            const Scalar roll = TRAP::Math::Abs(TRAP::Math::Degrees(TRAP::Math::Roll(q)));
             REQUIRE(TRAP::Math::Equal(roll, expected, Epsilon));
         }
         {
-            const T expected = -45.0f;
-            const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, 0.0f, expected)));
-            const T roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
-            REQUIRE(TRAP::Math::Equal(roll, expected, T(0.00001f)));
+            static constexpr Scalar expected = -45.0f;
+            static constexpr TestType q(TRAP::Math::Radians(Vec3Scalar(0.0f, 0.0f, expected)));
+            const Scalar roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
+            REQUIRE(TRAP::Math::Equal(roll, expected, Scalar(0.00001f)));
         }
     }
 
-    template<typename T>
-    requires std::floating_point<T>
-    void RunRollEdgeTests()
+    SECTION("Edge cases")
     {
-        static constexpr T inf = std::numeric_limits<T>::infinity();
-        static constexpr T ninf = -std::numeric_limits<T>::infinity();
-        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-        static constexpr T epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr Scalar inf = std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar ninf = -std::numeric_limits<Scalar>::infinity();
+        static constexpr Scalar nan = std::numeric_limits<Scalar>::quiet_NaN();
+        static constexpr Scalar epsilon = std::numeric_limits<Scalar>::epsilon();
 
         {
-            const T expected = inf;
-            const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, 0.0f, expected)));
-            const T roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
+            static constexpr Scalar expected = inf;
+            const TestType q(TRAP::Math::Radians(Vec3Scalar(0.0f, 0.0f, expected)));
+            const Scalar roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
             REQUIRE(TRAP::Math::IsNaN(roll));
         }
         {
-            const T expected = ninf;
-            const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, 0.0f, expected)));
-            const T roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
+            static constexpr Scalar expected = ninf;
+            const TestType q(TRAP::Math::Radians(Vec3Scalar(0.0f, 0.0f, expected)));
+            const Scalar roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
             REQUIRE(TRAP::Math::IsNaN(roll));
         }
         {
-            const T expected = nan;
-            const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, 0.0f, expected)));
-            const T roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
+            static constexpr Scalar expected = nan;
+            const TestType q(TRAP::Math::Radians(Vec3Scalar(0.0f, 0.0f, expected)));
+            const Scalar roll = TRAP::Math::Degrees(TRAP::Math::Roll(q));
             REQUIRE(TRAP::Math::IsNaN(roll));
         }
         {
-            const TRAP::Math::tQuat<T> input{};
-            const T expected = T(0.0f);
+            static constexpr TestType input{};
+            static constexpr Scalar expected = Scalar(0.0f);
             REQUIRE(TRAP::Math::Equal(TRAP::Math::Roll(input), expected, epsilon));
         }
-    }
-}
-
-TEST_CASE("TRAP::Math::Roll()", "[math][generic][roll]")
-{
-    SECTION("Quat - f64")
-    {
-        RunRollRunTimeTests<f64>();
-        RunRollCompileTimeTests<f64>();
-        RunRollEdgeTests<f64>();
-    }
-    SECTION("Quat - f32")
-    {
-        RunRollRunTimeTests<f32>();
-        RunRollCompileTimeTests<f32>();
-        RunRollEdgeTests<f32>();
     }
 }
