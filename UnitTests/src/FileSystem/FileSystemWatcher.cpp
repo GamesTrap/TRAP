@@ -64,6 +64,7 @@ namespace
             fsWatcher.AddFolder(p).wait();
         }
         fsWatcher.AddFolder("").wait();
+        fsWatcher.AddFolder("asdasdasdasdasdasdasdasdasdasdasd").wait();
 
         const auto fsFolders = fsWatcher.GetFolders();
         if(recursive)

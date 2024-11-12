@@ -382,7 +382,7 @@ namespace TRAP::Utils
 
     //-------------------------------------------------------------------------------------------------------------------//
 
-    /// @brief Decode BGRA indexed pixel data to RGBA.
+    /// @brief Decode indexed pixel data.
     /// Output format depends on channel count, if it is 4, output is RGBA, if it is 3, output is RGB and so on.
     /// @param source Indexed BGRA pixel data.
     /// @param width Width of the image.

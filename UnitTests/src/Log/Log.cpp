@@ -95,6 +95,9 @@ TEST_CASE("TRAP::Log", "[log]")
 
         log.SetFilePath(LogFilePath);
         REQUIRE(log.GetFilePath() == LogFilePath);
+
+        log.SetFilePath("");
+        REQUIRE(log.GetFilePath() == LogFilePath);
     }
 
     SECTION("TRAP::Log::GetImportanceLevel()")

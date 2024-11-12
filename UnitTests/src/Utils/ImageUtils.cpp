@@ -58,7 +58,7 @@ namespace
         if(flippedPixelData.size() != expectedPixelData.size())
             return false;
 
-        if(!std::equal(flippedPixelData.begin(), flippedPixelData.end(), expectedPixelData.begin()))
+        if(!std::ranges::equal(flippedPixelData, expectedPixelData))
             return false;
 
         return true;
@@ -75,7 +75,7 @@ namespace
         if(flippedPixelData.size() != expectedPixelData.size())
             return false;
 
-        if(!std::equal(flippedPixelData.begin(), flippedPixelData.end(), expectedPixelData.begin()))
+        if(!std::ranges::equal(flippedPixelData, expectedPixelData))
             return false;
 
         return true;
@@ -92,7 +92,7 @@ namespace
         if(flippedPixelData.size() != expectedPixelData.size())
             return false;
 
-        if(!std::equal(flippedPixelData.begin(), flippedPixelData.end(), expectedPixelData.begin()))
+        if(!std::ranges::equal(flippedPixelData, expectedPixelData))
             return false;
 
         return true;
@@ -109,7 +109,7 @@ namespace
         if(flippedPixelData.size() != expectedPixelData.size())
             return false;
 
-        if(!std::equal(flippedPixelData.begin(), flippedPixelData.end(), expectedPixelData.begin()))
+        if(!std::ranges::equal(flippedPixelData, expectedPixelData))
             return false;
 
         return true;
@@ -126,7 +126,7 @@ namespace
         if(convertedPixelData.size() != (width * height * 4u))
             return false;
 
-        if(!std::equal(convertedPixelData.begin(), convertedPixelData.end(), expectedPixelData.begin()))
+        if(!std::ranges::equal(convertedPixelData, expectedPixelData))
             return false;
 
         return true;
@@ -143,7 +143,7 @@ namespace
         if(convertedPixelData.size() != (width * height * 3u))
             return false;
 
-        if(!std::equal(convertedPixelData.begin(), convertedPixelData.end(), expectedPixelData.begin()))
+        if(!std::ranges::equal(convertedPixelData, expectedPixelData))
             return false;
 
         return true;
@@ -190,6 +190,17 @@ TEST_CASE("TRAP::Utils::FlipPixelDataX()", "[utils][imageutils]")
     {
         STATIC_REQUIRE(CheckFlipX<f32>(32u, 32u, 3u, TestImageHDRPixelDataRGB, TestImageHDRPixelDataRGBFlippedX));
     }
+
+    SECTION("Invalid")
+    {
+        STATIC_REQUIRE(TRAP::Utils::FlipPixelDataX<u8>(0u, 2u, 4u, {}).empty());
+        STATIC_REQUIRE(TRAP::Utils::FlipPixelDataX<u8>(2u, 0u, 4u, {}).empty());
+        STATIC_REQUIRE(TRAP::Utils::FlipPixelDataX<u8>(2u, 2u, 0u, {}).empty());
+
+        STATIC_REQUIRE(TRAP::Utils::FlipPixelDataX<u8>(2u, 2u, 100u, {}).empty());
+
+        STATIC_REQUIRE(TRAP::Utils::FlipPixelDataX<u8>(2u, 2u, 4u, {}).empty());
+    }
 }
 
 TEST_CASE("TRAP::Utils::FlipPixelDataY()", "[utils][imageutils]")
@@ -227,6 +238,17 @@ TEST_CASE("TRAP::Utils::FlipPixelDataY()", "[utils][imageutils]")
     SECTION("HDR RGB")
     {
         STATIC_REQUIRE(CheckFlipY<f32>(32u, 32u, 3u, TestImageHDRPixelDataRGB, TestImageHDRPixelDataRGBFlippedY));
+    }
+
+    SECTION("Invalid")
+    {
+        STATIC_REQUIRE(TRAP::Utils::FlipPixelDataY<u8>(0u, 2u, 4u, {}).empty());
+        STATIC_REQUIRE(TRAP::Utils::FlipPixelDataY<u8>(2u, 0u, 4u, {}).empty());
+        STATIC_REQUIRE(TRAP::Utils::FlipPixelDataY<u8>(2u, 2u, 0u, {}).empty());
+
+        STATIC_REQUIRE(TRAP::Utils::FlipPixelDataY<u8>(2u, 2u, 100u, {}).empty());
+
+        STATIC_REQUIRE(TRAP::Utils::FlipPixelDataY<u8>(2u, 2u, 4u, {}).empty());
     }
 }
 
@@ -266,6 +288,17 @@ TEST_CASE("TRAP::Utils::RotatePixelData90Clockwise()", "[utils][imageutils]")
     {
         STATIC_REQUIRE(CheckRotate90Clockwise<f32>(32u, 32u, 3u, TestImageHDRPixelDataRGB, TestImageHDRPixelDataRGBRotated90Clockwise));
     }
+
+    SECTION("Invalid")
+    {
+        STATIC_REQUIRE(TRAP::Utils::RotatePixelData90Clockwise<u8>(0u, 2u, 4u, {}).empty());
+        STATIC_REQUIRE(TRAP::Utils::RotatePixelData90Clockwise<u8>(2u, 0u, 4u, {}).empty());
+        STATIC_REQUIRE(TRAP::Utils::RotatePixelData90Clockwise<u8>(2u, 2u, 0u, {}).empty());
+
+        STATIC_REQUIRE(TRAP::Utils::RotatePixelData90Clockwise<u8>(2u, 2u, 100u, {}).empty());
+
+        STATIC_REQUIRE(TRAP::Utils::RotatePixelData90Clockwise<u8>(2u, 2u, 4u, {}).empty());
+    }
 }
 
 TEST_CASE("TRAP::Utils::RotatePixelData90CounterClockwise()", "[utils][imageutils]")
@@ -304,6 +337,17 @@ TEST_CASE("TRAP::Utils::RotatePixelData90CounterClockwise()", "[utils][imageutil
     {
         STATIC_REQUIRE(CheckRotate90CounterClockwise<f32>(32u, 32u, 3u, TestImageHDRPixelDataRGB, TestImageHDRPixelDataRGBRotated90CounterClockwise));
     }
+
+    SECTION("Invalid")
+    {
+        STATIC_REQUIRE(TRAP::Utils::RotatePixelData90CounterClockwise<u8>(0u, 2u, 4u, {}).empty());
+        STATIC_REQUIRE(TRAP::Utils::RotatePixelData90CounterClockwise<u8>(2u, 0u, 4u, {}).empty());
+        STATIC_REQUIRE(TRAP::Utils::RotatePixelData90CounterClockwise<u8>(2u, 2u, 0u, {}).empty());
+
+        STATIC_REQUIRE(TRAP::Utils::RotatePixelData90CounterClockwise<u8>(2u, 2u, 100u, {}).empty());
+
+        STATIC_REQUIRE(TRAP::Utils::RotatePixelData90CounterClockwise<u8>(2u, 2u, 4u, {}).empty());
+    }
 }
 
 TEST_CASE("TRAP::Utils::ConvertRGBPixelDataToRGBA()", "[utils][imageutils]")
@@ -322,6 +366,17 @@ TEST_CASE("TRAP::Utils::ConvertRGBPixelDataToRGBA()", "[utils][imageutils]")
     {
         STATIC_REQUIRE(CheckRGBToRGBA<u16>(32u, 32u, TestImageSDR16PixelDataRGB, TestImageSDR16PixelDataRGBA));
     }
+
+    SECTION("HDR RGB (f32)")
+    {
+        STATIC_REQUIRE(CheckRGBToRGBA<f32>(32u, 32u, TestImageHDRPixelDataRGB, TestImageHDRPixelDataRGBA));
+    }
+
+    SECTION("Invalid")
+    {
+        STATIC_REQUIRE(TRAP::Utils::ConvertRGBPixelDataToRGBA<u8>(0u, 2u, {}).empty());
+        STATIC_REQUIRE(TRAP::Utils::ConvertRGBPixelDataToRGBA<u8>(2u, 0u, {}).empty());
+    }
 }
 
 TEST_CASE("TRAP::Utils::ConvertRGBAPixelDataToRGB()", "[utils][imageutils]")
@@ -339,5 +394,83 @@ TEST_CASE("TRAP::Utils::ConvertRGBAPixelDataToRGB()", "[utils][imageutils]")
     SECTION("SDR RGBA (u16)")
     {
         STATIC_REQUIRE(CheckRGBAToRGB<u16>(32u, 32u, TestImageSDR16PixelDataRGBA, TestImageSDR16PixelDataRGB));
+    }
+
+    SECTION("HDR RGBA (f32)")
+    {
+        STATIC_REQUIRE(CheckRGBAToRGB<f32>(32u, 32u, TestImageHDRPixelDataRGBA, TestImageHDRPixelDataRGB));
+    }
+
+    SECTION("Invalid")
+    {
+        STATIC_REQUIRE(TRAP::Utils::ConvertRGBAPixelDataToRGB<u8>(0u, 2u, {}).empty());
+        STATIC_REQUIRE(TRAP::Utils::ConvertRGBAPixelDataToRGB<u8>(2u, 0u, {}).empty());
+    }
+}
+
+TEST_CASE("TRAP::Utils::ConvertBGR16PixelDataToRGB24()", "[utils][imageutils]")
+{
+    SECTION("Valid")
+    {
+        STATIC_REQUIRE(std::ranges::equal(TRAP::Utils::ConvertBGR16PixelDataToRGB24(TestImageSDRPixelDataBGR16, 32u, 32u), TestImageSDRPixelDataRGB_BGR16));
+    }
+
+    SECTION("Invalid")
+    {
+        STATIC_REQUIRE(TRAP::Utils::ConvertBGR16PixelDataToRGB24({}, 0u, 32u).empty());
+        STATIC_REQUIRE(TRAP::Utils::ConvertBGR16PixelDataToRGB24({}, 32u, 0u).empty());
+
+        STATIC_REQUIRE(TRAP::Utils::ConvertBGR16PixelDataToRGB24({}, 32u, 32u).empty());
+    }
+}
+
+TEST_CASE("TRAP::Utils::ConvertBGR24PixelDataToRGB24()", "[utils][imageutils]")
+{
+    SECTION("Valid")
+    {
+        STATIC_REQUIRE(std::ranges::equal(TRAP::Utils::ConvertBGR24PixelDataToRGB24(TestImageSDRPixelDataBGR, 32u, 32u), TestImageSDRPixelDataRGB));
+    }
+
+    SECTION("Invalid")
+    {
+        STATIC_REQUIRE(TRAP::Utils::ConvertBGR24PixelDataToRGB24({}, 0u, 32u).empty());
+        STATIC_REQUIRE(TRAP::Utils::ConvertBGR24PixelDataToRGB24({}, 32u, 0u).empty());
+
+        STATIC_REQUIRE(TRAP::Utils::ConvertBGR24PixelDataToRGB24({}, 32u, 32u).empty());
+    }
+}
+
+TEST_CASE("TRAP::Utils::ConvertBGRA32PixelDataToRGBA32()", "[utils][imageutils]")
+{
+    SECTION("Valid")
+    {
+        STATIC_REQUIRE(std::ranges::equal(TRAP::Utils::ConvertBGRA32PixelDataToRGBA32(TestImageSDRPixelDataBGRA, 32u, 32u), TestImageSDRPixelDataRGBA));
+    }
+
+    SECTION("Invalid")
+    {
+        STATIC_REQUIRE(TRAP::Utils::ConvertBGRA32PixelDataToRGBA32({}, 0u, 32u).empty());
+        STATIC_REQUIRE(TRAP::Utils::ConvertBGRA32PixelDataToRGBA32({}, 32u, 0u).empty());
+
+        STATIC_REQUIRE(TRAP::Utils::ConvertBGRA32PixelDataToRGBA32({}, 32u, 32u).empty());
+    }
+}
+
+TEST_CASE("TRAP::Utils::DecodeBGRAMappedPixelData()", "[utils][imageutils]")
+{
+    SECTION("Valid")
+    {
+        STATIC_REQUIRE(std::ranges::equal(TRAP::Utils::DecodeBGRAMappedPixelData(TestImageSDRMappedBGRA, 32u, 32u, 4u, TestImageSDRColorMapBGRA), TestImageSDRPixelDataRGBA));
+        STATIC_REQUIRE(std::ranges::equal(TRAP::Utils::FlipPixelDataY<u8>(32u, 32u, 3u, TRAP::Utils::DecodeBGRAMappedPixelData(TestImageSDRMappedBGR, 32u, 32u, 3u, TestImageSDRColorMapBGR)), TestImageSDRPixelDataRGB));
+    }
+
+    SECTION("Invalid")
+    {
+        STATIC_REQUIRE(TRAP::Utils::DecodeBGRAMappedPixelData({}, 0u, 32u, 4u, TestImageSDRColorMapBGRA).empty());
+        STATIC_REQUIRE(TRAP::Utils::DecodeBGRAMappedPixelData({}, 32u, 0u, 4u, TestImageSDRColorMapBGRA).empty());
+        STATIC_REQUIRE(TRAP::Utils::DecodeBGRAMappedPixelData({}, 32u, 32u, 0u, TestImageSDRColorMapBGRA).empty());
+        STATIC_REQUIRE(TRAP::Utils::DecodeBGRAMappedPixelData({}, 32u, 32u, 4u, {}).empty());
+        STATIC_REQUIRE(TRAP::Utils::DecodeBGRAMappedPixelData({}, 32u, 32u, 100u, TestImageSDRColorMapBGRA).empty());
+        STATIC_REQUIRE(TRAP::Utils::DecodeBGRAMappedPixelData({}, 32u, 32u, 4u, TestImageSDRColorMapBGRA).empty());
     }
 }
