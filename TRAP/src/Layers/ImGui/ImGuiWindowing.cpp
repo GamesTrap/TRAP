@@ -67,6 +67,8 @@ namespace
 		f64 Time{};
 		const TRAP::INTERNAL::WindowingAPI::InternalWindow* MouseWindow{};
 		std::array<TRAP::INTERNAL::WindowingAPI::InternalCursor*, ImGuiMouseCursor_COUNT> MouseCursors{};
+		bool MouseIgnoreButtonUpWaitForFocusLoss = false;
+		bool MouseIgnoreButtonUp = false;
 		ImVec2 LastValidMousePos = ImVec2(0.0f, 0.0f);
 		std::vector<const TRAP::INTERNAL::WindowingAPI::InternalWindow*> KeyOwnerWindows = std::vector<const TRAP::INTERNAL::WindowingAPI::InternalWindow*>(std::to_underlying(TRAP::Input::Key::Menu), nullptr);
 		bool InstalledCallbacks{};
@@ -315,11 +317,15 @@ namespace
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-		const ImGuiTRAPData* const bd = GetBackendData();
+		ImGuiTRAPData* const bd = GetBackendData();
         TRAP_ASSERT(bd, "ImGuiWindowing::WindowFocusCallback(): Backend data is nullptr!");
 
 		if (bd->PrevUserCallbackWindowFocus != nullptr && TRAP::INTERNAL::ImGuiWindowing::ShouldChainCallback(window))
 			bd->PrevUserCallbackWindowFocus(window, focused);
+
+		//Workaround for Linux: when losing focus with MouseIgnoreButtonUpWaitForFocusLoss set, we will temporarily ignore subsequent Mouse Up events
+		bd->MouseIgnoreButtonUp = (bd->MouseIgnoreButtonUpWaitForFocusLoss && !focused);
+		bd->MouseIgnoreButtonUpWaitForFocusLoss = false;
 
 		ImGuiIO& io = ImGui::GetIO();
 		io.AddFocusEvent(focused);
@@ -400,6 +406,10 @@ namespace
 
 		if (bd->PrevUserCallbackMouseButton != nullptr && TRAP::INTERNAL::ImGuiWindowing::ShouldChainCallback(window))
 			bd->PrevUserCallbackMouseButton(window, mouseButton, state);
+
+		//Workaround for Linux: ignore mouse up events which are following an focus loss following a viewport creation
+		if(bd->MouseIgnoreButtonUp && state == TRAP::Input::KeyState::Released)
+			return;
 
 		TRAP_ASSERT(bd->Window != nullptr, "ImGuiWindowing::MouseButtonCallback(): bd->Window is nullptr!");
 		UpdateKeyModifiers(*bd->Window);
@@ -867,8 +877,14 @@ namespace
 
 		TRAP_ASSERT(viewport != nullptr, "ImGuiWindowing::CreateWindow(): viewport is nullptr!");
 
+		ImGuiTRAPData* const bd = GetBackendData();
 		ImGuiViewportDataTRAP* const vd = IM_NEW(ImGuiViewportDataTRAP)();
 		viewport->PlatformUserData = vd;
+
+		//Workaround for Linux: ignore mouse up events corresponding to losing focus of the previously focused window
+#ifdef TRAP_PLATFORM_LINUX
+		bd->MouseIgnoreButtonUpWaitForFocusLoss = true;
+#endif /*TRAP_PLATFORM_LINUX*/
 
 		TRAP::INTERNAL::WindowingAPI::WindowHint(TRAP::INTERNAL::WindowingAPI::Hint::Visible, false);
 		TRAP::INTERNAL::WindowingAPI::WindowHint(TRAP::INTERNAL::WindowingAPI::Hint::Focused, false);
@@ -1334,6 +1350,7 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 	io.DeltaTime = bd->Time > 0.0 ? NumericCast<f32>(currentTime - bd->Time) : (1.0f / 60.0f);
 	bd->Time = currentTime;
 
+	bd->MouseIgnoreButtonUp = false;
 	UpdateMouseData();
 	UpdateMouseCursor();
 
