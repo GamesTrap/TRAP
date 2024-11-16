@@ -180,7 +180,7 @@ constexpr TRAP::Events::ControllerDisconnectEvent::ControllerDisconnectEvent(con
 
 [[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::ControllerDisconnectEvent::GetStaticType() noexcept
 {
-	return EventType::ControlledDisconnect;
+	return EventType::ControllerDisconnect;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

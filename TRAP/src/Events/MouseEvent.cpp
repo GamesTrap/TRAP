@@ -81,7 +81,7 @@ TRAP::Events::MouseEnterEvent::MouseEnterEvent(TRAP::Window& window)
 
 [[nodiscard]] std::string TRAP::Events::MouseEnterEvent::ToString() const
 {
-	return fmt::format("MouseEnterEvent (\"{}\")", m_window.get().GetTitle());
+	return fmt::format("MouseEnterEvent: (\"{}\")", m_window.get().GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -97,7 +97,7 @@ TRAP::Events::MouseLeaveEvent::MouseLeaveEvent(TRAP::Window& window)
 
 [[nodiscard]] std::string TRAP::Events::MouseLeaveEvent::ToString() const
 {
-	return fmt::format("MouseLeaveEvent (\"{}\")", m_window.get().GetTitle());
+	return fmt::format("MouseLeaveEvent: (\"{}\")", m_window.get().GetTitle());
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

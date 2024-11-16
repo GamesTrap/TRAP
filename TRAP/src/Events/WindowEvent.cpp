@@ -34,7 +34,7 @@ TRAP::Events::WindowMinimizeEvent::WindowMinimizeEvent(TRAP::Window& window)
 
 [[nodiscard]] std::string TRAP::Events::WindowMinimizeEvent::ToString() const
 {
-	return fmt::format("WindowMinimizeEvent (\"{}\")", m_window.get().GetTitle());
+	return fmt::format("WindowMinimizeEvent: (\"{}\")", m_window.get().GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -50,7 +50,7 @@ TRAP::Events::WindowMaximizeEvent::WindowMaximizeEvent(TRAP::Window& window)
 
 [[nodiscard]] std::string TRAP::Events::WindowMaximizeEvent::ToString() const
 {
-	return fmt::format("WindowMaximizeEvent (\"{}\")", m_window.get().GetTitle());
+	return fmt::format("WindowMaximizeEvent: (\"{}\")", m_window.get().GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -66,7 +66,7 @@ TRAP::Events::WindowRestoreEvent::WindowRestoreEvent(TRAP::Window& window)
 
 [[nodiscard]] std::string TRAP::Events::WindowRestoreEvent::ToString() const
 {
-	return fmt::format("WindowRestoreEvent (\"{}\")", m_window.get().GetTitle());
+	return fmt::format("WindowRestoreEvent: (\"{}\")", m_window.get().GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -98,7 +98,7 @@ TRAP::Events::WindowFocusEvent::WindowFocusEvent(TRAP::Window& window)
 
 [[nodiscard]] std::string TRAP::Events::WindowFocusEvent::ToString() const
 {
-	return fmt::format("WindowMoveEvent (\"{}\")", m_window.get().GetTitle());
+	return fmt::format("WindowFocusEvent: (\"{}\")", m_window.get().GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -114,7 +114,7 @@ TRAP::Events::WindowLostFocusEvent::WindowLostFocusEvent(TRAP::Window& window)
 
 [[nodiscard]] std::string TRAP::Events::WindowLostFocusEvent::ToString() const
 {
-	return fmt::format("WindowLostFocusEvent (\"{}\")", m_window.get().GetTitle());
+	return fmt::format("WindowLostFocusEvent: (\"{}\")", m_window.get().GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -153,7 +153,7 @@ TRAP::Events::WindowCloseEvent::WindowCloseEvent(TRAP::Window& window)
 
 [[nodiscard]] std::string TRAP::Events::WindowCloseEvent::ToString() const
 {
-	return fmt::format("WindowCloseEvent (\"{}\")", m_window.get().GetTitle());
+	return fmt::format("WindowCloseEvent: (\"{}\")", m_window.get().GetTitle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

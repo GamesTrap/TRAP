@@ -17,14 +17,14 @@ namespace TRAP::Events
 	//them during the "event" part of the update stage.
 
 	/// @brief Different event types.
-	enum class EventType
+	enum class EventType : u32
 	{
 		None = 0,
 		WindowClose, WindowResize, WindowMinimize, WindowMaximize, WindowRestore, WindowFocus, WindowLostFocus,
 		WindowMove, WindowDrop, WindowContentScale, FrameBufferResize,
 		KeyPress, KeyRepeat, KeyRelease, KeyType, KeyLayout,
 		MouseButtonPress, MouseButtonRelease, MouseMove, MouseScroll, MouseEnter, MouseLeave,
-		ControllerConnect, ControlledDisconnect,
+		ControllerConnect, ControllerDisconnect,
 		MonitorConnect, MonitorDisconnect,
 		TextureReload, ShaderReload, FileChange
 	};
@@ -40,7 +40,8 @@ namespace TRAP::Events
 		Controller       = BIT(4u),
 		MouseButton      = BIT(5u),
 		HotReload        = BIT(6u),
-		FileSystemChange = BIT(7u)
+		FileSystemChange = BIT(7u),
+		Monitor          = BIT(8u)
 	};
 
 	/// @brief Event base class.
@@ -109,7 +110,7 @@ namespace TRAP::Events
 		/// @tparam T Event to dispatch.
 		/// @tparam F Function to call.
 		/// @param func Function to call.
-		/// @return True if the received event matches the event to dispatch, false otherwise.
+		/// @return True if the received event matches the event to dispatch and was not already handled, false otherwise.
 		template<typename T, typename F>
 		constexpr bool Dispatch(F&& func) const& noexcept;
 
@@ -117,7 +118,7 @@ namespace TRAP::Events
 		/// @tparam T Event to dispatch.
 		/// @tparam F Function to call.
 		/// @param func Function to call.
-		/// @return True if the received event matches the event to dispatch, false otherwise.
+		/// @return True if the received event matches the event to dispatch and was not already handled, false otherwise.
 		template<typename T, typename F>
 		constexpr bool Dispatch(F&& func) const&& noexcept;
 

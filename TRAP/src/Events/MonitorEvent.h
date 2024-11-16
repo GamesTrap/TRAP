@@ -119,7 +119,7 @@ constexpr TRAP::Events::MonitorEvent::MonitorEvent(const Monitor& monitor) noexc
 
 [[nodiscard]] constexpr TRAP::Events::EventCategory TRAP::Events::MonitorEvent::GetCategoryFlags() const noexcept
 {
-	return EventCategory::Window;
+	return EventCategory::Monitor;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

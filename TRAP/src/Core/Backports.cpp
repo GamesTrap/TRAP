@@ -51,7 +51,7 @@ namespace std
     for(std::string line{}; std::getline(in, line);)
     {
         static constexpr std::string_view Prefix = "TracerPid:\t";
-        if(line.compare(0, Prefix.length(), Prefix) == 0)
+        if(line.starts_with(Prefix))
         {
             //We're traced if the PID is not 0 and no other PID starts with
             //0 digit, so it's enough to check for just a single character.
