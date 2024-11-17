@@ -7,7 +7,7 @@
 
 namespace TRAP::FileSystem
 {
-	enum class FileSystemStatus;
+	enum class FileSystemStatus : u8;
 }
 
 namespace TRAP::Events
