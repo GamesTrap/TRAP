@@ -10,7 +10,7 @@
 
 namespace
 {
-	enum class BMPErrorCode
+	enum class BMPErrorCode : u8
 	{
 		InvalidBitField,
 		InvalidBitFieldMaskParameter,
@@ -115,12 +115,13 @@ namespace
 			return "Failed to decompress RLE8 pixel data!";
 		}
 
-		return "";
+		TRAP_ASSERT(false, "BMPErrorCodeToString(): Unknown error code!");
+		return "<UNKNOWN BMPErrorCode>";
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	enum class BMPCompression : u32
+	enum class BMPCompression : u8
 	{
 		Uncompressed = 0u,
 		RLE8 = 1u,
@@ -133,7 +134,6 @@ namespace
 		CMYKRLE8 = 12u,
 		CMYKRLE4 = 13u
 	};
-	MAKE_ENUM_FLAG(BMPCompression);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

@@ -18,12 +18,12 @@ namespace TRAP
 	{
 	public:
 		/// @brief Color formats.
-		enum class ColorFormat : u32
+		enum class ColorFormat : u8
 		{
-			GrayScale = 1,
-			GrayScaleAlpha = 2,
-			RGB = 3,
-			RGBA = 4
+			GrayScale = 1u,
+			GrayScaleAlpha = 2u,
+			RGB = 3u,
+			RGBA = 4u
 		};
 
 	protected:
