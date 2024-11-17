@@ -16,7 +16,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	enum class PFMErrorCode
+	enum class PFMErrorCode : u8
 	{
 		InvalidMagicNumber,
 		InvalidWidth,

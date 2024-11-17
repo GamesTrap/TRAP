@@ -20,7 +20,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	enum class PAMErrorCode
+	enum class PAMErrorCode : u8
 	{
 		InvalidMagicNumber,
 		InvalidWidth,
@@ -92,15 +92,15 @@ namespace
 
 		Header header{};
 		header.MagicNumber = SkipComments();
-		const std::string widthStr = SkipComments();
+		[[maybe_unused]] const std::string widthStr = SkipComments();
 		header.Width = std::stoi(SkipComments());
-		const std::string heightStr = SkipComments();
+		[[maybe_unused]] const std::string heightStr = SkipComments();
 		header.Height = std::stoi(SkipComments());
-		const std::string depthStr = SkipComments();
+		[[maybe_unused]] const std::string depthStr = SkipComments();
 		header.Depth = std::stoi(SkipComments());
-		const std::string maxValStr = SkipComments();
+		[[maybe_unused]] const std::string maxValStr = SkipComments();
 		header.MaxValue = std::stoi(SkipComments());
-		const std::string tuplTypeStr = SkipComments();
+		[[maybe_unused]] const std::string tuplTypeStr = SkipComments();
 		header.TuplType = SkipComments();
 		const std::string endHdrStr = SkipComments();
 

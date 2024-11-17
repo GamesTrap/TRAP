@@ -5398,3 +5398,7 @@ SITREP 11/17/2024|24w46b1
     - UnitTests Added tests for TRAP::INTERNAL::PFMImage ~<15 mins
     - UnitTests Added tests for TRAP::INTERNAL::PAMImage ~<15 mins
     - UnitTests Added tests for TRAP::INTERNAL::PNMImage ~<15 mins
+
+SITREP 11/18/2024|24w47a1
+    - Changed TRAP Engine version to 24w47a1(0.11.44)
+    - UnitTests Added tests for TRAP::INTERNAL::PNGImage ~>30 mins

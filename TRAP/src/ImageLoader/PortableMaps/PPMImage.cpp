@@ -19,7 +19,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	enum class PPMErrorCode
+	enum class PPMErrorCode : u8
 	{
 		InvalidMagicNumber,
 		InvalidWidth,

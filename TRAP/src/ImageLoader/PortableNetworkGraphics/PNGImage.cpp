@@ -68,7 +68,11 @@ namespace
 		else if(colorType == PNG_COLOR_TYPE_GRAY_ALPHA)
 			header.Format = TRAP::Image::ColorFormat::GrayScaleAlpha;
 		else if(colorType == PNG_COLOR_TYPE_RGB || colorType == PNG_COLOR_TYPE_PALETTE)
+		{
 			header.Format = TRAP::Image::ColorFormat::RGB;
+			if(colorType == PNG_COLOR_TYPE_PALETTE)
+				header.BitsPerPixel = bitDepth * 3u;
+		}
 		else if(colorType == PNG_COLOR_TYPE_RGBA)
 			header.Format = TRAP::Image::ColorFormat::RGBA;
 
@@ -79,9 +83,15 @@ namespace
 		if(hastRNSChunk)
 		{
 			if(header.Format == TRAP::Image::ColorFormat::GrayScale)
+			{
 				header.Format = TRAP::Image::ColorFormat::GrayScaleAlpha;
+				header.BitsPerPixel = bitDepth * 2u;
+			}
 			else if(header.Format == TRAP::Image::ColorFormat::RGB)
+			{
 				header.Format = TRAP::Image::ColorFormat::RGBA;
+				header.BitsPerPixel = bitDepth * 4u;
+			}
 		}
 
 		return header;
