@@ -114,7 +114,7 @@
 		return {};
 	}
 
-	result.resize(size);
+	result.resize(size - 1); //Ignore null terminator
 	if (!WideCharToMultiByte(CP_UTF8, 0, wStr.data(), -1, result.data(), size, nullptr, nullptr))
 	{
 		TP_ERROR(TRAP::Log::EngineWindowsPrefix, "Failed to convert string to UTF-8");
@@ -141,7 +141,7 @@
 		return {};
 	}
 
-	result.resize(count);
+	result.resize(count - 1); //Ignore null terminator
 
 	if (!MultiByteToWideChar(CP_UTF8, 0, str.data(), -1, result.data(), count))
 	{

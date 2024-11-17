@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "FileSystem.h"
 
+#include "Utils/SafeSystem.h"
 #include "Utils/String/String.h"
 #include "Application.h"
 
@@ -1048,7 +1049,7 @@ namespace
         while(std::getline(file, line))
         {
             const auto commentIndex = line.find_first_of('#');
-            const auto xdgDocuments = line.find(XDGDocumentsDir.data());
+            const auto xdgDocuments = line.find(XDGDocumentsDir);
 
             if(xdgDocuments == std::string::npos)
                 continue;
@@ -1117,15 +1118,11 @@ namespace
         TRAP_ASSERT(!p.empty(), "FileSystem::OpenExternallyLinux(): Path is empty!");
         TRAP_ASSERT(TRAP::FileSystem::IsAbsolute(p), "FileSystem::OpenExternallyLinux(): Path is not absolute!");
 
-        const std::string cmd = fmt::format("xdg-open {}", p.native());
-        FILE* const xdg = popen(cmd.c_str(), "r");
-        if(xdg == nullptr)
+        if(const auto result = TRAP::Utils::SafeSystem("xdg-open", {p.native()}, false); !result)
         {
-            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open externally: ", p, "!");
-            TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
+            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open externally: ", result.Error());
             return false;
         }
-        pclose(xdg);
 
         return true;
     }
@@ -1143,15 +1140,11 @@ namespace
         TRAP_ASSERT(!p.empty(), "FileSystem::OpenFolderInFileBrowserLinux(): Path is empty!");
         TRAP_ASSERT(TRAP::FileSystem::IsAbsolute(p), "FileSystem::OpenFolderInFileBrowserLinux(): Path is not absolute!");
 
-        const std::string cmd = fmt::format("xdg-open {}", p.string());
-        FILE* const xdg = popen(cmd.c_str(), "r");
-        if(xdg == nullptr)
+        if(const auto result = TRAP::Utils::SafeSystem("xdg-open", {p.native()}, false); !result)
         {
-            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: ", p, "!");
-            TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
+            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: ", result.Error());
             return false;
         }
-        pclose(xdg);
 
         return true;
     }
@@ -1169,15 +1162,11 @@ namespace
         TRAP_ASSERT(!p.empty(), "FileSystem::OpenFileInFileBrowserLinux(): Path is empty!");
         TRAP_ASSERT(TRAP::FileSystem::IsAbsolute(p), "FileSystem::OpenFileInFileBrowserLinux(): Path is not absolute!");
 
-        const std::string cmd = fmt::format("xdg-open {}", p.parent_path().string());
-        FILE* const xdg = popen(cmd.c_str(), "r");
-        if(xdg == nullptr)
+        if(const auto result = TRAP::Utils::SafeSystem("xdg-open", {p.parent_path().native()}, false); !result)
         {
-            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: ", p, "!");
-            TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
+            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: ", result.Error());
             return false;
         }
-        pclose(xdg);
 
         return true;
     }
@@ -1260,8 +1249,6 @@ namespace
             return TRAP::NullOpt;
         }
 
-        folderPath.pop_back(); //Remove the extra null byte
-
         return folderPath;
     }
 
@@ -1274,20 +1261,9 @@ namespace
         TRAP_ASSERT(!p.empty(), "FileSystem::OpenExternallyWindows(): Path is empty!");
         TRAP_ASSERT(TRAP::FileSystem::IsAbsolute(p), "FileSystem::OpenExternallyWindows(): Path is not absolute!");
 
-        TRAP::Utils::Windows::COMInitializer comInitializer{};
-        if(comInitializer.IsInitialized())
+        if (const auto result = TRAP::Utils::SafeSystem("explorer", { TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(p.native()) }, false); !result)
         {
-            HINSTANCE res = ShellExecuteW(nullptr, L"open", p.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
-            if(std::bit_cast<INT_PTR>(res) <= 32)
-            {
-                TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open externally: ", p, "!");
-                TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
-                return false;
-            }
-        }
-        else
-        {
-            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open externally: ", p, " (COM initialization failed)!");
+            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open externally: ", result.Error());
             return false;
         }
 
@@ -1306,20 +1282,9 @@ namespace
         TRAP_ASSERT(!p.empty(), "FileSystem::OpenFolderInFileBrowserWindows(): Path is empty!");
         TRAP_ASSERT(TRAP::FileSystem::IsAbsolute(p), "FileSystem::OpenFolderInFileBrowserWindows(): Path is not absolute!");
 
-        TRAP::Utils::Windows::COMInitializer comInitializer{};
-        if(comInitializer.IsInitialized())
+        if (const auto result = TRAP::Utils::SafeSystem("explorer", { TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(p.native())}, false); !result)
         {
-            HINSTANCE res = ShellExecuteW(nullptr, L"explore", p.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
-            if(std::bit_cast<INT_PTR>(res) <= 32)
-            {
-                TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: ", p, "!");
-                TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
-                return false;
-            }
-        }
-        else
-        {
-            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: ", p, " (COM initialization failed)!");
+            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open externally: ", result.Error());
             return false;
         }
 
@@ -1338,7 +1303,7 @@ namespace
         TRAP_ASSERT(!p.empty(), "FileSystem::OpenFileInFileBrowserWindows(): Path is empty!");
         TRAP_ASSERT(TRAP::FileSystem::IsAbsolute(p), "FileSystem::OpenFileInFileBrowserWindows(): Path is not absolute!");
 
-        const std::wstring openPath = p.wstring();
+        const std::wstring& openPath = p.native();
 
         TRAP::Utils::Windows::COMInitializer comInitializer{};
         if(comInitializer.IsInitialized())

@@ -5385,3 +5385,9 @@ SITREP 11/13/2024|24w46a3
 SITREP 11/16/2024|24w46a4
     - Changed TRAP Engine version to 24w46a4(0.11.42)
     - UnitTests Added tests for TRAP::Events ~>30 mins
+
+SITREP 11/17/2024|24w46b1
+    - Changed TRAP Engine version to 24w46b1(0.11.43)
+    - Utils/String Fixed unnecessary extra null terminator in CreateUTF8StringFromWideStringWin32()/CreateWideStringFromUTF8StringWin32() ~<5 mins
+    - Utils Added SafeSystem() as a replacement for unsafe system()/shell calls ~>30 mins
+    - FileSystem Replaced calls to popen()/ShellExecuteW() with SafeSystem() ~<10 mins

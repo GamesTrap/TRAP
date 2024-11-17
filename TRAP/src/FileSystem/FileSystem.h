@@ -40,7 +40,7 @@
 namespace TRAP::FileSystem
 {
 	/// @brief Write mode to be used by writing operations.
-	enum class WriteMode
+	enum class WriteMode : u8
 	{
 		Overwrite,
 		Append

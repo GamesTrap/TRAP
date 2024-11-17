@@ -44,6 +44,7 @@
 #include <source_location>
 #include <csignal>
 #include <ranges>
+#include <regex>
 
 #include "Core/Backports.h"
 #include "Core/Types.h"
