@@ -5393,3 +5393,4 @@ SITREP 11/17/2024|24w46b1
     - FileSystem Replaced calls to popen()/ShellExecuteW() with SafeSystem() ~<10 mins
     - UnitTests Added tests for TRAP::FileSystem::FileSystemStatus ~<5 mins
     - UnitTests Added tests for TRAP::INTERNAL::BMPImage ~>45 mins
+    - UnitTests Added tests for TRAP::INTERNAL::PGMImage ~<20 mins
