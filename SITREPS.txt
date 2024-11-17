@@ -5391,3 +5391,4 @@ SITREP 11/17/2024|24w46b1
     - Utils/String Fixed unnecessary extra null terminator in CreateUTF8StringFromWideStringWin32()/CreateWideStringFromUTF8StringWin32() ~<5 mins
     - Utils Added SafeSystem() as a replacement for unsafe system()/shell calls ~>30 mins
     - FileSystem Replaced calls to popen()/ShellExecuteW() with SafeSystem() ~<10 mins
+    - UnitTests Added tests for TRAP::FileSystem::FileSystemStatus ~<5 mins

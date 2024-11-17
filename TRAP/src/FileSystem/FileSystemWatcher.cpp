@@ -593,7 +593,8 @@ void TRAP::FileSystem::FileSystemWatcher::Watch(const std::stop_token& stopToken
         if(!events.empty())
         {
             DeduplicateEvents(events);
-            DispatchEvents(events, *m_callback.ReadLock());
+            const auto callback = m_callback.ReadLock();
+            DispatchEvents(events, *callback);
         }
     }
 }
@@ -917,7 +918,8 @@ void TRAP::FileSystem::FileSystemWatcher::Watch(const std::stop_token& stopToken
         if(!events.empty())
         {
             DeduplicateEvents(events);
-            DispatchEvents(events, *m_callback.ReadLock());
+            const auto callback = m_callback.ReadLock();
+            DispatchEvents(events, *callback);
         }
     }
 }

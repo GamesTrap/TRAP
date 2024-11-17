@@ -320,3 +320,13 @@ TEST_CASE("TRAP::FileSystem::FileSystemWatcher - Recursive", "[filesystem][files
         TestEvents(fsWatcher, BasePath);
     }
 }
+
+TEST_CASE("TRAP::FileSystem::FileSystemStatus", "[filesystem][filesystemstatus]")
+{
+    REQUIRE(fmt::format("{}", TRAP::FileSystem::FileSystemStatus::Created) == "Created");
+    REQUIRE(fmt::format("{}", TRAP::FileSystem::FileSystemStatus::Renamed) == "Renamed");
+    REQUIRE(fmt::format("{}", TRAP::FileSystem::FileSystemStatus::Modified) == "Modified");
+    REQUIRE(fmt::format("{}", TRAP::FileSystem::FileSystemStatus::Erased) == "Erased");
+
+    REQUIRE(fmt::format("{}", static_cast<TRAP::FileSystem::FileSystemStatus>(100u)) == "<MISSING ENUM VALUE>");
+}

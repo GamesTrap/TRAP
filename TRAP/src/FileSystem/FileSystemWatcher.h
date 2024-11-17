@@ -35,7 +35,7 @@ namespace TRAP::Events
 namespace TRAP::FileSystem
 {
     /// @brief Specifies the status of a file or folder.
-    enum class FileSystemStatus
+    enum class FileSystemStatus : u8
     {
         Created,
         Renamed,
@@ -177,11 +177,12 @@ struct fmt::formatter<TRAP::FileSystem::FileSystemStatus>
         case Erased:
             enumStr = "Erased";
             break;
+        }
 
-        default:
+        if(enumStr.empty())
+        {
             TRAP_ASSERT(false, "fmt::formatter<TRAP::FileSystem::FileSystemStatus>: Missing enum value!");
             enumStr = "<MISSING ENUM VALUE>";
-            break;
         }
 
         return fmt::format_to(ctx.out(), "{}", enumStr);
