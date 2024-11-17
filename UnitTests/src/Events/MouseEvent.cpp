@@ -1,5 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
+#include "TRAP/src/Utils/Win.h"
 #include "TRAP/src/Events/MouseEvent.h"
 
 TEST_CASE("TRAP::Events::MouseMoveEvent", "[events][mousemoveevent]")
