@@ -5397,3 +5397,4 @@ SITREP 11/17/2024|24w46b1
     - UnitTests Added tests for TRAP::INTERNAL::PPMImage ~<15 mins
     - UnitTests Added tests for TRAP::INTERNAL::PFMImage ~<15 mins
     - UnitTests Added tests for TRAP::INTERNAL::PAMImage ~<15 mins
+    - UnitTests Added tests for TRAP::INTERNAL::PNMImage ~<15 mins
