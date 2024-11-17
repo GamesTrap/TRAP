@@ -26,14 +26,14 @@ TEST_CASE("TRAP::INTERNAL::QOIImage", "[imageloader][qoiimage]")
     SECTION("GetPixelData()")
     {
         REQUIRE_FALSE(linear24bpp->GetPixelData().empty());
-        // REQUIRE(std::ranges::equal(linear24bpp->GetPixelData(), TestImageHDRPixelDataRGB));
+        // REQUIRE(std::ranges::equal(linear24bpp->GetPixelData(), TestImageSDRPixelDataRGB));
         REQUIRE_FALSE(linear32bpp->GetPixelData().empty());
-        // REQUIRE(std::ranges::equal(linear32bpp->GetPixelData(), TestImageHDRPixelDataRGB));
+        // REQUIRE(std::ranges::equal(linear32bpp->GetPixelData(), TestImageSDRPixelDataRGB));
 
         REQUIRE_FALSE(srgb24bpp->GetPixelData().empty());
-        // REQUIRE(std::ranges::equal(srgb24bpp->GetPixelData(), TestImageHDRPixelDataRGBA));
+        // REQUIRE(std::ranges::equal(srgb24bpp->GetPixelData(), TestImageSDRPixelDataRGBA));
         REQUIRE_FALSE(srgb32bpp->GetPixelData().empty());
-        // REQUIRE(std::ranges::equal(srgb32bpp->GetPixelData(), TestImageHDRPixelDataRGBA));
+        // REQUIRE(std::ranges::equal(srgb32bpp->GetPixelData(), TestImageSDRPixelDataRGBA));
     }
 
     SECTION("GetChannelsPerPixel()")

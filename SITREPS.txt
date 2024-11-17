@@ -5403,3 +5403,4 @@ SITREP 11/18/2024|24w47a1
     - Changed TRAP Engine version to 24w47a1(0.11.44)
     - UnitTests Added tests for TRAP::INTERNAL::PNGImage ~>30 mins
     - UnitTests Added tests for TRAP::INTERNAL::QOIImage ~<25 mins
+    - UnitTests Added tests for TRAP::INTERNAL::RadianceImage ~<15 mins
