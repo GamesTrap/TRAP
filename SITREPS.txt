@@ -5407,3 +5407,7 @@ SITREP 11/18/2024|24w47a1
     - UnitTests Added tests for TRAP::INTERNAL::TGAImage ~<15 mins
     - UnitTests Added tests for TRAP::INTERNAL::CustomImage ~<15 mins
     - UnitTests Added tests for TRAP::Image ~<30 mins
+
+SITREP 11/19/2024|24w47a2
+    - Changed TRAP Engine version to 24w47a2(0.11.45)
+    - UnitTests Added tests for TRAP::Layer ~<10 mins

@@ -8,7 +8,7 @@
 
 namespace TRAP
 {
-	class LayerStack
+	class LayerStack final
 	{
 	public:
 		/// @brief Constructor.
