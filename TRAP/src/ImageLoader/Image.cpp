@@ -280,6 +280,12 @@ TRAP::Image::Image(std::filesystem::path filepath, u32 width, u32 height, ColorF
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (GetTRAPProfileSystems() & ProfileSystems::ImageLoader) != ProfileSystems::None);
 
+	if(img.GetColorFormat() != ColorFormat::RGB)
+	{
+		TRAP_ASSERT(false, "TRAP::Image::ConvertRGBToRGBA(): Provided image is not RGB!");
+		return nullptr;
+	}
+
 	if(img.IsHDR())
 	{
 		const std::span<const f32> data{reinterpret_cast<const f32*>(img.GetPixelData().data()), img.GetPixelData().size() / sizeof(f32)};

@@ -157,7 +157,7 @@ namespace TRAP
 		[[nodiscard]] static Scope<Image> Rotate90CounterClockwise(const Image& img);
 		/// @brief Convert a RGB image to RGBA.
 		/// @param img Image to convert.
-		/// @return Converted image.
+		/// @return Converted image on success, nullptr otherwise.
 		[[nodiscard]] static Scope<Image> ConvertRGBToRGBA(const Image& img);
 
 	protected:
