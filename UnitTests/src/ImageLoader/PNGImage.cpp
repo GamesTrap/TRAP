@@ -4,8 +4,6 @@
 
 #include "../Testfiles/Utils/ImageUtils_Src.h"
 
-//TODO Add fuzz testing for this class
-
 TEST_CASE("TRAP::INTERNAL::PNGImage", "[imageloader][pngimage]")
 {
     const TRAP::Scope<TRAP::Image> grayscale8bpp = TRAP::Image::LoadFromFile("Testfiles/ImageLoader/PNG/Test8BPPGrayscaleSmallest.png");

@@ -4,8 +4,6 @@
 
 #include "../Testfiles/Utils/ImageUtils_Src.h"
 
-//TODO Add fuzz testing for this class
-
 TEST_CASE("TRAP::INTERNAL::QOIImage", "[imageloader][qoiimage]")
 {
     const TRAP::Scope<TRAP::Image> linear24bpp = TRAP::Image::LoadFromFile("Testfiles/ImageLoader/QOI/Test24BPPLinear.qoi");
