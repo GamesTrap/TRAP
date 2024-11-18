@@ -5405,3 +5405,4 @@ SITREP 11/18/2024|24w47a1
     - UnitTests Added tests for TRAP::INTERNAL::QOIImage ~<25 mins
     - UnitTests Added tests for TRAP::INTERNAL::RadianceImage ~<15 mins
     - UnitTests Added tests for TRAP::INTERNAL::TGAImage ~<15 mins
+    - UnitTests Added tests for TRAP::INTERNAL::CustomImage ~<15 mins

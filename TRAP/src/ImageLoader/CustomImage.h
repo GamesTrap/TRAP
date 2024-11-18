@@ -58,6 +58,7 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const u
 
 	if constexpr(std::same_as<T, f32>)
 	{
+		m_isHDR = true;
 		m_dataHDR = std::move(pixelData);
 	}
 	else if constexpr (std::same_as<T, u16>)
