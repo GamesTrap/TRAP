@@ -13,7 +13,7 @@ TEST_CASE("TRAP::Layer", "[layer]")
     SECTION("Constructor")
     {
         //Default constructor
-        static constexpr TRAP::Layer layer{};
+        const TRAP::Layer layer{};
 
         //Copy constructor
         // static constexpr TRAP::Layer copy(layer); //Deleted
