@@ -57,6 +57,9 @@ void TRAP::LayerStack::PopLayer(Layer& layer)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
+	if(m_layerInsertIndex == 0u)
+		return;
+
 	const auto it = std::find_if(m_layers.begin(), m_layers.begin() + m_layerInsertIndex,
 		                         [&layer](const std::unique_ptr<Layer>& l){return l.get() == &layer;});
 	if (it != m_layers.end())
