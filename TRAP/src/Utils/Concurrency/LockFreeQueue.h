@@ -16,7 +16,7 @@ namespace TRAP::Utils
     /// @brief A FIFO Queue implementation without locking.
     ///        Internally a single linked list is used.
     template<typename T>
-    class LockFreeQueue
+    class LockFreeQueue final
     {
     public:
         /// @brief Constructor.
