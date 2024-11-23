@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "ImageLoader/Image.h"
+#include "ImageLoader/RadianceHDR/RadianceImage.h"
 
 #include "../Testfiles/Utils/ImageUtils_Src.h"
 
@@ -9,6 +9,14 @@
 TEST_CASE("TRAP::INTERNAL::RadianceImage", "[imageloader][radianceimage]")
 {
     const TRAP::Scope<TRAP::Image> hdrimg = TRAP::Image::LoadFromFile("Testfiles/ImageLoader/Radiance/TestHDR.hdr");
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::INTERNAL::RadianceImage>);
+        STATIC_REQUIRE(std::copyable<TRAP::INTERNAL::RadianceImage>);
+        STATIC_REQUIRE(std::movable<TRAP::INTERNAL::RadianceImage>);
+        STATIC_REQUIRE(std::derived_from<TRAP::INTERNAL::RadianceImage, TRAP::Image>);
+    }
 
     SECTION("LoadFromFile()")
     {

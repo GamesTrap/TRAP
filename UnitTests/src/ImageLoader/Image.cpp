@@ -11,6 +11,13 @@
 
 TEST_CASE("TRAP::Image", "[imageloader][image]")
 {
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE_FALSE(std::is_final_v<TRAP::Image>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Image>);
+        STATIC_REQUIRE_FALSE(std::movable<TRAP::Image>);
+    }
+
     SECTION("LoadFromFile()")
     {
         const TRAP::Scope<TRAP::Image> unsupportedImg = TRAP::Image::LoadFromFile("unsupportedFile.random");

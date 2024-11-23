@@ -232,6 +232,13 @@ TEST_CASE("TRAP::FileSystem::FileSystemWatcher", "[filesystem][filesystemwatcher
     static constexpr bool Recursive = false;
     TRAP::FileSystem::FileSystemWatcher fsWatcher(Recursive, "UnitTest Watcher (non recursive)");
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::FileSystem::FileSystemWatcher>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::FileSystem::FileSystemWatcher>);
+        STATIC_REQUIRE_FALSE(std::movable<TRAP::FileSystem::FileSystemWatcher>);
+    }
+
     SECTION("SetEventCallback()")
     {
         TestSetEventCallback(fsWatcher);

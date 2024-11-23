@@ -17,6 +17,10 @@ namespace TRAP::Events
 		consteval MonitorEvent(const MonitorEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
 		consteval MonitorEvent& operator=(const MonitorEvent&) noexcept = delete;
+		/// @brief Move constructor.
+		constexpr MonitorEvent(MonitorEvent&&) noexcept = default;
+		/// @brief Move assignment operator.
+		MonitorEvent& operator=(MonitorEvent&&) noexcept = default;
 
 		/// @brief Destructor.
 		constexpr ~MonitorEvent() override = default;
@@ -33,10 +37,6 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param monitor Affected monitor.
 		explicit constexpr MonitorEvent(const Monitor& monitor) noexcept;
-		/// @brief Move constructor.
-		constexpr MonitorEvent(MonitorEvent&&) noexcept = default;
-		/// @brief Move assignment operator.
-		MonitorEvent& operator=(MonitorEvent&&) noexcept = default;
 
 	private:
 		Monitor m_monitor;

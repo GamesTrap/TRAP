@@ -9,6 +9,14 @@ TEST_CASE("TRAP::Events::MouseMoveEvent", "[events][mousemoveevent]")
 
     // const TRAP::Events::MouseMoveEvent mmevent = TRAP::Events::MouseMoveEvent{-10.0f, 100.0f, WINDOW};
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::MouseMoveEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::MouseMoveEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::MouseMoveEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::MouseMoveEvent, TRAP::Events::Event>);
+    }
+
     SECTION("Constructor")
     {
         // const TRAP::Events::MouseMoveEvent mmeventCopyConstructor(mmevent); //Deleted
@@ -96,6 +104,14 @@ TEST_CASE("TRAP::Events::MouseScrollEvent", "[events][mousescrollevent]")
     //TODO Implement tests when TRAP::Window can be used in tests.
 
     // const TRAP::Events::MouseScrollEvent msevent = TRAP::Events::MouseScrollEvent{-10.0f, 100.0f, WINDOW};
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::MouseScrollEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::MouseScrollEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::MouseScrollEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::MouseScrollEvent, TRAP::Events::Event>);
+    }
 
     SECTION("Constructor")
     {
@@ -185,6 +201,15 @@ TEST_CASE("TRAP::Events::MouseButtonPressEvent", "[events][mousebuttonpressevent
 
     // const TRAP::Events::MouseButtonPressEvent mbpevent = TRAP::Events::MouseButtonPressEvent{TRAP::Input::MouseButton::Four, WINDOW};
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::MouseButtonPressEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::MouseButtonPressEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::MouseButtonPressEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::MouseButtonPressEvent, TRAP::Events::Event>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::MouseButtonPressEvent, TRAP::Events::MouseButtonEvent>);
+    }
+
     SECTION("Constructor")
     {
         // const TRAP::Events::MouseButtonPressEvent mbpeventCopyConstructor(mbpevent); //Deleted
@@ -258,6 +283,15 @@ TEST_CASE("TRAP::Events::MouseButtonReleaseEvent", "[events][mousebuttonreleasee
     //TODO Implement tests when TRAP::Window can be used in tests.
 
     // const TRAP::Events::MouseButtonReleaseEvent mbrevent = TRAP::Events::MouseButtonReleaseEvent{TRAP::Input::MouseButton::Four, WINDOW};
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::MouseButtonReleaseEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::MouseButtonReleaseEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::MouseButtonReleaseEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::MouseButtonReleaseEvent, TRAP::Events::Event>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::MouseButtonReleaseEvent, TRAP::Events::MouseButtonEvent>);
+    }
 
     SECTION("Constructor")
     {
@@ -333,6 +367,14 @@ TEST_CASE("TRAP::Events::MouseEnterEvent", "[events][mouseenterevent]")
 
     // const TRAP::Events::MouseEnterEvent meevent = TRAP::Events::MouseEnterEvent{WINDOW};
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::MouseEnterEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::MouseEnterEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::MouseEnterEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::MouseEnterEvent, TRAP::Events::Event>);
+    }
+
     SECTION("Constructor")
     {
         // const TRAP::Events::MouseEnterEvent meeventCopyConstructor(meevent); //Deleted
@@ -399,6 +441,14 @@ TEST_CASE("TRAP::Events::MouseLeaveEvent", "[events][mouseleaveevent]")
     //TODO Implement tests when TRAP::Window can be used in tests.
 
     // const TRAP::Events::MouseLeaveEvent mlevent = TRAP::Events::MouseLeaveEvent{WINDOW};
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::MouseLeaveEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::MouseLeaveEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::MouseLeaveEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::MouseLeaveEvent, TRAP::Events::Event>);
+    }
 
     SECTION("Constructor")
     {

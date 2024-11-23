@@ -10,6 +10,13 @@ TEMPLATE_TEST_CASE("TRAP::Math::Vec3", "[math][vec][vec3]", i8, i16, i32, i64, u
 {
     using Vec3 = TRAP::Math::tVec3<TestType>;
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE_FALSE(std::is_final_v<TestType>);
+        STATIC_REQUIRE(std::copyable<TestType>);
+        STATIC_REQUIRE(std::movable<TestType>);
+    }
+
     SECTION("Typedefs")
     {
         static_assert(std::same_as<typename Vec3::value_type, TestType>);

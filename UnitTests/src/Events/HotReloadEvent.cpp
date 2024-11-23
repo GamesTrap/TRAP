@@ -6,6 +6,14 @@ TEST_CASE("TRAP::Events::TextureReloadEvent", "[events][texturereloadevent]")
 {
     const TRAP::Events::TextureReloadEvent tevent = TRAP::Events::TextureReloadEvent{nullptr};
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::TextureReloadEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::TextureReloadEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::TextureReloadEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::TextureReloadEvent, TRAP::Events::Event>);
+    }
+
     SECTION("Constructor")
     {
         // const TRAP::Events::TextureReloadEvent teventCopyConstructor(tevent); //Deleted
@@ -74,6 +82,14 @@ TEST_CASE("TRAP::Events::TextureReloadEvent", "[events][texturereloadevent]")
 TEST_CASE("TRAP::Events::ShaderReloadEvent", "[events][shaderreloadevent]")
 {
     const TRAP::Events::ShaderReloadEvent sevent = TRAP::Events::ShaderReloadEvent{nullptr};
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::ShaderReloadEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::ShaderReloadEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::ShaderReloadEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::ShaderReloadEvent, TRAP::Events::Event>);
+    }
 
     SECTION("Constructor")
     {

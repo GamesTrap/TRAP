@@ -13,6 +13,13 @@ TEMPLATE_TEST_CASE("TRAP::Math::Mat4", "[math][mat][mat4]", TRAP::Math::Mat4f, T
     using Col = TestType::col_type;
     using Row = TestType::row_type;
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE_FALSE(std::is_final_v<TestType>);
+        STATIC_REQUIRE(std::copyable<TestType>);
+        STATIC_REQUIRE(std::movable<TestType>);
+    }
+
     SECTION("Typedefs")
     {
         STATIC_REQUIRE(std::same_as<typename TestType::col_type, Vec4Scalar>);

@@ -18,6 +18,11 @@ namespace TRAP::Events
 		/// @brief Copy assignment operator.
 		consteval KeyEvent& operator=(const KeyEvent&) noexcept = delete;
 
+		/// @brief Move constructor.
+		constexpr KeyEvent(KeyEvent&&) noexcept = default;
+		/// @brief Move assignment operator.
+		constexpr KeyEvent& operator=(KeyEvent&&) noexcept = default;
+
 		/// @brief Destructor.
 		constexpr ~KeyEvent() override = default;
 
@@ -38,10 +43,6 @@ namespace TRAP::Events
 		/// @param key Affected key.
 		/// @param window The affected window.
 		explicit constexpr KeyEvent(Input::Key key, TRAP::Window& window) noexcept;
-		/// @brief Move constructor.
-		constexpr KeyEvent(KeyEvent&&) noexcept = default;
-		/// @brief Move assignment operator.
-		constexpr KeyEvent& operator=(KeyEvent&&) noexcept = default;
 
 	private:
 		std::reference_wrapper<TRAP::Window> m_window;

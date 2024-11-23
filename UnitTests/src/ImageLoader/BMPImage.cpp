@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "ImageLoader/Image.h"
+#include "ImageLoader/Bitmap/BMPImage.h"
 
 #include "../Testfiles/Utils/ImageUtils_Src.h"
 
@@ -28,6 +28,14 @@ TEST_CASE("TRAP::INTERNAL::BMPImage", "[imageloader][bmpimage]")
     const TRAP::Scope<TRAP::Image> rgba32bpp = TRAP::Image::LoadFromFile("Testfiles/ImageLoader/BMP/Test32BPP.bmp");
     const TRAP::Scope<TRAP::Image> rgba32bppreversed = TRAP::Image::LoadFromFile("Testfiles/ImageLoader/BMP/Test32BPPReversed.bmp");
     const TRAP::Scope<TRAP::Image> rgba32bppbitfields = TRAP::Image::LoadFromFile("Testfiles/ImageLoader/BMP/Test32BPPBitFields.bmp");
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::INTERNAL::BMPImage>);
+        STATIC_REQUIRE(std::copyable<TRAP::INTERNAL::BMPImage>);
+        STATIC_REQUIRE(std::movable<TRAP::INTERNAL::BMPImage>);
+        STATIC_REQUIRE(std::derived_from<TRAP::INTERNAL::BMPImage, TRAP::Image>);
+    }
 
     SECTION("LoadFromFile()")
     {

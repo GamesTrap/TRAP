@@ -143,6 +143,13 @@ namespace
 
 TEST_CASE("TRAP::Expected", "[utils][expected]")
 {
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Expected<std::string, std::string>>);
+        STATIC_REQUIRE(std::copyable<TRAP::Expected<std::string, std::string>>);
+        STATIC_REQUIRE(std::movable<TRAP::Expected<std::string, std::string>>);
+    }
+
     // SECTION("Assertions")
     // {
     //     static constexpr TRAP::Expected<i32, i32> o1 = 42;
@@ -1414,6 +1421,10 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
 
     SECTION("BadExpectedAccess")
     {
+        STATIC_REQUIRE(std::is_final_v<TRAP::BadExpectedAccess<i32>>);
+        STATIC_REQUIRE(std::copyable<TRAP::BadExpectedAccess<i32>>);
+        STATIC_REQUIRE(std::movable<TRAP::BadExpectedAccess<i32>>);
+
         const TRAP::BadExpectedAccess<i32> err(12);
         [[maybe_unused]] const char* test = err.what();
         REQUIRE(err.Error() == 12);

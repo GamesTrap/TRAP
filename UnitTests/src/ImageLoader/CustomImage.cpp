@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "ImageLoader/Image.h"
+#include "ImageLoader/CustomImage.h"
 
 #include "../Testfiles/Utils/ImageUtils_Src.h"
 
@@ -14,6 +14,14 @@ TEST_CASE("TRAP::INTERNAL::CustomImage", "[imageloader][customimage]")
     const TRAP::Scope<TRAP::Image> rgba64bpp = TRAP::Image::LoadFromMemory(32u, 32u, TRAP::Image::ColorFormat::RGBA, std::vector<u16>(TestImageSDR16PixelDataRGBA.begin(), TestImageSDR16PixelDataRGBA.end()));
     const TRAP::Scope<TRAP::Image> rgbhdr = TRAP::Image::LoadFromMemory(32u, 32u, TRAP::Image::ColorFormat::RGB, std::vector<f32>(TestImageHDRPixelDataRGB.begin(), TestImageHDRPixelDataRGB.end()));
     const TRAP::Scope<TRAP::Image> rgbahdr = TRAP::Image::LoadFromMemory(32u, 32u, TRAP::Image::ColorFormat::RGBA, std::vector<f32>(TestImageHDRPixelDataRGBA.begin(), TestImageHDRPixelDataRGBA.end()));
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::INTERNAL::CustomImage>);
+        STATIC_REQUIRE(std::copyable<TRAP::INTERNAL::CustomImage>);
+        STATIC_REQUIRE(std::movable<TRAP::INTERNAL::CustomImage>);
+        STATIC_REQUIRE(std::derived_from<TRAP::INTERNAL::CustomImage, TRAP::Image>);
+    }
 
     SECTION("LoadFromMemory()")
     {

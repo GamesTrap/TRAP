@@ -1341,7 +1341,7 @@ namespace TRAP
     /// @param x Optional object whose states to swap.
     /// @param y Optional object whose states to swap.
     template<typename T>
-    constexpr void swap(Optional<T>& x, Optional<T>& y) noexcept(noexcept(x.swap(y)))
+    constexpr void swap(Optional<T>& x, Optional<T>& y) noexcept(noexcept(x.Swap(y)))
     requires (std::is_move_constructible_v<T> && std::is_swappable_v<T>)
     {
         x.Swap(y);

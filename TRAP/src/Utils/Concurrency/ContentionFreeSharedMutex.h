@@ -22,7 +22,7 @@ namespace TRAP::Utils
     ///         Falls back to exclusive locking when max is reached.
     /// @note This type supports Tracy via TracySharedLockable.
     template<u32 ContentionFreeCount = 32u>
-    class ContentionFreeSharedMutex
+    class ContentionFreeSharedMutex final
     {
     public:
         ContentionFreeSharedMutex() = default;

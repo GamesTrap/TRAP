@@ -11,6 +11,13 @@ TEMPLATE_TEST_CASE("TRAP::Math::Quat", "[math][quat]", TRAP::Math::Quatf, TRAP::
     using Scalar = TestType::value_type;
     using Vec3Scalar = TRAP::Math::tVec3<Scalar>;
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE_FALSE(std::is_final_v<TestType>);
+        STATIC_REQUIRE(std::copyable<TestType>);
+        STATIC_REQUIRE(std::movable<TestType>);
+    }
+
     SECTION("Typedefs")
     {
         STATIC_REQUIRE(std::same_as<typename TestType::value_type, Scalar>);

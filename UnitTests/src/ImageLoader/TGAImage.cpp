@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "ImageLoader/Image.h"
+#include "ImageLoader/TARGA/TGAImage.h"
 
 #include "../Testfiles/Utils/ImageUtils_Src.h"
 
@@ -20,6 +20,14 @@ TEST_CASE("TRAP::INTERNAL::TGAImage", "[imageloader][tgaimage]")
 
     const TRAP::Scope<TRAP::Image> rgba32bpp = TRAP::Image::LoadFromFile("Testfiles/ImageLoader/TGA/Test32BPP.tga");
     const TRAP::Scope<TRAP::Image> rgba32bpprle = TRAP::Image::LoadFromFile("Testfiles/ImageLoader/TGA/Test32BPPRLE.tga");
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::INTERNAL::TGAImage>);
+        STATIC_REQUIRE(std::copyable<TRAP::INTERNAL::TGAImage>);
+        STATIC_REQUIRE(std::movable<TRAP::INTERNAL::TGAImage>);
+        STATIC_REQUIRE(std::derived_from<TRAP::INTERNAL::TGAImage, TRAP::Image>);
+    }
 
     SECTION("LoadFromFile()")
     {

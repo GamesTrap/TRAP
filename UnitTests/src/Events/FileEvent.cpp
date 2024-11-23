@@ -6,6 +6,14 @@ TEST_CASE("TRAP::Events::FileSystemChangeEvent", "[events][filesystemchangeevent
 {
     const TRAP::Events::FileSystemChangeEvent fevent = TRAP::Events::FileSystemChangeEvent{TRAP::FileSystem::FileSystemStatus::Modified, "someFile.txt"};
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::FileSystemChangeEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::FileSystemChangeEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::FileSystemChangeEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::FileSystemChangeEvent, TRAP::Events::Event>);
+    }
+
     SECTION("Constructor")
     {
         // const TRAP::Events::FileSystemChangeEvent feventCopyConstructor(fevent); //Deleted

@@ -3,9 +3,31 @@
 #include "TRAP/src/Utils/Win.h"
 #include "TRAP/src/Events/ControllerEvent.h"
 
+TEST_CASE("TRAP::Events::ControllerEvent", "[events][controllerevent]")
+{
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE_FALSE(std::is_final_v<TRAP::Events::ControllerEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::ControllerEvent>);
+        STATIC_REQUIRE_FALSE(std::movable<TRAP::Events::ControllerEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::ControllerEvent, TRAP::Events::Event>);
+
+        STATIC_REQUIRE(std::is_move_assignable_v<TRAP::Events::ControllerEvent>);
+    }
+}
+
 TEST_CASE("TRAP::Events::ControllerConnectEvent", "[events][controllerconnectevent]")
 {
     static constexpr TRAP::Events::ControllerConnectEvent cevent = TRAP::Events::ControllerConnectEvent{TRAP::Input::Controller::One};
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::ControllerConnectEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::ControllerConnectEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::ControllerConnectEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::ControllerConnectEvent, TRAP::Events::Event>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::ControllerConnectEvent, TRAP::Events::ControllerEvent>);
+    }
 
     SECTION("Constructor")
     {
@@ -68,6 +90,15 @@ TEST_CASE("TRAP::Events::ControllerConnectEvent", "[events][controllerconnecteve
 TEST_CASE("TRAP::Events::ControllerDisconnectEvent", "[events][controllerdisconnectevent]")
 {
     static constexpr TRAP::Events::ControllerDisconnectEvent cevent = TRAP::Events::ControllerDisconnectEvent{TRAP::Input::Controller::One};
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::ControllerDisconnectEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::ControllerDisconnectEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::ControllerDisconnectEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::ControllerDisconnectEvent, TRAP::Events::Event>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::ControllerDisconnectEvent, TRAP::Events::ControllerEvent>);
+    }
 
     SECTION("Constructor")
     {

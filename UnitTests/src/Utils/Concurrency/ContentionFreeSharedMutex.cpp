@@ -7,6 +7,13 @@
 
 TEST_CASE("TRAP::Utils::ContentionFreeSharedMutex", "[utils][concurrency][contentionfreesharedmutex]")
 {
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Utils::ContentionFreeSharedMutex<>>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Utils::ContentionFreeSharedMutex<>>);
+        STATIC_REQUIRE_FALSE(std::movable<TRAP::Utils::ContentionFreeSharedMutex<>>);
+    }
+
     SECTION("Implicit CTAD")
     {
         TRAP::Utils::ContentionFreeSharedMutex m;

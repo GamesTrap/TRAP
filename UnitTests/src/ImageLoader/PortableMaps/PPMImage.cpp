@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "ImageLoader/Image.h"
+#include "ImageLoader/PortableMaps/PPMImage.h"
 
 #include "../Testfiles/Utils/ImageUtils_Src.h"
 
@@ -10,6 +10,14 @@ TEST_CASE("TRAP::INTERNAL::PPMImage", "[imageloader][ppmimage]")
 {
     const TRAP::Scope<TRAP::Image> rgb24bpp = TRAP::Image::LoadFromFile("Testfiles/ImageLoader/PM/PPM/Test24BPP.ppm");
     const TRAP::Scope<TRAP::Image> rgb48bpp = TRAP::Image::LoadFromFile("Testfiles/ImageLoader/PM/PPM/Test48BPP.ppm");
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::INTERNAL::PPMImage>);
+        STATIC_REQUIRE(std::copyable<TRAP::INTERNAL::PPMImage>);
+        STATIC_REQUIRE(std::movable<TRAP::INTERNAL::PPMImage>);
+        STATIC_REQUIRE(std::derived_from<TRAP::INTERNAL::PPMImage, TRAP::Image>);
+    }
 
     SECTION("LoadFromFile()")
     {

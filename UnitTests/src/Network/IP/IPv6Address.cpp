@@ -5,6 +5,13 @@
 
 TEST_CASE("TRAP::Network::IPv6Address", "[network][ipv6address]")
 {
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE_FALSE(std::is_final_v<TRAP::Network::IPv6Address>);
+        STATIC_REQUIRE(std::copyable<TRAP::Network::IPv6Address>);
+        STATIC_REQUIRE(std::movable<TRAP::Network::IPv6Address>);
+    }
+
     SECTION("TRAP::Network::IPv6Address()")
     {
         STATIC_REQUIRE(TRAP::Network::IPv6Address{} == TRAP::Network::IPv6Address::None);

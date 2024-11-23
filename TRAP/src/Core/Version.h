@@ -15,7 +15,7 @@ namespace TRAP
     /// @tparam minor Minor version number.
     /// @tparam patch Patch version number.
     template<u32 major, u32 minor, u32 patch>
-    class SemanticVersion
+    class SemanticVersion final
     {
         static_assert(major < 1024, "Major version number must be less than 1024.");
         static_assert(minor < 1024, "Minor version number must be less than 1024.");

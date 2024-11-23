@@ -4,6 +4,13 @@
 
 TEST_CASE("TRAP::SemanticVersion", "[core][semanticversion]")
 {
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::SemanticVersion<1u, 0u, 0u>>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::SemanticVersion<1u, 0u, 0u>>);
+        STATIC_REQUIRE(std::movable<TRAP::SemanticVersion<1u, 0u, 0u>>);
+    }
+
     SECTION("PreReleaseIdentifier()")
     {
         static constexpr TRAP::SemanticVersion<1u, 0u, 0u> ver1{};

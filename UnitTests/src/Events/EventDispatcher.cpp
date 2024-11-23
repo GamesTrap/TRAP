@@ -6,12 +6,19 @@
 
 TEST_CASE("TRAP::Events::EventDispatcher", "[events][eventdispatcher]")
 {
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE_FALSE(std::is_final_v<TRAP::Events::EventDispatcher>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::EventDispatcher>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::EventDispatcher>);
+    }
+
     SECTION("Constructor")
     {
         TRAP::Events::ControllerConnectEvent cevent = TRAP::Events::ControllerConnectEvent{TRAP::Input::Controller::One};
 
         const TRAP::Events::EventDispatcher eventDispatcher{cevent};
-        const TRAP::Events::EventDispatcher eventDispatcherCopyConstructor(eventDispatcher);
+        // const TRAP::Events::EventDispatcher eventDispatcherCopyConstructor(eventDispatcher);
 
         TRAP::Events::EventDispatcher eventDispatcher1 = TRAP::Events::EventDispatcher{cevent};
         const TRAP::Events::EventDispatcher eventDispatcher1MoveConstructor = TRAP::Events::EventDispatcher(std::move(eventDispatcher1));
@@ -23,7 +30,7 @@ TEST_CASE("TRAP::Events::EventDispatcher", "[events][eventdispatcher]")
 
         TRAP::Events::EventDispatcher eventDispatcherAssignment = TRAP::Events::EventDispatcher{cevent};
 
-        const TRAP::Events::EventDispatcher eventDispatcherCopyAssignment = eventDispatcherAssignment;
+        // const TRAP::Events::EventDispatcher eventDispatcherCopyAssignment = eventDispatcherAssignment;
         const TRAP::Events::EventDispatcher eventDispatcherMoveAssignment = std::move(eventDispatcherAssignment);
     }
 

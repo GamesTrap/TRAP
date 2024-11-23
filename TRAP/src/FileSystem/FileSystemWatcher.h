@@ -43,7 +43,7 @@ namespace TRAP::FileSystem
         Erased
     };
 
-    class FileSystemWatcher
+    class FileSystemWatcher final
     {
     public:
         /// @brief Describes a callback function which gets called when a event occurs.

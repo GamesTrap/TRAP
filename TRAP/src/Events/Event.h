@@ -50,12 +50,13 @@ namespace TRAP::Events
 	protected:
 		/// @brief Constructor.
 		constexpr Event() noexcept = default;
+
+	public:
 		/// @brief Move constructor.
 		constexpr Event(Event&&) noexcept = default;
 		/// @brief Move assignment operator.
 		constexpr Event& operator=(Event&&) noexcept = default;
 
-	public:
 		/// @brief Copy constructor.
 		consteval Event(const Event&) noexcept = delete;
 		/// @brief Copy assignment operator.
@@ -98,9 +99,9 @@ namespace TRAP::Events
 		/// @brief Destructor.
 		constexpr ~EventDispatcher() = default;
 		/// @brief Copy constructor.
-		constexpr EventDispatcher(const EventDispatcher&) noexcept = default;
+		constexpr EventDispatcher(const EventDispatcher&) noexcept = delete;
 		/// @brief Copy assignment operator.
-		constexpr EventDispatcher& operator=(const EventDispatcher&) noexcept = default;
+		constexpr EventDispatcher& operator=(const EventDispatcher&) noexcept = delete;
 		/// @brief Move constructor.
 		constexpr EventDispatcher(EventDispatcher&&) noexcept = default;
 		/// @brief Move assignment operator.

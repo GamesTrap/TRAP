@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "ImageLoader/Image.h"
+#include "ImageLoader/QuiteOKImage/QOIImage.h"
 
 #include "../Testfiles/Utils/ImageUtils_Src.h"
 
@@ -11,6 +11,14 @@ TEST_CASE("TRAP::INTERNAL::QOIImage", "[imageloader][qoiimage]")
 
     const TRAP::Scope<TRAP::Image> srgb24bpp = TRAP::Image::LoadFromFile("Testfiles/ImageLoader/QOI/Test24BPPsRGB.qoi");
     const TRAP::Scope<TRAP::Image> srgb32bpp = TRAP::Image::LoadFromFile("Testfiles/ImageLoader/QOI/Test32BPPsRGB.qoi");
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::INTERNAL::QOIImage>);
+        STATIC_REQUIRE(std::copyable<TRAP::INTERNAL::QOIImage>);
+        STATIC_REQUIRE(std::movable<TRAP::INTERNAL::QOIImage>);
+        STATIC_REQUIRE(std::derived_from<TRAP::INTERNAL::QOIImage, TRAP::Image>);
+    }
 
     SECTION("LoadFromFile()")
     {

@@ -9,6 +9,15 @@ TEST_CASE("TRAP::Events::KeyPressEvent", "[events][keypressevent]")
 
     // const TRAP::Events::KeyPressEvent kpevent = TRAP::Events::KeyPressEvent{TRAP::Input::Key::W, WINDOW};
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::KeyPressEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::KeyPressEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::KeyPressEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::KeyPressEvent, TRAP::Events::Event>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::KeyPressEvent, TRAP::Events::KeyEvent>);
+    }
+
     SECTION("Constructor")
     {
         // const TRAP::Events::KeyPressEvent kpeventCopyConstructor(kpevent); //Deleted
@@ -81,6 +90,15 @@ TEST_CASE("TRAP::Events::KeyRepeatEvent", "[events][keyrepeatevent]")
     //TODO Implement tests when TRAP::Window can be used in tests.
 
     // const TRAP::Events::KeyRepeatEvent krpevent = TRAP::Events::KeyRepeatEvent{TRAP::Input::Key::W, WINDOW};
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::KeyRepeatEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::KeyRepeatEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::KeyRepeatEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::KeyRepeatEvent, TRAP::Events::Event>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::KeyRepeatEvent, TRAP::Events::KeyEvent>);
+    }
 
     SECTION("Constructor")
     {
@@ -155,6 +173,15 @@ TEST_CASE("TRAP::Events::KeyReleaseEvent", "[events][keyreleaseevent]")
 
     // const TRAP::Events::KeyReleaseEvent krevent = TRAP::Events::KeyReleaseEvent{TRAP::Input::Key::W, WINDOW};
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::KeyReleaseEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::KeyReleaseEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::KeyReleaseEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::KeyReleaseEvent, TRAP::Events::Event>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::KeyReleaseEvent, TRAP::Events::KeyEvent>);
+    }
+
     SECTION("Constructor")
     {
         // const TRAP::Events::KeyReleaseEvent kreventCopyConstructor(krevent); //Deleted
@@ -228,6 +255,14 @@ TEST_CASE("TRAP::Events::KeyTypeEvent", "[events][keytypeevent]")
 
     // const TRAP::Events::KeyTypeEvent ktevent = TRAP::Events::KeyTypeEvent{0x0001F600u, WINDOW};
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::KeyTypeEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::KeyTypeEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::KeyTypeEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::KeyTypeEvent, TRAP::Events::Event>);
+    }
+
     SECTION("Constructor")
     {
         // const TRAP::Events::KeyTypeEvent kteventCopyConstructor(ktevent); //Deleted
@@ -298,6 +333,14 @@ TEST_CASE("TRAP::Events::KeyTypeEvent", "[events][keytypeevent]")
 TEST_CASE("TRAP::Events::KeyLayoutEvent", "[events][keylayoutevent]")
 {
     const TRAP::Events::KeyLayoutEvent klevent = TRAP::Events::KeyLayoutEvent{"English (US)"};
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::KeyLayoutEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::KeyLayoutEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::KeyLayoutEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::KeyLayoutEvent, TRAP::Events::Event>);
+    }
 
     SECTION("Constructor")
     {

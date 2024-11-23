@@ -8,6 +8,15 @@ TEST_CASE("TRAP::Events::MonitorConnectEvent", "[events][monitorconnectevent]")
 
     // const TRAP::Events::MonitorConnectEvent mcevent = TRAP::Events::MonitorConnectEvent{MONITOR};
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::MonitorConnectEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::MonitorConnectEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::MonitorConnectEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::MonitorConnectEvent, TRAP::Events::Event>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::MonitorConnectEvent, TRAP::Events::MonitorEvent>);
+    }
+
     SECTION("Constructor")
     {
         // const TRAP::Events::MonitorConnectEvent mceventCopyConstructor(mcpevent); //Deleted
@@ -72,6 +81,15 @@ TEST_CASE("TRAP::Events::MonitorDisconnectEvent", "[events][monitordisconnecteve
     //TODO Implement tests when TRAP::Monitor can be used in tests.
 
     // const TRAP::Events::MonitorDisconnectEvent mdcevent = TRAP::Events::MonitorDisconnectEvent{MONITOR};
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::MonitorDisconnectEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::MonitorDisconnectEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::MonitorDisconnectEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::MonitorDisconnectEvent, TRAP::Events::Event>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::MonitorDisconnectEvent, TRAP::Events::MonitorEvent>);
+    }
 
     SECTION("Constructor")
     {

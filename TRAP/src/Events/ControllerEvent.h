@@ -18,6 +18,11 @@ namespace TRAP::Events
 		/// @brief Copy assignment operator.
 		consteval ControllerEvent& operator=(const ControllerEvent&) noexcept = delete;
 
+		/// @brief Move constructor.
+		constexpr ControllerEvent(ControllerEvent&&) noexcept = default;
+		/// @brief Move assignment operator.
+		constexpr ControllerEvent& operator=(ControllerEvent&&) noexcept = default;
+
 		/// @brief Destructor.
 		constexpr ~ControllerEvent() override = default;
 
@@ -33,11 +38,6 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param controller Affected controller.
 		constexpr explicit ControllerEvent(Input::Controller controller) noexcept;
-
-		/// @brief Move constructor.
-		constexpr ControllerEvent(ControllerEvent&&) noexcept = default;
-		/// @brief Move assignment operator.
-		constexpr ControllerEvent& operator=(ControllerEvent&&) noexcept = default;
 
 	private:
 		Input::Controller m_controller;

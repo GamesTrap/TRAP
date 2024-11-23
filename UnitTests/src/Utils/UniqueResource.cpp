@@ -496,6 +496,27 @@ namespace
 
 TEST_CASE("TRAP::UniqueResource", "[utils][uniqueresource]")
 {
+    SECTION("Class requirements")
+    {
+        struct Value
+        {
+            i32 i;
+        };
+
+        struct Deleter
+        {
+            void operator()(Value v) const
+            {
+                REQUIRE(v.i == i);
+            }
+            i32 i;
+        };
+
+        STATIC_REQUIRE(std::is_final_v<TRAP::UniqueResource<Value, Deleter>>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::UniqueResource<Value, Deleter>>);
+        STATIC_REQUIRE(std::movable<TRAP::UniqueResource<Value, Deleter>>);
+    }
+
     SECTION("Default constructor")
     {
         DefaultConstructorCompileTimeTest();

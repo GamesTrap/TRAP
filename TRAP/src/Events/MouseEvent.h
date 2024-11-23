@@ -133,6 +133,10 @@ namespace TRAP::Events
 		consteval MouseButtonEvent(const MouseButtonEvent&) noexcept = delete;
 		/// @brief Copy assignment operator.
 		consteval MouseButtonEvent& operator=(const MouseButtonEvent&) noexcept = delete;
+		/// @brief Move constructor.
+		constexpr MouseButtonEvent(MouseButtonEvent&&) noexcept = default;
+		/// @brief Move assignment operator.
+		constexpr MouseButtonEvent& operator=(MouseButtonEvent&&) noexcept = default;
 
 		/// @brief Destructor.
 		constexpr ~MouseButtonEvent() override = default;
@@ -149,10 +153,6 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param button Affected mouse button.
 		explicit constexpr MouseButtonEvent(Input::MouseButton button) noexcept;
-		/// @brief Move constructor.
-		constexpr MouseButtonEvent(MouseButtonEvent&&) noexcept = default;
-		/// @brief Move assignment operator.
-		constexpr MouseButtonEvent& operator=(MouseButtonEvent&&) noexcept = default;
 
 	private:
 		Input::MouseButton m_button;

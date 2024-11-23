@@ -5,9 +5,11 @@
 
 TEST_CASE("TRAP::Layer", "[layer]")
 {
-    SECTION("Inheritance")
+    SECTION("Class requirements")
     {
         STATIC_REQUIRE_FALSE(std::is_final_v<TRAP::Layer>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Layer>);
+        STATIC_REQUIRE(std::movable<TRAP::Layer>);
     }
 
     SECTION("Constructor")

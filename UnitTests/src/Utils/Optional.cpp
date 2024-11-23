@@ -48,6 +48,13 @@ namespace
 
 TEST_CASE("TRAP::Optional<T>", "[utils][optional]")
 {
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Optional<std::string>>);
+        STATIC_REQUIRE(std::copyable<TRAP::Optional<std::string>>);
+        STATIC_REQUIRE(std::movable<TRAP::Optional<std::string>>);
+    }
+
     SECTION("Assignment value")
     {
         TRAP::Optional<i32> o1 = 42;
@@ -969,6 +976,10 @@ TEST_CASE("TRAP::Optional<T>", "[utils][optional]")
 
     SECTION("BadOptionalAccess")
     {
+        STATIC_REQUIRE(std::is_final_v<TRAP::BadOptionalAccess>);
+        STATIC_REQUIRE(std::copyable<TRAP::BadOptionalAccess>);
+        STATIC_REQUIRE(std::movable<TRAP::BadOptionalAccess>);
+
         using namespace std::string_view_literals;
 
         const TRAP::BadOptionalAccess boa{};
@@ -1039,6 +1050,13 @@ namespace
 
 TEST_CASE("TRAP::Optional<T&>", "[utils][optional]")
 {
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Optional<std::string&>>);
+        STATIC_REQUIRE(std::copyable<TRAP::Optional<std::string&>>);
+        STATIC_REQUIRE(std::movable<TRAP::Optional<std::string&>>);
+    }
+
     SECTION("Constructors")
     {
         STATIC_REQUIRE(std::is_same_v<TRAP::Optional<i32&>::value_type, i32&>);

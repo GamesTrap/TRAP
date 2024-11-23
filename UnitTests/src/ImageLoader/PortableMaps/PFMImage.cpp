@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "ImageLoader/Image.h"
+#include "ImageLoader/PortableMaps/PFMImage.h"
 
 #include "../Testfiles/Utils/ImageUtils_Src.h"
 
@@ -10,6 +10,14 @@ TEST_CASE("TRAP::INTERNAL::PFMImage", "[imageloader][pfmimage]")
 {
     const TRAP::Scope<TRAP::Image> grayscaleHDR = TRAP::Image::LoadFromFile("Testfiles/ImageLoader/PM/PFM/TestGrayscaleHDR.pfm");
     const TRAP::Scope<TRAP::Image> rgbHDR = TRAP::Image::LoadFromFile("Testfiles/ImageLoader/PM/PFM/TestHDR.pfm");
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::INTERNAL::PFMImage>);
+        STATIC_REQUIRE(std::copyable<TRAP::INTERNAL::PFMImage>);
+        STATIC_REQUIRE(std::movable<TRAP::INTERNAL::PFMImage>);
+        STATIC_REQUIRE(std::derived_from<TRAP::INTERNAL::PFMImage, TRAP::Image>);
+    }
 
     SECTION("LoadFromFile()")
     {

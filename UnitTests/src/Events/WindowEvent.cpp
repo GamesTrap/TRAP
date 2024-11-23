@@ -8,6 +8,14 @@ TEST_CASE("TRAP::Events::WindowResizeEvent", "[events][windowresizevent]")
 
     // const TRAP::Events::WindowResizeEvent wresievent = TRAP::Events::WindowResizeEvent{1280u, 720u, WINDOW};
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::WindowResizeEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::WindowResizeEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::WindowResizeEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::WindowResizeEvent, TRAP::Events::Event>);
+    }
+
     SECTION("Constructor")
     {
         // const TRAP::Events::WindowResizeEvent wresieventCopyConstructor(wresievent); //Deleted
@@ -87,6 +95,14 @@ TEST_CASE("TRAP::Events::WindowMinimizeEvent", "[events][windowminimizeevent]")
 
     // const TRAP::Events::WindowMinimizeEvent wmievent = TRAP::Events::WindowMinimizeEvent{WINDOW};
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::WindowMinimizeEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::WindowMinimizeEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::WindowMinimizeEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::WindowMinimizeEvent, TRAP::Events::Event>);
+    }
+
     SECTION("Constructor")
     {
         // const TRAP::Events::WindowMinimizeEvent wmieventCopyConstructor(wmievent); //Deleted
@@ -151,6 +167,14 @@ TEST_CASE("TRAP::Events::WindowMaximizeEvent", "[events][windowmaximizeevent]")
     //TODO Implement tests when TRAP::Window can be used in tests.
 
     // const TRAP::Events::WindowMaximizeEvent wmaevent = TRAP::Events::WindowMaximizeEvent{WINDOW};
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::WindowMaximizeEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::WindowMaximizeEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::WindowMaximizeEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::WindowMaximizeEvent, TRAP::Events::Event>);
+    }
 
     SECTION("Constructor")
     {
@@ -217,6 +241,14 @@ TEST_CASE("TRAP::Events::WindowRestoreEvent", "[events][windowrestoreevent]")
 
     // const TRAP::Events::WindowRestoreEvent wrestevent = TRAP::Events::WindowRestoreEvent{WINDOW};
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::WindowRestoreEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::WindowRestoreEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::WindowRestoreEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::WindowRestoreEvent, TRAP::Events::Event>);
+    }
+
     SECTION("Constructor")
     {
         // const TRAP::Events::WindowRestoreEvent wresteventCopyConstructor(wrestevent); //Deleted
@@ -282,6 +314,14 @@ TEST_CASE("TRAP::Events::WindowCloseEvent", "[events][windowcloseevent]")
 
     // const TRAP::Events::WindowCloseEvent wcevent = TRAP::Events::WindowCloseEvent{WINDOW};
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::WindowCloseEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::WindowCloseEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::WindowCloseEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::WindowCloseEvent, TRAP::Events::Event>);
+    }
+
     SECTION("Constructor")
     {
         // const TRAP::Events::WindowCloseEvent wceventCopyConstructor(wcevent); //Deleted
@@ -346,6 +386,14 @@ TEST_CASE("TRAP::Events::WindowMoveEvent", "[events][windowmoveevent]")
     //TODO Implement tests when TRAP::Window can be used in tests.
 
     // const TRAP::Events::WindowMoveEvent wmevent = TRAP::Events::WindowMoveEvent{10, 100, WINDOW};
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::WindowMoveEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::WindowMoveEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::WindowMoveEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::WindowMoveEvent, TRAP::Events::Event>);
+    }
 
     SECTION("Constructor")
     {
@@ -433,6 +481,14 @@ TEST_CASE("TRAP::Events::WindowFocusEvent", "[events][windowfocusevent]")
 
     // const TRAP::Events::WindowFocusEvent wfevent = TRAP::Events::WindowFocusEvent{WINDOW};
 
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::WindowFocusEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::WindowFocusEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::WindowFocusEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::WindowFocusEvent, TRAP::Events::Event>);
+    }
+
     SECTION("Constructor")
     {
         // const TRAP::Events::WindowFocusEvent wfeventCopyConstructor(wfevent); //Deleted
@@ -497,6 +553,14 @@ TEST_CASE("TRAP::Events::WindowLostFocusEvent", "[events][windowlostfocusevent]"
     //TODO Implement tests when TRAP::Window can be used in tests.
 
     // const TRAP::Events::WindowLostFocusEvent wlfevent = TRAP::Events::WindowLostFocusEvent{WINDOW};
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::WindowLostFocusEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::WindowLostFocusEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::WindowLostFocusEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::WindowLostFocusEvent, TRAP::Events::Event>);
+    }
 
     SECTION("Constructor")
     {
@@ -563,6 +627,14 @@ TEST_CASE("TRAP::Events::WindowDropEvent", "[events][windowdropevent]")
 
     std::vector<std::string> paths{"someFile.txt", "someFolder/someOtherFile.txt"};
     // const TRAP::Events::WindowDropEvent wdevent = TRAP::Events::WindowDropEvent{paths, WINDOW};
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::WindowDropEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::WindowDropEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::WindowDropEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::WindowDropEvent, TRAP::Events::Event>);
+    }
 
     SECTION("Constructor")
     {
@@ -642,6 +714,14 @@ TEST_CASE("TRAP::Events::WindowContentScaleEvent", "[events][windowcontentscalee
     //TODO Implement tests when TRAP::Window can be used in tests.
 
     // const TRAP::Events::WindowContentScaleEvent wcsevent = TRAP::Events::WindowContentScaleEvent{2.0f, 1.0f, WINDOW};
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::WindowContentScaleEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::WindowContentScaleEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::WindowContentScaleEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::WindowContentScaleEvent, TRAP::Events::Event>);
+    }
 
     SECTION("Constructor")
     {
@@ -728,6 +808,14 @@ TEST_CASE("TRAP::Events::FrameBufferResizeEvent", "[events][framebufferresizeeve
     //TODO Implement tests when TRAP::Window can be used in tests.
 
     // const TRAP::Events::FrameBufferResizeEvent frevent = TRAP::Events::FrameBufferResizeEvent{1280u, 720u, WINDOW};
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Events::FrameBufferResizeEvent>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Events::FrameBufferResizeEvent>);
+        STATIC_REQUIRE(std::movable<TRAP::Events::FrameBufferResizeEvent>);
+        STATIC_REQUIRE(std::derived_from<TRAP::Events::FrameBufferResizeEvent, TRAP::Events::Event>);
+    }
 
     SECTION("Constructor")
     {

@@ -5411,3 +5411,7 @@ SITREP 11/18/2024|24w47a1
 SITREP 11/19/2024|24w47a2
     - Changed TRAP Engine version to 24w47a2(0.11.45)
     - UnitTests Added tests for TRAP::Layer ~<10 mins
+
+SITREP 11/23/2024|24w47b1
+    - Changed TRAP Engine version to 24w47b1(0.11.46)
+    - UnitTests Added movable/copyable checks ~<15 mins

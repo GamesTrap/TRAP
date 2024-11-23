@@ -82,6 +82,13 @@ namespace
 
 TEST_CASE("TRAP::Log", "[log]")
 {
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::Log>);
+        STATIC_REQUIRE_FALSE(std::copyable<TRAP::Log>);
+        STATIC_REQUIRE_FALSE(std::movable<TRAP::Log>);
+    }
+
     SECTION("TRAP::Log::GetFilePath()")
     {
         TRAP::Log log(LogFilePath);

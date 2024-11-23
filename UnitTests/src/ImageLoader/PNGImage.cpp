@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "ImageLoader/Image.h"
+#include "ImageLoader/PortableNetworkGraphics/PNGImage.h"
 
 #include "../Testfiles/Utils/ImageUtils_Src.h"
 
@@ -20,6 +20,14 @@ TEST_CASE("TRAP::INTERNAL::PNGImage", "[imageloader][pngimage]")
 
     const TRAP::Scope<TRAP::Image> rgb48bpp = TRAP::Image::LoadFromFile("Testfiles/ImageLoader/PNG/Test48BPPSmallest.png");
     const TRAP::Scope<TRAP::Image> rgb48bppinterlaced = TRAP::Image::LoadFromFile("Testfiles/ImageLoader/PNG/Test48BPPBigInterlaced.png");
+
+    SECTION("Class requirements")
+    {
+        STATIC_REQUIRE(std::is_final_v<TRAP::INTERNAL::PNGImage>);
+        STATIC_REQUIRE(std::copyable<TRAP::INTERNAL::PNGImage>);
+        STATIC_REQUIRE(std::movable<TRAP::INTERNAL::PNGImage>);
+        STATIC_REQUIRE(std::derived_from<TRAP::INTERNAL::PNGImage, TRAP::Image>);
+    }
 
     SECTION("LoadFromFile()")
     {
