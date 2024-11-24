@@ -36,7 +36,7 @@ TEST_CASE("TRAP::Events::TextureReloadEvent", "[events][texturereloadevent]")
 
         const TRAP::Events::TextureReloadEvent tevent1 = TRAP::Events::TextureReloadEvent{nullptr};
 
-        REQUIRE(tevent1.GetTexture() == nullptr);
+        REQUIRE_FALSE(tevent1.GetTexture());
     }
 
     SECTION("GetStaticType()")
@@ -113,7 +113,7 @@ TEST_CASE("TRAP::Events::ShaderReloadEvent", "[events][shaderreloadevent]")
 
         const TRAP::Events::ShaderReloadEvent sevent1 = TRAP::Events::ShaderReloadEvent{nullptr};
 
-        REQUIRE(sevent1.GetShader() == nullptr);
+        REQUIRE_FALSE(sevent1.GetShader());
     }
 
     SECTION("GetStaticType()")

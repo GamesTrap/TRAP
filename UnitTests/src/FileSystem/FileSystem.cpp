@@ -47,13 +47,13 @@ TEST_CASE("TRAP::FileSystem::ReadFile()", "[filesystem][readfile]")
     SECTION("Empty path")
     {
         const auto data = TRAP::FileSystem::ReadFile("");
-        REQUIRE(!data.HasValue());
+        REQUIRE_FALSE(data.HasValue());
     }
 
     SECTION("Folder path")
     {
         const auto data = TRAP::FileSystem::ReadFile(TestFilesPath);
-        REQUIRE(!data.HasValue());
+        REQUIRE_FALSE(data.HasValue());
     }
 }
 
@@ -78,13 +78,13 @@ TEST_CASE("TRAP::FileSystem::ReadTextFile()", "[filesystem][readtextfile]")
     SECTION("Empty path")
     {
         const auto data = TRAP::FileSystem::ReadTextFile("");
-        REQUIRE(!data.HasValue());
+        REQUIRE_FALSE(data.HasValue());
     }
 
     SECTION("Folder path")
     {
         const auto data = TRAP::FileSystem::ReadTextFile(TestFilesPath);
-        REQUIRE(!data.HasValue());
+        REQUIRE_FALSE(data.HasValue());
     }
 }
 
@@ -115,12 +115,12 @@ TEST_CASE("TRAP::FileSystem::WriteFile()", "[filesystem][writefile]")
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::WriteFile("", {}));
+        REQUIRE_FALSE(TRAP::FileSystem::WriteFile("", {}));
     }
 
     SECTION("Folder path")
     {
-        REQUIRE(!TRAP::FileSystem::WriteFile(TestFilesPath, {}));
+        REQUIRE_FALSE(TRAP::FileSystem::WriteFile(TestFilesPath, {}));
     }
 }
 
@@ -151,12 +151,12 @@ TEST_CASE("TRAP::FileSystem::WriteTextFile()", "[filesystem][writetextfile]")
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::WriteTextFile("", ""));
+        REQUIRE_FALSE(TRAP::FileSystem::WriteTextFile("", ""));
     }
 
     SECTION("Folder path")
     {
-        REQUIRE(!TRAP::FileSystem::WriteTextFile(TestFilesPath, ""));
+        REQUIRE_FALSE(TRAP::FileSystem::WriteTextFile(TestFilesPath, ""));
     }
 }
 
@@ -177,19 +177,19 @@ TEST_CASE("TRAP::FileSystem::CreateFolder()", "[filesystem][createfolder]")
 
     SECTION("File path")
     {
-        REQUIRE(!TRAP::FileSystem::CreateFolder(TestFilesPath / "read.txt"));
+        REQUIRE_FALSE(TRAP::FileSystem::CreateFolder(TestFilesPath / "read.txt"));
     }
 
 #ifdef TRAP_PLATFORM_WINDOWS
     SECTION("Invalid path")
     {
-        REQUIRE(!TRAP::FileSystem::CreateFolder(TestFilesPath / "create:!folder"));
+        REQUIRE_FALSE(TRAP::FileSystem::CreateFolder(TestFilesPath / "create:!folder"));
     }
 #endif /*TRAP_PLATFORM_WINDOWS*/
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::CreateFolder(""));
+        REQUIRE_FALSE(TRAP::FileSystem::CreateFolder(""));
     }
 }
 
@@ -211,7 +211,7 @@ TEST_CASE("TRAP::FileSystem::Delete()", "[filesystem][delete]")
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::Delete(""));
+        REQUIRE_FALSE(TRAP::FileSystem::Delete(""));
     }
 }
 
@@ -235,19 +235,19 @@ TEST_CASE("TRAP::FileSystem::Move()", "[filesystem][move]")
 
     SECTION("Empty source path")
     {
-        REQUIRE(!TRAP::FileSystem::Move("", TestFilesPath / "move_folder_empty_dst"));
+        REQUIRE_FALSE(TRAP::FileSystem::Move("", TestFilesPath / "move_folder_empty_dst"));
     }
 
     SECTION("Empty destination path")
     {
         REQUIRE(TRAP::FileSystem::CreateFolder(TestFilesPath / "move_folder_empty"));
-        REQUIRE(!TRAP::FileSystem::Move(TestFilesPath / "move_folder_empty", ""));
+        REQUIRE_FALSE(TRAP::FileSystem::Move(TestFilesPath / "move_folder_empty", ""));
         REQUIRE(TRAP::FileSystem::Delete(TestFilesPath / "move_folder_empty"));
     }
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::Move("", ""));
+        REQUIRE_FALSE(TRAP::FileSystem::Move("", ""));
     }
 }
 
@@ -291,22 +291,22 @@ TEST_CASE("TRAP::FileSystem::Copy()", "[filesystem][copy]")
 
     SECTION("Empty source path")
     {
-        REQUIRE(!TRAP::FileSystem::Copy("", TestFilesPath / "copy_empty_src", false));
-        REQUIRE(!TRAP::FileSystem::Copy("", TestFilesPath / "copy_empty_src", true));
+        REQUIRE_FALSE(TRAP::FileSystem::Copy("", TestFilesPath / "copy_empty_src", false));
+        REQUIRE_FALSE(TRAP::FileSystem::Copy("", TestFilesPath / "copy_empty_src", true));
     }
 
     SECTION("Empty destination path")
     {
         REQUIRE(TRAP::FileSystem::CreateFolder(TestFilesPath / "copy_folder_empty"));
-        REQUIRE(!TRAP::FileSystem::Copy(TestFilesPath / "copy_folder_empty", "", false));
-        REQUIRE(!TRAP::FileSystem::Copy(TestFilesPath / "copy_folder_empty", "", true));
+        REQUIRE_FALSE(TRAP::FileSystem::Copy(TestFilesPath / "copy_folder_empty", "", false));
+        REQUIRE_FALSE(TRAP::FileSystem::Copy(TestFilesPath / "copy_folder_empty", "", true));
         REQUIRE(TRAP::FileSystem::Delete(TestFilesPath / "copy_folder_empty"));
     }
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::Copy("", "", false));
-        REQUIRE(!TRAP::FileSystem::Copy("", "", true));
+        REQUIRE_FALSE(TRAP::FileSystem::Copy("", "", false));
+        REQUIRE_FALSE(TRAP::FileSystem::Copy("", "", true));
     }
 }
 
@@ -336,17 +336,17 @@ TEST_CASE("TRAP::FileSystem::Rename()", "[filesystem][rename]")
     SECTION("Empty destination name")
     {
         REQUIRE(TRAP::FileSystem::CreateFolder(TestFilesPath / "rename_folder_empty_dst"));
-        REQUIRE(!TRAP::FileSystem::Rename(TestFilesPath / "rename_folder_empty_dst", ""));
+        REQUIRE_FALSE(TRAP::FileSystem::Rename(TestFilesPath / "rename_folder_empty_dst", ""));
         REQUIRE(TRAP::FileSystem::Delete(TestFilesPath / "rename_folder_empty_dst"));
 
         REQUIRE(TRAP::FileSystem::WriteFile(TestFilesPath / "rename_file_empty_dst", {}));
-        REQUIRE(!TRAP::FileSystem::Rename(TestFilesPath / "rename_file_empty_dst", ""));
+        REQUIRE_FALSE(TRAP::FileSystem::Rename(TestFilesPath / "rename_file_empty_dst", ""));
         REQUIRE(TRAP::FileSystem::Delete(TestFilesPath / "rename_file_empty_dst"));
     }
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::Rename("", ""));
+        REQUIRE_FALSE(TRAP::FileSystem::Rename("", ""));
     }
 }
 
@@ -366,7 +366,7 @@ TEST_CASE("TRAP::FileSystem::Exists()", "[filesystem][exists]")
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::Exists(""));
+        REQUIRE_FALSE(TRAP::FileSystem::Exists(""));
     }
 }
 
@@ -396,8 +396,8 @@ TEST_CASE("TRAP::FileSystem::GetSize()", "[filesystem][getsize]")
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::GetSize("", false));
-        REQUIRE(!TRAP::FileSystem::GetSize("", true));
+        REQUIRE_FALSE(TRAP::FileSystem::GetSize("", false));
+        REQUIRE_FALSE(TRAP::FileSystem::GetSize("", true));
     }
 }
 
@@ -417,7 +417,7 @@ TEST_CASE("TRAP::FileSystem::GetLastWriteTime()", "[filesystem][getlastwritetime
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::GetLastWriteTime(""));
+        REQUIRE_FALSE(TRAP::FileSystem::GetLastWriteTime(""));
     }
 }
 
@@ -434,12 +434,12 @@ TEST_CASE("TRAP::FileSystem::GetFileNameWithEnding()", "[filesystem][getfilename
 
     SECTION("Valid folder path")
     {
-        REQUIRE(!TRAP::FileSystem::GetFileNameWithEnding(TestFilesPath));
+        REQUIRE_FALSE(TRAP::FileSystem::GetFileNameWithEnding(TestFilesPath));
     }
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::GetFileNameWithEnding(""));
+        REQUIRE_FALSE(TRAP::FileSystem::GetFileNameWithEnding(""));
     }
 }
 
@@ -456,12 +456,12 @@ TEST_CASE("TRAP::FileSystem::GetFileNameWithoutEnding()", "[filesystem][getfilen
 
     SECTION("Valid folder path")
     {
-        REQUIRE(!TRAP::FileSystem::GetFileNameWithoutEnding(TestFilesPath));
+        REQUIRE_FALSE(TRAP::FileSystem::GetFileNameWithoutEnding(TestFilesPath));
     }
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::GetFileNameWithoutEnding(""));
+        REQUIRE_FALSE(TRAP::FileSystem::GetFileNameWithoutEnding(""));
     }
 }
 
@@ -476,7 +476,7 @@ TEST_CASE("TRAP::FileSystem::GetFileEnding()", "[filesystem][getfileending]")
         REQUIRE(*fileName == ".txt");
 
         const auto fileName2 = TRAP::FileSystem::GetFileEnding(TestFilesPath / "read");
-        REQUIRE(!fileName2);
+        REQUIRE_FALSE(fileName2);
     }
 
     SECTION("Valid folder path")
@@ -486,7 +486,7 @@ TEST_CASE("TRAP::FileSystem::GetFileEnding()", "[filesystem][getfileending]")
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::GetFileEnding(""));
+        REQUIRE_FALSE(TRAP::FileSystem::GetFileEnding(""));
     }
 }
 
@@ -510,7 +510,7 @@ TEST_CASE("TRAP::FileSystem::GetFolderPath()", "[filesystem][getfolderpath]")
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::GetFileNameWithoutEnding(""));
+        REQUIRE_FALSE(TRAP::FileSystem::GetFileNameWithoutEnding(""));
     }
 }
 
@@ -520,7 +520,7 @@ TEST_CASE("TRAP::FileSystem::GetEngineTempFolderPath()", "[filesystem][getengine
 
     const auto engineTempPath = TRAP::FileSystem::GetEngineTempFolderPath();
     REQUIRE(engineTempPath);
-    REQUIRE(!engineTempPath->empty());
+    REQUIRE_FALSE(engineTempPath->empty());
 }
 
 TEST_CASE("TRAP::FileSystem::GetGameTempFolderPath()", "[filesystem][getgametempfolderpath]")
@@ -530,7 +530,7 @@ TEST_CASE("TRAP::FileSystem::GetGameTempFolderPath()", "[filesystem][getgametemp
 
     const auto gameTempPath = TRAP::FileSystem::GetGameTempFolderPath();
     REQUIRE(gameTempPath);
-    REQUIRE(!gameTempPath->empty());
+    REQUIRE_FALSE(gameTempPath->empty());
 }
 
 TEST_CASE("TRAP::FileSystem::GetDocumentsFolderPath()", "[filesystem][getdocumentsfolderpath]")
@@ -539,7 +539,7 @@ TEST_CASE("TRAP::FileSystem::GetDocumentsFolderPath()", "[filesystem][getdocumen
 
     const auto docsPath = TRAP::FileSystem::GetDocumentsFolderPath();
     REQUIRE(docsPath);
-    REQUIRE(!docsPath->empty());
+    REQUIRE_FALSE(docsPath->empty());
 }
 
 TEST_CASE("TRAP::FileSystem::GetGameDocumentsFolderPath()", "[filesystem][getgamedocumentsfolderpath]")
@@ -549,7 +549,7 @@ TEST_CASE("TRAP::FileSystem::GetGameDocumentsFolderPath()", "[filesystem][getgam
 
     const auto gameDocsPath = TRAP::FileSystem::GetGameDocumentsFolderPath();
     REQUIRE(gameDocsPath);
-    REQUIRE(!gameDocsPath->empty());
+    REQUIRE_FALSE(gameDocsPath->empty());
 }
 
 TEST_CASE("TRAP::FileSystem::GetGameLogFolderPath()", "[filesystem][getgamelogfolderpath]")
@@ -559,7 +559,7 @@ TEST_CASE("TRAP::FileSystem::GetGameLogFolderPath()", "[filesystem][getgamelogfo
 
     const auto gameLogPath = TRAP::FileSystem::GetGameLogFolderPath();
     REQUIRE(gameLogPath);
-    REQUIRE(!gameLogPath->empty());
+    REQUIRE_FALSE(gameLogPath->empty());
 }
 
 TEST_CASE("TRAP::FileSystem::IsEquivalent()", "[filesystem][isequivalent]")
@@ -569,34 +569,34 @@ TEST_CASE("TRAP::FileSystem::IsEquivalent()", "[filesystem][isequivalent]")
     SECTION("Valid file path")
     {
         REQUIRE(TRAP::FileSystem::IsEquivalent(TestFilesPath / "read.txt", TestFilesPath / "read.txt"));
-        REQUIRE(!TRAP::FileSystem::IsEquivalent(TestFilesPath / "read.txt", TestFilesPath / "read.bin"));
+        REQUIRE_FALSE(TRAP::FileSystem::IsEquivalent(TestFilesPath / "read.txt", TestFilesPath / "read.bin"));
     }
 
     SECTION("Valid folder path")
     {
         REQUIRE(TRAP::FileSystem::IsEquivalent(TestFilesPath, TestFilesPath));
-        REQUIRE(!TRAP::FileSystem::IsEquivalent(TestFilesPath, ".." / TestFilesPath));
+        REQUIRE_FALSE(TRAP::FileSystem::IsEquivalent(TestFilesPath, ".." / TestFilesPath));
     }
 
     SECTION("Mixed file and folder path")
     {
-        REQUIRE(!TRAP::FileSystem::IsEquivalent(TestFilesPath / "read.bin", TestFilesPath));
-        REQUIRE(!TRAP::FileSystem::IsEquivalent(TestFilesPath, TestFilesPath / "read.txt"));
+        REQUIRE_FALSE(TRAP::FileSystem::IsEquivalent(TestFilesPath / "read.bin", TestFilesPath));
+        REQUIRE_FALSE(TRAP::FileSystem::IsEquivalent(TestFilesPath, TestFilesPath / "read.txt"));
     }
 
     SECTION("Empty source path")
     {
-        REQUIRE(!TRAP::FileSystem::IsEquivalent("", TestFilesPath / "read.txt"));
+        REQUIRE_FALSE(TRAP::FileSystem::IsEquivalent("", TestFilesPath / "read.txt"));
     }
 
     SECTION("Empty destination path")
     {
-        REQUIRE(!TRAP::FileSystem::IsEquivalent(TestFilesPath / "read.txt", ""));
+        REQUIRE_FALSE(TRAP::FileSystem::IsEquivalent(TestFilesPath / "read.txt", ""));
     }
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::IsEquivalent("", ""));
+        REQUIRE_FALSE(TRAP::FileSystem::IsEquivalent("", ""));
     }
 }
 
@@ -606,7 +606,7 @@ TEST_CASE("TRAP::FileSystem::IsFolder()", "[filesystem][isfolder]")
 
     SECTION("Valid file path")
     {
-        REQUIRE(!TRAP::FileSystem::IsFolder(TestFilesPath / "read.txt"));
+        REQUIRE_FALSE(TRAP::FileSystem::IsFolder(TestFilesPath / "read.txt"));
     }
 
     SECTION("Valid folder path")
@@ -616,7 +616,7 @@ TEST_CASE("TRAP::FileSystem::IsFolder()", "[filesystem][isfolder]")
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::IsFolder(""));
+        REQUIRE_FALSE(TRAP::FileSystem::IsFolder(""));
     }
 }
 
@@ -631,12 +631,12 @@ TEST_CASE("TRAP::FileSystem::IsFile()", "[filesystem][isfile]")
 
     SECTION("Valid folder path")
     {
-        REQUIRE(!TRAP::FileSystem::IsFile(TestFilesPath));
+        REQUIRE_FALSE(TRAP::FileSystem::IsFile(TestFilesPath));
     }
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::IsFile(""));
+        REQUIRE_FALSE(TRAP::FileSystem::IsFile(""));
     }
 }
 
@@ -646,13 +646,13 @@ TEST_CASE("TRAP::FileSystem::IsEmpty()", "[filesystem][isempty]")
 
     SECTION("Valid file path")
     {
-        REQUIRE(!TRAP::FileSystem::IsEmpty(TestFilesPath / "read.txt"));
+        REQUIRE_FALSE(TRAP::FileSystem::IsEmpty(TestFilesPath / "read.txt"));
         REQUIRE(TRAP::FileSystem::IsEmpty(TestFilesPath / "read_empty.txt"));
     }
 
     SECTION("Valid folder path")
     {
-        REQUIRE(!TRAP::FileSystem::IsEmpty(TestFilesPath));
+        REQUIRE_FALSE(TRAP::FileSystem::IsEmpty(TestFilesPath));
 
         REQUIRE(TRAP::FileSystem::CreateFolder(TestFilesPath / "folder_empty"));
         REQUIRE(TRAP::FileSystem::IsEmpty(TestFilesPath / "folder_empty"));
@@ -661,7 +661,7 @@ TEST_CASE("TRAP::FileSystem::IsEmpty()", "[filesystem][isempty]")
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::IsEmpty(""));
+        REQUIRE_FALSE(TRAP::FileSystem::IsEmpty(""));
     }
 }
 
@@ -671,7 +671,7 @@ TEST_CASE("TRAP::FileSystem::IsAbsolute()", "[filesystem][isabsolute]")
 
     SECTION("Valid file path")
     {
-        REQUIRE(!TRAP::FileSystem::IsAbsolute(TestFilesPath / "read.txt"));
+        REQUIRE_FALSE(TRAP::FileSystem::IsAbsolute(TestFilesPath / "read.txt"));
 
         const auto currWorkFolder = TRAP::FileSystem::GetCurrentWorkingFolderPath();
         REQUIRE(currWorkFolder);
@@ -680,7 +680,7 @@ TEST_CASE("TRAP::FileSystem::IsAbsolute()", "[filesystem][isabsolute]")
 
     SECTION("Valid folder path")
     {
-        REQUIRE(!TRAP::FileSystem::IsAbsolute(TestFilesPath));
+        REQUIRE_FALSE(TRAP::FileSystem::IsAbsolute(TestFilesPath));
 
         const auto currWorkFolder = TRAP::FileSystem::GetCurrentWorkingFolderPath();
         REQUIRE(currWorkFolder);
@@ -689,7 +689,7 @@ TEST_CASE("TRAP::FileSystem::IsAbsolute()", "[filesystem][isabsolute]")
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::IsAbsolute(""));
+        REQUIRE_FALSE(TRAP::FileSystem::IsAbsolute(""));
     }
 }
 
@@ -703,7 +703,7 @@ TEST_CASE("TRAP::FileSystem::IsRelative()", "[filesystem][isrelative]")
 
         const auto currWorkFolder = TRAP::FileSystem::GetCurrentWorkingFolderPath();
         REQUIRE(currWorkFolder);
-        REQUIRE(!TRAP::FileSystem::IsRelative(*currWorkFolder / TestFilesPath / "read.txt"));
+        REQUIRE_FALSE(TRAP::FileSystem::IsRelative(*currWorkFolder / TestFilesPath / "read.txt"));
     }
 
     SECTION("Valid folder path")
@@ -712,7 +712,7 @@ TEST_CASE("TRAP::FileSystem::IsRelative()", "[filesystem][isrelative]")
 
         const auto currWorkFolder = TRAP::FileSystem::GetCurrentWorkingFolderPath();
         REQUIRE(currWorkFolder);
-        REQUIRE(!TRAP::FileSystem::IsRelative(*currWorkFolder / TestFilesPath));
+        REQUIRE_FALSE(TRAP::FileSystem::IsRelative(*currWorkFolder / TestFilesPath));
     }
 
     SECTION("Empty path")
@@ -739,7 +739,7 @@ TEST_CASE("TRAP::FileSystem::ToAbsolutePath()", "[filesystem][toabsolutepath]")
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::ToAbsolutePath(""));
+        REQUIRE_FALSE(TRAP::FileSystem::ToAbsolutePath(""));
     }
 }
 
@@ -761,7 +761,7 @@ TEST_CASE("TRAP::FileSystem::ToCanonicalAbsolutePath()", "[filesystem][tocanonic
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::ToCanonicalAbsolutePath(""));
+        REQUIRE_FALSE(TRAP::FileSystem::ToCanonicalAbsolutePath(""));
     }
 }
 
@@ -796,8 +796,8 @@ TEST_CASE("TRAP::FileSystem::ToRelativePath()", "[filesystem][torelativepath]")
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::ToRelativePath(""));
-        REQUIRE(!TRAP::FileSystem::ToRelativePath("", *cwd));
+        REQUIRE_FALSE(TRAP::FileSystem::ToRelativePath(""));
+        REQUIRE_FALSE(TRAP::FileSystem::ToRelativePath("", *cwd));
     }
 }
 
@@ -810,7 +810,7 @@ TEST_CASE("TRAP::FileSystem::SetCurrentWorkingFolderPath()", "[filesystem][setcu
 
     SECTION("Valid file path")
     {
-        REQUIRE(!TRAP::FileSystem::SetCurrentWorkingFolderPath(TestFilesPath / "read.txt"));
+        REQUIRE_FALSE(TRAP::FileSystem::SetCurrentWorkingFolderPath(TestFilesPath / "read.txt"));
     }
 
     SECTION("Valid folder path")
@@ -821,7 +821,7 @@ TEST_CASE("TRAP::FileSystem::SetCurrentWorkingFolderPath()", "[filesystem][setcu
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::SetCurrentWorkingFolderPath(""));
+        REQUIRE_FALSE(TRAP::FileSystem::SetCurrentWorkingFolderPath(""));
     }
 }
 
@@ -831,7 +831,7 @@ TEST_CASE("TRAP::FileSystem::GetCurrentWorkingFolderPath()", "[filesystem][getcu
 
     const auto cwd = TRAP::FileSystem::GetCurrentWorkingFolderPath();
     REQUIRE(cwd);
-    REQUIRE(!cwd->empty());
+    REQUIRE_FALSE(cwd->empty());
 }
 
 TEST_CASE("TRAP::FileSystem::OpenInFileBrowser()", "[filesystem][openinfilebrowser]")
@@ -841,7 +841,7 @@ TEST_CASE("TRAP::FileSystem::OpenInFileBrowser()", "[filesystem][openinfilebrows
     //Note: Requires changes to TRAP::FileSystem
     // SECTION("Valid file path")
     // {
-    //     REQUIRE(!TRAP::FileSystem::OpenInFileBrowser(TestFilesPath / "read.txt"));
+    //     REQUIRE_FALSE(TRAP::FileSystem::OpenInFileBrowser(TestFilesPath / "read.txt"));
     // }
 
     //Note: Requires changes to TRAP::FileSystem
@@ -852,7 +852,7 @@ TEST_CASE("TRAP::FileSystem::OpenInFileBrowser()", "[filesystem][openinfilebrows
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::OpenInFileBrowser(""));
+        REQUIRE_FALSE(TRAP::FileSystem::OpenInFileBrowser(""));
     }
 }
 
@@ -863,7 +863,7 @@ TEST_CASE("TRAP::FileSystem::OpenExternally()", "[filesystem][openexternally]")
     //Note: Requires changes to TRAP::FileSystem
     // SECTION("Valid file path")
     // {
-    //     REQUIRE(!TRAP::FileSystem::OpenExternally(TestFilesPath / "read.txt"));
+    //     REQUIRE_FALSE(TRAP::FileSystem::OpenExternally(TestFilesPath / "read.txt"));
     // }
 
     //Note: Requires changes to TRAP::FileSystem
@@ -874,6 +874,6 @@ TEST_CASE("TRAP::FileSystem::OpenExternally()", "[filesystem][openexternally]")
 
     SECTION("Empty path")
     {
-        REQUIRE(!TRAP::FileSystem::OpenExternally(""));
+        REQUIRE_FALSE(TRAP::FileSystem::OpenExternally(""));
     }
 }

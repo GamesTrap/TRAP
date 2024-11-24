@@ -5421,3 +5421,4 @@ SITREP 11/24/2024|24w47b2
     - Changed TRAP Engine version to 24w47b2(0.11.47)
     - UnitTests Added tests for TRAP::Utils::LockFreeQueue ~<15 mins
     - UnitTests Added tests for TRAP::Utils::Safe ~<30 mins
+    - UnitTests Changed some REQUIRE() checks to REQUIRE_FALSE() ~<15 mins

@@ -193,11 +193,11 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
 
         static constexpr auto unexpected = TRAP::MakeUnexpected(12);
         e1 = unexpected;
-        REQUIRE(!e1);
+        REQUIRE_FALSE(e1);
         REQUIRE(e1.Error() == 12);
 
         e1 = TRAP::MakeUnexpected(42);
-        REQUIRE(!e1);
+        REQUIRE_FALSE(e1);
         REQUIRE(e1.Error() == 42);
 
         e1 = e3;
@@ -205,11 +205,11 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
         REQUIRE(*e1 == 21);
 
         e4 = e5;
-        REQUIRE(!e4);
+        REQUIRE_FALSE(e4);
         REQUIRE(e4.Error() == 17);
 
         e4 = std::move(e6);
-        REQUIRE(!e4);
+        REQUIRE_FALSE(e4);
         REQUIRE(e4.Error() == 21);
 
         e4 = e1;
@@ -297,15 +297,15 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
                 constexpr ~T()
                 {}
             };
-            STATIC_REQUIRE(!std::is_trivially_copy_constructible_v<TRAP::Expected<T, i32>>);
-            STATIC_REQUIRE(!std::is_trivially_copy_assignable_v<TRAP::Expected<T, i32>>);
-            STATIC_REQUIRE(!std::is_trivially_move_constructible_v<TRAP::Expected<T, i32>>);
-            STATIC_REQUIRE(!std::is_trivially_move_assignable_v<TRAP::Expected<T, i32>>);
-            STATIC_REQUIRE(!std::is_trivially_destructible_v<TRAP::Expected<T, i32>>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_constructible_v<TRAP::Expected<T, i32>>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_assignable_v<TRAP::Expected<T, i32>>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_constructible_v<TRAP::Expected<T, i32>>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_assignable_v<TRAP::Expected<T, i32>>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_destructible_v<TRAP::Expected<T, i32>>);
         }
 
         {
-            STATIC_REQUIRE(!std::is_trivially_destructible_v<std::vector<i32>>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_destructible_v<std::vector<i32>>);
             [[maybe_unused]] TRAP::Expected<void, std::vector<i32>> e = TRAP::MakeUnexpected(std::vector<i32>{1, 2, 3});
         }
     }
@@ -332,7 +332,7 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
                 constexpr T([[maybe_unused]] i32 _)
                 {}
             };
-            REQUIRE(!std::is_default_constructible_v<TRAP::Expected<T, i32>>);
+            STATIC_REQUIRE_FALSE(std::is_default_constructible_v<TRAP::Expected<T, i32>>);
         }
 
         {
@@ -360,10 +360,10 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
                 consteval T& operator=(T&&) = delete;
                 constexpr ~T() = default;
             };
-            STATIC_REQUIRE(!std::is_copy_constructible_v<TRAP::Expected<T, i32>>);
-            STATIC_REQUIRE(!std::is_copy_assignable_v<TRAP::Expected<T, i32>>);
-            STATIC_REQUIRE(!std::is_move_constructible_v<TRAP::Expected<T, i32>>);
-            STATIC_REQUIRE(!std::is_move_assignable_v<TRAP::Expected<T, i32>>);
+            STATIC_REQUIRE_FALSE(std::is_copy_constructible_v<TRAP::Expected<T, i32>>);
+            STATIC_REQUIRE_FALSE(std::is_copy_assignable_v<TRAP::Expected<T, i32>>);
+            STATIC_REQUIRE_FALSE(std::is_move_constructible_v<TRAP::Expected<T, i32>>);
+            STATIC_REQUIRE_FALSE(std::is_move_assignable_v<TRAP::Expected<T, i32>>);
         }
 
         {
@@ -375,8 +375,8 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
                 T& operator=(T&&) = default;
                 constexpr ~T() = default;
             };
-            STATIC_REQUIRE(!std::is_copy_constructible_v<TRAP::Expected<T, i32>>);
-            STATIC_REQUIRE(!std::is_copy_assignable_v<TRAP::Expected<T, i32>>);
+            STATIC_REQUIRE_FALSE(std::is_copy_constructible_v<TRAP::Expected<T, i32>>);
+            STATIC_REQUIRE_FALSE(std::is_copy_assignable_v<TRAP::Expected<T, i32>>);
             STATIC_REQUIRE(std::is_move_constructible_v<TRAP::Expected<T, i32>>);
             STATIC_REQUIRE(std::is_move_assignable_v<TRAP::Expected<T, i32>>);
         }
@@ -416,10 +416,10 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
             STATIC_REQUIRE(std::is_move_constructible_v<decltype(e)>);
             STATIC_REQUIRE(std::is_copy_assignable_v<decltype(e)>);
             STATIC_REQUIRE(std::is_move_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_copy_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_copy_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_move_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_move_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_assignable_v<decltype(e)>);
             STATIC_REQUIRE(std::is_nothrow_move_constructible_v<decltype(e)>);
             STATIC_REQUIRE(std::is_nothrow_move_assignable_v<decltype(e)>);
         }
@@ -431,10 +431,10 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
             STATIC_REQUIRE(std::is_move_constructible_v<decltype(e)>);
             STATIC_REQUIRE(std::is_copy_assignable_v<decltype(e)>);
             STATIC_REQUIRE(std::is_move_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_copy_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_copy_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_move_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_move_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_assignable_v<decltype(e)>);
             STATIC_REQUIRE(std::is_nothrow_move_constructible_v<decltype(e)>);
             STATIC_REQUIRE(std::is_nothrow_move_assignable_v<decltype(e)>);
         }
@@ -446,10 +446,10 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
             STATIC_REQUIRE(std::is_move_constructible_v<decltype(e)>);
             STATIC_REQUIRE(std::is_copy_assignable_v<decltype(e)>);
             STATIC_REQUIRE(std::is_move_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_copy_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_copy_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_move_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_move_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_assignable_v<decltype(e)>);
             STATIC_REQUIRE(std::is_nothrow_move_constructible_v<decltype(e)>);
             STATIC_REQUIRE(std::is_nothrow_move_assignable_v<decltype(e)>);
         }
@@ -461,12 +461,12 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
             STATIC_REQUIRE(std::is_move_constructible_v<decltype(e)>);
             STATIC_REQUIRE(std::is_copy_assignable_v<decltype(e)>);
             STATIC_REQUIRE(std::is_move_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_copy_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_copy_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_move_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_move_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_nothrow_move_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_nothrow_move_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_nothrow_move_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_nothrow_move_assignable_v<decltype(e)>);
         }
 
         {
@@ -476,12 +476,12 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
             STATIC_REQUIRE(std::is_move_constructible_v<decltype(e)>);
             STATIC_REQUIRE(std::is_copy_assignable_v<decltype(e)>);
             STATIC_REQUIRE(std::is_move_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_copy_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_copy_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_move_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_move_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_nothrow_move_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_nothrow_move_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_nothrow_move_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_nothrow_move_assignable_v<decltype(e)>);
         }
 
         {
@@ -491,12 +491,12 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
             STATIC_REQUIRE(std::is_move_constructible_v<decltype(e)>);
             // STATIC_REQUIRE(std::is_copy_assignable_v<decltype(e)>);
             // STATIC_REQUIRE(std::is_move_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_copy_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_copy_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_move_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_move_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_nothrow_move_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_nothrow_move_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_nothrow_move_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_nothrow_move_assignable_v<decltype(e)>);
         }
 
         {
@@ -521,10 +521,10 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
             STATIC_REQUIRE(std::is_move_constructible_v<decltype(e)>);
             STATIC_REQUIRE(std::is_copy_assignable_v<decltype(e)>);
             STATIC_REQUIRE(std::is_move_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_copy_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_copy_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_move_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_move_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_assignable_v<decltype(e)>);
             STATIC_REQUIRE(std::is_nothrow_move_constructible_v<decltype(e)>);
             STATIC_REQUIRE(std::is_nothrow_move_assignable_v<decltype(e)>);
         }
@@ -536,12 +536,12 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
             STATIC_REQUIRE(std::is_move_constructible_v<decltype(e)>);
             STATIC_REQUIRE(std::is_copy_assignable_v<decltype(e)>);
             STATIC_REQUIRE(std::is_move_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_copy_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_copy_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_move_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_trivially_move_assignable_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_nothrow_move_constructible_v<decltype(e)>);
-            STATIC_REQUIRE(!std::is_nothrow_move_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_copy_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_trivially_move_assignable_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_nothrow_move_constructible_v<decltype(e)>);
+            STATIC_REQUIRE_FALSE(std::is_nothrow_move_assignable_v<decltype(e)>);
         }
     }
 
@@ -555,13 +555,13 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
 
         {
             static constexpr TRAP::Expected<i32, i32> e = TRAP::MakeUnexpected(0);
-            STATIC_REQUIRE(!e);
+            STATIC_REQUIRE_FALSE(e);
             STATIC_REQUIRE(e.Error() == 0);
         }
 
         {
             static constexpr TRAP::Expected<i32, i32> e(TRAP::Unexpect, 0);
-            STATIC_REQUIRE(!e);
+            STATIC_REQUIRE_FALSE(e);
             STATIC_REQUIRE(e.Error() == 0);
         }
 
@@ -601,7 +601,7 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
 
         {
             static constexpr TRAP::Expected<void, i32> e(TRAP::Unexpect, 42);
-            STATIC_REQUIRE(!e);
+            STATIC_REQUIRE_FALSE(e);
             STATIC_REQUIRE(e.Error() == 42);
         }
     }
@@ -670,7 +670,7 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
         TRAP::Expected<MoveDetector, i32> o4{std::in_place};
         const MoveDetector o5 = std::move(o4).Value();
         REQUIRE(o4->BeenMoved);
-        REQUIRE(!o5.BeenMoved);
+        REQUIRE_FALSE(o5.BeenMoved);
 
         TRAP::Expected<i32, i32> o6{TRAP::Unexpect, 0};
         REQUIRE_THROWS_AS(o6.Value(), TRAP::BadExpectedAccess<i32>);
@@ -759,28 +759,28 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
         {
             TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             const auto ret = e.Transform(mul2);
-            REQUIRE(!ret);
+            REQUIRE_FALSE(ret);
             REQUIRE(ret.Error() == 21);
         }
 
         {
             static constexpr TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             static constexpr auto ret = e.Transform(mul2);
-            STATIC_REQUIRE(!ret);
+            STATIC_REQUIRE_FALSE(ret);
             STATIC_REQUIRE(ret.Error() == 21);
         }
 
         {
             TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             const auto ret = std::move(e).Transform(mul2);
-            REQUIRE(!ret);
+            REQUIRE_FALSE(ret);
             REQUIRE(ret.Error() == 21);
         }
 
         {
             static constexpr TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             static constexpr auto ret = std::move(e).Transform(mul2);
-            STATIC_REQUIRE(!ret);
+            STATIC_REQUIRE_FALSE(ret);
             STATIC_REQUIRE(ret.Error() == 21);
         }
 
@@ -815,28 +815,28 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
         {
             TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             const auto ret = e.Transform(retVoid);
-            REQUIRE(!ret);
+            REQUIRE_FALSE(ret);
             STATIC_REQUIRE((std::same_as<decltype(ret), const TRAP::Expected<void, i32>>));
         }
 
         {
             static constexpr TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             static constexpr auto ret = e.Transform(retVoid);
-            STATIC_REQUIRE(!ret);
+            STATIC_REQUIRE_FALSE(ret);
             STATIC_REQUIRE((std::same_as<decltype(ret), const TRAP::Expected<void, i32>>));
         }
 
         {
             TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             const auto ret = std::move(e).Transform(retVoid);
-            REQUIRE(!ret);
+            REQUIRE_FALSE(ret);
             STATIC_REQUIRE((std::same_as<decltype(ret), const TRAP::Expected<void, i32>>));
         }
 
         {
             static constexpr TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             static constexpr auto ret = std::move(e).Transform(retVoid);
-            STATIC_REQUIRE(!ret);
+            STATIC_REQUIRE_FALSE(ret);
             STATIC_REQUIRE((std::same_as<decltype(ret), const TRAP::Expected<void, i32>>));
         }
 
@@ -884,28 +884,28 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
         {
             TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             const auto ret = e.TransformError(mul2);
-            REQUIRE(!ret);
+            REQUIRE_FALSE(ret);
             REQUIRE(ret.Error() == 42);
         }
 
         {
             static constexpr TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             static constexpr auto ret = e.TransformError(mul2);
-            STATIC_REQUIRE(!ret);
+            STATIC_REQUIRE_FALSE(ret);
             STATIC_REQUIRE(ret.Error() == 42);
         }
 
         {
             TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             const auto ret = std::move(e).TransformError(mul2);
-            REQUIRE(!ret);
+            REQUIRE_FALSE(ret);
             REQUIRE(ret.Error() == 42);
         }
 
         {
             static constexpr TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             static constexpr auto ret = std::move(e).TransformError(mul2);
-            STATIC_REQUIRE(!ret);
+            STATIC_REQUIRE_FALSE(ret);
             STATIC_REQUIRE(ret.Error() == 42);
         }
 
@@ -936,25 +936,25 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
         // {
         //     TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
         //     const auto ret = e.TransformError(retVoid);
-        //     REQUIRE(!ret);
+        //     REQUIRE_FALSE(ret);
         // }
 
         // {
         //     static constexpr TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
         //     static constexpr auto ret = e.TransformError(retVoid);
-        //     STATIC_REQUIRE(!ret);
+        //     STATIC_REQUIRE_FALSE(ret);
         // }
 
         // {
         //     TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
         //     const auto ret = std::move(e).TransformError(retVoid);
-        //     REQUIRE(!ret);
+        //     REQUIRE_FALSE(ret);
         // }
 
         // {
         //     static constexpr TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
         //     static constexpr auto ret = std::move(e).TransformError(retVoid);
-        //     STATIC_REQUIRE(!ret);
+        //     STATIC_REQUIRE_FALSE(ret);
         // }
     }
 
@@ -994,84 +994,84 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
         {
             TRAP::Expected<i32, i32> e = 21;
             const auto ret = e.AndThen(fail);
-            REQUIRE(!ret);
+            REQUIRE_FALSE(ret);
             REQUIRE(ret.Error() == 17);
         }
 
         {
             static constexpr TRAP::Expected<i32, i32> e = 21;
             static constexpr auto ret = e.AndThen(fail);
-            STATIC_REQUIRE(!ret);
+            STATIC_REQUIRE_FALSE(ret);
             STATIC_REQUIRE(ret.Error() == 17);
         }
 
         {
             TRAP::Expected<i32, i32> e = 21;
             const auto ret = std::move(e).AndThen(fail);
-            REQUIRE(!ret);
+            REQUIRE_FALSE(ret);
             REQUIRE(ret.Error() == 17);
         }
 
         {
             static constexpr TRAP::Expected<i32, i32> e = 21;
             static constexpr auto ret = std::move(e).AndThen(fail);
-            STATIC_REQUIRE(!ret);
+            STATIC_REQUIRE_FALSE(ret);
             STATIC_REQUIRE(ret.Error() == 17);
         }
 
         {
             TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             const auto ret = e.AndThen(succeed);
-            REQUIRE(!ret);
+            REQUIRE_FALSE(ret);
             REQUIRE(ret.Error() == 21);
         }
 
         {
             static constexpr TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             static constexpr auto ret = e.AndThen(succeed);
-            STATIC_REQUIRE(!ret);
+            STATIC_REQUIRE_FALSE(ret);
             STATIC_REQUIRE(ret.Error() == 21);
         }
 
         {
             TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             const auto ret = std::move(e).AndThen(succeed);
-            REQUIRE(!ret);
+            REQUIRE_FALSE(ret);
             REQUIRE(ret.Error() == 21);
         }
 
         {
             static constexpr TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             static constexpr auto ret = std::move(e).AndThen(succeed);
-            STATIC_REQUIRE(!ret);
+            STATIC_REQUIRE_FALSE(ret);
             STATIC_REQUIRE(ret.Error() == 21);
         }
 
         {
             TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             const auto ret = e.AndThen(fail);
-            REQUIRE(!ret);
+            REQUIRE_FALSE(ret);
             REQUIRE(ret.Error() == 21);
         }
 
         {
             static constexpr TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             static constexpr auto ret = e.AndThen(fail);
-            STATIC_REQUIRE(!ret);
+            STATIC_REQUIRE_FALSE(ret);
             STATIC_REQUIRE(ret.Error() == 21);
         }
 
         {
             TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             const auto ret = std::move(e).AndThen(fail);
-            REQUIRE(!ret);
+            REQUIRE_FALSE(ret);
             REQUIRE(ret.Error() == 21);
         }
 
         {
             static constexpr TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             static constexpr auto ret = std::move(e).AndThen(fail);
-            STATIC_REQUIRE(!ret);
+            STATIC_REQUIRE_FALSE(ret);
             STATIC_REQUIRE(ret.Error() == 21);
         }
     }
@@ -1196,70 +1196,70 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
         {
             TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             const auto ret = e.OrElse(fail);
-            REQUIRE(!ret);
+            REQUIRE_FALSE(ret);
             REQUIRE(ret.Error() == 17);
         }
 
         // {
         //     TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
         //     const auto ret = e.OrElse(failvoid);
-        //     REQUIRE(!ret);
+        //     REQUIRE_FALSE(ret);
         //     REQUIRE(ret.Error() == 21);
         // }
 
         {
             static constexpr TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             static constexpr auto ret = e.OrElse(fail);
-            STATIC_REQUIRE(!ret);
+            STATIC_REQUIRE_FALSE(ret);
             STATIC_REQUIRE(ret.Error() == 17);
         }
 
         // {
         //     static constexpr TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
         //     static constexpr auto ret = e.OrElse(failvoid);
-        //     STATIC_REQUIRE(!ret);
+        //     STATIC_REQUIRE_FALSE(ret);
         //     STATIC_REQUIRE(ret.Error() == 21);
         // }
 
         {
             TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             const auto ret = std::move(e).OrElse(fail);
-            REQUIRE(!ret);
+            REQUIRE_FALSE(ret);
             REQUIRE(ret.Error() == 17);
         }
 
         // {
         //     TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
         //     const auto ret = std::move(e).OrElse(failvoid);
-        //     REQUIRE(!ret);
+        //     REQUIRE_FALSE(ret);
         //     REQUIRE(ret.Error() == 21);
         // }
 
         // {
         //     TRAP::Expected<i32, eptr> e(TRAP::Unexpect, makeUInt(21));
         //     const auto ret = std::move(e).OrElse(failvoidptr);
-        //     REQUIRE(!ret);
+        //     REQUIRE_FALSE(ret);
         //     REQUIRE(*ret.Error() == 21);
         // }
 
         // {
         //     TRAP::Expected<i32, eptr> e(TRAP::Unexpect, makeUInt(21));
         //     const auto ret = std::move(e).OrElse(consumeptr);
-        //     REQUIRE(!ret);
+        //     REQUIRE_FALSE(ret);
         //     REQUIRE(ret.Error() == nullptr);
         // }
 
         {
             static constexpr TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
             static constexpr auto ret = std::move(e).OrElse(fail);
-            STATIC_REQUIRE(!ret);
+            STATIC_REQUIRE_FALSE(ret);
             STATIC_REQUIRE(ret.Error() == 17);
         }
 
         // {
         //     static constexpr TRAP::Expected<i32, i32> e(TRAP::Unexpect, 21);
         //     static constexpr auto ret = std::move(e).OrElse(failvoid);
-        //     STATIC_REQUIRE(!ret);
+        //     STATIC_REQUIRE_FALSE(!ret);
         //     STATIC_REQUIRE(ret.Error() == 21);
         // }
     }

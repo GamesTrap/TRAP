@@ -14,6 +14,6 @@ TEST_CASE("TRAP::Utils::IsFutureType", "[utils][concurrency][futures][isfuturety
 
     SECTION("Invalid")
     {
-        STATIC_REQUIRE(!TRAP::Utils::IsFutureType<void>);
+        STATIC_REQUIRE_FALSE(TRAP::Utils::IsFutureType<void>);
     }
 }

@@ -111,7 +111,7 @@ TEST_CASE("TRAP::Log", "[log]")
     {
         TRAP::Log log(LogFilePath);
 
-        REQUIRE(log.GetImportance() != static_cast<TRAP::LogLevel>(0u));
+        REQUIRE_FALSE(log.GetImportance() == static_cast<TRAP::LogLevel>(0u));
     }
 
     SECTION("TRAP::Log::SetImportanceLevel()")

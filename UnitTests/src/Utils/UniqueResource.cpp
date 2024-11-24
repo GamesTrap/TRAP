@@ -281,8 +281,8 @@ namespace
 
             TRAP::UniqueResource r(Resource{}, [](const auto&){});
             const auto rr = std::move(r);
-            REQUIRE(r.Get().moved == true);
-            REQUIRE(rr.Get().moved == false);
+            REQUIRE(r.Get().moved);
+            REQUIRE_FALSE(rr.Get().moved);
         }
 
         {
@@ -303,8 +303,8 @@ namespace
 
             TRAP::UniqueResource r2(Resource2{}, [](const auto&){});
             const auto rr2 = std::move(r2);
-            REQUIRE(r2.Get().moved == false);
-            REQUIRE(rr2.Get().moved == false);
+            REQUIRE_FALSE(r2.Get().moved);
+            REQUIRE_FALSE(rr2.Get().moved);
         }
 
         {

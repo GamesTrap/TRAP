@@ -43,7 +43,7 @@ namespace
 
     void TestGetEventCallback(TRAP::FileSystem::FileSystemWatcher& fsWatcher)
     {
-        REQUIRE(!fsWatcher.GetEventCallback());
+        REQUIRE_FALSE(fsWatcher.GetEventCallback());
 
         fsWatcher.SetEventCallback(::FileSystemChangeEventCallback);
 
