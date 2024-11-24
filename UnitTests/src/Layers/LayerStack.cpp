@@ -15,7 +15,7 @@ TEST_CASE("TRAP::LayerStack", "[layerstack]")
 
     SECTION("Constructors")
     {
-        static constexpr TRAP::LayerStack layerStack{};
+        const TRAP::LayerStack layerStack{};
 
         //Copy constructor
         // static constexpr TRAP::LayerStack layerStack1{layerStack}; //Deleted

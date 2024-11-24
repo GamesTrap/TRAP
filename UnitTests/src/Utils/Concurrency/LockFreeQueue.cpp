@@ -2,7 +2,7 @@
 
 #include "Utils/Concurrency/LockFreeQueue.h"
 
-TEST_CASE("TRAP::Utils::LockFreeQueue()", "[utils][concurrency][lockfreequeue]")
+TEST_CASE("TRAP::Utils::LockFreeQueue", "[utils][concurrency][lockfreequeue]")
 {
     SECTION("Class requirements")
     {
