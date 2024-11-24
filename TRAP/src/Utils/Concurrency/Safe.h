@@ -43,31 +43,31 @@ namespace TRAP::Utils
     };
 
     template<typename LockType>
-    struct AccessTraits
+    struct AccessTraits final
     {
         static constexpr bool IsReadOnly = false;
     };
 
     template<typename MutexType>
-    struct AccessTraits<std::lock_guard<MutexType>>
+    struct AccessTraits<std::lock_guard<MutexType>> final
     {
         static constexpr bool IsReadOnly = false;
     };
 
     template<typename... MutexTypes>
-    struct AccessTraits<std::scoped_lock<MutexTypes...>>
+    struct AccessTraits<std::scoped_lock<MutexTypes...>> final
     {
         static constexpr bool IsReadOnly = false;
     };
 
     template<typename MutexType>
-    struct AccessTraits<std::unique_lock<MutexType>>
+    struct AccessTraits<std::unique_lock<MutexType>> final
     {
         static constexpr bool IsReadOnly = false;
     };
 
     template<typename MutexType>
-    struct AccessTraits<std::shared_lock<MutexType>>
+    struct AccessTraits<std::shared_lock<MutexType>> final
     {
         static constexpr bool IsReadOnly = true;
     };
@@ -80,7 +80,7 @@ namespace TRAP::Utils
     /// @tparam ValueType The type of the value to protect.
     /// @tparam MutexType The type of the mutex.
     template<typename ValueType, typename MutexType = INTERNAL::DefaultMutex>
-    class Safe
+    class Safe final
     {
         static_assert(!INTERNAL::SupportsAtomic<ValueType>,
                       "ValueType support std::atomic, use it instead of Safe!");
@@ -213,7 +213,7 @@ namespace TRAP::Utils
         /// @tparam Mode Determines the access mode of the Access object.
         ///         Can be either AccessMode::ReadOnly or AccessMode::ReadWrite.
         template<template<typename> class LockType, AccessMode Mode>
-        class Access
+        class Access final
         {
             //Make sure AccessMode is ReadOnly if a read-only lock is used.
             static_assert(!(AccessTraits<LockType<RemoveRefMutexType>>::IsReadOnly && Mode == AccessMode::ReadWrite),
@@ -263,18 +263,6 @@ namespace TRAP::Utils
             explicit Access(Safe& safe, OtherLockArgs&&... otherLockArgs)
                 : Access(safe.m_value, safe.m_mutex.Get, std::forward<OtherLockArgs>(otherLockArgs)...)
             {
-            }
-
-            /// @brief Construct an Access object from another one.
-            /// @param otherAccess The Acces sobject to construct from.
-            /// @param otherLockArgs Other arguments needed to construct the lock object.
-            /// @note OtherLockType must implement release() like std::unique_lock does.
-            template<template<typename> class OtherLockType, AccessMode OtherMode, typename... OtherLockArgs>
-            explicit Access(Access<OtherLockType, OtherMode>& otherAccess, OtherLockArgs&&... otherLockArgs)
-                : Access(*otherAccess, *otherAccess.lock().release(), std::adopt_lock, std::forward<OtherLockArgs>(otherLockArgs)...)
-            {
-                static_assert(OtherMode == AccessMode::ReadWrite || OtherMode == Mode,
-                              "Cannot construct a ReadWrite Access object from a ReadOnly one!");
             }
 
             /// @brief Const accessor to the value.
