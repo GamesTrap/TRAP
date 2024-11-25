@@ -8,7 +8,7 @@
 
 namespace TRAP::Utils
 {
-	class Config
+	class Config final
 	{
 	public:
 		/// @brief Constructor.
@@ -106,7 +106,7 @@ template<typename T>
 	const auto it = std::ranges::find_if(m_data,
 		[key](const std::pair<std::string, std::string>& element)
 		{
-			return element.first == key;
+			return Utils::String::CompareAnyCase(element.first, key);
 		});
 	if (it != m_data.end())
 	{
@@ -116,8 +116,8 @@ template<typename T>
 
 		std::vector<T> data(splitted.size());
 
-		for (const std::string& str : splitted)
-			data.push_back(String::ConvertToType<T>(str));
+		for(usize i = 0u; i < data.size(); ++i)
+			data[i] = String::ConvertToType<T>(splitted[i]);
 
 		return data;
 	}

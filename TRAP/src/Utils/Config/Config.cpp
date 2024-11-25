@@ -33,8 +33,8 @@ namespace
 			++index;
 			if(index >= line.size())
 			{
-				//Out of range so line only contains key
-				return { key, "" };
+				//Out of range so line only contains key which is invalid
+				return { "", "" };
 			}
 		}
 
@@ -86,9 +86,6 @@ bool TRAP::Utils::Config::LoadFromFile(const std::filesystem::path& file)
 bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
-
-	if(!m_hasChanged)
-		return true;
 
 	m_hasChanged = false;
 
