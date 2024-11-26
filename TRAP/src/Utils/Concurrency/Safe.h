@@ -34,6 +34,17 @@ namespace TRAP::Utils
 
         template<typename T>
         concept SupportsAtomic = std::integral<T> || std::same_as<T, bool>;
+
+#ifdef TRACY_ENABLE
+        template<typename Mutex>
+        concept IsMutexMarkable = requires(Mutex mtx, const tracy::SourceLocationData* srcLoc)
+        {
+            { mtx.Mark(srcLoc) };
+        };
+#else
+        template<typename Mutex>
+        concept IsMutexMarkable = false;
+#endif
     }
 
     enum class AccessMode : u8
@@ -236,7 +247,11 @@ namespace TRAP::Utils
                 : Lock(mutex, std::forward<OtherLockArgs>(otherLockArgs)...), m_value(value)
             {
                 ZoneScoped;
-                LockMark(mutex);
+
+                if constexpr(INTERNAL::IsMutexMarkable<MutexType>)
+                {
+                    LockMark(mutex);
+                }
             }
 
             /// @brief Construct a read-only Access object from a const Safe object and any

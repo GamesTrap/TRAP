@@ -2,6 +2,21 @@
 
 #include "Utils/Concurrency/Safe.h"
 
+namespace
+{
+    using Mutex = TRAP::Utils::ContentionFreeSharedMutex<>;
+
+    template<typename Mtx>
+    using ReadLock = std::shared_lock<Mtx>;
+    template<typename Mtx>
+    using WriteLock = std::unique_lock<Mtx>;
+
+    template<typename T>
+    using ReadAccess = TRAP::Utils::Safe<T, Mutex>::template ReadAccess<ReadLock>;
+    template<typename T>
+    using WriteAccess = TRAP::Utils::Safe<T, Mutex>::template WriteAccess<WriteLock>;
+}
+
 TEST_CASE("TRAP::Utils::AccessTraits", "[utils][concurrency][accesstraits]")
 {
     STATIC_REQUIRE_FALSE(TRAP::Utils::AccessTraits<i32>::IsReadOnly);
@@ -162,12 +177,12 @@ TEST_CASE("TRAP::Utils::Safe::ReadAccess", "[utils][concurrency][safe][readacces
 
     SECTION("Constructors")
     {
-        TRAP::Utils::INTERNAL::DefaultMutex mtx{};
+        Mutex mtx{};
 
         //Value, mutex constructor
         {
             const std::string str = "Hello World!";
-            TRAP::Utils::Safe<std::string>::ReadAccess<> access{str, mtx};
+            ReadAccess<std::string> access{str, mtx};
         }
 
         //Safe constructor
@@ -179,85 +194,85 @@ TEST_CASE("TRAP::Utils::Safe::ReadAccess", "[utils][concurrency][safe][readacces
         //Copy constructor
         // {
         //     const std::string str = "Hello World!";
-        //     TRAP::Utils::Safe<std::string>::ReadAccess<> access{str, mtx};
+        //     ReadAccess<std::string> access{str, mtx};
 
-        //     const TRAP::Utils::Safe<std::string>::ReadAccess<> accessCopy(access); //Not allowed
+        //     const ReadAccess<std::string> accessCopy(access); //Not allowed
         // }
 
         //Copy constructor (read->write access)
         // {
         //     std::string str = "Hello World!";
-        //     TRAP::Utils::Safe<std::string>::ReadAccess<> access{str, mtx};
+        //     ReadAccess<std::string> access{str, mtx};
 
-        //     const TRAP::Utils::Safe<std::string>::WriteAccess<> accessCopy(access); //Not allowed
+        //     const WriteAccess<std::string> accessCopy(access); //Not allowed
         // }
 
         //Move constructor
         {
             const std::string str = "Hello World!";
-            TRAP::Utils::Safe<std::string>::ReadAccess<> access(str, mtx);
+            ReadAccess<std::string> access(str, mtx);
 
-            const TRAP::Utils::Safe<std::string>::ReadAccess<> accessMove(std::move(access));
+            const ReadAccess<std::string> accessMove(std::move(access));
         }
 
         //Move constructor (read->write access)
         // {
         //     std::string str = "Hello World!";
-        //     TRAP::Utils::Safe<std::string>::ReadAccess<> access(str, mtx);
+        //     ReadAccess<std::string> access(str, mtx);
 
-        //     const TRAP::Utils::Safe<std::string>::WriteAccess<> accessMove(std::move(access)); //Not allowed
+        //     const WriteAccess<std::string> accessMove(std::move(access)); //Not allowed
         // }
     }
 
     SECTION("Assignments")
     {
-        TRAP::Utils::INTERNAL::DefaultMutex mtx{};
+        Mutex mtx{};
 
         //Copy assignment operator
         // {
         //     const std::string str = "Hello World!";
-        //     TRAP::Utils::Safe<std::string>::ReadAccess<> access{str, mtx};
+        //     ReadAccess<std::string> access{str, mtx};
 
-        //     const TRAP::Utils::Safe<std::string>::ReadAccess<> accessCopy = access; //Deleted
+        //     const ReadAccess<std::string> accessCopy = access; //Deleted
         // }
 
         //Copy assignment operator (read->write access)
         // {
         //     const std::string str = "Hello World!";
-        //     TRAP::Utils::Safe<std::string>::ReadAccess<> access{str, mtx};
+        //     ReadAccess<std::string> access{str, mtx};
 
-        //     const TRAP::Utils::Safe<std::string>::WriteAccess<> accessCopy = access; //Deleted
+        //     const WriteAccess<std::string> accessCopy = access; //Deleted
         // }
 
         //Move assignment operator
         {
             const std::string str = "Hello World!";
-            TRAP::Utils::Safe<std::string>::ReadAccess<> access{str, mtx};
+            ReadAccess<std::string> access{str, mtx};
 
-            const TRAP::Utils::Safe<std::string>::ReadAccess<> accessMove = std::move(access);
+            const ReadAccess<std::string> accessMove = std::move(access);
         }
 
         //Move assignment operator (read->write access)
         // {
         //     const std::string str = "Hello World!";
-        //     TRAP::Utils::Safe<std::string>::ReadAccess<> access{str, mtx};
+        //     ReadAccess<std::string> access{str, mtx};
 
-        //     const TRAP::Utils::Safe<std::string>::WriteAccess<> accessMove = std::move(access);
+        //     const WriteAccess<std::string> accessMove = std::move(access);
         // }
     }
 
     SECTION("operator->()")
     {
-        TRAP::Utils::INTERNAL::DefaultMutex mtx{};
+        Mutex mtx{};
         const std::string str = "Hello World!";
 
         {
-            const TRAP::Utils::Safe<std::string>::ReadAccess<> access{str, mtx};
+            const ReadAccess<std::string> access{str, mtx};
 
             REQUIRE_FALSE(access->empty());
         }
         {
-            TRAP::Utils::Safe<std::string>::ReadAccess<> access{str, mtx};
+            ReadAccess<std::string> access{str, mtx};
 
             REQUIRE_FALSE(access->empty());
         }
@@ -265,16 +280,16 @@ TEST_CASE("TRAP::Utils::Safe::ReadAccess", "[utils][concurrency][safe][readacces
 
     SECTION("operator*()")
     {
-        TRAP::Utils::INTERNAL::DefaultMutex mtx{};
+        Mutex mtx{};
         const std::string str = "Hello World!";
 
         {
-            const TRAP::Utils::Safe<std::string>::ReadAccess<> access{str, mtx};
+            const ReadAccess<std::string> access{str, mtx};
 
             REQUIRE_FALSE((*access).empty());
         }
         {
-            TRAP::Utils::Safe<std::string>::ReadAccess<> access{str, mtx};
+            ReadAccess<std::string> access{str, mtx};
 
             REQUIRE_FALSE((*access).empty());
         }
@@ -292,12 +307,12 @@ TEST_CASE("TRAP::Utils::Safe::WriteAccess", "[utils][concurrency][safe][writeacc
 
     SECTION("Constructors")
     {
-        TRAP::Utils::INTERNAL::DefaultMutex mtx{};
+        Mutex mtx{};
 
         //Value, mutex constructor
         {
             std::string str = "Hello World!";
-            TRAP::Utils::Safe<std::string>::WriteAccess<> access{str, mtx};
+            WriteAccess<std::string> access{str, mtx};
         }
 
         //Safe constructor
@@ -309,69 +324,69 @@ TEST_CASE("TRAP::Utils::Safe::WriteAccess", "[utils][concurrency][safe][writeacc
         //Copy constructor
         // {
         //     std::string str = "Hello World!";
-        //     TRAP::Utils::Safe<std::string>::WriteAccess<> access{str, mtx};
+        //     WriteAccess<std::string> access{str, mtx};
 
-        //     const TRAP::Utils::Safe<std::string>::WriteAccess<> accessCopy(access); //Not allowed
+        //     const WriteAccess<std::string> accessCopy(access); //Not allowed
         // }
 
         //Copy constructor (write->read access)
         // {
         //     std::string str = "Hello World!";
-        //     TRAP::Utils::Safe<std::string>::WriteAccess<> access{str, mtx};
+        //     WriteAccess<std::string> access{str, mtx};
 
-        //     const TRAP::Utils::Safe<std::string>::ReadAccess<> accessCopy(access); //Not allowed
+        //     const ReadAccess<std::string> accessCopy(access); //Not allowed
         // }
 
         //Move constructor
         {
             std::string str = "Hello World!";
-            TRAP::Utils::Safe<std::string>::WriteAccess<> access(str, mtx);
+            WriteAccess<std::string> access(str, mtx);
 
-            const TRAP::Utils::Safe<std::string>::WriteAccess<> accessMove(std::move(access));
+            const WriteAccess<std::string> accessMove(std::move(access));
         }
 
         //Move constructor (write->read access)
         // {
         //     std::string str = "Hello World!";
-        //     TRAP::Utils::Safe<std::string>::WriteAccess<> access(str, mtx);
+        //     WriteAccess<std::string> access(str, mtx);
 
-        //     const TRAP::Utils::Safe<std::string>::ReadAccess<> accessMove(std::move(access)); //Not allowed
+        //     const ReadAccess<std::string> accessMove(std::move(access)); //Not allowed
         // }
     }
 
     SECTION("Assignments")
     {
-        TRAP::Utils::INTERNAL::DefaultMutex mtx{};
+        Mutex mtx{};
 
         //Copy assignment operator (write->read access)
         // {
         //     std::string str = "Hello World!";
-        //     TRAP::Utils::Safe<std::string>::WriteAccess<> access{str, mtx};
+        //     WriteAccess<std::string> access{str, mtx};
 
-        //     const TRAP::Utils::Safe<std::string>::ReadAccess<> accessCopy = access; //Deleted
+        //     const ReadAccess<std::string> accessCopy = access; //Deleted
         // }
 
         //Move assignment operator (write->read access)
         // {
         //     std::string str = "Hello World!";
-        //     TRAP::Utils::Safe<std::string>::WriteAccess<> access{str, mtx};
+        //     WriteAccess<std::string> access{str, mtx};
 
-        //     const TRAP::Utils::Safe<std::string>::ReadAccess<> accessMove = std::move(access);
+        //     const ReadAccess<std::string> accessMove = std::move(access);
         // }
     }
 
     SECTION("operator->()")
     {
-        TRAP::Utils::INTERNAL::DefaultMutex mtx{};
+        Mutex mtx{};
         std::string str = "Hello World!";
 
         {
-            const TRAP::Utils::Safe<std::string>::WriteAccess<> access{str, mtx};
+            const WriteAccess<std::string> access{str, mtx};
 
             REQUIRE_FALSE(access->empty());
         }
         {
-            TRAP::Utils::Safe<std::string>::WriteAccess<> access{str, mtx};
+            WriteAccess<std::string> access{str, mtx};
 
             REQUIRE_FALSE(access->empty());
         }
@@ -379,16 +394,16 @@ TEST_CASE("TRAP::Utils::Safe::WriteAccess", "[utils][concurrency][safe][writeacc
 
     SECTION("operator*()")
     {
-        TRAP::Utils::INTERNAL::DefaultMutex mtx{};
+        Mutex mtx{};
         std::string str = "Hello World!";
 
         {
-            const TRAP::Utils::Safe<std::string>::WriteAccess<> access{str, mtx};
+            const WriteAccess<std::string> access{str, mtx};
 
             REQUIRE_FALSE((*access).empty());
         }
         {
-            TRAP::Utils::Safe<std::string>::WriteAccess<> access{str, mtx};
+            WriteAccess<std::string> access{str, mtx};
 
             REQUIRE_FALSE((*access).empty());
         }
