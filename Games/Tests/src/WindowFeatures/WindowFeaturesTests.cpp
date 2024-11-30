@@ -76,9 +76,9 @@ void WindowFeaturesTests::OnImGuiRender()
 
 		ImGui::Text("Size");
 		ImGui::SameLine();
-		changed += NumericCast<u32>(ImGui::InputScalar("##SizeX", ImGuiDataType_U32, &winSize.x(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<u32>(ImGui::InputScalar("##SizeX", ImGuiDataType_U32, &winSize.x(), nullptr, nullptr, nullptr));
 		ImGui::SameLine();
-		changed += NumericCast<u32>(ImGui::InputScalar("##SizeY", ImGuiDataType_U32, &winSize.y(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<u32>(ImGui::InputScalar("##SizeY", ImGuiDataType_U32, &winSize.y(), nullptr, nullptr, nullptr));
 
 		if(changed != 0u)
 		{
@@ -94,9 +94,9 @@ void WindowFeaturesTests::OnImGuiRender()
 			updateSizeLimit = true;
 
 		ImGui::SameLine();
-		changed += NumericCast<u32>(ImGui::InputScalar("##MinSizeX", ImGuiDataType_U32, &m_minWindowSize.x(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<u32>(ImGui::InputScalar("##MinSizeX", ImGuiDataType_U32, &m_minWindowSize.x(), nullptr, nullptr, nullptr));
 		ImGui::SameLine();
-		changed += NumericCast<u32>(ImGui::InputScalar("##MinSizeY", ImGuiDataType_U32, &m_minWindowSize.y(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<u32>(ImGui::InputScalar("##MinSizeY", ImGuiDataType_U32, &m_minWindowSize.y(), nullptr, nullptr, nullptr));
 
 		if(changed != 0u)
 			updateSizeLimit = true;
@@ -117,9 +117,9 @@ void WindowFeaturesTests::OnImGuiRender()
 			updateSizeLimit = true;
 
 		ImGui::SameLine();
-		changed += NumericCast<u32>(ImGui::InputScalar("##MaxSizeX", ImGuiDataType_U32, &m_maxWindowSize.x(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<u32>(ImGui::InputScalar("##MaxSizeX", ImGuiDataType_U32, &m_maxWindowSize.x(), nullptr, nullptr, nullptr));
 		ImGui::SameLine();
-		changed += NumericCast<u32>(ImGui::InputScalar("##MaxSizeY", ImGuiDataType_U32, &m_maxWindowSize.y(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<u32>(ImGui::InputScalar("##MaxSizeY", ImGuiDataType_U32, &m_maxWindowSize.y(), nullptr, nullptr, nullptr));
 
 		if(changed != 0u)
 			updateSizeLimit = true;
