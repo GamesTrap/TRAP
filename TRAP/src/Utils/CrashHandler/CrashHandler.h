@@ -13,7 +13,7 @@
 namespace TRAP::Utils
 {
     /// @brief RAII wrapper class for exception handlers
-    class CrashHandler
+    class CrashHandler final
     {
     public:
         /// @brief Constructors.
