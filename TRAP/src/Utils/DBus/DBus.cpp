@@ -362,9 +362,6 @@ namespace
 
     [[nodiscard]] constexpr const std::string& LibDBus::GetApplicationURI() const
     {
-	    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
-                                                      (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
         return m_applicationURI;
     }
 
@@ -372,9 +369,6 @@ namespace
 
     [[nodiscard]] constexpr const std::string& LibDBus::GetSignalName() const
     {
-	    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
-                                                      (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
         return m_signalName;
     }
 
@@ -382,9 +376,6 @@ namespace
 
     [[nodiscard]] constexpr const std::string& LibDBus::GetBusName() const
     {
-	    ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
-                                                      (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
         return m_busName;
     }
 
