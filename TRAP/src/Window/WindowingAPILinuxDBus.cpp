@@ -12,7 +12,7 @@
 
 void TRAP::INTERNAL::WindowingAPI::UpdateTaskbarProgressDBusPOSIX(const bool progressVisible, const f64 progressValue)
 {
-    const DBus::dbus_uint32_t progressVisibleu32 = static_cast<DBus::dbus_uint32_t>(progressVisible);
+    const u32 progressVisibleu32 = static_cast<u32>(progressVisible);
 
     //Signal signature:
     //signal com.canonical.Unity.LauncherEntry.Update (in s app_uri, in a{sv} properties)
@@ -26,12 +26,13 @@ void TRAP::INTERNAL::WindowingAPI::UpdateTaskbarProgressDBusPOSIX(const bool pro
     if(!args)
         return;
 
-    const char* const applicationURICStr = TRAP::DBus::GetApplicationURI().data();
+    const std::string applicationURI = TRAP::DBus::GetApplicationURI();
+    const char* const applicationURICStr = applicationURI.c_str();
     static constexpr const char* const progressVisibleCStr = "progress-visible";
     static constexpr const char* const progressCStr = "progress";
 
     //Setup app_uri parameter
-    if(!args->AppendData(TRAP::DBus::Type::String, &applicationURICStr))
+    if(!args->AppendData(TRAP::DBus::Type::String, static_cast<const void*>(&applicationURICStr)))
         return;
 
     //Set properties parameter
@@ -41,15 +42,15 @@ void TRAP::INTERNAL::WindowingAPI::UpdateTaskbarProgressDBusPOSIX(const bool pro
             return;
 
         //Set progress visible property
-        if(!sub1->AppendDictData(TRAP::DBus::Type::String, &progressVisibleCStr, TRAP::DBus::Type::Boolean, &progressVisibleu32))
+        if(!sub1->AppendDictData(TRAP::DBus::Type::String, static_cast<const void*>(&progressVisibleCStr), TRAP::DBus::Type::Boolean, &progressVisibleu32))
             return;
 
         //Set progress value property
-        if(!sub1->AppendDictData(TRAP::DBus::Type::String, &progressCStr, TRAP::DBus::Type::Double, &progressValue))
+        if(!sub1->AppendDictData(TRAP::DBus::Type::String, static_cast<const void*>(&progressCStr), TRAP::DBus::Type::Double, &progressValue))
             return;
     }
 
-    TRAP::DBus::SendMessage(msg);
+    msg.SendMessage();
 }
 
 #endif /*defined(TRAP_PLATFORM_LINUX) && !defined(TRAP_HEADLESS_MODE)*/
