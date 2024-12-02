@@ -105,6 +105,7 @@ namespace
         PFN_DBusMessageIterOpenContainer MessageIterOpenContainer{}; //dbus_message_iter_open_container
         PFN_DBusMessageIterCloseContainer MessageIterCloseContainer{}; //dbus_message_iter_close_container
 
+        [[nodiscard]] bool LoadSymbols();
         void UnloadSymbols();
         [[nodiscard]] constexpr bool AreSymbolsLoaded() const;
         [[nodiscard]] constexpr bool IsConnected() const;
@@ -120,7 +121,6 @@ namespace
         static constexpr u32 DBUS_NAME_FLAG_REPLACE_EXISTING = BIT(1u);
         static constexpr u32 DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER = 1u;
 
-        [[nodiscard]] bool LoadSymbols();
         void Disconnect();
 
         /// @threadsafe
@@ -490,7 +490,7 @@ namespace
         }
 
         if(type == TRAP::DBus::Type::Array || type == TRAP::DBus::Type::Variant || type == TRAP::DBus::Type::DictEntry ||
-        type == TRAP::DBus::Type::StructOpen || type == TRAP::DBus::Type::StructClose)
+           type == TRAP::DBus::Type::Struct)
         {
             TP_ERROR(TRAP::Log::UtilsDBusPrefix, "Invalid DBus type provided");
             return false;
@@ -513,15 +513,14 @@ namespace
         if(!dbus->AreSymbolsLoaded())
             return TRAP::NullOpt;
 
-        if(signature.empty() && type != TRAP::DBus::Type::DictEntry)
+        if(signature.empty() && type != TRAP::DBus::Type::DictEntry && type != TRAP::DBus::Type::Struct)
         {
             TP_ERROR(TRAP::Log::UtilsDBusPrefix, "Signature is empty!");
             return TRAP::NullOpt;
         }
 
-        if(type != TRAP::DBus::Type::Array && type != TRAP::DBus::Type::StructOpen &&
-           type != TRAP::DBus::Type::StructClose && type != TRAP::DBus::Type::Variant &&
-           type != TRAP::DBus::Type::DictEntry)
+        if(type != TRAP::DBus::Type::Array && type != TRAP::DBus::Type::Variant &&
+           type != TRAP::DBus::Type::DictEntry && type != TRAP::DBus::Type::Struct)
         {
             TP_ERROR(TRAP::Log::UtilsDBusPrefix, "Invalid DBus container type provided");
             return TRAP::NullOpt;

@@ -70,8 +70,7 @@ namespace TRAP::DBus
         UInt32 = 'u', //Type code marking a 32-bit unsigned integer.
         Int64 = 'x', //Type code marking a 64-bit signed integer.
         UInt64 = 't', //Type code marking a 64-bit unsigned integer.
-        StructOpen = '(', //Type code marking the start of a struct.
-        StructClose = ')', //Type code marking the end of a struct.
+        Struct = 'r', //Type code marking a struct.
         Byte = 'y', //Type code marking an 8-bit unsigned integer.
         ObjectPath = 'o', //Type code marking a DBus object path.
         Signature = 'g' //Type code marking a DBus type signature.
