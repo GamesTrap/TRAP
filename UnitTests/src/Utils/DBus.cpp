@@ -161,7 +161,7 @@ TEST_CASE("TRAP::DBus::MessageIterator", "[utils][dbus][messageiter]")
         REQUIRE(msgIt->AppendData(TRAP::DBus::Type::Signature, static_cast<const void*>(&testSignatureCStr)));
 
         //Invalid - container types
-        static constexpr std::array<std::string, 2u> testArray{"Hello", "World"};
+        const std::array<std::string, 2u> testArray{"Hello", "World"};
         REQUIRE_FALSE(msgIt->AppendData(TRAP::DBus::Type::Array, static_cast<const void*>(&testArray)));
 
         REQUIRE_FALSE(msgIt->AppendData(TRAP::DBus::Type::Variant, static_cast<const void*>(&testi16)));
@@ -219,7 +219,7 @@ TEST_CASE("TRAP::DBus::MessageIterator", "[utils][dbus][messageiter]")
         REQUIRE(msgIt->AppendDictData(TRAP::DBus::Type::Signature, static_cast<const void*>(&testSignatureCStr), TRAP::DBus::Type::Signature, static_cast<const void*>(&testSignatureCStr)));
 
         //Invalid - container type
-        static constexpr std::array<std::string, 2u> testArray{"Hello", "World"};
+        const std::array<std::string, 2u> testArray{"Hello", "World"};
         REQUIRE_FALSE(msgIt->AppendDictData(TRAP::DBus::Type::Array, static_cast<const void*>(&testArray), TRAP::DBus::Type::Array, static_cast<const void*>(&testArray)));
 
         REQUIRE_FALSE(msgIt->AppendDictData(TRAP::DBus::Type::Variant, static_cast<const void*>(&testi16), TRAP::DBus::Type::Variant, static_cast<const void*>(&testi16)));
@@ -340,7 +340,7 @@ TEST_CASE("TRAP::DBus::MessageIteratorContainer", "[utils][dbus][messageiterator
         REQUIRE(subContainerIt->AppendData(TRAP::DBus::Type::Signature, static_cast<const void*>(&testSignatureCStr)));
 
         //Invalid - container types
-        static constexpr std::array<std::string, 2u> testArray{"Hello", "World"};
+        const std::array<std::string, 2u> testArray{"Hello", "World"};
         REQUIRE_FALSE(subContainerIt->AppendData(TRAP::DBus::Type::Array, static_cast<const void*>(&testArray)));
 
         REQUIRE_FALSE(subContainerIt->AppendData(TRAP::DBus::Type::Variant, static_cast<const void*>(&testi16)));
@@ -403,7 +403,7 @@ TEST_CASE("TRAP::DBus::MessageIteratorContainer", "[utils][dbus][messageiterator
         REQUIRE(subContainerIt->AppendDictData(TRAP::DBus::Type::Signature, static_cast<const void*>(&testSignatureCStr), TRAP::DBus::Type::Signature, static_cast<const void*>(&testSignatureCStr)));
 
         //Invalid - container type
-        static constexpr std::array<std::string, 2u> testArray{"Hello", "World"};
+        const std::array<std::string, 2u> testArray{"Hello", "World"};
         REQUIRE_FALSE(subContainerIt->AppendDictData(TRAP::DBus::Type::Array, static_cast<const void*>(&testArray), TRAP::DBus::Type::Array, static_cast<const void*>(&testArray)));
 
         REQUIRE_FALSE(subContainerIt->AppendDictData(TRAP::DBus::Type::Variant, static_cast<const void*>(&testi16), TRAP::DBus::Type::Variant, static_cast<const void*>(&testi16)));
