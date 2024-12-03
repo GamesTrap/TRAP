@@ -173,6 +173,12 @@ if [[ ${_START_DOCKER_SERVICE} == "true" ]]; then
   service docker start
 fi
 
+# Start dbus daemon
+echo "Starting dbus session daemon"
+export DBUS_SESSION_BUS_ADDRESS=$(dbus-daemon --session --fork --print-address)
+# Export the env var globally for all shells
+echo "export DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS" >> /etc/bash.bashrc
+
 # Container's command (CMD) execution as runner user
 
 

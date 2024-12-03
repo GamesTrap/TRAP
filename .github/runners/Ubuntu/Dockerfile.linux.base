@@ -12,6 +12,7 @@ RUN echo en_US.UTF-8 UTF-8 >> /etc/locale.gen \
   && apt update \
   && apt upgrade -y \
   && apt install -y --no-install-recommends \
+    dbus \
     gnupg \
     lsb-release \
     curl \

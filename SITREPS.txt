@@ -5441,3 +5441,9 @@ SITREP 12/01/2024|24w48b2
 SITREP 12/02/2024|24w49a1
     - Changed TRAP Engine version to 24w49a1(0.11.51)
     - UnitTests Added tests for TRAP::DBus ~>30 mins
+
+SITREP 12/03/2024|24w49a2
+    - Changed TRAP Engine version to 24w49a2(0.11.52)
+    - GitHub Action Runners Added dbus package ~<5 mins
+    - GitHub Action Runners Added creation of dbus session in entrypoint.sh ~<5 mins
+    - GitHub Actions Linux Runner Updated and rebuild image ~<10 mins
