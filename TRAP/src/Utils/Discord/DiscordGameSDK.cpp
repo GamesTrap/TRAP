@@ -19,14 +19,34 @@
 
 namespace
 {
-    discord::Core* core = nullptr;
-    discord::Result lastRes = discord::Result::Ok;
-    i64 CurrentAppID = TRAP::Utils::Discord::TRAPDiscordAppID;
-    TRAP::Utils::Discord::Activity CurrentActivity{};
+    //The Discord Game SDK is not thread safe according to https://discord.com/developers/docs/developer-tools/game-sdk#step-3-start-coding
+    //So restrict access to the discord instance to a single thread at a time.
+    TRAP::Utils::Safe<discord::Core*> DiscordGameSDKCore{};
+    std::atomic<i64> CurrentAppID = TRAP::Utils::Discord::TRAPDiscordAppID;
 
     //Forward declares
-    void DiscordLogger(discord::LogLevel logLevel, std::string_view msg);
-    void DiscordLogResult(discord::Result res);
+    constexpr void DiscordLogger(discord::LogLevel logLevel, std::string_view msg);
+    constexpr void DiscordLogResult(discord::Result res);
+
+    void DefaultReconnectCallback()
+    {
+        if(CurrentAppID != TRAP::Utils::Discord::TRAPDiscordAppID)
+            return;
+
+        //Set activity to TRAP as default
+        const std::string version = fmt::format("{}[{}]", TRAP::Log::WindowVersion, TRAP_VERSION);
+
+        discord::Activity acti{};
+        acti.SetDetails(version.c_str());
+        acti.SetState("Developed by TrappedGames");
+        auto& asset = acti.GetAssets();
+        asset.SetLargeImage("trapwhitelogo2048x2048");
+        asset.SetLargeText("TRAP™");
+
+        auto core = DiscordGameSDKCore.WriteLock();
+        if(*core != nullptr)
+            (*core)->ActivityManager().UpdateActivity(acti, DiscordLogResult);
+    }
 }
 
 #endif /*USE_DISCORD_GAME_SDK*/
@@ -36,32 +56,31 @@ namespace
 bool TRAP::Utils::Discord::Create([[maybe_unused]] const i64 appID)
 {
 #ifdef USE_DISCORD_GAME_SDK
-    TP_INFO(TRAP::Log::DiscordGameSDKPrefix, "Creating Discord");
-    lastRes = discord::Core::Create(appID, DiscordCreateFlags_NoRequireDiscord, &core);
-    DiscordLogResult(lastRes);
-    if(lastRes != discord::Result::Ok)
-    {
-        core = nullptr;
-        return false;
-    }
+    TP_INFO(TRAP::Log::DiscordGameSDKPrefix, "Creating Discord instance");
 
     CurrentAppID = appID;
 
-    //Set log hook
-    core->SetLogHook(discord::LogLevel::Warn, DiscordLogger);
+    //Set the default reconnect callback
+    if(appID == TRAPDiscordAppID)
+        *OnReconnect.WriteLock() = DefaultReconnectCallback;
+
+    {
+        auto core = DiscordGameSDKCore.WriteLock();
+
+        const auto createRes = discord::Core::Create(appID, DiscordCreateFlags_NoRequireDiscord, &(*core)); //Don't require Discord to play the game
+        if((*core == nullptr) || createRes != discord::Result::Ok)
+        {
+            DiscordLogResult(createRes);
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Failed to create Discord instance!");
+            return false;
+        }
+
+        //Set log hook
+        (*core)->SetLogHook(discord::LogLevel::Warn, DiscordLogger);
+    }
 
     if(appID == TRAPDiscordAppID)
-    {
-        //Set activity to TRAP as default
-        const std::string version = fmt::format("{}[{}]", TRAP::Log::WindowVersion, TRAP_VERSION);
-
-        CurrentActivity.LargeImage = "trapwhitelogo2048x2048";
-        CurrentActivity.LargeText = "TRAP™";
-        CurrentActivity.Details = version;
-        CurrentActivity.State = "Developed by TrappedGames";
-
-        return SetActivity(CurrentActivity);
-    }
+        DefaultReconnectCallback();
 
     return true;
 #else
@@ -75,7 +94,7 @@ void TRAP::Utils::Discord::Destroy()
 {
 #ifdef USE_DISCORD_GAME_SDK
     TP_INFO(TRAP::Log::DiscordGameSDKPrefix, "Destroying Discord");
-    core = nullptr; //Should implicitly call discord::Core's destructor
+    *DiscordGameSDKCore.WriteLock() = nullptr; //Should implicitly call discord::Core's destructor
 #endif /*USE_DISCORD_GAME_SDK*/
 }
 
@@ -84,29 +103,37 @@ void TRAP::Utils::Discord::Destroy()
 bool TRAP::Utils::Discord::RunCallbacks()
 {
 #ifdef USE_DISCORD_GAME_SDK
-    if(lastRes == discord::Result::Ok)
+    bool hasReconnected = false;
     {
-        lastRes = core->RunCallbacks();
+        auto core = DiscordGameSDKCore.WriteLock();
 
-        DiscordLogResult(lastRes);
-        if(lastRes != discord::Result::Ok)
+        if(*core != nullptr)
         {
-            TRAP::Utils::Discord::Destroy();
-            return false;
+            const auto callbackRes = (*core)->RunCallbacks();
+            DiscordLogResult(callbackRes);
+
+            if(callbackRes == discord::Result::NotRunning)
+                *core = nullptr;
+
+            return *core != nullptr;
         }
+
+        //Try to reconnect with discord using the last set application ID
+        const auto createRes = discord::Core::Create(CurrentAppID, DiscordCreateFlags_NoRequireDiscord, &*core);
+        hasReconnected = createRes == discord::Result::Ok && *core != nullptr;
+    }
+
+    if(hasReconnected)
+    {
+        TP_INFO(TRAP::Log::DiscordGameSDKPrefix, "Reconnected Discord instance");
+        const auto reconnectCallback = OnReconnect.ReadLock();
+        if(*reconnectCallback)
+            (*reconnectCallback)();
 
         return true;
     }
 
-    //Try to reconnect
-    lastRes = discord::Core::Create(CurrentAppID, DiscordCreateFlags_NoRequireDiscord, &core);
-    if(lastRes != discord::Result::Ok)
-    {
-        core = nullptr;
-        return false;
-    }
-
-    TRAP::Utils::Discord::SetActivity(CurrentActivity);
+    return false;
 #endif /*USE_DISCORD_GAME_SDK*/
 
     return true;
@@ -114,43 +141,10 @@ bool TRAP::Utils::Discord::RunCallbacks()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Discord::SetActivity([[maybe_unused]] const Activity& activity)
-{
 #ifdef USE_DISCORD_GAME_SDK
-    if(lastRes == discord::Result::Ok)
-    {
-        discord::Activity acti{};
-        acti.SetDetails(activity.Details.c_str());
-        acti.SetState(activity.State.c_str());
-        auto& asset = acti.GetAssets();
-        asset.SetLargeImage(activity.LargeImage.c_str());
-        asset.SetLargeText(activity.LargeText.c_str());
-        core->ActivityManager().UpdateActivity(acti, [](const discord::Result res)
-        {
-            lastRes = res;
-            DiscordLogResult(lastRes);
-            if(lastRes != discord::Result::Ok)
-                TRAP::Utils::Discord::Destroy();
-        });
-
-        CurrentActivity = activity;
-
-        if(lastRes == discord::Result::Ok)
-            RunCallbacks();
-
-        return lastRes == discord::Result::Ok;
-    }
-#endif /*USE_DISCORD_GAME_SDK*/
-
-    return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#ifdef USE_DISCORD_GAME_SDK
-[[nodiscard]] discord::Core* TRAP::Utils::Discord::GetDiscordCore() noexcept
+[[nodiscard]] TRAP::Utils::Safe<discord::Core*>& TRAP::Utils::Discord::GetDiscordCore() noexcept
 {
-    return core;
+    return DiscordGameSDKCore;
 }
 #endif /*USE_DISCORD_GAME_SDK*/
 
@@ -159,25 +153,26 @@ bool TRAP::Utils::Discord::SetActivity([[maybe_unused]] const Activity& activity
 namespace
 {
 #ifdef USE_DISCORD_GAME_SDK
-    void DiscordLogger(const discord::LogLevel logLevel, const std::string_view msg)
+    /// @threadsafe
+    constexpr void DiscordLogger(const discord::LogLevel logLevel, const std::string_view msg)
     {
         switch (logLevel)
         {
         case discord::LogLevel::Debug:
             TP_DEBUG(TRAP::Log::DiscordGameSDKPrefix, msg);
-        break;
+            break;
 
         case discord::LogLevel::Info:
             TP_INFO(TRAP::Log::DiscordGameSDKPrefix, msg);
-        break;
+            break;
 
         case discord::LogLevel::Warn:
             TP_WARN(TRAP::Log::DiscordGameSDKPrefix, msg);
-        break;
+            break;
 
         case discord::LogLevel::Error:
             TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, msg);
-        break;
+            break;
         }
     }
 #endif /*USE_DISCORD_GAME_SDK*/
@@ -185,13 +180,14 @@ namespace
     //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef USE_DISCORD_GAME_SDK
-    void DiscordLogResult(const discord::Result res)
+    /// @threadsafe
+    constexpr void DiscordLogResult(const discord::Result res)
     {
         switch(res)
         {
-        // case discord::Result::Ok:
-        //     TP_DEBUG(TRAP::Log::DiscordGameSDKPrefix, "Ok");
-        //     break;
+        case discord::Result::Ok:
+            return;
+
         case discord::Result::ServiceUnavailable:
             TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Service unavailable");
             break;
@@ -199,6 +195,8 @@ namespace
             TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid version");
             break;
         case discord::Result::LockFailed:
+            TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Lock failed");
+            break;
         case discord::Result::InternalError:
             TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Internal API error");
             break;
@@ -321,9 +319,6 @@ namespace
             break;
         case discord::Result::DrawingInitFailed:
             TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Drawing init failed");
-            break;
-
-        default:
             break;
         }
     }

@@ -3,9 +3,10 @@
 
 #ifndef TRAP_HEADLESS_MODE
 
-#include <string>
+#include <functional>
 
 #include "Core/Types.h"
+#include "Utils/Concurrency/Safe.h"
 
 namespace discord
 {
@@ -16,47 +17,35 @@ namespace TRAP::Utils::Discord
 {
     constexpr i64 TRAPDiscordAppID = 639903785971613728;
 
-    /// @brief Activity used by Discord Game SDK.
-	/// @remark @headless This struct is not available in headless mode.
-    struct Activity
-    {
-        //Image name from Discord Developer portal.
-        std::string LargeImage;
-        //Text displayer when user hovers over the large image.
-        std::string LargeText;
-        //Description of the activity. For example, "Main menu".
-        std::string Details;
-        //Description of the current state for the activity. For example, "Lobby 1/4".
-        std::string State;
-    };
-
     /// @brief Create/Initialize Discord Game SDK.
     /// @param appID Discord App ID. Default TRAP™'s App ID.
     /// @return True on success, false otherwise
 	/// @remark @headless This function is not available in headless mode.
     bool Create(i64 appID = TRAPDiscordAppID);
     /// @brief Destroy/Shutdown Discord Game SDK.
+	/// @remark @headless This function is not available in headless mode.
     void Destroy();
     /// @brief Runs Discord Game SDK updates.
-    /// When Discord gets closed this function will also destroy the current
-    /// initialized Discord Game SDK instance.
     /// @return True if Discord Game SDK is initialized, false otherwise
     /// @note This function also tries to reconnect to Discord if it was disconnected.
-    ///       When this happens the last used activity will be set again.
+    ///       When this happens the OnReconnect callback gets called.
 	/// @remark @headless This function is not available in headless mode.
     bool RunCallbacks();
-    /// @brief Set the activity of the game.
-    /// @param activity Activity to be displayed.
-    /// @return True on success, false otherwise
-	/// @remark @headless This function is not available in headless mode.
-    bool SetActivity(const Activity& activity);
+
+    /// @brief Notify that the engine reconnected with Discord.
+    ///        The callback gets called when Discord gets closed and reopened while the engine is running.
+    /// @note The new connection will use the appID of the previous connection.
+    /// @note The callback may be called by from any thread, so make sure that the provided function is threadsafe.
+    /// @threadsafe
+    inline TRAP::Utils::Safe<std::function<void()>> OnReconnect{};
 
 #ifdef USE_DISCORD_GAME_SDK
     /// @brief Get the Discord Game SDK discord::Core* instance.
-    /// @return Handle to internal Discord Game SDK discord::Core*, nullptr when not initialized.
+    /// @return Handle to internal Discord Game SDK discord::Core*, nullptr when not initialized or not available.
 	/// @remark @headless This function is not available in headless mode.
-	/// @remark This function is only available when Discord Game SDK is provided.
-    [[nodiscard]] discord::Core* GetDiscordCore() noexcept;
+	/// @remark This function is only available when Discord Game SDK is provided during compilation.
+    /// @threadsafe
+    [[nodiscard]] TRAP::Utils::Safe<discord::Core*>& GetDiscordCore() noexcept;
 #endif /*USE_DISCORD_GAME_SDK*/
 }
 

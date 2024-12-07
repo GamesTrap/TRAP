@@ -5447,3 +5447,8 @@ SITREP 12/03/2024|24w49a2
     - GitHub Action Runners Added dbus package ~<5 mins
     - GitHub Action Runners Added creation of dbus session in entrypoint.sh ~<5 mins
     - GitHub Actions Linux Runner Updated and rebuild image ~<10 mins
+
+SITREP 12/08/2024|24w49b1
+    - Changed TRAP Engine version to 24w49b1(0.11.53)
+    - DiscordGameSDK Made implementation thread safe ~>30 mins
+    - DiscordGameSDK Added OnReconnect callback ~<5 mins
