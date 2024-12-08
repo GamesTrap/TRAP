@@ -1,6 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "Core/PlatformDetection.h"
+#include "Core/Base.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
 #include "Utils/Win.h"
