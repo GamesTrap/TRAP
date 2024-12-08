@@ -90,7 +90,7 @@ namespace
 
     TRAP_ASSERT(false, errorData->LogPrefix, errorData->LogMessage);
 
-    throw std::runtime_error(errorData->LogMessage.data());
+    throw std::runtime_error(std::string(errorData->LogMessage));
     std::terminate(); //Make sure we exit program even when using try/catch
 }
 

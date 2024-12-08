@@ -11,7 +11,7 @@
 namespace TRAP::Utils
 {
     /// @brief Unique identifier, basically a randomly generated 64-bit number
-    class UID
+    class UID final
     {
     public:
         /// @brief Constructor. Generated a new unique identifier.
