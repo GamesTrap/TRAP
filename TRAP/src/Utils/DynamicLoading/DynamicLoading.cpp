@@ -5,6 +5,9 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
+	if(path.empty())
+		return nullptr;
+
 #ifdef TRAP_PLATFORM_WINDOWS
 	HMODULE handle = LoadLibraryA(path.c_str());
 	if(!handle)
@@ -40,18 +43,21 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Utils::DynamicLoading::FreeLibrary(void* const module)
+void TRAP::Utils::DynamicLoading::FreeLibrary(void* const libraryHandle)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
+	if(libraryHandle == nullptr)
+		return;
+
 #ifdef TRAP_PLATFORM_WINDOWS
-	if(!FreeLibrary(static_cast<HMODULE>(module)))
+	if(!FreeLibrary(static_cast<HMODULE>(libraryHandle)))
 	{
 		TP_ERROR(Log::UtilsPrefix, "Failed to free library!");
 		TP_ERROR(Log::UtilsPrefix, Utils::String::GetStrError());
 	}
 #elif defined(TRAP_PLATFORM_LINUX)
-    if(dlclose(module) != 0)
+    if(dlclose(libraryHandle) != 0)
 	{
 		TP_ERROR(Log::UtilsPrefix, "Failed to free library!");
 		TP_ERROR(Log::UtilsPrefix, dlerror());

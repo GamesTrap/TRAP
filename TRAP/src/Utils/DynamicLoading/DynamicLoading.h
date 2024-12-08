@@ -21,28 +21,34 @@ namespace TRAP::Utils::DynamicLoading
 {
     /// @brief Loads a dynamic library into memory.
     /// @param path Path to the library.
-    /// @return Pointer to the loaded library.
+    /// @return Pointer to the loaded library on success, nullptr otherwise.
+    /// @threadsafe
     [[nodiscard]] void* LoadLibrary(const std::string& path);
     /// @brief Unloads a dynamic library from memory.
-    /// @param module Pointer to the library to unload.
-    void FreeLibrary(void* module);
+    /// @param libraryHandle Pointer to the library to unload.
+    /// @threadsafe
+    void FreeLibrary(void* libraryHandle);
     /// @brief Gets a function pointer from a dynamic library.
-    /// @param module Pointer to the library.
+    /// @param libraryHandle Pointer to the library.
     /// @param name Name of the function.
-    /// @return Pointer to the function.
+    /// @return Pointer to the function on success, nullptr otherwise.
+    /// @threadsafe
     template<typename T>
-    [[nodiscard]] T GetLibrarySymbol(void* module, const std::string& name);
+    [[nodiscard]] T GetLibrarySymbol(void* libraryHandle, const std::string& name);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] inline T TRAP::Utils::DynamicLoading::GetLibrarySymbol([[maybe_unused]] void* const module, [[maybe_unused]] const std::string& name)
+[[nodiscard]] inline T TRAP::Utils::DynamicLoading::GetLibrarySymbol([[maybe_unused]] void* const libraryHandle, [[maybe_unused]] const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
+    if(libraryHandle == nullptr || name.empty())
+        return T();
+
 #ifdef TRAP_PLATFORM_WINDOWS
-    FARPROC proc = ::GetProcAddress(static_cast<HMODULE>(module), name.c_str());
+    void* proc = ::GetProcAddress(static_cast<HMODULE>(libraryHandle), name.c_str());
     if(!proc)
     {
         TP_ERROR(Log::UtilsPrefix, "Failed to get symbol: ", name);
@@ -50,7 +56,7 @@ template<typename T>
     }
     return reinterpret_cast<T>(proc);
 #elif defined(TRAP_PLATFORM_LINUX)
-    void* symbol = dlsym(module, name.c_str());
+    void* const symbol = dlsym(libraryHandle, name.c_str());
     if(!symbol)
     {
         TP_ERROR(Log::UtilsPrefix, "Failed to get symbol: ", name);

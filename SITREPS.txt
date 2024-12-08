@@ -5452,3 +5452,4 @@ SITREP 12/08/2024|24w49b1
     - Changed TRAP Engine version to 24w49b1(0.11.53)
     - DiscordGameSDK Made implementation thread safe ~>30 mins
     - DiscordGameSDK Added OnReconnect callback ~<5 mins
+    - UnitTests Added tests for TRAP::Utils::DynamicLoading ~<15 mins
