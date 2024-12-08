@@ -8,10 +8,17 @@
 #include "Core/Types.h"
 #include "Utils/Concurrency/Safe.h"
 
-namespace discord
-{
-    class Core;
-}
+#ifdef USE_DISCORD_GAME_SDK
+
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif /*_MSC_VER*/
+#include <discord.h>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif /*_MSC_VER*/
+
+#endif /*USE_DISCORD_GAME_SDK*/
 
 namespace TRAP::Utils::Discord
 {

@@ -506,6 +506,27 @@ void TRAPEditorLayer::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+namespace
+{
+	void OnDiscordReconnect()
+	{
+		auto& discord = TRAP::Utils::Discord::GetDiscordCore();
+		auto discordCore = discord.WriteLock();
+
+		if(*discordCore == nullptr)
+			return;
+
+        discord::Activity activity{};
+        activity.SetDetails("TRAP™ Editor");
+        activity.SetState("Developed by TrappedGames");
+        auto& asset = activity.GetAssets();
+        asset.SetLargeImage("trapwhitelogo2048x2048");
+        asset.SetLargeText("TRAP™ Editor");
+
+		(*discordCore)->ActivityManager().UpdateActivity(activity, {});
+	}
+}
+
 void TRAPEditorLayer::OnAttach()
 {
 	//THIS IS THE TRAP EDITOR!!!11!!1!
@@ -524,8 +545,9 @@ void TRAPEditorLayer::OnAttach()
 		}
 	}
 
-	//Set Discord stuff
-	TRAP::Utils::Discord::SetActivity({.LargeImage="trapwhitelogo2048x2048", .LargeText="TRAP™ Editor", .Details="TRAP™ Editor", .State="Developed by TrappedGames"});
+	//Setup Discord stuff
+	*TRAP::Utils::Discord::OnReconnect.WriteLock() = OnDiscordReconnect;
+	OnDiscordReconnect();
 
 	//Enable Developer features
 	TRAP::Application::SetHotReloading(true);
