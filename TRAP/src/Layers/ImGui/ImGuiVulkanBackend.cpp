@@ -1027,7 +1027,7 @@ namespace
 
         InitInfo& v = bd->VulkanInitInfo;
 
-        const VkDescriptorPoolCreateInfo poolInfo = TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(v.DescriptorPoolSizes, 1u);
+        const VkDescriptorPoolCreateInfo poolInfo = TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(v.DescriptorPoolSizes, 100u * NumericCast<u32>(v.DescriptorPoolSizes.size()));
 
         VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
         CheckVkResult(vkCreateDescriptorPool(v.Device->GetVkDevice(), &poolInfo, nullptr, &descriptorPool));

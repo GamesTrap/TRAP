@@ -42,7 +42,7 @@ namespace
 		{
 			static const std::vector<VkDescriptorPoolSize> DescriptorPoolSizes =
 			{
-				{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1 }
+				{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100 }
 			};
 
 			return DescriptorPoolSizes;
