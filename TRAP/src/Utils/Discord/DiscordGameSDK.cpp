@@ -134,9 +134,9 @@ bool TRAP::Utils::Discord::RunCallbacks()
     }
 
     return false;
-#endif /*USE_DISCORD_GAME_SDK*/
-
+#else
     return true;
+#endif /*USE_DISCORD_GAME_SDK*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
