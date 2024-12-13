@@ -2660,13 +2660,22 @@ requires std::floating_point<genType>
 	TRAP_ASSERT(!IsNaN(x), "Math::RoundEven(): x is NaN!");
 	TRAP_ASSERT(!IsInf(x), "Math::RoundEven(): x is Inf!");
 
-	const i32 integer = static_cast<i32>(x);
-	const genType integerPart = static_cast<genType>(integer);
-	const genType fractionalPart = Fract(x);
+	genType integerPart{0.0};
+	genType fractionalPart{0.0};
+
+	if (std::is_constant_evaluated())
+	{
+		integerPart = Trunc(x);
+		fractionalPart = Fract(x);
+	}
+	else
+	{
+		fractionalPart = Abs(Modf(x, integerPart));
+	}
 
 	if (fractionalPart > static_cast<genType>(0.5) || fractionalPart < static_cast<genType>(0.5))
 		return Round(x);
-	if ((integer % 2) == 0)
+	if (Equal(FMod(integerPart, genType(2.0)), genType(0.0), Epsilon<genType>()))
 		return integerPart;
 	if (x <= static_cast<genType>(0))
 		return integerPart - static_cast<genType>(1);

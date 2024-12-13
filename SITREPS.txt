@@ -5457,3 +5457,7 @@ SITREP 12/08/2024|24w49b1
 SITREP 12/09/2024|24w50a1
     - Changed TRAP Engine version to 24w50a1(0.11.54)
     - UnitTests Added tests for TRAP::Utils::UID ~<5 mins
+
+SITREP 12/14/2024|24w50a2
+    - Changed TRAP Engine version to 24w50a2(0.11.55)
+    - Math Fixed undefined behaviour for edge cases in TRAP::Math::RoundEven() ~<5 mins
