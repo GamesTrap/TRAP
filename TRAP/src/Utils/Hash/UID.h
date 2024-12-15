@@ -38,7 +38,7 @@ namespace TRAP::Utils
         /// @brief Constructor.
         constexpr explicit UID(u64 uid) noexcept;
 
-        u64 m_uid = TRAP::Utils::RandomThreadLocal::Get();
+        u64 m_uid = TRAP::Utils::Random::Get();
 
         friend bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath);
     };

@@ -5461,3 +5461,11 @@ SITREP 12/09/2024|24w50a1
 SITREP 12/14/2024|24w50a2
     - Changed TRAP Engine version to 24w50a2(0.11.55)
     - Math Fixed undefined behaviour for edge cases in TRAP::Math::RoundEven() ~<5 mins
+
+SITREP 12/15/2024|24w50b1
+    - Changed TRAP Engine version to 24w50b1(0.11.56)
+    - Utils Remoed RandomThreadLocal ~<5 mins
+    - Utils Made Random thread safe ~<10 mins
+    - UnitTests Added tests for TRAP::Utils::SeederDefault ~<10 mins
+    - UnitTests Added tests for TRAP::Utils::Random ~<20 mins
+    - UnitTests Added tests for TRAP::Utils::RandomLocal ~<10 mins
