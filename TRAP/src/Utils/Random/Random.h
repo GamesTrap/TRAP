@@ -247,7 +247,7 @@ namespace TRAP::Utils
             auto Engine = EngineInstance().WriteLock();
 
             TRAP_ASSERT(0.0 <= probability && 1.0 >= probability, "BasicRandomStatic::Get(): Out of range!"); //Out of [0; 1] range
-            return BoolDist{ probability }(*Engine);
+            return BoolDist{ std::clamp(probability, 0.0, 1.0) }(*Engine);
         }
 
         /// @brief Get random value from initializer_list.
@@ -564,7 +564,7 @@ namespace TRAP::Utils
 	        ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None);
 
             TRAP_ASSERT(0.0 <= probability && 1.0 >= probability, "BasicRandomLocal::Get(): Out of range!"); //Out of [0; 1] range
-            return BoolDist{ probability }(m_engine);
+            return BoolDist{ std::clamp(probability, 0.0, 1.0) }(m_engine);
         }
 
         /// @brief Retrieve random value from initializer_list.

@@ -196,20 +196,20 @@ TEST_CASE("TRAP::Utils::RandomLocal", "[utils][random][local]")
         TRAP::Utils::RandomLocal random{};
 
         char num1 = random.Get<char>(char(-128), char(128));
-        wchar_t num2 = random.Get<wchar_t>(wchar_t(-1000), wchar_t(1000));
+        wchar_t num2 = random.Get<wchar_t>(wchar_t(0), wchar_t(1000));
         char16_t num3 = random.Get<char16_t>(char16_t(0), char16_t(1000));
         char32_t num4 = random.Get<char32_t>(char32_t(0), char32_t(1000));
         REQUIRE((num1 >= -128 && num1 <= 128));
-        REQUIRE((num2 >= -1000 && num2 <= 1000));
+        REQUIRE(num2 <= 1000);
         REQUIRE(num3 <= 1000);
         REQUIRE(num4 <= 1000);
 
         num1 = random.Get<char>(char(128), char(-128));
-        num2 = random.Get<wchar_t>(wchar_t(1000), wchar_t(-1000));
+        num2 = random.Get<wchar_t>(wchar_t(1000), wchar_t(0));
         num3 = random.Get<char16_t>(char16_t(1000), char16_t(0));
         num4 = random.Get<char32_t>(char32_t(1000), char32_t(0));
         REQUIRE((num1 >= -128 && num1 <= 128));
-        REQUIRE((num2 >= -1000 && num2 <= 1000));
+        REQUIRE(num2 <= 1000);
         REQUIRE(num3 <= 1000);
         REQUIRE(num4 <= 1000);
     }
@@ -469,20 +469,20 @@ TEST_CASE("TRAP::Utils::Random", "[utils][random][static]")
     SECTION("Get(character, character)")
     {
         char num1 = TRAP::Utils::Random::Get<char>(char(-128), char(128));
-        wchar_t num2 = TRAP::Utils::Random::Get<wchar_t>(wchar_t(-1000), wchar_t(1000));
+        wchar_t num2 = TRAP::Utils::Random::Get<wchar_t>(wchar_t(0), wchar_t(1000));
         char16_t num3 = TRAP::Utils::Random::Get<char16_t>(char16_t(0), char16_t(1000));
         char32_t num4 = TRAP::Utils::Random::Get<char32_t>(char32_t(0), char32_t(1000));
         REQUIRE((num1 >= -128 && num1 <= 128));
-        REQUIRE((num2 >= -1000 && num2 <= 1000));
+        REQUIRE(num2 <= 1000);
         REQUIRE(num3 <= 1000);
         REQUIRE(num4 <= 1000);
 
         num1 = TRAP::Utils::Random::Get<char>(char(128), char(-128));
-        num2 = TRAP::Utils::Random::Get<wchar_t>(wchar_t(1000), wchar_t(-1000));
+        num2 = TRAP::Utils::Random::Get<wchar_t>(wchar_t(1000), wchar_t(0));
         num3 = TRAP::Utils::Random::Get<char16_t>(char16_t(1000), char16_t(0));
         num4 = TRAP::Utils::Random::Get<char32_t>(char32_t(1000), char32_t(0));
         REQUIRE((num1 >= -128 && num1 <= 128));
-        REQUIRE((num2 >= -1000 && num2 <= 1000));
+        REQUIRE(num2 <= 1000);
         REQUIRE(num3 <= 1000);
         REQUIRE(num4 <= 1000);
     }
