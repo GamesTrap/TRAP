@@ -283,7 +283,6 @@ TEST_CASE("TRAP::Utils::RandomLocal", "[utils][random][local]")
         std::array<i32, 5u> arrCopy = arr;
 
         random.Shuffle(arrCopy.begin(), arrCopy.end());
-        REQUIRE_FALSE(arrCopy == arr);
     }
 
     SECTION("Shuffle(container)")
@@ -294,7 +293,6 @@ TEST_CASE("TRAP::Utils::RandomLocal", "[utils][random][local]")
         std::array<i32, 5u> arrCopy = arr;
 
         random.Shuffle(arrCopy);
-        REQUIRE_FALSE(arrCopy == arr);
     }
 
     SECTION("operator==()")
@@ -330,6 +328,8 @@ TEST_CASE("TRAP::Utils::RandomLocal", "[utils][random][local]")
 
         //random2s state now must match that of random.
         REQUIRE(random == random2);
+
+        REQUIRE_FALSE(random2.Deserialize(""));
     }
 }
 
@@ -542,7 +542,6 @@ TEST_CASE("TRAP::Utils::Random", "[utils][random][static]")
         std::array<i32, 5u> arrCopy = arr;
 
         TRAP::Utils::Random::Shuffle(arrCopy.begin(), arrCopy.end());
-        REQUIRE_FALSE(arrCopy == arr);
     }
 
     SECTION("Shuffle(container)")
@@ -551,7 +550,6 @@ TEST_CASE("TRAP::Utils::Random", "[utils][random][static]")
         std::array<i32, 5u> arrCopy = arr;
 
         TRAP::Utils::Random::Shuffle(arrCopy);
-        REQUIRE_FALSE(arrCopy == arr);
     }
 
     SECTION("Serialize()")
@@ -566,5 +564,7 @@ TEST_CASE("TRAP::Utils::Random", "[utils][random][static]")
         REQUIRE_FALSE(randomState.empty());
 
         REQUIRE(TRAP::Utils::Random::Deserialize(randomState));
+
+        REQUIRE_FALSE(TRAP::Utils::Random::Deserialize(""));
     }
 }

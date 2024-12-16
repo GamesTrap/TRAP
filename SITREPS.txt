@@ -5470,6 +5470,6 @@ SITREP 12/15/2024|24w50b1
     - UnitTests Added tests for TRAP::Utils::Random ~<20 mins
     - UnitTests Added tests for TRAP::Utils::RandomLocal ~<10 mins
 
-SITREP 12/15/2024|24w50b1
-    - Changed TRAP Engine version to 24w50b1(0.11.56)
+SITREP 12/16/2024|24w51a1
+    - Changed TRAP Engine version to 24w51a1(0.11.57)
     - Utils Added threadsafety tags to Random ~<5 mins
