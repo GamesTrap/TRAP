@@ -261,6 +261,7 @@ jobs:
     - name: Checkout repository and submodules
       uses: actions/checkout@v4
     - name: Checkout submodules (with retries)
+      shell: bash
       run: |
         git submodule sync && \
         (git -c protocol.version=2 submodule update --init --force --depth=1 || \
