@@ -21,8 +21,13 @@ jobs:
       uses: gamestrap/gha-workspace-cleanup@v1.2.5
     - name: Check-out repository
       uses: actions/checkout@v4
-      with:
-        submodules: 'true'
+    - name: Check-out submodules (with retries)
+      run: |
+        git submodule sync && \
+        (git -c protocol.version=2 submodule update --init --force --depth=1 || \
+         (sleep 10 && git -c protocol.version=2 submodule update --init --force --depth=1) || \
+         (sleep 10 && git -c protocol.version=2 submodule update --init --force --depth=1) \
+        )
     - name: Install dependencies
       run: sudo apt install -y doxygen python3-venv graphviz
     - name: Make python3 available as python

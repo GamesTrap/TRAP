@@ -5477,3 +5477,7 @@ SITREP 12/16/2024|24w51a1
 SITREP 12/17/2024|24w51a2
     - Changed TRAP Engine version to 24w51a2(0.11.58)
     - Updated Steamworks SDK support to v1.61 ~<5 mins
+
+SITREP 12/20/2024|24w51b1
+    - Changed TRAP Engine version to 24w51b1(0.11.59)
+    - GitHub Action workflows Added re-trying of submodule checkouts ~<10 mins

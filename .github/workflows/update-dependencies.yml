@@ -17,8 +17,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: 'true'
           ref: dev
+      - name: Checkout submodules (with retries)
+        run: |
+          git submodule sync && \
+          (git -c protocol.version=2 submodule update --init --force --depth=1 || \
+            (sleep 10 && git -c protocol.version=2 submodule update --init --force --depth=1) || \
+            (sleep 10 && git -c protocol.version=2 submodule update --init --force --depth=1) \
+          )
       - uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}

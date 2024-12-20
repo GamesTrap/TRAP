@@ -30,8 +30,14 @@ jobs:
     - name: Checkout repository and submodules
       uses: actions/checkout@v4
       with:
-        submodules: 'true'
         ref: 'dev' #Nightly Build is always run on dev branch
+    - name: Checkout submodules (with retries)
+      run: |
+        git submodule sync && \
+        (git -c protocol.version=2 submodule update --init --force --depth=1 || \
+          (sleep 10 && git -c protocol.version=2 submodule update --init --force --depth=1) || \
+          (sleep 10 && git -c protocol.version=2 submodule update --init --force --depth=1) \
+        )
     - name: Checkout DiscordGameSDK
       if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_DISCORDGAMESDK
       env:
@@ -163,8 +169,14 @@ jobs:
       - name: Checkout repository and submodules
         uses: actions/checkout@v4
         with:
-          submodules: 'true'
           ref: 'dev' #Nightly Build is always run on dev branch
+      - name: Checkout submodules (with retries)
+        run: |
+          git submodule sync && \
+          (git -c protocol.version=2 submodule update --init --force --depth=1 || \
+            (sleep 10 && git -c protocol.version=2 submodule update --init --force --depth=1) || \
+            (sleep 10 && git -c protocol.version=2 submodule update --init --force --depth=1) \
+          )
       - name: Checkout DiscordGameSDK
         if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_DISCORDGAMESDK
         env:
