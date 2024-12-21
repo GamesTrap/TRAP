@@ -7,12 +7,13 @@
 
 namespace
 {
-    bool steamClientInitialized = false;
-    bool steamServerInitialized = false;
+    std::atomic<bool> steamClientInitialized = false;
+    std::atomic<bool> steamServerInitialized = false;
 
     //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef USE_STEAMWORKS_SDK
+    /// @threadsafe
     constexpr void SteamLogCallback(const i32 severity, const char* const msg)
     {
         if(severity == 0)
@@ -25,26 +26,30 @@ namespace
     //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef USE_STEAMWORKS_SDK
+    /// @threadsafe
     void ShutdownClient()
     {
-        if(steamClientInitialized)
-        {
-            TP_INFO(TRAP::Log::SteamworksSDKPrefix, "Destroying Steam");
-            SteamAPI_Shutdown();
-        }
+        if(!steamClientInitialized)
+            return;
+
+        TP_INFO(TRAP::Log::SteamworksSDKPrefix, "Destroying Steam");
+        SteamAPI_Shutdown();
+        steamClientInitialized = false;
     }
 #endif /*USE_STEAMWORKS_SDK*/
 
     //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef USE_STEAMWORKS_SDK
+    /// @threadsafe
     void ShutdownServer()
     {
-        if(steamServerInitialized)
-        {
-            TP_INFO(TRAP::Log::SteamworksSDKPrefix, "Destroying Steam Server");
-            SteamGameServer_Shutdown();
-        }
+        if(!steamServerInitialized)
+            return;
+
+        TP_INFO(TRAP::Log::SteamworksSDKPrefix, "Destroying Steam Server");
+        SteamGameServer_Shutdown();
+        steamServerInitialized = false;
     }
 #endif /*USE_STEAMWORKS_SDK*/
 }
@@ -163,7 +168,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamApps* TRAP::Utils::Steam::GetSteamApps()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamApps(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamApps(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamApps();
 }
@@ -172,7 +181,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamFriends* TRAP::Utils::Steam::GetSteamFriends()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamFriends(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamFriends(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamFriends();
 }
@@ -181,7 +194,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamHTMLSurface* TRAP::Utils::Steam::GetSteamHTMLSurface()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamHTMLSurface(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamHTMLSurface(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamHTMLSurface();
 }
@@ -190,7 +207,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamHTTP* TRAP::Utils::Steam::GetSteamClientHTTP()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamClientHTTP(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamClientHTTP(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamHTTP();
 }
@@ -199,7 +220,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamHTTP* TRAP::Utils::Steam::GetSteamServerHTTP()
 {
-    TRAP_ASSERT(steamServerInitialized, "Steam::GetSteamServerHTTP(): SteamAPI is not initialized!");
+    if(!steamServerInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamServerHTTP(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamGameServerHTTP();
 }
@@ -208,7 +233,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamInput* TRAP::Utils::Steam::GetSteamInput()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamInput(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamInput(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamInput();
 }
@@ -217,7 +246,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamInventory* TRAP::Utils::Steam::GetSteamClientInventory()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamClientInventory(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamClientInventory(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamInventory();
 }
@@ -226,7 +259,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamInventory* TRAP::Utils::Steam::GetSteamServerInventory()
 {
-    TRAP_ASSERT(steamServerInitialized, "Steam::GetSteamServerInventory(): SteamAPI is not initialized!");
+    if(!steamServerInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamServerInventory(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamGameServerInventory();
 }
@@ -235,7 +272,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamMatchmaking* TRAP::Utils::Steam::GetSteamMatchmaking()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamMatchmaking(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamMatchmaking(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamMatchmaking();
 }
@@ -244,7 +285,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamMatchmakingServers* TRAP::Utils::Steam::GetSteamMatchmakingServers()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamMatchmakingServers(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamMatchmakingServers(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamMatchmakingServers();
 }
@@ -253,7 +298,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamMusic* TRAP::Utils::Steam::GetSteamMusic()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamMusic(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamMusic(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamMusic();
 }
@@ -262,7 +311,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamMusicRemote* TRAP::Utils::Steam::GetSteamMusicRemote()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamMusicRemote(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamMusicRemote(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamMusicRemote();
 }
@@ -271,7 +324,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamNetworkingMessages* TRAP::Utils::Steam::GetSteamClientNetworkingMessages()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamClientNetworkingMessages(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamClientNetworkingMessages(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamNetworkingMessages();
 }
@@ -280,7 +337,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamNetworkingMessages* TRAP::Utils::Steam::GetSteamServerNetworkingMessages()
 {
-    TRAP_ASSERT(steamServerInitialized, "Steam::GetSteamServerNetworkingMessages(): SteamAPI is not initialized!");
+    if(!steamServerInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamServerNetworkingMessages(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamGameServerNetworkingMessages();
 }
@@ -289,7 +350,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamNetworkingSockets* TRAP::Utils::Steam::GetSteamClientNetworkingSockets()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamClientNetworkingSockets(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamClientNetworkingSockets(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamNetworkingSockets();
 }
@@ -298,7 +363,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamNetworkingSockets* TRAP::Utils::Steam::GetSteamServerNetworkingSockets()
 {
-    TRAP_ASSERT(steamServerInitialized, "Steam::GetSteamServerNetworkingSockets(): SteamAPI is not initialized!");
+    if(!steamServerInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamServerNetworkingSockets(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamGameServerNetworkingSockets();
 }
@@ -307,7 +376,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamNetworkingUtils* TRAP::Utils::Steam::GetSteamNetworkingUtils()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamNetworkingUtils(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamNetworkingUtils(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamNetworkingUtils();
 }
@@ -316,7 +389,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamParties* TRAP::Utils::Steam::GetSteamParties()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamParties(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamParties(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamParties();
 }
@@ -325,7 +402,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamRemotePlay* TRAP::Utils::Steam::GetSteamRemotePlay()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamRemotePlay(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamRemotePlay(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamRemotePlay();
 }
@@ -334,7 +415,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamRemoteStorage* TRAP::Utils::Steam::GetSteamRemoteStorage()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamRemoteStorage(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamRemoteStorage(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamRemoteStorage();
 }
@@ -343,7 +428,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamScreenshots* TRAP::Utils::Steam::GetSteamScreenshots()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamScreenshots(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamScreenshots(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamScreenshots();
 }
@@ -352,7 +441,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamUGC* TRAP::Utils::Steam::GetSteamClientUGC()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamClientUGC(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamClientUGC(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamUGC();
 }
@@ -361,7 +454,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamUGC* TRAP::Utils::Steam::GetSteamServerUGC()
 {
-    TRAP_ASSERT(steamServerInitialized, "Steam::GetSteamServerUGC(): SteamAPI is not initialized!");
+    if(!steamServerInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamServerUGC(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamGameServerUGC();
 }
@@ -370,7 +467,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamUser* TRAP::Utils::Steam::GetSteamUser()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamUser(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamUser(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamUser();
 }
@@ -379,7 +480,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamUserStats* TRAP::Utils::Steam::GetSteamUserStats()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamUserStats(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamUserStats(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamUserStats();
 }
@@ -388,7 +493,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamUtils* TRAP::Utils::Steam::GetSteamClientUtils()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamClientUtils(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamClientUtils(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamUtils();
 }
@@ -397,7 +506,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamUtils* TRAP::Utils::Steam::GetSteamServerUtils()
 {
-    TRAP_ASSERT(steamServerInitialized, "Steam::GetSteamServerUtils(): SteamAPI is not initialized!");
+    if(!steamServerInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamServerUtils(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamGameServerUtils();
 }
@@ -406,7 +519,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamVideo* TRAP::Utils::Steam::GetSteamVideo()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamVideo(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamVideo(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamVideo();
 }
@@ -415,7 +532,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamTimeline* TRAP::Utils::Steam::GetSteamTimeline()
 {
-    TRAP_ASSERT(steamClientInitialized, "Steam::GetSteamTimeline(): SteamAPI is not initialized!");
+    if(!steamClientInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamTimeline(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamTimeline();
 }
@@ -424,7 +545,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamGameServer* TRAP::Utils::Steam::GetSteamGameServer()
 {
-    TRAP_ASSERT(steamServerInitialized, "Steam::GetSteamGameServer(): SteamGameServer is not initialized!");
+    if(!steamServerInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamGameServer(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamGameServer();
 }
@@ -433,7 +558,11 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 [[nodiscard]] ISteamGameServerStats* TRAP::Utils::Steam::GetSteamGameServerStats()
 {
-    TRAP_ASSERT(steamServerInitialized, "Steam::GetSteamGameServerStats(): SteamGameServer is not initialized!");
+    if(!steamServerInitialized)
+    {
+        TRAP_ASSERT(false, "Steam::GetSteamGameServerStats(): Steamworks SDK is not initialized!");
+        return nullptr;
+    }
 
     return SteamGameServerStats();
 }
