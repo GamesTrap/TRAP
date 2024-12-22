@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2024 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -38,13 +38,13 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
-	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
-		return 0; //We failed to retrieve the port
+	if(GetNativeHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
+		return 0u; //We failed to retrieve the port
 
 	//Retrieve information about the local end of the socket
 	sockaddr address{};
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
-	if (getsockname(GetHandle(), &address, &size) != -1)
+	if (getsockname(GetNativeHandle(), &address, &size) != -1)
 	{
 		u16 res = std::bit_cast<sockaddr_in>(address).sin_port;
 
@@ -54,7 +54,7 @@
 		return res;
 	}
 
-	return 0; //We failed to retrieve the port
+	return 0u; //We failed to retrieve the port
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -70,13 +70,13 @@
 	CreateIPv4();
 
 	//Check if the address is valid
-	if ((address == IPv4Address::None) || (address == IPv4Address::Broadcast))
+	if (address == IPv4Address::Broadcast)
 		return Status::Error;
 
 	//Bind the socket to the specified port
 	const sockaddr_in addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToInteger(), port);
 	const sockaddr finalAddr = std::bit_cast<const sockaddr>(addr);
-	if(bind(GetHandle(), &finalAddr, sizeof(sockaddr_in)) == -1)
+	if(bind(GetNativeHandle(), &finalAddr, sizeof(sockaddr_in)) == -1)
 	{
 		//Not likely to happen, but...
 		TP_ERROR(Log::NetworkTCPListenerPrefix, "Failed to bind listener socket to port", port);
@@ -84,7 +84,7 @@
 	}
 
 	//Listen to the bound port
-	if(::listen(GetHandle(), SOMAXCONN) == -1)
+	if(::listen(GetNativeHandle(), SOMAXCONN) == -1)
 	{
 		//Oops, socket is deaf
 		TP_ERROR(Log::NetworkTCPListenerPrefix, "Failed to listen to port", port);
@@ -111,7 +111,7 @@ void TRAP::Network::TCPListener::Close()
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Make sure that we're listening
-	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
+	if(GetNativeHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 	{
 		TP_ERROR(Log::NetworkTCPListenerPrefix, "Failed to accept a new connection, the socket is not listening");
 		return Status::Error;
@@ -120,7 +120,7 @@ void TRAP::Network::TCPListener::Close()
 	//Accept a new connection
 	sockaddr address{};
 	INTERNAL::Network::SocketImpl::AddressLength length = sizeof(sockaddr_in);
-	const SocketHandle remote = ::accept(GetHandle(), &address, &length);
+	const SocketHandle remote = ::accept(GetNativeHandle(), &address, &length);
 
 	//Check for errors
 	if (remote == INTERNAL::Network::SocketImpl::InvalidSocket())

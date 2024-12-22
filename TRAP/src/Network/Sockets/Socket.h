@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2024 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -27,23 +27,24 @@
 #ifndef TRAP_NETWORK_SOCKET_H
 #define TRAP_NETWORK_SOCKET_H
 
+#include <utility>
+
 #include "Core/PlatformDetection.h"
 
 #include "SocketHandle.h"
 
 namespace TRAP::Network
 {
-	class SocketSelector;
-
+	/// @brief Base class for all the socket types
 	class Socket
 	{
 	public:
 		/// @brief Constructor.
 		constexpr Socket() noexcept = default;
 		/// @brief Move constructor.
-		constexpr Socket(Socket&&) noexcept = default;
+		constexpr Socket(Socket&& socket) noexcept;
 		/// @brief Move assignment operator.
-		Socket& operator=(Socket&&) noexcept = default;
+		Socket& operator=(Socket&& socket) noexcept;
 		/// @brief Copy constructor.
 		consteval Socket(const Socket&) = delete;
 		/// @brief Copy assignment operator.
@@ -59,11 +60,7 @@ namespace TRAP::Network
 			Error         //An unexpected error happened
 		};
 
-		/// @brief Some special values used by sockets.
-		enum : u8
-		{
-			AnyPort = 0 //Special value that tells the system to pick any available port
-		};
+		static constexpr u16 AnyPort{0}; //Special value that tells the system to pick any available port.
 
 		/// @brief Destructor.
 		virtual ~Socket();
@@ -106,7 +103,7 @@ namespace TRAP::Network
 		/// was not created yet (or already destroyed).
 		/// This function can only be accessed by derived classes.
 		/// @return The internal (OS-specific) handle of the socket.
-		[[nodiscard]] constexpr SocketHandle GetHandle() const noexcept;
+		[[nodiscard]] constexpr SocketHandle GetNativeHandle() const noexcept;
 
 		/// @brief Create the internal representation of the socket.
 		///
@@ -152,6 +149,19 @@ constexpr TRAP::Network::Socket::Socket(const Type type) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+constexpr TRAP::Network::Socket::Socket(Socket&& socket) noexcept
+:	m_type(socket.m_type),
+#ifdef TRAP_PLATFORM_WINDOWS
+	m_socket(std::exchange(socket.m_socket, INVALID_SOCKET)),
+#elif defined(TRAP_PLATFORM_LINUX)
+	m_socket(std::exchange(socket.m_socket, -1)),
+#endif
+	m_isBlocking(socket.m_isBlocking)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr bool TRAP::Network::Socket::IsBlocking() const noexcept
 {
 	return m_isBlocking;
@@ -159,7 +169,7 @@ constexpr TRAP::Network::Socket::Socket(const Type type) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Network::SocketHandle TRAP::Network::Socket::GetHandle() const noexcept
+[[nodiscard]] constexpr TRAP::Network::SocketHandle TRAP::Network::Socket::GetNativeHandle() const noexcept
 {
 	return m_socket;
 }

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2024 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -32,12 +32,57 @@
 #include "Utils/Utils.h"
 #include "Utils/Memory.h"
 
-
-TRAP::Network::IPv4Address::IPv4Address(const std::string& address)
+TRAP::Optional<TRAP::Network::IPv4Address> TRAP::Network::IPv4Address::Resolve(const std::string& address)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
-	Resolve(address);
+	using namespace std::string_view_literals;
+
+	if(address.empty())
+	{
+		//Not generating an error message here as resolution failure is a valid outcome.
+		return TRAP::NullOpt;
+	}
+
+	if(address == "255.255.255.255"sv)
+	{
+		//The broadcast address needs to be handled explicitly,
+		//because it is also the value returned by inet_addr on error.
+		return Broadcast;
+	}
+
+	if(address == "0.0.0.0"sv)
+		return Any;
+
+	//Try to convert the address as a byte representation ("xxx.xxx.xxx.xxx")
+	if(u32 ip = inet_addr(address.c_str()); ip != INADDR_NONE)
+	{
+		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
+			TRAP::Utils::Memory::SwapBytes(ip);
+
+		return IPv4Address(ip);
+	}
+
+	//Not a valid address, try to convert it as a host name
+	addrinfo hints{};
+	hints.ai_family = AF_INET;
+
+	addrinfo* result = nullptr;
+	if(getaddrinfo(address.c_str(), nullptr, &hints, &result) == 0 && result != nullptr)
+	{
+		const sockaddr_in sin = std::bit_cast<sockaddr_in>(*(result->ai_addr));
+
+		u32 ip = sin.sin_addr.s_addr;
+		freeaddrinfo(result);
+
+		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
+			TRAP::Utils::Memory::SwapBytes(ip);
+
+		return IPv4Address(ip);
+	}
+
+	//Not generating an error message here as a resolution failure is a valid outcome.
+	return TRAP::NullOpt;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -49,6 +94,9 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string& address)
 	in_addr address{};
 	address.s_addr = m_address;
 
+	if constexpr (Utils::GetEndian() == Utils::Endian::Little)
+		TRAP::Utils::Memory::SwapBytes(address.s_addr);
+
 	std::string str(16, '\0');
 	inet_ntop(AF_INET, &address, str.data(), NumericCast<u32>(str.size()));
 	std::erase(str, '\0');
@@ -57,7 +105,7 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string& address)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
+[[nodiscard]] TRAP::Optional<TRAP::Network::IPv4Address> TRAP::Network::IPv4Address::GetLocalAddress()
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
@@ -68,11 +116,13 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string& address)
 	//Create the socket
 	const SocketHandle sock = socket(PF_INET, SOCK_DGRAM, 0);
 	if (sock == INTERNAL::Network::SocketImpl::InvalidSocket())
-		return {};
+	{
+		TP_ERROR(TRAP::Log::NetworkIPv4AddressPrefix, "Failed to retrieve local address (invalid socket)");
+		return TRAP::NullOpt;
+	}
 
 	//Connect the socket to localhost on any port
 	u32 loopback = INADDR_LOOPBACK;
-
 	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(loopback);
 
@@ -81,7 +131,9 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string& address)
 	if (connect(sock, &convertedAddress, sizeof(address)) == -1)
 	{
 		INTERNAL::Network::SocketImpl::Close(sock);
-		return {};
+
+		TP_ERROR(TRAP::Log::NetworkIPv4AddressPrefix, "Failed to retrieve local address (socket connection failure)");
+		return TRAP::NullOpt;
 	}
 
 	//Get the local address of the socket connection
@@ -89,7 +141,9 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string& address)
 	if(getsockname(sock, &convertedAddress, &size) == -1)
 	{
 		INTERNAL::Network::SocketImpl::Close(sock);
-		return {};
+
+		TP_ERROR(TRAP::Log::NetworkIPv4AddressPrefix, "Failed to retrieve local address (socket local address retrieval failure)");
+		return TRAP::NullOpt;
 	}
 
 	//Close the socket
@@ -97,7 +151,6 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string& address)
 
 	//Finally build the IP address
 	u32 addr = std::bit_cast<sockaddr_in>(convertedAddress).sin_addr.s_addr;
-
 	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(addr);
 
@@ -106,7 +159,7 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string& address)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetPublicAddress(const Utils::TimeStep timeout)
+[[nodiscard]] TRAP::Optional<TRAP::Network::IPv4Address> TRAP::Network::IPv4Address::GetPublicAddress(const Utils::TimeStep timeout)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
@@ -121,78 +174,38 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string& address)
 	HTTP::Request request("/ip-provider.php", HTTP::Request::Method::GET);
 	HTTP::Response page = server.SendRequest(request, timeout);
 	if(page.GetStatus() == HTTP::Response::Status::OK)
-		return IPv4Address(page.GetBody());
+		return IPv4Address::Resolve(page.GetBody());
 
 	//Retry with a different server
 	server.SetHost("www.sfml-dev.org", 80u, IPVersion::IPv4);
 	request.SetURI("/ip-provider.php");
 	page = server.SendRequest(request, timeout);
 	if (page.GetStatus() == HTTP::Response::Status::OK)
-		return IPv4Address(page.GetBody());
+		return IPv4Address::Resolve(page.GetBody());
 
 	//Something failed: return an invalid address
-	return {};
+	TP_ERROR(TRAP::Log::NetworkIPv4AddressPrefix, "Failed to retrieve public address from external IP resolution server (HTTP response status ", page.GetStatus(), ")");
+	return TRAP::NullOpt;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::IPv4Address::Resolve(const std::string& address)
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
-
-	m_address = 0;
-	m_valid = false;
-
-	if(address == "255.255.255.255")
-	{
-		//The broadcast address needs to be handled explicitly,
-		//because it is also the value returned by inet_addr on error
-		m_address = INADDR_BROADCAST;
-		m_valid = true;
-	}
-	else if(address == "0.0.0.0")
-	{
-		m_address = INADDR_ANY;
-		m_valid = true;
-	}
-	else
-	{
-		//Try to convert the address as a byte representation ("xxx.xxx.xxx.xxx")
-		u32 ip{};
-		if((inet_pton(AF_INET, address.c_str(), &ip) != 0) && ip != INADDR_NONE)
-		{
-			m_address = ip;
-			m_valid = true;
-		}
-		else if(!address.empty())
-		{
-			//Not a valid address, try to convert it as a host name
-			addrinfo hints{};
-			hints.ai_family = AF_INET;
-			addrinfo* result = nullptr;
-			if(getaddrinfo(address.c_str(), nullptr, &hints, &result) == 0)
-			{
-				if(result != nullptr)
-				{
-					ip = std::bit_cast<sockaddr_in>(*(result->ai_addr)).sin_addr.s_addr;
-					freeaddrinfo(result);
-					m_address = ip;
-					m_valid = true;
-				}
-			}
-		}
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::istream& TRAP::Network::operator>>(std::istream& stream, TRAP::Network::IPv4Address& address)
+std::istream& TRAP::Network::operator>>(std::istream& stream, TRAP::Optional<TRAP::Network::IPv4Address>& address)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	std::string str;
 	stream >> str;
-	address = TRAP::Network::IPv4Address(str);
+	address = TRAP::Network::IPv4Address::Resolve(str);
 
 	return stream;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::ostream& TRAP::Network::operator<<(std::ostream& stream, const TRAP::Network::IPv4Address& address)
+{
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
+
+	return stream << address.ToString();
 }

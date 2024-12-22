@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2024 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -54,13 +54,13 @@ namespace
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
-	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
-		return 0; //We failed to retrieve the port
+	if(GetNativeHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
+		return 0u;
 
 	//Retrieve information about the local end of the socket
 	sockaddr address{};
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
-	if (getsockname(GetHandle(), &address, &size) != -1)
+	if (getsockname(GetNativeHandle(), &address, &size) != -1)
 	{
 		u16 port = std::bit_cast<sockaddr_in>(address).sin_port;
 
@@ -70,23 +70,23 @@ namespace
 		return port;
 	}
 
-	//Failed to retrieve the port
-	return 0;
+	//We failed to retrieve the address.
+	return 0u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Network::IPv4Address TRAP::Network::TCPSocket::GetRemoteAddress() const
+[[nodiscard]] TRAP::Optional<TRAP::Network::IPv4Address> TRAP::Network::TCPSocket::GetRemoteAddress() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
-	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
-		return IPv4Address::None; //We failed to retrieve the address
+	if(GetNativeHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
+		return TRAP::NullOpt;
 
 	//Retrieve information about the remote end of the socket
 	sockaddr address{};
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
-	if (getpeername(GetHandle(), &address, &size) != -1)
+	if (getpeername(GetNativeHandle(), &address, &size) != -1)
 	{
 		u32 addr = std::bit_cast<sockaddr_in>(address).sin_addr.s_addr;
 
@@ -96,7 +96,8 @@ namespace
 		return IPv4Address(addr);
 	}
 
-	return IPv4Address::None;
+	//We failed to retrieve the address.
+	return TRAP::NullOpt;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -105,13 +106,13 @@ namespace
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
-	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
-		return 0; //We failed to retrieve the port
+	if(GetNativeHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
+		return 0u;
 
 	//Retrieve information about the remote end of the socket
 	sockaddr address{};
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
-	if (getpeername(GetHandle(), &address, &size) != -1)
+	if (getpeername(GetNativeHandle(), &address, &size) != -1)
 	{
 		u16 port = std::bit_cast<sockaddr_in>(address).sin_port;
 
@@ -121,7 +122,8 @@ namespace
 		return port;
 	}
 
-	return 0;
+ 	//We failed to retrieve the port.
+	return 0u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -146,7 +148,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Addres
 		//We're not using a timeout: just try to connect
 
 		//Connect the socket
-		if (::connect(GetHandle(), &convertedAddr, sizeof(sockaddr_in)) == -1)
+		if (::connect(GetNativeHandle(), &convertedAddr, sizeof(sockaddr_in)) == -1)
 			return INTERNAL::Network::SocketImpl::GetErrorStatus();
 
 		//Connection succeeded
@@ -155,7 +157,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Addres
 
 	//We're using a timeout: we'll need a few tricks to make it work
 
-	//save the previous blocking state
+	//Save the previous blocking state
 	const bool blocking = IsBlocking();
 
 	//Switch to non-blocking to enable our connection timeout
@@ -163,7 +165,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Addres
 		SetBlocking(false);
 
 	//Try to connect to the remote address
-	if(::connect(GetHandle(), &convertedAddr, sizeof(sockaddr_in)) >= 0)
+	if(::connect(GetNativeHandle(), &convertedAddr, sizeof(sockaddr_in)) >= 0)
 	{
 		//We got instantly connected! (it may no happen a lot...)
 		SetBlocking(blocking);
@@ -183,19 +185,19 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Addres
 		//Setup the selector
 		fd_set selector;
 		FD_ZERO(&selector);
-		FD_SET(GetHandle(), &selector);
+		FD_SET(GetNativeHandle(), &selector);
 
 		//Setup the timeout
 		timeval time{};
 		time.tv_sec = static_cast<time_t>(timeout.GetSeconds());
-		time.tv_usec = static_cast<time_t>(timeout.GetSeconds());
+		time.tv_usec = static_cast<long>((timeout.GetSeconds() - NumericCast<f32>(time.tv_sec)) * 1'000'000);
 
 		//Wait for something to write on our socket (which means that the connection request has returned)
-		if(select(static_cast<i32>(GetHandle() + 1), nullptr, &selector, nullptr, &time) > 0)
+		if(select(static_cast<i32>(GetNativeHandle() + 1), nullptr, &selector, nullptr, &time) > 0)
 		{
 			//At this point the connection may have been either accepted or refused.
 			//To know whether it's a success or a failure, we must check the address of the connected peer
-			if(GetRemoteAddress() != IPv4Address::None)
+			if(GetRemoteAddress().HasValue())
 				status = Status::Done; //Connection accepted
 			else
 				status = INTERNAL::Network::SocketImpl::GetErrorStatus(); //Conncetion refused
@@ -232,7 +234,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* const d
 	if (!IsBlocking())
 		TP_WARN(Log::NetworkTCPSocketPrefix, "Partial sends might not be handled properly.");
 
-	usize sent = 0;
+	usize sent = 0u;
 
 	return Send(data, size, sent);
 }
@@ -256,7 +258,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* const d
 	for(sent = 0; sent < size; sent += NumericCast<usize>(result))
 	{
 		//Send a chunk of data
-		result = ::send(GetHandle(), static_cast<const char*>(data) + sent, size - sent, flags);
+		result = ::send(GetNativeHandle(), static_cast<const char*>(data) + sent, size - sent, flags);
 
 		//Check for errors
 		if(result < 0)
@@ -292,7 +294,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* const data
 	}
 
 	//Receive a chunk of bytes
-	const i64 sizeReceived = recv(GetHandle(), static_cast<char*>(data), size, flags);
+	const i64 sizeReceived = recv(GetNativeHandle(), static_cast<char*>(data), size, flags);
 
 	//Check the number of bytes received
 	if (sizeReceived > 0)
@@ -308,7 +310,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* const data
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet) const
+TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
@@ -322,7 +324,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet) con
 	//partial send, which could cause data corruption on the receiving end.
 
 	//Get the data to send from the packet
-	usize size = 0;
+	usize size = 0u;
 	const void* const data = packet.OnSend(size);
 
 	//First convert the packet size to network byte order
@@ -332,22 +334,22 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet) con
 		TRAP::Utils::Memory::SwapBytes(packetSize);
 
 	//Allocate memory for the data block to send
-	std::vector<u8> blockToSend(sizeof(packetSize) + size);
+	m_blockToSendBuffer.resize(sizeof(packetSize) + size);
 
 	//Copy the packet size and data into the block to send
-	std::copy_n(reinterpret_cast<const u8*>(&packetSize), sizeof(packetSize), blockToSend.data());
-	if (size > 0)
-		std::copy_n(static_cast<const u8*>(data), size, blockToSend.data() + sizeof(packetSize));
+	std::copy_n(reinterpret_cast<const u8*>(&packetSize), sizeof(packetSize), m_blockToSendBuffer.data());
+	if (size > 0u)
+		std::copy_n(static_cast<const u8*>(data), size, m_blockToSendBuffer.data() + sizeof(packetSize));
 
 	//Send the data block
-	usize sent = 0;
-	const Status status = Send(blockToSend.data() + packet.m_sendPos, blockToSend.size() - packet.m_sendPos, sent);
+	usize sent = 0u;
+	const Status status = Send(m_blockToSendBuffer.data() + packet.m_sendPos, m_blockToSendBuffer.size() - packet.m_sendPos, sent);
 
 	//In the case of a partial send, record the location to resume from
 	if (status == Status::Partial)
 		packet.m_sendPos += sent;
 	else if (status == Status::Done)
-		packet.m_sendPos = 0;
+		packet.m_sendPos = 0u;
 
 	return status;
 }
@@ -362,8 +364,8 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 	packet.Clear();
 
 	//We start by getting the size of the incoming packet
-	u32 packetSize = 0;
-	usize received = 0;
+	u32 packetSize = 0u;
+	usize received = 0u;
 	if(m_pendingPacket.SizeReceived < sizeof(m_pendingPacket.Size))
 	{
 		//Loop until we've received the entire size of the packet
@@ -393,7 +395,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 	}
 
 	//Loop until we receive all the packet data
-	std::array<u8, 1024> buffer{};
+	std::array<u8, 1024u> buffer{};
 	while(m_pendingPacket.Data.size() < packetSize)
 	{
 		//Receive a chunk of data
@@ -404,7 +406,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 			return status;
 
 		//Append it into the packet
-		if(received > 0)
+		if(received > 0u)
 		{
 			m_pendingPacket.Data.resize(m_pendingPacket.Data.size() + received);
 			u8* const begin = m_pendingPacket.Data.data() + m_pendingPacket.Data.size() - received;

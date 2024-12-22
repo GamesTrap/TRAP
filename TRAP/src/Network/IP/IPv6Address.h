@@ -8,6 +8,7 @@
 #include <fmt/ostream.h>
 
 #include "Utils/Time/TimeStep.h"
+#include "Utils/Optional.h"
 
 namespace TRAP::Network
 {
@@ -17,25 +18,12 @@ namespace TRAP::Network
 	class IPv6Address
 	{
 	public:
-		/// @brief This constructor creates an empty (invalid) address.
-		constexpr IPv6Address() noexcept = default;
-
 		/// @brief Construct the address from a string.
-		///
-		/// Here address can be either a hex address (ex: "2001:0db8:85a3:0000:0000:8a2e:0370:7334") or a
-		/// network name (ex: "localhost").
-		/// @param address IPv6 address or network name.
-		explicit IPv6Address(const std::string& address);
-
-		/// @brief Construct the address from a string.
-		///
-		/// Here address can either be a hex address (ex: "2001:0db8:85a3:0000:0000:8a2e:0370:7334") or a
-		/// network name (ex: "localhost").
-		/// This is equivalent to the constructor taking a std::string
-		/// parameter, it is defined for convenience so that the
-		/// implicit conversion from literal strings to IPv6Address work.
-		/// @param address IPv6 address or network name.
-		explicit IPv6Address(const char* address);
+		///        Here address can be either a hex address (ex: "2001:0db8:85a3:0000:0000:8a2e:0370:7334") or a
+	    ///        network name (ex: "localhost").
+		/// @param address IP address or network name.
+		/// @return Address if provided argument was valid, otherwise TRAP::NullOpt.
+		[[nodiscard]] static TRAP::Optional<IPv6Address> Resolve(const std::string& address);
 
 		/// @brief Construct the address from 16 bytes array.
 		/// @param addressBytes Array containing 16 bytes address.
@@ -74,9 +62,9 @@ namespace TRAP::Network
 		/// The local address is the address of the computer from the
 		/// LAN point of view, i.e. something like 2001:0db8:85a3:0000:0000:8a2e:0370:7334.
 		/// It is meaningful only for communications over the local network.
-		/// Unlike GetPublicAddress, this function is fast and may be used safely anywhere.
-		/// @return Local IPv6 address of the computer.
-		[[nodiscard]] static IPv6Address GetLocalAddress();
+		/// Unlike GetPublicAddress(), this function is fast and may be used safely anywhere.
+		/// @return Local IPv6 address of the computer on success, TRAP::NullOpt otherwise.
+		[[nodiscard]] static TRAP::Optional<IPv6Address> GetLocalAddress();
 
 		/// @brief Get the computer's public address.
 		///
@@ -92,30 +80,18 @@ namespace TRAP::Network
 		/// to be possibly stuck waiting in case there is a problem; this
 		/// limit is deactivated by default.
 		/// @param timeout Maximum time to wait. Default: 2 minutes.
-		/// @return Public IP address of the computer.
-		[[nodiscard]] static IPv6Address GetPublicAddress(Utils::TimeStep timeout = Utils::TimeStep(120.0f));
+		/// @return Public IP address of the computer on success, TRAP::NullOpt otherwise.
+		[[nodiscard]] static TRAP::Optional<IPv6Address> GetPublicAddress(Utils::TimeStep timeout = Utils::TimeStep(120.0f));
 
-		static const IPv6Address None; //Value representing an empty/invaid address
 		static const IPv6Address Any; //Value representing any address (0000:0000:0000:0000:0000:0000:0000:0000)
 		static const IPv6Address LocalHost; //The "localhost" address (for connecting a computer to itself locally)
 
-		[[nodiscard]] friend constexpr auto operator<=>(const IPv6Address& lhs, const IPv6Address& rhs)
-		{
-			return lhs.m_address <=> rhs.m_address;
-		};
-
-		[[nodiscard]] friend constexpr bool operator==(const IPv6Address& lhs, const IPv6Address& rhs)
-		{
-			return lhs.m_address == rhs.m_address;
-		}
+		[[nodiscard]] friend constexpr auto operator<=>(const IPv6Address& lhs, const IPv6Address& rhs) = default;
+		[[nodiscard]] friend constexpr bool operator==(const IPv6Address& lhs, const IPv6Address& rhs) = default;
+		[[nodiscard]] friend constexpr bool operator!=(const IPv6Address& lhs, const IPv6Address& rhs) = default;
 
 	private:
-		/// @brief Resolve the given address string.
-		/// @param address Address string.
-		void Resolve(const std::string& address);
-
 		std::array<u8, 16> m_address{}; //Address stored as an 128 bit array
-		bool m_valid = false; //Is the address valid?
 	};
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -124,13 +100,19 @@ namespace TRAP::Network
 	/// @param stream Input stream.
 	/// @param address IP address to extract.
 	/// @return Reference to the input stream.
-	std::istream& operator>>(std::istream& stream, TRAP::Network::IPv6Address& address);
+	std::istream& operator>>(std::istream& stream, TRAP::Optional<TRAP::Network::IPv6Address>& address);
+
+	/// @brief Overload of << operator to print an IP address to an output stream.
+	/// @param stream Output stream.
+	/// @param address IP address to print.
+	/// @return Reference to the output stream.
+	std::ostream& operator<<(std::ostream& stream, const TRAP::Network::IPv6Address& address);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr TRAP::Network::IPv6Address::IPv6Address(const std::array<u8, 16>& addressBytes) noexcept
-	: m_address(addressBytes), m_valid(true)
+	: m_address(addressBytes)
 {
 }
 
@@ -143,7 +125,6 @@ constexpr TRAP::Network::IPv6Address::IPv6Address(const std::array<u8, 16>& addr
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline constexpr TRAP::Network::IPv6Address TRAP::Network::IPv6Address::None{};
 inline constexpr TRAP::Network::IPv6Address TRAP::Network::IPv6Address::Any(std::array<u8, 16u>
 	{
 		0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u

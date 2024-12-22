@@ -12,13 +12,13 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
-	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
-		return 0; //We failed to retrieve the port
+	if(GetNativeHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
+		return 0u; //We failed to retrieve the port
 
 	//Retrieve information about the local end of the socket
 	sockaddr_in6 address{};
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in6);
-	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
+	if (getsockname(GetNativeHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
 	{
 		u16 res = address.sin6_port;
 
@@ -28,7 +28,7 @@
 		return res;
 	}
 
-	return 0; //We failed to retrieve the port
+	return 0u; //We failed to retrieve the port
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -43,13 +43,9 @@
 	//Create the internal socket if it doesn't exist
 	CreateIPv6();
 
-	//Check if the address is valid
-	if (address == IPv6Address::None)
-		return Status::Error;
-
 	//Bind the socket to the specified port
 	const sockaddr_in6 addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToArray(), port);
-	if(bind(GetHandle(), reinterpret_cast<const sockaddr*>(&addr), sizeof(sockaddr_in6)) == -1)
+	if(bind(GetNativeHandle(), reinterpret_cast<const sockaddr*>(&addr), sizeof(sockaddr_in6)) == -1)
 	{
 		//Not likely to happen, but...
 		TP_ERROR(Log::NetworkTCPListenerPrefix, "Failed to bind listener socket to port", port);
@@ -57,7 +53,7 @@
 	}
 
 	//Listen to the bound port
-	if(::listen(GetHandle(), SOMAXCONN) == -1)
+	if(::listen(GetNativeHandle(), SOMAXCONN) == -1)
 	{
 		//Oops, socket is deaf
 		TP_ERROR(Log::NetworkTCPListenerPrefix, "Failed to listen to port", port);
@@ -84,7 +80,7 @@ void TRAP::Network::TCPListenerIPv6::Close()
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//Make sure that we're listening
-	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
+	if(GetNativeHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 	{
 		TP_ERROR(Log::NetworkTCPListenerPrefix, "Failed to accept a new connection, the socket is not listening");
 		return Status::Error;
@@ -93,7 +89,7 @@ void TRAP::Network::TCPListenerIPv6::Close()
 	//Accept a new connection
 	sockaddr_in6 address{};
 	INTERNAL::Network::SocketImpl::AddressLength length = sizeof(sockaddr_in6);
-	const SocketHandle remote = ::accept(GetHandle(), reinterpret_cast<sockaddr*>(&address), &length);
+	const SocketHandle remote = ::accept(GetNativeHandle(), reinterpret_cast<sockaddr*>(&address), &length);
 
 	//Check for errors
 	if (remote == INTERNAL::Network::SocketImpl::InvalidSocket())

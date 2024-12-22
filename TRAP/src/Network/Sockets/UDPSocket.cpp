@@ -36,13 +36,13 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
-	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
-		return 0; //We failed to retrieve the port
+	if(GetNativeHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
+		return 0u; //We failed to retrieve the port
 
 	//Retrieve information about the local end of the socket
 	sockaddr address{};
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
-	if (getsockname(GetHandle(), &address, &size) != -1)
+	if (getsockname(GetNativeHandle(), &address, &size) != -1)
 	{
 		u16 port = std::bit_cast<sockaddr_in>(address).sin_port;
 
@@ -52,7 +52,7 @@
 		return port;
 	}
 
-	return 0;
+	return 0u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -68,15 +68,15 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Bind(const u16 port, con
 	CreateIPv4();
 
 	//Check if the address is valid
-	if ((address == IPv4Address::None) || (address == IPv4Address::Broadcast))
+	if (address == IPv4Address::Broadcast)
 		return Status::Error;
 
 	//Bind the socket
 	const sockaddr_in addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToInteger(), port);
 	const sockaddr finalAddr = std::bit_cast<sockaddr>(addr);
-	if(::bind(GetHandle(), &finalAddr, sizeof(addr)) == -1)
+	if(::bind(GetNativeHandle(), &finalAddr, sizeof(addr)) == -1)
 	{
-		TP_ERROR(Log::NetworkUDPSocketPrefix, "Failed to bind socket to port");
+		TP_ERROR(Log::NetworkUDPSocketPrefix, "Failed to bind socket to port ", port);
 		return Status::Error;
 	}
 
@@ -117,7 +117,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* const d
 	const sockaddr finalAddress = std::bit_cast<sockaddr>(address);
 
 	//Send the data (unlike TCP, all the data is always sent in one call)
-	const i64 sent = sendto(GetHandle(), static_cast<const char*>(data), size, 0,
+	const i64 sent = sendto(GetNativeHandle(), static_cast<const char*>(data), size, 0,
 	                            &finalAddress, sizeof(sockaddr_in));
 
 	//Check for errors
@@ -130,15 +130,15 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* const d
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* const data, const usize size,
-                                                                usize& received, IPv4Address& remoteAddress,
+                                                                usize& received, TRAP::Optional<IPv4Address>& remoteAddress,
 																u16& remotePort) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	//First clear the variables to fill
-	received = 0;
-	remoteAddress = IPv4Address();
-	remotePort = 0;
+	received = 0u;
+	remoteAddress = TRAP::NullOpt;
+	remotePort = 0u;
 
 	//Check the destination buffer
 	if(data == nullptr)
@@ -149,12 +149,12 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* const data
 	}
 
 	//Data that will be filled with the other computer's address
-	sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(INADDR_ANY, 0);
+	sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(INADDR_ANY, 0u);
 	sockaddr convertedAddress = std::bit_cast<sockaddr>(address);
 
 	//Receive a chunk of bytes
 	INTERNAL::Network::SocketImpl::AddressLength addressSize = sizeof(sockaddr_in);
-	const i64 sizeReceived = recvfrom(GetHandle(), static_cast<char*>(data), size, 0,
+	const i64 sizeReceived = recvfrom(GetNativeHandle(), static_cast<char*>(data), size, 0,
 	                                      &convertedAddress, &addressSize);
 
 	//Check for errors
@@ -197,7 +197,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(Packet& packet, con
 	//to the packet's data.
 
 	//Get the data to send from the packet
-	usize size = 0;
+	usize size = 0u;
 	const void* const data = packet.OnSend(size);
 
 	//Send it
@@ -206,7 +206,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(Packet& packet, con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(Packet& packet, IPv4Address& remoteAddress,
+TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(Packet& packet, TRAP::Optional<IPv4Address>& remoteAddress,
                                                                 u16& remotePort)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
@@ -214,12 +214,12 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(Packet& packet, 
 	//See the detailed comment in Send(Packet) above.
 
 	//Receive the datagram
-	usize received = 0;
+	usize received = 0u;
 	const Status status = Receive(m_buffer.data(), m_buffer.size(), received, remoteAddress, remotePort);
 
 	//If we received valid data, we can copy it to the user packet
 	packet.Clear();
-	if ((status == Status::Done) && (received > 0))
+	if ((status == Status::Done) && (received > 0u))
 		packet.OnReceive(m_buffer.data(), received);
 
 	return status;

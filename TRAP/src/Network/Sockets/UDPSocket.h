@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2024 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -40,7 +40,7 @@ namespace TRAP::Network
 	{
 	public:
 		/// @brief Constants.
-		static constinit const u32 MaxDatagramSize = 65507; //The maximum number of bytes that can be sent in a single UDP datagram
+		static constexpr usize MaxDatagramSize = 65507u; //The maximum number of bytes that can be sent in a single UDP datagram.
 
 		/// @brief Constructor.
 		constexpr UDPSocket();
@@ -115,7 +115,7 @@ namespace TRAP::Network
 		/// @param remoteAddress Address of the peer that sent the data.
 		/// @param remotePort Port of the peer that sent the data.
 		/// @return Status code.
-		[[nodiscard]] Status Receive(void* data, usize size, usize& received, IPv4Address& remoteAddress,
+		[[nodiscard]] Status Receive(void* data, usize size, usize& received, TRAP::Optional<IPv4Address>& remoteAddress,
 		                             u16& remotePort) const;
 
 		/// @brief Send a formatted packet of data to a remote peer.
@@ -137,10 +137,10 @@ namespace TRAP::Network
 		/// @param remoteAddress Address of the peer that sent the data.
 		/// @param remotePort Port of the peer that sent the data.
 		/// @return Status code.
-		[[nodiscard]] Status Receive(Packet& packet, IPv4Address& remoteAddress, u16& remotePort);
+		[[nodiscard]] Status Receive(Packet& packet, TRAP::Optional<IPv4Address>& remoteAddress, u16& remotePort);
 
 	private:
-		std::vector<u8> m_buffer = std::vector<u8>(MaxDatagramSize); //Temporary buffer holding the received data in Receive(Packet)
+		std::vector<u8> m_buffer = std::vector<u8>(MaxDatagramSize); //Temporary buffer holding the received data in Receive(Packet).
 	};
 }
 

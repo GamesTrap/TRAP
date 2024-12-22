@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2024 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -221,9 +221,9 @@ namespace TRAP::Network
 		[[nodiscard]] constexpr bool CheckSize(usize size) noexcept;
 
 		std::vector<u8> m_data{}; //Data stored in the packet
-		usize m_readPos = 0;  //Current reading position in the packet
-		usize m_sendPos = 0;  //Current send position in the packet (for handling partial sends)
-		bool m_isValid = true;      //Reading state of the packet
+		usize m_readPos = 0; //Current reading position in the packet
+		usize m_sendPos = 0; //Current send position in the packet (for handling partial sends)
+		bool m_isValid = true; //Reading state of the packet
 	};
 }
 
@@ -291,6 +291,8 @@ constexpr TRAP::Network::Packet::operator bool() const noexcept
 
 	return m_isValid;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
 
 constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(bool& data)
 {

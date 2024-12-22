@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2024 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -332,12 +332,12 @@ namespace TRAP::Network
 		[[nodiscard]] Response SendRequest(const Request& request, Utils::TimeStep timeout = Utils::TimeStep(120.0f));
 
 	private:
-		TCPSocket m_connection;         //Connection to the host
+		TCPSocket m_connection; //Connection to the host
 		TCPSocketIPv6 m_connectionIPv6; //Connection to the host
-		IPv4Address m_host{};           //Web host address
-		IPv6Address m_hostIPv6{};       //Web host address
-		std::string m_hostName{};       //Web host name
-		u16 m_port = 0;                 //Port used for connection with host
+		TRAP::Optional<IPv4Address> m_host{}; //Web host address
+		TRAP::Optional<IPv6Address> m_hostIPv6{}; //Web host address
+		std::string m_hostName{}; //Web host name
+		u16 m_port = 0; //Port used for connection with host
 	};
 }
 

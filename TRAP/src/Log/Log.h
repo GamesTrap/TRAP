@@ -155,7 +155,7 @@ namespace TRAP
 		/// @threadsafe
 		void Clear() noexcept;
 
-		static constexpr auto WindowVersion =                        "[24w51b2]";
+		static constexpr auto WindowVersion =                        "[24w51c1]";
 		static constexpr auto WindowPrefix =                         "[Window] ";
 		static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -246,6 +246,8 @@ namespace TRAP
 		static constexpr auto RendererVulkanInstancePrefix =         "[Renderer][Vulkan][Instance] ";
 		static constexpr auto RendererVulkanDebugPrefix =            "[Renderer][Vulkan][Debug] ";
 		static constexpr auto ImGuiPrefix =                          "[ImGui] ";
+		static constexpr auto NetworkIPv4AddressPrefix =             "[Network][IPv4Address] ";
+		static constexpr auto NetworkIPv6AddressPrefix =             "[Network][IPv6Address] ";
 		static constexpr auto NetworkSocketPrefix =                  "[Network][Socket] ";
 		static constexpr auto NetworkFTPPrefix =                     "[Network][FTP] ";
 		static constexpr auto NetworkHTTPPrefix =                    "[Network][HTTP] ";

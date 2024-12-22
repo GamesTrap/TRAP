@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Socket.h"
+#include "Utils/Optional.h"
 #include "Utils/Time/TimeStep.h"
 
 namespace TRAP::Network
@@ -39,10 +40,10 @@ namespace TRAP::Network
 
 		/// @brief Get the address of the connected peer.
 		///
-		/// If the socket is not connected, this function returns
+		/// If the socket is not connected, this function returns TRAP::NullOpt.
 		/// TRAP::Network::IPv4Address::None.
 		/// @return Address of the remote peer.
-		[[nodiscard]] IPv6Address GetRemoteAddress() const;
+		[[nodiscard]] TRAP::Optional<IPv6Address> GetRemoteAddress() const;
 
 		/// @brief Get the port of the connected peer to which
 		/// the socket is connected.
@@ -111,7 +112,7 @@ namespace TRAP::Network
 		/// This function will fail if the socket is not connected.
 		/// @param packet Packet to send.
 		/// @return Status code.
-		[[nodiscard]] Status Send(Packet& packet) const;
+		[[nodiscard]] Status Send(Packet& packet);
 
 		/// @brief Receive a formatted packet of data from the remote peer.
 		///
@@ -134,6 +135,7 @@ namespace TRAP::Network
 		};
 
 		PendingPacket m_pendingPacket; //Temporary data of the packet currently being received
+		std::vector<u8> m_blockToSendBuffer; //Buffer used to prepare data being sent from the socket
 	};
 }
 

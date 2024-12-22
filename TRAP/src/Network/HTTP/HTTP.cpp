@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2024 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -244,9 +244,9 @@ void TRAP::Network::HTTP::SetHost(std::string host, const u16 port, const IPVers
 		m_hostName.erase(m_hostName.size() - 1);
 
 	if(std::to_underlying(ipVersion & IPVersion::IPv6) != 0u)
-		m_hostIPv6 = IPv6Address(m_hostName);
+		m_hostIPv6 = IPv6Address::Resolve(m_hostName);
 	if(std::to_underlying(ipVersion & IPVersion::IPv4) != 0u)
-		m_host = IPv4Address(m_hostName);
+		m_host = IPv4Address::Resolve(m_hostName);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -275,8 +275,7 @@ TRAP::Network::HTTP::Response TRAP::Network::HTTP::SendRequest(const Request& re
 	Response received;
 
 	//Connect the socket to the host
-	if(m_hostIPv6 != IPv6Address::None &&
-	   m_connectionIPv6.Connect(m_hostIPv6, m_port, timeout) == Socket::Status::Done)
+	if(m_connectionIPv6.Connect(*m_hostIPv6, m_port, timeout) == Socket::Status::Done)
 	{
 		//Convert the request to string and send it through the connected socket
 		const std::string requestStr = toSend.Prepare();
@@ -301,8 +300,7 @@ TRAP::Network::HTTP::Response TRAP::Network::HTTP::SendRequest(const Request& re
 		//Close the connection
 		m_connectionIPv6.Disconnect();
 	}
-	else if(m_host != IPv4Address::None &&
-	        m_connection.Connect(m_host, m_port, timeout) == Socket::Status::Done)
+	else if(m_connection.Connect(*m_host, m_port, timeout) == Socket::Status::Done)
 	{
 		//Convert the request to string and send it through the connected socket
 		const std::string requestStr = toSend.Prepare();

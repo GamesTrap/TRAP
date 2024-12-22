@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2024 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -40,10 +40,10 @@ namespace TRAP::Network
 {
 	struct SocketSelector::SocketSelectorImpl
 	{
-		fd_set AllSockets;   //Set containing all the sockets handles
-		fd_set SocketsReady; //Set containing handles of the sockets that are ready
-		i32 MaxSockets;  //Maximum socket handle
-		i32 SocketCount; //Number of socket handles
+		fd_set AllSockets{};   //Set containing all the sockets handles
+		fd_set SocketsReady{}; //Set containing handles of the sockets that are ready
+		i32 MaxSockets{};  //Maximum socket handle
+		i32 SocketCount{}; //Number of socket handles
 	};
 }
 
@@ -80,57 +80,39 @@ TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(const So
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::SocketSelector::SocketSelector(SocketSelector&& other) noexcept
-	: m_impl(std::move(other.m_impl))
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(SocketSelector&& other) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
-
-	m_impl = std::move(other.m_impl);
-	return *this;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Network::SocketSelector::Add(const Socket& socket)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
-	const SocketHandle handle = socket.GetHandle();
-	if(handle != INTERNAL::Network::SocketImpl::InvalidSocket())
-	{
+	const SocketHandle handle = socket.GetNativeHandle();
+	if(handle == INTERNAL::Network::SocketImpl::InvalidSocket())
+		return;
+
 #ifdef TRAP_PLATFORM_WINDOWS
-		if(m_impl->SocketCount >= FD_SETSIZE)
-		{
-			TP_ERROR(Log::NetworkSocketPrefix, "The socket can't be added to the selector because the ",
-				"selector is full. This is a limitation of your operating system's FD_SETSIZE setting.");
-			return;
-		}
+	if(m_impl->SocketCount >= FD_SETSIZE)
+	{
+		TP_ERROR(Log::NetworkSocketPrefix, "The socket can't be added to the selector because the ",
+			"selector is full. This is a limitation of your operating system's FD_SETSIZE setting.");
+		return;
+	}
 
-		if (FD_ISSET(handle, &m_impl->AllSockets))
-			return;
+	if (FD_ISSET(handle, &m_impl->AllSockets))
+		return;
 
-		m_impl->SocketCount++;
+	++m_impl->SocketCount;
 #else
-		if(handle >= FD_SETSIZE)
-		{
-			TP_ERROR(Log::NetworkSocketPrefix, "The socket can't be added to the selector because its ",
-				"ID is too high. This is a limitation of your operating system's FD_SETSIZE setting.");
-			return;
-		}
+	if(handle >= FD_SETSIZE)
+	{
+		TP_ERROR(Log::NetworkSocketPrefix, "The socket can't be added to the selector because its ",
+			"ID is too high. This is a limitation of your operating system's FD_SETSIZE setting.");
+		return;
+	}
 
-		//SocketHandle is an i32 in POSIX
-		m_impl->MaxSockets = std::max(m_impl->MaxSockets, handle);
+	//SocketHandle is an i32 in POSIX
+	m_impl->MaxSockets = std::max(m_impl->MaxSockets, handle);
 #endif
 
-		FD_SET(handle, &m_impl->AllSockets);
-	}
+	FD_SET(handle, &m_impl->AllSockets);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -139,22 +121,22 @@ void TRAP::Network::SocketSelector::Remove(const Socket& socket) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
-	const SocketHandle handle = socket.GetHandle();
-	if(handle != INTERNAL::Network::SocketImpl::InvalidSocket())
-	{
-#ifdef TRAP_PLATFORM_WINDOWS
-		if (!FD_ISSET(handle, &m_impl->AllSockets))
-			return;
+	const SocketHandle handle = socket.GetNativeHandle();
+	if(handle == INTERNAL::Network::SocketImpl::InvalidSocket())
+		return;
 
-		m_impl->SocketCount--;
+#ifdef TRAP_PLATFORM_WINDOWS
+	if (!FD_ISSET(handle, &m_impl->AllSockets))
+		return;
+
+	--m_impl->SocketCount;
 #else
-		if (handle >= FD_SETSIZE)
-			return;
+	if (handle >= FD_SETSIZE)
+		return;
 #endif
 
-		FD_CLR(handle, &m_impl->AllSockets);
-		FD_CLR(handle, &m_impl->SocketsReady);
-	}
+	FD_CLR(handle, &m_impl->AllSockets);
+	FD_CLR(handle, &m_impl->SocketsReady);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -179,7 +161,7 @@ bool TRAP::Network::SocketSelector::Wait(const Utils::TimeStep timeout) const
 	//Setup the timeout
 	timeval time{};
 	time.tv_sec = static_cast<time_t>(timeout.GetSeconds());
-	time.tv_usec = static_cast<time_t>(timeout.GetSeconds());
+	time.tv_usec = static_cast<long>((timeout.GetSeconds() - NumericCast<f32>(time.tv_sec)) * 1'000'000);
 
 	//initialize the set that will contain the sockets that are ready
 	m_impl->SocketsReady = m_impl->AllSockets;
@@ -198,15 +180,15 @@ bool TRAP::Network::SocketSelector::Wait(const Utils::TimeStep timeout) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
-	const SocketHandle handle = socket.GetHandle();
+	const SocketHandle handle = socket.GetNativeHandle();
 	if(handle != INTERNAL::Network::SocketImpl::InvalidSocket())
 	{
 #ifndef TRAP_PLATFORM_WINDOWS
 		if (handle >= FD_SETSIZE)
 			return false;
-#else
-		return FD_ISSET(handle, &m_impl->SocketsReady) != 0;
 #endif
+
+		return FD_ISSET(handle, &m_impl->SocketsReady) != 0;
 	}
 
 	return false;

@@ -14,7 +14,7 @@ namespace TRAP::Network
 	{
 	public:
 		/// @brief Constants.
-		static constinit const u32 MaxDatagramSize = 65507; //The maximum number of bytes that can be sent in a single UDP datagram
+		static constexpr usize MaxDatagramSize = 65507u; //The maximum number of bytes that can be sent in a single UDP datagram.
 
 		/// @brief Constructor.
 		constexpr UDPSocketIPv6();
@@ -89,7 +89,7 @@ namespace TRAP::Network
 		/// @param remoteAddress Address of the peer that sent the data.
 		/// @param remotePort Port of the peer that sent the data.
 		/// @return Status code.
-		[[nodiscard]] Status Receive(void* data, usize size, usize& received, IPv6Address& remoteAddress,
+		[[nodiscard]] Status Receive(void* data, usize size, usize& received, TRAP::Optional<IPv6Address>& remoteAddress,
 		                             u16& remotePort) const;
 
 		/// @brief Send a formatted packet of data to a remote peer.
@@ -111,10 +111,10 @@ namespace TRAP::Network
 		/// @param remoteAddress Address of the peer that sent the data.
 		/// @param remotePort Port of the peer that sent the data.
 		/// @return Status code.
-		[[nodiscard]] Status Receive(Packet& packet, IPv6Address& remoteAddress, u16& remotePort);
+		[[nodiscard]] Status Receive(Packet& packet, TRAP::Optional<IPv6Address>& remoteAddress, u16& remotePort);
 
 	private:
-		std::vector<u8> m_buffer = std::vector<u8>(MaxDatagramSize); //Temporary buffer holding the received data in Receive(Packet)
+		std::vector<u8> m_buffer = std::vector<u8>(MaxDatagramSize); //Temporary buffer holding the received data in Receive(Packet).
 	};
 }
 

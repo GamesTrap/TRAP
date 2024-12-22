@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2024 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -46,15 +46,11 @@ namespace TRAP::Network
 	class IPv4Address
 	{
 	public:
-		/// @brief This constructor creates an empty (invalid) address.
-		constexpr IPv4Address() noexcept = default;
-
 		/// @brief Construct the address from a string.
-		///
-		/// Here address can be either a decimal address (ex: "192.168.1.180") or a
-		/// network name (ex: "localhost").
-		/// @param address IPv4 address or network name.
-		explicit IPv4Address(const std::string& address);
+		///        Here address can be either a decimal address (ex: "192.168.1.56") or a network name (ex: "localhost").
+		/// @param address IP address or network name.
+		/// @return Address if provided argument was valid, otherwise TRAP::NullOpt.
+		[[nodiscard]] static TRAP::Optional<IPv4Address> Resolve(const std::string& address);
 
 		/// @brief Construct the address from 4 bytes.
 		///
@@ -111,9 +107,9 @@ namespace TRAP::Network
 		/// The local address is the address of the computer from the
 		/// LAN point of view, i.e. something like 192.168.1.180.
 		/// It is meaningful only for communications over the local network.
-		/// Unlike GetPublicAddress, this function is fast and may be used safely anywhere.
-		/// @return Local IPv4 address of the computer.
-		[[nodiscard]] static IPv4Address GetLocalAddress();
+		/// Unlike GetPublicAddress(), this function is fast and may be used safely anywhere.
+		/// @return Local IPv4 address of the computer on success, TRAP::NullOpt otherwise.
+		[[nodiscard]] static TRAP::Optional<IPv4Address> GetLocalAddress();
 
 		/// @brief Get the computer's public address.
 		///
@@ -130,31 +126,19 @@ namespace TRAP::Network
 		/// to be possibly stuck waiting in case there is a problem; this
 		/// limit is deactivated by default.
 		/// @param timeout Maximum time to wait. Default: 2 minutes.
-		/// @return Public IP address of the computer.
-		[[nodiscard]] static IPv4Address GetPublicAddress(Utils::TimeStep timeout = Utils::TimeStep(120.0f));
+		/// @return Public IP address of the computer on success, TRAP::NullOpt otherwise.
+		[[nodiscard]] static TRAP::Optional<IPv4Address> GetPublicAddress(Utils::TimeStep timeout = Utils::TimeStep(120.0f));
 
-		static const IPv4Address None;      //Value representing an empty/invalid address
 		static const IPv4Address Any;       //Value representing any address (0.0.0.0)
 		static const IPv4Address LocalHost; //The "localhost" address (for connecting a computer to itself locally)
 		static const IPv4Address Broadcast; //The "broadcast" address (for sending UDP messages to everyone on a local network)
 
-		[[nodiscard]] friend constexpr auto operator<=>(const IPv4Address& lhs, const IPv4Address& rhs)
-		{
-			return lhs.m_address <=> rhs.m_address;
-		}
-
-		[[nodiscard]] friend constexpr auto operator==(const IPv4Address& lhs, const IPv4Address& rhs)
-		{
-			return lhs.m_address == rhs.m_address;
-		}
+		[[nodiscard]] friend constexpr auto operator<=>(const IPv4Address& lhs, const IPv4Address& rhs) = default;
+		[[nodiscard]] friend constexpr bool operator==(const IPv4Address& lhs, const IPv4Address& rhs) = default;
+		[[nodiscard]] friend constexpr bool operator!=(const IPv4Address& lhs, const IPv4Address& rhs) = default;
 
 	private:
-		/// @brief Resolve the given address string.
-		/// @param address Address string.
-		void Resolve(const std::string& address);
-
 		u32 m_address = 0u; //Address stored as an unsigned 32 bit integer
-		bool m_valid = false; //Is the address valid?
 	};
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -163,43 +147,40 @@ namespace TRAP::Network
 	/// @param stream Input stream.
 	/// @param address IP address to extract.
 	/// @return Reference to the input stream.
-	std::istream& operator>>(std::istream& stream, TRAP::Network::IPv4Address& address);
+	std::istream& operator>>(std::istream& stream, TRAP::Optional<TRAP::Network::IPv4Address>& address);
+
+	/// @brief Overload of << operator to print an IP address to an output stream.
+	/// @param stream Output stream.
+	/// @param address IP address to print.
+	/// @return Reference to the output stream.
+	std::ostream& operator<<(std::ostream& stream, const TRAP::Network::IPv4Address& address);
 }
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr TRAP::Network::IPv4Address::IPv4Address(const u8 byte0, const u8 byte1, const u8 byte2,
                                                   const u8 byte3)
 	: m_address((NumericCast<u32>(byte0) << 24u) | (NumericCast<u32>(byte1) << 16u) |
-	             (NumericCast<u32>(byte2) << 8u) | NumericCast<u32>(byte3)), m_valid(true)
+	             (NumericCast<u32>(byte2) << 8u) | NumericCast<u32>(byte3))
 {
-	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
-		TRAP::Utils::Memory::SwapBytes(m_address);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr TRAP::Network::IPv4Address::IPv4Address(const u32 address)
-	: m_address(address), m_valid(true)
+	: m_address(address)
 {
-	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
-		TRAP::Utils::Memory::SwapBytes(m_address);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr u32 TRAP::Network::IPv4Address::ToInteger() const
 {
-	u32 address = m_address;
-
-	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
-		TRAP::Utils::Memory::SwapBytes(address);
-
-	return address;
+	return m_address;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::None{};
 inline constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Any(0u, 0u, 0u, 0u);
 inline constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::LocalHost(127u, 0u, 0u, 1u);
 inline constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Broadcast(255u, 255u, 255u, 255u);

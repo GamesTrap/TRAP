@@ -6,22 +6,46 @@
 #include "Network/Sockets/SocketImpl.h"
 #include "Utils/String/String.h"
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Network::IPv6Address::IPv6Address(const std::string& address)
+[[nodiscard]] TRAP::Optional<TRAP::Network::IPv6Address> TRAP::Network::IPv6Address::Resolve(const std::string& address)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
-	Resolve(address);
-}
+	if(address.empty())
+	{
+		//Not generating an error message here as resolution failure is a valid outcome.
+		return TRAP::NullOpt;
+	}
 
-//-------------------------------------------------------------------------------------------------------------------//
+	const std::string lowerAddress = Utils::String::ToLower(address);
+	if (address == "::" || address == "0:0:0:0:0:0:0:0" ||
+		address == "0000:0000:0000:0000:0000:0000:0000:0000")
+	{
+		return Any;
+	}
 
-TRAP::Network::IPv6Address::IPv6Address(const char* const address)
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
+	//Try to convert the address as a hex representation ("XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX")
+	std::array<u8, 16> ip{};
+	if(inet_pton(AF_INET6, lowerAddress.c_str(), ip.data()) != 0)
+		return IPv6Address(ip);
 
-	Resolve(address);
+	//Not a valid address, try to convert it as a host name
+	addrinfo hints{};
+	hints.ai_family = AF_INET6;
+
+	addrinfo* result = nullptr;
+	if(getaddrinfo(lowerAddress.c_str(), nullptr, &hints, &result) == 0 && result != nullptr)
+	{
+		const sockaddr_in6* const in6 = reinterpret_cast<sockaddr_in6*>(result->ai_addr);
+
+		std::copy_n(in6->sin6_addr.s6_addr, ip.size(), ip.data());
+
+		freeaddrinfo(result);
+
+		return IPv6Address(ip);
+	}
+
+	//Not generating an error message here as a resolution failure is a valid outcome.
+	return TRAP::NullOpt;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -46,7 +70,7 @@ TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetLocalAddress()
+[[nodiscard]] TRAP::Optional<TRAP::Network::IPv6Address> TRAP::Network::IPv6Address::GetLocalAddress()
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
@@ -57,7 +81,10 @@ TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 	//Create the socket
 	const TRAP::Network::SocketHandle sock = socket(PF_INET6, SOCK_DGRAM, 0);
 	if (sock == INTERNAL::Network::SocketImpl::InvalidSocket())
-		return {};
+	{
+		TP_ERROR(TRAP::Log::NetworkIPv6AddressPrefix, "Failed to retrieve local address (invalid socket)");
+		return TRAP::NullOpt;
+	}
 
 	//Connect the socket to localhost on any port
 	std::array<u8, 16> loopback{};
@@ -70,7 +97,9 @@ TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 	if(connect(sock, reinterpret_cast<sockaddr*>(&address), sizeof(address)) == -1)
 	{
 		INTERNAL::Network::SocketImpl::Close(sock);
-		return {};
+
+		TP_ERROR(TRAP::Log::NetworkIPv6AddressPrefix, "Failed to retrieve local address (socket connection failure)");
+		return TRAP::NullOpt;
 	}
 
 	//Get the local address of the socket connection
@@ -78,7 +107,9 @@ TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 	if(getsockname(sock, reinterpret_cast<sockaddr*>(&address), &size) == -1)
 	{
 		INTERNAL::Network::SocketImpl::Close(sock);
-		return {};
+
+		TP_ERROR(TRAP::Log::NetworkIPv6AddressPrefix, "Failed to retrieve local address (socket local address retrieval failure)");
+		return TRAP::NullOpt;
 	}
 
 	//Close the socket
@@ -96,7 +127,7 @@ TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetPublicAddress(const Utils::TimeStep timeout)
+[[nodiscard]] TRAP::Optional<TRAP::Network::IPv6Address> TRAP::Network::IPv6Address::GetPublicAddress(const Utils::TimeStep timeout)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
@@ -111,80 +142,38 @@ TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 	HTTP::Request request("/ip-provider.php", TRAP::Network::HTTP::Request::Method::GET);
 	HTTP::Response page = server.SendRequest(request, timeout);
 	if(page.GetStatus() == HTTP::Response::Status::OK)
-		return IPv6Address(page.GetBody());
+		return IPv6Address::Resolve(page.GetBody());
 
 	//Retry with a different server
 	server.SetHost("v6.ident.me", 80u, IPVersion::IPv6);
 	request = HTTP::Request("", TRAP::Network::HTTP::Request::Method::GET);
 	page = server.SendRequest(request, timeout);
 	if(page.GetStatus() == HTTP::Response::Status::OK)
-		return IPv6Address(page.GetBody());
+		return IPv6Address::Resolve(page.GetBody());
 
 	//Something failed: return an invalid address
-	return {};
+	TP_ERROR(TRAP::Log::NetworkIPv6AddressPrefix, "Failed to retrieve public address from external IP resolution server (HTTP response status", page.GetStatus(), ")");
+	return TRAP::NullOpt;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::IPv6Address::Resolve(const std::string& address)
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
-
-	m_address = {};
-	m_valid = false;
-
-	if(address.empty())
-		return;
-
-	const std::string lowerAddress = Utils::String::ToLower(address);
-	if (address == "::" || address == "0:0:0:0:0:0:0:0" ||
-		address == "0000:0000:0000:0000:0000:0000:0000:0000")
-	{
-#ifdef TRAP_PLATFORM_WINDOWS
-		std::copy_n(in6addr_any.u.Byte, m_address.size(), m_address.data());
-#else
-		std::copy_n(in6addr_any.s6_addr, m_address.size(), m_address.data());
-#endif
-		m_valid = true;
-	}
-	else
-	{
-		//Try to convert the address as a hex representation ("XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX")
-		std::array<u8, 16> ip{};
-		if(inet_pton(AF_INET6, lowerAddress.c_str(), ip.data()) != 0)
-		{
-			m_address = ip;
-			m_valid = true;
-		}
-		else if(!address.empty())
-		{
-			//Not a valid address, try to convert it as a host name
-			addrinfo hints{};
-			hints.ai_family = AF_INET6;
-			addrinfo* result = nullptr;
-			if(getaddrinfo(lowerAddress.c_str(), nullptr, &hints, &result) == 0)
-			{
-				if(result != nullptr)
-				{
-					std::copy_n(reinterpret_cast<sockaddr_in6*>(result->ai_addr)->sin6_addr.s6_addr, ip.size(), ip.data());
-					freeaddrinfo(result);
-					m_address = ip;
-					m_valid = true;
-				}
-			}
-		}
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::istream& TRAP::Network::operator>>(std::istream& stream, TRAP::Network::IPv6Address& address)
+std::istream& TRAP::Network::operator>>(std::istream& stream, TRAP::Optional<TRAP::Network::IPv6Address>& address)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
 
 	std::string str;
 	stream >> str;
-	address = TRAP::Network::IPv6Address(str);
+	address = TRAP::Network::IPv6Address::Resolve(str);
 
 	return stream;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::ostream& TRAP::Network::operator<<(std::ostream& stream, const TRAP::Network::IPv6Address& address)
+{
+	ZoneNamedC(__tracy, tracy::Color::Azure, (GetTRAPProfileSystems() & ProfileSystems::Network) != ProfileSystems::None);
+
+	return stream << address.ToString();
 }

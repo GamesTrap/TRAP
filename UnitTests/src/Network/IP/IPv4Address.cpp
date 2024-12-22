@@ -12,40 +12,36 @@ TEST_CASE("TRAP::Network::IPv4Address", "[network][ipv4address]")
         STATIC_REQUIRE(std::movable<TRAP::Network::IPv4Address>);
     }
 
-    SECTION("TRAP::Network::IPv4Address()")
-    {
-        STATIC_REQUIRE(TRAP::Network::IPv4Address{} == TRAP::Network::IPv4Address::None);
-    }
-
     SECTION("TRAP::Network::IPv4Address(std::string)")
     {
-        const auto ipAddress = TRAP::Network::IPv4Address("192.168.0.1");
-        REQUIRE(ipAddress != TRAP::Network::IPv4Address::None);
-        REQUIRE(ipAddress.ToString() == "192.168.0.1");
-        REQUIRE(ipAddress.ToInteger() == 0xC0A80001u);
-        REQUIRE(ipAddress != TRAP::Network::IPv4Address::Any);
-        REQUIRE(ipAddress != TRAP::Network::IPv4Address::Broadcast);
-        REQUIRE(ipAddress != TRAP::Network::IPv4Address::LocalHost);
+        const auto ipAddress = TRAP::Network::IPv4Address::Resolve("192.168.0.1");
+        REQUIRE(ipAddress);
+        REQUIRE(ipAddress->ToString() == "192.168.0.1");
+        REQUIRE(ipAddress->ToInteger() == 0xC0A80001u);
+        REQUIRE_FALSE(*ipAddress == TRAP::Network::IPv4Address::Any);
+        REQUIRE_FALSE(*ipAddress == TRAP::Network::IPv4Address::Broadcast);
+        REQUIRE_FALSE(*ipAddress == TRAP::Network::IPv4Address::LocalHost);
 
-        const auto broadcast = TRAP::Network::IPv4Address("255.255.255.255");
-        REQUIRE(broadcast != TRAP::Network::IPv4Address::None);
-        REQUIRE(broadcast.ToString() == "255.255.255.255");
-        REQUIRE(broadcast.ToInteger() == 0xFFFFFFFFu);
-        REQUIRE(broadcast == TRAP::Network::IPv4Address::Broadcast);
+        const auto broadcast = TRAP::Network::IPv4Address::Resolve("255.255.255.255");
+        REQUIRE(broadcast);
+        REQUIRE(broadcast->ToString() == "255.255.255.255");
+        REQUIRE(broadcast->ToInteger() == 0xFFFFFFFFu);
+        REQUIRE(*broadcast == TRAP::Network::IPv4Address::Broadcast);
 
-        const auto any = TRAP::Network::IPv4Address("0.0.0.0");
-        REQUIRE(any.ToString() == "0.0.0.0");
-        REQUIRE(any.ToInteger() == 0x00000000u);
-        REQUIRE(any == TRAP::Network::IPv4Address::Any);
+        const auto any = TRAP::Network::IPv4Address::Resolve("0.0.0.0");
+        REQUIRE(any);
+        REQUIRE(any->ToString() == "0.0.0.0");
+        REQUIRE(any->ToInteger() == 0x00000000u);
+        REQUIRE(*any == TRAP::Network::IPv4Address::Any);
 
-        const auto localhost = TRAP::Network::IPv4Address("localhost");
-        REQUIRE(localhost != TRAP::Network::IPv4Address::None);
-        REQUIRE(localhost.ToString() == "127.0.0.1");
-        REQUIRE(localhost.ToInteger() == 0x7F000001u);
-        REQUIRE(localhost == TRAP::Network::IPv4Address::LocalHost);
+        const auto localhost = TRAP::Network::IPv4Address::Resolve("localhost");
+        REQUIRE(localhost);
+        REQUIRE(localhost->ToString() == "127.0.0.1");
+        REQUIRE(localhost->ToInteger() == 0x7F000001u);
+        REQUIRE(*localhost == TRAP::Network::IPv4Address::LocalHost);
 
-        REQUIRE(TRAP::Network::IPv4Address("255.255.255.256") == TRAP::Network::IPv4Address::None);
-        REQUIRE(TRAP::Network::IPv4Address("") == TRAP::Network::IPv4Address::None);
+        REQUIRE_FALSE(TRAP::Network::IPv4Address::Resolve("255.255.255.256"));
+        REQUIRE_FALSE(TRAP::Network::IPv4Address::Resolve(""));
     }
 
     SECTION("TRAP::Network::IPv4Address(u8, u8, u8, u8)")
@@ -106,9 +102,9 @@ TEST_CASE("TRAP::Network::IPv4Address", "[network][ipv4address]")
     {
         STATIC_REQUIRE(TRAP::Network::IPv4Address(1u) < TRAP::Network::IPv4Address(2u));
         STATIC_REQUIRE(TRAP::Network::IPv4Address(0u, 0u, 0u, 0u) < TRAP::Network::IPv4Address(1u, 0u, 0u, 0u));
-        STATIC_REQUIRE(TRAP::Network::IPv4Address(1u, 0u, 0u, 0u) < TRAP::Network::IPv4Address(0u, 1u, 0u, 0u));
-        STATIC_REQUIRE(TRAP::Network::IPv4Address(0u, 1u, 0u, 0u) < TRAP::Network::IPv4Address(0u, 0u, 1u, 0u));
-        STATIC_REQUIRE(TRAP::Network::IPv4Address(0u, 0u, 1u, 0u) < TRAP::Network::IPv4Address(0u, 0u, 0u, 1u));
+        STATIC_REQUIRE_FALSE(TRAP::Network::IPv4Address(1u, 0u, 0u, 0u) < TRAP::Network::IPv4Address(0u, 1u, 0u, 0u));
+        STATIC_REQUIRE_FALSE(TRAP::Network::IPv4Address(0u, 1u, 0u, 0u) < TRAP::Network::IPv4Address(0u, 0u, 1u, 0u));
+        STATIC_REQUIRE_FALSE(TRAP::Network::IPv4Address(0u, 0u, 1u, 0u) < TRAP::Network::IPv4Address(0u, 0u, 0u, 1u));
         STATIC_REQUIRE(TRAP::Network::IPv4Address(0u, 0u, 0u, 1u) < TRAP::Network::IPv4Address(1u, 0u, 0u, 1u));
     }
 
@@ -116,9 +112,9 @@ TEST_CASE("TRAP::Network::IPv4Address", "[network][ipv4address]")
     {
         STATIC_REQUIRE(TRAP::Network::IPv4Address(1u) <= TRAP::Network::IPv4Address(2u));
         STATIC_REQUIRE(TRAP::Network::IPv4Address(0u, 0u, 0u, 0u) <= TRAP::Network::IPv4Address(1u, 0u, 0u, 0u));
-        STATIC_REQUIRE(TRAP::Network::IPv4Address(1u, 0u, 0u, 0u) <= TRAP::Network::IPv4Address(0u, 1u, 0u, 0u));
-        STATIC_REQUIRE(TRAP::Network::IPv4Address(0u, 1u, 0u, 0u) <= TRAP::Network::IPv4Address(0u, 0u, 1u, 0u));
-        STATIC_REQUIRE(TRAP::Network::IPv4Address(0u, 0u, 1u, 0u) <= TRAP::Network::IPv4Address(0u, 0u, 0u, 1u));
+        STATIC_REQUIRE_FALSE(TRAP::Network::IPv4Address(1u, 0u, 0u, 0u) <= TRAP::Network::IPv4Address(0u, 1u, 0u, 0u));
+        STATIC_REQUIRE_FALSE(TRAP::Network::IPv4Address(0u, 1u, 0u, 0u) <= TRAP::Network::IPv4Address(0u, 0u, 1u, 0u));
+        STATIC_REQUIRE_FALSE(TRAP::Network::IPv4Address(0u, 0u, 1u, 0u) <= TRAP::Network::IPv4Address(0u, 0u, 0u, 1u));
         STATIC_REQUIRE(TRAP::Network::IPv4Address(0u, 0u, 0u, 1u) <= TRAP::Network::IPv4Address(1u, 0u, 0u, 1u));
         STATIC_REQUIRE(TRAP::Network::IPv4Address(0x42u, 0x69u, 0x96u, 0x24u) <= TRAP::Network::IPv4Address(0x42699624u));
         STATIC_REQUIRE(TRAP::Network::IPv4Address(0xABCDEF01u) <= TRAP::Network::IPv4Address(171u, 205u, 239u, 1u));
@@ -128,9 +124,9 @@ TEST_CASE("TRAP::Network::IPv4Address", "[network][ipv4address]")
     {
         STATIC_REQUIRE(TRAP::Network::IPv4Address(2u) >= TRAP::Network::IPv4Address(1u));
         STATIC_REQUIRE(TRAP::Network::IPv4Address(1u, 0u, 0u, 0u) >= TRAP::Network::IPv4Address(0u, 0u, 0u, 0u));
-        STATIC_REQUIRE(TRAP::Network::IPv4Address(0u, 1u, 0u, 0u) >= TRAP::Network::IPv4Address(1u, 0u, 0u, 0u));
-        STATIC_REQUIRE(TRAP::Network::IPv4Address(0u, 0u, 1u, 0u) >= TRAP::Network::IPv4Address(0u, 1u, 0u, 0u));
-        STATIC_REQUIRE(TRAP::Network::IPv4Address(0u, 0u, 0u, 1u) >= TRAP::Network::IPv4Address(0u, 0u, 1u, 0u));
+        STATIC_REQUIRE_FALSE(TRAP::Network::IPv4Address(0u, 1u, 0u, 0u) >= TRAP::Network::IPv4Address(1u, 0u, 0u, 0u));
+        STATIC_REQUIRE_FALSE(TRAP::Network::IPv4Address(0u, 0u, 1u, 0u) >= TRAP::Network::IPv4Address(0u, 1u, 0u, 0u));
+        STATIC_REQUIRE_FALSE(TRAP::Network::IPv4Address(0u, 0u, 0u, 1u) >= TRAP::Network::IPv4Address(0u, 0u, 1u, 0u));
         STATIC_REQUIRE(TRAP::Network::IPv4Address(1u, 0u, 0u, 1u) >= TRAP::Network::IPv4Address(0u, 0u, 0u, 1u));
         STATIC_REQUIRE(TRAP::Network::IPv4Address(0x42u, 0x69u, 0x96u, 0x24u) >= TRAP::Network::IPv4Address(0x42699624u));
         STATIC_REQUIRE(TRAP::Network::IPv4Address(0xABCDEF01u) >= TRAP::Network::IPv4Address(171u, 205u, 239u, 1u));
@@ -140,28 +136,28 @@ TEST_CASE("TRAP::Network::IPv4Address", "[network][ipv4address]")
     {
         STATIC_REQUIRE(TRAP::Network::IPv4Address(2u) > TRAP::Network::IPv4Address(1u));
         STATIC_REQUIRE(TRAP::Network::IPv4Address(1u, 0u, 0u, 0u) > TRAP::Network::IPv4Address(0u, 0u, 0u, 0u));
-        STATIC_REQUIRE(TRAP::Network::IPv4Address(0u, 1u, 0u, 0u) > TRAP::Network::IPv4Address(1u, 0u, 0u, 0u));
-        STATIC_REQUIRE(TRAP::Network::IPv4Address(0u, 0u, 1u, 0u) > TRAP::Network::IPv4Address(0u, 1u, 0u, 0u));
-        STATIC_REQUIRE(TRAP::Network::IPv4Address(0u, 0u, 0u, 1u) > TRAP::Network::IPv4Address(0u, 0u, 1u, 0u));
+        STATIC_REQUIRE_FALSE(TRAP::Network::IPv4Address(0u, 1u, 0u, 0u) > TRAP::Network::IPv4Address(1u, 0u, 0u, 0u));
+        STATIC_REQUIRE_FALSE(TRAP::Network::IPv4Address(0u, 0u, 1u, 0u) > TRAP::Network::IPv4Address(0u, 1u, 0u, 0u));
+        STATIC_REQUIRE_FALSE(TRAP::Network::IPv4Address(0u, 0u, 0u, 1u) > TRAP::Network::IPv4Address(0u, 0u, 1u, 0u));
         STATIC_REQUIRE(TRAP::Network::IPv4Address(1u, 0u, 0u, 1u) > TRAP::Network::IPv4Address(0u, 0u, 0u, 1u));
     }
 
     SECTION("TRAP::Network::IPv4Address::operator>>()")
     {
-        TRAP::Network::IPv4Address ipAddress{};
+        TRAP::Optional<TRAP::Network::IPv4Address> ipAddress{};
         std::istringstream("4.4.4.4") >> ipAddress;
-        REQUIRE(ipAddress != TRAP::Network::IPv4Address::None);
-        REQUIRE(ipAddress.ToString() == "4.4.4.4");
-        REQUIRE(ipAddress.ToInteger() == 0x04040404u);
+        REQUIRE(ipAddress);
+        REQUIRE(ipAddress->ToString() == "4.4.4.4");
+        REQUIRE(ipAddress->ToInteger() == 0x04040404u);
 
-        TRAP::Network::IPv4Address ipAddress2{};
+        TRAP::Optional<TRAP::Network::IPv4Address> ipAddress2{};
         std::istringstream("92.100.0.72") >> ipAddress2;
-        REQUIRE(ipAddress2 != TRAP::Network::IPv4Address::None);
-        REQUIRE(ipAddress2.ToString() == "92.100.0.72");
-        REQUIRE(ipAddress2.ToInteger() == 0x5C640048u);
+        REQUIRE(ipAddress2);
+        REQUIRE(ipAddress2->ToString() == "92.100.0.72");
+        REQUIRE(ipAddress2->ToInteger() == 0x5C640048u);
 
-        TRAP::Network::IPv4Address ipAddress3{};
+        TRAP::Optional<TRAP::Network::IPv4Address> ipAddress3{};
         std::istringstream("") >> ipAddress3;
-        REQUIRE(ipAddress3 == TRAP::Network::IPv4Address::None);
+        REQUIRE_FALSE(ipAddress3);
     }
 }
