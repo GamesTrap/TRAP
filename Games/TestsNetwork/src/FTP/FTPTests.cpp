@@ -7,16 +7,16 @@ namespace
 	void FTP()
 	{
 		//Choose the server address
-		TRAP::Network::IPv4Address address{};
+		TRAP::Optional<TRAP::Network::IPv4Address> address{};
 		do
 		{
 			fmt::print("{}Enter the FTP server address: ", NetWorkFTPPrefix);
 			std::cin >> address;
-		} while (address == TRAP::Network::IPv4Address::None);
+		} while (!address);
 
 		//Connect to the server
 		TRAP::Network::FTP server;
-		TRAP::Network::FTP::Response connectResponse = server.Connect(address);
+		TRAP::Network::FTP::Response connectResponse = server.Connect(*address);
 		fmt::println("{}{}", NetWorkFTPPrefix, connectResponse);
 		if (!connectResponse.IsOK())
 			return;

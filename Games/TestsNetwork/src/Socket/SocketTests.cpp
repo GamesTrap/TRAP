@@ -24,7 +24,7 @@ namespace
 		TRAP::Network::TCPSocket socket;
 		if (listener.Accept(socket) != TRAP::Network::Socket::Status::Done)
 			return;
-		fmt::println("{}Client connected: {}", NetworkSocketsTCPIPv4Prefix, socket.GetRemoteAddress());
+		fmt::println("{}Client connected: {}", NetworkSocketsTCPIPv4Prefix, socket.GetRemoteAddress().Value());
 
 		//Send a message to the connected client
 		const std::string out = "Hi, I'm the server";
@@ -45,20 +45,20 @@ namespace
 	void RunTCPClientIPv4(const u16 port)
 	{
 		//Ask for the server address
-		TRAP::Network::IPv4Address server{};
+		TRAP::Optional<TRAP::Network::IPv4Address> server{};
 		do
 		{
 			fmt::print("{}Type the address or name of the server to connect to: ", NetworkSocketsTCPIPv4Prefix);
 			std::cin >> server;
-		} while (server == TRAP::Network::IPv4Address::None);
+		} while (!server);
 
 		//Create a socket for communicating with the server
 		TRAP::Network::TCPSocket socket;
 
 		//Connect to the server
-		if (socket.Connect(server, port) != TRAP::Network::Socket::Status::Done)
+		if (socket.Connect(*server, port) != TRAP::Network::Socket::Status::Done)
 			return;
-		fmt::println("{}Connected to server ", NetworkSocketsTCPIPv4Prefix, server);
+		fmt::println("{}Connected to server ", NetworkSocketsTCPIPv4Prefix, *server);
 
 		//Receive a message from the server
 		std::array<char, 128> in{};
@@ -89,15 +89,15 @@ namespace
 		//Wait for a message
 		std::array<char, 128> in{};
 		usize received = 0;
-		TRAP::Network::IPv4Address sender{};
-		u16 senderPort = 0;
+		TRAP::Optional<TRAP::Network::IPv4Address> sender{};
+		u16 senderPort = 0u;
 		if (socket.Receive(in.data(), in.size(), received, sender, senderPort) != TRAP::Network::Socket::Status::Done)
 			return;
-		fmt::println("{}Message received from client {}: \"{}\"", NetworkSocketsUDPIPv4Prefix, sender, in.data());
+		fmt::println("{}Message received from client {}: \"{}\"", NetworkSocketsUDPIPv4Prefix, *sender, in.data());
 
 		//Send an answer to the client
 		const std::string out = "Hi, I'm the server";
-		if (socket.Send(out.data(), out.size(), sender, senderPort) != TRAP::Network::Socket::Status::Done)
+		if (socket.Send(out.data(), out.size(), *sender, senderPort) != TRAP::Network::Socket::Status::Done)
 			return;
 		fmt::println("{}Message sent to the client: \"{}\"", NetworkSocketsUDPIPv4Prefix, out);
 	}
@@ -107,30 +107,30 @@ namespace
 	void RunUDPClientIPv4(const u16 port)
 	{
 		//Ask for the server address
-		TRAP::Network::IPv4Address server{};
+		TRAP::Optional<TRAP::Network::IPv4Address> server{};
 		do
 		{
 			fmt::print("{}Type the address or name of the server to connect to: ", NetworkSocketsUDPIPv4Prefix);
 			std::cin >> server;
-		} while (server == TRAP::Network::IPv4Address::None);
+		} while (!server);
 
 		//Create a socket for communicating with the server
 		TRAP::Network::UDPSocket socket;
 
 		//Send a message to the server
 		const std::string out = "Hi, I'm a client";
-		if (socket.Send(out.data(), out.size(), server, port) != TRAP::Network::Socket::Status::Done)
+		if (socket.Send(out.data(), out.size(), *server, port) != TRAP::Network::Socket::Status::Done)
 			return;
 		fmt::println("{}Message sent to the server: \"{}\"", NetworkSocketsUDPIPv4Prefix, out);
 
 		//Receive an answer from anyone (but most likely from the server)
 		std::array<char, 128> in{};
 		usize received = 0;
-		TRAP::Network::IPv4Address sender{};
+		TRAP::Optional<TRAP::Network::IPv4Address> sender{};
 		u16 senderPort = 0;
 		if (socket.Receive(in.data(), in.size(), received, sender, senderPort) != TRAP::Network::Socket::Status::Done)
 			return;
-		fmt::println("{}Message received from {}: \"{}\"", NetworkSocketsUDPIPv4Prefix, sender, in.data());
+		fmt::println("{}Message received from {}: \"{}\"", NetworkSocketsUDPIPv4Prefix, *sender, in.data());
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -151,7 +151,7 @@ namespace
 		TRAP::Network::TCPSocketIPv6 socket;
 		if (listener.Accept(socket) != TRAP::Network::Socket::Status::Done)
 			return;
-		fmt::println("{}Client connected: {}", NetworkSocketsTCPIPv6Prefix, socket.GetRemoteAddress());
+		fmt::println("{}Client connected: {}", NetworkSocketsTCPIPv6Prefix, socket.GetRemoteAddress().Value());
 
 		//Send a message to the connected client
 		const std::string out = "Hi, I'm the server";
@@ -172,20 +172,20 @@ namespace
 	void RunTCPClientIPv6(const u16 port)
 	{
 		//Ask for the server address
-		TRAP::Network::IPv6Address server{};
+		TRAP::Optional<TRAP::Network::IPv6Address> server{};
 		do
 		{
 			fmt::print("{}Type the address or name of the server to connect to: ", NetworkSocketsTCPIPv6Prefix);
 			std::cin >> server;
-		} while (server == TRAP::Network::IPv6Address::None);
+		} while (!server);
 
 		//Create a socket for communicating with the server
 		TRAP::Network::TCPSocketIPv6 socket;
 
 		//Connect to the server
-		if (socket.Connect(server, port) != TRAP::Network::Socket::Status::Done)
+		if (socket.Connect(*server, port) != TRAP::Network::Socket::Status::Done)
 			return;
-		fmt::println("{}Connected to server {}", NetworkSocketsTCPIPv6Prefix, server);
+		fmt::println("{}Connected to server {}", NetworkSocketsTCPIPv6Prefix, *server);
 
 		//Receive a message from the server
 		std::array<char, 128> in{};
@@ -216,15 +216,15 @@ namespace
 		//Wait for a message
 		std::array<char, 128> in{};
 		usize received = 0;
-		TRAP::Network::IPv6Address sender{};
+		TRAP::Optional<TRAP::Network::IPv6Address> sender{};
 		u16 senderPort = 0;
 		if (socket.Receive(in.data(), in.size(), received, sender, senderPort) != TRAP::Network::Socket::Status::Done)
 			return;
-		fmt::println("{}Message received from client {}: \"{}\"", NetworkSocketsUDPIPv6Prefix, sender, in.data());
+		fmt::println("{}Message received from client {}: \"{}\"", NetworkSocketsUDPIPv6Prefix, *sender, in.data());
 
 		//Send an answer to the client
 		const std::string out = "Hi, I'm a server";
-		if (socket.Send(out.data(), out.size(), sender, senderPort) != TRAP::Network::Socket::Status::Done)
+		if (socket.Send(out.data(), out.size(), *sender, senderPort) != TRAP::Network::Socket::Status::Done)
 			return;
 		fmt::println("{}Message sent to the client: \"{}\"", NetworkSocketsUDPIPv6Prefix, out);
 	}
@@ -234,30 +234,30 @@ namespace
 	void RunUDPClientIPv6(const u16 port)
 	{
 		//Ask for the server address
-		TRAP::Network::IPv6Address server{};
+		TRAP::Optional<TRAP::Network::IPv6Address> server{};
 		do
 		{
 			fmt::print("{}Type the address or name of the server to connect to: ", NetworkSocketsUDPIPv6Prefix);
 			std::cin >> server;
-		} while (server == TRAP::Network::IPv6Address::None);
+		} while (!server);
 
 		//Create a socket for communicating with the server
 		TRAP::Network::UDPSocketIPv6 socket;
 
 		//Send a message to the server
 		const std::string out = "Hi, I'm a client";
-		if (socket.Send(out.data(), out.size(), server, port) != TRAP::Network::Socket::Status::Done)
+		if (socket.Send(out.data(), out.size(), *server, port) != TRAP::Network::Socket::Status::Done)
 			return;
 		fmt::println("{}Message sent to the server: \"{}\"", NetworkSocketsUDPIPv6Prefix, out);
 
 		//Receive an answer from anyone (but most likely from the server)
 		std::array<char, 128> in{};
 		usize received = 0;
-		TRAP::Network::IPv6Address sender{};
+		TRAP::Optional<TRAP::Network::IPv6Address> sender{};
 		u16 senderPort = 0;
 		if (socket.Receive(in.data(), in.size(), received, sender, senderPort) != TRAP::Network::Socket::Status::Done)
 			return;
-		fmt::println("{}Message received from {}: \"{}\"", NetworkSocketsUDPIPv6Prefix, sender, in.data());
+		fmt::println("{}Message received from {}: \"{}\"", NetworkSocketsUDPIPv6Prefix, *sender, in.data());
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//

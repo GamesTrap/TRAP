@@ -7,20 +7,20 @@ namespace
 	void IPv6()
 	{
 		//Print out the local IP
-		fmt::println("{}Local Address: {}", NetworkIPv6Prefix, TRAP::Network::IPv6Address::GetLocalAddress());
+		fmt::println("{}Local Address: {}", NetworkIPv6Prefix, TRAP::Network::IPv6Address::GetLocalAddress().Value());
 		//Print out the public IP
-		fmt::println("{}Public Address: {}", NetworkIPv6Prefix, TRAP::Network::IPv6Address::GetPublicAddress());
+		fmt::println("{}Public Address: {}", NetworkIPv6Prefix, TRAP::Network::IPv6Address::GetPublicAddress().Value());
 
 		//Ask for the server address
-		TRAP::Network::IPv6Address server{};
+		TRAP::Optional<TRAP::Network::IPv6Address> server{};
 		do
 		{
 			fmt::print("{}Type the address or name of a server: ", NetworkIPv6Prefix);
 			std::cin >> server;
-		} while (server == TRAP::Network::IPv6Address::None);
+		} while (!server);
 
 		//Print out the IP
-		fmt::println("{}Entered IP: ", NetworkIPv6Prefix, server);
+		fmt::println("{}Entered IP: ", NetworkIPv6Prefix, *server);
 	}
 }
 
