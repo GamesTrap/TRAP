@@ -15,21 +15,25 @@ namespace TRAP::Utils::String
 	/// @param str String to split up.
 	/// @param delimiters Delimiter(s) to split source string with.
 	/// @return Vector of strings splitted by the given delimiter(s).
+	/// @threadsafe
 	[[nodiscard]] constexpr std::vector<std::string_view> SplitStringView(std::string_view str, std::string_view delimiters);
 	/// @brief Split a string by the delimiter.
 	/// @param str String to split up.
 	/// @param delimiter Delimiter to split source string with.
 	/// @return Vector of strings splitted by the given delimiter.
+	/// @threadsafe
 	[[nodiscard]] constexpr std::vector<std::string_view> SplitStringView(std::string_view str, char delimiter);
 	/// @brief Split a string by the delimiter(s).
 	/// @param str String to split up.
 	/// @param delimiters Delimiter(s) to split source string with.
 	/// @return Vector of strings splitted by the given delimiter(s).
+	/// @threadsafe
 	[[nodiscard]] constexpr std::vector<std::string> SplitString(const std::string& str, std::string_view delimiters);
 	/// @brief Split a string by the delimiter.
 	/// @param str String to split up.
 	/// @param delimiter Delimiter to split source string with.
 	/// @return Vector of strings splitted by the given delimiter.
+	/// @threadsafe
 	[[nodiscard]] constexpr std::vector<std::string> SplitString(const std::string& str, char delimiter);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -37,10 +41,12 @@ namespace TRAP::Utils::String
 	/// @brief Split a string on new line.
 	/// @param str String to split up.
 	/// @return Vector of strings splitted by new lines.
+	/// @threadsafe
 	[[nodiscard]] constexpr std::vector<std::string_view> GetLinesStringView(std::string_view str);
 	/// @brief Split a string on new line.
 	/// @param str String to split up.
 	/// @return Vector of strings splitted by new lines.
+	/// @threadsafe
 	[[nodiscard]] constexpr std::vector<std::string> GetLines(const std::string& str);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -49,6 +55,7 @@ namespace TRAP::Utils::String
 	/// @param str String to check.
 	/// @param substr Substring to check if inside string.
 	/// @return True if the string contains the provided substring, false otherwise.
+	/// @threadsafe
 	/// @deprecated This function is deprecated when compiling with C++23 standard.
 #if __cplusplus >= 202302L
 	[[deprecated("Use std::string::contains() instead!")]]
@@ -59,6 +66,7 @@ namespace TRAP::Utils::String
 	/// @param str String to check.
 	/// @param c Substring to check if inside string.
 	/// @return True if the string contains the provided substring, false otherwise.
+	/// @threadsafe
 	/// @deprecated This function is deprecated when compiling with C++23 standard.
 #if __cplusplus >= 202302L
 	[[deprecated("Use std::string::contains() instead!")]]
@@ -69,6 +77,7 @@ namespace TRAP::Utils::String
 	/// @param str String to check.
 	/// @param substr Substring to check if inside string.
 	/// @return True if the string contains the provided substring, false otherwise.
+	/// @threadsafe
 	/// @deprecated This function is deprecated when compiling with C++23 standard.
 #if __cplusplus >= 202302L
 	[[deprecated("Use std::string::contains() instead!")]]
@@ -80,10 +89,12 @@ namespace TRAP::Utils::String
 	/// @brief Get the suffix of a string(everything after the last '.' in the string).
 	/// @param name String to get suffix from.
 	/// @return Suffix if found, nullptr otherwise.
+	/// @threadsafe
 	[[nodiscard]] constexpr std::string_view GetSuffixStringView(std::string_view name);
 	/// @brief Get the suffix of a string(everything after the last '.' in the string).
 	/// @param name String to get suffix from.
 	/// @return Suffix if found, empty string otherwise.
+	/// @threadsafe
 	[[nodiscard]] constexpr std::string GetSuffix(const std::string& name);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -91,11 +102,15 @@ namespace TRAP::Utils::String
 	/// @brief Convert a string to lower case.
 	/// @param str String to convert.
 	/// @return Lower case version of the given string.
+	/// @note The string must only contains ASCII characters.
+	/// @threadsafe
 	[[nodiscard]] constexpr std::string ToLower(std::string str);
 
 	/// @brief Convert a character to lower case.
 	/// @param c Character to convert.
 	/// @return Lower case version of the given character.
+	/// @note The char must be an ASCII character.
+	/// @threadsafe
 	[[nodiscard]] constexpr char ToLower(char c);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -103,11 +118,15 @@ namespace TRAP::Utils::String
 	/// @brief Convert a string to upper case.
 	/// @param str String to convert.
 	/// @return Upper case version of the given string.
+	/// @note The string must only contains ASCII characters.
+	/// @threadsafe
 	[[nodiscard]] constexpr std::string ToUpper(std::string str);
 
 	/// @brief Convert a character to upper case.
 	/// @param c Character to convert.
 	/// @return Upper case version of the given character.
+	/// @note The char must be an ASCII character.
+	/// @threadsafe
 	[[nodiscard]] constexpr char ToUpper(char c);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -115,6 +134,7 @@ namespace TRAP::Utils::String
 	/// @brief Check if a character is a digit (0123456789).
 	/// @param c Character to check.
 	/// @return True if character is a digit, false otherwise.
+	/// @threadsafe
 	[[nodiscard]] constexpr bool IsDigit(char c) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -122,6 +142,7 @@ namespace TRAP::Utils::String
 	/// @brief Check if a character is a hexdecimal digit (0123456789abcdefABCDEF).
 	/// @param c Character to check.
 	/// @return True if character is a hexdecimal digit, false otherwise.
+	/// @threadsafe
 	[[nodiscard]] constexpr bool IsHexDigit(char c) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -129,6 +150,7 @@ namespace TRAP::Utils::String
 	/// @brief Check if a character is a whitespace character.
 	/// @param c Character to check.
 	/// @return True if character is a whitespace character, false otherwise.
+	/// @threadsafe
 	[[nodiscard]] constexpr bool IsSpace(char c) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -136,6 +158,7 @@ namespace TRAP::Utils::String
 	/// @brief Check if a character is an alphabetic character.
 	/// @param c Character to check.
 	/// @return True if character is an alphabetic character, false otherwise.
+	/// @threadsafe
 	[[nodiscard]] constexpr bool IsAlpha(char c) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -143,6 +166,7 @@ namespace TRAP::Utils::String
 	/// @brief Check if a character is an alphanumeric character.
 	/// @param c Character to check.
 	/// @return True if character is an alphanumeric character, false otherwise.
+	/// @threadsafe
 	[[nodiscard]] constexpr bool IsAlphaNumeric(char c) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -151,6 +175,7 @@ namespace TRAP::Utils::String
 	/// @param str String to count occurrences.
 	/// @param delimiter Delimiter to find.
 	/// @return Number of occurrences of the delimiter inside the given string.
+	/// @threadsafe
 	[[nodiscard]] constexpr i64 GetCount(std::string_view str, char delimiter);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -159,6 +184,8 @@ namespace TRAP::Utils::String
 	/// @param left String to check.
 	/// @param right String to check.
 	/// @return True if both strings are equal, false otherwise
+	/// @note The strings must only contain ASCII characters.
+	/// @threadsafe
 	[[nodiscard]] constexpr bool CompareAnyCase(std::string_view left, std::string_view right);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -183,6 +210,7 @@ namespace TRAP::Utils::String
 	/// @brief Encode a single Unicode code point to UTF-8 chars.
 	/// @param codePoint Unicode code point
 	/// @return UTF-8 chars.
+	/// @threadsafe
 	[[nodiscard]] constexpr std::string EncodeUTF8(u32 codePoint);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -191,10 +219,12 @@ namespace TRAP::Utils::String
 	/// @brief Returns an UTF-8 string version of the specified wide string.
 	/// @param wStr Wide string representation.
 	/// @return UTF-8 string representation of the given wide string.
+	/// @threadsafe
 	[[nodiscard]] std::string CreateUTF8StringFromWideStringWin32(std::wstring_view wStr);
 	/// @brief Returns a wide string string version of the specified UTF-8 string.
 	/// @param str UTF-8 representation.
 	/// @return Wide string representation of the given UTF-8 string.
+	/// @threadsafe
 	[[nodiscard]] std::wstring CreateWideStringFromUTF8StringWin32(std::string_view str);
 #endif /*TRAP_PLATFORM_WINDOWS*/
 }
@@ -276,14 +306,14 @@ namespace TRAP::Utils::String
 
 [[nodiscard]] constexpr std::vector<std::string_view> TRAP::Utils::String::GetLinesStringView(const std::string_view str)
 {
-	return SplitStringView(str, "\n");
+	return SplitStringView(str, "\r\n");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr std::vector<std::string> TRAP::Utils::String::GetLines(const std::string& str)
 {
-	return SplitString(str, "\n");
+	return SplitString(str, "\r\n");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -304,6 +334,9 @@ namespace TRAP::Utils::String
 
 [[nodiscard]] constexpr bool TRAP::Utils::String::Contains(const std::string_view str, const char* const substr) noexcept
 {
+	if(substr == nullptr)
+		return false;
+
 	return str.find(substr) != std::string_view::npos;
 }
 
