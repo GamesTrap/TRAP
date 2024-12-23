@@ -63,9 +63,18 @@ namespace INTERNAL
         {
             return "f64";
         }
+        else if constexpr (std::same_as<X, unsigned long>)
+        {
+            return "unsigned long";
+        }
+        else if constexpr (std::same_as<X, long>)
+        {
+            return "long";
+        }
         else
         {
-            std::unreachable();
+            TRAP_ASSERT(false);
+            return "Unknown Type";
         }
     }
 

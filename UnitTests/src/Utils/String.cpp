@@ -44,13 +44,13 @@ TEST_CASE("TRAP::Utils::String", "[utils][string]")
         static constexpr std::string_view d = "Lorem,ipsum";
         static constexpr std::string_view e = ",ipsum";
 
-        STATIC_REQUIRE(TRAP::Utils::String::SplitString(std::string(a), ",") == std::vector<std::string>{"Lorem", "ipsum", "hello", "world!"});
-        STATIC_REQUIRE(TRAP::Utils::String::SplitString(std::string(a), "") == std::vector<std::string>{std::string(a)});
-        STATIC_REQUIRE(TRAP::Utils::String::SplitString(std::string(b), ", ") == std::vector<std::string>{"Lorem", "ipsum", "hello", "world", "!"});
-        STATIC_REQUIRE(TRAP::Utils::String::SplitString(std::string(c), ",") == std::vector<std::string>{"Lorem"});
-        STATIC_REQUIRE(TRAP::Utils::String::SplitString(std::string(d), ",") == std::vector<std::string>{"Lorem", "ipsum"});
-        STATIC_REQUIRE(TRAP::Utils::String::SplitString(std::string(e), ",") == std::vector<std::string>{"ipsum"});
-        STATIC_REQUIRE(TRAP::Utils::String::SplitString("", ",") == std::vector<std::string>{});
+        REQUIRE(TRAP::Utils::String::SplitString(std::string(a), ",") == std::vector<std::string>{"Lorem", "ipsum", "hello", "world!"});
+        REQUIRE(TRAP::Utils::String::SplitString(std::string(a), "") == std::vector<std::string>{std::string(a)});
+        REQUIRE(TRAP::Utils::String::SplitString(std::string(b), ", ") == std::vector<std::string>{"Lorem", "ipsum", "hello", "world", "!"});
+        REQUIRE(TRAP::Utils::String::SplitString(std::string(c), ",") == std::vector<std::string>{"Lorem"});
+        REQUIRE(TRAP::Utils::String::SplitString(std::string(d), ",") == std::vector<std::string>{"Lorem", "ipsum"});
+        REQUIRE(TRAP::Utils::String::SplitString(std::string(e), ",") == std::vector<std::string>{"ipsum"});
+        REQUIRE(TRAP::Utils::String::SplitString("", ",") == std::vector<std::string>{});
     }
 
     SECTION("SplitString(string, char)")
@@ -60,11 +60,11 @@ TEST_CASE("TRAP::Utils::String", "[utils][string]")
         static constexpr std::string_view c = "Lorem,ipsum";
         static constexpr std::string_view d = ",ipsum";
 
-        STATIC_REQUIRE(TRAP::Utils::String::SplitString(std::string(a), ',') == std::vector<std::string>{"Lorem", "ipsum", "hello", "world!"});
-        STATIC_REQUIRE(TRAP::Utils::String::SplitString(std::string(b), ",") == std::vector<std::string>{"Lorem"});
-        STATIC_REQUIRE(TRAP::Utils::String::SplitString(std::string(c), ",") == std::vector<std::string>{"Lorem", "ipsum"});
-        STATIC_REQUIRE(TRAP::Utils::String::SplitString(std::string(d), ",") == std::vector<std::string>{"ipsum"});
-        STATIC_REQUIRE(TRAP::Utils::String::SplitString("", ",") == std::vector<std::string>{});
+        REQUIRE(TRAP::Utils::String::SplitString(std::string(a), ',') == std::vector<std::string>{"Lorem", "ipsum", "hello", "world!"});
+        REQUIRE(TRAP::Utils::String::SplitString(std::string(b), ",") == std::vector<std::string>{"Lorem"});
+        REQUIRE(TRAP::Utils::String::SplitString(std::string(c), ",") == std::vector<std::string>{"Lorem", "ipsum"});
+        REQUIRE(TRAP::Utils::String::SplitString(std::string(d), ",") == std::vector<std::string>{"ipsum"});
+        REQUIRE(TRAP::Utils::String::SplitString("", ",") == std::vector<std::string>{});
     }
 
     SECTION("GetLinesStringView()")
@@ -88,11 +88,11 @@ TEST_CASE("TRAP::Utils::String", "[utils][string]")
         static constexpr std::string_view c = "First line...\r\nSecond long line\r\nLast line.";
         static constexpr std::string_view d = "First line...\r\nSecond long line\nLast line.";
 
-        STATIC_REQUIRE(TRAP::Utils::String::GetLines(std::string(a)) == std::vector<std::string>{std::string(a)});
-        STATIC_REQUIRE(TRAP::Utils::String::GetLines(std::string(b)) == std::vector<std::string>{"First line...", "Second long line", "Last line."});
-        STATIC_REQUIRE(TRAP::Utils::String::GetLines(std::string(c)) == std::vector<std::string>{"First line...", "Second long line", "Last line."});
-        STATIC_REQUIRE(TRAP::Utils::String::GetLines(std::string(d)) == std::vector<std::string>{"First line...", "Second long line", "Last line."});
-        STATIC_REQUIRE(TRAP::Utils::String::GetLines("") == std::vector<std::string>{});
+        REQUIRE(TRAP::Utils::String::GetLines(std::string(a)) == std::vector<std::string>{std::string(a)});
+        REQUIRE(TRAP::Utils::String::GetLines(std::string(b)) == std::vector<std::string>{"First line...", "Second long line", "Last line."});
+        REQUIRE(TRAP::Utils::String::GetLines(std::string(c)) == std::vector<std::string>{"First line...", "Second long line", "Last line."});
+        REQUIRE(TRAP::Utils::String::GetLines(std::string(d)) == std::vector<std::string>{"First line...", "Second long line", "Last line."});
+        REQUIRE(TRAP::Utils::String::GetLines("") == std::vector<std::string>{});
     }
 
     SECTION("Contains(string_view, string_view)")
