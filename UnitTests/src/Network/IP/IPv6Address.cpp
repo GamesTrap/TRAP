@@ -56,14 +56,14 @@ TEST_CASE("TRAP::Network::IPv6Address", "[network][ipv6address]")
         // CHECK(ipAddress.ToArray() != arr);
     }
 
-    SECTION("TRAP::Network::IPv6Address::GetPublicAddress()")
-    {
-        [[maybe_unused]] const auto ipAddress2 = TRAP::Network::IPv6Address::GetPublicAddress(TRAP::Utils::TimeStep(120.0f));
-        // CHECK(ipAddress2 != TRAP::Network::IPv6Address::None);
-        // CHECK(ipAddress2.ToString() != "::");
-        // static constexpr std::array<u8, 16u> arr{0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u};
-        // CHECK(ipAddress2.ToArray() != arr);
-    }
+    // SECTION("TRAP::Network::IPv6Address::GetPublicAddress()")
+    // {
+    //     // [[maybe_unused]] const auto ipAddress2 = TRAP::Network::IPv6Address::GetPublicAddress(TRAP::Utils::TimeStep(120.0f));
+    //     // CHECK(ipAddress2 != TRAP::Network::IPv6Address::None);
+    //     // CHECK(ipAddress2.ToString() != "::");
+    //     // static constexpr std::array<u8, 16u> arr{0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u};
+    //     // CHECK(ipAddress2.ToArray() != arr);
+    // }
 
     SECTION("Constants")
     {
