@@ -6,35 +6,42 @@
 namespace TRAP::Utils
 {
 	/// @brief Struct for a single step in time.
-	class TimeStep
+	class TimeStep final
 	{
 	public:
 		/// @brief Constructor for a single step in time.
 		/// @param time Time for the time step in seconds.
+		/// @threadsafe
 		constexpr explicit TimeStep(f32 time) noexcept;
 
 		/// @brief Copy constructor.
+		/// @threadsafe
 		constexpr TimeStep(const TimeStep&) = default;
-		/// @brief Copy assignment operator,
+		/// @brief Copy assignment operator.
+		/// @threadsafe
 		constexpr TimeStep& operator=(const TimeStep&) = default;
 		/// @brief Move constructor.
-		constexpr TimeStep(TimeStep&&) noexcept = default;
+		constexpr TimeStep(TimeStep&&) noexcept = delete;
 		/// @brief Move assignment operator.
-		constexpr TimeStep& operator=(TimeStep&&) noexcept = default;
+		constexpr TimeStep& operator=(TimeStep&&) noexcept = delete;
 
 		/// @brief Destructor,
+		/// @threadsafe
 		constexpr ~TimeStep() = default;
 
 		/// @brief Convenience operator.
 		/// Same as GetSeconds();
 		/// @return Time of the time step in seconds.
+		/// @threadsafe
 		[[nodiscard]] constexpr operator f32() const noexcept;
 
 		/// @brief Get time of the time step in seconds.
 		/// @return Time in seconds.
+		/// @threadsafe
 		[[nodiscard]] constexpr f32 GetSeconds() const noexcept;
 		/// @brief Get time of the time step in milliseconds.
 		/// @return Time in milliseconds.
+		/// @threadsafe
 		[[nodiscard]] constexpr f32 GetMilliseconds() const noexcept;
 
 	private:

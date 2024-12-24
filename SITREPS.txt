@@ -5494,3 +5494,8 @@ SITREP 12/22/2024|24w51c1
 SITREP 12/23/2024|24w52a1
     - Changed TRAP Engine version to 24w52a1(0.11.62)
     - UnitTests Added tests for TRAP::Utils::String ~>30 mins
+
+SITREP 12/24/2024|24w52a2
+    - Changed TRAP Engine version to 24w52a2(0.11.63)
+    - UnitTests Added tests for TRAP::Utils::Timer ~<5 mins
+    - UnitTests Added tests for TRAP::Utils::TimeStep ~<5 mins

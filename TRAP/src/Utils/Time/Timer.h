@@ -8,7 +8,7 @@
 namespace TRAP::Utils
 {
 	/// @brief Timer class.
-	class Timer
+	class Timer final
 	{
 	public:
 		/// @brief Constructor.
