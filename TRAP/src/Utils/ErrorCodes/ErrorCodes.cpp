@@ -13,6 +13,9 @@ namespace
         std::string_view Description;
         std::string_view LogPrefix;
         std::string_view LogMessage;
+
+        [[nodiscard]] constexpr bool operator==(const ErrorData& other) const = default;
+        [[nodiscard]] constexpr bool operator!=(const ErrorData& other) const = default;
     };
 
     constexpr TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 30u> ErrorCodesMap

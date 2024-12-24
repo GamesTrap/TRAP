@@ -10,17 +10,20 @@
 
 namespace TRAP::Utils
 {
-    /// @brief Compile-time and thread safe, fixed size map implementation
+    /// @brief Fixed size map implementation.
     /// @tparam Key Key type for the map.
     /// @tparam Value Value type for the map.
     /// @tparam Size Size for the map.
     template<typename Key, typename Value, usize Size, typename KeyEqual = std::equal_to<Key>>
     class ConstexprMap final
     {
+    private:
+        std::array<std::pair<Key, Value>, Size> m_data{};
+
     public:
         using key_type = Key;
         using mapped_type = Value;
-        using value_type = std::pair<const Key, Value>;
+        using value_type = std::pair<Key, Value>;
         using size_type = usize;
         using difference_type = isize;
         using key_equal = KeyEqual;
@@ -28,8 +31,13 @@ namespace TRAP::Utils
         using const_reference = const value_type&;
         using pointer = value_type*;
         using const_pointer = const value_type*;
-        using iterator = value_type*;
-        using const_iterator = const value_type*;
+        using iterator = decltype(m_data)::iterator;
+        using const_iterator = decltype(m_data)::const_iterator;
+
+        //-------------------------------------------------------------------------------------------------------------------//
+
+        static_assert(std::equality_comparable<Key>, "Key must implement operator==() and operator!=()");
+        static_assert(std::equality_comparable<Value>, "Value must implement operator==() and operator!=()");
 
         //-------------------------------------------------------------------------------------------------------------------//
 
@@ -37,20 +45,22 @@ namespace TRAP::Utils
 
         template<typename InputIt>
         constexpr ConstexprMap(const InputIt first, const InputIt last)
-            : m_data(std::to_array(first, last))
         {
-            static_assert(std::distance(first, last) == Size);
+            const auto inSize = std::distance(first, last);
+            TRAP_ASSERT(inSize == Size);
+
+            std::copy_n(first, inSize <= m_data.size() ? inSize : m_data.size(), m_data.begin());
         }
 
-        constexpr ConstexprMap(const ConstexprMap& other)
-            : m_data(other.m_data)
+        explicit(false) constexpr ConstexprMap(const std::initializer_list<value_type> iList)
         {
-        }
+            TRAP_ASSERT(iList.size() == Size);
+            std::copy_n(iList.begin(), iList.size() <= m_data.size() ? iList.size() : m_data.size(), m_data.begin());
+        };
 
-        constexpr ConstexprMap(ConstexprMap&& other) noexcept
-            : m_data(std::move(other.m_data))
-        {
-        }
+        constexpr ConstexprMap(const ConstexprMap& other) = default;
+
+        constexpr ConstexprMap(ConstexprMap&& other) noexcept = default;
 
         constexpr explicit ConstexprMap(std::array<value_type, Size> data)
             : m_data(std::move(data))
@@ -69,15 +79,7 @@ namespace TRAP::Utils
         ///        Copy assignment operator. Replaces the contents with a copy of the contents of other.
         /// @param other Another container to use as data source.
         /// @return *this.
-        constexpr ConstexprMap& operator=(const ConstexprMap& other)
-        {
-            if(this == &other)
-                return *this;
-
-            m_data = other.m_data;
-
-            return *this;
-        }
+        constexpr ConstexprMap& operator=(const ConstexprMap& other) = default;
 
         /// @brief Replaces the contents of the container.
         ///        Move assignment operator. Replaces the contents with those of other using move semantics
@@ -85,15 +87,7 @@ namespace TRAP::Utils
         ///        other is in a valid but unspecified state afterwards
         /// @param other Another container to use as data source.
         /// @return *this.
-        constexpr ConstexprMap& operator=(ConstexprMap&& other) noexcept
-        {
-            if(this == &other)
-                return *this;
-
-            m_data = std::move(other.m_data);
-
-            return *this;
-        }
+        constexpr ConstexprMap& operator=(ConstexprMap&& other) noexcept = default;
 
         /// @brief Replaces the contents of the container.
         ///        Replaces the contents with those identified by intializer list iList.
@@ -101,8 +95,8 @@ namespace TRAP::Utils
         /// @return *this.
         constexpr ConstexprMap& operator=(const std::initializer_list<value_type> iList)
         {
-            static_assert(iList.size() == Size);
-            std::ranges::copy(iList, m_data.data());
+            TRAP_ASSERT(iList.size() == Size);
+            std::copy_n(iList.begin(), iList.size() <= m_data.size() ? iList.size() : m_data.size(), m_data.data());
         }
 
         //-------------------------------------------------------------------------------------------------------------------//
@@ -290,33 +284,18 @@ namespace TRAP::Utils
             return contains(key) ? 1u : 0u;
         }
 
-    private:
-        std::array<value_type, Size> m_data{};
+        /// @brief Compares the contents of two ConstexprMaps.
+        /// @param other ConstexprMap to compare with.
+        /// @return true if the contents of the containers are equal, false otherwise.
+        [[nodiscard]] constexpr bool operator==(const ConstexprMap<Key, Value, Size, KeyEqual>& other) const = default;
+
+        //-------------------------------------------------------------------------------------------------------------------//
+
+        /// @brief Compares the contents of two ConstexprMaps.
+        /// @param other ConstexprMap to compare with.
+        /// @return true if the contents of the containers are not equal, false otherwise.
+        [[nodiscard]] constexpr bool operator!=(const ConstexprMap<Key, Value, Size, KeyEqual>& other) const = default;
     };
-
-    //-------------------------------------------------------------------------------------------------------------------//
-
-    /// @brief Compares the contents of two ConstexprMaps.
-    /// @param lhs ConstexprMap to compare.
-    /// @param rhs ConstexprMap to compare.
-    /// @return true if the contents of the containers are equal, false otherwise.
-    template<typename Key, typename Value, usize Size, typename KeyEqual = std::equal_to<Key>>
-    [[nodiscard]] constexpr bool operator==(const ConstexprMap<Key, Value, Size, KeyEqual>& lhs,
-                                            const ConstexprMap<Key, Value, Size, KeyEqual>& rhs)
-    {
-        return lhs.m_data == rhs.m_data;
-    }
-
-    /// @brief Compares the contents of two ConstexprMaps.
-    /// @param lhs ConstexprMap to compare.
-    /// @param rhs ConstexprMap to compare.
-    /// @return true if the contents of the containers are not equal, false otherwise.
-    template<typename Key, typename Value, usize Size, typename KeyEqual = std::equal_to<Key>>
-    [[nodiscard]] constexpr bool operator!=(const ConstexprMap<Key, Value, Size, KeyEqual>& lhs,
-                                            const ConstexprMap<Key, Value, Size, KeyEqual>& rhs)
-    {
-        return !(lhs == rhs);
-    }
 }
 
 #endif /*TRAP_CONSTEXPRMAP_H*/
