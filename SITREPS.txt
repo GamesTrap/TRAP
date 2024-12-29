@@ -5504,3 +5504,6 @@ SITREP 12/24/2024|24w52a2
 SITREP 12/29/2024|24w52b1
     - Changed TRAP Engine version to 24w52b1(0.11.64)
     - Memory Changed ConvertByte() and ConvertBytes() implementations ~<15 mins
+    - UnitTests Added tests for TRAP::Utils::Memory::SwapBytes ~<15 mins
+    - UnitTests Added tests for TRAP::Utils::Memory::ConvertByte ~<15 mins
+    - UnitTests Added tests for TRAP::Utils::Memory::ConvertBytes ~<15 mins
