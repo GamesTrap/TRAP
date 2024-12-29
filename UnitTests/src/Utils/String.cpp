@@ -2,6 +2,7 @@
 
 #include "Utils/String/String.h"
 #include "Utils/String/ConvertToType.h"
+#include "Utils/String/PrimitiveTypeNameToString.h"
 
 TEST_CASE("TRAP::Utils::String", "[utils][string]")
 {
@@ -485,5 +486,86 @@ TEST_CASE("TRAP::Utils::String", "[utils][string]")
         REQUIRE(TRAP::Utils::String::ConvertToType<f64>("-120.5") == -120.5);
         REQUIRE(TRAP::Utils::String::ConvertToType<f64>("70000") == 70000.0);
         REQUIRE(TRAP::Utils::String::ConvertToType<f64>("-70000") == -70000.0);
+    }
+
+    SECTION("PrimitiveTypeNameToString")
+    {
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<u8>() == "u8");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<u16>() == "u16");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<u32>() == "u32");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<u64>() == "u64");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<i8>() == "i8");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<i16>() == "i16");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<i32>() == "i32");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<i64>() == "i64");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<f32>() == "f32");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<f64>() == "f64");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<bool>() == "bool");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<char>() == "char");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<wchar_t>() == "wchar_t");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<char8_t>() == "char8_t");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<char16_t>() == "char16_t");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<char32_t>() == "char32_t");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<void>() == "void");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<std::nullptr_t>() == "nullptr");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<signed char>() == "i8");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<unsigned char>() == "u8");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<short>() == "i16");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<short int>() == "i16");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<signed short>() == "i16");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<signed short int>() == "i16");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<unsigned short>() == "u16");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<unsigned short int>() == "u16");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<int>() == "i32");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<int>() == "i32");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<signed>() == "i32");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<signed int>() == "i32");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<unsigned>() == "u32");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<unsigned int>() == "u32");
+        STATIC_REQUIRE((TRAP::Utils::String::PrimitiveTypeNameToString<long>() == "i64" ||
+                        TRAP::Utils::String::PrimitiveTypeNameToString<long>() == "i32"));
+        STATIC_REQUIRE((TRAP::Utils::String::PrimitiveTypeNameToString<long int>() == "i64" ||
+                        TRAP::Utils::String::PrimitiveTypeNameToString<long int>() == "i32"));
+        STATIC_REQUIRE((TRAP::Utils::String::PrimitiveTypeNameToString<signed long>() == "i64" ||
+                        TRAP::Utils::String::PrimitiveTypeNameToString<signed long>() == "i32"));
+        STATIC_REQUIRE((TRAP::Utils::String::PrimitiveTypeNameToString<signed long int>() == "i64" ||
+                        TRAP::Utils::String::PrimitiveTypeNameToString<signed long int>() == "i32"));
+        STATIC_REQUIRE((TRAP::Utils::String::PrimitiveTypeNameToString<unsigned long>() == "u64" ||
+                        TRAP::Utils::String::PrimitiveTypeNameToString<unsigned long>() == "u32"));
+        STATIC_REQUIRE((TRAP::Utils::String::PrimitiveTypeNameToString<unsigned long int>() == "u64" ||
+                        TRAP::Utils::String::PrimitiveTypeNameToString<unsigned long int>() == "u32"));
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<long long>() == "i64");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<long long int>() == "i64");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<signed long long>() == "i64");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<signed long long int>() == "i64");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<unsigned long long>() == "u64");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<unsigned long long int>() == "u64");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<float>() == "f32");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<double>() == "f64");
+        STATIC_REQUIRE((TRAP::Utils::String::PrimitiveTypeNameToString<long double>() == "f128" ||
+                        TRAP::Utils::String::PrimitiveTypeNameToString<long double>() == "f64"));
+    #if __STDCPP_FLOAT16_T__ == 1
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<std::float16_t>() == "f16");
+    #endif /*__STDCPP_FLOAT16_T__*/
+    #if __STDCPP_FLOAT32_T__ == 1
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<std::float32_t>() == "f32");
+    #endif /*__STDCPP_FLOAT32_T__*/
+    #if __STDCPP_FLOAT64_T__ == 1
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<std::float64_t>() == "f64");
+    #endif /*__STDCPP_FLOAT64_T__*/
+    #if __STDCPP_FLOAT128_T__ == 1
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<std::float128_t>() == "f128");
+    #endif /*__STDCPP_FLOAT128_T__*/
+    #if __STDCPP_BFLOAT16_T__ == 1
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<std::bfloat16_t>() == "bf16");
+    #endif /*__STDCPP_BFLOAT16_T__*/
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<std::int8_t>() == "i8");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<std::int16_t>() == "i16");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<std::int32_t>() == "i32");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<std::int64_t>() == "i64");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<std::uint8_t>() == "u8");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<std::uint16_t>() == "u16");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<std::uint32_t>() == "u32");
+        STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<std::uint64_t>() == "u64");
     }
 }
