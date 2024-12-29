@@ -5500,3 +5500,7 @@ SITREP 12/24/2024|24w52a2
     - UnitTests Added tests for TRAP::Utils::Timer ~<5 mins
     - UnitTests Added tests for TRAP::Utils::TimeStep ~<5 mins
     - UnitTests Added tests for TRAP::Utils::ConstexprMap ~>30 mins
+
+SITREP 12/29/2024|24w52b1
+    - Changed TRAP Engine version to 24w52b1(0.11.64)
+    - Memory Changed ConvertByte() and ConvertBytes() implementations ~<15 mins

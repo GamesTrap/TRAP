@@ -46,7 +46,7 @@ TEST_CASE("TRAP::Utils::Timer", "[utils][timer]")
 
         const f32 elapsed = timer.Elapsed();
 
-        REQUIRE((elapsed > 0.1f && elapsed < 0.250f));
+        REQUIRE((elapsed >= 0.1f && elapsed < 0.250f));
     }
 
     SECTION("Elapsed()")

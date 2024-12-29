@@ -547,16 +547,16 @@ namespace
 		if(SPIRV.size() < (ShaderHeaderOffset + sizeof(SPIRVMagicNumber)))
 			return {};
 
-		u32 magicNumber = TRAP::Utils::Memory::ConvertByte<u32>(SPIRV.subspan(ShaderHeaderOffset).data());
+		auto magicNumber = TRAP::Utils::Memory::ConvertByte<u32>(SPIRV.subspan(ShaderHeaderOffset));
 
 		//Check endianness of byte stream
-		if (magicNumber != SPIRVMagicNumber)
+		if (magicNumber.ValueOr(0u) != SPIRVMagicNumber)
 		{
 			TRAP::Utils::Memory::SwapBytes(SPIRV.begin(), SPIRV.end()); //Convert endianness if needed
 
-			magicNumber = TRAP::Utils::Memory::ConvertByte<u32>(SPIRV.subspan(ShaderHeaderOffset).data());
+			magicNumber = TRAP::Utils::Memory::ConvertByte<u32>(SPIRV.subspan(ShaderHeaderOffset));
 
-			if (magicNumber != SPIRVMagicNumber) //Recheck if SPIRV Magic Number is present
+			if (magicNumber.ValueOr(0u) != SPIRVMagicNumber) //Recheck if SPIRV Magic Number is present
 				return {};
 		}
 
@@ -566,15 +566,24 @@ namespace
 
 		for(u32 i = 0; i < SPIRVSubShaderCount; ++i)
 		{
-			const usize SPIRVSize = TRAP::Utils::Memory::ConvertByte<usize>(SPIRV.data() + NumericCast<isize>(index));
+			const auto SPIRVSize = TRAP::Utils::Memory::ConvertByte<usize>(SPIRV.subspan(NumericCast<isize>(index)));
+			if(!SPIRVSize)
+			{
+				TRAP_ASSERT(false);
+				return {};
+			}
+
 			index += sizeof(usize);
 
 			const TRAP::Graphics::RendererAPI::ShaderStage stage = static_cast<TRAP::Graphics::RendererAPI::ShaderStage>(SPIRV[index++]);
 			desc.Stages |= stage;
 
-			const u32 spvMagicNumber = TRAP::Utils::Memory::ConvertByte<u32>(SPIRV.data() + NumericCast<isize>(index));
-			if(spvMagicNumber != SPIRVMagicNumber || (SPIRV.size() - index) < SPIRVSize)
+			const auto spvMagicNumber = TRAP::Utils::Memory::ConvertByte<u32>(SPIRV.subspan(NumericCast<isize>(index)));
+			if(spvMagicNumber.ValueOr(0u) != SPIRVMagicNumber || (SPIRV.size() - index) < SPIRVSize)
+			{
+				TRAP_ASSERT(false);
 				return {};
+			}
 
 			std::vector<u32>* outputSPIRV = nullptr;
 
@@ -617,11 +626,11 @@ namespace
 
 			if(outputSPIRV != nullptr)
 			{
-				outputSPIRV->resize(SPIRVSize);
-				TRAP::Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<isize>(index), SPIRV.begin() + NumericCast<isize>(index) + NumericCast<isize>(SPIRVSize * sizeof(u32)), outputSPIRV->begin());
+				outputSPIRV->resize(*SPIRVSize);
+				TRAP::Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<isize>(index), SPIRV.begin() + NumericCast<isize>(index) + NumericCast<isize>(*SPIRVSize * sizeof(u32)), outputSPIRV->begin());
 			}
 
-			index += SPIRVSize * sizeof(u32);
+			index += *SPIRVSize * sizeof(u32);
 		}
 
 		return desc;
@@ -708,7 +717,7 @@ namespace
 
 		if(isSPIRV && SPIRVSource.empty())
 			TP_ERROR(TRAP::Log::ShaderSPIRVPrefix, "Couldn't load shader: \"", name, "\"!");
-		else if(glslSource.empty())
+		else if(!isSPIRV && glslSource.empty())
 			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Couldn't load shader: \"", name, "\"!");
 
 		if (glslSource.empty() && SPIRVSource.empty())
@@ -787,7 +796,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 	if(isSPIRV && SPIRVSource.empty())
 		TP_ERROR(Log::ShaderSPIRVPrefix, "Couldn't load shader: \"", m_name, "\"!");
-	else if (glslSource.empty())
+	else if (!isSPIRV && glslSource.empty())
 		TP_ERROR(Log::ShaderGLSLPrefix, "Couldn't load shader: \"", m_name, "\"!");
 
 	if (glslSource.empty() && SPIRVSource.empty())
