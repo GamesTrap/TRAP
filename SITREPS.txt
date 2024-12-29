@@ -5507,3 +5507,5 @@ SITREP 12/29/2024|24w52b1
     - UnitTests Added tests for TRAP::Utils::Memory::SwapBytes ~<15 mins
     - UnitTests Added tests for TRAP::Utils::Memory::ConvertByte ~<15 mins
     - UnitTests Added tests for TRAP::Utils::Memory::ConvertBytes ~<15 mins
+    - NumericCasts Moved TypeNameToString() to a separate header ~<5 mins
+    - Replaced TypeNameToString() with PrimitiveTypeNameToString() ~<5 mins

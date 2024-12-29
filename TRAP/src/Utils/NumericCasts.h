@@ -12,72 +12,10 @@
 
 #include "Core/Backports.h"
 #include "TRAP_Assert.h"
+#include "Utils/String/PrimitiveTypeNameToString.h"
 
 namespace INTERNAL
 {
-    template<typename X>
-    requires std::is_arithmetic_v<X>
-    constexpr std::string_view TypeNameToString()
-    {
-        if constexpr(std::same_as<X, char>)
-        {
-            return "char";
-        }
-        else if constexpr(std::same_as<X, i8>)
-        {
-            return "i8";
-        }
-        else if constexpr(std::same_as<X, u8>)
-        {
-            return "u8";
-        }
-        else if constexpr(std::same_as<X, i16>)
-        {
-            return "i16";
-        }
-        else if constexpr(std::same_as<X, u16>)
-        {
-            return "u16";
-        }
-        else if constexpr(std::same_as<X, i32>)
-        {
-            return "i32";
-        }
-        else if constexpr(std::same_as<X, u32>)
-        {
-            return "u32";
-        }
-        else if constexpr(std::same_as<X, i64>)
-        {
-            return "i64";
-        }
-        else if constexpr(std::same_as<X, u64>)
-        {
-            return "u64";
-        }
-        else if constexpr(std::same_as<X, f32>)
-        {
-            return "f32";
-        }
-        else if constexpr(std::same_as<X, f64>)
-        {
-            return "f64";
-        }
-        else if constexpr (std::same_as<X, unsigned long>)
-        {
-            return "unsigned long";
-        }
-        else if constexpr (std::same_as<X, long>)
-        {
-            return "long";
-        }
-        else
-        {
-            TRAP_ASSERT(false);
-            return "Unknown Type";
-        }
-    }
-
     template<typename To, typename From>
     concept NarrowFloatingPointToFloatingPoint = (std::floating_point<To> && std::floating_point<From> && (sizeof(To) <= sizeof(From)));
 
@@ -120,7 +58,7 @@ requires std::is_arithmetic_v<To> && std::is_arithmetic_v<From>
         if(value > static_cast<From>(std::numeric_limits<To>::max()) ||
             value < static_cast<From>(std::numeric_limits<To>::lowest()))
         {
-            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}({}) to type {}!", INTERNAL::TypeNameToString<From>(), value, INTERNAL::TypeNameToString<To>()));
+            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}({}) to type {}!", TRAP::Utils::String::PrimitiveTypeNameToString<From>(), value, TRAP::Utils::String::PrimitiveTypeNameToString<To>()));
         }
 
         return static_cast<To>(value);
@@ -130,7 +68,7 @@ requires std::is_arithmetic_v<To> && std::is_arithmetic_v<From>
         //Casting integral -> unsigned integral with increased byte size is considered unsafe
         if(value < static_cast<From>(0))
         {
-            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}({}) to type {}!", INTERNAL::TypeNameToString<From>(), value, INTERNAL::TypeNameToString<To>()));
+            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}({}) to type {}!", TRAP::Utils::String::PrimitiveTypeNameToString<From>(), value, TRAP::Utils::String::PrimitiveTypeNameToString<To>()));
         }
 
         return static_cast<To>(value);
@@ -140,7 +78,7 @@ requires std::is_arithmetic_v<To> && std::is_arithmetic_v<From>
         //Casting unsigned integral -> signed integral with decreased byte size is considered unsafe
         if(value > static_cast<From>(std::numeric_limits<To>::max()))
         {
-            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}({}) to type {}!", INTERNAL::TypeNameToString<From>(), value, INTERNAL::TypeNameToString<To>()));
+            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}({}) to type {}!", TRAP::Utils::String::PrimitiveTypeNameToString<From>(), value, TRAP::Utils::String::PrimitiveTypeNameToString<To>()));
         }
 
         return static_cast<To>(value);
@@ -151,7 +89,7 @@ requires std::is_arithmetic_v<To> && std::is_arithmetic_v<From>
         if(value < static_cast<From>(0) ||
             static_cast<To>(value) > static_cast<To>(std::numeric_limits<From>::max()))
         {
-            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}({}) to type {}!", INTERNAL::TypeNameToString<From>(), value, INTERNAL::TypeNameToString<To>()));
+            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}({}) to type {}!", TRAP::Utils::String::PrimitiveTypeNameToString<From>(), value, TRAP::Utils::String::PrimitiveTypeNameToString<To>()));
         }
 
         return static_cast<To>(value);
