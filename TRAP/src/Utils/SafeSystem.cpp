@@ -13,7 +13,7 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Violet, (GetTRAPProfileSystems() & ProfileSystems::Utils) != ProfileSystems::None &&
                                                   (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-        //Prepare arguments fpr execvp
+        //Prepare arguments for execvp
         std::vector<char*> argsCStr{};
         argsCStr.reserve(args.size() + 2u); //program + args + nullptr
         argsCStr.push_back(const_cast<char*>(program.c_str()));
@@ -31,8 +31,8 @@ namespace
             //Child process: Execute the program
             execvp(program.c_str(), argsCStr.data());
 
-            //If execvp returns, an error occurred
-            return TRAP::MakeUnexpected(fmt::format("TRAP::Utils::SafeSystem(): Failed to execute {} ({})", program, TRAP::Utils::String::GetStrError()));
+            //If execvp returns, an error occurred, terminate child.
+            std::_Exit(errno);
         }
 
         if(waitForChild)
@@ -88,7 +88,7 @@ namespace
         const bool res = CreateProcessW(nullptr, commandW.data(), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &startupInfo, &processInfo);
         if (!res)
         {
-            return TRAP::MakeUnexpected(fmt::format("TRAP::Utils::SafeSystem(): Failed to create process ({})!", program, TRAP::Utils::String::GetStrError()));
+            return TRAP::MakeUnexpected(fmt::format("TRAP::Utils::SafeSystem(): Failed to create process {} ({})!", program, TRAP::Utils::String::GetStrError()));
         }
 
         if (waitForChild)

@@ -5514,3 +5514,4 @@ SITREP 12/29/2024|24w52b1
 SITREP 12/30/2024|25w01a1
     - Changed TRAP Engine version to 25w01a1(0.11.65)
     - UnitTests Fixed Memory compiler errors ~<5 mins
+    - UnitTests Added tests for TRAP::Utils::SafeSystem ~<20 mins
