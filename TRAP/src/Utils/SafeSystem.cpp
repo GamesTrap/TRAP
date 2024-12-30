@@ -72,7 +72,7 @@ namespace
 
         std::string command = program;
         for (const auto& arg : args)
-            command += fmt::format(" \"{}\"", arg); //Quote arguments to handle spaces
+            command += fmt::format(" {}", arg); //Quote arguments to handle spaces
 
         std::wstring commandW = TRAP::Utils::String::CreateWideStringFromUTF8StringWin32(command);
 
