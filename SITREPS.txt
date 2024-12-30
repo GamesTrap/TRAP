@@ -5510,3 +5510,7 @@ SITREP 12/29/2024|24w52b1
     - NumericCasts Moved TypeNameToString() to a separate header ~<5 mins
     - Replaced TypeNameToString() with PrimitiveTypeNameToString() ~<5 mins
     - UnitTests Added tests for TRAP::Utils::String::PrimitiveTypeNameToString ~<15 mins
+
+SITREP 12/30/2024|25w01a1
+    - Changed TRAP Engine version to 25w01a1(0.11.65)
+    - UnitTests Fixed Memory compiler errors ~<5 mins

@@ -303,19 +303,19 @@ TEST_CASE("TRAP::Utils::Memory::ConvertByte(u8*, len)", "[utils][memory][convert
     SECTION("u16")
     {
         static constexpr std::array<u8, 4u> test{0xEF, 0xBE, 0xAD, 0xDE};
-        STATIC_REQUIRE(TRAP::Utils::Memory::ConvertByte<u16>(test.data(), test.size()).Value() == 0xBEEF);
+        REQUIRE(TRAP::Utils::Memory::ConvertByte<u16>(test.data(), test.size()).Value() == 0xBEEF);
     }
 
     SECTION("u32")
     {
         static constexpr std::array<u8, 4u> test{0xEF, 0xBE, 0xAD, 0xDE};
-        STATIC_REQUIRE(TRAP::Utils::Memory::ConvertByte<u32>(test.data(), test.size()).Value() == 0xDEADBEEF);
+        REQUIRE(TRAP::Utils::Memory::ConvertByte<u32>(test.data(), test.size()).Value() == 0xDEADBEEF);
     }
 
     SECTION("u64")
     {
         static constexpr std::array<u8, 8u> test{0xEF, 0xBE, 0xAD, 0xDE, 0xDE, 0xC0, 0xAD, 0xDE};
-        STATIC_REQUIRE(TRAP::Utils::Memory::ConvertByte<u64>(test.data(), test.size()).Value() == 0xDEADC0DEDEADBEEF);
+        REQUIRE(TRAP::Utils::Memory::ConvertByte<u64>(test.data(), test.size()).Value() == 0xDEADC0DEDEADBEEF);
     }
 
     SECTION("Invalid")
@@ -326,9 +326,9 @@ TEST_CASE("TRAP::Utils::Memory::ConvertByte(u8*, len)", "[utils][memory][convert
         STATIC_REQUIRE_FALSE(TRAP::Utils::Memory::ConvertByte<u32>(nullptr, 10u));
         STATIC_REQUIRE_FALSE(TRAP::Utils::Memory::ConvertByte<u64>(nullptr, 10u));
 
-        STATIC_REQUIRE_FALSE(TRAP::Utils::Memory::ConvertByte<u16>(test.data(), 0u));
-        STATIC_REQUIRE_FALSE(TRAP::Utils::Memory::ConvertByte<u32>(test.data(), 0u));
-        STATIC_REQUIRE_FALSE(TRAP::Utils::Memory::ConvertByte<u64>(test.data(), 0u));
+        REQUIRE_FALSE(TRAP::Utils::Memory::ConvertByte<u16>(test.data(), 0u));
+        REQUIRE_FALSE(TRAP::Utils::Memory::ConvertByte<u32>(test.data(), 0u));
+        REQUIRE_FALSE(TRAP::Utils::Memory::ConvertByte<u64>(test.data(), 0u));
 
         STATIC_REQUIRE_FALSE(TRAP::Utils::Memory::ConvertByte<u16>(nullptr, 0u));
         STATIC_REQUIRE_FALSE(TRAP::Utils::Memory::ConvertByte<u32>(nullptr, 0u));
