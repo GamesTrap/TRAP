@@ -17,11 +17,11 @@ workspace "TRAP"
 	systemversion "latest"
 	vectorextensions "AVX2"
 	warnings "Extra"
+	fatalwarnings "All"
 
 	flags
 	{
 		"MultiProcessorCompile",
-		"FatalCompileWarnings"
 	}
 
 	outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
@@ -64,7 +64,7 @@ workspace "TRAP"
 		}
 
 	filter {"language:C or C++", "configurations:Release or configurations:Profiling" }
-		flags "LinkTimeOptimization"
+		linktimeoptimization "on"
 
 	filter {"language:C or C++", "configurations:Debug" }
 		runtime "Debug"

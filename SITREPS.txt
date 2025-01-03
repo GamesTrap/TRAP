@@ -5520,3 +5520,4 @@ SITREP 01/03/2024|25w01a2
     - Changed TRAP Engine version to 25w01a2(0.11.66)
     - UnitTests Added tests for TRAP::Utils ~<20 mins
     - Updated copyright and third party licenses ~<15 mins
+    - Updated premake binaries and scripts ~<5 mins
