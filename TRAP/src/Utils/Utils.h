@@ -54,7 +54,7 @@ namespace TRAP::Utils
 		using is_transparent = void; //Enable heterogeneous lookup.
 
 		/// @threadsafe
-		[[nodiscard]] usize operator()(const std::string_view sv) const
+		[[nodiscard]] usize operator()(const std::string_view sv) const noexcept
 		{
 			std::hash<std::string_view> hasher{};
 			return hasher(sv);
@@ -346,7 +346,7 @@ struct fmt::formatter<TRAP::Utils::LinuxWindowManager>
         switch(linuxWM)
         {
         case TRAP::Utils::LinuxWindowManager::Unknown:
-            enumStr = "Off";
+            enumStr = "Unknown";
             break;
         case TRAP::Utils::LinuxWindowManager::X11:
             enumStr = "X11";
