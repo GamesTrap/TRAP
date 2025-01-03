@@ -85,7 +85,7 @@ TEST_CASE("TRAP::Utils", "[utils]")
     SECTION("GetLinuxWindowManager()")
     {
 #ifdef TRAP_PLATFORM_LINUX
-        [[maybe_unused]] const TRAP::Utils::LinuxWindowManager wm = TRAP::Utils::GetLinuxWindowManager();
+        // [[maybe_unused]] const TRAP::Utils::LinuxWindowManager wm = TRAP::Utils::GetLinuxWindowManager();
 #else
         REQUIRE(TRAP::Utils::GetLinuxWindowManager() == TRAP::Utils::LinuxWindowManager::Unknown);
 #endif
