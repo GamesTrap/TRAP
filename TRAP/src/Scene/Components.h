@@ -6,6 +6,8 @@
 #endif /*_MSC_VER*/
 #include <box2d/b2_body.h>
 #include <box2d/b2_fixture.h>
+#include <box2d/b2_polygon_shape.h>
+#include <box2d/b2_circle_shape.h>
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif /*_MSC_VER*/
@@ -153,6 +155,9 @@ namespace TRAP
 	//Physics------------------------------------------------------------------------------------------------------------//
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	struct BoxCollider2DComponent;
+	struct CircleCollider2DComponent;
+
 	struct Rigidbody2DComponent
 	{
 		enum class BodyType : u8 {Static, Dynamic, Kinematic};
@@ -192,6 +197,17 @@ namespace TRAP
 
 			RuntimeBody->SetType(originalBodyType);
 		}
+
+		template<typename T>
+		requires std::same_as<T, BoxCollider2DComponent> || std::same_as<T, CircleCollider2DComponent>
+		void DestroyColliderFixture(T& collider2DComp) const
+		{
+			if((RuntimeBody != nullptr) && (collider2DComp.RuntimeFixture != nullptr))
+			{
+				RuntimeBody->DestroyFixture(collider2DComp.RuntimeFixture);
+				collider2DComp.RuntimeFixture = nullptr;
+			}
+		}
 	};
 
 	struct BoxCollider2DComponent
@@ -210,6 +226,26 @@ namespace TRAP
 
 		/// @brief Constructor.
 		constexpr BoxCollider2DComponent() noexcept = default;
+
+		void CreateFixture(const Rigidbody2DComponent& rigidBody2DComp, const TRAP::Math::Vec2& scale)
+		{
+			if(rigidBody2DComp.RuntimeBody == nullptr)
+			{
+				TRAP_ASSERT(false, "CreateBoxColliderFixture(): rigidBody2DComp.RuntimeBody is nullptr!");
+				return;
+			}
+
+			b2PolygonShape boxShape{};
+			boxShape.SetAsBox(Size.x() * scale.x(), Size.y() * scale.y());
+
+			b2FixtureDef fixtureDef{};
+			fixtureDef.shape = &boxShape;
+			fixtureDef.density = Density;
+			fixtureDef.friction = Friction;
+			fixtureDef.restitution = Restitution;
+			fixtureDef.restitutionThreshold = RestitutionThreshold;
+			RuntimeFixture = rigidBody2DComp.RuntimeBody->CreateFixture(&fixtureDef);
+		}
 	};
 
 	struct CircleCollider2DComponent
@@ -228,6 +264,27 @@ namespace TRAP
 
 		/// @brief Constructor.
 		constexpr CircleCollider2DComponent() noexcept = default;
+
+		void CreateFixture(const Rigidbody2DComponent& rigidBody2DComp, const TRAP::Math::Vec2& scale)
+		{
+			if(rigidBody2DComp.RuntimeBody == nullptr)
+			{
+				TRAP_ASSERT(false, "CreateCircleColliderFixture(): rigidBody2DComp.RuntimeBody is nullptr!");
+				return;
+			}
+
+			b2CircleShape circleShape{};
+			circleShape.m_p.Set(Offset.x(), Offset.y());
+			circleShape.m_radius = TRAP::Math::Max(scale.x(), scale.y()) * Radius;
+
+			b2FixtureDef fixtureDef{};
+			fixtureDef.shape = &circleShape;
+			fixtureDef.density = Density;
+			fixtureDef.friction = Friction;
+			fixtureDef.restitution = Restitution;
+			fixtureDef.restitutionThreshold = RestitutionThreshold;
+			RuntimeFixture = rigidBody2DComp.RuntimeBody->CreateFixture(&fixtureDef);
+		}
 	};
 
 	template<typename... Component>

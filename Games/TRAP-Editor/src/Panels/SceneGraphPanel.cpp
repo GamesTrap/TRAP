@@ -302,14 +302,22 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 	},
 	[](const TRAP::Entity& ent, const TransformComponent& transComp)
 	{
-		if(!ent.HasComponent<Rigidbody2DComponent>())
-			return;
+		if(const auto* const rigid2DComp = ent.TryGetComponent<Rigidbody2DComponent>())
+		{
+			rigid2DComp->SetPosition(TRAP::Math::Vec2{transComp.Position});
+			rigid2DComp->SetAngle(transComp.Rotation.z());
 
-		const auto& rigid2DComp = ent.GetComponent<Rigidbody2DComponent>();
-
-		rigid2DComp.SetPosition(TRAP::Math::Vec2{transComp.Position});
-		rigid2DComp.SetAngle(transComp.Rotation.z());
-		//TODO Scale collider
+			if(auto* const boxCollider2DComp = ent.TryGetComponent<BoxCollider2DComponent>()) //Recreate Fixture (applies scaling)
+			{
+				rigid2DComp->DestroyColliderFixture(*boxCollider2DComp);
+				boxCollider2DComp->CreateFixture(*rigid2DComp, TRAP::Math::Vec2{transComp.Scale});
+			}
+			if(auto* const circleCollider2DComp = ent.TryGetComponent<CircleCollider2DComponent>()) //Recreate Fixture (applies scaling)
+			{
+				rigid2DComp->DestroyColliderFixture(*circleCollider2DComp);
+				circleCollider2DComp->CreateFixture(*rigid2DComp, TRAP::Math::Vec2{transComp.Scale});
+			}
+		}
 	});
 
 	DrawComponent<CameraComponent>("Camera", entity, [](auto& component)

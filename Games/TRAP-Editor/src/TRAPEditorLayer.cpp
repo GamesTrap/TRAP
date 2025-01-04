@@ -508,13 +508,21 @@ void TRAPEditorLayer::OnImGuizmoRender()
 			tc.Rotation += deltaRotation;
 			tc.Scale = scale;
 
-			if(selectedEntity.HasComponent<TRAP::Rigidbody2DComponent>())
+			if(const auto* const rigid2DComp = selectedEntity.TryGetComponent<TRAP::Rigidbody2DComponent>())
 			{
-				const auto& rigid2DComp = selectedEntity.GetComponent<TRAP::Rigidbody2DComponent>();
+				rigid2DComp->SetPosition(TRAP::Math::Vec2{tc.Position});
+				rigid2DComp->SetAngle(tc.Rotation.z());
 
-				rigid2DComp.SetPosition(TRAP::Math::Vec2{tc.Position});
-				rigid2DComp.SetAngle(tc.Rotation.z());
-				//TODO Scale collider
+				if(auto* const boxCollider2DComp = selectedEntity.TryGetComponent<TRAP::BoxCollider2DComponent>()) //Recreate Fixture (applies scaling)
+				{
+					rigid2DComp->DestroyColliderFixture(*boxCollider2DComp);
+					boxCollider2DComp->CreateFixture(*rigid2DComp, TRAP::Math::Vec2{tc.Scale});
+				}
+				if(auto* const circleCollider2DComp = selectedEntity.TryGetComponent<TRAP::CircleCollider2DComponent>()) //Recreate Fixture (applies scaling)
+				{
+					rigid2DComp->DestroyColliderFixture(*circleCollider2DComp);
+					circleCollider2DComp->CreateFixture(*rigid2DComp, TRAP::Math::Vec2{tc.Scale});
+				}
 			}
 		}
 	}
