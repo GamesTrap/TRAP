@@ -305,10 +305,11 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 		if(!ent.HasComponent<Rigidbody2DComponent>())
 			return;
 
-		const auto& rigidComp = ent.GetComponent<Rigidbody2DComponent>();
+		const auto& rigid2DComp = ent.GetComponent<Rigidbody2DComponent>();
 
-		rigidComp.SetPosition(TRAP::Math::Vec2{transComp.Position});
-		rigidComp.SetAngle(transComp.Rotation.z());
+		rigid2DComp.SetPosition(TRAP::Math::Vec2{transComp.Position});
+		rigid2DComp.SetAngle(transComp.Rotation.z());
+		//TODO Scale collider
 	});
 
 	DrawComponent<CameraComponent>("Camera", entity, [](auto& component)
