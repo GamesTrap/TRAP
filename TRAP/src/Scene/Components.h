@@ -254,7 +254,7 @@ namespace TRAP
 			}
 
 			b2PolygonShape boxShape{};
-			boxShape.SetAsBox(Size.x() * scale.x(), Size.y() * scale.y());
+			boxShape.SetAsBox(Size.x() * scale.x(), Size.y() * scale.y(), b2Vec2(Offset.x(), Offset.y()), 0.0f);
 
 			b2FixtureDef fixtureDef{};
 			fixtureDef.shape = &boxShape;

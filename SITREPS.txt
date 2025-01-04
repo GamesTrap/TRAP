@@ -5536,3 +5536,4 @@ SITREP 01/04/2025|25w01b1
     - TRAP-Editor Added support for changing BoxCollider2DComponent while in play mode through component UI ~<10 mins
     - TRAP-Editor Added support for changing CircleCollider2DComponent while in play mode through component UI ~<10 mins
     - TRAP-Editor Fixed CircleCollider2DComponent wrong scale when drawing colliders ~<5 mins
+    - TRAP-Editor Fixed BoxCollider2DComponent Offset property being wrongly displayed when drawing colliders ~<5 mins
