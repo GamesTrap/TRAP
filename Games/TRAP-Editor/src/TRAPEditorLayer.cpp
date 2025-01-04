@@ -1006,12 +1006,14 @@ void TRAPEditorLayer::OnOverlayRender()
 			{
 				auto [transform, circleCollider] = view.get<TRAP::TransformComponent, TRAP::CircleCollider2DComponent>(entity);
 
-				const TRAP::Math::Vec3 position = transform.Position + TRAP::Math::Vec3(circleCollider.Offset, -colliderProjectionZ);
 				const f32 rotation = transform.Rotation.z();
 				const f32 maxScale = TRAP::Math::Max(transform.Scale.x(), transform.Scale.y());
 				const TRAP::Math::Vec3 scale = TRAP::Math::Vec3{maxScale, maxScale, transform.Scale.z()} * TRAP::Math::Vec3(circleCollider.Radius * 2.0f);
 
-				const TRAP::Math::Mat4 trans = TRAP::Math::Translate(position) * TRAP::Math::Rotate(rotation, {0.0f, 0.0f, 1.0f}) * TRAP::Math::Scale(scale);
+				const TRAP::Math::Mat4 trans = TRAP::Math::Translate(transform.Position) *
+				                               TRAP::Math::Rotate(rotation, {0.0f, 0.0f, 1.0f}) *
+				                               TRAP::Math::Translate(TRAP::Math::Vec3(circleCollider.Offset, -colliderProjectionZ)) *
+											   TRAP::Math::Scale(scale);
 
 				TRAP::Graphics::Renderer2D::DrawCircle(trans, TRAP::Math::Vec4(0.0f, 1.0f, 0.0f, 1.0f), 0.01f);
 			}
