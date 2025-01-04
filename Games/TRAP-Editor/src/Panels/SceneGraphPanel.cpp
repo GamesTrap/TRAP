@@ -102,7 +102,7 @@ namespace
 	/// @param displayFunc Function which draws the component specific properties.
 	/// @param updateFunc Function to call when a value of the component has changed through the UI.
 	template <typename T, typename UIFunction, typename UpdateFunction>
-	requires TRAP::IsComponent<T> && std::is_invocable_r_v<bool, UIFunction, T&> && std::is_invocable_r_v<void, UpdateFunction, TRAP::Entity&, const T&>
+	requires TRAP::IsComponent<T> && std::is_invocable_r_v<bool, UIFunction, T&> && std::is_invocable_r_v<void, UpdateFunction, TRAP::Entity&, T&>
 	void DrawComponent(const std::string& name, TRAP::Entity& entity, UIFunction displayFunc, UpdateFunction updateFunc)
 	{
 		static constexpr ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowOverlap |
@@ -434,26 +434,62 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 
 	DrawComponent<BoxCollider2DComponent>("Box Collider 2D", entity, [](auto& component)
 	{
-		ImGui::DragFloat2("Offset", &std::get<0u>(component.Offset), 0.1f);
-		ImGui::DragFloat2("Size", &std::get<0u>(component.Size), 0.1f);
-		ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
-		ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
-		ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
-		ImGui::DragFloat("RestitutionThreshold", &component.RestitutionThreshold, 0.01f, 0.0f);
+		bool changed = false;
 
-		return false; //TODO Apply changes in play mode
+		changed |= ImGui::DragFloat2("Offset", &std::get<0u>(component.Offset), 0.1f);
+		changed |= ImGui::DragFloat2("Size", &std::get<0u>(component.Size), 0.1f);
+		changed |= ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
+		changed |= ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
+		changed |= ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
+		changed |= ImGui::DragFloat("RestitutionThreshold", &component.RestitutionThreshold, 0.01f, 0.0f);
+
+		return changed;
+	},
+	[]([[maybe_unused]] const TRAP::Entity& ent, BoxCollider2DComponent& boxCollider2DComp)
+	{
+		if(boxCollider2DComp.RuntimeFixture == nullptr)
+			return;
+
+		const auto* const transformComp = ent.TryGetComponent<TransformComponent>();
+		if(transformComp == nullptr)
+			return;
+
+		const auto* const rigidBody2DComp = ent.TryGetComponent<Rigidbody2DComponent>();
+		if(rigidBody2DComp == nullptr || rigidBody2DComp->RuntimeBody == nullptr)
+			return;
+
+		rigidBody2DComp->DestroyColliderFixture(boxCollider2DComp);
+		boxCollider2DComp.CreateFixture(*rigidBody2DComp, TRAP::Math::Vec2{transformComp->Scale});
 	});
 
 	DrawComponent<CircleCollider2DComponent>("Circle Collider 2D", entity, [](auto& component)
 	{
-		ImGui::DragFloat2("Offset", &std::get<0u>(component.Offset), 0.1f);
-		ImGui::DragFloat("Radius", &component.Radius, 0.1f);
-		ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
-		ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
-		ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
-		ImGui::DragFloat("RestitutionThreshold", &component.RestitutionThreshold, 0.01f, 0.0f);
+		bool changed = false;
 
-		return false; //TODO Apply changes in play mode
+		changed |= ImGui::DragFloat2("Offset", &std::get<0u>(component.Offset), 0.1f);
+		changed |= ImGui::DragFloat("Radius", &component.Radius, 0.1f);
+		changed |= ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
+		changed |= ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
+		changed |= ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
+		changed |= ImGui::DragFloat("RestitutionThreshold", &component.RestitutionThreshold, 0.01f, 0.0f);
+
+		return changed;
+	},
+	[]([[maybe_unused]] const TRAP::Entity& ent, TRAP::CircleCollider2DComponent& circleCollider2DComp)
+	{
+		if(circleCollider2DComp.RuntimeFixture == nullptr)
+			return;
+
+		const auto* const transformComp = ent.TryGetComponent<TransformComponent>();
+		if(transformComp == nullptr)
+			return;
+
+		const auto* const rigidBody2DComp = ent.TryGetComponent<Rigidbody2DComponent>();
+		if(rigidBody2DComp == nullptr || rigidBody2DComp->RuntimeBody == nullptr)
+			return;
+
+		rigidBody2DComp->DestroyColliderFixture(circleCollider2DComp);
+		circleCollider2DComp.CreateFixture(*rigidBody2DComp, TRAP::Math::Vec2{transformComp->Scale});
 	});
 }
 
