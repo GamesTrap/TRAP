@@ -22,7 +22,7 @@ void Sandbox2D::OnImGuiRender()
     ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
 	ImGui::PlotLines("##frameHistory", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()), 0, nullptr, 0.0f, 33.0f, ImVec2(200.0f, 50.0f));
 	ImGui::NewLine();
-	ImGui::Image(TRAP::Graphics::TextureManager::Get2D("TRAP"), ImVec2(100.0f, 100.0f));
+	ImGui::Image(*TRAP::Graphics::TextureManager::Get2D("TRAP"), ImVec2(100.0f, 100.0f));
 	ImGui::End();
 
 	const TRAP::Graphics::Renderer2D::Statistics stats = TRAP::Graphics::Renderer2D::GetStats();

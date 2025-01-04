@@ -196,12 +196,12 @@ void FrameBufferTests::OnImGuiRender()
                                                               ImGuiWindowFlags_NoResize);
     if(m_MSAAEnabled)
     {
-        ImGui::Image(m_resolveTarget->GetTexture(), ImVec2(NumericCast<f32>(m_resolveTarget->GetWidth()),
+        ImGui::Image(*m_resolveTarget->GetTexture(), ImVec2(NumericCast<f32>(m_resolveTarget->GetWidth()),
                      NumericCast<f32>(m_resolveTarget->GetHeight())), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
     }
     else
     {
-        ImGui::Image(m_renderTarget->GetTexture(), ImVec2(NumericCast<f32>(m_renderTarget->GetWidth()),
+        ImGui::Image(*m_renderTarget->GetTexture(), ImVec2(NumericCast<f32>(m_renderTarget->GetWidth()),
                      NumericCast<f32>(m_renderTarget->GetHeight())), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
     }
     ImGui::Text("Vulkan and the Vulkan logo are registered trademarks of the Khronos Group Inc.");

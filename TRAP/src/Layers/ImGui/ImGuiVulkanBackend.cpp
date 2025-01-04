@@ -213,18 +213,6 @@ namespace
     //-------------------------------------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------------------------------------//
 
-    struct VulkanTextureCacheEntry
-    {
-        TRAP::Ref<TRAP::Graphics::API::VulkanSampler> Sampler;
-        VkImageLayout ImageLayout;
-        VkDescriptorSet DescriptorSet;
-    };
-    std::unordered_map<TRAP::Ref<TRAP::Graphics::API::VulkanTexture>, VulkanTextureCacheEntry> s_VulkanTextureCache{};
-
-    //-------------------------------------------------------------------------------------------------------------------//
-    //-------------------------------------------------------------------------------------------------------------------//
-    //-------------------------------------------------------------------------------------------------------------------//
-
     // Reusable buffers used for rendering 1 current in-flight frame, for RenderDrawData()
     struct ImGui_ImplVulkanH_FrameRenderBuffers
     {
@@ -280,6 +268,7 @@ namespace
         ImGui_ImplVulkanH_WindowRenderBuffers MainWindowRenderBuffers{};
 
         std::vector<VkDescriptorPool> DescriptorPools;
+        std::unordered_map<usize, VkDescriptorSet> TextureDescriptorCache{};
     };
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -682,6 +671,11 @@ namespace
                 v.PipelineCache->Save(*tempFolder / "ImGui.cache");
             v.PipelineCache = nullptr;
         }
+
+        for(VkDescriptorPool& descPool : bd->DescriptorPools)
+            vkDestroyDescriptorPool(v.Device->GetVkDevice(), descPool, v.Allocator);
+        bd->DescriptorPools.clear();
+        ClearCache();
     }
 
     //-------------------------------------------------------------------------
@@ -1513,7 +1507,7 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
     bd->FontImage->Init(fontDesc);
 
     // Create the Descriptor Set:
-    bd->FontDescriptorSet = std::bit_cast<VkDescriptorSet>(AddTexture(bd->FontSampler, bd->FontImage, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
+    bd->FontDescriptorSet = std::bit_cast<VkDescriptorSet>(AddTexture(*bd->FontSampler, *bd->FontImage, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
 
     // Create the Upload Buffer:
     TRAP::Ref<TRAP::Graphics::API::VulkanBuffer> uploadBuffer = nullptr;
@@ -1607,7 +1601,6 @@ void ImGui::INTERNAL::Vulkan::DestroyFontsTexture()
 
     if(bd->FontDescriptorSet != nullptr)
     {
-        RemoveTexture(bd->FontImage);
         bd->FontDescriptorSet = VK_NULL_HANDLE;
         io.Fonts->SetTexID(std::bit_cast<ImTextureID>(nullptr));
     }
@@ -1867,16 +1860,11 @@ void ImGui::INTERNAL::Vulkan::Shutdown()
 
     TRAP_ASSERT(bd != nullptr, "ImGuiVulkanBackend::Shutdown(): Renderer backend is already shutdown!");
     ImGuiIO& io = ImGui::GetIO();
-    const InitInfo& v = bd->VulkanInitInfo;
 
     TRAP::Graphics::RendererAPI::GetRenderer()->WaitIdle();
 
     // First destroy objects in all viewports
     DestroyDeviceObjects();
-
-    for(VkDescriptorPool& descPool : bd->DescriptorPools)
-        vkDestroyDescriptorPool(v.Device->GetVkDevice(), descPool, v.Allocator);
-    bd->DescriptorPools.clear();
 
     // Manually delete main viewport render data in-case we haven't initialized for viewports
     ImGuiViewport* const main_viewport = ImGui::GetMainViewport();
@@ -1890,8 +1878,6 @@ void ImGui::INTERNAL::Vulkan::Shutdown()
 
     // Clean up windows
     ShutdownMultiViewportSupport();
-
-    ClearCache();
 
     io.BackendRendererName = nullptr;
     io.BackendRendererUserData = nullptr;
@@ -1914,25 +1900,21 @@ void ImGui::INTERNAL::Vulkan::NewFrame()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] ImTextureID ImGui::INTERNAL::Vulkan::AddTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanSampler>& sampler,
-                                                              const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& image,
+[[nodiscard]] ImTextureID ImGui::INTERNAL::Vulkan::AddTexture(const TRAP::Graphics::API::VulkanSampler& sampler,
+                                                              const TRAP::Graphics::API::VulkanTexture& image,
                                                               const VkImageLayout image_layout)
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-    TRAP_ASSERT(sampler != nullptr, "ImGuiVulkanBackend::AddTexture(): sampler is nullptr!");
-    TRAP_ASSERT(image != nullptr, "ImGuiVulkanBackend::AddTexture(): image is nullptr!");
-
-    const auto it = s_VulkanTextureCache.find(image);
-    if(it != s_VulkanTextureCache.end())
-        return reinterpret_cast<ImTextureID>(it->second.DescriptorSet);
-
-    VulkanTextureCacheEntry& vulkanDetails = s_VulkanTextureCache[image];
-    vulkanDetails.Sampler = sampler;
-    vulkanDetails.ImageLayout = image_layout;
-
-    const ImGui_ImplVulkan_Data* const bd = GetBackendData();
+    ImGui_ImplVulkan_Data* const bd = GetBackendData();
     TRAP_ASSERT(bd, "ImGuiVulkanBackend::AddTexture(): Backend data is nullptr!");
+
+    usize hash = 0u;
+    TRAP::Utils::HashCombine(hash, image.GetSRVVkImageView(), sampler.GetVkSampler(), image_layout);
+
+    const auto it = bd->TextureDescriptorCache.find(hash);
+    if(it != bd->TextureDescriptorCache.end())
+        return std::bit_cast<ImTextureID>(it->second);
 
     const InitInfo& v = bd->VulkanInitInfo;
     VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
@@ -1945,6 +1927,9 @@ void ImGui::INTERNAL::Vulkan::NewFrame()
 
         if(descriptorSet == VK_NULL_HANDLE)
         {
+            if(err == VK_ERROR_OUT_OF_POOL_MEMORY)
+                TP_WARN(TRAP::Log::ImGuiPrefix, "ImGuiVulkanBackend::AddTexture(): DescriptorPool exhausted, creating new DescriptorPool (currently ", bd->DescriptorPools.size(), " are in use)");
+
             CreateNewDescriptorPool();
 
             //Try again now with the new pool
@@ -1954,44 +1939,12 @@ void ImGui::INTERNAL::Vulkan::NewFrame()
         }
     }
 
-    vulkanDetails.DescriptorSet = descriptorSet;
-    UpdateTextureInfo(vulkanDetails.DescriptorSet, *vulkanDetails.Sampler, image->GetSRVVkImageView(), vulkanDetails.ImageLayout);
-
-    return reinterpret_cast<ImTextureID>(vulkanDetails.DescriptorSet);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void ImGui::INTERNAL::Vulkan::RemoveTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& image)
-{
-    const auto it = s_VulkanTextureCache.find(image);
-
-    if(it == s_VulkanTextureCache.end())
-        return;
-
-    s_VulkanTextureCache.erase(it);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] ImTextureID ImGui::INTERNAL::Vulkan::UpdateTextureInfo(VkDescriptorSet descriptorSet,
-                                                                     const TRAP::Graphics::API::VulkanSampler& sampler,
-                                                                     VkImageView image_view,
-                                                                     const VkImageLayout image_layout)
-{
-    ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
-
-    const ImGui_ImplVulkan_Data* const bd = GetBackendData();
-    TRAP_ASSERT(bd, "ImGuiVulkanBackend::UpdateTextureInfo(): Backend data is nullptr!");
-
-    const InitInfo& v = bd->VulkanInitInfo;
-
     // Update Descriptor Set:
     {
         const VkDescriptorImageInfo imageInfo
         {
             .sampler = sampler.GetVkSampler(),
-            .imageView = image_view,
+            .imageView = image.GetSRVVkImageView(),
             .imageLayout = image_layout
         };
         const VkWriteDescriptorSet writeDesc
@@ -2010,7 +1963,9 @@ void ImGui::INTERNAL::Vulkan::RemoveTexture(const TRAP::Ref<TRAP::Graphics::API:
         vkUpdateDescriptorSets(v.Device->GetVkDevice(), 1u, &writeDesc, 0u, nullptr);
     }
 
-    return reinterpret_cast<ImTextureID>(descriptorSet);
+    bd->TextureDescriptorCache[hash] = descriptorSet;
+
+    return std::bit_cast<ImTextureID>(descriptorSet);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2019,7 +1974,10 @@ void ImGui::INTERNAL::Vulkan::ClearCache() noexcept
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-    s_VulkanTextureCache.clear();
+    ImGui_ImplVulkan_Data* const bd = GetBackendData();
+    TRAP_ASSERT(bd, "ImGuiVulkanBackend::ClearCache(): Backend data is nullptr!");
+
+    bd->TextureDescriptorCache.clear();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

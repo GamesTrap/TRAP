@@ -5521,3 +5521,7 @@ SITREP 01/03/2024|25w01a2
     - UnitTests Added tests for TRAP::Utils ~<20 mins
     - Updated copyright and third party licenses ~<15 mins
     - Updated premake binaries and scripts ~<5 mins
+
+SITREP 01/04/2024|25w01b1
+    - Changed TRAP Engine version to 25w01b1(0.11.67)
+    - ImGuiVulkanBackend Changed caching of textures ~<30 mins

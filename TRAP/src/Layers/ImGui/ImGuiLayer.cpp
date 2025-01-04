@@ -434,21 +434,19 @@ void TRAP::ImGuiLayer::SetImGuizmoStyle()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const TRAP::Ref<TRAP::Graphics::Sampler>& sampler,
+void ImGui::Image(const TRAP::Graphics::Texture& image, const TRAP::Graphics::Sampler& sampler,
                   const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col,
 				  const ImVec4& border_col)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-	TRAP_ASSERT(sampler != nullptr, "ImGui::Image(): Sampler is nullptr!");
-	TRAP_ASSERT(image != nullptr, "ImGui::Image(): Image is nullptr!");
-	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "ImGui::Image(): Image is not a Texture2D!");
+	TRAP_ASSERT(image.GetType() == TRAP::Graphics::TextureType::Texture2D, "ImGui::Image(): Image is not a Texture2D!");
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
-		const auto vkImage = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(image);
-		const auto vkSampler = dynamic_pointer_cast<TRAP::Graphics::API::VulkanSampler>(sampler);
-		ImTextureID texID = ImGui::INTERNAL::Vulkan::AddTexture(vkSampler, vkImage,
+		const auto* const vkImage = dynamic_cast<const TRAP::Graphics::API::VulkanTexture*>(&image);
+		const auto* const vkSampler = dynamic_cast<const TRAP::Graphics::API::VulkanSampler*>(&sampler);
+		ImTextureID texID = ImGui::INTERNAL::Vulkan::AddTexture(*vkSampler, *vkImage,
 		                                                        VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
 	}
@@ -456,38 +454,36 @@ void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const TRAP::R
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const ImVec2& size, const ImVec2& uv0,
+void ImGui::Image(const TRAP::Graphics::Texture& image, const ImVec2& size, const ImVec2& uv0,
                   const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-	TRAP_ASSERT(image != nullptr, "ImGui::Image(): Image is nullptr!");
-	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "ImGui::Image(): Image is not a Texture2D!");
+	TRAP_ASSERT(image.GetType() == TRAP::Graphics::TextureType::Texture2D, "ImGui::Image(): Image is not a Texture2D!");
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
-		const auto vkImage = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(image);
-		ImTextureID texID = ImGui::INTERNAL::Vulkan::AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler,
-		                                                        vkImage, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		const auto* const vkImage = dynamic_cast<const TRAP::Graphics::API::VulkanTexture*>(&image);
+		ImTextureID texID = ImGui::INTERNAL::Vulkan::AddTexture(*TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler,
+		                                                        *vkImage, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ImGui::ImageButton(const TRAP::Ref<TRAP::Graphics::Texture>& image, const ImVec2& size,
+bool ImGui::ImageButton(const TRAP::Graphics::Texture& image, const ImVec2& size,
                         const ImVec2& uv0, const ImVec2& uv1, const ImVec4& bg_col, const ImVec4& tint_col)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-	TRAP_ASSERT(image != nullptr, "ImGui::ImageButton(): Image is nullptr!");
-	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "ImGui::ImageButton(): Image is not a Texture2D!");
+	TRAP_ASSERT(image.GetType() == TRAP::Graphics::TextureType::Texture2D, "ImGui::ImageButton(): Image is not a Texture2D!");
 
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
-		const auto vkImage = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(image);
-		ImTextureID texID = ImGui::INTERNAL::Vulkan::AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler,
-												                vkImage, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		const auto* const vkImage = dynamic_cast<const TRAP::Graphics::API::VulkanTexture*>(&image);
+		ImTextureID texID = ImGui::INTERNAL::Vulkan::AddTexture(*TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler,
+												                *vkImage, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 		VkImageView imgView = vkImage->GetSRVVkImageView();
 		usize imgViewHash = 0;
@@ -502,19 +498,19 @@ bool ImGui::ImageButton(const TRAP::Ref<TRAP::Graphics::Texture>& image, const I
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ImGui::InputText(const std::string_view label, std::string& str, ImGuiInputTextFlags flags,
+bool ImGui::InputText(const std::string& label, std::string& str, ImGuiInputTextFlags flags,
                       const ImGuiInputTextCallback callback, void* const userData)
 {
 	flags |= ImGuiInputTextFlags_CallbackResize;
 
 	InputTextCallbackUserData cbUserData{&str, callback, userData};
 
-	return InputText(label.data(), str.data(), str.capacity() + 1, flags, InputTextCallback, &cbUserData);
+	return InputText(label.c_str(), str.data(), str.capacity() + 1, flags, InputTextCallback, &cbUserData);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ImGui::InputTextMultiline(const std::string_view label, std::string& str, const ImVec2& size,
+bool ImGui::InputTextMultiline(const std::string& label, std::string& str, const ImVec2& size,
                                ImGuiInputTextFlags flags, const ImGuiInputTextCallback callback,
 							   void* const userData)
 {
@@ -522,30 +518,30 @@ bool ImGui::InputTextMultiline(const std::string_view label, std::string& str, c
 
 	InputTextCallbackUserData cbUserData{&str, callback, userData};
 
-	return InputTextMultiline(label.data(), str.data(), str.capacity() + 1, size, flags, InputTextCallback, &cbUserData);
+	return InputTextMultiline(label.c_str(), str.data(), str.capacity() + 1, size, flags, InputTextCallback, &cbUserData);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ImGui::InputTextWithHint(const std::string_view label, const std::string_view hint, std::string& str,
+bool ImGui::InputTextWithHint(const std::string& label, const std::string& hint, std::string& str,
                               ImGuiInputTextFlags flags, const ImGuiInputTextCallback callback, void* const userData)
 {
 	flags |= ImGuiInputTextFlags_CallbackResize;
 
 	InputTextCallbackUserData cbUserData{&str, callback, userData};
 
-	return InputTextWithHint(label.data(), hint.data(), str.data(), str.capacity() + 1, flags, InputTextCallback, &cbUserData);
+	return InputTextWithHint(label.c_str(), hint.c_str(), str.data(), str.capacity() + 1, flags, InputTextCallback, &cbUserData);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ImFont* ImGui::AddFontFromFileTTF(const std::string_view filename, const f32 sizePixels,
+ImFont* ImGui::AddFontFromFileTTF(const std::string& filename, const f32 sizePixels,
 							      const ImFontConfig* const fontCfgTemplate, const ImWchar* const glyphRanges)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
 	//Add font like normally
-	ImFont* const font = ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.data(), sizePixels, fontCfgTemplate, glyphRanges);
+	ImFont* const font = ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.c_str(), sizePixels, fontCfgTemplate, glyphRanges);
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 		ImGui::INTERNAL::Vulkan::CreateFontsTexture();

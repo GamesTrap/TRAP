@@ -96,9 +96,7 @@ namespace ImGui::INTERNAL::Vulkan
                   void        CreateFontsTexture();
                   /// @note You probably never need to call this, as it is called by CreateFontsTexture() and Shutdown().
                   void        DestroyFontsTexture();
-    [[nodiscard]] ImTextureID AddTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanSampler>& sampler, const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& image, VkImageLayout image_layout);
-                  void        RemoveTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& image_view);
-                  ImTextureID UpdateTextureInfo(VkDescriptorSet descriptorSet, const TRAP::Graphics::API::VulkanSampler& sampler, VkImageView image_view, VkImageLayout image_layout);
+    [[nodiscard]] ImTextureID AddTexture(const TRAP::Graphics::API::VulkanSampler& sampler, const TRAP::Graphics::API::VulkanTexture& image, VkImageLayout image_layout);
                   void        ClearCache() noexcept;
                   void        SetMSAASamples(VkSampleCountFlagBits sampleCount);
 

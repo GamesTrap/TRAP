@@ -428,7 +428,7 @@ void TRAPEditorLayer::OnImGuiRender()
 	TRAP::Ref<TRAP::Graphics::RenderTarget> mainViewportRT = m_renderTarget;
 	if(m_cachedAAMode == TRAP::Graphics::AntiAliasing::MSAA)
 		mainViewportRT = m_resolveRenderTarget;
-	ImGui::Image(mainViewportRT->GetTexture(), ImVec2{ m_viewportSize.x(), m_viewportSize.y() }, ImVec2{ 0.0f, 0.0f }, ImVec2{ 1.0f, 1.0f });
+	ImGui::Image(*mainViewportRT->GetTexture(), ImVec2{ m_viewportSize.x(), m_viewportSize.y() }, ImVec2{ 0.0f, 0.0f }, ImVec2{ 1.0f, 1.0f });
 
 	m_allowViewportCameraEvents = (ImGui::IsMouseHoveringRect(ImVec2(std::get<0u>(m_viewportBounds).x(), std::get<0u>(m_viewportBounds).y()),
 	                                                          ImVec2(std::get<1u>(m_viewportBounds).x(), std::get<1u>(m_viewportBounds).y())) && m_viewportFocused) || m_startedCameraMovement;
@@ -1010,8 +1010,8 @@ void TRAPEditorLayer::MousePicking()
 		mousePos.x -= std::get<0u>(m_viewportBounds).x();
 		mousePos.y -= std::get<0u>(m_viewportBounds).y();
 		const TRAP::Math::Vec2 viewportSize = std::get<1u>(m_viewportBounds);
-		u32 mouseX = NumericCast<u32>(mousePos.x);
-		u32 mouseY = NumericCast<u32>(mousePos.y);
+		u32 mouseX = static_cast<u32>(mousePos.x);
+		u32 mouseY = static_cast<u32>(mousePos.y);
 
 		//Out of viewport bounds check (maybe redundant, doesnt hurt)
 		if(mouseX >= NumericCast<u32>(viewportSize.x()) || mouseY >= NumericCast<u32>(viewportSize.y()))
@@ -1185,7 +1185,7 @@ void TRAPEditorLayer::UIToolbar()
 		const f32 size = ImGui::GetWindowHeight() - 4.0f;
 		TRAP::Ref<TRAP::Graphics::Texture> icon = m_sceneState == SceneState::Edit ? m_iconPlay : m_iconStop;
 		ImGui::SameLine((ImGui::GetContentRegionAvail().x * 0.5f) - (size * 0.5f));
-		if(ImGui::ImageButton(icon, ImVec2(size, size), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f)))
+		if(ImGui::ImageButton(*icon, ImVec2(size, size), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f)))
 		{
 			if(m_sceneState == SceneState::Edit)
 				OnScenePlay();
