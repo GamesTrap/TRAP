@@ -90,6 +90,17 @@ namespace TRAP
 			return m_scene->m_registry.get<T>(m_entityHandle);
 		}
 
+		/// @brief Try to retrieve component T from entity.
+		/// @tparam T Type of component.
+		/// @return Component if exists on entity, nullptr otherwise.
+		template<typename T>
+		[[nodiscard]] T* TryGetComponent() const
+		{
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (GetTRAPProfileSystems() & ProfileSystems::Scene) != ProfileSystems::None);
+
+			return m_scene->m_registry.try_get<T>(m_entityHandle);
+		}
+
 		/// @brief Query if entity contains the component T.
 		/// @tparam T Type of component.
 		/// @return True if entity contains component T, false otherwise.

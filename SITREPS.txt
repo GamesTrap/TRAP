@@ -5530,3 +5530,4 @@ SITREP 01/04/2025|25w01b1
     - TRAP-Editor Added support for changing entity position and rotation while in play mode through component UI ~<30 mins
     - TRAP-Editor Fixed CircleCollider2DComponent not taking rotation into account when drawing colliders ~<5 mins
     - TRAP-Editor Added support for changing entity position and rotation while in play mode through Gizmo ~<10 mins
+    - Entity Added TryGetComponent() function ~<5 mins
