@@ -6,6 +6,8 @@
 #endif /*_MSC_VER*/
 #include <box2d/b2_body.h>
 #include <box2d/b2_fixture.h>
+#include <box2d/b2_polygon_shape.h>
+#include <box2d/b2_circle_shape.h>
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif /*_MSC_VER*/
@@ -153,6 +155,9 @@ namespace TRAP
 	//Physics------------------------------------------------------------------------------------------------------------//
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	struct BoxCollider2DComponent;
+	struct CircleCollider2DComponent;
+
 	struct Rigidbody2DComponent
 	{
 		enum class BodyType : u8 {Static, Dynamic, Kinematic};
@@ -164,6 +169,63 @@ namespace TRAP
 
 		/// @brief Constructor.
 		constexpr Rigidbody2DComponent() noexcept = default;
+
+		void SetPosition(const TRAP::Math::Vec2& pos) const
+		{
+			if(RuntimeBody == nullptr)
+				return;
+
+			//Temporarily set the rigidbody to static for manual update
+			const b2BodyType originalBodyType = RuntimeBody->GetType();
+			RuntimeBody->SetType(b2BodyType::b2_staticBody);
+
+			RuntimeBody->SetTransform(b2Vec2(pos.x(), pos.y()), RuntimeBody->GetAngle());
+
+			RuntimeBody->SetType(originalBodyType);
+		}
+
+		void SetAngle(const f32 angle) const
+		{
+			if(RuntimeBody == nullptr)
+				return;
+
+			//Temporarily set the rigidbody to static for manual update
+			const b2BodyType originalBodyType = RuntimeBody->GetType();
+			RuntimeBody->SetType(b2BodyType::b2_staticBody);
+
+			RuntimeBody->SetTransform(RuntimeBody->GetPosition(), angle);
+
+			RuntimeBody->SetType(originalBodyType);
+		}
+
+		template<typename T>
+		requires std::same_as<T, BoxCollider2DComponent> || std::same_as<T, CircleCollider2DComponent>
+		void DestroyColliderFixture(T& collider2DComp) const
+		{
+			if((RuntimeBody != nullptr) && (collider2DComp.RuntimeFixture != nullptr))
+			{
+				RuntimeBody->DestroyFixture(collider2DComp.RuntimeFixture);
+				collider2DComp.RuntimeFixture = nullptr;
+			}
+		}
+
+		[[nodiscard]] static constexpr b2BodyType Rigidbody2DTypeToBox2DBody(const TRAP::Rigidbody2DComponent::BodyType bodyType)
+		{
+			switch(bodyType)
+			{
+			case TRAP::Rigidbody2DComponent::BodyType::Static:
+				return b2_staticBody;
+
+			case TRAP::Rigidbody2DComponent::BodyType::Dynamic:
+				return b2_dynamicBody;
+
+			case TRAP::Rigidbody2DComponent::BodyType::Kinematic:
+				return b2_kinematicBody;
+			}
+
+			TRAP_ASSERT(false, "TRAPRigidbody2DTypeToBox2DBody(): Unknown body type!");
+			return b2_staticBody;
+		}
 	};
 
 	struct BoxCollider2DComponent
@@ -182,6 +244,26 @@ namespace TRAP
 
 		/// @brief Constructor.
 		constexpr BoxCollider2DComponent() noexcept = default;
+
+		void CreateFixture(const Rigidbody2DComponent& rigidBody2DComp, const TRAP::Math::Vec2& scale)
+		{
+			if(rigidBody2DComp.RuntimeBody == nullptr)
+			{
+				TRAP_ASSERT(false, "CreateBoxColliderFixture(): rigidBody2DComp.RuntimeBody is nullptr!");
+				return;
+			}
+
+			b2PolygonShape boxShape{};
+			boxShape.SetAsBox(Size.x() * scale.x(), Size.y() * scale.y(), b2Vec2(Offset.x(), Offset.y()), 0.0f);
+
+			b2FixtureDef fixtureDef{};
+			fixtureDef.shape = &boxShape;
+			fixtureDef.density = Density;
+			fixtureDef.friction = Friction;
+			fixtureDef.restitution = Restitution;
+			fixtureDef.restitutionThreshold = RestitutionThreshold;
+			RuntimeFixture = rigidBody2DComp.RuntimeBody->CreateFixture(&fixtureDef);
+		}
 	};
 
 	struct CircleCollider2DComponent
@@ -200,6 +282,27 @@ namespace TRAP
 
 		/// @brief Constructor.
 		constexpr CircleCollider2DComponent() noexcept = default;
+
+		void CreateFixture(const Rigidbody2DComponent& rigidBody2DComp, const TRAP::Math::Vec2& scale)
+		{
+			if(rigidBody2DComp.RuntimeBody == nullptr)
+			{
+				TRAP_ASSERT(false, "CreateCircleColliderFixture(): rigidBody2DComp.RuntimeBody is nullptr!");
+				return;
+			}
+
+			b2CircleShape circleShape{};
+			circleShape.m_p.Set(Offset.x(), Offset.y());
+			circleShape.m_radius = TRAP::Math::Max(scale.x(), scale.y()) * Radius;
+
+			b2FixtureDef fixtureDef{};
+			fixtureDef.shape = &circleShape;
+			fixtureDef.density = Density;
+			fixtureDef.friction = Friction;
+			fixtureDef.restitution = Restitution;
+			fixtureDef.restitutionThreshold = RestitutionThreshold;
+			RuntimeFixture = rigidBody2DComp.RuntimeBody->CreateFixture(&fixtureDef);
+		}
 	};
 
 	template<typename... Component>

@@ -37,6 +37,8 @@ private:
 	// void OnScenePause();
 	// void OnSceneSimulate();
 
+	void OnImGuizmoRender();
+
 	//UI Panels
 	void UIToolbar();
 

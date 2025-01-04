@@ -5527,3 +5527,14 @@ SITREP 01/04/2025|25w01b1
     - ImGuiVulkanBackend Changed caching of textures ~<30 mins
     - ImGuiLayer Added TextFmt() function to use fmt::format with ImGui ~<5 mins
     - Replaced ImGui::Text() calls with ImGui::TextFmt() ~<10 mins
+    - TRAP-Editor Added support for changing entity position and rotation while in play mode through component UI ~<30 mins
+    - TRAP-Editor Fixed CircleCollider2DComponent not taking rotation into account when drawing colliders ~<5 mins
+    - TRAP-Editor Added support for changing entity position and rotation while in play mode through Gizmo ~<10 mins
+    - Entity Added TryGetComponent() function ~<5 mins
+    - TRAP-Editor Added support for changing entity scale while in play mode through Gizmo and component UI ~<20 mins
+    - TRAP-Editor Added support for changing Rigidbody2DComponent while in play mode through component UI ~<10 mins
+    - TRAP-Editor Added support for changing BoxCollider2DComponent while in play mode through component UI ~<10 mins
+    - TRAP-Editor Added support for changing CircleCollider2DComponent while in play mode through component UI ~<10 mins
+    - TRAP-Editor Fixed CircleCollider2DComponent wrong scale when drawing colliders ~<5 mins
+    - TRAP-Editor Fixed BoxCollider2DComponent Offset property being wrongly displayed when drawing colliders ~<5 mins
+    - TRAP-Editor Fixed CircleCollider2DComponent Offset property being wrongly displayed when drawing colliders ~<5 mins

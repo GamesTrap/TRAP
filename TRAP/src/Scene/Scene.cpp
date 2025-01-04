@@ -22,26 +22,7 @@
 #endif /*_MSC_VER*/
 
 namespace
-{
-	[[nodiscard]] constexpr b2BodyType TRAPRigidbody2DTypeToBox2DBody(const TRAP::Rigidbody2DComponent::BodyType bodyType)
-	{
-		switch(bodyType)
-		{
-		case TRAP::Rigidbody2DComponent::BodyType::Static:
-			return b2_staticBody;
-
-		case TRAP::Rigidbody2DComponent::BodyType::Dynamic:
-			return b2_dynamicBody;
-
-		case TRAP::Rigidbody2DComponent::BodyType::Kinematic:
-			return b2_kinematicBody;
-		}
-
-		TRAP_ASSERT(false, "TRAPRigidbody2DTypeToBox2DBody(): Unknown body type!");
-		return b2_staticBody;
-	}
-
-	//-------------------------------------------------------------------------------------------------------------------//
+{	//-------------------------------------------------------------------------------------------------------------------//
 
 	template<typename... Component>
 	void CopyComponent(entt::registry& dst, const entt::registry& src, const std::unordered_map<entt::entity, entt::entity>& enttMap)
@@ -167,7 +148,7 @@ void TRAP::Scene::OnRuntimeStart()
 		auto& rigidbody2D = entity.GetComponent<Rigidbody2DComponent>();
 
 		b2BodyDef bodyDef{};
-		bodyDef.type = TRAPRigidbody2DTypeToBox2DBody(rigidbody2D.Type);
+		bodyDef.type = Rigidbody2DComponent::Rigidbody2DTypeToBox2DBody(rigidbody2D.Type);
 		bodyDef.position.Set(transform.Position.x(), transform.Position.y());
 		bodyDef.angle = transform.Rotation.z();
 
@@ -176,37 +157,10 @@ void TRAP::Scene::OnRuntimeStart()
 		rigidbody2D.RuntimeBody = body;
 
 		if(entity.HasComponent<BoxCollider2DComponent>())
-		{
-			auto& boxCollider2D = entity.GetComponent<BoxCollider2DComponent>();
-
-			b2PolygonShape boxShape{};
-			boxShape.SetAsBox(boxCollider2D.Size.x() * transform.Scale.x(), boxCollider2D.Size.y() * transform.Scale.y());
-
-			b2FixtureDef fixtureDef{};
-			fixtureDef.shape = &boxShape;
-			fixtureDef.density = boxCollider2D.Density;
-			fixtureDef.friction = boxCollider2D.Friction;
-			fixtureDef.restitution = boxCollider2D.Restitution;
-			fixtureDef.restitutionThreshold = boxCollider2D.RestitutionThreshold;
-			boxCollider2D.RuntimeFixture = body->CreateFixture(&fixtureDef);
-		}
+			entity.GetComponent<BoxCollider2DComponent>().CreateFixture(rigidbody2D, TRAP::Math::Vec2{transform.Scale});
 
 		if(entity.HasComponent<CircleCollider2DComponent>())
-		{
-			auto& circleCollider2D = entity.GetComponent<CircleCollider2DComponent>();
-
-			b2CircleShape circleShape{};
-			circleShape.m_p.Set(circleCollider2D.Offset.x(), circleCollider2D.Offset.y());
-			circleShape.m_radius = transform.Scale.x() * circleCollider2D.Radius;
-
-			b2FixtureDef fixtureDef{};
-			fixtureDef.shape = &circleShape;
-			fixtureDef.density = circleCollider2D.Density;
-			fixtureDef.friction = circleCollider2D.Friction;
-			fixtureDef.restitution = circleCollider2D.Restitution;
-			fixtureDef.restitutionThreshold = circleCollider2D.RestitutionThreshold;
-			circleCollider2D.RuntimeFixture = body->CreateFixture(&fixtureDef);
-		}
+			entity.GetComponent<CircleCollider2DComponent>().CreateFixture(rigidbody2D, TRAP::Math::Vec2{transform.Scale});
 	}
 }
 
@@ -225,23 +179,13 @@ void TRAP::Scene::OnRuntimeStop()
 		if(entity.HasComponent<BoxCollider2DComponent>())
 		{
 			auto& boxCollider2D = entity.GetComponent<BoxCollider2DComponent>();
-
-			if((rigidbody2D.RuntimeBody != nullptr) && (boxCollider2D.RuntimeFixture != nullptr))
-			{
-				rigidbody2D.RuntimeBody->DestroyFixture(boxCollider2D.RuntimeFixture);
-				boxCollider2D.RuntimeFixture = nullptr;
-			}
+			rigidbody2D.DestroyColliderFixture(boxCollider2D);
 		}
 
 		if(entity.HasComponent<CircleCollider2DComponent>())
 		{
 			auto& circleCollider2D = entity.GetComponent<CircleCollider2DComponent>();
-
-			if((rigidbody2D.RuntimeBody != nullptr) && (circleCollider2D.RuntimeFixture != nullptr))
-			{
-				rigidbody2D.RuntimeBody->DestroyFixture(circleCollider2D.RuntimeFixture);
-				circleCollider2D.RuntimeFixture = nullptr;
-			}
+			rigidbody2D.DestroyColliderFixture(circleCollider2D);
 		}
 
 		if(rigidbody2D.RuntimeBody != nullptr)

@@ -433,68 +433,7 @@ void TRAPEditorLayer::OnImGuiRender()
 	m_allowViewportCameraEvents = (ImGui::IsMouseHoveringRect(ImVec2(std::get<0u>(m_viewportBounds).x(), std::get<0u>(m_viewportBounds).y()),
 	                                                          ImVec2(std::get<1u>(m_viewportBounds).x(), std::get<1u>(m_viewportBounds).y())) && m_viewportFocused) || m_startedCameraMovement;
 
-	//Gizmos
-	TRAP::Entity selectedEntity = m_sceneGraphPanel.GetSelectedEntity();
-	if(selectedEntity && m_enableGizmo)
-	{
-		//Camera
-		auto cameraEntity = m_activeScene->GetPrimaryCameraEntity(); //Run time camera
-		TRAP::Math::Mat4 cameraProj{};
-		TRAP::Math::Mat4 cameraView{};
-		if(m_sceneState == SceneState::Edit || !cameraEntity)
-		{
-			cameraProj = m_editorCamera.GetProjectionMatrix();
-			cameraView = m_editorCamera.GetViewMatrix();
-		}
-		else if(m_sceneState == SceneState::Play)
-		{
-			const auto& camera = cameraEntity.GetComponent<TRAP::CameraComponent>().Camera;
-			cameraProj = camera.GetProjectionMatrix();
-			cameraView = TRAP::Math::Inverse(cameraEntity.GetComponent<TRAP::TransformComponent>().GetTransform());
-		}
-
-		//Entity transform
-		auto& tc = selectedEntity.GetComponent<TRAP::TransformComponent>();
-		TRAP::Math::Mat4 transform = tc.GetTransform();
-
-		// ImGuizmo::SetOrthographic(camera.GetProjectionType() == TRAP::SceneCamera::ProjectionType::Orthographic); //TODO 2D mode
-		ImGuizmo::SetOrthographic(false);
-		ImGuizmo::SetDrawlist();
-
-		ImGuizmo::SetRect(std::get<0u>(m_viewportBounds).x(), std::get<0u>(m_viewportBounds).y(),
-						  std::get<1u>(m_viewportBounds).x(), std::get<1u>(m_viewportBounds).y());
-
-		//Snapping
-		const bool snap = TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Control) ||
-						  TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Control);
-		f32 snapValue = 0.5f;
-		if(m_gizmoType == ImGuizmo::OPERATION::ROTATE)
-			snapValue = 45.0f;
-
-		const std::array<f32, 3u> snapValues = {snapValue, snapValue, snapValue};
-
-		//Disable gizmo while entity was just changed and the left mouse button is still pressed
-		ImGuizmo::Enable(!m_entityChanged || m_leftMouseBtnRepeatCount == 0u);
-
-		const bool manipulated = ImGuizmo::Manipulate(&std::get<0u>(cameraView).x(), &std::get<0u>(cameraProj).x(),
-														static_cast<ImGuizmo::OPERATION>(m_gizmoType),
-														ImGuizmo::LOCAL, &std::get<0u>(transform).x(),
-														nullptr, snap ? snapValues.data() : nullptr);
-
-		if (manipulated &&
-			!TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Right) &&
-			!TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Middle))
-		{
-			TRAP::Math::Vec3 position{}, rotation{}, scale{};
-			if(TRAP::Math::Decompose(transform, position, rotation, scale))
-			{
-				const TRAP::Math::Vec3 deltaRotation = rotation - tc.Rotation;
-				tc.Position = position;
-				tc.Rotation += deltaRotation;
-				tc.Scale = scale;
-			}
-		}
-	}
+	OnImGuizmoRender();
 
 	ImGui::End();
 	ImGui::PopStyleVar();
@@ -502,6 +441,92 @@ void TRAPEditorLayer::OnImGuiRender()
 	UIToolbar();
 
 	ImGui::End();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::OnImGuizmoRender()
+{
+	//Gizmos
+	TRAP::Entity selectedEntity = m_sceneGraphPanel.GetSelectedEntity();
+	if(!selectedEntity || !m_enableGizmo)
+		return;
+
+	//Camera
+	auto cameraEntity = m_activeScene->GetPrimaryCameraEntity(); //Run time camera
+	TRAP::Math::Mat4 cameraProj{};
+	TRAP::Math::Mat4 cameraView{};
+	if(m_sceneState == SceneState::Edit || !cameraEntity)
+	{
+		cameraProj = m_editorCamera.GetProjectionMatrix();
+		cameraView = m_editorCamera.GetViewMatrix();
+	}
+	else if(m_sceneState == SceneState::Play)
+	{
+		const auto& camera = cameraEntity.GetComponent<TRAP::CameraComponent>().Camera;
+		cameraProj = camera.GetProjectionMatrix();
+		cameraView = TRAP::Math::Inverse(cameraEntity.GetComponent<TRAP::TransformComponent>().GetTransform());
+	}
+
+	//Entity transform
+	auto& tc = selectedEntity.GetComponent<TRAP::TransformComponent>();
+	TRAP::Math::Mat4 transform = tc.GetTransform();
+
+	// ImGuizmo::SetOrthographic(camera.GetProjectionType() == TRAP::SceneCamera::ProjectionType::Orthographic); //TODO 2D mode
+	ImGuizmo::SetOrthographic(false);
+	ImGuizmo::SetDrawlist();
+
+	ImGuizmo::SetRect(std::get<0u>(m_viewportBounds).x(), std::get<0u>(m_viewportBounds).y(),
+						std::get<1u>(m_viewportBounds).x(), std::get<1u>(m_viewportBounds).y());
+
+	//Snapping
+	const bool snap = TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Control) ||
+						TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Control);
+	f32 snapValue = 0.5f;
+	if(m_gizmoType == ImGuizmo::OPERATION::ROTATE)
+		snapValue = 45.0f;
+
+	const std::array<f32, 3u> snapValues = {snapValue, snapValue, snapValue};
+
+	//Disable gizmo while entity was just changed and the left mouse button is still pressed
+	ImGuizmo::Enable(!m_entityChanged || m_leftMouseBtnRepeatCount == 0u);
+
+	const bool manipulated = ImGuizmo::Manipulate(&std::get<0u>(cameraView).x(), &std::get<0u>(cameraProj).x(),
+													static_cast<ImGuizmo::OPERATION>(m_gizmoType),
+													ImGuizmo::LOCAL, &std::get<0u>(transform).x(),
+													nullptr, snap ? snapValues.data() : nullptr);
+
+	if (manipulated &&
+		!TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Right) &&
+		!TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Middle))
+	{
+		TRAP::Math::Vec3 position{}, rotation{}, scale{};
+		if(TRAP::Math::Decompose(transform, position, rotation, scale))
+		{
+			const TRAP::Math::Vec3 deltaRotation = rotation - tc.Rotation;
+			tc.Position = position;
+			tc.Rotation += deltaRotation;
+			tc.Scale = scale;
+
+			if(const auto* const rigid2DComp = selectedEntity.TryGetComponent<TRAP::Rigidbody2DComponent>();
+			   rigid2DComp != nullptr && rigid2DComp->RuntimeBody != nullptr)
+			{
+				rigid2DComp->SetPosition(TRAP::Math::Vec2{tc.Position});
+				rigid2DComp->SetAngle(tc.Rotation.z());
+
+				if(auto* const boxCollider2DComp = selectedEntity.TryGetComponent<TRAP::BoxCollider2DComponent>()) //Recreate Fixture (applies scaling)
+				{
+					rigid2DComp->DestroyColliderFixture(*boxCollider2DComp);
+					boxCollider2DComp->CreateFixture(*rigid2DComp, TRAP::Math::Vec2{tc.Scale});
+				}
+				if(auto* const circleCollider2DComp = selectedEntity.TryGetComponent<TRAP::CircleCollider2DComponent>()) //Recreate Fixture (applies scaling)
+				{
+					rigid2DComp->DestroyColliderFixture(*circleCollider2DComp);
+					circleCollider2DComp->CreateFixture(*rigid2DComp, TRAP::Math::Vec2{tc.Scale});
+				}
+			}
+		}
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -962,13 +987,13 @@ void TRAPEditorLayer::OnOverlayRender()
 			{
 				auto [transform, boxCollider] = view.get<TRAP::TransformComponent, TRAP::BoxCollider2DComponent>(entity);
 
-				const TRAP::Math::Vec3 position = transform.Position + TRAP::Math::Vec3(boxCollider.Offset, -colliderProjectionZ);
 				const f32 rotation = transform.Rotation.z();
 				const TRAP::Math::Vec3 scale = transform.Scale * TRAP::Math::Vec3(boxCollider.Size * 2.0f, 1.0f);
 
-				const TRAP::Math::Mat4 trans = TRAP::Math::Translate(position) *
+				const TRAP::Math::Mat4 trans = TRAP::Math::Translate(transform.Position) *
 											   TRAP::Math::Rotate(rotation, {0.0f, 0.0f, 1.0f}) *
-											    TRAP::Math::Scale(scale);
+											   TRAP::Math::Translate(TRAP::Math::Vec3(boxCollider.Offset, -colliderProjectionZ)) *
+											   TRAP::Math::Scale(scale);
 
 				TRAP::Graphics::Renderer2D::DrawRect(trans, TRAP::Math::Vec4(0.0f, 1.0f, 0.0f, 1.0f));
 			}
@@ -981,10 +1006,14 @@ void TRAPEditorLayer::OnOverlayRender()
 			{
 				auto [transform, circleCollider] = view.get<TRAP::TransformComponent, TRAP::CircleCollider2DComponent>(entity);
 
-				const TRAP::Math::Vec3 position = transform.Position + TRAP::Math::Vec3(circleCollider.Offset, -colliderProjectionZ);
-				const TRAP::Math::Vec3 scale = transform.Scale * TRAP::Math::Vec3(circleCollider.Radius * 2.0f);
+				const f32 rotation = transform.Rotation.z();
+				const f32 maxScale = TRAP::Math::Max(transform.Scale.x(), transform.Scale.y());
+				const TRAP::Math::Vec3 scale = TRAP::Math::Vec3{maxScale, maxScale, transform.Scale.z()} * TRAP::Math::Vec3(circleCollider.Radius * 2.0f);
 
-				const TRAP::Math::Mat4 trans = TRAP::Math::Translate(position) * TRAP::Math::Scale(scale);
+				const TRAP::Math::Mat4 trans = TRAP::Math::Translate(transform.Position) *
+				                               TRAP::Math::Rotate(rotation, {0.0f, 0.0f, 1.0f}) *
+				                               TRAP::Math::Translate(TRAP::Math::Vec3(circleCollider.Offset, -colliderProjectionZ)) *
+											   TRAP::Math::Scale(scale);
 
 				TRAP::Graphics::Renderer2D::DrawCircle(trans, TRAP::Math::Vec4(0.0f, 1.0f, 0.0f, 1.0f), 0.01f);
 			}
