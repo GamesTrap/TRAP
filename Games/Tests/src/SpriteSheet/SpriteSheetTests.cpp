@@ -11,10 +11,10 @@ void SpriteSheetTests::OnImGuiRender()
 {
     ImGui::Begin("Sprite Sheet Tests", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                            ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("Press ESC to close");
-    ImGui::Text("Press Shift+P to pause animation");
-    ImGui::Text("Press P to play/resume animation");
-    ImGui::Text("Press R to stop/reset animation");
+	ImGui::TextFmt("Press ESC to close");
+    ImGui::TextFmt("Press Shift+P to pause animation");
+    ImGui::TextFmt("Press P to play/resume animation");
+    ImGui::TextFmt("Press R to stop/reset animation");
     ImGui::End();
 }
 

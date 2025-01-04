@@ -11,10 +11,10 @@ void FileSystemTests::OnImGuiRender()
 {
 	ImGui::Begin("FileSystem", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                    ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("Press ESC to close");
-	ImGui::Text("Press O to open the working folder in the file browser");
-	ImGui::Text("Press F to open a file in the file browser");
-	ImGui::Text("Press E to externally open a file");
+	ImGui::TextFmt("Press ESC to close");
+	ImGui::TextFmt("Press O to open the working folder in the file browser");
+	ImGui::TextFmt("Press F to open a file in the file browser");
+	ImGui::TextFmt("Press E to externally open a file");
 
 	ImGui::End();
 }

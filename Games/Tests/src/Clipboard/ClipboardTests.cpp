@@ -12,14 +12,14 @@ void ClipboardTests::OnImGuiRender()
 	ImGui::Begin("Clipboard", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse |
 	                                   ImGuiWindowFlags_AlwaysAutoResize);
 
-	ImGui::Text("Press ESC to close");
-	ImGui::Text("Press CTRL+C to copy example text from engine");
-	ImGui::Text("Press CTRL+V to paste clipboard contents to the engine");
+	ImGui::TextFmt("Press ESC to close");
+	ImGui::TextFmt("Press CTRL+C to copy example text from engine");
+	ImGui::TextFmt("Press CTRL+V to paste clipboard contents to the engine");
 	ImGui::Separator();
 	if (!m_clipboard.empty())
-		ImGui::Text("Pasted from Clipboard: %s", m_clipboard.c_str());
+		ImGui::TextFmt("Pasted from Clipboard: {}", m_clipboard);
 	else
-		ImGui::Text("Nothing pasted yet");
+		ImGui::TextFmt("Nothing pasted yet");
 	ImGui::End();
 }
 

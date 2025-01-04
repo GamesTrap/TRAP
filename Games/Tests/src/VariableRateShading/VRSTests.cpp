@@ -11,7 +11,7 @@ void VRSTests::OnImGuiRender()
 {
 	ImGui::Begin("Variable Rate Shading", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                               ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("Press ESC to close");
+	ImGui::TextFmt("Press ESC to close");
     ImGui::Separator();
 
     if((m_supportsPerDrawVRS || m_supportsPerTileVRS))
@@ -66,7 +66,7 @@ void VRSTests::OnImGuiRender()
         ImGui::Checkbox("Visualize Shading Rate", &m_visualizeShadingRate);
 
     if(!m_supportsPerDrawVRS && !m_supportsPerTileVRS)
-        ImGui::Text("Variable Rate Shading is not supported on this GPU");
+        ImGui::TextFmt("Variable Rate Shading is not supported on this GPU");
 
     ImGui::End();
 }

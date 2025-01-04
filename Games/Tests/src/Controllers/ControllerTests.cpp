@@ -47,7 +47,7 @@ namespace
 
 	void DrawGamepad(const TRAP::Input::Controller controller)
 	{
-		ImGui::Text("Mapped State: %s", TRAP::Input::GetControllerName(controller).c_str());
+		ImGui::TextFmt("Mapped State: {}", TRAP::Input::GetControllerName(controller));
 
 		f32 leftX = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Left_X);
 		f32 leftY = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Left_Y);
@@ -119,10 +119,10 @@ namespace
 		const std::string controllerName = fmt::format("{}. {}", (std::to_underlying(controller) + 1),
 														TRAP::Input::GetControllerName(controller));
 		ImGui::Begin(controllerName.c_str());
-		ImGui::Text("Hardware GUID: %s", TRAP::Input::GetControllerGUID(controller).c_str());
+		ImGui::TextFmt("Hardware GUID: {}", TRAP::Input::GetControllerGUID(controller));
 		ImGui::NewLine();
-		ImGui::Text("Controller Battery Status: %s", fmt::format("{}", TRAP::Input::GetControllerBatteryStatus(controller)).c_str());
-		ImGui::Text("Controller State");
+		ImGui::TextFmt("Controller Battery Status: {}", fmt::format("{}", TRAP::Input::GetControllerBatteryStatus(controller)));
+		ImGui::TextFmt("Controller State");
 		DrawRawAxes(axes);
 		DrawRawButtons(buttons, dpads);
 		DrawRawDPads(dpads);
@@ -134,7 +134,7 @@ namespace
 			DrawGamepad(controller);
 		}
 		else
-			ImGui::Text("Controller has no Gamepad mapping!");
+			ImGui::TextFmt("Controller has no Gamepad mapping!");
 
 		ImGui::End();
 	}
@@ -172,7 +172,7 @@ void ControllerTests::OnImGuiRender()
 		}
 	}
 	else
-		ImGui::Text("No Controllers Connected!");
+		ImGui::TextFmt("No Controllers Connected!");
 	ImGui::End();
 
 	for(const TRAP::Input::Controller& controller : s_controllers)

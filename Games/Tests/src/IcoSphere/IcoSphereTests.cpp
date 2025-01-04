@@ -151,9 +151,9 @@ void IcoSphereTests::OnImGuiRender()
 
 	ImGui::Begin("IcoSphere", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                   ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("Press ESC to close");
-	ImGui::Text("WireFrame (F1): %s", m_wireFrame ? "Enabled" : "Disabled");
-	ImGui::Text("VSync (V): %s", m_vsync ? "Enabled" : "Disabled");
+	ImGui::TextFmt("Press ESC to close");
+	ImGui::TextFmt("WireFrame (F1): {}", m_wireFrame ? "Enabled" : "Disabled");
+	ImGui::TextFmt("VSync (V): {}", m_vsync ? "Enabled" : "Disabled");
 	if(ImGui::SliderFloat("Camera FoV", &fov, 45.0f, 100.0f))
         m_camera.SetPerspectiveVerticalFOV(TRAP::Math::Radians(fov));
 	if(ImGui::SliderFloat3("Camera Pos", &std::get<0u>(pos), -10.0f, 10.0f))

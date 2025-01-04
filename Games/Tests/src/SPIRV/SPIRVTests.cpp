@@ -98,15 +98,15 @@ void SPIRVTests::OnImGuiRender()
 	ImGui::Begin("SPIRV", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                               ImGuiWindowFlags_AlwaysAutoResize);
 
-	ImGui::Text("Press ESC to close");
+	ImGui::TextFmt("Press ESC to close");
     ImGui::Separator();
-    ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
-	ImGui::Text("GPU: %s", TRAP::Graphics::RenderCommand::GetGPUName().c_str());
-    ImGui::Text("CPU FPS: %u", TRAP::Graphics::RenderCommand::GetCPUFPS());
-    ImGui::Text("GPU FPS: %u", TRAP::Graphics::RenderCommand::GetGPUFPS());
-    ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
-    ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
-    ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
+    ImGui::TextFmt("CPU: {}x {}", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model);
+	ImGui::TextFmt("GPU: {}", TRAP::Graphics::RenderCommand::GetGPUName());
+    ImGui::TextFmt("CPU FPS: {}", TRAP::Graphics::RenderCommand::GetCPUFPS());
+    ImGui::TextFmt("GPU FPS: {}", TRAP::Graphics::RenderCommand::GetGPUFPS());
+    ImGui::TextFmt("CPU FrameTime: {:.3f}ms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
+    ImGui::TextFmt("GPU Graphics FrameTime: {:.3f}ms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
+    ImGui::TextFmt("GPU Compute FrameTime: {:.3f}ms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
     ImGui::PlotLines("##frametimeHistory", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()),
                      0, nullptr, 0.0f, 33.0f, ImVec2(200.0f, 50.0f));
 	ImGui::End();

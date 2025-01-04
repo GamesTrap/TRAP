@@ -145,7 +145,7 @@ void AntiAliasingTests::OnImGuiRender()
 
 	DrawAntiAliasingComboBox();
 
-	ImGui::Text("Press ESC to close");
+	ImGui::TextFmt("Press ESC to close");
 	ImGui::End();
 }
 

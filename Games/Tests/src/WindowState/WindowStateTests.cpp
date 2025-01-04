@@ -4,21 +4,21 @@ void WindowStateTests::OnImGuiRender()
 {
 	ImGui::Begin("WindowState", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                     ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("Press ESC to close");
-	ImGui::Text("Press I to minimize window");
-	ImGui::Text("Press M to maximize window");
-	ImGui::Text("Press R to restore window");
-	ImGui::Text("Press B to enable/disable window resizability");
+	ImGui::TextFmt("Press ESC to close");
+	ImGui::TextFmt("Press I to minimize window");
+	ImGui::TextFmt("Press M to maximize window");
+	ImGui::TextFmt("Press R to restore window");
+	ImGui::TextFmt("Press B to enable/disable window resizability");
 	ImGui::Separator();
-	ImGui::Text("Press 1 to set progress to   0%%");
-	ImGui::Text("Press 2 to set progress to  25%%");
-	ImGui::Text("Press 3 to set progress to  50%%");
-	ImGui::Text("Press 4 to set progress to  75%%");
-	ImGui::Text("Press 5 to set progress to 100%%");
-	ImGui::Text("Press 6 to set progress to Indeterminate");
-	ImGui::Text("Press 7 to set progress to Error");
-	ImGui::Text("Press 8 to set progress to Paused");
-	ImGui::Text("Press 9 to request user attention");
+	ImGui::TextFmt("Press 1 to set progress to   0%");
+	ImGui::TextFmt("Press 2 to set progress to  25%");
+	ImGui::TextFmt("Press 3 to set progress to  50%");
+	ImGui::TextFmt("Press 4 to set progress to  75%");
+	ImGui::TextFmt("Press 5 to set progress to 100%");
+	ImGui::TextFmt("Press 6 to set progress to Indeterminate");
+	ImGui::TextFmt("Press 7 to set progress to Error");
+	ImGui::TextFmt("Press 8 to set progress to Paused");
+	ImGui::TextFmt("Press 9 to request user attention");
 	ImGui::End();
 }
 

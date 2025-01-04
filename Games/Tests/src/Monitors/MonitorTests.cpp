@@ -44,16 +44,16 @@ void MonitorTests::OnImGuiRender()
 		const auto videoModes = monitor.GetVideoModes();
 
 		ImGui::Begin(uniqueName.c_str());
-		ImGui::Text("Name: %s", name.c_str());
-		ImGui::Text("Primary: %s", (ID == primaryID ? "True" : "False"));
-		ImGui::Text("Native VideoMode: %s", nativeMode ? FormatMode(*nativeMode).c_str() : "Unknown");
-		ImGui::Text("Current VideoMode: %s", currentMode ? FormatMode(*currentMode).c_str() : "Unknown");
-		ImGui::Text("Virtual Position: %i %i", position.x(), position.y());
-		ImGui::Text("Content Scale: %f %f", scale.x(), scale.y());
-		ImGui::Text("Monitor Work Area: %i %i Starting @ %i %i", workArea.x(), workArea.y(),
+		ImGui::TextFmt("Name: {}", name);
+		ImGui::TextFmt("Primary: {}", (ID == primaryID ? "True" : "False"));
+		ImGui::TextFmt("Native VideoMode: {}", nativeMode ? FormatMode(*nativeMode).c_str() : "Unknown");
+		ImGui::TextFmt("Current VideoMode: {}", currentMode ? FormatMode(*currentMode).c_str() : "Unknown");
+		ImGui::TextFmt("Virtual Position: {} {}", position.x(), position.y());
+		ImGui::TextFmt("Content Scale: {} {}", scale.x(), scale.y());
+		ImGui::TextFmt("Monitor Work Area: {} {} Starting @ {} {}", workArea.x(), workArea.y(),
 		            workArea.z(), workArea.w());
 		ImGui::Separator();
-		ImGui::Text("Supported VideoModes:");
+		ImGui::TextFmt("Supported VideoModes:");
 		for(const TRAP::Monitor::VideoMode& videoMode : videoModes)
 		{
 			std::string tmp = FormatMode(videoMode);
@@ -63,7 +63,7 @@ void MonitorTests::OnImGuiRender()
 			if (nativeMode && *nativeMode == videoMode)
 				tmp += " (native)";
 
-			ImGui::Text("%s", tmp.c_str());
+			ImGui::TextFmt("{}", tmp);
 		}
 		ImGui::End();
 	}

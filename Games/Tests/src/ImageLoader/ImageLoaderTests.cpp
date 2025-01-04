@@ -11,90 +11,90 @@ void ImageLoaderTests::OnImGuiRender()
 {
 	ImGui::Begin("Image loader", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                      ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("Press ESC to close");
-	ImGui::Text("Keys: 1(TGA), 2(PNG), 3(BMP), 4(PM), 5(Radiance), 6(QOI)");
+	ImGui::TextFmt("Press ESC to close");
+	ImGui::TextFmt("Keys: 1(TGA), 2(PNG), 3(BMP), 4(PM), 5(Radiance), 6(QOI)");
 	if(m_tga)
 	{
-		ImGui::Text("Current: TGA");
-		ImGui::Text("1. Test16BPP");
-		ImGui::Text("2. Test16BPPRLE");
-		ImGui::Text("3. Test24BPP");
-		ImGui::Text("4. Test24BPPRLE");
-		ImGui::Text("5. Test32BPP");
-		ImGui::Text("6. Test32BPPRLE");
-		ImGui::Text("7. TestGrayscale");
-		ImGui::Text("8. TestPalette");
+		ImGui::TextFmt("Current: TGA");
+		ImGui::TextFmt("1. Test16BPP");
+		ImGui::TextFmt("2. Test16BPPRLE");
+		ImGui::TextFmt("3. Test24BPP");
+		ImGui::TextFmt("4. Test24BPPRLE");
+		ImGui::TextFmt("5. Test32BPP");
+		ImGui::TextFmt("6. Test32BPPRLE");
+		ImGui::TextFmt("7. TestGrayscale");
+		ImGui::TextFmt("8. TestPalette");
 	}
 	else if(m_png)
 	{
-		ImGui::Text("Current: PNG");
-		ImGui::Text(" 1. Test8BPPGrayscaleBig");
-		ImGui::Text(" 2. Test8BPPGrayscaleBigInterlaced");
-		ImGui::Text(" 3. Test8BPPGrayscaleSmaller");
-		ImGui::Text(" 4. Test8BPPGrayscaleSmallest");
-		ImGui::Text(" 5. Test16BPPGrayscaleBig");
-		ImGui::Text(" 6. Test16BPPGrayscaleBigInterlaced");
-		ImGui::Text(" 7. Test16BPPGrayscaleSmaller");
-		ImGui::Text(" 8. Test16BPPGrayscaleSmallest");
-		ImGui::Text(" 9. Test24BPPBig");
-		ImGui::Text("10. Test24BPPBigInterlaced");
-		ImGui::Text("11. Test24BPPSmaller");
-		ImGui::Text("12. Test24BPPSmallest");
-		ImGui::Text("13. Test48BPPBig");
-		ImGui::Text("14. Test48BPPBigInterlaced");
-		ImGui::Text("15. Test48BPPSmaller");
-		ImGui::Text("16. Test48BPPSmallest");
-		ImGui::Text("17. TestPaletteBig");
-		ImGui::Text("18. TestPaletteBigInterlaced");
-		ImGui::Text("19. TestPaletteSmaller");
-		ImGui::Text("20. TestPaletteSmallest");
+		ImGui::TextFmt("Current: PNG");
+		ImGui::TextFmt(" 1. Test8BPPGrayscaleBig");
+		ImGui::TextFmt(" 2. Test8BPPGrayscaleBigInterlaced");
+		ImGui::TextFmt(" 3. Test8BPPGrayscaleSmaller");
+		ImGui::TextFmt(" 4. Test8BPPGrayscaleSmallest");
+		ImGui::TextFmt(" 5. Test16BPPGrayscaleBig");
+		ImGui::TextFmt(" 6. Test16BPPGrayscaleBigInterlaced");
+		ImGui::TextFmt(" 7. Test16BPPGrayscaleSmaller");
+		ImGui::TextFmt(" 8. Test16BPPGrayscaleSmallest");
+		ImGui::TextFmt(" 9. Test24BPPBig");
+		ImGui::TextFmt("10. Test24BPPBigInterlaced");
+		ImGui::TextFmt("11. Test24BPPSmaller");
+		ImGui::TextFmt("12. Test24BPPSmallest");
+		ImGui::TextFmt("13. Test48BPPBig");
+		ImGui::TextFmt("14. Test48BPPBigInterlaced");
+		ImGui::TextFmt("15. Test48BPPSmaller");
+		ImGui::TextFmt("16. Test48BPPSmallest");
+		ImGui::TextFmt("17. TestPaletteBig");
+		ImGui::TextFmt("18. TestPaletteBigInterlaced");
+		ImGui::TextFmt("19. TestPaletteSmaller");
+		ImGui::TextFmt("20. TestPaletteSmallest");
 	}
 	else if(m_bmp)
 	{
-		ImGui::Text("Current: BMP");
-		ImGui::Text(" 1. Test8BPPGrayscale");
-		ImGui::Text(" 2. Test8BPPGrayscaleReversed");
-		ImGui::Text(" 3. Test8BPPGrayscaleRLE");
-		ImGui::Text(" 4. Test8BPPGrayscaleRLEReversed");
-		ImGui::Text(" 5. Test8BPPPalette");
-		ImGui::Text(" 6. Test8BPPPaletteReversed");
-		ImGui::Text(" 7. Test8BPPPaletteRLE");
-		ImGui::Text(" 8. Test8BPPPaletteRLEReversed");
-		ImGui::Text(" 9. Test16BPP");
-		ImGui::Text("10. Test16BPPReversed");
-		ImGui::Text("11. Test16BPPBitFields");
-		ImGui::Text("12. Test24BPP");
-		ImGui::Text("13. Test24BPPReversed");
-		ImGui::Text("14. Test32BPP");
-		ImGui::Text("15. Test32BPPReversed");
-		ImGui::Text("16. Test32BPPBitFields");
+		ImGui::TextFmt("Current: BMP");
+		ImGui::TextFmt(" 1. Test8BPPGrayscale");
+		ImGui::TextFmt(" 2. Test8BPPGrayscaleReversed");
+		ImGui::TextFmt(" 3. Test8BPPGrayscaleRLE");
+		ImGui::TextFmt(" 4. Test8BPPGrayscaleRLEReversed");
+		ImGui::TextFmt(" 5. Test8BPPPalette");
+		ImGui::TextFmt(" 6. Test8BPPPaletteReversed");
+		ImGui::TextFmt(" 7. Test8BPPPaletteRLE");
+		ImGui::TextFmt(" 8. Test8BPPPaletteRLEReversed");
+		ImGui::TextFmt(" 9. Test16BPP");
+		ImGui::TextFmt("10. Test16BPPReversed");
+		ImGui::TextFmt("11. Test16BPPBitFields");
+		ImGui::TextFmt("12. Test24BPP");
+		ImGui::TextFmt("13. Test24BPPReversed");
+		ImGui::TextFmt("14. Test32BPP");
+		ImGui::TextFmt("15. Test32BPPReversed");
+		ImGui::TextFmt("16. Test32BPPBitFields");
 	}
 	else if(m_pm)
 	{
-		ImGui::Text("Current: PM");
-		ImGui::Text("1. Test8BPPGrayscale (PGM)");
-		ImGui::Text("2. Test8BPPGrayscale (PAM)");
-		ImGui::Text("3. Test16BPPGrayscale (PGM)");
-		ImGui::Text("4. Test16BPPGrayscale (PAM)");
-		ImGui::Text("5. Test24BPP (PPM)");
-		ImGui::Text("6. Test24BPP (PAM)");
-		ImGui::Text("7. Test48BPP (PPM)");
-		ImGui::Text("8. Test48BPP (PAM)");
-		ImGui::Text("9. TestGrayscaleHDR (PFM)");
-		ImGui::Text("10. TestHDR (PFM)");
+		ImGui::TextFmt("Current: PM");
+		ImGui::TextFmt("1. Test8BPPGrayscale (PGM)");
+		ImGui::TextFmt("2. Test8BPPGrayscale (PAM)");
+		ImGui::TextFmt("3. Test16BPPGrayscale (PGM)");
+		ImGui::TextFmt("4. Test16BPPGrayscale (PAM)");
+		ImGui::TextFmt("5. Test24BPP (PPM)");
+		ImGui::TextFmt("6. Test24BPP (PAM)");
+		ImGui::TextFmt("7. Test48BPP (PPM)");
+		ImGui::TextFmt("8. Test48BPP (PAM)");
+		ImGui::TextFmt("9. TestGrayscaleHDR (PFM)");
+		ImGui::TextFmt("10. TestHDR (PFM)");
 	}
 	else if(m_radiance)
 	{
-		ImGui::Text("Current: Radiance");
-		ImGui::Text("1. TestHDR");
+		ImGui::TextFmt("Current: Radiance");
+		ImGui::TextFmt("1. TestHDR");
 	}
 	else if(m_qoi)
 	{
-		ImGui::Text("Current: Quite OK Image");
-		ImGui::Text("1. Test24BPPsRGB");
-		ImGui::Text("2. Test24BPPLinear");
-		ImGui::Text("3. Test32BPPsRGB");
-		ImGui::Text("4. Test32BPPLinear");
+		ImGui::TextFmt("Current: Quite OK Image");
+		ImGui::TextFmt("1. Test24BPPsRGB");
+		ImGui::TextFmt("2. Test24BPPLinear");
+		ImGui::TextFmt("3. Test32BPPsRGB");
+		ImGui::TextFmt("4. Test32BPPLinear");
 	}
 	ImGui::End();
 }

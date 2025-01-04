@@ -11,15 +11,15 @@ void Sandbox2D::OnImGuiRender()
 {
 	ImGui::SetNextWindowBgAlpha(0.3f);
 	ImGui::Begin("Performance", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("Performance");
+	ImGui::TextFmt("Performance");
 	ImGui::Separator();
-    ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
-	ImGui::Text("GPU: %s", TRAP::Graphics::RenderCommand::GetGPUName().c_str());
-    ImGui::Text("CPU FPS: %u", TRAP::Graphics::RenderCommand::GetCPUFPS());
-    ImGui::Text("GPU FPS: %u", TRAP::Graphics::RenderCommand::GetGPUFPS());
-    ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
-    ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
-    ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
+    ImGui::TextFmt("CPU: {}x {}", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model);
+	ImGui::TextFmt("GPU: {}", TRAP::Graphics::RenderCommand::GetGPUName());
+    ImGui::TextFmt("CPU FPS: {}", TRAP::Graphics::RenderCommand::GetCPUFPS());
+    ImGui::TextFmt("GPU FPS: {}", TRAP::Graphics::RenderCommand::GetGPUFPS());
+    ImGui::TextFmt("CPU FrameTime: {:.3f}ms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
+    ImGui::TextFmt("GPU Graphics FrameTime: {:.3f}ms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
+    ImGui::TextFmt("GPU Compute FrameTime: {:.3f}ms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
 	ImGui::PlotLines("##frameHistory", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()), 0, nullptr, 0.0f, 33.0f, ImVec2(200.0f, 50.0f));
 	ImGui::NewLine();
 	ImGui::Image(*TRAP::Graphics::TextureManager::Get2D("TRAP"), ImVec2(100.0f, 100.0f));
@@ -29,14 +29,14 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::SetNextWindowBgAlpha(0.3f);
 	ImGui::Begin("Renderer2D Stats:", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
                                                ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("Renderer2D Stats");
+	ImGui::TextFmt("Renderer2D Stats");
 	ImGui::Separator();
-	ImGui::Text("DrawCalls: %u", stats.DrawCalls);
-	ImGui::Text("Quads: %u", stats.QuadCount);
-	ImGui::Text("Circles: %u", stats.CircleCount);
-	ImGui::Text("Lines: %u", stats.LineCount);
-	ImGui::Text("Vertices: %u", stats.GetTotalVertexCount());
-	ImGui::Text("Indices: %u", stats.GetTotalIndexCount());
+	ImGui::TextFmt("DrawCalls: {}", stats.DrawCalls);
+	ImGui::TextFmt("Quads: {}", stats.QuadCount);
+	ImGui::TextFmt("Circles: {}", stats.CircleCount);
+	ImGui::TextFmt("Lines: {}", stats.LineCount);
+	ImGui::TextFmt("Vertices: {}", stats.GetTotalVertexCount());
+	ImGui::TextFmt("Indices: {}", stats.GetTotalIndexCount());
 	ImGui::End();
 }
 

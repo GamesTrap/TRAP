@@ -5525,3 +5525,5 @@ SITREP 01/03/2025|25w01a2
 SITREP 01/04/2025|25w01b1
     - Changed TRAP Engine version to 25w01b1(0.11.67)
     - ImGuiVulkanBackend Changed caching of textures ~<30 mins
+    - ImGuiLayer Added TextFmt() function to use fmt::format with ImGui ~<5 mins
+    - Replaced ImGui::Text() calls with ImGui::TextFmt() ~<10 mins

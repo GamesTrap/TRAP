@@ -27,7 +27,7 @@ namespace
 
 		if(maxSupportedAnisotropy == TRAP::Graphics::SampleCount::One)
 		{
-			ImGui::Text("Anisotropic Filtering is not supported by this device!");
+			ImGui::TextFmt("Anisotropic Filtering is not supported by this device!");
 			return;
 		}
 
@@ -114,7 +114,7 @@ void AnisotropyTests::OnImGuiRender()
 	ImGui::Begin("Anisotropy", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                    ImGuiWindowFlags_AlwaysAutoResize);
 	DrawAnisotropyComboBox();
-	ImGui::Text("Press ESC to close");
+	ImGui::TextFmt("Press ESC to close");
 	ImGui::End();
 }
 

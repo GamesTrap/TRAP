@@ -4,17 +4,17 @@ void DragAndDropTests::OnImGuiRender()
 {
 	ImGui::Begin("Drag and Drop", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                       ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("Press ESC to close");
-	ImGui::Text("Press D to enable/disable Drag and Drop");
-	ImGui::Text("%s", fmt::format("Drag and Drop: {}", m_dragAndDrop ? "Enabled" : "Disabled").c_str());
+	ImGui::TextFmt("Press ESC to close");
+	ImGui::TextFmt("Press D to enable/disable Drag and Drop");
+	ImGui::TextFmt("Drag and Drop: {}", m_dragAndDrop ? "Enabled" : "Disabled");
 	ImGui::Separator();
-	ImGui::Text("Data: ");
+	ImGui::TextFmt("Data: ");
 	if(m_dropData.empty())
-		ImGui::Text("No data");
+		ImGui::TextFmt("No data");
 	else
 	{
 		for (const std::string& str : m_dropData)
-			ImGui::Text("%s", str.c_str());
+			ImGui::TextFmt("{}", str);
 	}
 	ImGui::End();
 }

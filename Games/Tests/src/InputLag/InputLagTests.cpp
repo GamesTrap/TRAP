@@ -4,9 +4,9 @@ namespace
 {
 	void DrawNVIDIAReflexModeSelection()
 	{
-		ImGui::Text("NVIDIA Reflex:");
+		ImGui::TextFmt("NVIDIA Reflex:");
 		if(!TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported)
-			ImGui::Text("NVIDIA Reflex is not supported on this GPU!");
+			ImGui::TextFmt("NVIDIA Reflex is not supported on this GPU!");
 		else
 		{
 			static constexpr std::array<TRAP::Graphics::NVIDIAReflexLatencyMode, 3u> latencyModes
@@ -17,7 +17,7 @@ namespace
 			};
 			const TRAP::Graphics::NVIDIAReflexLatencyMode currentLatencyMode = TRAP::Graphics::RenderCommand::GetReflexLatencyMode();
 
-			ImGui::Text("Current Latency Mode: %s", fmt::format("{}", currentLatencyMode).c_str());
+			ImGui::TextFmt("Current Latency Mode: {}", currentLatencyMode);
 
 			if(ImGui::BeginCombo("Latency Mode", fmt::format("{}", currentLatencyMode).c_str()))
 			{
@@ -37,9 +37,9 @@ namespace
 	}
 	void DrawAMDAntiLagModeSelection()
 	{
-		ImGui::Text("AMD Anti Lag:");
+		ImGui::TextFmt("AMD Anti Lag:");
 		if(!TRAP::Graphics::RendererAPI::GPUSettings.AntiLagSupported)
-			ImGui::Text("AMD Anti Lag is not supported on this GPU!");
+			ImGui::TextFmt("AMD Anti Lag is not supported on this GPU!");
 		else
 		{
 			static constexpr std::array<TRAP::Graphics::AMDAntiLagMode, 3u> modes
@@ -50,7 +50,7 @@ namespace
 			};
 			const TRAP::Graphics::AMDAntiLagMode currentMode = TRAP::Graphics::RenderCommand::GetAntiLagMode();
 
-			ImGui::Text("Current Mode: %s", fmt::format("{}", currentMode).c_str());
+			ImGui::TextFmt("Current Mode: {}", currentMode);
 
 			if(ImGui::BeginCombo("Mode", fmt::format("{}", currentMode).c_str()))
 			{
@@ -108,26 +108,26 @@ void InputLagTests::OnImGuiRender()
 	ImGui::Begin("InputLag", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse |
 	                                  ImGuiWindowFlags_AlwaysAutoResize);
 
-	ImGui::Text("Press ESC to close");
-	ImGui::Text("VSync (V): %s", m_vsync ? "Enabled" : "Disabled");
+	ImGui::TextFmt("Press ESC to close");
+	ImGui::TextFmt("VSync (V): {}", m_vsync ? "Enabled" : "Disabled");
 	ImGui::Separator();
 	//Draw indicators on mouse pos
 	for(i32 lead = m_showForecasts ? 3 : 0; lead >= 0; --lead)
 		DrawMarker(NumericCast<u32>(lead), TRAP::Math::Vec2(m_cursorPos + m_cursorVelocity * NumericCast<f32>(lead)));
 	//Draw instructions
-	ImGui::Text("Move mouse uniformly and check marker under cursor:");
+	ImGui::TextFmt("Move mouse uniformly and check marker under cursor:");
 	for(u32 lead = 0u; lead <= 3u; ++lead)
 	{
 		if(lead == 0u)
-			ImGui::Text("Red circle - Current cursor position (no input lag)");
+			ImGui::TextFmt("Red circle - Current cursor position (no input lag)");
 		else if(lead == 1u)
-			ImGui::Text("Yellow circle - %d-frame forecast (input lag is %d frame)", lead, lead);
+			ImGui::TextFmt("Yellow circle - {}-frame forecast (input lag is {} frame)", lead, lead);
 		else if(lead == 2u)
-			ImGui::Text("Green circle  - %d-frame forecast (input lag is %d frame)", lead, lead);
+			ImGui::TextFmt("Green circle  - {}-frame forecast (input lag is {} frame)", lead, lead);
 		else if(lead == 3u)
-			ImGui::Text("Blue circle   - %d-frame forecast (input lag is %d frame)", lead, lead);
+			ImGui::TextFmt("Blue circle   - {}-frame forecast (input lag is {} frame)", lead, lead);
 	}
-	ImGui::Text("Current input method: %s", m_cursorMethod == CursorMethod::SyncQuery ? "Sync query" : "Latest input message");
+	ImGui::TextFmt("Current input method: {}", m_cursorMethod == CursorMethod::SyncQuery ? "Sync query" : "Latest input message");
 	ImGui::Separator();
 	ImGui::Checkbox("Show forecasts", &m_showForecasts);
 	if(ImGui::RadioButton("TRAP::Input::GetMousePosition (sync query)", m_cursorMethod == CursorMethod::SyncQuery))
@@ -138,14 +138,14 @@ void InputLagTests::OnImGuiRender()
 
 	ImGui::Begin("Latency Stats", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                       ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("Performance:");
-    ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
-	ImGui::Text("GPU: %s", TRAP::Graphics::RenderCommand::GetGPUName().c_str());
-    ImGui::Text("CPU FPS: %u", TRAP::Graphics::RenderCommand::GetCPUFPS());
-    ImGui::Text("GPU FPS: %u", TRAP::Graphics::RenderCommand::GetGPUFPS());
-    ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
-    ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
-    ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
+	ImGui::TextFmt("Performance:");
+    ImGui::TextFmt("CPU: {}x {}", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model);
+	ImGui::TextFmt("GPU: {}", TRAP::Graphics::RenderCommand::GetGPUName());
+    ImGui::TextFmt("CPU FPS: {}", TRAP::Graphics::RenderCommand::GetCPUFPS());
+    ImGui::TextFmt("GPU FPS: {}", TRAP::Graphics::RenderCommand::GetGPUFPS());
+    ImGui::TextFmt("CPU FrameTime: {:.3f}ms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
+    ImGui::TextFmt("GPU Graphics FrameTime: {:.3f}ms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
+    ImGui::TextFmt("GPU Compute FrameTime: {:.3f}ms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
     ImGui::Separator();
 	DrawNVIDIAReflexModeSelection();
 	DrawAMDAntiLagModeSelection();

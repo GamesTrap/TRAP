@@ -15,7 +15,7 @@ void WindowFeaturesTests::OnImGuiRender()
 	ImGui::Begin("WindowFeatures", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse |
 	                                        ImGuiWindowFlags_AlwaysAutoResize);
 
-	ImGui::Text("Press ESC to close");
+	ImGui::TextFmt("Press ESC to close");
 	ImGui::Separator();
 
 	if(ImGui::BeginCombo("Display Mode", fmt::format("{}", TRAP::Application::GetWindow()->GetDisplayMode()).c_str()))
@@ -51,13 +51,13 @@ void WindowFeaturesTests::OnImGuiRender()
 		TRAP::Application::GetWindow()->Show();
 	}
 
-	ImGui::Text("Press Enter in a text field to set value");
+	ImGui::TextFmt("Press Enter in a text field to set value");
 	//Window Position
 	{
 		TRAP::Math::Vec2i winPos = TRAP::Application::GetWindow()->GetPosition();
 		u32 changed = 0u;
 
-		ImGui::Text("Position");
+		ImGui::TextFmt("Position");
 		ImGui::SameLine();
 		changed += NumericCast<u32>(ImGui::InputInt("##PosX", &winPos.x(), 0, ImGuiInputTextFlags_EnterReturnsTrue));
 		ImGui::SameLine();
@@ -74,7 +74,7 @@ void WindowFeaturesTests::OnImGuiRender()
 		TRAP::Math::Vec2ui winSize = TRAP::Application::GetWindow()->GetSize();
 		u32 changed = 0u;
 
-		ImGui::Text("Size");
+		ImGui::TextFmt("Size");
 		ImGui::SameLine();
 		changed += NumericCast<u32>(ImGui::InputScalar("##SizeX", ImGuiDataType_U32, &winSize.x(), nullptr, nullptr, nullptr));
 		ImGui::SameLine();
@@ -134,10 +134,10 @@ void WindowFeaturesTests::OnImGuiRender()
 	}
 
 	TRAP::Math::Vec2ui frameBufferSize = TRAP::Application::GetWindow()->GetFrameBufferSize();
-	ImGui::Text("Framebuffer Size: %d %d", frameBufferSize.x(), frameBufferSize.y());
+	ImGui::TextFmt("Framebuffer Size: {} {}", frameBufferSize.x(), frameBufferSize.y());
 
 	TRAP::Math::Vec2 contentScale = TRAP::Application::GetWindow()->GetMonitor().GetContentScale();
-	ImGui::Text("Content Scale: %f %f", contentScale.x(), contentScale.y());
+	ImGui::TextFmt("Content Scale: {} {}", contentScale.x(), contentScale.y());
 
 	f32 opacity = TRAP::Application::GetWindow()->GetOpacity().value_or(1.0f);
 	if(ImGui::SliderFloat("Opacity", &opacity, 0.001f, 1.0f))
@@ -148,11 +148,11 @@ void WindowFeaturesTests::OnImGuiRender()
 		TRAP::Application::GetWindow()->SetResizable(resizable);
 
 	ImGui::Separator();
-	ImGui::Text("Focused: %s", TRAP::Application::GetWindow()->IsFocused() ? "true" : "false");
-	ImGui::Text("Hovered: %s", TRAP::Application::GetWindow()->IsHovered() ? "true" : "false");
-	ImGui::Text("Visible: %s", TRAP::Application::GetWindow()->IsVisible() ? "true" : "false");
-	ImGui::Text("Minimized: %s", TRAP::Application::GetWindow()->IsMinimized() ? "true" : "false");
-	ImGui::Text("Maximized: %s", TRAP::Application::GetWindow()->IsMaximized() ? "true" : "false");
+	ImGui::TextFmt("Focused: {}", TRAP::Application::GetWindow()->IsFocused());
+	ImGui::TextFmt("Hovered: {}", TRAP::Application::GetWindow()->IsHovered());
+	ImGui::TextFmt("Visible: {}", TRAP::Application::GetWindow()->IsVisible());
+	ImGui::TextFmt("Minimized: {}", TRAP::Application::GetWindow()->IsMinimized());
+	ImGui::TextFmt("Maximized: {}", TRAP::Application::GetWindow()->IsMaximized());
 	ImGui::End();
 }
 

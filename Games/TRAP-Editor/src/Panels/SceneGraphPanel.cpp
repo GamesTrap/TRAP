@@ -18,7 +18,7 @@ namespace
 
 		ImGui::Columns(2);
 		ImGui::SetColumnWidth(0, columnWidth);
-		ImGui::Text("%s", label.c_str());
+		ImGui::TextFmt("{}", label);
 		ImGui::NextColumn();
 
 		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
@@ -222,7 +222,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 		if(ImGui::IsItemHovered(/*ImGuiHoveredFlags_DelayShort*/)) //TODO
 		{
 			ImGui::BeginTooltip();
-			ImGui::Text("UID: %lu", static_cast<u64>(uid));
+			ImGui::TextFmt("UID: {}", static_cast<u64>(uid));
 			ImGui::EndTooltip();
 		}
 	}

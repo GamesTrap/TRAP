@@ -218,29 +218,29 @@ void Cube3D::OnImGuiRender()
         flags = ImGuiWindowFlags_NoFocusOnAppearing;
 
     ImGui::Begin("Settings", nullptr, flags);
-    ImGui::Text("Performance");
-    ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
-	ImGui::Text("GPU: %s", TRAP::Graphics::RenderCommand::GetGPUName().c_str());
-    ImGui::Text("CPU FPS: %u", TRAP::Graphics::RenderCommand::GetCPUFPS());
-    ImGui::Text("GPU FPS: %u", TRAP::Graphics::RenderCommand::GetGPUFPS());
-    ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
-    ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
-    ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
+    ImGui::TextFmt("Performance");
+    ImGui::TextFmt("CPU: {}x {}", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model);
+	ImGui::TextFmt("GPU: {}", TRAP::Graphics::RenderCommand::GetGPUName());
+    ImGui::TextFmt("CPU FPS: {}", TRAP::Graphics::RenderCommand::GetCPUFPS());
+    ImGui::TextFmt("GPU FPS: {}", TRAP::Graphics::RenderCommand::GetGPUFPS());
+    ImGui::TextFmt("CPU FrameTime: {:.3f}ms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
+    ImGui::TextFmt("GPU Graphics FrameTime: {:.3f}ms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
+    ImGui::TextFmt("GPU Compute FrameTime: {:.3f}ms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
     ImGui::PlotLines("##frametimeHistory", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()),
                      0, nullptr, 0.0f, 33.0f, ImVec2(200.0f, 50.0f));
     ImGui::Separator();
-    ImGui::Text("Camera");
-    ImGui::Text("Camera Position: %f %f %f", pos.x(), pos.y(), pos.z());
-    ImGui::Text("Camera Rotation: %f %f %f", rot.x(), rot.y(), rot.z());
+    ImGui::TextFmt("Camera");
+    ImGui::TextFmt("Camera Position: {} {} {}", pos.x(), pos.y(), pos.z());
+    ImGui::TextFmt("Camera Rotation: {} {} {}", rot.x(), rot.y(), rot.z());
     if(ImGui::SliderFloat("Camera FoV", &fov, 1.0f, 100.0f))
         m_camera.SetPerspectiveVerticalFOV(TRAP::Math::Radians(fov));
     if(ImGui::SliderFloat("Camera Sensitivity", &sensitivity, 0.01f, 50.0f))
         m_mouseSensitivity = sensitivity;
     if(ImGui::SliderFloat("Camera Movement", &movement, 0.25f, 100.0f))
         m_translationSpeed = movement;
-    ImGui::Text("Press ALT to toggle Mouse Movement");
+    ImGui::TextFmt("Press ALT to toggle Mouse Movement");
     ImGui::Separator();
-    ImGui::Text("Cube");
+    ImGui::TextFmt("Cube");
     ImGui::DragFloat3("Cube Position", &std::get<0u>(m_cubePosition));
     ImGui::DragFloat3("Cube Rotation", &std::get<0u>(m_cubeRotation), 1, -360.0f, 360.0f);
     ImGui::DragFloat3("Cube Scale", &std::get<0u>(m_cubeScale), 1, 0.1f, 1000.0f);
@@ -249,7 +249,7 @@ void Cube3D::OnImGuiRender()
 	{
         DiffuseReflectionDataBuffer diffuseReflectionDataBuffer = m_diffuseReflectionDataBuffer;
 
-        ImGui::Text("Diffuse Reflection");
+        ImGui::TextFmt("Diffuse Reflection");
         ImGui::DragFloat3("Light Position", &std::get<0u>(m_lightPosition), 0.1f);
         ImGui::SliderFloat3("Light Source Intensity", &std::get<0u>(diffuseReflectionDataBuffer.LightSourceIntensity), 0.0f,
                             1.0f);
@@ -268,13 +268,13 @@ void Cube3D::OnImGuiRender()
     {
         PhongLightningDataBuffer phongLightningDataBuffer = m_phongLightningDataBuffer;
 
-        ImGui::Text("Phong Lightning");
-        ImGui::Text("Light");
+        ImGui::TextFmt("Phong Lightning");
+        ImGui::TextFmt("Light");
         ImGui::DragFloat3("Light Position", &std::get<0u>(m_lightPosition), 0.1f);
         ImGui::SliderFloat3("Light Ambient", &std::get<0u>(phongLightningDataBuffer.LightLa), 0.0f, 1.0f);
         ImGui::SliderFloat3("Light Diffuse", &std::get<0u>(phongLightningDataBuffer.LightLd), 0.0f, 1.0f);
         ImGui::SliderFloat3("Light Specular", &std::get<0u>(phongLightningDataBuffer.LightLs), 0.0f, 1.0f);
-        ImGui::Text("Material");
+        ImGui::TextFmt("Material");
         ImGui::SliderFloat3("Material Ambient", &std::get<0u>(phongLightningDataBuffer.MaterialKa), 0.0f, 1.0f);
         ImGui::SliderFloat3("Material Diffuse", &std::get<0u>(phongLightningDataBuffer.MaterialKd), 0.0f, 1.0f);
         ImGui::SliderFloat3("Material Specular", &std::get<0u>(phongLightningDataBuffer.MaterialKs), 0.0f, 1.0f);
@@ -298,9 +298,9 @@ void Cube3D::OnImGuiRender()
             m_phongLightningDataBuffer.MaterialShininess = phongLightningDataBuffer.MaterialShininess;
 		}
     }
-    ImGui::Text("Press F1 to switch Shaders");
-    ImGui::Text("Current Shader:");
-    ImGui::Text("%s", m_shaderNames[m_currentShader].c_str());
+    ImGui::TextFmt("Press F1 to switch Shaders");
+    ImGui::TextFmt("Current Shader:");
+    ImGui::TextFmt("{}", m_shaderNames[m_currentShader]);
     ImGui::Checkbox("WireFrame", &m_wireFrame);
     ImGui::Checkbox("Skybox", &m_drawSkyBox);
     ImGui::End();

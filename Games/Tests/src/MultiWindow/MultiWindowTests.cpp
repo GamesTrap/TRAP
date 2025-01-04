@@ -170,10 +170,10 @@ void MultiWindowTests::OnImGuiRender()
 {
 	ImGui::Begin("Multi-Window", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                      ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("Press ESC to close");
-	ImGui::Text("Main-Window WireFrame (F1): %s", m_wireFrameMainWindow ? "Enabled" : "Disabled");
-	ImGui::Text("Secondary-Window WireFrame (F2): %s", m_wireFrameSecondWindow ? "Enabled" : "Disabled");
-	ImGui::Text("UBO (F3): %s", m_useUBO ? "Enabled" : "Disabled");
+	ImGui::TextFmt("Press ESC to close");
+	ImGui::TextFmt("Main-Window WireFrame (F1): {}", m_wireFrameMainWindow ? "Enabled" : "Disabled");
+	ImGui::TextFmt("Secondary-Window WireFrame (F2): {}", m_wireFrameSecondWindow ? "Enabled" : "Disabled");
+	ImGui::TextFmt("UBO (F3): {}", m_useUBO ? "Enabled" : "Disabled");
 	ImGui::End();
 }
 

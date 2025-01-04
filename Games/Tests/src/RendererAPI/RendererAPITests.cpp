@@ -205,17 +205,17 @@ void RendererAPITests::OnImGuiRender()
 {
 	ImGui::Begin("RendererAPI Test", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                          ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("Press ESC to close");
-	ImGui::Text("WireFrame (F1): %s", m_wireFrame ? "Enabled" : "Disabled");
-	ImGui::Text("Geometry (F2): %s", m_quad ? "Quad" : "Triangle");
-	ImGui::Text("Indexed Drawing (F3): %s", m_indexed ? "Enabled" : "Disabled");
+	ImGui::TextFmt("Press ESC to close");
+	ImGui::TextFmt("WireFrame (F1): {}", m_wireFrame ? "Enabled" : "Disabled");
+	ImGui::TextFmt("Geometry (F2): {}", m_quad ? "Quad" : "Triangle");
+	ImGui::TextFmt("Indexed Drawing (F3): {}", m_indexed ? "Enabled" : "Disabled");
 	std::string shaderData = "Uniform Buffer";
 	if(m_pushConstantOrUBO == 0u)
 		shaderData = "Disabled";
 	else if(m_pushConstantOrUBO == 1u)
 		shaderData = "Push Constants";
-	ImGui::Text("Shader Data (F4): %s", shaderData.c_str());
-	ImGui::Text("VSync (V): %s", m_vsync ? "Enabled" : "Disabled");
+	ImGui::TextFmt("Shader Data (F4): {}", shaderData);
+	ImGui::TextFmt("VSync (V): {}", m_vsync ? "Enabled" : "Disabled");
 	ImGui::End();
 }
 

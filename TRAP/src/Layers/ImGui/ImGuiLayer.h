@@ -140,6 +140,16 @@ namespace ImGui
 	/// @remark @headless This function is not available in headless mode.
 	bool InputTextWithHint(const std::string& label, const std::string& hint, std::string& str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
 
+	/// @brief Formats args according to specifications in fmt and draws the result as text.
+	/// @param fmt Format string.
+	/// @param args Format string arguments.
+	template<typename... Args>
+	void TextFmt(fmt::format_string<Args...> fmt, Args&&... args)
+	{
+		const std::string str = fmt::format(fmt, std::forward<Args>(args)...);
+		ImGui::TextUnformatted(std::to_address(str.begin()), std::to_address(str.end()));
+	}
+
 	/// @brief Add a TTF font to ImGui from file.
 	/// @param filename Path to TTF file.
 	/// @param sizePixels Font size in pixels.

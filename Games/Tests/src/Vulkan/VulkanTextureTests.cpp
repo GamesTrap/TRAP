@@ -117,10 +117,10 @@ void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 void VulkanTextureTests::OnImGuiRender()
 {
     ImGui::Begin("Vulkan Texture Test");
-    ImGui::Text("Press ESC to close");
-    ImGui::Text("Current Mip Level: %i", m_currentMipLevel);
-    ImGui::Text("Cycle Mip Levels (F1): %s", m_cycleMips ? "Enabled" : "Disabled");
-    ImGui::Text("Update Texture (F2)");
+    ImGui::TextFmt("Press ESC to close");
+    ImGui::TextFmt("Current Mip Level: {}", m_currentMipLevel);
+    ImGui::TextFmt("Cycle Mip Levels (F1): {}", m_cycleMips ? "Enabled" : "Disabled");
+    ImGui::TextFmt("Update Texture (F2)");
     ImGui::End();
 }
 

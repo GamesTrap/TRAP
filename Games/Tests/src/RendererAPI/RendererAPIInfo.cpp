@@ -21,22 +21,22 @@ void RendererAPIInfo::OnImGuiRender()
 
     ImGui::Begin("RendererAPI Info", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse |
 	                                   ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::Text("Current RenderAPI: %s", renderAPI.c_str());
+    ImGui::TextFmt("Current RenderAPI: {}", renderAPI);
     ImGui::Separator();
-    ImGui::Text("Current GPU:");
-    ImGui::Text("Name: %s", GPUName.c_str());
-    ImGui::Text("UUID: %s", GPUUUIDStr.c_str());
+    ImGui::TextFmt("Current GPU:");
+    ImGui::TextFmt("Name: {}", GPUName);
+    ImGui::TextFmt("UUID: {}", GPUUUIDStr);
     ImGui::NewLine();
-    ImGui::Text("RenderAPIs:");
-    ImGui::Text("Vulkan: %s", TRAP::Graphics::RendererAPI::IsVulkanCapable() ? "Supported" : "Not Supported");
+    ImGui::TextFmt("RenderAPIs:");
+    ImGui::TextFmt("Vulkan: {}", TRAP::Graphics::RendererAPI::IsVulkanCapable() ? "Supported" : "Not Supported");
     ImGui::NewLine();
-    ImGui::Text("Supported Features:");
-    ImGui::Text("MultiDrawIndirect: %s", TRAP::Graphics::RendererAPI::GPUSettings.MultiDrawIndirectSupported ? "Supported" : "Not Supported");
-    ImGui::Text("Tessellation: %s", TRAP::Graphics::RendererAPI::GPUSettings.TessellationSupported ? "Supported" : "Not Supported");
-    ImGui::Text("Geometry Shader: %s", TRAP::Graphics::RendererAPI::GPUSettings.GeometryShaderSupported ? "Supported" : "Not Supported");
-    ImGui::Text("Surface: %s", TRAP::Graphics::RendererAPI::GPUSettings.SurfaceSupported ? "Supported" : "Not Supported");
-    ImGui::Text("Present: %s", TRAP::Graphics::RendererAPI::GPUSettings.PresentSupported ? "Supported" : "Not Supported");
-    ImGui::Text("Max Anisotropy: %u", NumericCast<u32>(TRAP::Graphics::RendererAPI::GPUSettings.MaxAnisotropy));
+    ImGui::TextFmt("Supported Features:");
+    ImGui::TextFmt("MultiDrawIndirect: {}", TRAP::Graphics::RendererAPI::GPUSettings.MultiDrawIndirectSupported ? "Supported" : "Not Supported");
+    ImGui::TextFmt("Tessellation: {}", TRAP::Graphics::RendererAPI::GPUSettings.TessellationSupported ? "Supported" : "Not Supported");
+    ImGui::TextFmt("Geometry Shader: {}", TRAP::Graphics::RendererAPI::GPUSettings.GeometryShaderSupported ? "Supported" : "Not Supported");
+    ImGui::TextFmt("Surface: {}", TRAP::Graphics::RendererAPI::GPUSettings.SurfaceSupported ? "Supported" : "Not Supported");
+    ImGui::TextFmt("Present: {}", TRAP::Graphics::RendererAPI::GPUSettings.PresentSupported ? "Supported" : "Not Supported");
+    ImGui::TextFmt("Max Anisotropy: {}", NumericCast<u32>(TRAP::Graphics::RendererAPI::GPUSettings.MaxAnisotropy));
     bool vrsPerDraw = (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerDraw) != TRAP::Graphics::RendererAPI::ShadingRateCaps::NotSupported;
     bool vrsPerTile = (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerTile) != TRAP::Graphics::RendererAPI::ShadingRateCaps::NotSupported;
     bool vrsMin = static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCombiner & TRAP::Graphics::RendererAPI::ShadingRateCombiner::Min);
@@ -50,34 +50,34 @@ void RendererAPIInfo::OnImGuiRender()
     bool vrs2x1 = (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::RendererAPI::ShadingRate::TwoXOne) != TRAP::Graphics::RendererAPI::ShadingRate::NotSupported;
     bool vrs2x4 = (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::RendererAPI::ShadingRate::TwoXFour) != TRAP::Graphics::RendererAPI::ShadingRate::NotSupported;
     bool vrs4x2 = (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::RendererAPI::ShadingRate::FourXTwo) != TRAP::Graphics::RendererAPI::ShadingRate::NotSupported;
-    ImGui::Text("Variable Rate Shading (VRS): %s", vrsPerDraw ? "Supported" : "Not Supported");
-    ImGui::Text("    Per Draw: %s", vrsPerDraw ? "Supported" : "Not Supported");
-    ImGui::Text("    Per Tile: %s", vrsPerTile ? "Supported" : "Not Supported");
-    ImGui::Text("    Combiner:");
-    ImGui::Text("        Passthrough: %s", vrsPerDraw ? "Supported" : "Not Supported");
-    ImGui::Text("        Override: %s", vrsPerDraw ? "Supported" : "Not Supported");
-    ImGui::Text("        Min: %s", vrsMin ? "Supported" : "Not Supported");
-    ImGui::Text("        Max: %s", vrsMax ? "Supported" : "Not Supported");
-    ImGui::Text("        Sum: %s", vrsSum ? "Supported" : "Not Supported");
-    ImGui::Text("    Rates:");
-    ImGui::Text("        1x1: %s", vrs1x1 ? "Supported" : "Not Supported");
-    ImGui::Text("        2x2: %s", vrs2x2 ? "Supported" : "Not Supported");
-    ImGui::Text("        4x4: %s", vrs4x4 ? "Supported" : "Not Supported");
-    ImGui::Text("        8x8: %s", vrs8x8 ? "Supported" : "Not Supported");
-    ImGui::Text("        1x2: %s", vrs1x2 ? "Supported" : "Not Supported");
-    ImGui::Text("        2x1: %s", vrs2x1 ? "Supported" : "Not Supported");
-    ImGui::Text("        2x4: %s", vrs2x4 ? "Supported" : "Not Supported");
-    ImGui::Text("        4x2: %s", vrs4x2 ? "Supported" : "Not Supported");
+    ImGui::TextFmt("Variable Rate Shading (VRS): {}", vrsPerDraw ? "Supported" : "Not Supported");
+    ImGui::TextFmt("    Per Draw: {}", vrsPerDraw ? "Supported" : "Not Supported");
+    ImGui::TextFmt("    Per Tile: {}", vrsPerTile ? "Supported" : "Not Supported");
+    ImGui::TextFmt("    Combiner:");
+    ImGui::TextFmt("        Passthrough: {}", vrsPerDraw ? "Supported" : "Not Supported");
+    ImGui::TextFmt("        Override: {}", vrsPerDraw ? "Supported" : "Not Supported");
+    ImGui::TextFmt("        Min: {}", vrsMin ? "Supported" : "Not Supported");
+    ImGui::TextFmt("        Max: {}", vrsMax ? "Supported" : "Not Supported");
+    ImGui::TextFmt("        Sum: {}", vrsSum ? "Supported" : "Not Supported");
+    ImGui::TextFmt("    Rates:");
+    ImGui::TextFmt("        1x1: {}", vrs1x1 ? "Supported" : "Not Supported");
+    ImGui::TextFmt("        2x2: {}", vrs2x2 ? "Supported" : "Not Supported");
+    ImGui::TextFmt("        4x4: {}", vrs4x4 ? "Supported" : "Not Supported");
+    ImGui::TextFmt("        8x8: {}", vrs8x8 ? "Supported" : "Not Supported");
+    ImGui::TextFmt("        1x2: {}", vrs1x2 ? "Supported" : "Not Supported");
+    ImGui::TextFmt("        2x1: {}", vrs2x1 ? "Supported" : "Not Supported");
+    ImGui::TextFmt("        2x4: {}", vrs2x4 ? "Supported" : "Not Supported");
+    ImGui::TextFmt("        4x2: {}", vrs4x2 ? "Supported" : "Not Supported");
     if(TRAP::Graphics::RendererAPI::GetRenderer()->GetAllGPUs().size() > 1u)
     {
         ImGui::Separator();
-        ImGui::Text("Other supported GPUs:");
+        ImGui::TextFmt("Other supported GPUs:");
         for(const auto& [name, uuid] : TRAP::Graphics::RendererAPI::GetRenderer()->GetAllGPUs())
         {
             if(name == GPUName)
                 continue;
 
-            ImGui::Text("Name: %s", name.c_str());
+            ImGui::TextFmt("Name: {}", name);
         }
         ImGui::Separator();
     }
@@ -95,47 +95,47 @@ void RendererAPIInfo::OnImGuiRender()
 
         ImGui::Begin("Vulkan Info", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse |
 	                                         ImGuiWindowFlags_AlwaysAutoResize);
-        ImGui::Text("Used Instance Layers:");
+        ImGui::TextFmt("Used Instance Layers:");
         for(const std::string& str : instLayers)
         {
             const auto layerProps = TRAP::Graphics::API::VulkanInstance::GetInstanceLayerProperties(str);
             if(layerProps)
             {
-                ImGui::Text("%s (%s) Spec: %i.%i.%i.%i Rev: %i", str.c_str(), layerProps->description,
-                            VK_API_VERSION_MAJOR(layerProps->specVersion), VK_API_VERSION_MINOR(layerProps->specVersion),
-                            VK_API_VERSION_PATCH(layerProps->specVersion), VK_API_VERSION_VARIANT(layerProps->specVersion),
-                            layerProps->implementationVersion);
+                ImGui::TextFmt("{} ({}) Spec: {}.{}.{}.{} Rev: {}", str, layerProps->description,
+                               VK_API_VERSION_MAJOR(layerProps->specVersion), VK_API_VERSION_MINOR(layerProps->specVersion),
+                               VK_API_VERSION_PATCH(layerProps->specVersion), VK_API_VERSION_VARIANT(layerProps->specVersion),
+                               layerProps->implementationVersion);
             }
             else
-                ImGui::Text("%s", str.c_str());
+                ImGui::TextFmt("{}", str);
         }
         ImGui::Separator();
-        ImGui::Text("Used Instance Extensions:");
+        ImGui::TextFmt("Used Instance Extensions:");
         for(const std::string& str : instExts)
         {
             const auto extensionProps = TRAP::Graphics::API::VulkanInstance::GetInstanceExtensionProperties(str);
             if(extensionProps)
             {
-                ImGui::Text("%s Spec: %i.%i.%i.%i", str.c_str(), VK_API_VERSION_MAJOR(extensionProps->specVersion),
-                            VK_API_VERSION_MINOR(extensionProps->specVersion), VK_API_VERSION_PATCH(extensionProps->specVersion),
-                            VK_API_VERSION_VARIANT(extensionProps->specVersion));
+                ImGui::TextFmt("{} Spec: {}.{}.{}.{}", str, VK_API_VERSION_MAJOR(extensionProps->specVersion),
+                               VK_API_VERSION_MINOR(extensionProps->specVersion), VK_API_VERSION_PATCH(extensionProps->specVersion),
+                               VK_API_VERSION_VARIANT(extensionProps->specVersion));
             }
             else
-                ImGui::Text("%s", str.c_str());
+                ImGui::TextFmt("{}", str);
         }
         ImGui::Separator();
-        ImGui::Text("Used Physical Device Extensions:");
+        ImGui::TextFmt("Used Physical Device Extensions:");
         for(const std::string& str : devExts)
         {
             const auto extensionProps = vkPhysicalDev.GetPhysicalDeviceExtensionProperties(str);
             if(extensionProps)
             {
-                ImGui::Text("%s Spec: %i.%i.%i.%i", str.c_str(), VK_API_VERSION_MAJOR(extensionProps->specVersion),
-                            VK_API_VERSION_MINOR(extensionProps->specVersion), VK_API_VERSION_PATCH(extensionProps->specVersion),
-                            VK_API_VERSION_VARIANT(extensionProps->specVersion));
+                ImGui::TextFmt("{} Spec: {}.{}.{}.{}", str, VK_API_VERSION_MAJOR(extensionProps->specVersion),
+                               VK_API_VERSION_MINOR(extensionProps->specVersion), VK_API_VERSION_PATCH(extensionProps->specVersion),
+                               VK_API_VERSION_VARIANT(extensionProps->specVersion));
             }
             else
-                ImGui::Text("%s", str.c_str());
+                ImGui::TextFmt("{}", str);
         }
         ImGui::End();
     }

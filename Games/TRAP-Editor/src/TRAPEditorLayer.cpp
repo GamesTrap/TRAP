@@ -117,7 +117,7 @@ namespace
 
 		if(maxSupportedAnisotropy == TRAP::Graphics::SampleCount::One)
 		{
-			ImGui::Text("Anisotropic Filtering is not supported by this device!");
+			ImGui::TextFmt("Anisotropic Filtering is not supported by this device!");
 			return;
 		}
 
@@ -387,22 +387,22 @@ void TRAPEditorLayer::OnImGuiRender()
 	m_sceneGraphPanel.OnImGuiRender();
 
 	ImGui::Begin("TRAP-Editor Settings");
-    ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
-	ImGui::Text("GPU: %s", TRAP::Graphics::RenderCommand::GetGPUName().c_str());
-    ImGui::Text("CPU FPS: %u", TRAP::Graphics::RenderCommand::GetCPUFPS());
-    ImGui::Text("GPU FPS: %u", TRAP::Graphics::RenderCommand::GetGPUFPS());
-    ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
-    ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
-    ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
+    ImGui::TextFmt("CPU: {}x {}", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model);
+	ImGui::TextFmt("GPU: {}", TRAP::Graphics::RenderCommand::GetGPUName());
+    ImGui::TextFmt("CPU FPS: {}", TRAP::Graphics::RenderCommand::GetCPUFPS());
+    ImGui::TextFmt("GPU FPS: {}", TRAP::Graphics::RenderCommand::GetGPUFPS());
+    ImGui::TextFmt("CPU FrameTime: {:.3f}ms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
+    ImGui::TextFmt("GPU Graphics FrameTime: {:.3f}ms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
+    ImGui::TextFmt("GPU Compute FrameTime: {:.3f}ms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
 	ImGui::Separator();
 	const TRAP::Graphics::Renderer2D::Statistics stats = TRAP::Graphics::Renderer2D::GetStats();
-	ImGui::Text("Renderer2D Stats:");
-	ImGui::Text("DrawCalls: %u", stats.DrawCalls);
-	ImGui::Text("Quads: %u", stats.QuadCount);
-	ImGui::Text("Circles: %u", stats.CircleCount);
-	ImGui::Text("Lines: %u", stats.LineCount);
-	ImGui::Text("Vertices: %u", stats.GetTotalVertexCount());
-	ImGui::Text("Indices: %u", stats.GetTotalIndexCount());
+	ImGui::TextFmt("Renderer2D Stats:");
+	ImGui::TextFmt("DrawCalls: {}", stats.DrawCalls);
+	ImGui::TextFmt("Quads: {}", stats.QuadCount);
+	ImGui::TextFmt("Circles: {}", stats.CircleCount);
+	ImGui::TextFmt("Lines: {}", stats.LineCount);
+	ImGui::TextFmt("Vertices: {}", stats.GetTotalVertexCount());
+	ImGui::TextFmt("Indices: {}", stats.GetTotalIndexCount());
 	ImGui::Separator();
 	DrawEngineSettings();
 	ImGui::Separator();

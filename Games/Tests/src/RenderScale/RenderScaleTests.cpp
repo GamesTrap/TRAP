@@ -11,7 +11,7 @@ void RenderScaleTests::OnImGuiRender()
 {
 	ImGui::Begin("Render Scaling", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                        ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("Press ESC to close");
+	ImGui::TextFmt("Press ESC to close");
     ImGui::Separator();
 
     f32 renderScale = TRAP::Graphics::RenderCommand::GetRenderScale();
@@ -19,10 +19,10 @@ void RenderScaleTests::OnImGuiRender()
         TRAP::Graphics::RenderCommand::SetRenderScale(renderScale);
 
     const auto internalRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(*TRAP::Application::GetWindow());
-    ImGui::Text("Render Resolution: %ux%u", internalRes.x(), internalRes.y());
+    ImGui::TextFmt("Render Resolution: {}x{}", internalRes.x(), internalRes.y());
 
     const auto outputSize = TRAP::Application::GetWindow()->GetFrameBufferSize();
-    ImGui::Text("Output Resolution: %ux%u", outputSize.x(), outputSize.y());
+    ImGui::TextFmt("Output Resolution: {}x{}", outputSize.x(), outputSize.y());
 
     ImGui::End();
 }
