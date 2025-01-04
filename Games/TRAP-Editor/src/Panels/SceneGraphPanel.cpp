@@ -6,11 +6,15 @@
 
 namespace
 {
-	void DrawVec3Control(const std::string& label,
+	/// @brief Draws a Vec3 control.
+	/// @return True if a value has changed, false if values are unchanged.
+	bool DrawVec3Control(const std::string& label,
 						 TRAP::Math::Vec3& values,
 						 const f32 resetValues = 0.0f,
 						 const f32 columnWidth = 100.0f)
 	{
+		bool changed = false;
+
 		ImGuiIO& io = ImGui::GetIO();
 		auto* const boldFont = io.Fonts->Fonts[0u];
 
@@ -32,12 +36,16 @@ namespace
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.8f, 0.1f, 0.15f, 1.0f));
 		ImGui::PushFont(boldFont);
 		if (ImGui::Button("X", buttonSize))
+		{
 			values.x() = resetValues;
+			changed = true;
+		}
 		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
-		ImGui::DragFloat("##X", &values.x(), 0.1f, 0.0f, 0.0f, "%.2f");
+		if(ImGui::DragFloat("##X", &values.x(), 0.1f, 0.0f, 0.0f, "%.2f"))
+			changed = true;
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
 
@@ -46,12 +54,16 @@ namespace
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));
 		ImGui::PushFont(boldFont);
 		if (ImGui::Button("Y", buttonSize))
+		{
 			values.y() = resetValues;
+			changed = true;
+		}
 		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
-		ImGui::DragFloat("##Y", &values.y(), 0.1f, 0.0f, 0.0f, "%.2f");
+		if(ImGui::DragFloat("##Y", &values.y(), 0.1f, 0.0f, 0.0f, "%.2f"))
+			changed = true;
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
 
@@ -60,12 +72,16 @@ namespace
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.18f, 0.25f, 0.8f, 1.0f));
 		ImGui::PushFont(boldFont);
 		if (ImGui::Button("Z", buttonSize))
+		{
 			values.z() = resetValues;
+			changed = true;
+		}
 		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
-		ImGui::DragFloat("##Z", &values.z(), 0.1f, 0.0f, 0.0f, "%.2f");
+		if(ImGui::DragFloat("##Z", &values.z(), 0.1f, 0.0f, 0.0f, "%.2f"))
+			changed = true;
 		ImGui::PopItemWidth();
 
 		ImGui::PopStyleVar();
@@ -73,6 +89,77 @@ namespace
 		ImGui::Columns(1);
 
 		ImGui::PopID();
+
+		return changed;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// @brief Draw component UI for an entity.
+	/// @tparam T Component type.
+	/// @param name Name of the component to display.
+	/// @param entity Entity associated with the component.
+	/// @param displayFunc Function which draws the component specific properties.
+	/// @param updateFunc Function to call when a value of the component has changed through the UI.
+	template <typename T, typename UIFunction, typename UpdateFunction>
+	requires TRAP::IsComponent<T> && std::is_invocable_r_v<bool, UIFunction, T&> && std::is_invocable_r_v<void, UpdateFunction, TRAP::Entity&, const T&>
+	void DrawComponent(const std::string& name, TRAP::Entity& entity, UIFunction displayFunc, UpdateFunction updateFunc)
+	{
+		static constexpr ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowOverlap |
+															ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Framed |
+															ImGuiTreeNodeFlags_FramePadding;
+
+		if (!entity.HasComponent<T>())
+			return;
+
+		auto& component = entity.GetComponent<T>();
+		const ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
+
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4.0f, 4.0f });
+		const f32 lineHeight = GImGui->Font->FontSize + (GImGui->Style.FramePadding.y * 2.0f);
+		ImGui::Separator();
+		const bool open = ImGui::TreeNodeEx(reinterpret_cast<void*>(typeid(T).hash_code()), treeNodeFlags, "%s", name.c_str());
+		ImGui::PopStyleVar();
+		bool removeComponent = false;
+		if(!std::same_as<T, TRAP::TransformComponent>)
+		{
+			ImGui::SameLine(contentRegionAvailable.x - (lineHeight * 0.5f));
+			if (ImGui::Button(":", ImVec2{ lineHeight, lineHeight }))
+				ImGui::OpenPopup("ComponentSettings");
+
+			if (ImGui::BeginPopup("ComponentSettings"))
+			{
+				if (ImGui::MenuItem("Remove Component"))
+					removeComponent = true;
+
+				ImGui::EndPopup();
+			}
+
+		}
+
+		if (open)
+		{
+			if(displayFunc(component))
+				updateFunc(entity, component);
+			ImGui::TreePop();
+		}
+		if(!std::same_as<T, TRAP::TransformComponent>)
+		{
+			if (removeComponent)
+				entity.RemoveComponent<T>();
+		}
+	}
+
+	/// @brief Draw component UI for an entity.
+	/// @tparam T Component type.
+	/// @param name Name of the component to display.
+	/// @param entity Entity associated with the component.
+	/// @param displayFunc Function which draws the component specific properties.
+	template <typename T, typename UIFunction>
+	requires TRAP::IsComponent<T> && std::is_invocable_r_v<bool, UIFunction, T&>
+	void DrawComponent(const std::string& name, TRAP::Entity& entity, UIFunction displayFunc)
+	{
+		return DrawComponent<T, UIFunction>(name, entity, displayFunc, [](TRAP::Entity&, const T&){});
 	}
 }
 
@@ -159,56 +246,6 @@ void TRAP::SceneGraphPanel::DrawEntityNode(const Entity& entity)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <typename T, typename UIFunction>
-requires TRAP::IsComponent<T> && std::is_invocable_r_v<void, UIFunction, T&>
-void DrawComponent(const std::string& name, TRAP::Entity& entity, UIFunction func)
-{
-	static constexpr ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowOverlap |
-		                                                ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Framed |
-														ImGuiTreeNodeFlags_FramePadding;
-
-	if (!entity.HasComponent<T>())
-		return;
-
-	auto& component = entity.GetComponent<T>();
-	const ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
-
-	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4.0f, 4.0f });
-	const f32 lineHeight = GImGui->Font->FontSize + (GImGui->Style.FramePadding.y * 2.0f);
-	ImGui::Separator();
-	const bool open = ImGui::TreeNodeEx(reinterpret_cast<void*>(typeid(T).hash_code()), treeNodeFlags, "%s", name.c_str());
-	ImGui::PopStyleVar();
-	bool removeComponent = false;
-	if(!std::same_as<T, TRAP::TransformComponent>)
-	{
-		ImGui::SameLine(contentRegionAvailable.x - (lineHeight * 0.5f));
-		if (ImGui::Button(":", ImVec2{ lineHeight, lineHeight }))
-			ImGui::OpenPopup("ComponentSettings");
-
-		if (ImGui::BeginPopup("ComponentSettings"))
-		{
-			if (ImGui::MenuItem("Remove Component"))
-				removeComponent = true;
-
-			ImGui::EndPopup();
-		}
-
-	}
-
-	if (open)
-	{
-		func(component);
-		ImGui::TreePop();
-	}
-	if(!std::same_as<T, TRAP::TransformComponent>)
-	{
-		if (removeComponent)
-			entity.RemoveComponent<T>();
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 {
 	if (entity.HasComponent<TagComponent>() && entity.HasComponent<UIDComponent>())
@@ -249,11 +286,29 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 
 	DrawComponent<TransformComponent>("Transform", entity, [](auto& component)
 	{
-		DrawVec3Control("Position", component.Position);
+		bool changed = false;
+
+		changed |= DrawVec3Control("Position", component.Position);
+
 		Math::Vec3 rotation = Math::Degrees(component.Rotation);
-		DrawVec3Control("Rotation", rotation);
-		component.Rotation = Math::Radians(rotation);
-		DrawVec3Control("Scale", component.Scale, 1.0f);
+		if(DrawVec3Control("Rotation", rotation))
+		{
+			component.Rotation = Math::Radians(rotation);
+			changed = true;
+		}
+		changed |= DrawVec3Control("Scale", component.Scale, 1.0f);
+
+		return changed;
+	},
+	[](const TRAP::Entity& ent, const TransformComponent& transComp)
+	{
+		if(!ent.HasComponent<Rigidbody2DComponent>())
+			return;
+
+		const auto& rigidComp = ent.GetComponent<Rigidbody2DComponent>();
+
+		rigidComp.SetPosition(TRAP::Math::Vec2{transComp.Position});
+		rigidComp.SetAngle(transComp.Rotation.z());
 	});
 
 	DrawComponent<CameraComponent>("Camera", entity, [](auto& component)
@@ -309,11 +364,15 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 
 			ImGui::Checkbox("Fixed Aspect Ratio", &component.FixedAspectRatio);
 		}
+
+		return false;
 	});
 
 	DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
 	{
 		ImGui::ColorEdit4("Color", &std::get<0u>(component.Color));
+
+		return false;
 	});
 
 	DrawComponent<CircleRendererComponent>("Circle Renderer", entity, [](auto& component)
@@ -321,6 +380,8 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 		ImGui::ColorEdit4("Color", &std::get<0u>(component.Color));
 		ImGui::DragFloat("Thickness", &component.Thickness, 0.025f, 0.0f, 1.0f);
 		ImGui::DragFloat("Fade", &component.Fade, 0.00025f, 0.0f, 1.0f);
+
+		return false;
 	});
 
 	DrawComponent<Rigidbody2DComponent>("Rigidbody 2D", entity, [](auto& component)
@@ -346,6 +407,8 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 		}
 
 		ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
+
+		return false;
 	});
 
 	DrawComponent<BoxCollider2DComponent>("Box Collider 2D", entity, [](auto& component)
@@ -356,6 +419,8 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 		ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat("RestitutionThreshold", &component.RestitutionThreshold, 0.01f, 0.0f);
+
+		return false;
 	});
 
 	DrawComponent<CircleCollider2DComponent>("Circle Collider 2D", entity, [](auto& component)
@@ -366,6 +431,8 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 		ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat("RestitutionThreshold", &component.RestitutionThreshold, 0.01f, 0.0f);
+
+		return false;
 	});
 }
 

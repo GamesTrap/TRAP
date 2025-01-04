@@ -164,6 +164,34 @@ namespace TRAP
 
 		/// @brief Constructor.
 		constexpr Rigidbody2DComponent() noexcept = default;
+
+		void SetPosition(const TRAP::Math::Vec2& pos) const
+		{
+			if(RuntimeBody == nullptr)
+				return;
+
+			//Temporarily set the rigidbody to static for manual update
+			const b2BodyType originalBodyType = RuntimeBody->GetType();
+			RuntimeBody->SetType(b2BodyType::b2_staticBody);
+
+			RuntimeBody->SetTransform(b2Vec2(pos.x(), pos.y()), RuntimeBody->GetAngle());
+
+			RuntimeBody->SetType(originalBodyType);
+		}
+
+		void SetAngle(const f32 angle) const
+		{
+			if(RuntimeBody == nullptr)
+				return;
+
+			//Temporarily set the rigidbody to static for manual update
+			const b2BodyType originalBodyType = RuntimeBody->GetType();
+			RuntimeBody->SetType(b2BodyType::b2_staticBody);
+
+			RuntimeBody->SetTransform(RuntimeBody->GetPosition(), angle);
+
+			RuntimeBody->SetType(originalBodyType);
+		}
 	};
 
 	struct BoxCollider2DComponent
