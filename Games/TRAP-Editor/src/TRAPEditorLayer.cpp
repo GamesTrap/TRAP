@@ -508,7 +508,8 @@ void TRAPEditorLayer::OnImGuizmoRender()
 			tc.Rotation += deltaRotation;
 			tc.Scale = scale;
 
-			if(const auto* const rigid2DComp = selectedEntity.TryGetComponent<TRAP::Rigidbody2DComponent>())
+			if(const auto* const rigid2DComp = selectedEntity.TryGetComponent<TRAP::Rigidbody2DComponent>();
+			   rigid2DComp != nullptr && rigid2DComp->RuntimeBody != nullptr)
 			{
 				rigid2DComp->SetPosition(TRAP::Math::Vec2{tc.Position});
 				rigid2DComp->SetAngle(tc.Rotation.z());

@@ -302,7 +302,8 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 	},
 	[](const TRAP::Entity& ent, const TransformComponent& transComp)
 	{
-		if(const auto* const rigid2DComp = ent.TryGetComponent<Rigidbody2DComponent>())
+		if(const auto* const rigid2DComp = ent.TryGetComponent<Rigidbody2DComponent>();
+		   rigid2DComp != nullptr && rigid2DComp->RuntimeBody != nullptr)
 		{
 			rigid2DComp->SetPosition(TRAP::Math::Vec2{transComp.Position});
 			rigid2DComp->SetAngle(transComp.Rotation.z());
