@@ -1008,7 +1008,8 @@ void TRAPEditorLayer::OnOverlayRender()
 
 				const TRAP::Math::Vec3 position = transform.Position + TRAP::Math::Vec3(circleCollider.Offset, -colliderProjectionZ);
 				const f32 rotation = transform.Rotation.z();
-				const TRAP::Math::Vec3 scale = transform.Scale * TRAP::Math::Vec3(circleCollider.Radius * 2.0f);
+				const f32 maxScale = TRAP::Math::Max(transform.Scale.x(), transform.Scale.y());
+				const TRAP::Math::Vec3 scale = TRAP::Math::Vec3{maxScale, maxScale, transform.Scale.z()} * TRAP::Math::Vec3(circleCollider.Radius * 2.0f);
 
 				const TRAP::Math::Mat4 trans = TRAP::Math::Translate(position) * TRAP::Math::Rotate(rotation, {0.0f, 0.0f, 1.0f}) * TRAP::Math::Scale(scale);
 
