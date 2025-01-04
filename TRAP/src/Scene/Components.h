@@ -208,6 +208,24 @@ namespace TRAP
 				collider2DComp.RuntimeFixture = nullptr;
 			}
 		}
+
+		[[nodiscard]] static constexpr b2BodyType Rigidbody2DTypeToBox2DBody(const TRAP::Rigidbody2DComponent::BodyType bodyType)
+		{
+			switch(bodyType)
+			{
+			case TRAP::Rigidbody2DComponent::BodyType::Static:
+				return b2_staticBody;
+
+			case TRAP::Rigidbody2DComponent::BodyType::Dynamic:
+				return b2_dynamicBody;
+
+			case TRAP::Rigidbody2DComponent::BodyType::Kinematic:
+				return b2_kinematicBody;
+			}
+
+			TRAP_ASSERT(false, "TRAPRigidbody2DTypeToBox2DBody(): Unknown body type!");
+			return b2_staticBody;
+		}
 	};
 
 	struct BoxCollider2DComponent

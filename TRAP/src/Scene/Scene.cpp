@@ -22,26 +22,7 @@
 #endif /*_MSC_VER*/
 
 namespace
-{
-	[[nodiscard]] constexpr b2BodyType TRAPRigidbody2DTypeToBox2DBody(const TRAP::Rigidbody2DComponent::BodyType bodyType)
-	{
-		switch(bodyType)
-		{
-		case TRAP::Rigidbody2DComponent::BodyType::Static:
-			return b2_staticBody;
-
-		case TRAP::Rigidbody2DComponent::BodyType::Dynamic:
-			return b2_dynamicBody;
-
-		case TRAP::Rigidbody2DComponent::BodyType::Kinematic:
-			return b2_kinematicBody;
-		}
-
-		TRAP_ASSERT(false, "TRAPRigidbody2DTypeToBox2DBody(): Unknown body type!");
-		return b2_staticBody;
-	}
-
-	//-------------------------------------------------------------------------------------------------------------------//
+{	//-------------------------------------------------------------------------------------------------------------------//
 
 	template<typename... Component>
 	void CopyComponent(entt::registry& dst, const entt::registry& src, const std::unordered_map<entt::entity, entt::entity>& enttMap)
@@ -167,7 +148,7 @@ void TRAP::Scene::OnRuntimeStart()
 		auto& rigidbody2D = entity.GetComponent<Rigidbody2DComponent>();
 
 		b2BodyDef bodyDef{};
-		bodyDef.type = TRAPRigidbody2DTypeToBox2DBody(rigidbody2D.Type);
+		bodyDef.type = Rigidbody2DComponent::Rigidbody2DTypeToBox2DBody(rigidbody2D.Type);
 		bodyDef.position.Set(transform.Position.x(), transform.Position.y());
 		bodyDef.angle = transform.Rotation.z();
 

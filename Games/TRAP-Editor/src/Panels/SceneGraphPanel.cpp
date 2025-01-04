@@ -396,6 +396,8 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 
 	DrawComponent<Rigidbody2DComponent>("Rigidbody 2D", entity, [](auto& component)
 	{
+		bool changed = false;
+
 		static const std::array<std::string, 3u> bodyTypeStrings{"Static", "Dynamic", "Kinematic"};
 		const char* currentBodyTypeString = bodyTypeStrings[std::to_underlying(component.Type)].c_str();
 		if(ImGui::BeginCombo("Body Type", currentBodyTypeString))
@@ -407,6 +409,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 				{
 					currentBodyTypeString = bodyTypeStrings[i].c_str();
 					component.Type = static_cast<Rigidbody2DComponent::BodyType>(i);
+					changed = true;
 				}
 
 				if(isSelected)
@@ -416,9 +419,17 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 			ImGui::EndCombo();
 		}
 
-		ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
+		changed |= ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
 
-		return false;
+		return changed;
+	},
+	[]([[maybe_unused]] const TRAP::Entity& ent, const Rigidbody2DComponent& rigidBody2DComp)
+	{
+		if(rigidBody2DComp.RuntimeBody != nullptr)
+		{
+			rigidBody2DComp.RuntimeBody->SetType(Rigidbody2DComponent::Rigidbody2DTypeToBox2DBody(rigidBody2DComp.Type));
+			rigidBody2DComp.RuntimeBody->SetFixedRotation(rigidBody2DComp.FixedRotation);
+		}
 	});
 
 	DrawComponent<BoxCollider2DComponent>("Box Collider 2D", entity, [](auto& component)
@@ -430,7 +441,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 		ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat("RestitutionThreshold", &component.RestitutionThreshold, 0.01f, 0.0f);
 
-		return false;
+		return false; //TODO Apply changes in play mode
 	});
 
 	DrawComponent<CircleCollider2DComponent>("Circle Collider 2D", entity, [](auto& component)
@@ -442,7 +453,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity& entity)
 		ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat("RestitutionThreshold", &component.RestitutionThreshold, 0.01f, 0.0f);
 
-		return false;
+		return false; //TODO Apply changes in play mode
 	});
 }
 
