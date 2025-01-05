@@ -206,6 +206,11 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 	if (!FileSystem::Exists(m_filepath))
 		return;
 
+
+#ifdef _MSC_VER
+#pragma warning(disable: 4996)
+#endif /*_MSC_VER*/
+	//C++26 use std::ifstream::native_handle() to replace fopen().
 	TRAP::UniqueResource file = TRAP::MakeUniqueResourceChecked(fopen(m_filepath.string().c_str(), "rb"), nullptr, CFileCloser);
 	if (file.Get() == nullptr)
 	{
@@ -213,6 +218,9 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 		return;
 	}
+#ifdef _MSC_VER
+#pragma warning(default: 4996)
+#endif /*_MSC_VER*/
 
 	bool errored = false;
 	png_struct* png = png_create_read_struct(PNG_LIBPNG_VER_STRING, &errored, HandlePNGError, HandlePNGWarning);

@@ -42,9 +42,8 @@ The above license only applies to some of the Controller specific parts of this 
 #include <regex>
 #include <optional>
 
-#ifdef TRAP_PLATFORM_LINUX
 #include "Utils/Linux.h"
-#endif /*TRAP_PLATFORM_LINUX*/
+#include "Utils/Win.h"
 
 #include "Events/Event.h"
 #include <Maths/Types.h>

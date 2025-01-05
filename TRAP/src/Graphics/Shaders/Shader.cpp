@@ -7,6 +7,8 @@
 #include "Utils/String/String.h"
 #include "Utils/Memory.h"
 
+#include <glslang/Public/ResourceLimits.h>
+
 namespace
 {
 	constexpr u32 SPIRVMagicNumber = 0x07230203u;

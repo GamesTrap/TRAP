@@ -4,6 +4,8 @@
 #include "Utils/SafeSystem.h"
 #include "Utils/String/String.h"
 #include "Application.h"
+#include "Utils/Linux.h"
+#include "Utils/Win.h"
 
 namespace
 {

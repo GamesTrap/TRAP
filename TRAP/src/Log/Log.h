@@ -2,9 +2,9 @@
 #define TRAP_LOG_H
 
 #include <vector>
-#include <mutex>
+#include <shared_mutex>
 #include <string>
-#include <iostream>
+#include <cstdio>
 #include <filesystem>
 
 #include <fmt/color.h>
@@ -155,7 +155,7 @@ namespace TRAP
 		/// @threadsafe
 		void Clear() noexcept;
 
-		static constexpr auto WindowVersion =                        "[25w01b1]";
+		static constexpr auto WindowVersion =                        "[25w01c1]";
 		static constexpr auto WindowPrefix =                         "[Window] ";
 		static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -467,7 +467,7 @@ constexpr void TRAP::Log::LogMessage(const LogLevel level, Args&&... args)
 			const bool isError = std::to_underlying(level & LogLevel::Error) != 0u ||
 								std::to_underlying(level & LogLevel::Critical) != 0u;
 
-			fmt::print(isError ? std::cerr : std::cout, "{}\n", fmt::styled(logMsg, fmtColor ? fmt::fg(*fmtColor) : fmt::text_style{}));
+			fmt::print(isError ? stderr : stdout, "{}\n", fmt::styled(logMsg, fmtColor ? fmt::fg(*fmtColor) : fmt::text_style{}));
 		}
 	#endif
 

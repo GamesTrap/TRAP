@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "String.h"
 
+#include "Utils/Win.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] std::string TRAP::Utils::String::GetTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint) noexcept

@@ -6,6 +6,8 @@
 #include "Utils/String/String.h"
 #include "Utils/UniqueResource.h"
 #include "Utils/Utils.h"
+#include "Utils/Linux.h"
+#include "Utils/Win.h"
 
 TRAP::FileSystem::FileSystemWatcher::FileSystemWatcher(const bool recursive, std::string debugName)
     : m_recursive(recursive), m_debugName(std::move(debugName))
@@ -412,7 +414,7 @@ namespace
             return TRAP::NullOpt;
         }
 
-        return TRAP::MakeUniqueResourceChecked(reinterpret_cast<uptr>(overlappedEvent), false, OverlappedEventDeleter);
+        return TRAP::MakeUniqueResourceChecked(reinterpret_cast<uptr>(overlappedEvent), NULL, OverlappedEventDeleter);
     }
 
     [[nodiscard]] bool ReadAllDirectoryChangesAsync(const std::span<const std::pair<DirectoryHandle, std::filesystem::path>> dirHandles,

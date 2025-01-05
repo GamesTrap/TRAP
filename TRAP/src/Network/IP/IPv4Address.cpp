@@ -55,12 +55,12 @@ TRAP::Optional<TRAP::Network::IPv4Address> TRAP::Network::IPv4Address::Resolve(c
 		return Any;
 
 	//Try to convert the address as a byte representation ("xxx.xxx.xxx.xxx")
-	if(u32 ip = inet_addr(address.c_str()); ip != INADDR_NONE)
+	if (in_addr addr{}; inet_pton(AF_INET, address.c_str(), &addr) != 0)
 	{
 		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
-			TRAP::Utils::Memory::SwapBytes(ip);
+			TRAP::Utils::Memory::SwapBytes(addr.s_addr);
 
-		return IPv4Address(ip);
+		return IPv4Address(addr.s_addr);
 	}
 
 	//Not a valid address, try to convert it as a host name

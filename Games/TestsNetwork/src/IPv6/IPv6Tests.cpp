@@ -1,5 +1,7 @@
 #include "IPv6Tests.h"
 
+#include <iostream>
+
 namespace
 {
 	constexpr std::string_view NetworkIPv6Prefix = "[Network][IPv6] ";

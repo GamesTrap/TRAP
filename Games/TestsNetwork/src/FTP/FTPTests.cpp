@@ -1,5 +1,7 @@
 #include "FTPTests.h"
 
+#include <iostream>
+
 namespace
 {
 	constexpr std::string_view NetWorkFTPPrefix = "[Network][FTP] ";

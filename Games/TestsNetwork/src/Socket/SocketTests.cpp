@@ -1,5 +1,7 @@
 #include "SocketTests.h"
 
+#include <iostream>
+
 namespace
 {
 	constexpr std::string_view NetworkSocketsPrefix = "[Network][Sockets] ";

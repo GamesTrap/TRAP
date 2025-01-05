@@ -232,7 +232,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* con
 	for(sent = 0; sent < size; sent += NumericCast<usize>(result))
 	{
 		//Send a chunk of data
-		result = ::send(GetNativeHandle(), static_cast<const char*>(data) + sent, size - sent, flags);
+		result = ::send(GetNativeHandle(), static_cast<const char*>(data) + sent, static_cast<TRAP::INTERNAL::Network::SocketImpl::Size>(size - sent), flags);
 
 		//Check for errors
 		if(result < 0)
@@ -268,7 +268,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(void* const 
 	}
 
 	//Receive a chunk of bytes
-	const i64 sizeReceived = recv(GetNativeHandle(), static_cast<char*>(data), size, flags);
+	const i64 sizeReceived = recv(GetNativeHandle(), static_cast<char*>(data), static_cast<TRAP::INTERNAL::Network::SocketImpl::Size>(size), flags);
 
 	//Check the number of bytes received
 	if (sizeReceived > 0)
