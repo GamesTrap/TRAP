@@ -5542,3 +5542,4 @@ SITREP 01/04/2025|25w01b1
 SITREP 01/05/2025|25w01c1
     - Changed TRAP Engine version to 25w01c1(0.11.68)
     - TRAPPCH Removed not commonly used headers ~<10 mins
+    - TRAPPCH Added TRAP::Optional, TRAP::Expected and TRAP::UniqueResource headers ~<10 mins

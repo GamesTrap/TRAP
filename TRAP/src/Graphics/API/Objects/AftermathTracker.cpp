@@ -4,7 +4,6 @@
 #include "FileSystem/FileSystem.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
 #include "Utils/String/String.h"
-#include "Utils/UniqueResource.h"
 #include "Graphics/API/RendererAPI.h"
 
 namespace

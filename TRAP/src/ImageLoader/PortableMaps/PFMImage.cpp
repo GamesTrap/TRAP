@@ -2,7 +2,6 @@
 #include "PFMImage.h"
 
 #include "FileSystem/FileSystem.h"
-#include "Utils/Expected.h"
 
 namespace
 {

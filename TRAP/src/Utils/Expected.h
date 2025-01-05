@@ -2,6 +2,9 @@
 /// Originally written in 2017 by Sy Brand (tartanllama@gmail.com, @TartanLlama)
 /// Modified by Jan "GamesTrap" Schuerkamp
 
+#ifndef TRAP_EXPECTED_H
+#define TRAP_EXPECTED_H
+
 #include <initializer_list>
 #include <exception>
 #include <type_traits>
@@ -2119,3 +2122,5 @@ namespace TRAP
         bool m_hasValue;
     };
 }
+
+#endif /*TRAP_EXPECTED_H*/

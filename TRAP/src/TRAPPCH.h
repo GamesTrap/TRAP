@@ -65,6 +65,10 @@
 #include "Log/Log.h"
 #include "Utils/NumericCasts.h"
 
+#include "Utils/UniqueResource.h"
+#include "Utils/Optional.h"
+#include "Utils/Expected.h"
+
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif /*_MSC_VER*/

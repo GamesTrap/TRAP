@@ -2,7 +2,6 @@
 #include "PNGImage.h"
 
 #include "FileSystem/FileSystem.h"
-#include "Utils/UniqueResource.h"
 
 #include <png.h>
 

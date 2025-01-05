@@ -4,7 +4,6 @@
 
 #include "DBus.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
-#include "Utils/Expected.h"
 
 namespace
 {

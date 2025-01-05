@@ -4,7 +4,6 @@
 #include "FileSystem.h"
 #include "Events/FileEvent.h"
 #include "Utils/String/String.h"
-#include "Utils/UniqueResource.h"
 #include "Utils/Utils.h"
 #include "Utils/Linux.h"
 #include "Utils/Win.h"
