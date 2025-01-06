@@ -28,7 +28,9 @@
 #define TRAP_NETWORK_SOCKETHANDLE_H
 
 #include <cstdint>
+
 #include "Core/Types.h"
+#include "Utils/Win.h"
 
 namespace TRAP::Network
 {

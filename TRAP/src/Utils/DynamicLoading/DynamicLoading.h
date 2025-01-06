@@ -15,6 +15,7 @@
 #include "Core/PlatformDetection.h"
 #include "Utils/String/String.h"
 #include "Utils/Linux.h"
+#include "Utils/Win.h"
 #include "Log/Log.h"
 
 namespace TRAP::Utils::DynamicLoading

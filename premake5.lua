@@ -156,7 +156,7 @@ workspace "TRAP"
 		buildoptions "-fcolor-diagnostics"
 
 	filter { "language:C or C++", "toolset:msc-v143"}
-		buildoptions "/utf-8"
+		buildoptions "/utf-8 /wd4996"
 
 --Include directories relative to root folder(solution folder)
 IncludeDir = {}

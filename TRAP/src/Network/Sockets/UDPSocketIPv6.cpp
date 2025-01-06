@@ -85,7 +85,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(const void* con
 	const sockaddr_in6 address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToArray(), remotePort);
 
 	//Send the data (unlike TCP, all the data is always sent in one call)
-	const i64 sent = sendto(GetNativeHandle(), static_cast<const char*>(data), size, 0,
+	const i64 sent = sendto(GetNativeHandle(), static_cast<const char*>(data), static_cast<TRAP::INTERNAL::Network::SocketImpl::Size>(size), 0,
 	                            reinterpret_cast<const sockaddr*>(&address), sizeof(address));
 
 	//Check for errors
@@ -128,7 +128,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* const 
 
 	//Receive a chunk of bytes
 	INTERNAL::Network::SocketImpl::AddressLength addressSize = sizeof(address);
-	const i64 sizeReceived = recvfrom(GetNativeHandle(), static_cast<char*>(data), size, 0,
+	const i64 sizeReceived = recvfrom(GetNativeHandle(), static_cast<char*>(data), static_cast<TRAP::INTERNAL::Network::SocketImpl::Size>(size), 0,
 	                                      reinterpret_cast<sockaddr*>(&address), &addressSize);
 
 	//Check for errors

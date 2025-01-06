@@ -58,7 +58,7 @@ namespace
 		//Memory Budget
 #if VMA_MEMORY_BUDGET || VMA_VULKAN_VERSION >= 1001000
 		if(physicalDevice.IsExtensionSupported(TRAP::Graphics::API::VulkanPhysicalDeviceExtension::MemoryBudget))
-			vulkanFunctions.vkGetPhysicalDeviceMemoryProperties2KHR = vkGetPhysicalDeviceMemoryProperties2KHR;
+			vulkanFunctions.vkGetPhysicalDeviceMemoryProperties2KHR = vkGetPhysicalDeviceMemoryProperties2;
 #endif /*VMA_MEMORY_BUDGET || VMA_VULKAN_VERSION >= 1001000*/
 
 #if VMA_KHR_MAINTENANCE4 || VMA_VULKAN_VERSION >= 1003000

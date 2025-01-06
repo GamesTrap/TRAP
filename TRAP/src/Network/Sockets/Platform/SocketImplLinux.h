@@ -45,6 +45,7 @@ namespace TRAP::INTERNAL::Network::SocketImpl
 {
 	/// @brief Types.
 	using AddressLength = socklen_t;
+	using Size = usize;
 
 	/// @brief Create an internal sockaddr_in address.
 	/// @param address Target address.

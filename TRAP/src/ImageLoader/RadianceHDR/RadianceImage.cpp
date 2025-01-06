@@ -4,7 +4,6 @@
 #include "Maths/Math.h"
 #include "Utils/ImageUtils.h"
 #include "Utils/String/String.h"
-#include "Utils/Expected.h"
 #include "FileSystem/FileSystem.h"
 
 namespace

@@ -3,15 +3,6 @@
 
 #include <memory>
 
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif /*_MSC_VER*/
-//Tracy - Profiler
-#include <tracy/Tracy.hpp>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif /*_MSC_VER*/
-
 #include "PlatformDetection.h"
 #include "TRAP_Assert.h"
 #include "Backports.h"
@@ -77,7 +68,7 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 /// @brief TRAP version number created with TRAP_MAKE_VERSION
-inline constexpr TRAP::SemanticVersion<0, 11, 67> TRAP_VERSION{};
+inline constexpr TRAP::SemanticVersion<0, 11, 68> TRAP_VERSION{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 

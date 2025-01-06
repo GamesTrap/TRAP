@@ -1,5 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
+#include <fmt/format.h>
+
 #include "TRAP/src/Core/Version.h"
 
 TEST_CASE("TRAP::SemanticVersion", "[core][semanticversion]")

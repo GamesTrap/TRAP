@@ -1,8 +1,6 @@
 #include "TRAPPCH.h"
 #include "Window.h"
 
-#include <algorithm>
-
 #ifndef TRAP_HEADLESS_MODE
 
 #include "Utils/String/String.h"

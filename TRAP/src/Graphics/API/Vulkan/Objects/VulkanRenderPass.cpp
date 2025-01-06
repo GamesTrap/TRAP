@@ -6,7 +6,6 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
-#include "Utils/Optional.h"
 
 namespace
 {

@@ -42,6 +42,7 @@ namespace TRAP::INTERNAL::Network::SocketImpl
 {
 	/// @brief Types.
 	using AddressLength = i32;
+	using Size = i32;
 
 	/// @brief Create an internal sockaddr_in address.
 	/// @param address Target address.

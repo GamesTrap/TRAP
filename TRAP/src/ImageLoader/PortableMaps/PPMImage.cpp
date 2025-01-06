@@ -5,7 +5,6 @@
 #include "Utils/ImageUtils.h"
 #include "Utils/Memory.h"
 #include "Utils/Utils.h"
-#include "Utils/Expected.h"
 
 namespace
 {

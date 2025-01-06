@@ -4,7 +4,7 @@
 #include "Core/PlatformDetection.h"
 
 //C++ STL
-#include <iostream>
+#include <iosfwd>
 #include <memory>
 #include <utility>
 #include <algorithm>
@@ -31,6 +31,7 @@
 #include <cctype>
 #include <any>
 #include <climits>
+#include <limits>
 #include <forward_list>
 #include <random>
 #include <queue>
@@ -45,6 +46,8 @@
 #include <csignal>
 #include <ranges>
 #include <regex>
+#include <version>
+#include <concepts>
 
 #include "Core/Backports.h"
 #include "Core/Types.h"
@@ -53,19 +56,8 @@
 	#pragma warning(push, 0)
 #endif /*_MSC_VER*/
 
-#include <fmt/format.h>
-#include <fmt/color.h>
-#include <fmt/ostream.h>
-#include <fmt/std.h>
-
 //Tracy - Profiler
 #include <tracy/Tracy.hpp>
-
-#ifndef TRAP_HEADLESS_MODE
-//ImGUI
-#include <imgui.h>
-#include <ImGuizmo.h>
-#endif /*TRAP_HEADLESS_MODE*/
 
 //TRAP
 #include "Core/Base.h"
@@ -73,30 +65,9 @@
 #include "Log/Log.h"
 #include "Utils/NumericCasts.h"
 
-#ifdef TRAP_PLATFORM_LINUX
-#include "Utils/Linux.h"
-#elif defined(TRAP_PLATFORM_WINDOWS)
-#include "Utils/Win.h"
-#endif /*TRAP_PLATFORM_LINUX*/
-
-//VulkanAPI
-#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
-
-//SPIRV
-#include <glslang/Public/ShaderLang.h>
-#include <glslang/Public/ResourceLimits.h>
-#include <SPIRV/GlslangToSpv.h>
-//SPIRV to GLSL
-#include <spirv_glsl.hpp>
-
-//VulkanMemoryAllocator
-#include <vk_mem_alloc.h>
-
-#ifdef ENABLE_NSIGHT_AFTERMATH
-#include <GFSDK_Aftermath.h>
-#include <GFSDK_Aftermath_Defines.h>
-#include <GFSDK_Aftermath_GpuCrashDump.h>
-#endif /*ENABLE_NSIGHT_AFTERMATH*/
+#include "Utils/UniqueResource.h"
+#include "Utils/Optional.h"
+#include "Utils/Expected.h"
 
 #ifdef _MSC_VER
 	#pragma warning(pop)

@@ -32,8 +32,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifdef TRAP_PLATFORM_LINUX
 
-#include <regex>
-
 #include "Events/ControllerEvent.h"
 #include "Window/WindowingAPI.h"
 #include "Utils/String/String.h"
