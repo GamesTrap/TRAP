@@ -68,6 +68,9 @@
 #include "Utils/UniqueResource.h"
 #include "Utils/Optional.h"
 #include "Utils/Expected.h"
+#include "Utils/Enum.h"
+#include "Utils/Bit.h"
+#include "Utils/SmartPtr.h"
 
 #ifdef _MSC_VER
 	#pragma warning(pop)

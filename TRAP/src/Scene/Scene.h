@@ -2,6 +2,7 @@
 #define TRAP_SCENE_H
 
 #include "Core/Base.h"
+#include "Utils/SmartPtr.h"
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)

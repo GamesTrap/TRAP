@@ -45,6 +45,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "ImageLoader/Image.h"
 #include "Input/Input.h"
 #include "Maths/Math.h"
+#include "Utils/SmartPtr.h"
 
 namespace TRAP::INTERNAL
 {

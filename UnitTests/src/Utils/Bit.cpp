@@ -1,8 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "TRAP/src/Core/Base.h"
+#include "TRAP/src/Utils/Bit.h"
 
-TEST_CASE("BIT()", "[core][bit]")
+TEST_CASE("BIT()", "[utils][bit]")
 {
     STATIC_REQUIRE(BIT(0u) == 1u);
     STATIC_REQUIRE(BIT(1u) == 2u);

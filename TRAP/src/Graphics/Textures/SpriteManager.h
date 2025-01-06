@@ -1,11 +1,11 @@
 #ifndef TRAP_SPRITEMANAGER_H
 #define TRAP_SPRITEMANAGER_H
 
-#include <unordered_map>
-
 #include "Core/Base.h"
 #include "Maths/Types.h"
 #include "Maths/Vec2.h"
+#include "Utils/Map.h"
+#include "Utils/SmartPtr.h"
 
 namespace TRAP::Graphics
 {

@@ -4,6 +4,9 @@
 #include <variant>
 #include <unordered_map>
 
+#include "Utils/Bit.h"
+#include "Utils/Map.h"
+#include "Utils/SmartPtr.h"
 #include "Window/Window.h"
 #include "ImageFormat.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
@@ -2846,7 +2849,7 @@ namespace TRAP::Graphics
 			bool AntiLagSupported;
 		} GPUSettings{};
 
-		static constexpr u32 ImageCount = 3; //Triple Buffered
+		static constexpr u32 ImageCount = 3u; //Triple Buffered
 
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Retrieve the image index currently used for rendering from the given window.

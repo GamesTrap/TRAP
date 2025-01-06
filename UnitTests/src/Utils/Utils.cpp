@@ -3,23 +3,8 @@
 #include "Utils/Utils.h"
 #include "Utils/Win.h"
 
-TEST_CASE("TRAP::Utils::StringHasher", "[utils][stringhasher]")
-{
-    STATIC_REQUIRE(std::same_as<TRAP::Utils::StringHasher::is_transparent, void>);
-
-    REQUIRE(TRAP::Utils::StringHasher{}("Hello World") > 0u);
-}
-
 TEST_CASE("TRAP::Utils", "[utils]")
 {
-    SECTION("UnorderedStringMap")
-    {
-        STATIC_REQUIRE(std::same_as<TRAP::Utils::UnorderedStringMap<u32>::key_type, std::string>);
-        STATIC_REQUIRE(std::same_as<TRAP::Utils::UnorderedStringMap<u32>::mapped_type, u32>);
-        STATIC_REQUIRE(std::same_as<TRAP::Utils::UnorderedStringMap<u32>::hasher, TRAP::Utils::StringHasher>);
-        STATIC_REQUIRE(std::same_as<TRAP::Utils::UnorderedStringMap<u32>::key_equal, std::equal_to<>>);
-    }
-
     SECTION("GetEndian()")
     {
         STATIC_REQUIRE(TRAP::Utils::GetEndian() == static_cast<TRAP::Utils::Endian>(std::endian::native == std::endian::little));

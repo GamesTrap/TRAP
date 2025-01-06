@@ -1,12 +1,12 @@
 #ifndef TRAP_CORE_H
 #define TRAP_CORE_H
 
-#include <memory>
-
 #include "PlatformDetection.h"
 #include "TRAP_Assert.h"
 #include "Backports.h"
 #include "Version.h"
+#include "Utils/Bit.h"
+#include "Utils/Enum.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -57,40 +57,8 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// @brief Shift 1 x times.
-/// @param x Amount to shift.
-/// @return Shifted value.
-[[nodiscard]] constexpr std::unsigned_integral auto BIT(const std::unsigned_integral auto x) noexcept
-{
-	return decltype(x)(1) << x;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 /// @brief TRAP version number created with TRAP_MAKE_VERSION
-inline constexpr TRAP::SemanticVersion<0, 11, 68> TRAP_VERSION{};
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#ifndef MAKE_ENUM_FLAG
-#define MAKE_ENUM_FLAG(ENUM_TYPE) \
-	[[maybe_unused]] [[nodiscard]] constexpr ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
-	{ \
-		return static_cast<ENUM_TYPE>(std::to_underlying(a) | std::to_underlying(b)); \
-	} \
-	[[maybe_unused]] [[nodiscard]] constexpr ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
-	{ \
-		return static_cast<ENUM_TYPE>(std::to_underlying(a) & std::to_underlying(b)); \
-	} \
-	[[maybe_unused]] constexpr ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept \
-	{ \
-	    return a = (a | b); \
-	} \
-	[[maybe_unused]] constexpr ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept \
-	{ \
-	    return a = (a & b); \
-	}
-#endif /*MAKE_ENUM_FLAG*/
+inline constexpr TRAP::SemanticVersion<0, 11, 69> TRAP_VERSION{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -167,30 +135,5 @@ void operator delete[](void* ptr, const std::nothrow_t& tag) noexcept;
 void operator delete(void* ptr, std::align_val_t alignment, const std::nothrow_t& tag) noexcept;
 void operator delete[](void* ptr, std::align_val_t alignment, const std::nothrow_t& tag) noexcept;
 #endif /*TRACY_ENABLE*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-namespace TRAP
-{
-	/// @brief Wrapper for std::unique_ptr. Related to memory management which is still in planing.
-	template<typename T>
-	using Scope = std::unique_ptr<T>;
-	/// @brief Wrapper for std::make_unique. Related to memory management which is still in planing.
-	template<typename T, typename... Args>
-	constexpr Scope<T> MakeScope(Args&&... args)
-	{
-		return std::make_unique<T>(std::forward<Args>(args)...);
-	}
-
-	/// @brief Wrapper for std::shared_ptr. Related to memory management which is still in planing.
-	template<typename T>
-	using Ref = std::shared_ptr<T>;
-	/// @brief Wrapper for std::make_shared. Related to memory management which is still in planing.
-	template<typename T, typename... Args>
-	constexpr Ref<T> MakeRef(Args&&... args)
-	{
-		return std::make_shared<T>(std::forward<Args>(args)...);
-	}
-}
 
 #endif /*TRAP_CORE_H*/

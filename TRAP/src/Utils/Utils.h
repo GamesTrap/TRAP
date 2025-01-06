@@ -5,7 +5,6 @@
 #include <string>
 
 #include <fmt/core.h>
-#include <unordered_map>
 
 #include "Core/Types.h"
 #include "TRAP_Assert.h"
@@ -45,24 +44,6 @@ namespace TRAP::Utils
 		seed ^= std::hash<T>()(v) + 0x9E3779B9u + (seed << 6u) + (seed >> 2u);
     	((seed ^= std::hash<Rest>()(rest) + 0x9E3779B9u + (seed << 6u) + (seed >> 2u)), ...);
 	}
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
-	/// @brief Hasher for string like types with enabled heterogeneous lookup.
-	struct StringHasher
-	{
-		using is_transparent = void; //Enable heterogeneous lookup.
-
-		/// @threadsafe
-		[[nodiscard]] usize operator()(const std::string_view sv) const noexcept
-		{
-			std::hash<std::string_view> hasher{};
-			return hasher(sv);
-		}
-	};
-
-	template<typename Value>
-	using UnorderedStringMap = std::unordered_map<std::string, Value, TRAP::Utils::StringHasher, std::equal_to<>>;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

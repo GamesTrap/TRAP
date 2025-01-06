@@ -1,6 +1,7 @@
 #ifndef TRAP_HOTRELOADEVENT_H
 #define TRAP_HOTRELOADEVENT_H
 
+#include "Utils/SmartPtr.h"
 #include "Event.h"
 
 namespace TRAP::Graphics
