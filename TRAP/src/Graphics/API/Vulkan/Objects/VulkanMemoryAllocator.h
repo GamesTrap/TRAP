@@ -3,6 +3,7 @@
 
 #include "Core/PlatformDetection.h"
 #include "Utils/Win.h"
+#include "Utils/SmartPtr.h"
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
@@ -14,8 +15,6 @@
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif /*_MSC_VER*/
-
-#include "Core/Base.h"
 
 namespace TRAP::Graphics::API
 {

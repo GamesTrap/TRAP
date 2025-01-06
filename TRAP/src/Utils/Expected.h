@@ -10,7 +10,6 @@
 #include <type_traits>
 #include <utility>
 
-#include "Core/Base.h"
 #include "Core/Types.h"
 #include "TRAP_Assert.h"
 

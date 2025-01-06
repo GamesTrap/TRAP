@@ -1,7 +1,7 @@
 #ifndef TRAP_SCENE_H
 #define TRAP_SCENE_H
 
-#include "Core/Base.h"
+#include "Core/Types.h"
 #include "Utils/SmartPtr.h"
 
 #ifdef _MSC_VER

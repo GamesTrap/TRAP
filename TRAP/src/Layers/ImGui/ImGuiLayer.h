@@ -3,9 +3,12 @@
 
 #ifndef TRAP_HEADLESS_MODE
 
+#include <span>
+
+#include <fmt/format.h>
 #include <imgui.h>
 
-#include "Core/Base.h"
+#include "Utils/SmartPtr.h"
 #include "Layers/Layer.h"
 
 namespace TRAP

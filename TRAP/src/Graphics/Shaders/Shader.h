@@ -13,7 +13,7 @@
 	#pragma warning(pop)
 #endif /*_MSC_VER*/
 
-#include "Core/Base.h"
+#include "Utils/SmartPtr.h"
 #include "Application.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/DescriptorSet.h"

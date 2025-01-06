@@ -3,7 +3,6 @@
 
 #include <string>
 
-#include "Core/Base.h"
 #include "Core/Types.h"
 #include "Utils/String/String.h"
 

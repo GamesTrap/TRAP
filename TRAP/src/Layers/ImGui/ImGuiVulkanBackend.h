@@ -41,7 +41,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include <imgui.h>
 
-#include "Core/Base.h"
+#include "Utils/SmartPtr.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
 namespace TRAP::Graphics::API

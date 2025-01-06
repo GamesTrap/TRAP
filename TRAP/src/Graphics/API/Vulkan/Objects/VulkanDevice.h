@@ -1,7 +1,7 @@
 #ifndef TRAP_VULKANDEVICE_H
 #define TRAP_VULKANDEVICE_H
 
-#include "Core/Base.h"
+#include "Utils/SmartPtr.h"
 #include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::Graphics::API

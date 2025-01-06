@@ -3,7 +3,6 @@
 
 #ifndef TRAP_HEADLESS_MODE
 
-#include "Utils/String/String.h"
 #include "Core/PlatformDetection.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"

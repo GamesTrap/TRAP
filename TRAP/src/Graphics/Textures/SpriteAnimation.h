@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "Core/Base.h"
+#include "Utils/SmartPtr.h"
 #include "Utils/Time/TimeStep.h"
 
 namespace TRAP::Utils

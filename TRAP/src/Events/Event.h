@@ -6,7 +6,9 @@
 
 #include <fmt/ostream.h>
 
-#include "Core/Base.h"
+#include "Core/Types.h"
+#include "Utils/Bit.h"
+#include "Utils/Enum.h"
 
 namespace TRAP::Events
 {

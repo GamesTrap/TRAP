@@ -5,8 +5,6 @@
 
 #include "Log/Log.h"
 
-#include "Core/Base.h"
-
 #ifdef USE_DISCORD_GAME_SDK
 
 #ifdef _MSC_VER

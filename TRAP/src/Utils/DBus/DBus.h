@@ -1,7 +1,8 @@
 #ifndef TRAP_DBUS_H
 #define TRAP_DBUS_H
 
-#include "Core/Base.h"
+#include "Core/PlatformDetection.h"
+#include "Core/Types.h"
 
 #ifdef TRAP_PLATFORM_LINUX
 

@@ -3,7 +3,7 @@
 
 #ifndef TRAP_HEADLESS_MODE
 
-#include "Core/Base.h"
+#include "Utils/SmartPtr.h"
 #include "Window/Window.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 

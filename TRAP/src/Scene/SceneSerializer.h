@@ -1,7 +1,8 @@
 #ifndef TRAP_SCENESERIALIZER_H
 #define TRAP_SCENESERIALIZER_H
 
-#include "Core/Base.h"
+#include <filesystem>
+
 #include "Scene.h"
 
 namespace TRAP

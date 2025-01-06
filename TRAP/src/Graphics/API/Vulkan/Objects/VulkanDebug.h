@@ -1,7 +1,7 @@
 #ifndef TRAP_VULKANDEBUG_H
 #define TRAP_VULKANDEBUG_H
 
-#include "Core/Base.h"
+#include "Utils/SmartPtr.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
 namespace TRAP::Graphics::API

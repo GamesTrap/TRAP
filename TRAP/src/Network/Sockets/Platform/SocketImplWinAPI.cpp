@@ -29,9 +29,6 @@
 
 #include "Core/PlatformDetection.h"
 
-#include "Utils/Utils.h"
-#include "Utils/Memory.h"
-
 #ifdef TRAP_PLATFORM_WINDOWS
 
 void TRAP::INTERNAL::Network::SocketImpl::Close(const TRAP::Network::SocketHandle sock)

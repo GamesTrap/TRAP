@@ -5,7 +5,6 @@
 #include <vector>
 #include <filesystem>
 
-#include "Core/Base.h"
 #include "Utils/NumericCasts.h"
 #include "Utils/SmartPtr.h"
 

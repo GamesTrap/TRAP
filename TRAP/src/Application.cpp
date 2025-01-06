@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "Application.h"
 
-#include "Core/Base.h"
 #include "FileSystem/FileSystem.h"
 #include "FileSystem/FileSystemWatcher.h"
 #include "Embed.h"

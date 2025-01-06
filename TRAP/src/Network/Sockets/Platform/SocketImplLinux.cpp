@@ -29,8 +29,6 @@
 
 #include "Core/PlatformDetection.h"
 #include "Utils/String/String.h"
-#include "Utils/Utils.h"
-#include "Utils/Memory.h"
 
 #ifdef TRAP_PLATFORM_LINUX
 
