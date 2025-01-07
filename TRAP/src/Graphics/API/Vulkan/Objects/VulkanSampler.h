@@ -14,7 +14,7 @@ namespace TRAP::Graphics::API
 	public:
 		/// @brief Constructor.
 		/// @param desc Sampler description.
-		explicit VulkanSampler(const RendererAPI::SamplerDesc& desc);
+		explicit VulkanSampler(const SamplerDesc& desc);
 		/// @brief Destructor.
 		~VulkanSampler() override;
 

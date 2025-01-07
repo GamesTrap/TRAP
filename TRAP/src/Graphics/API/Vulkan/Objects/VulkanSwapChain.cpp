@@ -32,7 +32,7 @@ namespace
 	[[nodiscard]] TRAP::Ref<TRAP::Graphics::API::VulkanSurface> CreateSurface(TRAP::Ref<TRAP::Graphics::API::VulkanSurface> oldSurface,
 	                                                                          const TRAP::Ref<TRAP::Graphics::API::VulkanInstance>& instance,
 																			  const TRAP::Graphics::API::VulkanDevice& device,
-																			  TRAP::Graphics::RendererAPI::SwapChainDesc& desc,
+																			  TRAP::Graphics::SwapChainDesc& desc,
 																			  VkSwapchainKHR& oldSwapChain)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -75,7 +75,7 @@ namespace
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	[[nodiscard]] constexpr u32 GetRequiredImageCount(const TRAP::Graphics::API::VulkanSurface& surface,
-	                                                  const TRAP::Graphics::RendererAPI::SwapChainDesc& desc)
+	                                                  const TRAP::Graphics::SwapChainDesc& desc)
 	{
 		const auto& caps = surface.GetVkSurfaceCapabilities();
 
@@ -105,7 +105,7 @@ namespace
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	[[nodiscard]] VkSurfaceFormatKHR GetSurfaceFormat(const TRAP::Graphics::API::VulkanSurface& surface,
-	                                                  TRAP::Graphics::RendererAPI::SwapChainDesc& desc)
+	                                                  TRAP::Graphics::SwapChainDesc& desc)
 	{
 		//TODO HDR support
 
@@ -193,7 +193,7 @@ namespace
 
 	[[nodiscard]] PresentQueueInfo GetPresentQueueInfo(const TRAP::Graphics::API::VulkanPhysicalDevice& physicalDevice,
 	                                                   const TRAP::Graphics::API::VulkanSurface& surface,
-													   const TRAP::Graphics::RendererAPI::SwapChainDesc& desc)
+													   const TRAP::Graphics::SwapChainDesc& desc)
 	{
 		TRAP_ASSERT(!desc.PresentQueues.empty(), "VulkanSwapChain::GetPresentQueueInfo(): desc.PresentQueues is empty!");
 
@@ -276,7 +276,7 @@ namespace
 												   const VkSurfaceTransformFlagBitsKHR surfaceTransform,
 												   const VkCompositeAlphaFlagBitsKHR compositeAlpha,
 												   const VkPresentModeKHR presentMode,
-												   TRAP::Graphics::RendererAPI::SwapChainDesc& desc,
+												   TRAP::Graphics::SwapChainDesc& desc,
 												   VkSwapchainKHR& oldSwapChain)
 	{
 		VkSwapchainKHR swapChain = VK_NULL_HANDLE;
@@ -309,7 +309,7 @@ namespace
 	[[nodiscard]] VkSwapchainKHR CreateSwapChain(const TRAP::Graphics::API::VulkanDevice& device,
 		                                         const TRAP::Graphics::API::VulkanSurface& surface,
 												 VkSwapchainKHR& oldSwapChain,
-		                                         TRAP::Graphics::RendererAPI::SwapChainDesc& desc)
+		                                         TRAP::Graphics::SwapChainDesc& desc)
 	{
 		desc.ImageCount = GetRequiredImageCount(surface, desc);
 
@@ -330,7 +330,7 @@ namespace
 
 	[[nodiscard]] std::vector<VkImage> GetSwapChainImages(const TRAP::Graphics::API::VulkanDevice& device,
 	                                                      VkSwapchainKHR swapChain,
-														  const TRAP::Graphics::RendererAPI::SwapChainDesc& desc)
+														  const TRAP::Graphics::SwapChainDesc& desc)
 	{
 		u32 imageCount = 0;
 		VkCall(vkGetSwapchainImagesKHR(device.GetVkDevice(), swapChain, &imageCount, nullptr));
@@ -348,11 +348,11 @@ namespace
 
 	[[nodiscard]] std::vector<TRAP::Ref<TRAP::Graphics::RenderTarget>> CreateRenderTargets(const TRAP::Graphics::API::VulkanDevice& device,
 	                                                                                       VkSwapchainKHR swapChain,
-																						   const TRAP::Graphics::RendererAPI::SwapChainDesc& desc)
+																						   const TRAP::Graphics::SwapChainDesc& desc)
 	{
 		const std::vector<VkImage> images = GetSwapChainImages(device, swapChain, desc);
 
-		TRAP::Graphics::RendererAPI::RenderTargetDesc descColor
+		TRAP::Graphics::RenderTargetDesc descColor
 		{
 			.Flags = TRAP::Graphics::TextureCreationFlags::None,
 			.Width = desc.Width,
@@ -360,12 +360,12 @@ namespace
 			.Depth = 1,
 			.ArraySize = 1,
 			.MipLevels = 0,
-			.SampleCount = TRAP::Graphics::RendererAPI::SampleCount::One,
+			.SampleCount = TRAP::Graphics::SampleCount::One,
 			.Format = desc.ColorFormat,
-			.StartState = TRAP::Graphics::RendererAPI::ResourceState::Present,
+			.StartState = TRAP::Graphics::ResourceState::Present,
 			.ClearValue = desc.ClearValue,
 			.SampleQuality = 0,
-			.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Undefined,
+			.Descriptors = TRAP::Graphics::DescriptorType::Undefined,
 			.Name = "",
 			.NativeHandle = nullptr
 		};
@@ -387,7 +387,7 @@ namespace
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc& desc)
+TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(SwapChainDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -420,7 +420,7 @@ TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainDesc& desc,
+void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(SwapChainDesc& desc,
                                                          VkSwapchainKHR oldSwapChain)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -635,7 +635,7 @@ void TRAP::Graphics::API::VulkanSwapChain::UpdateFramebufferSize()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanSwapChain::ReflexSetMarker(const TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker marker)
+void TRAP::Graphics::API::VulkanSwapChain::ReflexSetMarker(const TRAP::Graphics::NVIDIAReflexLatencyMarker marker)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -645,13 +645,13 @@ void TRAP::Graphics::API::VulkanSwapChain::ReflexSetMarker(const TRAP::Graphics:
 	const VkSetLatencyMarkerInfoNV markerInfoNV = VulkanInits::SetLatencyMarkerInfo(m_presentCounter, marker);
 	vkSetLatencyMarkerNV(m_device->GetVkDevice(), m_swapChain, &markerInfoNV);
 
-	if(marker == TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker::SimulationEnd)
+	if(marker == TRAP::Graphics::NVIDIAReflexLatencyMarker::SimulationEnd)
 		++m_presentCounter;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanSwapChain::ReflexSetLatencyMode(const TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode latencyMode,
+void TRAP::Graphics::API::VulkanSwapChain::ReflexSetLatencyMode(const TRAP::Graphics::NVIDIAReflexLatencyMode latencyMode,
                                                                 u32 fpsLimit) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -680,7 +680,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ReflexSleep(const Semaphore& reflexSe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanSwapChain::AntiLagSetMarker(const TRAP::Graphics::RendererAPI::AMDAntiLagMarker marker,
+void TRAP::Graphics::API::VulkanSwapChain::AntiLagSetMarker(const TRAP::Graphics::AMDAntiLagMarker marker,
                                                             const RendererAPI::PerViewportData& viewportData)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -693,13 +693,13 @@ void TRAP::Graphics::API::VulkanSwapChain::AntiLagSetMarker(const TRAP::Graphics
 	const VkAntiLagDataAMD antiLagData = TRAP::Graphics::API::VulkanInits::AntiLagData(viewportData.AntiLagMode, viewportData.FPSLimit, &antiLagPresentationInfo);
 	vkAntiLagUpdateAMD(m_device->GetVkDevice(), &antiLagData);
 
-	if(marker == RendererAPI::AMDAntiLagMarker::PresentStage)
+	if(marker == AMDAntiLagMarker::PresentStage)
 		++m_presentCounter;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanSwapChain::AntiLagSetMode(const TRAP::Graphics::RendererAPI::AMDAntiLagMode mode, const u32 fpsLimit) const
+void TRAP::Graphics::API::VulkanSwapChain::AntiLagSetMode(const TRAP::Graphics::AMDAntiLagMode mode, const u32 fpsLimit) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 

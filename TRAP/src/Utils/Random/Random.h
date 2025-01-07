@@ -4,6 +4,7 @@
 #include <random>
 #include <algorithm>
 
+#include "Core/Base.h"
 #include "RandomInternal.h"
 #include "TRAP_Assert.h"
 #include "Utils/NumericCasts.h"

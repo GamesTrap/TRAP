@@ -5,7 +5,7 @@
 #include "Graphics/API/Objects/Buffer.h"
 
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const std::span<const f32> vertices,
-                                                                                             const UpdateFrequency updateFrequency)
+                                                                                             const DescriptorUpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -15,7 +15,7 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const u64 size,
-                                                                                             const UpdateFrequency updateFrequency)
+                                                                                             const DescriptorUpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -51,13 +51,13 @@ TRAP::Graphics::VertexBuffer::VertexBuffer(const TRAP::Ref<TRAP::Graphics::Buffe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::UpdateFrequency TRAP::Graphics::VertexBuffer::GetUpdateFrequency() const noexcept
+[[nodiscard]] TRAP::Graphics::DescriptorUpdateFrequency TRAP::Graphics::VertexBuffer::GetUpdateFrequency() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	return (m_vertexBuffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly) ? UpdateFrequency::Static :
-	                                                                                         UpdateFrequency::Dynamic;
+	return (m_vertexBuffer->GetMemoryUsage() == ResourceMemoryUsage::GPUOnly) ? DescriptorUpdateFrequency::Static :
+	                                                                                         DescriptorUpdateFrequency::Dynamic;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -87,7 +87,7 @@ void TRAP::Graphics::VertexBuffer::SetData(const std::span<const f32> data, cons
 	TRAP_ASSERT(!data.empty(), "VertexBuffer::SetData(): Data is nullptr!");
 	TRAP_ASSERT(data.size_bytes() + offset <= m_vertexBuffer->GetSize(), "VertexBuffer::SetData(): Out of bounds!");
 
-	RendererAPI::BufferUpdateDesc desc{};
+	BufferUpdateDesc desc{};
 	desc.Buffer = m_vertexBuffer;
 	desc.DstOffset = offset;
 	API::ResourceLoader::BeginUpdateResource(desc);
@@ -116,23 +116,23 @@ void TRAP::Graphics::VertexBuffer::AwaitLoading() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Init(const f32* const vertices, const u64 size,
- 																		                   const UpdateFrequency updateFrequency)
+ 																		                   const DescriptorUpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	const RendererAPI::BufferDesc bufferDesc
+	const BufferDesc bufferDesc
 	{
 		.Size = size,
-		.MemoryUsage = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
-	                                                                  RendererAPI::ResourceMemoryUsage::CPUToGPU,
-		.Flags = (updateFrequency != UpdateFrequency::Static) ? RendererAPI::BufferCreationFlags::PersistentMap :
-	                                                            RendererAPI::BufferCreationFlags::None,
+		.MemoryUsage = (updateFrequency == DescriptorUpdateFrequency::Static) ? ResourceMemoryUsage::GPUOnly :
+	                                                                  ResourceMemoryUsage::CPUToGPU,
+		.Flags = (updateFrequency != DescriptorUpdateFrequency::Static) ? BufferCreationFlags::PersistentMap :
+	                                                            BufferCreationFlags::None,
 		.ElementCount = size / sizeof(f32),
 		.StructStride = sizeof(f32),
-		.Descriptors = RendererAPI::DescriptorType::VertexBuffer
+		.Descriptors = DescriptorType::VertexBuffer
 	};
 
-	RendererAPI::BufferLoadDesc desc
+	BufferLoadDesc desc
 	{
 		.Data = vertices,
 		.Desc = bufferDesc

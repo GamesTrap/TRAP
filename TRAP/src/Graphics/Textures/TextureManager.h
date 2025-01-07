@@ -33,7 +33,7 @@ namespace TRAP::Graphics::TextureManager
 	/// @param flags Additional flags. Default: None.
 	/// @return Loaded texture.
 	Ref<Texture> Load(const std::string& name, const std::filesystem::path& filepath,
-				      TextureCubeFormat format,
+				      TextureCubeType format,
 				      TextureCreationFlags flags = TextureCreationFlags::None);
 	/// @brief Load a cube texture from file.
 	/// File name will be used as the texture name.
@@ -41,7 +41,7 @@ namespace TRAP::Graphics::TextureManager
 	/// @param format Format of the cube texture.
 	/// @param flags Additional flags. Default: None.
 	/// @return Loaded texture.
-	Ref<Texture> Load(const std::filesystem::path& filepath, TextureCubeFormat format,
+	Ref<Texture> Load(const std::filesystem::path& filepath, TextureCubeType format,
 				      TextureCreationFlags flags = TextureCreationFlags::None);
 	/// @brief Load a cube texture from files.
 	/// @param name Name for the texture.
@@ -58,7 +58,7 @@ namespace TRAP::Graphics::TextureManager
 	/// @param flags Additional flags. Default: None.
 	/// @return Loaded texture.
 	Ref<Texture> Load(const std::string& name, const Image& img,
-				      TextureCubeFormat format,
+				      TextureCubeType format,
 				      TextureCreationFlags flags = TextureCreationFlags::None);
 	/// @brief Load a cube texture from 6 TRAP::Images.
 	/// @param name Name for the texture.

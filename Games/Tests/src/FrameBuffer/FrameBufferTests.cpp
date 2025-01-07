@@ -20,15 +20,15 @@ namespace
                                                                             const TRAP::Graphics::SampleCount sampleCount,
                                                                             const std::string& name)
     {
-        TRAP::Graphics::RendererAPI::RenderTargetDesc desc{};
+        TRAP::Graphics::RenderTargetDesc desc{};
         desc.Width = width;
         desc.Height = height;
         desc.Depth = 1u;
         desc.ArraySize = 1u;
-        desc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
-        desc.ClearValue = TRAP::Graphics::RendererAPI::Color{.Red=0.0, .Green=0.0, .Blue=0.0, .Alpha=1.0};
+        desc.Descriptors = TRAP::Graphics::DescriptorType::Texture;
+        desc.ClearValue = TRAP::Graphics::Color{.Red=0.0, .Green=0.0, .Blue=0.0, .Alpha=1.0};
         desc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
-        desc.StartState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
+        desc.StartState = TRAP::Graphics::ResourceState::PixelShaderResource;
         desc.SampleCount = sampleCount;
         desc.SampleQuality = 0u;
         desc.Name = name;
@@ -50,7 +50,7 @@ void FrameBufferTests::OnAttach()
     TRAP::Application::GetWindow()->SetTitle("FrameBuffer");
 
     //Load Quad vertices
-    m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(QuadVerticesIndexed, TRAP::Graphics::UpdateFrequency::Static);
+    m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(QuadVerticesIndexed, TRAP::Graphics::DescriptorUpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout layout =
     {
         { TRAP::Graphics::ShaderDataType::Float3, "Pos" },
@@ -60,7 +60,7 @@ void FrameBufferTests::OnAttach()
     m_vertexBuffer->AwaitLoading();
 
     //Load Quad indices
-    m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(QuadIndices, TRAP::Graphics::UpdateFrequency::Static);
+    m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(QuadIndices, TRAP::Graphics::DescriptorUpdateFrequency::Static);
     m_indexBuffer->AwaitLoading();
 
     //Load Texture
@@ -70,7 +70,7 @@ void FrameBufferTests::OnAttach()
     //Load Shader
     m_shader = TRAP::Graphics::ShaderManager::LoadFile("TextureTest", "./Assets/Shaders/testtextureseperate.shader", TRAP::Graphics::ShaderType::Graphics);
 
-    static const TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc
+    static const TRAP::Graphics::SamplerDesc samplerDesc
     {
         .MinFilter = TRAP::Graphics::FilterType::Linear,
         .MagFilter = TRAP::Graphics::FilterType::Linear,
@@ -111,11 +111,11 @@ void FrameBufferTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
     //Stop RenderPass (necessary for transition)
     TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
 
-    TRAP::Graphics::RendererAPI::RenderTargetBarrier barrier
+    TRAP::Graphics::RenderTargetBarrier barrier
     {
         .RenderTarget = *m_renderTarget,
-        .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource,
-        .NewState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget
+        .CurrentState = TRAP::Graphics::ResourceState::PixelShaderResource,
+        .NewState = TRAP::Graphics::ResourceState::RenderTarget
     };
     TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
     if(m_MSAAEnabled)
@@ -146,8 +146,8 @@ void FrameBufferTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 
     //Transition from RenderTarget to PixelShaderResource
     barrier.RenderTarget = *m_renderTarget;
-    barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
-    barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
+    barrier.CurrentState = TRAP::Graphics::ResourceState::RenderTarget;
+    barrier.NewState = TRAP::Graphics::ResourceState::PixelShaderResource;
     TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
     if(m_MSAAEnabled)
     {

@@ -16,7 +16,7 @@ namespace TRAP::Graphics::API
 	public:
 		/// @brief Constructor.
 		/// @param desc Command pool description.
-		explicit VulkanCommandPool(const RendererAPI::CommandPoolDesc& desc);
+		explicit VulkanCommandPool(const CommandPoolDesc& desc);
 		/// @brief Destructor.
 		~VulkanCommandPool() override;
 

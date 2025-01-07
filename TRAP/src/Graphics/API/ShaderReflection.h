@@ -33,7 +33,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 	struct ShaderResource
 	{
 		//Resource Type
-		RendererAPI::DescriptorType Type;
+		DescriptorType Type;
 
 		//The resource set for binding frequency
 		u32 Set{};
@@ -46,7 +46,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 		u64 Size{};
 
 		//What stages use this resource
-		RendererAPI::ShaderStage UsedStages;
+		ShaderStage UsedStages;
 
 		//Resource name
 		std::string Name;
@@ -85,7 +85,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 
 	struct ShaderReflection
 	{
-		RendererAPI::ShaderStage ShaderStage;
+		TRAP::Graphics::ShaderStage ShaderStage;
 
 		std::vector<VertexInput> VertexInputs{};
 
@@ -104,7 +104,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 
 	struct PipelineReflection
 	{
-		RendererAPI::ShaderStage ShaderStages;
+		ShaderStage ShaderStages;
 		//The individual stages reflection data
 		std::vector<ShaderReflection> StageReflections;
 

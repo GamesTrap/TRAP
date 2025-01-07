@@ -228,17 +228,17 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndices()
 
 	[[maybe_unused]] VkQueueFamilyProperties qfp{};
 
-	FindQueueFamilyIndex(RendererAPI::QueueType::Graphics, qfp, m_graphicsQueueFamilyIndex, m_graphicsQueueIndex);
+	FindQueueFamilyIndex(QueueType::Graphics, qfp, m_graphicsQueueFamilyIndex, m_graphicsQueueIndex);
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Graphics Queue Family Index ",
 	         NumericCast<u32>(m_graphicsQueueFamilyIndex));
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
-	FindQueueFamilyIndex(RendererAPI::QueueType::Compute, qfp, m_computeQueueFamilyIndex, m_computeQueueIndex);
+	FindQueueFamilyIndex(QueueType::Compute, qfp, m_computeQueueFamilyIndex, m_computeQueueIndex);
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Compute Queue Family Index ",
 	         NumericCast<u32>(m_computeQueueFamilyIndex));
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
-	FindQueueFamilyIndex(RendererAPI::QueueType::Transfer, qfp, m_transferQueueFamilyIndex, m_transferQueueIndex);
+	FindQueueFamilyIndex(QueueType::Transfer, qfp, m_transferQueueFamilyIndex, m_transferQueueIndex);
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Transfer Queue Family Index ",
 	         NumericCast<u32>(m_transferQueueFamilyIndex));
@@ -256,7 +256,7 @@ void TRAP::Graphics::API::VulkanDevice::WaitIdle() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::QueueType queueType,
+void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const QueueType queueType,
                                                              VkQueueFamilyProperties& queueFamilyProperties,
 															 u8& queueFamilyIndex, u8& queueIndex)
 {
@@ -278,7 +278,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 		const bool graphicsQueue = (queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0;
 		const u32 flagAnd = (queueFlags & requiredFlags);
 		//Usually only one graphics queue so choose the first one with graphics bit
-		if (queueType == RendererAPI::QueueType::Graphics && graphicsQueue)
+		if (queueType == QueueType::Graphics && graphicsQueue)
 		{
 			found = true;
 			qfi = index;

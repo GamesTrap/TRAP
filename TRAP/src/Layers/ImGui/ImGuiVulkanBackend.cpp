@@ -372,7 +372,7 @@ namespace
         {
 
             command_buffer.BindVertexBuffer({*rb.VertexBuffer}, {sizeof(TRAP::Math::Vec2) + sizeof(TRAP::Math::Vec2) + sizeof(TRAP::Math::Vec4)}, {0u});
-            const auto indexType = sizeof(ImDrawIdx) == 2u ? TRAP::Graphics::RendererAPI::IndexType::UInt16 : TRAP::Graphics::RendererAPI::IndexType::UInt32;
+            const auto indexType = sizeof(ImDrawIdx) == 2u ? TRAP::Graphics::IndexType::UInt16 : TRAP::Graphics::IndexType::UInt32;
             command_buffer.BindIndexBuffer(*rb.IndexBuffer, indexType, 0u);
         }
 
@@ -579,21 +579,21 @@ namespace
         if (bd->FontSampler == nullptr)
         {
             // Bilinear sampling is required by default. Set 'io.Fonts->Flags |= ImFontAtlasFlags_NoBakedLines' or 'style.AntiAliasedLinesUseTex = false' to allow point/nearest sampling.
-            const TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc
+            const TRAP::Graphics::SamplerDesc samplerDesc
             {
-                .MinFilter = TRAP::Graphics::RendererAPI::FilterType::Linear,
-                .MagFilter = TRAP::Graphics::RendererAPI::FilterType::Linear,
-                .MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode::Linear,
-                .AddressU = TRAP::Graphics::RendererAPI::AddressMode::ClampToEdge,
-                .AddressV = TRAP::Graphics::RendererAPI::AddressMode::ClampToEdge,
-                .AddressW = TRAP::Graphics::RendererAPI::AddressMode::ClampToEdge,
+                .MinFilter = TRAP::Graphics::FilterType::Linear,
+                .MagFilter = TRAP::Graphics::FilterType::Linear,
+                .MipMapMode = TRAP::Graphics::MipMapMode::Linear,
+                .AddressU = TRAP::Graphics::AddressMode::ClampToEdge,
+                .AddressV = TRAP::Graphics::AddressMode::ClampToEdge,
+                .AddressW = TRAP::Graphics::AddressMode::ClampToEdge,
                 .MipLodBias = 0.0f,
                 .SetLodRange = true,
                 .MinLod = -1000.0f,
                 .MaxLod = 1000.0f,
                 .EnableAnisotropy = true,
                 .OverrideAnisotropyLevel = 1.0f,
-                .CompareFunc = TRAP::Graphics::RendererAPI::CompareMode::Never,
+                .CompareFunc = TRAP::Graphics::CompareMode::Never,
                 .Name = "ImGui Font Sampler",
                 .SamplerConversionDesc = {}
             };
@@ -782,10 +782,10 @@ namespace
         for (u32 i = 0u; i < wd.ImageCount; ++i)
         {
             ImGui_ImplVulkanH_Frame& fd = wd.Frames[i];
-            const TRAP::Graphics::RendererAPI::CommandPoolDesc cmdPoolDesc
+            const TRAP::Graphics::CommandPoolDesc cmdPoolDesc
             {
                 .Queue = queue,
-                .CreateFlags = TRAP::Graphics::RendererAPI::CommandPoolCreateFlags::Transient,
+                .CreateFlags = TRAP::Graphics::CommandPoolCreateFlags::Transient,
                 .Name = fmt::format("ImGui Window CommandPool (Image: {}, QueueType: \"{}\")", i, queue->GetQueueType())
             };
             fd.CommandPool = TRAP::MakeScope<TRAP::Graphics::API::VulkanCommandPool>(cmdPoolDesc);
@@ -889,20 +889,20 @@ namespace
             wd.FrameSemaphores.resize(wd.ImageCount + 1u);
             for (u32 i = 0u; i < wd.ImageCount; ++i)
             {
-                const TRAP::Graphics::RendererAPI::RenderTargetDesc rtDesc
+                const TRAP::Graphics::RenderTargetDesc rtDesc
                 {
-                    .Flags = TRAP::Graphics::RendererAPI::TextureCreationFlags::None,
+                    .Flags = TRAP::Graphics::TextureCreationFlags::None,
                     .Width = NumericCast<u32>(wd.Width),
                     .Height = NumericCast<u32>(wd.Height),
                     .Depth = 1u,
                     .ArraySize = 1u,
                     .MipLevels = 0u,
-                    .SampleCount = TRAP::Graphics::RendererAPI::SampleCount::One,
+                    .SampleCount = TRAP::Graphics::SampleCount::One,
                     .Format = TRAP::Graphics::API::ImageFormatFromVkFormat(wd.SurfaceFormat.format),
-                    .StartState = TRAP::Graphics::RendererAPI::ResourceState::Present,
+                    .StartState = TRAP::Graphics::ResourceState::Present,
                     .ClearValue = {},
                     .SampleQuality = 0u,
-                    .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Undefined,
+                    .Descriptors = TRAP::Graphics::DescriptorType::Undefined,
                     .Name = fmt::format("ImGui Backbuffer (Index: {})", i),
                     .NativeHandle = backbuffers[i]
                 };
@@ -1455,10 +1455,10 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
     //Create command pool/buffer
     if(!bd->FontCommandPool)
     {
-        const TRAP::Graphics::RendererAPI::CommandPoolDesc cmdPoolDesc
+        const TRAP::Graphics::CommandPoolDesc cmdPoolDesc
         {
             .Queue = v.Queue,
-            .CreateFlags = TRAP::Graphics::RendererAPI::CommandPoolCreateFlags::Transient,
+            .CreateFlags = TRAP::Graphics::CommandPoolCreateFlags::Transient,
             .Name = fmt::format("ImGui Staging Font CommandPool (Transient, QueueType: \"{}\")", v.Queue->GetQueueType())
         };
         bd->FontCommandPool = TRAP::MakeRef<TRAP::Graphics::API::VulkanCommandPool>(cmdPoolDesc);
@@ -1486,19 +1486,19 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
     const usize upload_size = NumericCast<usize>(width) * NumericCast<usize>(height) * 4u * sizeof(u8);
 
     // Create the Image:
-    const TRAP::Graphics::RendererAPI::TextureDesc fontDesc
+    const TRAP::Graphics::TextureDesc fontDesc
     {
-        .Flags = TRAP::Graphics::RendererAPI::TextureCreationFlags::None,
+        .Flags = TRAP::Graphics::TextureCreationFlags::None,
         .Width = NumericCast<u32>(width),
         .Height = NumericCast<u32>(height),
         .Depth = 1u,
         .ArraySize = 1u,
-        .SampleCount = TRAP::Graphics::RendererAPI::SampleCount::One,
+        .SampleCount = TRAP::Graphics::SampleCount::One,
         .SampleQuality = 1u,
         .Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM,
         .ClearValue = {},
-        .StartState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
-        .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture,
+        .StartState = TRAP::Graphics::ResourceState::Undefined,
+        .Descriptors = TRAP::Graphics::DescriptorType::Texture,
         .NativeHandle = nullptr,
         .Name = "ImGui Font Texture",
         .VkSamplerYcbcrConversionInfo = nullptr
@@ -1512,21 +1512,21 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
     // Create the Upload Buffer:
     TRAP::Ref<TRAP::Graphics::API::VulkanBuffer> uploadBuffer = nullptr;
     {
-        const TRAP::Graphics::RendererAPI::BufferDesc bufferDesc
+        const TRAP::Graphics::BufferDesc bufferDesc
         {
             .Size = upload_size,
             .Alignment = 0u,
-            .MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU,
-            .Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::HostVisible,
-            .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
-            .StartState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
+            .MemoryUsage = TRAP::Graphics::ResourceMemoryUsage::CPUToGPU,
+            .Flags = TRAP::Graphics::BufferCreationFlags::HostVisible,
+            .QueueType = TRAP::Graphics::QueueType::Graphics,
+            .StartState = TRAP::Graphics::ResourceState::Undefined,
             .ElementCount = upload_size,
             .StructStride = sizeof(u8),
             .ICBDrawType = {},
             .ICBMaxVertexBufferBind = 0u,
             .ICBMaxFragmentBufferBind = 0u,
             .Format = TRAP::Graphics::API::ImageFormat::Undefined,
-            .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Undefined,
+            .Descriptors = TRAP::Graphics::DescriptorType::Undefined,
             .Name = "ImGui UploadBuffer"
         };
         uploadBuffer = TRAP::MakeRef<TRAP::Graphics::API::VulkanBuffer>(bufferDesc);
@@ -1544,18 +1544,18 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
 
     // Copy to Image:
     {
-        std::vector<TRAP::Graphics::RendererAPI::TextureBarrier> fontImageBarriers
+        std::vector<TRAP::Graphics::TextureBarrier> fontImageBarriers
         {
-            TRAP::Graphics::RendererAPI::TextureBarrier
+            TRAP::Graphics::TextureBarrier
             {
                 .Texture = *bd->FontImage,
-                .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
-                .NewState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination,
+                .CurrentState = TRAP::Graphics::ResourceState::Undefined,
+                .NewState = TRAP::Graphics::ResourceState::CopyDestination,
                 .BeginOnly = false,
                 .EndOnly = false,
                 .Acquire = false,
                 .Release = false,
-                .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
+                .QueueType = TRAP::Graphics::QueueType::Graphics,
                 .SubresourceBarrier = false,
                 .MipLevel = 0u,
                 .ArrayLayer = 0u
@@ -1564,7 +1564,7 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
         bd->FontCommandBuffer->ResourceBarrier(nullptr, &fontImageBarriers, nullptr);
 
         //TODO This currently only supports tightly packed (using image extent) textures
-        const TRAP::Graphics::RendererAPI::SubresourceDataDesc subresourceDesc
+        const TRAP::Graphics::SubresourceDataDesc subresourceDesc
         {
             .SrcOffset = 0u,
             .MipLevel = 0u,
@@ -1574,8 +1574,8 @@ void ImGui::INTERNAL::Vulkan::CreateFontsTexture()
         };
         bd->FontCommandBuffer->UpdateSubresource(*bd->FontImage, *uploadBuffer, subresourceDesc);
 
-        fontImageBarriers[0u].CurrentState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination;
-        fontImageBarriers[0u].NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+        fontImageBarriers[0u].CurrentState = TRAP::Graphics::ResourceState::CopyDestination;
+        fontImageBarriers[0u].NewState = TRAP::Graphics::ResourceState::ShaderResource;
         bd->FontCommandBuffer->ResourceBarrier(nullptr, &fontImageBarriers, nullptr);
     }
 
@@ -1654,42 +1654,42 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
         const usize index_size = NumericCast<usize>(draw_data.TotalIdxCount) * sizeof(ImDrawIdx);
         if (rb.VertexBuffer == nullptr || rb.VertexBuffer->GetSize() < vertex_size)
         {
-            const TRAP::Graphics::RendererAPI::BufferDesc bufferDesc
+            const TRAP::Graphics::BufferDesc bufferDesc
             {
                 .Size = vertex_size,
                 .Alignment = 0u,
-                .MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU,
-                .Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::HostVisible,
-                .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
-                .StartState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
+                .MemoryUsage = TRAP::Graphics::ResourceMemoryUsage::CPUToGPU,
+                .Flags = TRAP::Graphics::BufferCreationFlags::HostVisible,
+                .QueueType = TRAP::Graphics::QueueType::Graphics,
+                .StartState = TRAP::Graphics::ResourceState::Undefined,
                 .ElementCount = vertex_size / sizeof(ImDrawVert),
                 .StructStride = sizeof(ImDrawVert),
                 .ICBDrawType = {},
                 .ICBMaxVertexBufferBind = 0u,
                 .ICBMaxFragmentBufferBind = 0u,
                 .Format = TRAP::Graphics::API::ImageFormat::Undefined,
-                .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::VertexBuffer,
+                .Descriptors = TRAP::Graphics::DescriptorType::VertexBuffer,
                 .Name = "ImGui VertexBuffer"
             };
             rb.VertexBuffer = TRAP::MakeRef<TRAP::Graphics::API::VulkanBuffer>(bufferDesc);
         }
         if (rb.IndexBuffer == VK_NULL_HANDLE || rb.IndexBuffer->GetSize() < index_size)
         {
-            const TRAP::Graphics::RendererAPI::BufferDesc bufferDesc
+            const TRAP::Graphics::BufferDesc bufferDesc
             {
                 .Size = index_size,
                 .Alignment = 0u,
-                .MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU,
-                .Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::HostVisible,
-                .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
-                .StartState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
+                .MemoryUsage = TRAP::Graphics::ResourceMemoryUsage::CPUToGPU,
+                .Flags = TRAP::Graphics::BufferCreationFlags::HostVisible,
+                .QueueType = TRAP::Graphics::QueueType::Graphics,
+                .StartState = TRAP::Graphics::ResourceState::Undefined,
                 .ElementCount = index_size / sizeof(ImDrawIdx),
                 .StructStride = sizeof(ImDrawIdx),
                 .ICBDrawType = {},
                 .ICBMaxVertexBufferBind = 0u,
                 .ICBMaxFragmentBufferBind = 0u,
                 .Format = TRAP::Graphics::API::ImageFormat::Undefined,
-                .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::IndexBuffer,
+                .Descriptors = TRAP::Graphics::DescriptorType::IndexBuffer,
                 .Name = "ImGui IndexBuffer"
             };
             rb.IndexBuffer = TRAP::MakeRef<TRAP::Graphics::API::VulkanBuffer>(bufferDesc);

@@ -51,18 +51,18 @@ namespace
 	/// @brief Validate texture limits.
 	/// @param desc Texture description.
 	/// @return True if texture is inside limits, false otherwise.
-	[[nodiscard]] bool ValidateLimits(const TRAP::Graphics::RendererAPI::TextureDesc& desc)
+	[[nodiscard]] bool ValidateLimits(const TRAP::Graphics::TextureDesc& desc)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-		if(desc.SampleCount > TRAP::Graphics::RendererAPI::SampleCount::One && desc.MipLevels > 1)
+		if(desc.SampleCount > TRAP::Graphics::SampleCount::One && desc.MipLevels > 1)
 		{
 			TP_ERROR(TRAP::Log::TexturePrefix, "Multi-Sampled textures cannot have mip maps!");
 			TRAP_ASSERT(false, "Texture::ValidateLimits(): Multi-Sampled textures cannot have mip maps!");
 			return false;
 		}
-		const bool cubeMapRequired = (desc.Descriptors & TRAP::Graphics::RendererAPI::DescriptorType::TextureCube) ==
-									 TRAP::Graphics::RendererAPI::DescriptorType::TextureCube;
+		const bool cubeMapRequired = (desc.Descriptors & TRAP::Graphics::DescriptorType::TextureCube) ==
+									 TRAP::Graphics::DescriptorType::TextureCube;
 		if(!cubeMapRequired)
 		{
 			if(desc.Width > TRAP::Graphics::RendererAPI::GPUSettings.MaxImageDimension2D)
@@ -182,7 +182,7 @@ namespace
 			return;
 		}
 
-		TRAP::Graphics::RendererAPI::TextureUpdateDesc updateDesc{};
+		TRAP::Graphics::TextureUpdateDesc updateDesc{};
 		updateDesc.Texture = &texture;
 		updateDesc.MipLevel = mipLevel;
 		updateDesc.ArrayLayer = arrayLayer;
@@ -241,7 +241,7 @@ namespace
 		AddPathsToHotReloading(filepaths);
 
 		//Load Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+		TRAP::Graphics::TextureLoadDesc desc
 		{
 			.Texture = texture.get(),
 			.Filepaths = texture->m_filepaths,
@@ -303,7 +303,7 @@ namespace
 		AddPathsToHotReloading(texture->m_filepaths);
 
 		//Load Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+		TRAP::Graphics::TextureLoadDesc desc
 		{
 			.Texture = texture.get(),
 			.Filepaths = {},
@@ -322,7 +322,7 @@ namespace
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCube(std::string name,
 																		             const std::filesystem::path& filepath,
-																		             const TextureCubeFormat cubeFormat,
+																		             const TextureCubeType cubeFormat,
 																		             const TextureCreationFlags flags)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
@@ -357,7 +357,7 @@ namespace
 		AddPathToHotReloading(filepath);
 
 		//Load Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+		TRAP::Graphics::TextureLoadDesc desc
 		{
 			.Texture = texture.get(),
 			.Filepaths = texture->m_filepaths,
@@ -376,7 +376,7 @@ namespace
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCube(std::string name,
 																			         const Image& image,
-																					 const TextureCubeFormat cubeFormat,
+																					 const TextureCubeType cubeFormat,
 																			         const TextureCreationFlags flags)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
@@ -411,7 +411,7 @@ namespace
 		AddPathToHotReloading(image.GetFilePath());
 
 		//Load Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+		TRAP::Graphics::TextureLoadDesc desc
 		{
 			.Texture = texture.get(),
 			.Filepaths = {},
@@ -469,21 +469,21 @@ namespace
 
 	if(texture)
 	{
-		RendererAPI::TextureDesc texDesc
+		TextureDesc texDesc
 		{
 			.Width = width,
 			.Height = height,
 			.ArraySize = 6,
 			.Format = imageFormat,
-			.StartState = RendererAPI::ResourceState::Common,
-			.Descriptors = (RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::TextureCube),
+			.StartState = ResourceState::Common,
+			.Descriptors = (DescriptorType::Texture | DescriptorType::TextureCube),
 			.Name = std::move(name)
 		};
 
 		if((flags & TextureCreationFlags::Storage) != TextureCreationFlags::None)
-			texDesc.Descriptors |= RendererAPI::DescriptorType::RWTexture;
+			texDesc.Descriptors |= DescriptorType::RWTexture;
 
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+		TRAP::Graphics::TextureLoadDesc desc
 		{
 			.Texture = texture.get(),
 			.Desc = &texDesc,
@@ -534,7 +534,7 @@ namespace
 		AddPathToHotReloading(filepath);
 
 		//Load Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+		TRAP::Graphics::TextureLoadDesc desc
 		{
 			.Texture = texture.get(),
 			.Filepaths = texture->m_filepaths,
@@ -586,7 +586,7 @@ namespace
 		AddPathToHotReloading(image.GetFilePath());
 
 		//Load Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+		TRAP::Graphics::TextureLoadDesc desc
 		{
 			.Texture = texture.get(),
 			.Filepaths = {},
@@ -643,21 +643,21 @@ namespace
 
 	if(texture)
 	{
-		RendererAPI::TextureDesc texDesc
+		TextureDesc texDesc
 		{
 			.Width = width,
 			.Height = height,
 			.ArraySize = 1,
 			.Format = imageFormat,
-			.StartState = RendererAPI::ResourceState::Common,
-			.Descriptors = RendererAPI::DescriptorType::Texture,
+			.StartState = ResourceState::Common,
+			.Descriptors = DescriptorType::Texture,
 			.Name = std::move(name)
 		};
 
 		if((flags & TextureCreationFlags::Storage) != TextureCreationFlags::None)
-			texDesc.Descriptors |= RendererAPI::DescriptorType::RWTexture;
+			texDesc.Descriptors |= DescriptorType::RWTexture;
 
-		TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+		TRAP::Graphics::TextureLoadDesc desc
 		{
 			.Texture = texture.get(),
 			.Desc = &texDesc,
@@ -672,7 +672,7 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCustom(const TRAP::Graphics::RendererAPI::TextureDesc& desc)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCustom(const TRAP::Graphics::TextureDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -701,10 +701,10 @@ namespace
 
 	if(texture)
 	{
-		TRAP::Graphics::RendererAPI::TextureLoadDesc loadDesc{};
+		TRAP::Graphics::TextureLoadDesc loadDesc{};
 		loadDesc.Texture = texture.get();
 
-		TRAP::Graphics::RendererAPI::TextureDesc texDesc = desc;
+		TRAP::Graphics::TextureDesc texDesc = desc;
 		loadDesc.Desc = &texDesc;
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(loadDesc, &texture->m_syncToken);
@@ -725,8 +725,8 @@ namespace
 	fallback2DTex->AwaitLoading();
 
 	//By default Storage texture are in Unordered Access layout.
-	RendererAPI::Transition(fallback2DTex, RendererAPI::ResourceState::UnorderedAccess,
-	                        RendererAPI::ResourceState::ShaderResource);
+	RendererAPI::Transition(fallback2DTex, ResourceState::UnorderedAccess,
+	                        ResourceState::ShaderResource);
 
 	return fallback2DTex;
 }
@@ -748,8 +748,8 @@ namespace
 	fallbackCubeTex->AwaitLoading();
 
 	//By default Storage texture are in Unordered Access layout.
-	RendererAPI::Transition(fallbackCubeTex, RendererAPI::ResourceState::UnorderedAccess,
-	                        RendererAPI::ResourceState::ShaderResource);
+	RendererAPI::Transition(fallbackCubeTex, ResourceState::UnorderedAccess,
+	                        ResourceState::ShaderResource);
 
 	return fallbackCubeTex;
 }
@@ -775,7 +775,7 @@ bool TRAP::Graphics::Texture::Reload()
 	Shutdown();
 
 	//Load texture
-	TRAP::Graphics::RendererAPI::TextureLoadDesc desc
+	TRAP::Graphics::TextureLoadDesc desc
 	{
 		.Texture = this,
 		.Filepaths = m_filepaths,
@@ -783,8 +783,8 @@ bool TRAP::Graphics::Texture::Reload()
 		.Type = m_textureCubeFormat
 	};
 
-	if((m_descriptorTypes & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined)
-		desc.CreationFlag |= RendererAPI::TextureCreationFlags::Storage;
+	if((m_descriptorTypes & DescriptorType::RWTexture) != DescriptorType::Undefined)
+		desc.CreationFlag |= TextureCreationFlags::Storage;
 
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &m_syncToken);
 
@@ -846,17 +846,17 @@ TRAP::Graphics::Texture::Texture(std::string name, std::vector<std::filesystem::
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	if(m_filepaths.size() == 6)
-		m_descriptorTypes |= RendererAPI::DescriptorType::TextureCube;
+		m_descriptorTypes |= DescriptorType::TextureCube;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Texture::Texture(std::string name, std::vector<std::filesystem::path> filePaths,
-                                 const TRAP::Optional<TextureCubeFormat>& cubeFormat)
+                                 const TRAP::Optional<TextureCubeType>& cubeFormat)
 	: m_name(std::move(name)), m_filepaths(std::move(filePaths)), m_textureCubeFormat(cubeFormat)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
 	if(cubeFormat || m_filepaths.size() == 6)
-		m_descriptorTypes |= RendererAPI::DescriptorType::TextureCube;
+		m_descriptorTypes |= DescriptorType::TextureCube;
 }

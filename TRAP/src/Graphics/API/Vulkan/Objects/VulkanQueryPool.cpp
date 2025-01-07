@@ -6,7 +6,7 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
-TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const RendererAPI::QueryPoolDesc& desc)
+TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const QueryPoolDesc& desc)
 	: m_type(QueryTypeToVkQueryType(desc.Type)), m_count(desc.QueryCount)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);

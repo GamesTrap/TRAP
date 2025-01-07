@@ -11,7 +11,7 @@ namespace TRAP::Graphics
 		/// @brief Create a new root signature from the given description.
 		/// @param desc Root signature description.
 		/// @return Created root signature.
-		[[nodiscard]] static TRAP::Ref<RootSignature> Create(const RendererAPI::RootSignatureDesc& desc);
+		[[nodiscard]] static TRAP::Ref<RootSignature> Create(const RootSignatureDesc& desc);
 
 		/// @brief Destructor.
 		virtual ~RootSignature();
@@ -27,37 +27,37 @@ namespace TRAP::Graphics
 
 		/// @brief Retrieve the pipeline type used by the shaders of the root signature.
 		/// @return Pipeline type.
-		[[nodiscard]] constexpr RendererAPI::PipelineType GetPipelineType() const noexcept;
+		[[nodiscard]] constexpr PipelineType GetPipelineType() const noexcept;
 		/// @brief Retrieve the list of descriptors contained in the root signature.
 		/// @return List of descriptors.
-		[[nodiscard]] constexpr const std::vector<RendererAPI::DescriptorInfo>& GetDescriptors() const noexcept;
+		[[nodiscard]] constexpr const std::vector<DescriptorInfo>& GetDescriptors() const noexcept;
 		/// @brief Retrieve the map which converts a descriptor name to its index.
 		/// @return Map which converts a descriptor name to its index.
-		[[nodiscard]] const RendererAPI::DescriptorIndexMap& GetDescriptorNameToIndexMap() const noexcept;
+		[[nodiscard]] const DescriptorIndexMap& GetDescriptorNameToIndexMap() const noexcept;
 
 	protected:
 		/// @brief Constructor.
 		RootSignature();
 
 		//Graphics or Compute
-		RendererAPI::PipelineType m_pipelineType;
+		PipelineType m_pipelineType;
 		//Array of all descriptors declared in the root signature layout
-		std::vector<RendererAPI::DescriptorInfo> m_descriptors{};
+		std::vector<DescriptorInfo> m_descriptors{};
 		//Translates hash of descriptor name to descriptor index in m_descriptors array
-		RendererAPI::DescriptorIndexMap m_descriptorNameToIndexMap{};
+		DescriptorIndexMap m_descriptorNameToIndexMap{};
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::RootSignature::GetPipelineType() const noexcept
+[[nodiscard]] constexpr TRAP::Graphics::PipelineType TRAP::Graphics::RootSignature::GetPipelineType() const noexcept
 {
 	return m_pipelineType;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr const std::vector<TRAP::Graphics::RendererAPI::DescriptorInfo>& TRAP::Graphics::RootSignature::GetDescriptors() const noexcept
+[[nodiscard]] constexpr const std::vector<TRAP::Graphics::DescriptorInfo>& TRAP::Graphics::RootSignature::GetDescriptors() const noexcept
 {
 	return m_descriptors;
 }

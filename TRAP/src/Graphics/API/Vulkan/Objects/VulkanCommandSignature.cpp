@@ -3,7 +3,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const RendererAPI::CommandSignatureDesc& desc)
+TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const CommandSignatureDesc& desc)
 {
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Creating CommandSignature");
@@ -13,19 +13,19 @@ TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const Render
 	{
 		switch(argDesc.Type)
 		{
-		case RendererAPI::IndirectArgumentType::IndirectDraw:
-			m_drawType = RendererAPI::IndirectArgumentType::IndirectDraw;
-			m_stride += sizeof(RendererAPI::IndirectDrawArguments);
+		case IndirectArgumentType::IndirectDraw:
+			m_drawType = IndirectArgumentType::IndirectDraw;
+			m_stride += sizeof(IndirectDrawArguments);
 			break;
 
-		case RendererAPI::IndirectArgumentType::IndirectDrawIndex:
-			m_drawType = RendererAPI::IndirectArgumentType::IndirectDrawIndex;
-			m_stride += sizeof(RendererAPI::IndirectDrawIndexArguments);
+		case IndirectArgumentType::IndirectDrawIndex:
+			m_drawType = IndirectArgumentType::IndirectDrawIndex;
+			m_stride += sizeof(IndirectDrawIndexArguments);
 			break;
 
-		case RendererAPI::IndirectArgumentType::IndirectDispatch:
-			m_drawType = RendererAPI::IndirectArgumentType::IndirectDispatch;
-			m_stride += sizeof(RendererAPI::IndirectDispatchArguments);
+		case IndirectArgumentType::IndirectDispatch:
+			m_drawType = IndirectArgumentType::IndirectDispatch;
+			m_stride += sizeof(IndirectDispatchArguments);
 			break;
 
 		default:

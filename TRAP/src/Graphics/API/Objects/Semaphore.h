@@ -44,10 +44,10 @@ namespace TRAP::Graphics
 		bool m_signaled = false;
 
 	private:
-		friend void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc& desc) const;
+		friend void TRAP::Graphics::API::VulkanQueue::Submit(const QueueSubmitDesc& desc) const;
 
 #ifndef TRAP_HEADLESS_MODE
-		friend TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Present(const RendererAPI::QueuePresentDesc& desc) const;
+		friend TRAP::Graphics::PresentStatus TRAP::Graphics::API::VulkanQueue::Present(const QueuePresentDesc& desc) const;
 #endif /*TRAP_HEADLESS_MODE*/
 	};
 }

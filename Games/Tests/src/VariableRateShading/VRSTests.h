@@ -33,8 +33,8 @@ private:
     TRAP::Graphics::ShadingRate m_shadingRate = TRAP::Graphics::ShadingRate::NotSupported;
     f32 m_currRenderScale = 1.0f;
 
-	bool m_supportsPerDrawVRS = (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerDraw) != TRAP::Graphics::RendererAPI::ShadingRateCaps::NotSupported;
-	bool m_supportsPerTileVRS = (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerTile) != TRAP::Graphics::RendererAPI::ShadingRateCaps::NotSupported;
+	bool m_supportsPerDrawVRS = (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::ShadingRateCaps::PerDraw) != TRAP::Graphics::ShadingRateCaps::NotSupported;
+	bool m_supportsPerTileVRS = (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::ShadingRateCaps::PerTile) != TRAP::Graphics::ShadingRateCaps::NotSupported;
 
 	bool m_perDrawActive = true;
 

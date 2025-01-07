@@ -71,7 +71,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const std::string& name,
 	                                                                    const std::filesystem::path& filepath,
-															            const TextureCubeFormat format,
+															            const TextureCubeType format,
                                                                         const TextureCreationFlags flags)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
@@ -91,7 +91,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const std::filesystem::path& filepath,
-	                                                                    const TextureCubeFormat format,
+	                                                                    const TextureCubeType format,
                                                                         const TextureCreationFlags flags)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
@@ -132,7 +132,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const std::string& name,
 	                                                                    const Image& img,
-															            const TextureCubeFormat format,
+															            const TextureCubeType format,
 															            const TextureCreationFlags flags)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);

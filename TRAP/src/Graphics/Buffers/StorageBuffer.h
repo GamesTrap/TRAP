@@ -34,7 +34,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] u64 GetSize() const noexcept;
 		/// @brief Retrieve the update frequency of the SSBO.
 		/// @return Update frequency of the SSBO.
-		[[nodiscard]] constexpr UpdateFrequency GetUpdateFrequency() const noexcept;
+		[[nodiscard]] constexpr DescriptorUpdateFrequency GetUpdateFrequency() const noexcept;
 		/// @brief Retrieve the underlying buffers.
 		/// @return Underlying buffers.
 		[[nodiscard]] constexpr const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetSSBOs() const noexcept;
@@ -76,14 +76,14 @@ namespace TRAP::Graphics
 		/// @param size Byte size for the uniform buffer.
 		/// @param updateFrequency Update frequency for the buffer.
 		/// @return New shader storage buffer.
-		[[nodiscard]] static Scope<StorageBuffer> Create(u64 size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<StorageBuffer> Create(u64 size, DescriptorUpdateFrequency updateFrequency);
 		/// @brief Create a new shader storage buffer and set its data.
 		/// @param data Pointer to the data to upload.
 		/// @param size Byte size of the data to upload.
 		/// @param updateFrequency Update frequency for the buffer.
 		/// @return New shader storage buffer.
 		template<typename T>
-		[[nodiscard]] static Scope<StorageBuffer> Create(const T* data, u64 size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<StorageBuffer> Create(const T* data, u64 size, DescriptorUpdateFrequency updateFrequency);
 
 	private:
 		/// @brief Initialize shader storage buffer with given data.
@@ -92,7 +92,7 @@ namespace TRAP::Graphics
 		/// @param updateFrequency Update frequency for the buffer.
 		/// @return New shader storage buffer.
 		template<typename T>
-		[[nodiscard]] static Scope<StorageBuffer> Init(const T* data, u64 size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<StorageBuffer> Init(const T* data, u64 size, DescriptorUpdateFrequency updateFrequency);
 
 		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_storageBuffers;
 
@@ -110,9 +110,9 @@ constexpr TRAP::Graphics::StorageBuffer::StorageBuffer(const std::vector<TRAP::R
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Graphics::UpdateFrequency TRAP::Graphics::StorageBuffer::GetUpdateFrequency() const noexcept
+[[nodiscard]] constexpr TRAP::Graphics::DescriptorUpdateFrequency TRAP::Graphics::StorageBuffer::GetUpdateFrequency() const noexcept
 {
-	return m_storageBuffers.size() == 1 ? UpdateFrequency::Static : UpdateFrequency::Dynamic;
+	return m_storageBuffers.size() == 1 ? DescriptorUpdateFrequency::Static : DescriptorUpdateFrequency::Dynamic;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -124,9 +124,9 @@ inline void TRAP::Graphics::StorageBuffer::GetData(const auto* const data, const
 
 	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize(), "StorageBuffer::GetData(): Out of bounds!");
 
-	RendererAPI::BufferUpdateDesc desc{};
+	BufferUpdateDesc desc{};
 	const u32 imageIndex = GetUpdateFrequency() ==
-								RendererAPI::DescriptorUpdateFrequency::Static ?
+								DescriptorUpdateFrequency::Static ?
 									0 : RendererAPI::GetCurrentImageIndex(window);
 	desc.Buffer = m_storageBuffers[imageIndex];
 	desc.DstOffset = offset;
@@ -141,9 +141,9 @@ inline void TRAP::Graphics::StorageBuffer::GetData(const auto* const data, const
 
 	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize(), "StorageBuffer::GetData(): Out of bounds!");
 
-	RendererAPI::BufferUpdateDesc desc{};
+	BufferUpdateDesc desc{};
 	const u32 imageIndex = GetUpdateFrequency() ==
-								RendererAPI::DescriptorUpdateFrequency::Static ?
+								DescriptorUpdateFrequency::Static ?
 									0 : RendererAPI::GetCurrentImageIndex();
 	desc.Buffer = m_storageBuffers[imageIndex];
 	desc.DstOffset = offset;
@@ -164,7 +164,7 @@ inline void TRAP::Graphics::StorageBuffer::GetData(const auto* const data, const
 
 template<typename T>
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const T* const data, const u64 size,
-																				               const UpdateFrequency updateFrequency)
+																				               const DescriptorUpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -175,28 +175,28 @@ template<typename T>
 
 template<typename T>
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Init(const T* const data, const u64 size,
-																			                 const UpdateFrequency updateFrequency)
+																			                 const DescriptorUpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	const RendererAPI::BufferDesc bufferDesc
+	const BufferDesc bufferDesc
 	{
 		.Size = size,
-		.MemoryUsage = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
-	                                                                  RendererAPI::ResourceMemoryUsage::CPUToGPU,
-		.Flags = RendererAPI::BufferCreationFlags::PersistentMap,
+		.MemoryUsage = (updateFrequency == DescriptorUpdateFrequency::Static) ? ResourceMemoryUsage::GPUOnly :
+	                                                                  ResourceMemoryUsage::CPUToGPU,
+		.Flags = BufferCreationFlags::PersistentMap,
 		.ElementCount = size / sizeof(T),
 		.StructStride = sizeof(T),
-		.Descriptors = RendererAPI::DescriptorType::RWBuffer
+		.Descriptors = DescriptorType::RWBuffer
 	};
 
-	RendererAPI::BufferLoadDesc desc
+	BufferLoadDesc desc
 	{
 		.Data = data,
 		.Desc = bufferDesc
 	};
 
-	std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> storageBuffers((updateFrequency == UpdateFrequency::Static) ? 1 : RendererAPI::ImageCount);
+	std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> storageBuffers((updateFrequency == DescriptorUpdateFrequency::Static) ? 1 : RendererAPI::ImageCount);
 	std::vector<API::SyncToken> syncTokens(storageBuffers.size());
 	for(u32 i = 0; i < storageBuffers.size(); ++i)
 	{

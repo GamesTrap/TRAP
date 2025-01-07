@@ -44,7 +44,7 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] constexpr VkCommandBuffer GetVkCommandBuffer() const noexcept;
 		/// @brief Retrieve the queue type used for resource barriers.
 		/// @return Queue type used for resource barriers.
-		[[nodiscard]] RendererAPI::QueueType GetQueueType() const;
+		[[nodiscard]] QueueType GetQueueType() const;
 		/// @brief Retrieve whether this is a secondary command buffer.
 		/// @return True of this is a secondary command buffer, false otherwise.
 		[[nodiscard]] constexpr bool IsSecondary() const noexcept;
@@ -71,7 +71,7 @@ namespace TRAP::Graphics::API
 		/// @param buffer Index buffer to bind.
 		/// @param indexType Data type used by the index buffer.
 		/// @param offset Starting offset in bytes to use for index buffer.
-		void BindIndexBuffer(const Buffer& buffer, RendererAPI::IndexType indexType,
+		void BindIndexBuffer(const Buffer& buffer, IndexType indexType,
 		                     u64 offset) const override;
 		/// @brief Bind vertex buffer(s) to the command buffer.
 		/// @param buffers Vertex buffer(s) to bind.
@@ -95,7 +95,7 @@ namespace TRAP::Graphics::API
 		/// @note This functions ends the currently running render pass and starts a new one.
 		void BindRenderTargets(const std::vector<std::reference_wrapper<const RenderTarget>>& renderTargets,
 		                       const RenderTarget* depthStencil,
-							   RendererAPI::LoadActionsDesc* loadActions,
+							   LoadActionsDesc* loadActions,
 							   const std::vector<u32>* colorArraySlices,
 		                       const std::vector<u32>* colorMipSlices,
 							   u32 depthArraySlice,
@@ -193,13 +193,13 @@ namespace TRAP::Graphics::API
 		/// @param srcBuffer Source buffer to read data from.
 		/// @param subresourceDesc Subresource description.
 		void UpdateSubresource(const TRAP::Graphics::Texture& texture, const Buffer& srcBuffer,
-		                       const RendererAPI::SubresourceDataDesc& subresourceDesc) const override;
+		                       const SubresourceDataDesc& subresourceDesc) const override;
 		/// @brief Copy a texture partially into a buffer.
 		/// @param dstBuffer Destination to copy data into.
 		/// @param texture Source texture to copy from.
 		/// @param subresourceDesc Subresource description.
 		void CopySubresource(const Buffer& dstBuffer, const Texture& texture,
-		                     const RendererAPI::SubresourceDataDesc& subresourceDesc) const override;
+		                     const SubresourceDataDesc& subresourceDesc) const override;
 
 		/// @brief Reset a query pool.
 		/// @param queryPool Query pool to reset.
@@ -210,11 +210,11 @@ namespace TRAP::Graphics::API
 		/// @brief Begin a new query.
 		/// @param queryPool Query pool to begin a new query in.
 		/// @param desc Query desc.
-		void BeginQuery(const QueryPool& queryPool, const RendererAPI::QueryDesc& desc) const override;
+		void BeginQuery(const QueryPool& queryPool, const QueryDesc& desc) const override;
 		/// @brief End a query.
 		/// @param queryPool Query pool to begin a new query in.
 		/// @param desc Query desc.
-		void EndQuery(const QueryPool& queryPool, const RendererAPI::QueryDesc& desc) const override;
+		void EndQuery(const QueryPool& queryPool, const QueryDesc& desc) const override;
 		/// @brief Retrieve the results of a query.
 		/// @param queryPool Query pool containing the query results.
 		/// @param readBackBuffer Buffer to write results to.
@@ -227,16 +227,16 @@ namespace TRAP::Graphics::API
 		/// @param bufferBarriers Optional buffer barriers.
 		/// @param textureBarriers Optional texture barriers.
 		/// @param renderTargetBarriers Optional render target barriers.
-		void ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>* bufferBarriers,
-		                     const std::vector<RendererAPI::TextureBarrier>* textureBarriers,
-		                     const std::vector<RendererAPI::RenderTargetBarrier>* renderTargetBarriers) const override;
+		void ResourceBarrier(const std::vector<BufferBarrier>* bufferBarriers,
+		                     const std::vector<TextureBarrier>* textureBarriers,
+		                     const std::vector<RenderTargetBarrier>* renderTargetBarriers) const override;
 		/// @brief Add a resource barrier (memory dependency) to the command buffer.
 		/// @param bufferBarrier Optional buffer barrier.
 		/// @param textureBarrier Optional texture barrier.
 		/// @param renderTargetBarrier Optional render target barrier.
-		void ResourceBarrier(const RendererAPI::BufferBarrier* bufferBarrier,
-		                     const RendererAPI::TextureBarrier* textureBarrier,
-		                     const RendererAPI::RenderTargetBarrier* renderTargetBarrier) const override;
+		void ResourceBarrier(const BufferBarrier* bufferBarrier,
+		                     const TextureBarrier* textureBarrier,
+		                     const RenderTargetBarrier* renderTargetBarrier) const override;
 
 		/// @brief Set the stencil reference value for the command buffer.
 		/// @param val New value to use as stencil reference.
@@ -246,16 +246,16 @@ namespace TRAP::Graphics::API
 		/// @param shadingRate Shading rate to use.
 		/// @param postRasterizerRate Shading rate combiner to use.
 		/// @param finalRate Shading rate combiner to use.
-		void SetShadingRate(RendererAPI::ShadingRate shadingRate,
-		                    RendererAPI::ShadingRateCombiner postRasterizerRate,
-							RendererAPI::ShadingRateCombiner finalRate) const override;
+		void SetShadingRate(ShadingRate shadingRate,
+		                    ShadingRateCombiner postRasterizerRate,
+							ShadingRateCombiner finalRate) const override;
 
 		/// @brief Clear the currently used color attachment.
 		/// @param color Color to clear the color attachment with.
 		/// @param width Width of the area to clear.
 		/// @param height Height of the area to clear.
 		/// @param colorAttachment Index a bound color attachment which should be cleared by the given color.
-		void Clear(const RendererAPI::Color& color, u32 width, u32 height, u32 colorAttachment = 0) const override;
+		void Clear(const Color& color, u32 width, u32 height, u32 colorAttachment = 0) const override;
 		/// @brief Clear the currently used depth and stencil attachment.
 		/// @param depth Depth value to clear the depth attachment with.
 		/// @param stencil Stencil value to clear the stencil attachment with.
@@ -278,8 +278,8 @@ namespace TRAP::Graphics::API
 		/// @param srcState Source texture state.
 		/// @param dstImage Destination non-multisample color texture to resolve into.
 		/// @param dstState Destination texture state.
-		void ResolveImage(const API::VulkanTexture& srcImage, RendererAPI::ResourceState srcState,
-		                  const API::VulkanTexture& dstImage, RendererAPI::ResourceState dstState) const;
+		void ResolveImage(const API::VulkanTexture& srcImage, ResourceState srcState,
+		                  const API::VulkanTexture& dstImage, ResourceState dstState) const;
 
 		/// @brief Blit an image from source to destination using the specified region and filtering options.
 		/// @param source Source texture to blit from.
@@ -287,7 +287,7 @@ namespace TRAP::Graphics::API
 		/// @param region Region to blit.
 		/// @param filter Filter mode to use for the blit operation.
 		void BlitImage(const VulkanTexture& source, const VulkanTexture& destination,
-                       const VkImageBlit& region, RendererAPI::FilterType filter) const;
+                       const VkImageBlit& region, FilterType filter) const;
 
 		/// @brief Retrieve the currently active VkRenderPass.
 		/// @return Currently active VkRenderPass.

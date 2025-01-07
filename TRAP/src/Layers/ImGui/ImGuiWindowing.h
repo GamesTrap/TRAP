@@ -35,7 +35,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 namespace TRAP::Graphics
 {
-	enum class RenderAPI;
+	enum class RenderAPI : u8;
 }
 
 namespace TRAP::INTERNAL

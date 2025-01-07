@@ -56,7 +56,7 @@ void RendererAPITests::OnAttach()
 
 	//Load Triangle vertices (with enough space for a quad)
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create({TriangleVertices.data(), QuadVertices.size()},
-	                                                      TRAP::Graphics::UpdateFrequency::Dynamic);
+	                                                      TRAP::Graphics::DescriptorUpdateFrequency::Dynamic);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
@@ -68,15 +68,15 @@ void RendererAPITests::OnAttach()
 
 	//Load Triangle indices (with enough space for a quad)
 	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create({TriangleIndices.data(), QuadIndices.size()},
-	                                                    TRAP::Graphics::UpdateFrequency::Dynamic);
+	                                                    TRAP::Graphics::DescriptorUpdateFrequency::Dynamic);
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();
 
 	//Load UniformBuffers
 	m_sizeMultiplicatorUniformBuffer = TRAP::Graphics::UniformBuffer::Create(sizeof(SizeMultiplicatorData),
-																			 TRAP::Graphics::UpdateFrequency::Dynamic);
+																			 TRAP::Graphics::DescriptorUpdateFrequency::Dynamic);
 	m_colorUniformBuffer = TRAP::Graphics::UniformBuffer::Create(sizeof(ColorData),
-																 TRAP::Graphics::UpdateFrequency::Dynamic);
+																 TRAP::Graphics::DescriptorUpdateFrequency::Dynamic);
 	m_sizeMultiplicatorUniformBuffer->AwaitLoading();
 	m_colorUniformBuffer->AwaitLoading();
 
@@ -94,9 +94,9 @@ void RendererAPITests::OnAttach()
 void RendererAPITests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
 	if(m_wireFrame)
-		TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line);
+		TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::FillMode::Line);
 	else
-		TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Solid);
+		TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::FillMode::Solid);
 
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{

@@ -27,7 +27,7 @@ namespace TRAP::Graphics::API
 	public:
 		/// @brief Instantiate the resource loader.
 		/// @param desc Optional settings.
-		explicit ResourceLoader(const RendererAPI::ResourceLoaderDesc& desc = {8ull << 20u, 2u});
+		explicit ResourceLoader(const ResourceLoaderDesc& desc = {8ull << 20u, 2u});
 		/// @brief Destructor.
 		~ResourceLoader() = default;
 
@@ -50,32 +50,32 @@ namespace TRAP::Graphics::API
 		/// @param token
 		/// If token is nullptr, the resource will be available when AllResourceLoadsCompleted() returns true.
 		/// If token is not nullptr, the resource will be available after IsTokenCompleted(token) returns true.
-		void AddResource(RendererAPI::BufferLoadDesc& desc, SyncToken* token);
+		void AddResource(BufferLoadDesc& desc, SyncToken* token);
 		/// @brief Add a resource to GPU.
 		/// @param textureDesc Description of texture resource to add.
 		/// @param token
 		/// If token is nullptr, the resource will be available when AllResourceLoadsCompleted() returns true.
 		/// If token is not nullptr, the resource will be available after IsTokenCompleted(token) returns true.
-		void AddResource(RendererAPI::TextureLoadDesc& textureDesc, SyncToken* token);
+		void AddResource(TextureLoadDesc& textureDesc, SyncToken* token);
 
 		/// @brief Start updating a buffer resource.
 		/// @param desc Description of buffer resource to update.
-		static void BeginUpdateResource(RendererAPI::BufferUpdateDesc& desc);
+		static void BeginUpdateResource(BufferUpdateDesc& desc);
 		/// @brief Start updating a texture resource.
 		/// @param desc Description of texture resource to update.
-		static void BeginUpdateResource(RendererAPI::TextureUpdateDesc& desc);
+		static void BeginUpdateResource(TextureUpdateDesc& desc);
 		/// @brief End updating a buffer resource.
 		/// @param desc Description of updated buffer resource.
 		/// @param token
 		/// If token is nullptr, the resource will be available when AllResourceLoadsCompleted() returns true.
 		/// If token is not nullptr, the resource will be available after IsTokenCompleted(token) returns true.
-		void EndUpdateResource(RendererAPI::BufferUpdateDesc& desc, SyncToken* token);
+		void EndUpdateResource(BufferUpdateDesc& desc, SyncToken* token);
 		/// @brief End updating a texture resource.
 		/// @param desc Description of updated texture resource.
 		/// @param token
 		/// If token is nullptr, the resource will be available when AllResourceLoadsCompleted() returns true.
 		/// If token is not nullptr, the resource will be available after IsTokenCompleted(token) returns true.
-		void EndUpdateResource(RendererAPI::TextureUpdateDesc& desc, SyncToken* token);
+		void EndUpdateResource(TextureUpdateDesc& desc, SyncToken* token);
 
 		/// @brief Copy data from GPU to the CPU.
 		/// For optimal use, the amount of data to transfer should be minimized as much as possible and
@@ -84,7 +84,7 @@ namespace TRAP::Graphics::API
 		/// @param token
 		/// If token is nullptr, the resource will be available when AllResourceLoadsCompleted() returns true.
 		/// If token is not nullptr, the resource will be available after IsTokenCompleted(token) return true.
-		void CopyResource(const RendererAPI::TextureCopyDesc& textureDesc, SyncToken* token);
+		void CopyResource(const TextureCopyDesc& textureDesc, SyncToken* token);
 
 		/// @brief Retrieve whether all submitted resource loads and updates have been completed.
 		/// @return True if all loads and updates have finished, false otherwise.
@@ -133,7 +133,7 @@ namespace TRAP::Graphics::API
 		struct TextureUpdateDescInternal
 		{
 			TRAP::Graphics::Texture* Texture = nullptr;
-			RendererAPI::MappedMemoryRange Range{};
+			MappedMemoryRange Range{};
 			u32 BaseMipLevel = 0;
 			u32 MipLevels = 0;
 			u32 BaseArrayLayer = 0;
@@ -152,15 +152,15 @@ namespace TRAP::Graphics::API
 		/// @param buffer Buffer to queue a barrier on.
 		/// @param state State to transition the buffer to.
 		/// @param token Optional output sync token.
-		void QueueBufferBarrier(const TRAP::Ref<Buffer>& buffer, RendererAPI::ResourceState state, SyncToken* token);
+		void QueueBufferBarrier(const TRAP::Ref<Buffer>& buffer, ResourceState state, SyncToken* token);
 		/// @brief Queue a buffer update.
 		/// @param desc Description of buffer update.
 		/// @param token Optional output sync token.
-		void QueueBufferUpdate(const RendererAPI::BufferUpdateDesc& desc, SyncToken* token);
+		void QueueBufferUpdate(const BufferUpdateDesc& desc, SyncToken* token);
 		/// @brief Queue a texture load.
 		/// @param desc Description of texture load.
 		/// @param token Optional output sync token.
-		void QueueTextureLoad(const RendererAPI::TextureLoadDesc& desc, SyncToken* token);
+		void QueueTextureLoad(const TextureLoadDesc& desc, SyncToken* token);
 		/// @brief Queue a texture update.
 		/// @param textureUpdate Internal description of texture update.
 		/// @param token Optional output sync token.
@@ -168,20 +168,20 @@ namespace TRAP::Graphics::API
 		/// @brief Queue a texture copy.
 		/// @param desc Description of texture copy.
 		/// @param token Optional output sync token.
-		void QueueTextureCopy(const RendererAPI::TextureCopyDesc& desc, SyncToken* token);
+		void QueueTextureCopy(const TextureCopyDesc& desc, SyncToken* token);
 		/// @brief Queue a texture barrier.
 		/// @param texture Texture to queue a barrier on.
 		/// @param state State to transition the texture to.
 		/// @param token Optional output sync token.
 		void QueueTextureBarrier(const TRAP::Graphics::Texture& texture,
-		                         RendererAPI::ResourceState state, SyncToken* token);
+		                         ResourceState state, SyncToken* token);
 
 		/// @brief Retrieve memory from pre-allocated staging buffer or create a
 		/// temporary buffer if the streamer ran out of memory.
 		/// @param memoryRequirement Required memory size.
 		/// @param alignment Memory alignment.
 		/// @return Memory from pre-allocated staging buffer or temporary buffer.
-		[[nodiscard]] RendererAPI::MappedMemoryRange AllocateStagingMemory(u64 memoryRequirement, u32 alignment);
+		[[nodiscard]] MappedMemoryRange AllocateStagingMemory(u64 memoryRequirement, u32 alignment);
 		/// @brief Free all upload memory and temporary buffers.
 		void FreeAllUploadMemory() noexcept;
 
@@ -223,7 +223,7 @@ namespace TRAP::Graphics::API
 		/// @param bufferUpdateDesc Description of buffer update.
 		/// @return Result of upload.
 		[[nodiscard]] UploadFunctionResult UpdateBuffer(usize activeSet,
-		                                                const RendererAPI::BufferUpdateDesc& bufferUpdateDesc);
+		                                                const BufferUpdateDesc& bufferUpdateDesc);
 		/// @brief Update a texture with the specified resource set.
 		/// @param activeSet Resource set to use.
 		/// @param textureUpdateDesc Description of texture update.
@@ -241,9 +241,9 @@ namespace TRAP::Graphics::API
 		/// @param activeSet Resource set to use.
 		/// @param textureCopy Texture copy request.
 		/// @return Result of copy.
-		[[nodiscard]] UploadFunctionResult CopyTexture(usize activeSet, const RendererAPI::TextureCopyDesc& textureCopy);
+		[[nodiscard]] UploadFunctionResult CopyTexture(usize activeSet, const TextureCopyDesc& textureCopy);
 
-		RendererAPI::ResourceLoaderDesc m_desc;
+		ResourceLoaderDesc m_desc;
 
 		TracyLockable(std::mutex, m_queueMutex);
 		std::condition_variable_any m_queueCond;
@@ -264,31 +264,31 @@ namespace TRAP::Graphics::API
 		{
 			/// @brief Constructor for buffer update request.
 			/// @param buffer Description of buffer update.
-			constexpr explicit UpdateRequest(const RendererAPI::BufferUpdateDesc& buffer) noexcept;
+			constexpr explicit UpdateRequest(const BufferUpdateDesc& buffer) noexcept;
 			/// @brief Constructor for texture load request.
 			/// @param texture Description of texture load.
-			constexpr explicit UpdateRequest(const RendererAPI::TextureLoadDesc& texture) noexcept;
+			constexpr explicit UpdateRequest(const TextureLoadDesc& texture) noexcept;
 			/// @brief Constructor for texture copy request.
 			/// @param textureCopy Description of texture copy.
-			constexpr explicit UpdateRequest(const RendererAPI::TextureCopyDesc& textureCopy) noexcept;
+			constexpr explicit UpdateRequest(const TextureCopyDesc& textureCopy) noexcept;
 			/// @brief Constructor for texture update request.
 			/// @param texture Description of texture update.
 			explicit UpdateRequest(TRAP::Graphics::API::ResourceLoader::TextureUpdateDescInternal texture) noexcept;
 			/// @brief Constructor for buffer barrier request.
 			/// @param barrier Description of buffer barrier.
-			constexpr explicit UpdateRequest(const RendererAPI::BufferBarrier& barrier) noexcept;
+			constexpr explicit UpdateRequest(const BufferBarrier& barrier) noexcept;
 			/// @brief Constructor for texture barrier request.
 			/// @param barrier Description of texture barrier.
-			constexpr explicit UpdateRequest(const RendererAPI::TextureBarrier& barrier) noexcept;
+			constexpr explicit UpdateRequest(const TextureBarrier& barrier) noexcept;
 
 			UpdateRequestType Type = UpdateRequestType::Invalid;
 			u64 WaitIndex = 0;
 			TRAP::Ref<Buffer> UploadBuffer = nullptr;
 			TRAP::Scope<TRAP::Image> Image = nullptr;
-			std::variant<RendererAPI::BufferUpdateDesc,
+			std::variant<BufferUpdateDesc,
 			             TRAP::Graphics::API::ResourceLoader::TextureUpdateDescInternal,
-						 RendererAPI::TextureLoadDesc, RendererAPI::TextureCopyDesc,
-						 RendererAPI::BufferBarrier, RendererAPI::TextureBarrier> Desc;
+						 TextureLoadDesc, TextureCopyDesc,
+						 BufferBarrier, TextureBarrier> Desc;
 		};
 		std::vector<UpdateRequest> m_requestQueue{};
 
@@ -340,31 +340,31 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::BufferUpdateDesc& buffer) noexcept
+constexpr TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const BufferUpdateDesc& buffer) noexcept
 	: Type(UpdateRequestType::UpdateBuffer), Desc(buffer)
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::TextureLoadDesc& texture) noexcept
+constexpr TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const TextureLoadDesc& texture) noexcept
 	: Type(UpdateRequestType::LoadTexture), Desc(texture)
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::TextureCopyDesc& textureCopy) noexcept
+constexpr TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const TextureCopyDesc& textureCopy) noexcept
 	: Type(UpdateRequestType::CopyTexture), Desc(textureCopy)
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::BufferBarrier& barrier) noexcept
+constexpr TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const BufferBarrier& barrier) noexcept
 	: Type(UpdateRequestType::BufferBarrier), Desc(barrier)
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::TextureBarrier& barrier) noexcept
+constexpr TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const TextureBarrier& barrier) noexcept
 	: Type(UpdateRequestType::TextureBarrier), Desc(barrier)
 {}
 

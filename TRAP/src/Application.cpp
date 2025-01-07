@@ -124,7 +124,7 @@ namespace
 
 		//AMD Anti Lag only limits FPS when set to enabled.
 		if (TRAP::Graphics::RendererAPI::GPUSettings.AntiLagSupported &&
-			TRAP::Graphics::RendererAPI::GetRenderer()->GetAntiLagMode(*TRAP::Application::GetWindow()) != TRAP::Graphics::RendererAPI::AMDAntiLagMode::Disabled)
+			TRAP::Graphics::RendererAPI::GetRenderer()->GetAntiLagMode(*TRAP::Application::GetWindow()) != TRAP::Graphics::AMDAntiLagMode::Disabled)
 		{
 			return;
 		}
@@ -426,8 +426,8 @@ namespace
 		if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
 			return;
 
-		TRAP::Graphics::ShaderManager::LoadSource("FallbackGraphics", std::string(TRAP::Embed::FallbackGraphicsShader), TRAP::Graphics::RendererAPI::ShaderType::Graphics)->Use();
-		TRAP::Graphics::ShaderManager::LoadSource("FallbackCompute", std::string(TRAP::Embed::FallbackComputeShader), TRAP::Graphics::RendererAPI::ShaderType::Compute)->Use();
+		TRAP::Graphics::ShaderManager::LoadSource("FallbackGraphics", std::string(TRAP::Embed::FallbackGraphicsShader), TRAP::Graphics::ShaderType::Graphics)->Use();
+		TRAP::Graphics::ShaderManager::LoadSource("FallbackCompute", std::string(TRAP::Embed::FallbackComputeShader), TRAP::Graphics::ShaderType::Compute)->Use();
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -675,18 +675,18 @@ void TRAP::Application::Run()
 #endif
 
 #if !defined(TRAP_HEADLESS_MODE)
-		Graphics::RendererAPI::GetRenderer()->AntiLagMarker(TRAP::Graphics::RendererAPI::AMDAntiLagMarker::InputStage, *m_window);
-		Graphics::RendererAPI::GetRenderer()->ReflexMarker(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker::SimulationStart, *m_window);
+		Graphics::RendererAPI::GetRenderer()->AntiLagMarker(TRAP::Graphics::AMDAntiLagMarker::InputStage, *m_window);
+		Graphics::RendererAPI::GetRenderer()->ReflexMarker(TRAP::Graphics::NVIDIAReflexLatencyMarker::SimulationStart, *m_window);
 #endif /*!TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-		Graphics::RendererAPI::GetRenderer()->ReflexMarker(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker::InputSample, *m_window);
+		Graphics::RendererAPI::GetRenderer()->ReflexMarker(TRAP::Graphics::NVIDIAReflexLatencyMarker::InputSample, *m_window);
 		TRAP::Window::OnUpdate();
 #endif /*TRAP_HEADLESS_MODE*/
 
 #if !defined(TRAP_HEADLESS_MODE)
 		if(Input::IsMouseButtonPressed(Input::MouseButton::Left))
-			Graphics::RendererAPI::GetRenderer()->ReflexMarker(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker::TriggerFlash, *m_window);
+			Graphics::RendererAPI::GetRenderer()->ReflexMarker(TRAP::Graphics::NVIDIAReflexLatencyMarker::TriggerFlash, *m_window);
 #endif /*!TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -706,7 +706,7 @@ void TRAP::Application::Run()
 		TRAP::Utils::Steam::RunCallbacks();
 
 #if !defined(TRAP_HEADLESS_MODE)
-		Graphics::RendererAPI::GetRenderer()->ReflexMarker(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker::SimulationEnd, *m_window);
+		Graphics::RendererAPI::GetRenderer()->ReflexMarker(TRAP::Graphics::NVIDIAReflexLatencyMarker::SimulationEnd, *m_window);
 #endif /*!TRAP_HEADLESS_MODE*/
 
 		m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
@@ -1152,12 +1152,12 @@ void TRAP::Application::UpdateHotReloading()
 		//new shader will trigger a pipeline rebuild.
 		switch(shader->GetShaderType())
 		{
-		case Graphics::RendererAPI::ShaderType::Graphics:
-			TRAP::Graphics::ShaderManager::Get("FallbackGraphics", TRAP::Graphics::RendererAPI::ShaderType::Graphics)->Use();
+		case Graphics::ShaderType::Graphics:
+			TRAP::Graphics::ShaderManager::Get("FallbackGraphics", TRAP::Graphics::ShaderType::Graphics)->Use();
 			break;
 
-		case Graphics::RendererAPI::ShaderType::Compute:
-			TRAP::Graphics::ShaderManager::Get("FallbackCompute", TRAP::Graphics::RendererAPI::ShaderType::Compute)->Use();
+		case Graphics::ShaderType::Compute:
+			TRAP::Graphics::ShaderManager::Get("FallbackCompute", TRAP::Graphics::ShaderType::Compute)->Use();
 			break;
 		}
 

@@ -225,7 +225,7 @@ namespace
 		if (newFbSize.x() == 0 || newFbSize.y() == 0) //0x0 is an invalid framebuffer size
 			return;
 
-		const auto& gpd = std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>(p.GraphicsPipelineDesc.Pipeline);
+		const auto& gpd = std::get<TRAP::Graphics::GraphicsPipelineDesc>(p.GraphicsPipelineDesc.Pipeline);
 		const auto& depthState = gpd.DepthState;
 
 		//Nothing to do if depth/stencil testing is disabled
@@ -243,13 +243,13 @@ namespace
 
 		//Check for sample count match
 		if(p.DepthStencilTarget != nullptr &&
-		   p.CurrentAntiAliasing == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA &&
+		   p.CurrentAntiAliasing == TRAP::Graphics::AntiAliasing::MSAA &&
 		   p.DepthStencilTarget->GetSampleCount() == p.CurrentSampleCount)
 		{
 		   return;
 		}
 
-		const TRAP::Graphics::RendererAPI::RenderTargetDesc depthStencilRTDesc
+		const TRAP::Graphics::RenderTargetDesc depthStencilRTDesc
 		{
 			.Flags{},
 			.Width = newFbSize.x(),
@@ -257,12 +257,12 @@ namespace
 			.Depth = 1,
 			.ArraySize = 1,
 			.MipLevels = 1,
-			.SampleCount = p.CurrentAntiAliasing == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA ? p.CurrentSampleCount : TRAP::Graphics::RendererAPI::SampleCount::One,
+			.SampleCount = p.CurrentAntiAliasing == TRAP::Graphics::AntiAliasing::MSAA ? p.CurrentSampleCount : TRAP::Graphics::SampleCount::One,
 			.Format = PickDepthStencilFormat(depthState->DepthTest, depthState->StencilTest, device),
-			.StartState = TRAP::Graphics::RendererAPI::ResourceState::DepthRead | TRAP::Graphics::RendererAPI::ResourceState::DepthWrite,
-			.ClearValue = TRAP::Graphics::RendererAPI::DepthStencil{0.0f, 0},
+			.StartState = TRAP::Graphics::ResourceState::DepthRead | TRAP::Graphics::ResourceState::DepthWrite,
+			.ClearValue = TRAP::Graphics::DepthStencil{0.0f, 0},
 			.SampleQuality = 0,
-			.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture,
+			.Descriptors = TRAP::Graphics::DescriptorType::Texture,
 			.Name = "Swapchain Depth/Stencil RenderTarget",
 			.NativeHandle = nullptr
 		};
@@ -311,10 +311,10 @@ namespace
 
 		TRAP_ASSERT(graphicsQueue, "VulkanRenderer::MapRenderTarget(): Graphics queue is nullptr!");
 
-		const TRAP::Graphics::RendererAPI::CommandPoolDesc cmdPoolDesc
+		const TRAP::Graphics::CommandPoolDesc cmdPoolDesc
 		{
 			.Queue = graphicsQueue,
-			.CreateFlags = TRAP::Graphics::RendererAPI::CommandPoolCreateFlags::Transient,
+			.CreateFlags = TRAP::Graphics::CommandPoolCreateFlags::Transient,
 			.Name = fmt::format("MapRenderTarget CommandPool (Transient, QueueType: \"Graphics\")")
 		};
 		const TRAP::Ref<TRAP::Graphics::API::VulkanCommandPool> cmdPool = TRAP::MakeRef<TRAP::Graphics::API::VulkanCommandPool>(cmdPoolDesc);
@@ -326,16 +326,16 @@ namespace
 		const u32 formatByteWidth = ImageFormatBitSizeOfBlock(renderTarget.GetImageFormat()) / 8u;
 		const u64 pixelDataByteSize = NumericCast<u64>(renderTarget.GetWidth()) * renderTarget.GetHeight() * formatByteWidth;
 
-		const TRAP::Graphics::RendererAPI::BufferDesc bufferDesc
+		const TRAP::Graphics::BufferDesc bufferDesc
 		{
 			.Size = pixelDataByteSize,
-			.MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::GPUToCPU,
-			.Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::PersistentMap | TRAP::Graphics::RendererAPI::BufferCreationFlags::NoDescriptorViewCreation,
+			.MemoryUsage = TRAP::Graphics::ResourceMemoryUsage::GPUToCPU,
+			.Flags = TRAP::Graphics::BufferCreationFlags::PersistentMap | TRAP::Graphics::BufferCreationFlags::NoDescriptorViewCreation,
 			.QueueType = TRAP::Graphics::QueueType::Graphics,
 			.StartState = TRAP::Graphics::ResourceState::CopyDestination,
 			.ElementCount = bufferDesc.Size / formatByteWidth,
 			.StructStride = formatByteWidth,
-			.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::RWBuffer
+			.Descriptors = TRAP::Graphics::DescriptorType::RWBuffer
 		};
 		const TRAP::Ref<TRAP::Graphics::Buffer> buffer = TRAP::Graphics::Buffer::Create(bufferDesc);
 
@@ -343,7 +343,7 @@ namespace
 		cmd.Begin();
 
 		//Transition the render target to the correct state
-		TRAP::Graphics::RendererAPI::RenderTargetBarrier srcBarrier{renderTarget, currResState, TRAP::Graphics::ResourceState::CopySource};
+		TRAP::Graphics::RenderTargetBarrier srcBarrier{renderTarget, currResState, TRAP::Graphics::ResourceState::CopySource};
 		cmd.ResourceBarrier(nullptr, nullptr, &srcBarrier);
 
 		const u32 rowPitch = renderTarget.GetWidth() * formatByteWidth;
@@ -351,7 +351,7 @@ namespace
 		const u32 numBlocksWide = rowPitch / (ImageFormatBitSizeOfBlock(fmt) >> 3u);
 		const u32 slicePitch = numBlocksWide * ImageFormatWidthOfBlock(fmt);
 
-		const TRAP::Graphics::RendererAPI::SubresourceDataDesc subResDesc
+		const TRAP::Graphics::SubresourceDataDesc subResDesc
 		{
 			.SrcOffset = 0,
 			.MipLevel = 0,
@@ -369,7 +369,7 @@ namespace
 		cmd.End();
 
 		//Submit the command buffer
-		const TRAP::Graphics::RendererAPI::QueueSubmitDesc submitDesc
+		const TRAP::Graphics::QueueSubmitDesc submitDesc
 		{
 			.Cmds = {cmd}
 		};
@@ -653,7 +653,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData&
 
 	//TODO Always use back buffer (InternalRenderTarget), copy/resolve final image to SwapChain RenderTargert as last step in EndGraphicRecording().
 	TRAP::Ref<RenderTarget> bindRenderTarget{};
-	if(p.RenderScale != 1.0f || p.CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
+	if(p.RenderScale != 1.0f || p.CurrentAntiAliasing == AntiAliasing::MSAA)
 		bindRenderTarget = p.InternalRenderTargets[p.CurrentSwapChainImageIndex];
 	else
 		bindRenderTarget = p.GetCurrentSwapchainRenderTarget();
@@ -702,11 +702,11 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData&
 	p.GraphicCommandBuffers[p.ImageIndex]->SetScissor(0, 0, width, height);
 
 	//Set Default Shading Rate (if support is enabled)
-	if(RendererAPI::GPUSettings.ShadingRateCaps != RendererAPI::ShadingRateCaps::NotSupported) //VRS is not supported
+	if(RendererAPI::GPUSettings.ShadingRateCaps != ShadingRateCaps::NotSupported) //VRS is not supported
 	{
-		p.GraphicCommandBuffers[p.ImageIndex]->SetShadingRate(RendererAPI::ShadingRate::Full,
-															  RendererAPI::ShadingRateCombiner::Passthrough,
-															  RendererAPI::ShadingRateCombiner::Passthrough);
+		p.GraphicCommandBuffers[p.ImageIndex]->SetShadingRate(ShadingRate::Full,
+															  ShadingRateCombiner::Passthrough,
+															  ShadingRateCombiner::Passthrough);
 	}
 
 	///////////////////////////////
@@ -726,7 +726,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerViewportData& p
 	if(!p.Recording)
 		return;
 
-	if(p.CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA && p.RenderScale == 1.0f) //Inject MSAA resolve pass
+	if(p.CurrentAntiAliasing == AntiAliasing::MSAA && p.RenderScale == 1.0f) //Inject MSAA resolve pass
 	{
 		const TRAP::Ref<RenderTarget> presentRenderTarget = p.GetCurrentSwapchainRenderTarget();
 		const TRAP::Ref<RenderTarget>& MSAARenderTarget = p.InternalRenderTargets[p.CurrentSwapChainImageIndex];
@@ -847,8 +847,8 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData& p) const
 
 #ifndef TRAP_HEADLESS_MODE
 
-	p.SwapChain->AntiLagSetMarker(TRAP::Graphics::RendererAPI::AMDAntiLagMarker::PresentStage, p);
-	p.SwapChain->ReflexSetMarker(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker::PresentStart);
+	p.SwapChain->AntiLagSetMarker(TRAP::Graphics::AMDAntiLagMarker::PresentStage, p);
+	p.SwapChain->ReflexSetMarker(TRAP::Graphics::NVIDIAReflexLatencyMarker::PresentStart);
 
 	const QueuePresentDesc presentDesc
 	{
@@ -858,7 +858,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData& p) const
 	};
 	const PresentStatus presentStatus = s_graphicQueue->Present(presentDesc);
 
-	p.SwapChain->ReflexSetMarker(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker::PresentEnd);
+	p.SwapChain->ReflexSetMarker(TRAP::Graphics::NVIDIAReflexLatencyMarker::PresentEnd);
 
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -893,14 +893,14 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData& p) const
 
 		if(p.NewWidth > 0 && p.NewHeight > 0)
 		{
-			RendererAPI::RenderTargetDesc rTDesc{};
+			RenderTargetDesc rTDesc{};
 			rTDesc.Width = p.NewWidth;
 			rTDesc.Height = p.NewHeight;
 			rTDesc.Depth = 1;
 			rTDesc.ArraySize = 1;
 			rTDesc.MipLevels = 1;
 			rTDesc.Format = GetRecommendedSwapchainFormat(true, false);
-			rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
+			rTDesc.StartState = ResourceState::RenderTarget;
 			rTDesc.SampleCount = SampleCount::One;
 			for(u32 i = 0; i < RendererAPI::ImageCount; ++i)
 			{
@@ -1012,14 +1012,14 @@ void TRAP::Graphics::API::VulkanRenderer::Flush() const
 	PerViewportData& p = *GETPERVIEWPORTDATA;
 
 #if !defined(TRAP_HEADLESS_MODE)
-	ReflexMarker(RendererAPI::NVIDIAReflexLatencyMarker::RenderSubmitStart, window);
+	ReflexMarker(NVIDIAReflexLatencyMarker::RenderSubmitStart, window);
 #endif /*!TRAP_HEADLESS_MODE*/
 
 	EndComputeRecording(p);
 	EndGraphicRecording(p);
 
 #if !defined(TRAP_HEADLESS_MODE)
-	ReflexMarker(RendererAPI::NVIDIAReflexLatencyMarker::RenderSubmitEnd, window);
+	ReflexMarker(NVIDIAReflexLatencyMarker::RenderSubmitEnd, window);
 #endif /*!TRAP_HEADLESS_MODE*/
 
 	Present(p);
@@ -1064,9 +1064,9 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<u32, 3> workGroupE
 	{
 		//Bind fallback shader
 #ifndef TRAP_HEADLESS_MODE
-		this->BindShader(*TRAP::Graphics::ShaderManager::Get("FallbackCompute", RendererAPI::ShaderType::Compute), *p.Window);
+		this->BindShader(*TRAP::Graphics::ShaderManager::Get("FallbackCompute", ShaderType::Compute), *p.Window);
 #else
-		this->BindShader(*TRAP::Graphics::ShaderManager::Get("FallbackCompute", RendererAPI::ShaderType::Compute));
+		this->BindShader(*TRAP::Graphics::ShaderManager::Get("FallbackCompute", ShaderType::Compute));
 #endif /*TRAP_HEADLESS_MODE*/
 	}
 
@@ -1156,9 +1156,9 @@ void TRAP::Graphics::API::VulkanRenderer::SetRenderScale(f32 scale) const
 //------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const RendererAPI::Color& color, const Window& window) const
+void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Color& color, const Window& window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const RendererAPI::Color& color) const
+void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Color& color) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -1531,7 +1531,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadi
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	if(RendererAPI::GPUSettings.ShadingRateCaps == RendererAPI::ShadingRateCaps::NotSupported) //VRS is not supported
+	if(RendererAPI::GPUSettings.ShadingRateCaps == ShadingRateCaps::NotSupported) //VRS is not supported
 	{
 		TRAP_ASSERT(false, "VulkanRenderer::SetShadingRate(): Shading rate is not supported by this device!");
 		return;
@@ -1551,7 +1551,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadi
 	if(gpd.ShadingRateTexture)
 		p.NewShadingRateTexture = nullptr;
 
-	if((RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerDraw) == RendererAPI::ShadingRateCaps::NotSupported)
+	if((RendererAPI::GPUSettings.ShadingRateCaps & ShadingRateCaps::PerDraw) == ShadingRateCaps::NotSupported)
 		return;
 
 	if(std::to_underlying(RendererAPI::GPUSettings.ShadingRateCombiner & postRasterizerRate) == 0u)
@@ -1566,10 +1566,10 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadi
 	}
 
 	//VUID-vkCmdSetFragmentShadingRateKHR-primitiveFragmentShadingRate-04510
-	if((RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerPrimitive) == RendererAPI::ShadingRateCaps::NotSupported)
+	if((RendererAPI::GPUSettings.ShadingRateCaps & ShadingRateCaps::PerPrimitive) == ShadingRateCaps::NotSupported)
 		postRasterizerRate = ShadingRateCombiner::Passthrough;
 	//VUID-vkCmdSetFragmentShadingRateKHR-attachmentFragmentShadingRate-04511
-	if((RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerTile) == RendererAPI::ShadingRateCaps::NotSupported)
+	if((RendererAPI::GPUSettings.ShadingRateCaps & ShadingRateCaps::PerTile) == ShadingRateCaps::NotSupported)
 		finalRate = ShadingRateCombiner::Passthrough;
 
 	gpd.ShadingRate = shadingRate;
@@ -1589,7 +1589,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(TRAP::Ref<TRAP::Graphic
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	if(RendererAPI::GPUSettings.ShadingRateCaps == RendererAPI::ShadingRateCaps::NotSupported) //VRS is not supported
+	if(RendererAPI::GPUSettings.ShadingRateCaps == ShadingRateCaps::NotSupported) //VRS is not supported
 	{
 		TRAP_ASSERT(false, "VulkanRenderer::SetShadingRate(): Shading rate is not supported by this device!");
 		return;
@@ -1606,7 +1606,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(TRAP::Ref<TRAP::Graphic
 		return;
 	}
 
-	if((RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerTile) == RendererAPI::ShadingRateCaps::NotSupported)
+	if((RendererAPI::GPUSettings.ShadingRateCaps & ShadingRateCaps::PerTile) == ShadingRateCaps::NotSupported)
 		return;
 
 	gpd.ShadingRate = ShadingRate::Full;
@@ -1632,7 +1632,7 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType)
 	const PerViewportData& p = *GETPERVIEWPORTDATA;
 
 	TRAP::Ref<RenderTarget> renderTarget;
-	if(p.RenderScale != 1.0f || p.CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
+	if(p.RenderScale != 1.0f || p.CurrentAntiAliasing == AntiAliasing::MSAA)
 		renderTarget = p.InternalRenderTargets[p.CurrentSwapChainImageIndex];
 	else
 		renderTarget = p.GetCurrentSwapchainRenderTarget();
@@ -1800,7 +1800,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader& shader) const
 		if(!actualShader.get().IsShaderValid())
 		{
 			//Overwrite invalid shader with fallback
-			actualShader = *TRAP::Graphics::ShaderManager::Get("FallbackGraphics", RendererAPI::ShaderType::Graphics).get();
+			actualShader = *TRAP::Graphics::ShaderManager::Get("FallbackGraphics", ShaderType::Graphics).get();
 
 			gpd.ShaderProgram = &actualShader.get();
 			gpd.RootSignature = actualShader.get().GetRootSignature();
@@ -1825,7 +1825,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader& shader) const
 		if(!actualShader.get().IsShaderValid())
 		{
 			//Overwrite invalid shader with fallback
-			actualShader = *TRAP::Graphics::ShaderManager::Get("FallbackCompute", RendererAPI::ShaderType::Compute).get();
+			actualShader = *TRAP::Graphics::ShaderManager::Get("FallbackCompute", ShaderType::Compute).get();
 
 			cpd.ShaderProgram = &actualShader.get();
 			cpd.RootSignature = actualShader.get().GetRootSignature();
@@ -2011,7 +2011,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const u32 par
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const Graphics::RenderTarget* const colorTarget,
 		                                                   const Graphics::RenderTarget* const depthStencil,
-							                               RendererAPI::LoadActionsDesc* const loadActions,
+							                               LoadActionsDesc* const loadActions,
 							                               std::vector<u32>* const colorArraySlices,
 							                               std::vector<u32>* const colorMipSlices,
 							                               const u32 depthArraySlice,
@@ -2019,7 +2019,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const Graphics::Rende
 #else
 void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const Graphics::RenderTarget* const colorTarget,
 		                                                   const Graphics::RenderTarget* const depthStencil,
-							                               RendererAPI::LoadActionsDesc* const loadActions,
+							                               LoadActionsDesc* const loadActions,
 							                               std::vector<u32>* const colorArraySlices,
 							                               std::vector<u32>* const colorMipSlices,
 							                               const u32 depthArraySlice,
@@ -2072,7 +2072,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const Graphics::Rende
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<std::reference_wrapper<const Graphics::RenderTarget>>& colorTargets,
 		                                                    const Graphics::RenderTarget* const depthStencil,
-							                                RendererAPI::LoadActionsDesc* const loadActions,
+							                                LoadActionsDesc* const loadActions,
 							                                std::vector<u32>* const colorArraySlices,
 							                                std::vector<u32>* const colorMipSlices,
 							                                const u32 depthArraySlice,
@@ -2080,7 +2080,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<st
 #else
 void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<std::reference_wrapper<const Graphics::RenderTarget>>& colorTargets,
 		                                                    const Graphics::RenderTarget* const depthStencil,
-							                                RendererAPI::LoadActionsDesc* const loadActions,
+							                                LoadActionsDesc* const loadActions,
 							                                std::vector<u32>* const colorArraySlices,
 							                                std::vector<u32>* const colorMipSlices,
 							                                const u32 depthArraySlice,
@@ -2137,10 +2137,10 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<st
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
+void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarrier(const BufferBarrier& bufferBarrier,
 															    const QueueType queueType, const Window& window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
+void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarrier(const BufferBarrier& bufferBarrier,
 															    const QueueType queueType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
@@ -2159,10 +2159,10 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarrier(const RendererAP
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
+void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarriers(const std::vector<BufferBarrier>& bufferBarriers,
 																 const QueueType queueType, const Window& window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
+void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarriers(const std::vector<BufferBarrier>& bufferBarriers,
 																 const QueueType queueType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
@@ -2181,10 +2181,10 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarriers(const std::vect
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
+void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarrier(const TextureBarrier& textureBarrier,
 																 const QueueType queueType, const Window& window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
+void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarrier(const TextureBarrier& textureBarrier,
 																 const QueueType queueType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
@@ -2203,10 +2203,10 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarrier(const RendererA
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
+void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarriers(const std::vector<TextureBarrier>& textureBarriers,
 																  const QueueType queueType, const Window& window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
+void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarriers(const std::vector<TextureBarrier>& textureBarriers,
 																  const QueueType queueType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
@@ -2225,10 +2225,10 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarriers(const std::vec
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier,
+void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarrier(const RenderTargetBarrier& renderTargetBarrier,
 									                                  const Window& window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier) const
+void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarrier(const RenderTargetBarrier& renderTargetBarrier) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -2241,10 +2241,10 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarrier(const Rend
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
+void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarriers(const std::vector<RenderTargetBarrier>& renderTargetBarriers,
 									                                   const Window& window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers) const
+void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarriers(const std::vector<RenderTargetBarrier>& renderTargetBarriers) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -2374,7 +2374,7 @@ void TRAP::Graphics::API::VulkanRenderer::AntiLagMarker(const AMDAntiLagMarker m
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::RendererAPI::GPUVendor TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUVendor() const noexcept
+[[nodiscard]] TRAP::Graphics::GPUVendor TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUVendor() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -2552,7 +2552,7 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 		viewportData.CurrentAntiAliasing = s_newAntiAliasing;
 		viewportData.CurrentSampleCount = s_newSampleCount;
 
-		if(viewportData.CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
+		if(viewportData.CurrentAntiAliasing == AntiAliasing::MSAA)
 			std::get<GraphicsPipelineDesc>(viewportData.GraphicsPipelineDesc.Pipeline).SampleCount = viewportData.CurrentSampleCount;
 		else
 			std::get<GraphicsPipelineDesc>(viewportData.GraphicsPipelineDesc.Pipeline).SampleCount = SampleCount::One;
@@ -2568,7 +2568,7 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 	{
 		viewportData.InternalRenderTargets.clear();
 
-		RendererAPI::RenderTargetDesc rTDesc
+		RenderTargetDesc rTDesc
 		{
 			.Width = newInternalRes.x(),
 			.Height = newInternalRes.y(),
@@ -2577,7 +2577,7 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 			.MipLevels = 1,
 			.SampleCount = (viewportData.CurrentAntiAliasing == AntiAliasing::MSAA) ? viewportData.CurrentSampleCount : SampleCount::One,
 			.Format = GetRecommendedSwapchainFormat(true, false),
-			.StartState = RendererAPI::ResourceState::RenderTarget
+			.StartState = ResourceState::RenderTarget
 		};
 
 #ifndef TRAP_HEADLESS_MODE
@@ -2650,7 +2650,7 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(const RenderTarget& so
 				.MipLevels = 1,
 				.SampleCount = SampleCount::One,
 				.Format = GetRecommendedSwapchainFormat(true, false),
-				.StartState = RendererAPI::ResourceState::RenderTarget,
+				.StartState = ResourceState::RenderTarget,
 				.Name = "MSAA Resolve RenderTarget (RenderScalePass)"
 			};
 			tempTarget = RenderTarget::Create(rTDesc);
@@ -2706,7 +2706,7 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(const RenderTarget& so
 		.dstOffsets = {{0, 0, 0}, {NumericCast<i32>(texOutput->GetWidth()), NumericCast<i32>(texOutput->GetHeight()), 1}}
 	};
 
-	cmd->BlitImage(*texInternal, *texOutput, region, RendererAPI::FilterType::Linear);
+	cmd->BlitImage(*texInternal, *texOutput, region, FilterType::Linear);
 
 	//Transition layout back
 	barrier.Texture = *srcPtr->GetTexture();
@@ -2759,7 +2759,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetReflexLatencyMode([[maybe_unused]] 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-[[nodiscard]] TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode TRAP::Graphics::API::VulkanRenderer::GetReflexLatencyMode([[maybe_unused]] const Window& window) const
+[[nodiscard]] TRAP::Graphics::NVIDIAReflexLatencyMode TRAP::Graphics::API::VulkanRenderer::GetReflexLatencyMode([[maybe_unused]] const Window& window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -2797,7 +2797,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetAntiLagMode([[maybe_unused]] const 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-[[nodiscard]] TRAP::Graphics::RendererAPI::AMDAntiLagMode TRAP::Graphics::API::VulkanRenderer::GetAntiLagMode([[maybe_unused]] const Window& window) const
+[[nodiscard]] TRAP::Graphics::AMDAntiLagMode TRAP::Graphics::API::VulkanRenderer::GetAntiLagMode([[maybe_unused]] const Window& window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -2846,13 +2846,13 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 	p->GraphicsFrameTime = 0.0f;
 	p->ComputeFrameTime = 0.0f;
 
-	RendererAPI::QueryPoolDesc queryPoolDesc{QueryType::Timestamp, 1 * 2};
-	RendererAPI::BufferDesc bufferDesc
+	QueryPoolDesc queryPoolDesc{QueryType::Timestamp, 1 * 2};
+	BufferDesc bufferDesc
 	{
 		.Size = sizeof(u64) * 1 * 2,
-		.MemoryUsage = RendererAPI::ResourceMemoryUsage::GPUToCPU,
-		.Flags = RendererAPI::BufferCreationFlags::OwnMemory,
-		.StartState = RendererAPI::ResourceState::CopyDestination,
+		.MemoryUsage = ResourceMemoryUsage::GPUToCPU,
+		.Flags = BufferCreationFlags::OwnMemory,
+		.StartState = ResourceState::CopyDestination,
 		.ElementCount = 2,
 		.StructStride = sizeof(u64)
 	};
@@ -2888,7 +2888,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 		queryPoolDesc.Name = "GPU FrameTime Graphics QueryPool";
 		p->GraphicsTimestampQueryPools[i] = QueryPool::Create(queryPoolDesc);
 		bufferDesc.Name = "GPU FrameTime Graphics Query Readback Buffer";
-		RendererAPI::BufferLoadDesc loadDesc{};
+		BufferLoadDesc loadDesc{};
 		loadDesc.Desc = bufferDesc;
 		GetResourceLoader()->AddResource(loadDesc, nullptr);
 		p->GraphicsTimestampReadbackBuffers[i] = loadDesc.Buffer;
@@ -2952,7 +2952,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 	//Create MSAA RenderTargets if needed
 	if(p->CurrentAntiAliasing == AntiAliasing::MSAA)
 	{
-		RendererAPI::RenderTargetDesc rTMSAADesc
+		RenderTargetDesc rTMSAADesc
 		{
 			.Width = window.GetFrameBufferWidth(),
 			.Height = window.GetFrameBufferHeight(),
@@ -2961,7 +2961,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 			.MipLevels = 1,
 			.SampleCount = p->CurrentSampleCount,
 			.Format = GetRecommendedSwapchainFormat(true, false),
-			.StartState = RendererAPI::ResourceState::RenderTarget
+			.StartState = ResourceState::RenderTarget
 		};
 		for(u32 i = 0; i < RendererAPI::ImageCount; ++i)
 		{
@@ -2970,7 +2970,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 		}
 	}
 #else
-	RendererAPI::RenderTargetDesc rTDesc
+	RenderTargetDesc rTDesc
 	{
 		.Width = p->NewWidth,
 		.Height = p->NewHeight,
@@ -2979,7 +2979,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 		.MipLevels = 1,
 		.SampleCount = SampleCount::One,
 		.Format = GetRecommendedSwapchainFormat(true, false),
-		.StartState = RendererAPI::ResourceState::RenderTarget
+		.StartState = ResourceState::RenderTarget
 	};
 	for(u32 i = 0; i < RendererAPI::ImageCount; ++i)
 	{
@@ -2999,11 +2999,11 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 
 	//Graphics Pipeline
 #ifndef TRAP_HEADLESS_MODE
-	const TRAP::Ref<RenderTarget>& rT = p->CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA ?
+	const TRAP::Ref<RenderTarget>& rT = p->CurrentAntiAliasing == AntiAliasing::MSAA ?
   	                                    p->InternalRenderTargets[0] :
 								        p->SwapChain->GetRenderTargets()[0];
 #else
-	const auto& rT = p->CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA ? p->InternalRenderTargets[0] : std::get<0>(p->RenderTargets);
+	const auto& rT = p->CurrentAntiAliasing == AntiAliasing::MSAA ? p->InternalRenderTargets[0] : std::get<0>(p->RenderTargets);
 #endif
 	p->GraphicsPipelineDesc = {};
 	p->GraphicsPipelineDesc.Type = PipelineType::Graphics;
@@ -3015,7 +3015,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 	gpd.ColorFormats = { rT->GetImageFormat() };
 	gpd.SampleCount = rT->GetSampleCount();
 	gpd.SampleQuality = rT->GetSampleQuality();
-	gpd.ShadingRate = RendererAPI::ShadingRate::Full;
+	gpd.ShadingRate = ShadingRate::Full;
 	gpd.ShadingRateCombiners = {ShadingRateCombiner::Passthrough, ShadingRateCombiner::Passthrough};
 
 	gpd.DepthState = TRAP::MakeRef<DepthStateDesc>();
@@ -3313,7 +3313,7 @@ void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const TRAP::Graphics::Texture& texture,
-                                                                const RendererAPI::ResourceState startState)
+                                                                const ResourceState startState)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -3322,10 +3322,10 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const TRAP::Grap
 	VulkanCommandBuffer* const cmd = nullDescriptorData->InitialTransitionCmd;
 	nullDescriptorData->InitialTransitionCmdPool->Reset();
 	cmd->Begin();
-	const TextureBarrier barrier{texture, RendererAPI::ResourceState::Undefined, startState};
+	const TextureBarrier barrier{texture, ResourceState::Undefined, startState};
 	cmd->ResourceBarrier(nullptr, &barrier, nullptr);
 	cmd->End();
-	const RendererAPI::QueueSubmitDesc submitDesc
+	const QueueSubmitDesc submitDesc
 	{
 		.Cmds = {*cmd},
 		.SignalFence = nullDescriptorData->InitialTransitionFence
@@ -3517,7 +3517,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGPUFrameProfile(const QueueType typ
 
 	f32 time = 0.0f;
 
-	static constexpr RendererAPI::ReadRange readRange{0, sizeof(u64) * 1 * 2};
+	static constexpr ReadRange readRange{0, sizeof(u64) * 1 * 2};
 
 	TRAP::Ref<Buffer> buffer = nullptr;
 

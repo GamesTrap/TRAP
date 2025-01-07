@@ -6,7 +6,7 @@
 #include "Graphics/Shaders/Shader.h"
 
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const u64 size,
-																				               const UpdateFrequency updateFrequency)
+																				               const DescriptorUpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -35,7 +35,7 @@ void TRAP::Graphics::UniformBuffer::SetData(const void* const data, const u64 si
 	//TODO Do we really have to update all buffers? Or is the RendererAPI::GetCurrentImageIndex() enough?
 	for(usize i = 0; i < m_uniformBuffers.size(); ++i)
 	{
-		RendererAPI::BufferUpdateDesc desc{};
+		BufferUpdateDesc desc{};
 		desc.Buffer = m_uniformBuffers[i];
 		desc.DstOffset = offset;
 		API::ResourceLoader::BeginUpdateResource(desc);

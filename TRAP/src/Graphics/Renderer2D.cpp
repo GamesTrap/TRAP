@@ -221,7 +221,7 @@ TRAP::Graphics::Renderer2DData::Renderer2DData()
 
 	CameraUniformBuffer = UniformBuffer::Create(&UniformCamera,
 	                                            sizeof(Renderer2DData::UniformCamera),
-		                                        UpdateFrequency::Dynamic);
+		                                        DescriptorUpdateFrequency::Dynamic);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -232,7 +232,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::Init()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Shader = Shader::CreateFromSource(RendererAPI::ShaderType::Graphics, "Renderer2D_Quad", std::string(Embed::Renderer2DQuadShader));
+	Shader = Shader::CreateFromSource(ShaderType::Graphics, "Renderer2D_Quad", std::string(Embed::Renderer2DQuadShader));
 
 	const Scope<Image> whiteImage = Image::LoadFromMemory(2, 2, Image::ColorFormat::RGBA,
 														  std::vector<u8>{255, 255, 255, 255,
@@ -242,7 +242,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::Init()
 	WhiteTexture = Texture::Create2D("Renderer2DWhite", *whiteImage);
 	WhiteTexture->AwaitLoading();
 
-	RendererAPI::SamplerDesc samplerDesc{};
+	SamplerDesc samplerDesc{};
 	samplerDesc.Name = "Renderer2D Default Sampler";
 	TextureSampler = Sampler::Create(samplerDesc);
 
@@ -261,7 +261,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::Init()
 		offset += 4;
 	}
 
-	IndexBuffer = IndexBuffer::Create({IndicesData->data(), MaxQuadIndices}, UpdateFrequency::Dynamic);
+	IndexBuffer = IndexBuffer::Create({IndicesData->data(), MaxQuadIndices}, DescriptorUpdateFrequency::Dynamic);
 	IndexBuffer->AwaitLoading();
 }
 
@@ -277,7 +277,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::InitBuffers()
 		buffers.emplace_back();
 
 		buffers[DataBufferIndex].VertexBuffer = VertexBuffer::Create(MaxQuadVertices * sizeof(QuadVertex),
-																	 UpdateFrequency::Dynamic);
+																	 DescriptorUpdateFrequency::Dynamic);
 		buffers[DataBufferIndex].VertexBuffer->SetLayout(VertexLayout);
 
 		std::ranges::fill(buffers[DataBufferIndex].TextureSlots, WhiteTexture.get());
@@ -348,7 +348,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::ExtendBuffers()
 	auto& buffers = DataBuffers[imageIndex][DataBufferIndex];
 
 	buffers.VertexBuffer = TRAP::Graphics::VertexBuffer::Create(MaxQuadVertices * sizeof(QuadVertex),
-	                                                            TRAP::Graphics::UpdateFrequency::Dynamic);
+	                                                            TRAP::Graphics::DescriptorUpdateFrequency::Dynamic);
 	buffers.VertexBuffer->SetLayout(VertexLayout);
 
 	std::ranges::fill(DataBuffers[imageIndex][DataBufferIndex].TextureSlots, WhiteTexture.get());
@@ -441,7 +441,7 @@ void TRAP::Graphics::Renderer2DData::CircleData::Init()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Shader = Shader::CreateFromSource(RendererAPI::ShaderType::Graphics, "Renderer2D_Circle", std::string(Embed::Renderer2DCircleShader));
+	Shader = Shader::CreateFromSource(ShaderType::Graphics, "Renderer2D_Circle", std::string(Embed::Renderer2DCircleShader));
 
 	//Initialize circle indices (actually quad indices)
 	const auto IndicesData = MakeScope<std::array<u32, MaxCircleIndices>>();
@@ -459,7 +459,7 @@ void TRAP::Graphics::Renderer2DData::CircleData::Init()
 	}
 
 	//This uses the same indices as for quads
-	IndexBuffer = IndexBuffer::Create({IndicesData->data(), MaxCircleIndices}, UpdateFrequency::Dynamic);
+	IndexBuffer = IndexBuffer::Create({IndicesData->data(), MaxCircleIndices}, DescriptorUpdateFrequency::Dynamic);
 	IndexBuffer->AwaitLoading();
 }
 
@@ -475,7 +475,7 @@ void TRAP::Graphics::Renderer2DData::CircleData::InitBuffers()
 		buffers.emplace_back();
 
 		buffers[DataBufferIndex].VertexBuffer = VertexBuffer::Create(MaxCircleVertices * sizeof(CircleVertex),
-																	 UpdateFrequency::Dynamic);
+																	 DescriptorUpdateFrequency::Dynamic);
 		buffers[DataBufferIndex].VertexBuffer->SetLayout(VertexLayout);
 	}
 
@@ -535,7 +535,7 @@ void TRAP::Graphics::Renderer2DData::CircleData::ExtendBuffers()
 	auto& buffers = DataBuffers[imageIndex][DataBufferIndex];
 
 	buffers.VertexBuffer = TRAP::Graphics::VertexBuffer::Create(MaxCircleVertices * sizeof(CircleVertex),
-	                                                            TRAP::Graphics::UpdateFrequency::Dynamic);
+	                                                            TRAP::Graphics::DescriptorUpdateFrequency::Dynamic);
 	buffers.VertexBuffer->SetLayout(VertexLayout);
 }
 
@@ -597,7 +597,7 @@ void TRAP::Graphics::Renderer2DData::LineData::Init()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	Shader = Shader::CreateFromSource(RendererAPI::ShaderType::Graphics, "Renderer2D_Line", std::string(Embed::Renderer2DLineShader));
+	Shader = Shader::CreateFromSource(ShaderType::Graphics, "Renderer2D_Line", std::string(Embed::Renderer2DLineShader));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -612,7 +612,7 @@ void TRAP::Graphics::Renderer2DData::LineData::InitBuffers()
 		buffers.emplace_back();
 
 		buffers[DataBufferIndex].VertexBuffer = VertexBuffer::Create(MaxLineVertices * sizeof(LineVertex),
-																	 UpdateFrequency::Dynamic);
+																	 DescriptorUpdateFrequency::Dynamic);
 		buffers[DataBufferIndex].VertexBuffer->SetLayout(VertexLayout);
 	}
 
@@ -671,7 +671,7 @@ void TRAP::Graphics::Renderer2DData::LineData::ExtendBuffers()
 	auto& buffers = DataBuffers[imageIndex][DataBufferIndex];
 
 	buffers.VertexBuffer = TRAP::Graphics::VertexBuffer::Create(MaxLineVertices * sizeof(LineVertex),
-	                                                            TRAP::Graphics::UpdateFrequency::Dynamic);
+	                                                            TRAP::Graphics::DescriptorUpdateFrequency::Dynamic);
 	buffers.VertexBuffer->SetLayout(VertexLayout);
 }
 

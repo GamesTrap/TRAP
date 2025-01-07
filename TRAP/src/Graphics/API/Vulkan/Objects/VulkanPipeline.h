@@ -14,7 +14,7 @@ namespace TRAP::Graphics::API
 	public:
 		/// @brief Constructor.
 		/// @param desc Pipeline description
-		explicit VulkanPipeline(const RendererAPI::PipelineDesc& desc);
+		explicit VulkanPipeline(const PipelineDesc& desc);
 		/// @brief Destructor.
 		~VulkanPipeline() override;
 
@@ -32,18 +32,18 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] constexpr VkPipeline GetVkPipeline() const noexcept;
 		/// @brief Retrieve the pipeline type.
 		/// @return Pipeline type
-		[[nodiscard]] constexpr RendererAPI::PipelineType GetPipelineType() const noexcept;
+		[[nodiscard]] constexpr PipelineType GetPipelineType() const noexcept;
 
 	private:
 		/// @brief Initialize compute pipeline.
 		/// @param desc Pipeline description
-		void InitComputePipeline(const RendererAPI::PipelineDesc& desc);
+		void InitComputePipeline(const PipelineDesc& desc);
 		/// @brief Initialize graphics pipeline.
 		/// @param desc Pipeline description
-		void InitGraphicsPipeline(const RendererAPI::PipelineDesc& desc);
+		void InitGraphicsPipeline(const PipelineDesc& desc);
 
 		VkPipeline m_vkPipeline = VK_NULL_HANDLE;
-		RendererAPI::PipelineType m_type;
+		PipelineType m_type;
 		//In DX12 this information is stored in ID3D12StateObject.
 		//But for Vulkan we need to store it manually.
 		std::vector<std::string> m_shaderStageNames{};
@@ -61,7 +61,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanPipeline::GetPipelineType() const noexcept
+[[nodiscard]] constexpr TRAP::Graphics::PipelineType TRAP::Graphics::API::VulkanPipeline::GetPipelineType() const noexcept
 {
 	return m_type;
 }

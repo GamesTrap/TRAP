@@ -201,7 +201,7 @@ namespace
 	void FillRenderPassShadingRateAttachment2(const TRAP::Graphics::API::VulkanRenderer::RenderPassDesc& desc,
 	                                          VulkanRenderPassAttachments2& outRenderPassAttachments)
 	{
-		if((TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerTile) == TRAP::Graphics::RendererAPI::ShadingRateCaps::NotSupported ||
+		if((TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::ShadingRateCaps::PerTile) == TRAP::Graphics::ShadingRateCaps::NotSupported ||
 		   (desc.ShadingRateFormat == TRAP::Graphics::API::ImageFormat::Undefined))
 		{
 			return;

@@ -287,7 +287,7 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	return std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>
+	return std::get<TRAP::Graphics::GraphicsPipelineDesc>
 	(
 		s_perViewportDataMap.at(&window)->GraphicsPipelineDesc.Pipeline
 	).RootSignature;
@@ -298,7 +298,7 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	return std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>
+	return std::get<TRAP::Graphics::GraphicsPipelineDesc>
 	(
 		s_perViewportData->GraphicsPipelineDesc.Pipeline
 	).RootSignature;
@@ -385,7 +385,7 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(const Window& window)
 	TRAP::Ref<Graphics::RenderTarget> renderTarget = nullptr;
 
 	//Get correct RenderTarget
-	if((viewportData->RenderScale != 1.0f || viewportData->CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA) && viewportData->State == PerWindowState::PreUpdate)
+	if((viewportData->RenderScale != 1.0f || viewportData->CurrentAntiAliasing == AntiAliasing::MSAA) && viewportData->State == PerWindowState::PreUpdate)
 		renderTarget = viewportData->InternalRenderTargets[viewportData->CurrentSwapChainImageIndex];
 	else
 		renderTarget = viewportData->GetCurrentSwapchainRenderTarget();
@@ -402,7 +402,7 @@ void TRAP::Graphics::RendererAPI::StartRenderPass()
 	TRAP::Ref<Graphics::RenderTarget> renderTarget = nullptr;
 
 	//Get correct RenderTarget
-	if((s_perViewportData->RenderScale != 1.0f || s_perViewportData->CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA) && s_perViewportData->State == PerWindowState::PreUpdate)
+	if((s_perViewportData->RenderScale != 1.0f || s_perViewportData->CurrentAntiAliasing == AntiAliasing::MSAA) && s_perViewportData->State == PerWindowState::PreUpdate)
 		renderTarget = s_perViewportData->InternalRenderTargets[s_perViewportData->CurrentSwapChainImageIndex];
 	else
 		renderTarget = s_perViewportData->GetCurrentSwapchainRenderTarget();
@@ -437,9 +437,9 @@ void TRAP::Graphics::RendererAPI::StopRenderPass()
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::RendererAPI::Transition(const Ref<TRAP::Graphics::Texture>& texture,
-											 const TRAP::Graphics::RendererAPI::ResourceState oldLayout,
-											 const TRAP::Graphics::RendererAPI::ResourceState newLayout,
-											 const TRAP::Graphics::RendererAPI::QueueType queueType)
+											 const TRAP::Graphics::ResourceState oldLayout,
+											 const TRAP::Graphics::ResourceState newLayout,
+											 const TRAP::Graphics::QueueType queueType)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -505,7 +505,7 @@ void TRAP::Graphics::RendererAPI::GetAntiAliasing(AntiAliasing& outAntiAliasing,
 
 	outAntiAliasing = data.CurrentAntiAliasing;
 
-	if(outAntiAliasing == TRAP::Graphics::RendererAPI::AntiAliasing::Off)
+	if(outAntiAliasing == TRAP::Graphics::AntiAliasing::Off)
 		outSampleCount = TRAP::Graphics::SampleCount::One;
 	else
 		outSampleCount = data.CurrentSampleCount;
@@ -518,7 +518,7 @@ void TRAP::Graphics::RendererAPI::GetAntiAliasing(AntiAliasing& outAntiAliasing,
 
 	outAntiAliasing = s_perViewportData->CurrentAntiAliasing;
 
-	if(outAntiAliasing == TRAP::Graphics::RendererAPI::AntiAliasing::Off)
+	if(outAntiAliasing == TRAP::Graphics::AntiAliasing::Off)
 		outSampleCount = TRAP::Graphics::SampleCount::One;
 	else
 		outSampleCount = s_perViewportData->CurrentSampleCount;
@@ -549,7 +549,7 @@ void TRAP::Graphics::RendererAPI::SetAntiAliasing(const AntiAliasing antiAliasin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RendererAPI::GetAnisotropyLevel() noexcept
+[[nodiscard]] TRAP::Graphics::SampleCount TRAP::Graphics::RendererAPI::GetAnisotropyLevel() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);

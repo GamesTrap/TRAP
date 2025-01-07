@@ -16,7 +16,7 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc)
+TRAP::Graphics::API::VulkanQueue::VulkanQueue(const QueueDesc& desc)
 	: Queue(desc.Type)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -71,7 +71,7 @@ void TRAP::Graphics::API::VulkanQueue::WaitQueueIdle() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc& desc) const
+void TRAP::Graphics::API::VulkanQueue::Submit(const QueueSubmitDesc& desc) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -133,12 +133,12 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-[[nodiscard]] TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Present(const RendererAPI::QueuePresentDesc& desc) const
+[[nodiscard]] TRAP::Graphics::PresentStatus TRAP::Graphics::API::VulkanQueue::Present(const QueuePresentDesc& desc) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	const std::vector<TRAP::Ref<Semaphore>>& waitSemaphores = desc.WaitSemaphores;
-	RendererAPI::PresentStatus presentStatus = RendererAPI::PresentStatus::Failed;
+	PresentStatus presentStatus = PresentStatus::Failed;
 
 	if(!desc.SwapChain)
 		return presentStatus;
@@ -169,11 +169,11 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	const VkResult res = vkQueuePresentKHR(sChain->GetPresentVkQueue() != nullptr ? sChain->GetPresentVkQueue() : m_vkQueue,
 	                                       &presentInfo);
 	if (res == VK_SUCCESS)
-		presentStatus = RendererAPI::PresentStatus::Success;
+		presentStatus = PresentStatus::Success;
 	else if (res == VK_ERROR_DEVICE_LOST)
-		presentStatus = RendererAPI::PresentStatus::DeviceReset;
+		presentStatus = PresentStatus::DeviceReset;
 	else if(res == VK_ERROR_OUT_OF_DATE_KHR || res == VK_SUBOPTIMAL_KHR)
-		presentStatus = RendererAPI::PresentStatus::OutOfDate;
+		presentStatus = PresentStatus::OutOfDate;
 	else
 	{
 		VkCall(res);

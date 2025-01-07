@@ -48,12 +48,12 @@ namespace TRAP::Graphics::API
 	/// @brief Convert the RendererAPI::QueueType to VkQueueFlags.
 	/// @param queueType QueueType to convert.
 	/// @return Converted VkQueueFlags.
-	[[nodiscard]] constexpr VkQueueFlags QueueTypeToVkQueueFlags(RendererAPI::QueueType queueType) noexcept;
+	[[nodiscard]] constexpr VkQueueFlags QueueTypeToVkQueueFlags(QueueType queueType) noexcept;
 
 	/// @brief Convert the RendererAPI::SampleCount to VkSampleCountFlagBits.
 	/// @param sampleCount SampleCount to convert.
 	/// @return Converted VkSampleCountFlagBits.
-	[[nodiscard]] constexpr VkSampleCountFlagBits SampleCountToVkSampleCount(RendererAPI::SampleCount sampleCount) noexcept;
+	[[nodiscard]] constexpr VkSampleCountFlagBits SampleCountToVkSampleCount(SampleCount sampleCount) noexcept;
 	/// @brief Convert the ImageFormat to VkFormat.
 	/// @param imageFormat ImageFormat to convert.
 	/// @return Converted VkFormat.
@@ -66,7 +66,7 @@ namespace TRAP::Graphics::API
 	/// @brief Convert the RendererAPI::DescriptorType to VkImageUsageFlags.
 	/// @param type DescriptorType to convert.
 	/// @return Converted VkImageUsageFlags.
-	[[nodiscard]] constexpr VkImageUsageFlags DescriptorTypeToVkImageUsage(RendererAPI::DescriptorType type) noexcept;
+	[[nodiscard]] constexpr VkImageUsageFlags DescriptorTypeToVkImageUsage(DescriptorType type) noexcept;
 	/// @brief Convert the VkImageUsageFlags to VkFormatFeatureFlags.
 	/// @param usage VkImageUsageFlags to convert.
 	/// @return Converted VkFormatFeatureFlags.
@@ -75,77 +75,77 @@ namespace TRAP::Graphics::API
 	/// @param usage DescriptorType to convert.
 	/// @param typed Whether the buffer is a typed buffer.
 	/// @return Converted VkBufferUsageFlags.
-	[[nodiscard]] constexpr VkBufferUsageFlags DescriptorTypeToVkBufferUsage(RendererAPI::DescriptorType usage, bool typed) noexcept;
+	[[nodiscard]] constexpr VkBufferUsageFlags DescriptorTypeToVkBufferUsage(DescriptorType usage, bool typed) noexcept;
 	/// @brief Convert the RendererAPI::FilterType to VkFilter.
 	/// @param filter FilterType to convert.
 	/// @return Converted VkFilter.
-	[[nodiscard]] constexpr VkFilter FilterTypeToVkFilter(RendererAPI::FilterType filter) noexcept;
+	[[nodiscard]] constexpr VkFilter FilterTypeToVkFilter(FilterType filter) noexcept;
 	/// @brief Convert the RendererAPI::MipMapMode to VkSamplerMipmapMode.
 	/// @param mipMapMode MipMapMode to convert.
 	/// @return Converted VkSamplerMipmapMode.
-	[[nodiscard]] constexpr VkSamplerMipmapMode MipMapModeToVkMipMapMode(RendererAPI::MipMapMode mipMapMode) noexcept;
+	[[nodiscard]] constexpr VkSamplerMipmapMode MipMapModeToVkMipMapMode(MipMapMode mipMapMode) noexcept;
 	/// @brief Convert the RendererAPI::AddressMode to VkSamplerAddressMode.
 	/// @param addressMode AddressMode to convert.
 	/// @return Converted VkSamplerAddressMode.
-	[[nodiscard]] constexpr VkSamplerAddressMode AddressModeToVkAddressMode(RendererAPI::AddressMode addressMode) noexcept;
+	[[nodiscard]] constexpr VkSamplerAddressMode AddressModeToVkAddressMode(AddressMode addressMode) noexcept;
 	/// @brief Convert the RendererAPI::DescriptorType to VkDescriptorType.
 	/// @param type DescriptorType to convert.
 	/// @return Converted VkDescriptorType.
-	[[nodiscard]] constexpr VkDescriptorType DescriptorTypeToVkDescriptorType(RendererAPI::DescriptorType type) noexcept;
+	[[nodiscard]] constexpr VkDescriptorType DescriptorTypeToVkDescriptorType(DescriptorType type) noexcept;
 	/// @brief Convert the RendererAPI::ShaderStage to VkShaderStageFlags.
 	/// @param stages ShaderStage(s) to convert.
 	/// @return Converted VkShaderStageFlags.
 	/// @note This returns all found VkShaderStageFlagBits in stages as a single VkShaderStageFlags value.
-	[[nodiscard]] constexpr VkShaderStageFlags ShaderStageToVkShaderStageFlags(RendererAPI::ShaderStage stages) noexcept;
+	[[nodiscard]] constexpr VkShaderStageFlags ShaderStageToVkShaderStageFlags(ShaderStage stages) noexcept;
 	/// @brief Convert the RendererAPI::ShaderStage to VkShaderStageFlagBits.
 	/// @param stages ShaderStage(s) to convert.
 	/// @return Converted VkShaderStageFlagBits.
 	/// @note This returns the first found VkShaderStageFlagBits.
-	[[nodiscard]] constexpr VkShaderStageFlagBits ShaderStageToVkShaderStageFlagBits(RendererAPI::ShaderStage stage) noexcept;
+	[[nodiscard]] constexpr VkShaderStageFlagBits ShaderStageToVkShaderStageFlagBits(ShaderStage stage) noexcept;
 	/// @brief Convert the RendererAPI::PipelineCacheFlags to VkPipelineCacheCreateFlags.
 	/// @param flags PipelineCacheFlag to convert.
 	/// @return Converted VkPipelineCacheCreateFlags.
-	[[nodiscard]] constexpr VkPipelineCacheCreateFlags PipelineCacheFlagsToVkPipelineCacheCreateFlags(RendererAPI::PipelineCacheFlags flags) noexcept;
+	[[nodiscard]] constexpr VkPipelineCacheCreateFlags PipelineCacheFlagsToVkPipelineCacheCreateFlags(PipelineCacheFlags flags) noexcept;
 	/// @brief Convert the RendererAPI::ResourceState to VkAccessFlags.
 	/// @param state ResourceState to convert.
 	/// @return Converted VkAccessFlags.
-	[[nodiscard]] constexpr VkAccessFlags ResourceStateToVkAccessFlags(RendererAPI::ResourceState state) noexcept;
+	[[nodiscard]] constexpr VkAccessFlags ResourceStateToVkAccessFlags(ResourceState state) noexcept;
 	/// @brief Convert the RendererAPI::ResourceState to VkImageLayout.
 	/// @param usage ResourceState to convert.
 	/// @return Converted VkImageLayout.
-	[[nodiscard]] constexpr VkImageLayout ResourceStateToVkImageLayout(RendererAPI::ResourceState usage) noexcept;
+	[[nodiscard]] constexpr VkImageLayout ResourceStateToVkImageLayout(ResourceState usage) noexcept;
 	/// @brief Determine the VkPipelineStageFlags from VkAccessFlags and RendererAPI::QueueType.
 	/// @param physicalDevice Vulkan physical device.
 	/// @param accessFlags VkAccessFlags.
 	/// @param queueType QueueType.
 	/// @return Determined VkPipelineStageFlags.
-	[[nodiscard]] VkPipelineStageFlags DetermineVkPipelineStageFlags(const VulkanPhysicalDevice& physicalDevice, VkAccessFlags accessFlags, RendererAPI::QueueType queueType) noexcept;
+	[[nodiscard]] VkPipelineStageFlags DetermineVkPipelineStageFlags(const VulkanPhysicalDevice& physicalDevice, VkAccessFlags accessFlags, QueueType queueType) noexcept;
 	/// @brief Convert the RendererAPI::QueryType to VkQueryType.
 	/// @param type QueryType to convert.
 	/// @return Converted VkQueryType.
-	[[nodiscard]] constexpr VkQueryType QueryTypeToVkQueryType(RendererAPI::QueryType type) noexcept;
+	[[nodiscard]] constexpr VkQueryType QueryTypeToVkQueryType(QueryType type) noexcept;
 	/// @brief Convert the RendererAPI::PrimitiveTopology to VkPrimitiveTopology.
 	/// @param primitiveTopology Primitive topology to convert.
 	/// @return Converted VkPrimitiveTopology.
-	[[nodiscard]] constexpr VkPrimitiveTopology PrimitiveTopologyToVkPrimitiveTopology(RendererAPI::PrimitiveTopology primitiveToplogy) noexcept;
+	[[nodiscard]] constexpr VkPrimitiveTopology PrimitiveTopologyToVkPrimitiveTopology(PrimitiveTopology primitiveToplogy) noexcept;
 
 	/// @brief Utility to create the VkPipelineColorBlendStateCreateInfo struct from
 	/// a RendererAPI::BlendStateDesc and color blend attachments.
 	/// @param desc BlendStateDesc.
 	/// @param attachments Color blend attachments.
 	/// @return Created VkPipelineColorBlendStateCreateInfo.
-	[[nodiscard]] constexpr VkPipelineColorBlendStateCreateInfo UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
+	[[nodiscard]] constexpr VkPipelineColorBlendStateCreateInfo UtilToBlendDesc(const BlendStateDesc& desc,
 	                                                                            std::vector<VkPipelineColorBlendAttachmentState>& attachments) ;
 	/// @brief Utility to create the VkPipelineDepthStencilStateCreateInfo struct from
 	/// a RendererAPI::DepthStateDesc.
 	/// @param desc DepthStateDesc.
 	/// @return Created VkPipelineDepthStencilStateCreateInfo.
-	[[nodiscard]] constexpr VkPipelineDepthStencilStateCreateInfo UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc);
+	[[nodiscard]] constexpr VkPipelineDepthStencilStateCreateInfo UtilToDepthDesc(const DepthStateDesc& desc);
 	/// @brief Utility to create the VkPipelineRasterizationStateCreateInfo struct from
 	/// a RendererAPI::RasterizerStateDesc.
 	/// @param desc RasterizerStateDesc.
 	/// @return Created VkPipelineRasterizationStateCreateInfo.
-	[[nodiscard]] constexpr VkPipelineRasterizationStateCreateInfo UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc);
+	[[nodiscard]] constexpr VkPipelineRasterizationStateCreateInfo UtilToRasterizerDesc(const RasterizerStateDesc& desc);
 	/// @brief Utility to retrieve the planar image memory requirement for Vulkan.
 	/// @param device Vulkan device.
 	/// @param image Vulkan image.
@@ -158,12 +158,12 @@ namespace TRAP::Graphics::API
 	/// a RendererAPI::ShadingRateCombiner.
 	/// @param combiner ShadingRateCombiner.
 	/// @return Converted VkFragmentShadingRateCombinerOpKHR.
-	[[nodiscard]] constexpr VkFragmentShadingRateCombinerOpKHR ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(RendererAPI::ShadingRateCombiner combiner);
+	[[nodiscard]] constexpr VkFragmentShadingRateCombinerOpKHR ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(ShadingRateCombiner combiner);
 	/// @brief Utility to create the VkExtent2D (fragment size) from
 	/// a RendererAPI::ShadingRate.
 	/// @param rate ShadingRate.
 	/// @return Converted VkExtent2D.
-	[[nodiscard]] constexpr VkExtent2D ShadingRateToVkExtent2D(RendererAPI::ShadingRate rate);
+	[[nodiscard]] constexpr VkExtent2D ShadingRateToVkExtent2D(ShadingRate rate);
 
 	/// @brief Retrieve the recommended swapchain format for Vulkan.
 	/// @param HDR True if HDR is desired.
@@ -192,9 +192,9 @@ namespace TRAP::Graphics::API
 	void VkSetObjectName(const VulkanDevice& device, u64 handle, VkObjectType type, std::string_view name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
-	[[nodiscard]] constexpr VkAttachmentLoadOp VkAttachmentLoadOpTranslator(const RendererAPI::LoadActionType loadActionType)
+	[[nodiscard]] constexpr VkAttachmentLoadOp VkAttachmentLoadOpTranslator(const LoadActionType loadActionType)
 	{
-		using enum TRAP::Graphics::RendererAPI::LoadActionType;
+		using enum TRAP::Graphics::LoadActionType;
 
 		switch(loadActionType)
 		{
@@ -211,9 +211,9 @@ namespace TRAP::Graphics::API
 	};
 
 
-	[[nodiscard]] constexpr VkAttachmentStoreOp VkAttachmentStoreOpTranslator(const RendererAPI::StoreActionType storeActionType)
+	[[nodiscard]] constexpr VkAttachmentStoreOp VkAttachmentStoreOpTranslator(const StoreActionType storeActionType)
 	{
-		using enum TRAP::Graphics::RendererAPI::StoreActionType;
+		using enum TRAP::Graphics::StoreActionType;
 
 		switch(storeActionType)
 		{
@@ -230,9 +230,9 @@ namespace TRAP::Graphics::API
 		return VK_ATTACHMENT_STORE_OP_MAX_ENUM;
 	};
 
-	[[nodiscard]] constexpr VkCompareOp VkComparisonFuncTranslator(const RendererAPI::CompareMode compareMode)
+	[[nodiscard]] constexpr VkCompareOp VkComparisonFuncTranslator(const CompareMode compareMode)
 	{
-		using enum TRAP::Graphics::RendererAPI::CompareMode;
+		using enum TRAP::Graphics::CompareMode;
 
 		switch(compareMode)
 		{
@@ -258,9 +258,9 @@ namespace TRAP::Graphics::API
 		return VK_COMPARE_OP_MAX_ENUM;
 	}
 
-	[[nodiscard]] constexpr VkPipelineBindPoint VkPipelineBindPointTranslator(const RendererAPI::PipelineType pipelineType)
+	[[nodiscard]] constexpr VkPipelineBindPoint VkPipelineBindPointTranslator(const PipelineType pipelineType)
 	{
-		using enum TRAP::Graphics::RendererAPI::PipelineType;
+		using enum TRAP::Graphics::PipelineType;
 
 		switch(pipelineType)
 		{
@@ -276,9 +276,9 @@ namespace TRAP::Graphics::API
 		return VK_PIPELINE_BIND_POINT_MAX_ENUM;
 	}
 
-	[[nodiscard]] constexpr VkBlendFactor VkBlendConstantTranslator(const RendererAPI::BlendConstant blendConstant)
+	[[nodiscard]] constexpr VkBlendFactor VkBlendConstantTranslator(const BlendConstant blendConstant)
 	{
-		using enum TRAP::Graphics::RendererAPI::BlendConstant;
+		using enum TRAP::Graphics::BlendConstant;
 
 		switch(blendConstant)
 		{
@@ -314,9 +314,9 @@ namespace TRAP::Graphics::API
 		return VK_BLEND_FACTOR_MAX_ENUM;
 	}
 
-	[[nodiscard]] constexpr VkBlendOp VkBlendOpTranslator(const RendererAPI::BlendMode blendMode)
+	[[nodiscard]] constexpr VkBlendOp VkBlendOpTranslator(const BlendMode blendMode)
 	{
-		using enum RendererAPI::BlendMode;
+		using enum BlendMode;
 
 		switch(blendMode)
 		{
@@ -336,9 +336,9 @@ namespace TRAP::Graphics::API
 		return VK_BLEND_OP_MAX_ENUM;
 	}
 
-	[[nodiscard]] constexpr VkStencilOp VkStencilOpTranslator(const RendererAPI::StencilOp stencilOp)
+	[[nodiscard]] constexpr VkStencilOp VkStencilOpTranslator(const StencilOp stencilOp)
 	{
-		using enum RendererAPI::StencilOp;
+		using enum StencilOp;
 
 		switch(stencilOp)
 		{
@@ -364,9 +364,9 @@ namespace TRAP::Graphics::API
 		return VK_STENCIL_OP_MAX_ENUM;
 	}
 
-	[[nodiscard]] constexpr VkCullModeFlags VkCullModeTranslator(const RendererAPI::CullMode cullMode)
+	[[nodiscard]] constexpr VkCullModeFlags VkCullModeTranslator(const CullMode cullMode)
 	{
-		using enum RendererAPI::CullMode;
+		using enum CullMode;
 
 		switch(cullMode)
 		{
@@ -384,9 +384,9 @@ namespace TRAP::Graphics::API
 		return VK_CULL_MODE_FLAG_BITS_MAX_ENUM;
 	}
 
-	[[nodiscard]] constexpr VkPolygonMode VkFillModeTranslator(const RendererAPI::FillMode fillMode)
+	[[nodiscard]] constexpr VkPolygonMode VkFillModeTranslator(const FillMode fillMode)
 	{
-		using enum RendererAPI::FillMode;
+		using enum FillMode;
 
 		switch(fillMode)
 		{
@@ -402,9 +402,9 @@ namespace TRAP::Graphics::API
 		return VK_POLYGON_MODE_MAX_ENUM;
 	}
 
-	[[nodiscard]] constexpr VkFrontFace VkFrontFaceTranslator(const RendererAPI::FrontFace frontFace)
+	[[nodiscard]] constexpr VkFrontFace VkFrontFaceTranslator(const FrontFace frontFace)
 	{
-		using enum RendererAPI::FrontFace;
+		using enum FrontFace;
 
 		switch(frontFace)
 		{
@@ -418,9 +418,9 @@ namespace TRAP::Graphics::API
 		return VK_FRONT_FACE_MAX_ENUM;
 	}
 
-	[[nodiscard]] constexpr VkVertexInputRate VkVertexInputRateTranslator(const RendererAPI::VertexAttributeRate vertexAttributeRate)
+	[[nodiscard]] constexpr VkVertexInputRate VkVertexInputRateTranslator(const VertexAttributeRate vertexAttributeRate)
 	{
-		using enum RendererAPI::VertexAttributeRate;
+		using enum VertexAttributeRate;
 
 		switch(vertexAttributeRate)
 		{
@@ -516,17 +516,17 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkQueueFlags TRAP::Graphics::API::QueueTypeToVkQueueFlags(const RendererAPI::QueueType queueType) noexcept
+[[nodiscard]] constexpr VkQueueFlags TRAP::Graphics::API::QueueTypeToVkQueueFlags(const QueueType queueType) noexcept
 {
 	switch(queueType)
 	{
-	case RendererAPI::QueueType::Graphics:
+	case QueueType::Graphics:
 		return VK_QUEUE_GRAPHICS_BIT;
 
-	case RendererAPI::QueueType::Transfer:
+	case QueueType::Transfer:
 		return VK_QUEUE_TRANSFER_BIT;
 
-	case RendererAPI::QueueType::Compute:
+	case QueueType::Compute:
 		return VK_QUEUE_COMPUTE_BIT;
 	}
 
@@ -536,23 +536,23 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkSampleCountFlagBits TRAP::Graphics::API::SampleCountToVkSampleCount(const RendererAPI::SampleCount sampleCount) noexcept
+[[nodiscard]] constexpr VkSampleCountFlagBits TRAP::Graphics::API::SampleCountToVkSampleCount(const SampleCount sampleCount) noexcept
 {
 	switch(sampleCount)
 	{
-	case RendererAPI::SampleCount::One:
+	case SampleCount::One:
 		return VK_SAMPLE_COUNT_1_BIT;
 
-	case RendererAPI::SampleCount::Two:
+	case SampleCount::Two:
 		return VK_SAMPLE_COUNT_2_BIT;
 
-	case RendererAPI::SampleCount::Four:
+	case SampleCount::Four:
 		return VK_SAMPLE_COUNT_4_BIT;
 
-	case RendererAPI::SampleCount::Eight:
+	case SampleCount::Eight:
 		return VK_SAMPLE_COUNT_8_BIT;
 
-	case RendererAPI::SampleCount::Sixteen:
+	case SampleCount::Sixteen:
 		return VK_SAMPLE_COUNT_16_BIT;
 	}
 
@@ -804,13 +804,13 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkImageUsageFlags TRAP::Graphics::API::DescriptorTypeToVkImageUsage(const RendererAPI::DescriptorType type) noexcept
+[[nodiscard]] constexpr VkImageUsageFlags TRAP::Graphics::API::DescriptorTypeToVkImageUsage(const DescriptorType type) noexcept
 {
 	VkImageUsageFlags result = 0;
 
-	if ((type & RendererAPI::DescriptorType::Texture) != RendererAPI::DescriptorType::Undefined)
+	if ((type & DescriptorType::Texture) != DescriptorType::Undefined)
 		result |= VK_IMAGE_USAGE_SAMPLED_BIT;
-	if ((type & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined)
+	if ((type & DescriptorType::RWTexture) != DescriptorType::Undefined)
 		result |= VK_IMAGE_USAGE_STORAGE_BIT;
 
 	return result;
@@ -836,40 +836,43 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkBufferUsageFlags TRAP::Graphics::API::DescriptorTypeToVkBufferUsage(const RendererAPI::DescriptorType usage,
+[[nodiscard]] constexpr VkBufferUsageFlags TRAP::Graphics::API::DescriptorTypeToVkBufferUsage(const DescriptorType usage,
                                                                                               const bool typed) noexcept
 {
 	VkBufferUsageFlags result = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 
-	if ((usage & RendererAPI::DescriptorType::UniformBuffer) != RendererAPI::DescriptorType::Undefined)
+	if ((usage & DescriptorType::UniformBuffer) != DescriptorType::Undefined ||
+	    (usage & DescriptorType::UniformBufferDynamic) != DescriptorType::Undefined)
+	{
 		result |= VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
-	if ((usage & RendererAPI::DescriptorType::RWBuffer) != RendererAPI::DescriptorType::Undefined)
+	}
+	if ((usage & DescriptorType::RWBuffer) != DescriptorType::Undefined)
 	{
 		result |= VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
 		if (typed)
 			result |= VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT;
 	}
-	if ((usage & RendererAPI::DescriptorType::Buffer) != RendererAPI::DescriptorType::Undefined)
+	if ((usage & DescriptorType::Buffer) != DescriptorType::Undefined)
 	{
 		result |= VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
 		if (typed)
 			result |= VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT;
 	}
-	if ((usage & RendererAPI::DescriptorType::IndexBuffer) != RendererAPI::DescriptorType::Undefined)
+	if ((usage & DescriptorType::IndexBuffer) != DescriptorType::Undefined)
 		result |= VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
-	if ((usage & RendererAPI::DescriptorType::VertexBuffer) != RendererAPI::DescriptorType::Undefined)
+	if ((usage & DescriptorType::VertexBuffer) != DescriptorType::Undefined)
 		result |= VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-	if ((usage & RendererAPI::DescriptorType::IndirectBuffer) != RendererAPI::DescriptorType::Undefined)
+	if ((usage & DescriptorType::IndirectBuffer) != DescriptorType::Undefined)
 		result |= VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT;
 
 	//RayTracing
-	if ((usage & RendererAPI::DescriptorType::AccelerationStructure) != RendererAPI::DescriptorType::Undefined)
+	if ((usage & DescriptorType::AccelerationStructure) != DescriptorType::Undefined)
 		result |= VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR;
-	if ((usage & RendererAPI::DescriptorType::AccelerationStructureBuildInput) != RendererAPI::DescriptorType::Undefined)
+	if ((usage & DescriptorType::AccelerationStructureBuildInput) != DescriptorType::Undefined)
 		result |= VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR;
-	if ((usage & RendererAPI::DescriptorType::ShaderDeviceAddress) != RendererAPI::DescriptorType::Undefined)
+	if ((usage & DescriptorType::ShaderDeviceAddress) != DescriptorType::Undefined)
 		result |= VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR;
-	if ((usage & RendererAPI::DescriptorType::ShaderBindingTable) != RendererAPI::DescriptorType::Undefined)
+	if ((usage & DescriptorType::ShaderBindingTable) != DescriptorType::Undefined)
 		result |= VK_BUFFER_USAGE_SHADER_BINDING_TABLE_BIT_KHR;
 
 	return result;
@@ -877,14 +880,14 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkFilter TRAP::Graphics::API::FilterTypeToVkFilter(const RendererAPI::FilterType filter) noexcept
+[[nodiscard]] constexpr VkFilter TRAP::Graphics::API::FilterTypeToVkFilter(const FilterType filter) noexcept
 {
 	switch(filter)
 	{
-	case RendererAPI::FilterType::Nearest:
+	case FilterType::Nearest:
 		return VK_FILTER_NEAREST;
 
-	case RendererAPI::FilterType::Linear:
+	case FilterType::Linear:
 		return VK_FILTER_LINEAR;
 	}
 
@@ -894,14 +897,14 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkSamplerMipmapMode TRAP::Graphics::API::MipMapModeToVkMipMapMode(const RendererAPI::MipMapMode mipMapMode) noexcept
+[[nodiscard]] constexpr VkSamplerMipmapMode TRAP::Graphics::API::MipMapModeToVkMipMapMode(const MipMapMode mipMapMode) noexcept
 {
 	switch (mipMapMode)
 	{
-	case RendererAPI::MipMapMode::Nearest:
+	case MipMapMode::Nearest:
 		return VK_SAMPLER_MIPMAP_MODE_NEAREST;
 
-	case RendererAPI::MipMapMode::Linear:
+	case MipMapMode::Linear:
 		return VK_SAMPLER_MIPMAP_MODE_LINEAR;
 	}
 
@@ -911,20 +914,20 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkSamplerAddressMode TRAP::Graphics::API::AddressModeToVkAddressMode(const RendererAPI::AddressMode addressMode) noexcept
+[[nodiscard]] constexpr VkSamplerAddressMode TRAP::Graphics::API::AddressModeToVkAddressMode(const AddressMode addressMode) noexcept
 {
 	switch(addressMode)
 	{
-	case RendererAPI::AddressMode::Mirror:
+	case AddressMode::Mirror:
 		return VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
 
-	case RendererAPI::AddressMode::Repeat:
+	case AddressMode::Repeat:
 		return VK_SAMPLER_ADDRESS_MODE_REPEAT;
 
-	case RendererAPI::AddressMode::ClampToEdge:
+	case AddressMode::ClampToEdge:
 		return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
 
-	case RendererAPI::AddressMode::ClampToBorder:
+	case AddressMode::ClampToBorder:
 		return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
 	}
 
@@ -934,45 +937,47 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType(const RendererAPI::DescriptorType type) noexcept
+[[nodiscard]] constexpr VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType(const DescriptorType type) noexcept
 {
 	switch(type)
 	{
-	case RendererAPI::DescriptorType::Undefined:
+	case DescriptorType::Undefined:
 		TRAP_ASSERT(false, "DescriptorTypeToVkDescriptorType(): Invalid DescriptorInfo Type");
 		return VK_DESCRIPTOR_TYPE_MAX_ENUM;
 
-	case RendererAPI::DescriptorType::Sampler:
+	case DescriptorType::Sampler:
 		return VK_DESCRIPTOR_TYPE_SAMPLER;
 
-	case RendererAPI::DescriptorType::Texture:
+	case DescriptorType::Texture:
 		return VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
 
-	case RendererAPI::DescriptorType::UniformBuffer:
+	case DescriptorType::UniformBuffer:
 		return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	case DescriptorType::UniformBufferDynamic:
+		return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
 
-	case RendererAPI::DescriptorType::RWTexture:
+	case DescriptorType::RWTexture:
 		return VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
 
-	case RendererAPI::DescriptorType::Buffer:
+	case DescriptorType::Buffer:
 		[[fallthrough]];
-	case RendererAPI::DescriptorType::RWBuffer:
+	case DescriptorType::RWBuffer:
 		return VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 
-	case RendererAPI::DescriptorType::InputAttachment:
+	case DescriptorType::InputAttachment:
 		return VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
 
-	case RendererAPI::DescriptorType::TexelBuffer:
+	case DescriptorType::TexelBuffer:
 		return VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
 
-	case RendererAPI::DescriptorType::RWTexelBuffer:
+	case DescriptorType::RWTexelBuffer:
 		return VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
 
-	case RendererAPI::DescriptorType::CombinedImageSampler:
+	case DescriptorType::CombinedImageSampler:
 		return VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 
 	//RayTracing
-	case RendererAPI::DescriptorType::RayTracing:
+	case DescriptorType::RayTracing:
 		return VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR;
 
 	default:
@@ -983,27 +988,27 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlags(const RendererAPI::ShaderStage stages) noexcept
+[[nodiscard]] constexpr VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlags(const ShaderStage stages) noexcept
 {
 	VkShaderStageFlags res = 0;
 
-	if ((stages & RendererAPI::ShaderStage::AllGraphics) != RendererAPI::ShaderStage::None)
+	if ((stages & ShaderStage::AllGraphics) != ShaderStage::None)
 		return VK_SHADER_STAGE_ALL_GRAPHICS;
 
-	if ((stages & RendererAPI::ShaderStage::Vertex) != RendererAPI::ShaderStage::None)
+	if ((stages & ShaderStage::Vertex) != ShaderStage::None)
 		res |= VK_SHADER_STAGE_VERTEX_BIT;
-	if ((stages & RendererAPI::ShaderStage::Geometry) != RendererAPI::ShaderStage::None)
+	if ((stages & ShaderStage::Geometry) != ShaderStage::None)
 		res |= VK_SHADER_STAGE_GEOMETRY_BIT;
-	if ((stages & RendererAPI::ShaderStage::TessellationEvaluation) != RendererAPI::ShaderStage::None)
+	if ((stages & ShaderStage::TessellationEvaluation) != ShaderStage::None)
 		res |= VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
-	if ((stages & RendererAPI::ShaderStage::TessellationControl) != RendererAPI::ShaderStage::None)
+	if ((stages & ShaderStage::TessellationControl) != ShaderStage::None)
 		res |= VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
-	if ((stages & RendererAPI::ShaderStage::Fragment) != RendererAPI::ShaderStage::None)
+	if ((stages & ShaderStage::Fragment) != ShaderStage::None)
 		res |= VK_SHADER_STAGE_FRAGMENT_BIT;
-	if ((stages & RendererAPI::ShaderStage::Compute) != RendererAPI::ShaderStage::None)
+	if ((stages & ShaderStage::Compute) != ShaderStage::None)
 		res |= VK_SHADER_STAGE_COMPUTE_BIT;
 	//RayTracing
-	if ((stages & RendererAPI::ShaderStage::RayTracing) != RendererAPI::ShaderStage::None)
+	if ((stages & ShaderStage::RayTracing) != ShaderStage::None)
 		res |= (VK_SHADER_STAGE_RAYGEN_BIT_KHR | VK_SHADER_STAGE_ANY_HIT_BIT_KHR |
 			    VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_MISS_BIT_KHR |
 			    VK_SHADER_STAGE_INTERSECTION_BIT_KHR | VK_SHADER_STAGE_CALLABLE_BIT_KHR);
@@ -1014,28 +1019,28 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkShaderStageFlagBits TRAP::Graphics::API::ShaderStageToVkShaderStageFlagBits(const RendererAPI::ShaderStage stage) noexcept
+[[nodiscard]] constexpr VkShaderStageFlagBits TRAP::Graphics::API::ShaderStageToVkShaderStageFlagBits(const ShaderStage stage) noexcept
 {
 	VkShaderStageFlagBits res{};
 
 	//Graphics
-	if (stage == RendererAPI::ShaderStage::Vertex)
+	if (stage == ShaderStage::Vertex)
 		return VK_SHADER_STAGE_VERTEX_BIT;
-	if (stage == RendererAPI::ShaderStage::Geometry)
+	if (stage == ShaderStage::Geometry)
 		return VK_SHADER_STAGE_GEOMETRY_BIT;
-	if (stage == RendererAPI::ShaderStage::TessellationEvaluation)
+	if (stage == ShaderStage::TessellationEvaluation)
 		return VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
-	if (stage == RendererAPI::ShaderStage::TessellationControl)
+	if (stage == ShaderStage::TessellationControl)
 		return VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
-	if (stage == RendererAPI::ShaderStage::Fragment)
+	if (stage == ShaderStage::Fragment)
 		return VK_SHADER_STAGE_FRAGMENT_BIT;
 
 	//Compute
-	if (stage == RendererAPI::ShaderStage::Compute)
+	if (stage == ShaderStage::Compute)
 		return VK_SHADER_STAGE_COMPUTE_BIT;
 
 	//RayTracing
-	// if (stage == RendererAPI::ShaderStage::RayTracing)
+	// if (stage == ShaderStage::RayTracing)
 	// {
 	// 	return (VK_SHADER_STAGE_RAYGEN_BIT_KHR | VK_SHADER_STAGE_ANY_HIT_BIT_KHR |
 	// 		    VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_MISS_BIT_KHR |
@@ -1048,11 +1053,11 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkPipelineCacheCreateFlags TRAP::Graphics::API::PipelineCacheFlagsToVkPipelineCacheCreateFlags(const RendererAPI::PipelineCacheFlags flags) noexcept
+[[nodiscard]] constexpr VkPipelineCacheCreateFlags TRAP::Graphics::API::PipelineCacheFlagsToVkPipelineCacheCreateFlags(const PipelineCacheFlags flags) noexcept
 {
 	VkPipelineCacheCreateFlags ret = 0;
 
-	if ((flags & RendererAPI::PipelineCacheFlags::ExternallySynchronized) != RendererAPI::PipelineCacheFlags::None)
+	if ((flags & PipelineCacheFlags::ExternallySynchronized) != PipelineCacheFlags::None)
 		ret |= VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT_EXT;
 
 	return ret;
@@ -1060,31 +1065,31 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkAccessFlags TRAP::Graphics::API::ResourceStateToVkAccessFlags(const RendererAPI::ResourceState state) noexcept
+[[nodiscard]] constexpr VkAccessFlags TRAP::Graphics::API::ResourceStateToVkAccessFlags(const ResourceState state) noexcept
 {
 	VkAccessFlags ret = 0;
 
-	if ((state & RendererAPI::ResourceState::CopySource) != RendererAPI::ResourceState::Undefined)
+	if ((state & ResourceState::CopySource) != ResourceState::Undefined)
 		ret |= VK_ACCESS_TRANSFER_READ_BIT;
-	if ((state & RendererAPI::ResourceState::CopyDestination) != RendererAPI::ResourceState::Undefined)
+	if ((state & ResourceState::CopyDestination) != ResourceState::Undefined)
 		ret |= VK_ACCESS_TRANSFER_WRITE_BIT;
-	if ((state & RendererAPI::ResourceState::VertexAndConstantBuffer) != RendererAPI::ResourceState::Undefined)
+	if ((state & ResourceState::VertexAndConstantBuffer) != ResourceState::Undefined)
 		ret |= VK_ACCESS_UNIFORM_READ_BIT | VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
-	if ((state & RendererAPI::ResourceState::IndexBuffer) != RendererAPI::ResourceState::Undefined)
+	if ((state & ResourceState::IndexBuffer) != ResourceState::Undefined)
 		ret |= VK_ACCESS_INDEX_READ_BIT;
-	if ((state & RendererAPI::ResourceState::UnorderedAccess) != RendererAPI::ResourceState::Undefined)
+	if ((state & ResourceState::UnorderedAccess) != ResourceState::Undefined)
 		ret |= VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;
-	if ((state & RendererAPI::ResourceState::IndirectArgument) != RendererAPI::ResourceState::Undefined)
+	if ((state & ResourceState::IndirectArgument) != ResourceState::Undefined)
 		ret |= VK_ACCESS_INDIRECT_COMMAND_READ_BIT;
-	if ((state & RendererAPI::ResourceState::RenderTarget) != RendererAPI::ResourceState::Undefined)
+	if ((state & ResourceState::RenderTarget) != ResourceState::Undefined)
 		ret |= VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-	if ((state & RendererAPI::ResourceState::DepthWrite) != RendererAPI::ResourceState::Undefined)
+	if ((state & ResourceState::DepthWrite) != ResourceState::Undefined)
 		ret |= VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
-	if ((state & RendererAPI::ResourceState::ShaderResource) != RendererAPI::ResourceState::Undefined)
+	if ((state & ResourceState::ShaderResource) != ResourceState::Undefined)
 		ret |= VK_ACCESS_SHADER_READ_BIT;
 
 	//RayTracing
-	if ((state & RendererAPI::ResourceState::RayTracingAccelerationStructure) != RendererAPI::ResourceState::Undefined)
+	if ((state & ResourceState::RayTracingAccelerationStructure) != ResourceState::Undefined)
 		ret |= VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_KHR | VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR;
 
 	return ret;
@@ -1092,33 +1097,33 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkImageLayout TRAP::Graphics::API::ResourceStateToVkImageLayout(const RendererAPI::ResourceState usage) noexcept
+[[nodiscard]] constexpr VkImageLayout TRAP::Graphics::API::ResourceStateToVkImageLayout(const ResourceState usage) noexcept
 {
-	if ((usage & RendererAPI::ResourceState::CopySource) != RendererAPI::ResourceState::Undefined)
+	if ((usage & ResourceState::CopySource) != ResourceState::Undefined)
 		return VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
 
-	if ((usage & RendererAPI::ResourceState::CopyDestination) != RendererAPI::ResourceState::Undefined)
+	if ((usage & ResourceState::CopyDestination) != ResourceState::Undefined)
 		return VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 
-	if ((usage & RendererAPI::ResourceState::RenderTarget) != RendererAPI::ResourceState::Undefined)
+	if ((usage & ResourceState::RenderTarget) != ResourceState::Undefined)
 		return VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-	if ((usage & RendererAPI::ResourceState::DepthWrite) != RendererAPI::ResourceState::Undefined)
+	if ((usage & ResourceState::DepthWrite) != ResourceState::Undefined)
 		return VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-	if ((usage & RendererAPI::ResourceState::UnorderedAccess) != RendererAPI::ResourceState::Undefined)
+	if ((usage & ResourceState::UnorderedAccess) != ResourceState::Undefined)
 		return VK_IMAGE_LAYOUT_GENERAL;
 
-	if ((usage & RendererAPI::ResourceState::ShaderResource) != RendererAPI::ResourceState::Undefined)
+	if ((usage & ResourceState::ShaderResource) != ResourceState::Undefined)
 		return VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
-	if ((usage & RendererAPI::ResourceState::Present) != RendererAPI::ResourceState::Undefined)
+	if ((usage & ResourceState::Present) != ResourceState::Undefined)
 		return VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-	if ((usage & RendererAPI::ResourceState::Common) != RendererAPI::ResourceState::Undefined)
+	if ((usage & ResourceState::Common) != ResourceState::Undefined)
 		return VK_IMAGE_LAYOUT_GENERAL;
 
-	if ((usage & RendererAPI::ResourceState::ShadingRateSource) != RendererAPI::ResourceState::Undefined)
+	if ((usage & ResourceState::ShadingRateSource) != ResourceState::Undefined)
 		return VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR;
 
 	return VK_IMAGE_LAYOUT_UNDEFINED;
@@ -1126,17 +1131,17 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(const RendererAPI::QueryType type) noexcept
+[[nodiscard]] constexpr VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(const QueryType type) noexcept
 {
 	switch(type)
 	{
-	case RendererAPI::QueryType::Timestamp:
+	case QueryType::Timestamp:
 		return VK_QUERY_TYPE_TIMESTAMP;
 
-	case RendererAPI::QueryType::PipelineStatistics:
+	case QueryType::PipelineStatistics:
 		return VK_QUERY_TYPE_PIPELINE_STATISTICS;
 
-	case RendererAPI::QueryType::Occlusion:
+	case QueryType::Occlusion:
 		return VK_QUERY_TYPE_OCCLUSION;
 	}
 
@@ -1146,9 +1151,9 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkPrimitiveTopology TRAP::Graphics::API::PrimitiveTopologyToVkPrimitiveTopology(const TRAP::Graphics::RendererAPI::PrimitiveTopology primitiveToplogy) noexcept
+[[nodiscard]] constexpr VkPrimitiveTopology TRAP::Graphics::API::PrimitiveTopologyToVkPrimitiveTopology(const TRAP::Graphics::PrimitiveTopology primitiveToplogy) noexcept
 {
-	using enum RendererAPI::PrimitiveTopology;
+	using enum PrimitiveTopology;
 
 	switch(primitiveToplogy)
 	{
@@ -1172,7 +1177,7 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
+[[nodiscard]] constexpr VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const BlendStateDesc& desc,
 	                                                                                             std::vector<VkPipelineColorBlendAttachmentState>& attachments)
 {
 	u32 blendDescIndex = 0;
@@ -1206,7 +1211,7 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc)
+[[nodiscard]] constexpr VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::UtilToDepthDesc(const DepthStateDesc& desc)
 {
 	const VkStencilOpState frontStencilState
 	{
@@ -1249,7 +1254,7 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc)
+[[nodiscard]] constexpr VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::UtilToRasterizerDesc(const RasterizerStateDesc& desc)
 {
 	return VkPipelineRasterizationStateCreateInfo
 	{
@@ -1481,19 +1486,19 @@ constexpr void TRAP::Graphics::API::LinkVulkanStruct(VkBaseOutStructure*& base, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkFragmentShadingRateCombinerOpKHR TRAP::Graphics::API::ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const RendererAPI::ShadingRateCombiner combiner)
+[[nodiscard]] constexpr VkFragmentShadingRateCombinerOpKHR TRAP::Graphics::API::ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const ShadingRateCombiner combiner)
 {
 	switch(combiner)
 	{
-	case RendererAPI::ShadingRateCombiner::Passthrough:
+	case ShadingRateCombiner::Passthrough:
 		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_KEEP_KHR;
-	case RendererAPI::ShadingRateCombiner::Override:
+	case ShadingRateCombiner::Override:
 		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_REPLACE_KHR;
-	case RendererAPI::ShadingRateCombiner::Min:
+	case ShadingRateCombiner::Min:
 		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MIN_KHR;
-	case RendererAPI::ShadingRateCombiner::Max:
+	case ShadingRateCombiner::Max:
 		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MAX_KHR;
-	case RendererAPI::ShadingRateCombiner::Sum:
+	case ShadingRateCombiner::Sum:
 		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MUL_KHR;
 	}
 
@@ -1503,28 +1508,28 @@ constexpr void TRAP::Graphics::API::LinkVulkanStruct(VkBaseOutStructure*& base, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkExtent2D TRAP::Graphics::API::ShadingRateToVkExtent2D(const RendererAPI::ShadingRate rate)
+[[nodiscard]] constexpr VkExtent2D TRAP::Graphics::API::ShadingRateToVkExtent2D(const ShadingRate rate)
 {
 	switch(rate)
 	{
-	case RendererAPI::ShadingRate::Full:
+	case ShadingRate::Full:
 		[[fallthrough]];
-	case RendererAPI::ShadingRate::NotSupported:
+	case ShadingRate::NotSupported:
 		return VkExtent2D{ 1, 1 };
 
-	case RendererAPI::ShadingRate::Half:
+	case ShadingRate::Half:
 		return VkExtent2D{ 2, 2 };
-	case RendererAPI::ShadingRate::Quarter:
+	case ShadingRate::Quarter:
 		return VkExtent2D{ 4, 4 };
-	case RendererAPI::ShadingRate::Eighth:
+	case ShadingRate::Eighth:
 		return VkExtent2D{ 8, 8 };
-	case RendererAPI::ShadingRate::OneXTwo:
+	case ShadingRate::OneXTwo:
 		return VkExtent2D{ 1, 2 };
-	case RendererAPI::ShadingRate::TwoXOne:
+	case ShadingRate::TwoXOne:
 		return VkExtent2D{ 2, 1 };
-	case RendererAPI::ShadingRate::TwoXFour:
+	case ShadingRate::TwoXFour:
 		return VkExtent2D{ 2, 4 };
-	case RendererAPI::ShadingRate::FourXTwo:
+	case ShadingRate::FourXTwo:
 		return VkExtent2D{ 4, 2 };
 	}
 

@@ -16,7 +16,7 @@ namespace TRAP::Graphics::API
 	public:
 		/// @brief Constructor.
 		/// @param desc Queue description.
-		explicit VulkanQueue(const RendererAPI::QueueDesc& desc);
+		explicit VulkanQueue(const QueueDesc& desc);
 		/// @brief Destructor.
 		~VulkanQueue() override;
 
@@ -56,14 +56,14 @@ namespace TRAP::Graphics::API
 
 		/// @brief Submit work to the queue.
 		/// @param desc Queue submit description.
-		void Submit(const RendererAPI::QueueSubmitDesc& desc) const override;
+		void Submit(const QueueSubmitDesc& desc) const override;
 
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Queue an image for presentation.
 		/// @param desc Queue presentation description.
 		/// @return Presentation status.
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const override;
+		[[nodiscard]] PresentStatus Present(const QueuePresentDesc& desc) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 	private:

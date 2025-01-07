@@ -37,9 +37,9 @@ void TRAP::Graphics::Renderer::Init()
 	MaxDrawCalls = TRAP::Math::Min(MaxDrawCalls, 1000000u); //Max 1 million draw calls (so we don't exceed heap sizes)
 
 	SceneStorageBuffer = TRAP::Graphics::StorageBuffer::Create(SceneDataObj.get(), sizeof(SceneData),
-	 														   TRAP::Graphics::UpdateFrequency::Dynamic);
+	 														   TRAP::Graphics::DescriptorUpdateFrequency::Dynamic);
 	ModelStorageBuffer = TRAP::Graphics::StorageBuffer::Create(sizeof(TRAP::Math::Mat4) * MaxDrawCalls,
-	                                                           TRAP::Graphics::UpdateFrequency::Dynamic);
+	                                                           TRAP::Graphics::DescriptorUpdateFrequency::Dynamic);
 
 	Renderer2D::Init();
 }

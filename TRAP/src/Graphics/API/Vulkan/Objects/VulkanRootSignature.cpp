@@ -14,7 +14,7 @@
 
 namespace
 {
-	[[nodiscard]] TRAP::Utils::UnorderedStringMap<TRAP::Ref<TRAP::Graphics::API::VulkanSampler>> GetStaticSamplerMap(const TRAP::Graphics::RendererAPI::RootSignatureDesc& desc)
+	[[nodiscard]] TRAP::Utils::UnorderedStringMap<TRAP::Ref<TRAP::Graphics::API::VulkanSampler>> GetStaticSamplerMap(const TRAP::Graphics::RootSignatureDesc& desc)
 	{
 		TRAP::Utils::UnorderedStringMap<TRAP::Ref<TRAP::Graphics::API::VulkanSampler>> staticSamplerMap{};
 
@@ -27,10 +27,8 @@ namespace
 		return staticSamplerMap;
 	}
 
-	[[nodiscard]] TRAP::Optional<TRAP::Graphics::RendererAPI::PipelineType> GetReflectionPipelineType(const TRAP::Graphics::Shader& shader)
+	[[nodiscard]] TRAP::Optional<TRAP::Graphics::PipelineType> GetReflectionPipelineType(const TRAP::Graphics::Shader& shader)
 	{
-		using RendererAPI = TRAP::Graphics::RendererAPI;
-
 		const TRAP::Graphics::API::VulkanShader* const vkShader = dynamic_cast<const TRAP::Graphics::API::VulkanShader* const>(&shader);
 		if(vkShader == nullptr)
 			return TRAP::NullOpt;
@@ -38,19 +36,19 @@ namespace
 		if(reflection == nullptr)
 			return TRAP::NullOpt;
 
-		if ((reflection->ShaderStages & RendererAPI::ShaderStage::Compute) != RendererAPI::ShaderStage::None)
-			return RendererAPI::PipelineType::Compute;
-		if ((reflection->ShaderStages & RendererAPI::ShaderStage::RayTracing) != RendererAPI::ShaderStage::None)
-			return RendererAPI::PipelineType::RayTracing;
-		if ((reflection->ShaderStages & RendererAPI::ShaderStage::AllGraphics) != RendererAPI::ShaderStage::None)
-			return RendererAPI::PipelineType::Graphics;
+		if ((reflection->ShaderStages & TRAP::Graphics::ShaderStage::Compute) != TRAP::Graphics::ShaderStage::None)
+			return TRAP::Graphics::PipelineType::Compute;
+		if ((reflection->ShaderStages & TRAP::Graphics::ShaderStage::RayTracing) != TRAP::Graphics::ShaderStage::None)
+			return TRAP::Graphics::PipelineType::RayTracing;
+		if ((reflection->ShaderStages & TRAP::Graphics::ShaderStage::AllGraphics) != TRAP::Graphics::ShaderStage::None)
+			return TRAP::Graphics::PipelineType::Graphics;
 
 		return TRAP::NullOpt;
 	}
 
 	[[nodiscard]] bool CollectUniqueShaderResourcesFromReflection(const TRAP::Graphics::API::ShaderReflection::PipelineReflection& reflection,
 	                                                              std::vector<TRAP::Graphics::API::ShaderReflection::ShaderResource>& outShaderResources,
-													              TRAP::Graphics::RendererAPI::DescriptorIndexMap& outIndexMap)
+													              TRAP::Graphics::DescriptorIndexMap& outIndexMap)
 	{
 		for(const auto& res : reflection.ShaderResources)
 		{
@@ -106,10 +104,10 @@ namespace
 		return true;
 	}
 
-	[[nodiscard]] std::pair<std::vector<TRAP::Graphics::API::ShaderReflection::ShaderResource>, TRAP::Graphics::RendererAPI::DescriptorIndexMap>
-		CollectUniqueShaderResources(const TRAP::Graphics::RendererAPI::RootSignatureDesc& desc)
+	[[nodiscard]] std::pair<std::vector<TRAP::Graphics::API::ShaderReflection::ShaderResource>, TRAP::Graphics::DescriptorIndexMap>
+		CollectUniqueShaderResources(const TRAP::Graphics::RootSignatureDesc& desc)
 	{
-		std::pair<std::vector<TRAP::Graphics::API::ShaderReflection::ShaderResource>, TRAP::Graphics::RendererAPI::DescriptorIndexMap> uniqueResources{};
+		std::pair<std::vector<TRAP::Graphics::API::ShaderReflection::ShaderResource>, TRAP::Graphics::DescriptorIndexMap> uniqueResources{};
 		auto& [shaderResources, indexMap] = uniqueResources;
 
 		//Collect all unique shader resources in the given shaders
@@ -133,7 +131,7 @@ namespace
 	}
 
 	[[nodiscard]] VkDescriptorSetLayoutBinding BuildVkDescriptorSetLayoutBinding(const TRAP::Graphics::API::ShaderReflection::ShaderResource& shaderResource,
-	                                                                             const TRAP::Graphics::RendererAPI::DescriptorInfo& descriptorInfo,
+	                                                                             const TRAP::Graphics::DescriptorInfo& descriptorInfo,
 																				 const TRAP::Utils::UnorderedStringMap<TRAP::Ref<TRAP::Graphics::API::VulkanSampler>>& staticSamplerMap)
 	{
 		VkDescriptorSetLayoutBinding binding{};
@@ -172,10 +170,10 @@ namespace
 	}
 
 	void FillDescriptors(std::vector<TRAP::Graphics::API::ShaderReflection::ShaderResource> shaderResources,
-	                     const TRAP::Graphics::RendererAPI::RootSignatureDesc& desc,
+	                     const TRAP::Graphics::RootSignatureDesc& desc,
 						 std::vector<VkPushConstantRange>& outPushConstants,
 						 const std::span<TRAP::Graphics::API::VulkanRenderer::UpdateFrequencyLayoutInfo> outLayouts,
-	                     std::vector<TRAP::Graphics::RendererAPI::DescriptorInfo>& outDescriptors)
+	                     std::vector<TRAP::Graphics::DescriptorInfo>& outDescriptors)
 	{
 		const TRAP::Utils::UnorderedStringMap<TRAP::Ref<TRAP::Graphics::API::VulkanSampler>> staticSamplerMap = GetStaticSamplerMap(desc);
 
@@ -187,14 +185,14 @@ namespace
 			const TRAP::Graphics::API::ShaderReflection::ShaderResource& res = shaderResources[i];
 			u32 setIndex = res.Set;
 			if(setIndex >= TRAP::Graphics::RendererAPI::MaxDescriptorSets &&
-			   res.Type != TRAP::Graphics::RendererAPI::DescriptorType::RootConstant)
+			   res.Type != TRAP::Graphics::DescriptorType::RootConstant)
 			{
 				TP_ERROR(TRAP::Log::RendererVulkanRootSignaturePrefix, "Trying to use descriptor set ", setIndex, " which is not supported");
 				continue;
 			}
 
 			//Copy the binding information generated from the shader reflection into the descriptor
-			TRAP::Graphics::RendererAPI::DescriptorInfo& descInfo = outDescriptors.emplace_back();
+			TRAP::Graphics::DescriptorInfo& descInfo = outDescriptors.emplace_back();
 			descInfo.Reg = res.Reg;
 			descInfo.Size = NumericCast<u32>(res.Size);
 			descInfo.Type = res.Type;
@@ -203,12 +201,12 @@ namespace
 
 			//If descriptor is not a root constant create a new layout binding for this descriptor and add it to
 			//the binding array
-			if(descInfo.Type != TRAP::Graphics::RendererAPI::DescriptorType::RootConstant)
+			if(descInfo.Type != TRAP::Graphics::DescriptorType::RootConstant)
 			{
 				const VkDescriptorSetLayoutBinding binding = BuildVkDescriptorSetLayoutBinding(res, descInfo, staticSamplerMap);
 
 				//Store the Vulkan related info in the descriptor to avoid constantly calling mapping functions
-				descInfo.VkType = binding.descriptorType;
+				// descInfo.VkType = binding.descriptorType;
 				descInfo.VkStages = binding.stageFlags;
 				descInfo.Set = setIndex;
 
@@ -219,7 +217,7 @@ namespace
 				//if user tries to update a static sampler
 				//In case of Combined Image Samplers, skip invalidating the index
 				//because we do not introduce new ways to update the descriptor in the interface
-				if(staticSamplerMap.contains(descInfo.Name) && descInfo.Type != TRAP::Graphics::RendererAPI::DescriptorType::CombinedImageSampler)
+				if(staticSamplerMap.contains(descInfo.Name) && descInfo.Type != TRAP::Graphics::DescriptorType::CombinedImageSampler)
 					descInfo.IndexInParent = std::numeric_limits<u32>::max();
 				else
 					outLayouts[setIndex].Descriptors.emplace_back(&descInfo);
@@ -292,7 +290,7 @@ namespace
 			//Loop through descriptor belonging to this update frequency and increment the cumulative descriptor count
 			for(usize descIndex = 0; descIndex < layout.Descriptors.size(); ++descIndex)
 			{
-				TRAP::Graphics::RendererAPI::DescriptorInfo* const descInfo = layout.Descriptors[descIndex];
+				TRAP::Graphics::DescriptorInfo* const descInfo = layout.Descriptors[descIndex];
 				descInfo->IndexInParent = NumericCast<u32>(descIndex);
 				descInfo->HandleIndex = outVkCumulativeDescriptorCounts[i];
 				outVkCumulativeDescriptorCounts[i] += descInfo->Size;
@@ -301,7 +299,7 @@ namespace
 			outVkDynamicDescriptorCounts[i] = NumericCast<u8>(layout.DynamicDescriptors.size());
 			for(usize descIndex = 0; descIndex < outVkDynamicDescriptorCounts[i]; ++descIndex)
 			{
-				TRAP::Graphics::RendererAPI::DescriptorInfo* const descInfo = layout.DynamicDescriptors[descIndex];
+				TRAP::Graphics::DescriptorInfo* const descInfo = layout.DynamicDescriptors[descIndex];
 				descInfo->RootDescriptorIndex = NumericCast<u32>(descIndex);
 			}
 		}
@@ -330,12 +328,12 @@ namespace
 		return pipelineLayout;
 	}
 
-	void FillDescriptorWithDefaultValue(const TRAP::Graphics::RendererAPI::DescriptorInfo& descInfo,
+	void FillDescriptorWithDefaultValue(const TRAP::Graphics::DescriptorInfo& descInfo,
 	                                    const std::span<TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData> outUpdateTemplateData)
 	{
 		switch(descInfo.Type)
 		{
-		case TRAP::Graphics::RendererAPI::DescriptorType::Sampler:
+		case TRAP::Graphics::DescriptorType::Sampler:
 			for (u32 arr = 0; arr < descInfo.Size; ++arr)
 			{
 				outUpdateTemplateData[descInfo.HandleIndex + NumericCast<usize>(arr)].ImageInfo =
@@ -347,7 +345,7 @@ namespace
 			}
 			break;
 
-		case TRAP::Graphics::RendererAPI::DescriptorType::Texture:
+		case TRAP::Graphics::DescriptorType::Texture:
 			for (u32 arr = 0; arr < descInfo.Size; ++arr)
 			{
 				outUpdateTemplateData[descInfo.HandleIndex + NumericCast<usize>(arr)].ImageInfo =
@@ -359,7 +357,7 @@ namespace
 			}
 			break;
 
-		case TRAP::Graphics::RendererAPI::DescriptorType::RWTexture:
+		case TRAP::Graphics::DescriptorType::RWTexture:
 			for (u32 arr = 0; arr < descInfo.Size; ++arr)
 			{
 				outUpdateTemplateData[descInfo.HandleIndex + NumericCast<usize>(arr)].ImageInfo =
@@ -371,11 +369,13 @@ namespace
 			}
 			break;
 
-		case TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer:
+		case TRAP::Graphics::DescriptorType::UniformBuffer:
 			[[fallthrough]];
-		case TRAP::Graphics::RendererAPI::DescriptorType::Buffer:
+		case TRAP::Graphics::DescriptorType::UniformBufferDynamic:
 			[[fallthrough]];
-		case TRAP::Graphics::RendererAPI::DescriptorType::BufferRaw:
+		case TRAP::Graphics::DescriptorType::Buffer:
+			[[fallthrough]];
+		case TRAP::Graphics::DescriptorType::BufferRaw:
 			for(u32 arr = 0; arr < descInfo.Size; ++arr)
 			{
 				outUpdateTemplateData[descInfo.HandleIndex + NumericCast<usize>(arr)].BufferInfo =
@@ -387,9 +387,9 @@ namespace
 			}
 			break;
 
-		case TRAP::Graphics::RendererAPI::DescriptorType::RWBuffer:
+		case TRAP::Graphics::DescriptorType::RWBuffer:
 			[[fallthrough]];
-		case TRAP::Graphics::RendererAPI::DescriptorType::RWBufferRaw:
+		case TRAP::Graphics::DescriptorType::RWBufferRaw:
 			for(u32 arr = 0; arr < descInfo.Size; ++arr)
 			{
 				outUpdateTemplateData[descInfo.HandleIndex + NumericCast<usize>(arr)].BufferInfo =
@@ -401,12 +401,12 @@ namespace
 			}
 			break;
 
-		case TRAP::Graphics::RendererAPI::DescriptorType::TexelBuffer:
+		case TRAP::Graphics::DescriptorType::TexelBuffer:
 			for (u32 arr = 0; arr < descInfo.Size; ++arr)
 				outUpdateTemplateData[descInfo.HandleIndex + NumericCast<usize>(arr)].BufferView = TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultBufferSRV->GetUniformTexelView();
 			break;
 
-		case TRAP::Graphics::RendererAPI::DescriptorType::RWTexelBuffer:
+		case TRAP::Graphics::DescriptorType::RWTexelBuffer:
 			for (u32 arr = 0; arr < descInfo.Size; ++arr)
 				outUpdateTemplateData[descInfo.HandleIndex + NumericCast<usize>(arr)].BufferView = TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultBufferUAV->GetStorageTexelView();
 			break;
@@ -429,7 +429,7 @@ namespace
 		for (const auto* const descInfo : layout.Descriptors)
 		{
 			//Raytracing descriptor dont support update template so we ignore them
-			if(descInfo->Type == TRAP::Graphics::RendererAPI::DescriptorType::RayTracing)
+			if(descInfo->Type == TRAP::Graphics::DescriptorType::RayTracing)
 			{
 				outVkRayTracingDescriptorCount += NumericCast<u8>(descInfo->Size);
 				continue;
@@ -437,7 +437,7 @@ namespace
 
 			const u64 offset = descInfo->HandleIndex * sizeof(TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData);
 
-			entries.emplace_back(descInfo->Reg, 0, descInfo->Size, descInfo->VkType, offset,
+			entries.emplace_back(descInfo->Reg, 0, descInfo->Size, TRAP::Graphics::API::DescriptorTypeToVkDescriptorType(descInfo->Type), offset,
 								 sizeof(TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData));
 
 			FillDescriptorWithDefaultValue(*descInfo, outUpdateTemplateData);
@@ -447,7 +447,7 @@ namespace
 	}
 
 	void UpdateDescriptorSetTemplate(const TRAP::Graphics::API::VulkanDevice& device,
-	                                 const TRAP::Graphics::RendererAPI::PipelineType pipelineType,
+	                                 const TRAP::Graphics::PipelineType pipelineType,
 	                                 VkPipelineLayout pipelineLayout,
 		                             const u32 setIndex,
 	                                 const std::span<const TRAP::Graphics::API::VulkanRenderer::UpdateFrequencyLayoutInfo> layouts,
@@ -488,7 +488,7 @@ namespace
 	}
 
 	void UpdateDescriptorTemplates(const TRAP::Graphics::API::VulkanDevice& device,
-	                               const TRAP::Graphics::RendererAPI::PipelineType pipelineType,
+	                               const TRAP::Graphics::PipelineType pipelineType,
 	                               VkPipelineLayout pipelineLayout,
 	                               const std::span<const TRAP::Graphics::API::VulkanRenderer::UpdateFrequencyLayoutInfo> layouts,
 	                               const std::span<const u16> vkDescriptorCounts,
@@ -514,7 +514,7 @@ namespace
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI::RootSignatureDesc& desc)
+TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RootSignatureDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -568,7 +568,7 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const std::string_view resName) const
+[[nodiscard]] const TRAP::Graphics::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const std::string_view resName) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);

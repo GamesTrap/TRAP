@@ -129,14 +129,14 @@ namespace
 
 		if(const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath())
 		{
-			const TRAP::Graphics::RendererAPI::PipelineCacheLoadDesc cacheDesc{.Path = *tempFolder / "ImGui.cache",
-			                                                                   .Flags = TRAP::Graphics::RendererAPI::PipelineCacheFlags::None,
+			const TRAP::Graphics::PipelineCacheLoadDesc cacheDesc{.Path = *tempFolder / "ImGui.cache",
+			                                                                   .Flags = TRAP::Graphics::PipelineCacheFlags::None,
 																			   .Name = "Pipeline cache (Pipeline: \"ImGui\")"};
 			outImGuiPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
 		}
 		else //Create empty cache as fallback
 		{
-			TRAP::Graphics::RendererAPI::PipelineCacheDesc cacheDesc{};
+			TRAP::Graphics::PipelineCacheDesc cacheDesc{};
 			cacheDesc.Name = "Pipeline cache (Pipeline: \"ImGui\")";
 			outImGuiPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
 		}
@@ -310,7 +310,7 @@ void TRAP::ImGuiLayer::Begin()
 		TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
 
 		TRAP::Ref<TRAP::Graphics::RenderTarget> rT = nullptr;
-		if(aaMethod == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA && viewportData.RenderScale == 1.0f) //MSAA and no RenderScale
+		if(aaMethod == TRAP::Graphics::AntiAliasing::MSAA && viewportData.RenderScale == 1.0f) //MSAA and no RenderScale
 			rT = viewportData.InternalRenderTargets[viewportData.CurrentSwapChainImageIndex];
 		else
 			rT = viewportData.GetCurrentSwapchainRenderTarget();

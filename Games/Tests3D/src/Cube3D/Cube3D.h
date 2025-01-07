@@ -22,7 +22,7 @@ private:
 	TRAP::Scope<TRAP::Graphics::IndexBuffer> m_cubeIndexBuffer = nullptr;
 	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_skyBoxVertexBuffer = nullptr;
 
-	TRAP::Graphics::RendererAPI::SamplerDesc m_textureSamplerDesc{};
+	TRAP::Graphics::SamplerDesc m_textureSamplerDesc{};
 	TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler = nullptr;
 
 	struct DiffuseReflectionDataBuffer

@@ -8,9 +8,9 @@
 namespace std
 {
 	template<>
-    struct hash<TRAP::Graphics::RendererAPI::PipelineDesc>
+    struct hash<TRAP::Graphics::PipelineDesc>
 	{
-		[[nodiscard]] constexpr usize operator()(const TRAP::Graphics::RendererAPI::PipelineDesc& p) const noexcept
+		[[nodiscard]] constexpr usize operator()(const TRAP::Graphics::PipelineDesc& p) const noexcept
 		{
 			usize res = 0;
 
@@ -22,7 +22,7 @@ namespace std
                 p.PipelineExtensionCount
             );
 
-			if (const auto* const c = std::get_if<TRAP::Graphics::RendererAPI::ComputePipelineDesc>(&p.Pipeline))
+			if (const auto* const c = std::get_if<TRAP::Graphics::ComputePipelineDesc>(&p.Pipeline))
 			{
 				TRAP::Utils::HashCombine
                 (
@@ -31,7 +31,7 @@ namespace std
                 );
 			}
 
-			if (const auto* const g = std::get_if<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>(&p.Pipeline))
+			if (const auto* const g = std::get_if<TRAP::Graphics::GraphicsPipelineDesc>(&p.Pipeline))
 			{
 				TRAP::Utils::HashCombine
                 (

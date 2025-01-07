@@ -701,7 +701,7 @@ namespace TRAP::Graphics::API
 		/// @remark @headless This function is not available in headless mode.
 		void BindRenderTarget(const Graphics::RenderTarget* colorTarget,
 		                      const Graphics::RenderTarget* depthStencil /*= nullptr*/,
-							  RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
+							  LoadActionsDesc* loadActions /*= nullptr*/,
 							  std::vector<u32>* colorArraySlices /*= nullptr*/,
 							  std::vector<u32>* colorMipSlices /*= nullptr*/,
 							  u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/,
@@ -719,7 +719,7 @@ namespace TRAP::Graphics::API
 		/// @remark This function is only available in headless mode.
 		void BindRenderTarget(const Graphics::RenderTarget* colorTarget,
 		                      const Graphics::RenderTarget* depthStencil /*= nullptr*/,
-							  RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
+							  LoadActionsDesc* loadActions /*= nullptr*/,
 							  std::vector<u32>* colorArraySlices /*= nullptr*/,
 							  std::vector<u32>* colorMipSlices /*= nullptr*/,
 							  u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/) const override;
@@ -738,7 +738,7 @@ namespace TRAP::Graphics::API
 		/// @remark @headless This function is not available in headless mode.
 		void BindRenderTargets(const std::vector<std::reference_wrapper<const Graphics::RenderTarget>>& colorTargets,
 		                       const Graphics::RenderTarget* depthStencil /*= nullptr*/,
-							   RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
+							   LoadActionsDesc* loadActions /*= nullptr*/,
 							   std::vector<u32>* colorArraySlices /*= nullptr*/,
 							   std::vector<u32>* colorMipSlices /*= nullptr*/,
 							   u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/,
@@ -756,7 +756,7 @@ namespace TRAP::Graphics::API
 		/// @remark This function is only available in headless mode.
 		void BindRenderTargets(const std::vector<std::reference_wrapper<const Graphics::RenderTarget>>& colorTargets,
 		                       const Graphics::RenderTarget* depthStencil /*= nullptr*/,
-							   RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
+							   LoadActionsDesc* loadActions /*= nullptr*/,
 							   std::vector<u32>* colorArraySlices /*= nullptr*/,
 							   std::vector<u32>* colorMipSlices /*= nullptr*/,
 							   u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/) const override;
@@ -768,7 +768,7 @@ namespace TRAP::Graphics::API
 		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
 		/// @param window Window to add the barrier for.
 		/// @remark @headless This function is not available in headless mode.
-		void ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
+		void ResourceBufferBarrier(const BufferBarrier& bufferBarrier,
 								   QueueType queueType /*= QueueType::Graphics*/,
 								   const Window& window) const override;
 #else
@@ -776,7 +776,7 @@ namespace TRAP::Graphics::API
 		/// @param bufferBarrier Buffer barrier.
 		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
 		/// @remark This function is only available in headless mode.
-		void ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
+		void ResourceBufferBarrier(const BufferBarrier& bufferBarrier,
 								   QueueType queueType /*= QueueType::Graphics*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
@@ -785,7 +785,7 @@ namespace TRAP::Graphics::API
 		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
 		/// @param window Window to add the barriers for.
 		/// @remark @headless This function is not available in headless mode.
-		void ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
+		void ResourceBufferBarriers(const std::vector<BufferBarrier>& bufferBarriers,
 									QueueType queueType /*= QueueType::Graphics*/,
 									const Window& window) const override;
 #else
@@ -793,7 +793,7 @@ namespace TRAP::Graphics::API
 		/// @param bufferBarriers Buffer barriers.
 		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
 		/// @remark This function is only available in headless mode.
-		void ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
+		void ResourceBufferBarriers(const std::vector<BufferBarrier>& bufferBarriers,
 									QueueType queueType /*= QueueType::Graphics*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
@@ -802,7 +802,7 @@ namespace TRAP::Graphics::API
 		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
 		/// @param window Window to add the barrier for.
 		/// @remark @headless This function is not available in headless mode.
-		void ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
+		void ResourceTextureBarrier(const TextureBarrier& textureBarrier,
 									QueueType queueType /*= QueueType::Graphics*/,
 									const Window& window) const override;
 #else
@@ -810,7 +810,7 @@ namespace TRAP::Graphics::API
 		/// @param textureBarrier Texture barrier.
 		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
 		/// @remark This function is only available in headless mode.
-		void ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
+		void ResourceTextureBarrier(const TextureBarrier& textureBarrier,
 									QueueType queueType /*= QueueType::Graphics*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
@@ -819,7 +819,7 @@ namespace TRAP::Graphics::API
 		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
 		/// @param window Window to add the barriers for.
 		/// @remark @headless This function is not available in headless mode.
-		void ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
+		void ResourceTextureBarriers(const std::vector<TextureBarrier>& textureBarriers,
 									 QueueType queueType /*= QueueType::Graphics*/,
 									 const Window& window) const override;
 #else
@@ -827,7 +827,7 @@ namespace TRAP::Graphics::API
 		/// @param textureBarriers Texture barriers.
 		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
 		/// @remark This function is only available in headless mode.
-		void ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
+		void ResourceTextureBarriers(const std::vector<TextureBarrier>& textureBarriers,
 									 QueueType queueType /*= QueueType::Graphics*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
@@ -835,26 +835,26 @@ namespace TRAP::Graphics::API
 		/// @param renderTargetBarrier Render target barrier.
 		/// @param window Window to add the barrier for.
 		/// @remark @headless This function is not available in headless mode.
-		void ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier,
+		void ResourceRenderTargetBarrier(const RenderTargetBarrier& renderTargetBarrier,
 									     const Window& window) const override;
 #else
 		/// @brief Add a resource barrier (memory dependency).
 		/// @param renderTargetBarrier Render target barrier.
 		/// @remark This function is only available in headless mode.
-		void ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier) const override;
+		void ResourceRenderTargetBarrier(const RenderTargetBarrier& renderTargetBarrier) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Add resource barriers (memory dependencies) for the given window.
 		/// @param renderTargetBarriers Render target barriers.
 		/// @param window Window to add the barriers for.
 		/// @remark @headless This function is not available in headless mode.
-		void ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
+		void ResourceRenderTargetBarriers(const std::vector<RenderTargetBarrier>& renderTargetBarriers,
 									      const Window& window) const override;
 #else
 		/// @brief Add resource barriers (memory dependencies).
 		/// @param renderTargetBarriers Render target barriers.
 		/// @remark This function is only available in headless mode.
-		void ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers) const override;
+		void ResourceRenderTargetBarriers(const std::vector<RenderTargetBarrier>& renderTargetBarriers) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -1055,7 +1055,7 @@ namespace TRAP::Graphics::API
 			std::vector<LoadActionType> LoadActionsColor;
 			std::vector<StoreActionType> StoreActionsColor;
 			u32 RenderTargetCount;
-			TRAP::Graphics::RendererAPI::SampleCount SampleCount = RendererAPI::SampleCount::One;
+			TRAP::Graphics::SampleCount SampleCount = SampleCount::One;
 			ImageFormat DepthStencilFormat;
 			ImageFormat ShadingRateFormat;
 			LoadActionType LoadActionDepth;
@@ -1106,7 +1106,7 @@ namespace TRAP::Graphics::API
 		/// @brief Transition the given texture from undefined resource state to the given resource state.
 		/// @param texture Texture to transition.
 		/// @param startState Start state for the texture.
-		static void UtilInitialTransition(const TRAP::Graphics::Texture& texture, RendererAPI::ResourceState startState);
+		static void UtilInitialTransition(const TRAP::Graphics::Texture& texture, ResourceState startState);
 
 		//Per Thread Render Pass synchronization logic
 		//Render-passes are not exposed to the engine code since they are not available on all APIs

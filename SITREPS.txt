@@ -5551,3 +5551,4 @@ SITREP 01/06/2025|25w02a1
 SITREP 01/07/2025|25w02a2
     - Changed TRAP Engine version to 25w02a2(0.11.70)
     - Reorganized various includes ~<15 mins
+    - Splitted RendererAPI header ~>120 mins

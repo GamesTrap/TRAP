@@ -79,7 +79,7 @@ namespace TRAP::Graphics::API
 		/// @param queueFamilyProperties Queue family properties to search in.
 		/// @param queueFamilyIndex Output queue family index.
 		/// @param queueIndex Output queue index.
-		void FindQueueFamilyIndex(RendererAPI::QueueType queueType, VkQueueFamilyProperties& queueFamilyProperties,
+		void FindQueueFamilyIndex(QueueType queueType, VkQueueFamilyProperties& queueFamilyProperties,
 		                          u8& queueFamilyIndex, u8& queueIndex);
 
 		TRAP::Scope<VulkanPhysicalDevice> m_physicalDevice;

@@ -25,7 +25,7 @@ namespace TRAP::Graphics
 		/// @param desc Swap chain description.
 		/// @return Created swap chain.
 		/// @remark @headless This function is not available in headless mode.
-		[[nodiscard]] static TRAP::Ref<SwapChain> Create(RendererAPI::SwapChainDesc& desc);
+		[[nodiscard]] static TRAP::Ref<SwapChain> Create(SwapChainDesc& desc);
 
 		/// @brief Destructor.
 		virtual ~SwapChain();
@@ -71,11 +71,11 @@ namespace TRAP::Graphics
 		[[nodiscard]] virtual std::vector<VkLatencyTimingsFrameReportNV> ReflexGetLatency(u32 numLatencyData) const = 0;
 		/// @brief Set a timestamp for NVIDIA-Reflex.
 		/// @param marker Enum value of the marker to set.
-		virtual void ReflexSetMarker(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker marker) = 0;
+		virtual void ReflexSetMarker(TRAP::Graphics::NVIDIAReflexLatencyMarker marker) = 0;
 		/// @brief Set the latency mode for NVIDIA-Reflex.
 		/// @param latencyMode Latency mode to use.
 		/// @param fpsLimit Optional: FPS limit, use 0 to disable limiter.
-		virtual void ReflexSetLatencyMode(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode latencyMode, u32 fpsLimit = 0u) const = 0;
+		virtual void ReflexSetLatencyMode(TRAP::Graphics::NVIDIAReflexLatencyMode latencyMode, u32 fpsLimit = 0u) const = 0;
 		/// @brief Delay host CPU work for low latency rendering.
 		/// @param reflexSemaphore Semaphore to use for sleep.
 		virtual void ReflexSleep(const Semaphore& reflexSemaphore) const = 0;
@@ -83,11 +83,11 @@ namespace TRAP::Graphics
 		/// @brief Set a timestamp for AMD Anti Lag.
 		/// @param marker Enum value of the marker to set.
 		/// @param viewportData The viewport to set the marker for.
-		virtual void AntiLagSetMarker(TRAP::Graphics::RendererAPI::AMDAntiLagMarker marker, const RendererAPI::PerViewportData& viewportData) = 0;
+		virtual void AntiLagSetMarker(TRAP::Graphics::AMDAntiLagMarker marker, const RendererAPI::PerViewportData& viewportData) = 0;
 		/// @brief Set the mode for AMD Anti Lag.
 		/// @param mode Mode to use.
 		/// @param fpsLimit Optional: FPS limit, use 0 to disable limiter.
-		virtual void AntiLagSetMode(TRAP::Graphics::RendererAPI::AMDAntiLagMode mode, u32 fpsLimit = 0u) const = 0;
+		virtual void AntiLagSetMode(TRAP::Graphics::AMDAntiLagMode mode, u32 fpsLimit = 0u) const = 0;
 
 	protected:
 		/// @brief Constructor.

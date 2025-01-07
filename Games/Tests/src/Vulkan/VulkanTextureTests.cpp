@@ -25,7 +25,7 @@ void VulkanTextureTests::OnAttach()
 
     //Load Quad vertices
     m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(QuadVerticesIndexed,
-                                                          TRAP::Graphics::UpdateFrequency::Static);
+                                                          TRAP::Graphics::DescriptorUpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout layout =
     {
         { TRAP::Graphics::ShaderDataType::Float3, "Pos" },
@@ -35,7 +35,7 @@ void VulkanTextureTests::OnAttach()
     m_vertexBuffer->AwaitLoading();
 
     //Load Quad indices
-    m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(QuadIndices, TRAP::Graphics::UpdateFrequency::Static);
+    m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(QuadIndices, TRAP::Graphics::DescriptorUpdateFrequency::Static);
     m_indexBuffer->AwaitLoading();
 
     //Load Images
@@ -50,7 +50,7 @@ void VulkanTextureTests::OnAttach()
     //Load Shader
     m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKTextureTest", "./Assets/Shaders/testtextureseperatelod.shader", TRAP::Graphics::ShaderType::Graphics);
 
-    static const TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc
+    static const TRAP::Graphics::SamplerDesc samplerDesc
     {
         .MinFilter = TRAP::Graphics::FilterType::Linear,
         .MagFilter = TRAP::Graphics::FilterType::Linear,

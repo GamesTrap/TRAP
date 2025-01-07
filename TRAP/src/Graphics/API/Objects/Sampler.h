@@ -11,7 +11,7 @@ namespace TRAP::Graphics
 		/// @brief Create a new sampler from the given description.
 		/// @param desc Sampler description.
 		/// @return Created sampler.
-		[[nodiscard]] static TRAP::Ref<Sampler> Create(RendererAPI::SamplerDesc desc);
+		[[nodiscard]] static TRAP::Ref<Sampler> Create(SamplerDesc desc);
 
 		/// @brief Destructor.
 		virtual ~Sampler();
@@ -65,13 +65,13 @@ namespace TRAP::Graphics
 
 	protected:
 		/// @brief Constructor.
-		explicit Sampler(const RendererAPI::SamplerDesc& desc);
+		explicit Sampler(const SamplerDesc& desc);
 
 		/// @brief Update the anisotropy value of the sampler.
 		/// @param anisotropy New anisotropy to use.
 		virtual void UpdateAnisotropy(f32 anisotropy) = 0;
 
-		RendererAPI::SamplerDesc m_samplerDesc{};
+		SamplerDesc m_samplerDesc{};
 		bool m_usesEngineAnisotropyLevel = false;
 	};
 }
@@ -154,9 +154,9 @@ namespace TRAP::Graphics
 namespace std
 {
 	template <>
- 	struct hash<TRAP::Graphics::RendererAPI::SamplerDesc>
+ 	struct hash<TRAP::Graphics::SamplerDesc>
 	{
-		[[nodiscard]] constexpr usize operator()(const TRAP::Graphics::RendererAPI::SamplerDesc& desc) const noexcept
+		[[nodiscard]] constexpr usize operator()(const TRAP::Graphics::SamplerDesc& desc) const noexcept
 		{
 			usize res = 0;
 

@@ -11,7 +11,7 @@ namespace TRAP::Graphics::API
 	public:
 		/// @brief Constructor.
 		/// @param desc Command signature description.
-		explicit VulkanCommandSignature(const RendererAPI::CommandSignatureDesc& desc);
+		explicit VulkanCommandSignature(const CommandSignatureDesc& desc);
 		/// @brief Destructor.
 		~VulkanCommandSignature() override;
 
@@ -26,20 +26,20 @@ namespace TRAP::Graphics::API
 
 		/// @brief Retrieve the draw type used for indirect drawing.
 		/// @return Draw type.
-		[[nodiscard]] constexpr RendererAPI::IndirectArgumentType GetDrawType() const noexcept;
+		[[nodiscard]] constexpr IndirectArgumentType GetDrawType() const noexcept;
 		/// @brief Retrieve the byte stride between successive sets of draw parameters.
 		/// @return Byte stride.
 		[[nodiscard]] constexpr u32 GetStride() const noexcept;
 
 	private:
-		RendererAPI::IndirectArgumentType m_drawType{};
+		IndirectArgumentType m_drawType{};
 		u32 m_stride{};
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::IndirectArgumentType TRAP::Graphics::API::VulkanCommandSignature::GetDrawType() const noexcept
+[[nodiscard]] constexpr TRAP::Graphics::IndirectArgumentType TRAP::Graphics::API::VulkanCommandSignature::GetDrawType() const noexcept
 {
 	return m_drawType;
 }

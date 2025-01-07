@@ -35,8 +35,8 @@ namespace TRAP::Graphics
 
 	protected:
 		/// @brief Constructor.
-		Shader(RendererAPI::ShaderType shaderType, std::string name, bool valid,
-		       RendererAPI::ShaderStage stages, const std::vector<Macro>& userMacros = {},
+		Shader(ShaderType shaderType, std::string name, bool valid,
+		       ShaderStage stages, const std::vector<Macro>& userMacros = {},
 			   std::filesystem::path filepath = "");
 	public:
 		/// @brief Copy constructor.
@@ -68,7 +68,7 @@ namespace TRAP::Graphics
 
 		/// @brief Retrieve the shader stages of the shader.
 		/// @brief @return Shader stages of the shader.
-		[[nodiscard]] constexpr RendererAPI::ShaderStage GetShaderStages() const noexcept;
+		[[nodiscard]] constexpr ShaderStage GetShaderStages() const noexcept;
 
 		/// @brief Retrieve the used macros of the shader.
 		/// @return Used macros.
@@ -87,7 +87,7 @@ namespace TRAP::Graphics
 
 		/// @brief Retrieve the type of the shader.
 		/// @return ShaderType.
-		[[nodiscard]] constexpr RendererAPI::ShaderType GetShaderType() const noexcept;
+		[[nodiscard]] constexpr ShaderType GetShaderType() const noexcept;
 
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Use shader for rendering on the given window.
@@ -228,7 +228,7 @@ namespace TRAP::Graphics
 		/// @param filePath File path of the shader.
 		/// @param userMacros Optional user defined macros. Default: nullptr.
 		/// @return Loaded Shader on success, Fallback Shader otherwise.
-		[[nodiscard]] static Ref<Shader> CreateFromFile(RendererAPI::ShaderType shaderType,
+		[[nodiscard]] static Ref<Shader> CreateFromFile(ShaderType shaderType,
 		                                                const std::string& name,
 														const std::filesystem::path& filePath,
 		                                                const std::vector<Macro>& userMacros = {});
@@ -238,7 +238,7 @@ namespace TRAP::Graphics
 		/// @param filePath File path of the shader.
 		/// @param userMacros Optional user defined macros. Default: nullptr.
 		/// @return Loaded Shader on success, Fallback Shader otherwise.
-		[[nodiscard]] static Ref<Shader> CreateFromFile(RendererAPI::ShaderType shaderType,
+		[[nodiscard]] static Ref<Shader> CreateFromFile(ShaderType shaderType,
 		                                                const std::filesystem::path& filePath,
 		                                                const std::vector<Macro>& userMacros = {});
 		/// @brief Create a shader from GLSL source.
@@ -247,7 +247,7 @@ namespace TRAP::Graphics
 		/// @param glslSource GLSL Source code.
 		/// @param userMacros Optional user defined macros. Default: nullptr.
 		/// @return Loaded Shader on success, Fallback Shader otherwise.
-		[[nodiscard]] static Ref<Shader> CreateFromSource(RendererAPI::ShaderType shaderType,
+		[[nodiscard]] static Ref<Shader> CreateFromSource(ShaderType shaderType,
 		                                                  const std::string& name, const std::string& glslSource,
 		                                                  const std::vector<Macro>& userMacros = {});
 
@@ -256,18 +256,18 @@ namespace TRAP::Graphics
 	protected:
 		/// @brief Initialize API dependent shader.
 		/// @param desc Binary shader description.
-		virtual void Init(const RendererAPI::BinaryShaderDesc& desc) = 0;
+		virtual void Init(const BinaryShaderDesc& desc) = 0;
 		/// @brief Shutdown API dependent shader.
 		virtual void Shutdown() = 0;
 
 		std::string m_name;
 		std::filesystem::path m_filepath;
-		RendererAPI::ShaderStage m_shaderStages{};
+		ShaderStage m_shaderStages{};
 		TRAP::Ref<RootSignature> m_rootSignature;
 		std::array<TRAP::Scope<DescriptorSet>, RendererAPI::MaxDescriptorSets> m_descriptorSets{};
 		std::vector<Macro> m_macros;
 		bool m_valid{};
-		RendererAPI::ShaderType m_shaderType;
+		ShaderType m_shaderType;
 	};
 }
 
@@ -280,7 +280,7 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::ShaderStage TRAP::Graphics::Shader::GetShaderStages() const noexcept
+[[nodiscard]] constexpr TRAP::Graphics::ShaderStage TRAP::Graphics::Shader::GetShaderStages() const noexcept
 {
 	return m_shaderStages;
 }
@@ -309,7 +309,7 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::ShaderType TRAP::Graphics::Shader::GetShaderType() const noexcept
+[[nodiscard]] constexpr TRAP::Graphics::ShaderType TRAP::Graphics::Shader::GetShaderType() const noexcept
 {
 	return m_shaderType;
 }

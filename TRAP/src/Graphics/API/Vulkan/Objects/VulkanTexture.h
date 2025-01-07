@@ -24,7 +24,7 @@ namespace TRAP::Graphics::API
 		/// @param name Name of the texture.
 		/// @param filePaths File paths of the texture.
 		/// @param cubeFormat Format for the cube texture.
-		VulkanTexture(std::string name, std::vector<std::filesystem::path> filePaths, const TRAP::Optional<TextureCubeFormat>& cubeFormat);
+		VulkanTexture(std::string name, std::vector<std::filesystem::path> filePaths, const TRAP::Optional<TextureCubeType>& cubeFormat);
 		/// @brief Destructor.
 		~VulkanTexture() override;
 
@@ -39,7 +39,7 @@ namespace TRAP::Graphics::API
 
 		/// @brief Initialize the Texture.
 		/// @param desc Texture description.
-		void Init(const RendererAPI::TextureDesc& desc) override;
+		void Init(const TextureDesc& desc) override;
 
 		/// @brief Retrieve the read only color Vulkan image view handle of the texture.
 		/// @return Vulkan image view handle.
@@ -66,12 +66,12 @@ namespace TRAP::Graphics::API
 		/// @brief Pre Initialization step run by every constructor.
 		void PreInit();
 
-		void CreateVkImage(const TRAP::Graphics::RendererAPI::TextureDesc& desc,
+		void CreateVkImage(const TRAP::Graphics::TextureDesc& desc,
 		                   VkImageType imageType, bool cubeMapRequired,
-                           TRAP::Graphics::RendererAPI::DescriptorType descriptors);
-		void CreateVkImageViews(const TRAP::Graphics::RendererAPI::TextureDesc& desc,
+                           TRAP::Graphics::DescriptorType descriptors);
+		void CreateVkImageViews(const TRAP::Graphics::TextureDesc& desc,
                                 VkImageType imageType, bool cubeMapRequired,
-                                TRAP::Graphics::RendererAPI::DescriptorType descriptors);
+                                TRAP::Graphics::DescriptorType descriptors);
 
 		TRAP::Ref<VulkanDevice> m_device = nullptr;
 		TRAP::Ref<VulkanMemoryAllocator> m_vma = nullptr;

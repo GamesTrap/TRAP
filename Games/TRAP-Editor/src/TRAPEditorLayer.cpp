@@ -581,14 +581,14 @@ void TRAPEditorLayer::OnAttach()
 	m_iconStop = TRAP::Graphics::Texture::Create2D("Stop", "./Resources/Icons/Stop.png");
 
 	//Setup Viewport FrameBuffer
-	TRAP::Graphics::RendererAPI::RenderTargetDesc desc{};
+	TRAP::Graphics::RenderTargetDesc desc{};
     m_renderTargetDesc.Width = 1280u;
     m_renderTargetDesc.Height = 720u;
     m_renderTargetDesc.Depth = 1u;
     m_renderTargetDesc.ArraySize = 1u;
-    m_renderTargetDesc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
+    m_renderTargetDesc.Descriptors = TRAP::Graphics::DescriptorType::Texture;
     m_renderTargetDesc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
-    m_renderTargetDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+    m_renderTargetDesc.StartState = TRAP::Graphics::ResourceState::ShaderResource;
     m_renderTargetDesc.Name = "Viewport RenderTarget";
 	m_renderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
     m_renderTargetDesc.Name = "Viewport ID RenderTarget";
@@ -596,18 +596,18 @@ void TRAPEditorLayer::OnAttach()
 	m_IDRenderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
 
 	m_renderTargetLoadActions.ClearColorValues.emplace_back(0.1, 0.1, 0.1, 1.0);
-	m_renderTargetLoadActions.LoadActionsColor.emplace_back(TRAP::Graphics::RendererAPI::LoadActionType::Clear);
+	m_renderTargetLoadActions.LoadActionsColor.emplace_back(TRAP::Graphics::LoadActionType::Clear);
 	m_renderTargetLoadActions.ClearColorValues.emplace_back(-1.0, 0.0, 0.0, 0.0);
-	m_renderTargetLoadActions.LoadActionsColor.emplace_back(TRAP::Graphics::RendererAPI::LoadActionType::Clear);
+	m_renderTargetLoadActions.LoadActionsColor.emplace_back(TRAP::Graphics::LoadActionType::Clear);
 
 	//Setup Mouse Picking Buffer
-	m_mousePickBufferDesc.Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::PersistentMap |
-	                              TRAP::Graphics::RendererAPI::BufferCreationFlags::NoDescriptorViewCreation;
+	m_mousePickBufferDesc.Flags = TRAP::Graphics::BufferCreationFlags::PersistentMap |
+	                              TRAP::Graphics::BufferCreationFlags::NoDescriptorViewCreation;
 	m_mousePickBufferDesc.Size = NumericCast<u64>(m_renderTargetDesc.Width) * m_renderTargetDesc.Height * sizeof(i32);
-	m_mousePickBufferDesc.QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics;
-	m_mousePickBufferDesc.MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::GPUToCPU;
-	m_mousePickBufferDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination;
-	m_mousePickBufferDesc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::RWBuffer;
+	m_mousePickBufferDesc.QueueType = TRAP::Graphics::QueueType::Graphics;
+	m_mousePickBufferDesc.MemoryUsage = TRAP::Graphics::ResourceMemoryUsage::GPUToCPU;
+	m_mousePickBufferDesc.StartState = TRAP::Graphics::ResourceState::CopyDestination;
+	m_mousePickBufferDesc.Descriptors = TRAP::Graphics::DescriptorType::RWBuffer;
 	m_mousePickBufferDesc.StructStride = sizeof(i32);
 	m_mousePickBufferDesc.ElementCount = m_mousePickBufferDesc.Size / m_mousePickBufferDesc.StructStride;
 	m_mousePickBufferDesc.Name = "Viewport ID Buffer";
@@ -650,7 +650,7 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		m_renderTargetDesc.Width = NumericCast<u32>(m_viewportSize.x());
 		m_renderTargetDesc.Height = NumericCast<u32>(m_viewportSize.y());
     	m_renderTargetDesc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
-    	m_renderTargetDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+    	m_renderTargetDesc.StartState = TRAP::Graphics::ResourceState::ShaderResource;
     	m_renderTargetDesc.Name = "Viewport RenderTarget";
 		m_renderTargetDesc.SampleCount = (currentAA == TRAP::Graphics::AntiAliasing::MSAA) ? currentAASamples : TRAP::Graphics::SampleCount::One;
 		m_renderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
@@ -661,13 +661,13 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		if(currentAA == TRAP::Graphics::AntiAliasing::MSAA)
 		{
     		m_renderTargetDesc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
-    		m_renderTargetDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
+    		m_renderTargetDesc.StartState = TRAP::Graphics::ResourceState::PixelShaderResource;
     		m_renderTargetDesc.Name = "Resolve Viewport RenderTarget";
 			m_renderTargetDesc.SampleCount = TRAP::Graphics::SampleCount::One;
 			m_resolveRenderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
 
     		m_renderTargetDesc.Format = TRAP::Graphics::API::ImageFormat::R32_SINT;
-    		m_renderTargetDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
+    		m_renderTargetDesc.StartState = TRAP::Graphics::ResourceState::RenderTarget;
 			m_renderTargetDesc.Name = "MSAA Resolve ID RenderTarget";
 			m_renderTargetDesc.SampleCount = TRAP::Graphics::SampleCount::One;
 			m_IDResolveRenderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
@@ -702,13 +702,13 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	//Stop RenderPass (necessary for transition)
 	TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
 
-	TRAP::Graphics::RendererAPI::RenderTargetBarrier barrier
+	TRAP::Graphics::RenderTargetBarrier barrier
 	{
 		.RenderTarget = *m_renderTarget,
-		.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource,
-		.NewState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget
+		.CurrentState = TRAP::Graphics::ResourceState::PixelShaderResource,
+		.NewState = TRAP::Graphics::ResourceState::RenderTarget
 	};
-	TRAP::Graphics::RendererAPI::RenderTargetBarrier IDBarrier = barrier;
+	TRAP::Graphics::RenderTargetBarrier IDBarrier = barrier;
 	IDBarrier.RenderTarget = *m_IDRenderTarget;
 	TRAP::Graphics::RenderCommand::RenderTargetBarriers({barrier, IDBarrier});
 
@@ -756,8 +756,8 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 	//Transition from RenderTarget to PixelShaderResource
 	barrier.RenderTarget = *m_renderTarget;
-	barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
-	barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
+	barrier.CurrentState = TRAP::Graphics::ResourceState::RenderTarget;
+	barrier.NewState = TRAP::Graphics::ResourceState::PixelShaderResource;
 	IDBarrier = barrier;
 	IDBarrier.RenderTarget = *m_IDRenderTarget;
 	TRAP::Graphics::RenderCommand::RenderTargetBarriers({barrier, IDBarrier});
@@ -1049,11 +1049,11 @@ void TRAPEditorLayer::MousePicking()
 		TRAP::Ref<TRAP::Graphics::RenderTarget> IDRenderTarget = m_IDRenderTarget;
 		if(m_cachedAAMode == TRAP::Graphics::AntiAliasing::MSAA)
 		{
-			TRAP::Graphics::RendererAPI::RenderTargetBarrier barrier
+			TRAP::Graphics::RenderTargetBarrier barrier
 			{
 				.RenderTarget = *m_IDRenderTarget,
-				.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource,
-				.NewState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget
+				.CurrentState = TRAP::Graphics::ResourceState::PixelShaderResource,
+				.NewState = TRAP::Graphics::ResourceState::RenderTarget
 			};
 			TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
 
@@ -1061,22 +1061,22 @@ void TRAPEditorLayer::MousePicking()
 
 			TRAP::Graphics::RenderCommand::MSAAResolvePass(*m_IDRenderTarget, *IDRenderTarget);
 
-			barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
-			barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
+			barrier.CurrentState = TRAP::Graphics::ResourceState::RenderTarget;
+			barrier.NewState = TRAP::Graphics::ResourceState::PixelShaderResource;
 			TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
 
 			TRAP::Graphics::RenderCommand::Transition(IDRenderTarget->GetTexture(),
-													  TRAP::Graphics::RendererAPI::ResourceState::RenderTarget,
-													  TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource);
+													  TRAP::Graphics::ResourceState::RenderTarget,
+													  TRAP::Graphics::ResourceState::PixelShaderResource);
 		}
 
 		//Copy the RenderTarget contents to our CPU visible buffer
 		TRAP::Graphics::API::SyncToken sync{};
-		TRAP::Graphics::RendererAPI::TextureCopyDesc copyDesc{};
+		TRAP::Graphics::TextureCopyDesc copyDesc{};
 		copyDesc.Texture = IDRenderTarget->GetTexture();
 		copyDesc.Buffer = m_mousePickBuffer;
-		copyDesc.TextureState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
-		copyDesc.QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics;
+		copyDesc.TextureState = TRAP::Graphics::ResourceState::PixelShaderResource;
+		copyDesc.QueueType = TRAP::Graphics::QueueType::Graphics;
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->CopyResource(copyDesc, &sync);
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForToken(sync);
 
@@ -1084,14 +1084,14 @@ void TRAPEditorLayer::MousePicking()
 		if(m_cachedAAMode != TRAP::Graphics::AntiAliasing::MSAA)
 		{
 			TRAP::Graphics::RenderCommand::Transition(m_IDRenderTarget->GetTexture(),
-													  TRAP::Graphics::RendererAPI::ResourceState::CopySource,
-													  TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource);
+													  TRAP::Graphics::ResourceState::CopySource,
+													  TRAP::Graphics::ResourceState::PixelShaderResource);
 		}
 		else
 		{
 			TRAP::Graphics::RenderCommand::Transition(IDRenderTarget->GetTexture(),
-													  TRAP::Graphics::RendererAPI::ResourceState::CopySource,
-													  TRAP::Graphics::RendererAPI::ResourceState::RenderTarget);
+													  TRAP::Graphics::ResourceState::CopySource,
+													  TRAP::Graphics::ResourceState::RenderTarget);
 		}
 
 		//Read pixel of the CPU visible buffer
@@ -1130,17 +1130,17 @@ void TRAPEditorLayer::MSAAResolveMainRenderTarget()
 	if(m_cachedAAMode != TRAP::Graphics::AntiAliasing::MSAA || m_resolveRenderTarget == nullptr)
 		return;
 
-	TRAP::Graphics::RendererAPI::RenderTargetBarrier barrier =
+	TRAP::Graphics::RenderTargetBarrier barrier =
 	{
 		.RenderTarget = *m_renderTarget,
-		.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource,
-		.NewState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget
+		.CurrentState = TRAP::Graphics::ResourceState::PixelShaderResource,
+		.NewState = TRAP::Graphics::ResourceState::RenderTarget
 	};
-	TRAP::Graphics::RendererAPI::RenderTargetBarrier resolveBarrier
+	TRAP::Graphics::RenderTargetBarrier resolveBarrier
 	{
 		.RenderTarget = *m_resolveRenderTarget,
-		.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource,
-		.NewState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget
+		.CurrentState = TRAP::Graphics::ResourceState::PixelShaderResource,
+		.NewState = TRAP::Graphics::ResourceState::RenderTarget
 	};
 	TRAP::Graphics::RenderCommand::RenderTargetBarriers({barrier, resolveBarrier});
 
@@ -1149,14 +1149,14 @@ void TRAPEditorLayer::MSAAResolveMainRenderTarget()
 	barrier =
 	{
 		.RenderTarget = *m_renderTarget,
-		.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget,
-		.NewState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource
+		.CurrentState = TRAP::Graphics::ResourceState::RenderTarget,
+		.NewState = TRAP::Graphics::ResourceState::PixelShaderResource
 	};
 	resolveBarrier =
 	{
 		.RenderTarget = *m_resolveRenderTarget,
-		.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget,
-		.NewState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource
+		.CurrentState = TRAP::Graphics::ResourceState::RenderTarget,
+		.NewState = TRAP::Graphics::ResourceState::PixelShaderResource
 	};
 	TRAP::Graphics::RenderCommand::RenderTargetBarriers({barrier, resolveBarrier});
 }

@@ -5,12 +5,12 @@
 
 namespace
 {
-	std::unordered_map<TRAP::Graphics::RendererAPI::SamplerDesc, TRAP::Ref<TRAP::Graphics::Sampler>> CachedSamplers{};
+	std::unordered_map<TRAP::Graphics::SamplerDesc, TRAP::Ref<TRAP::Graphics::Sampler>> CachedSamplers{};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(RendererAPI::SamplerDesc desc)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(SamplerDesc desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -79,7 +79,7 @@ TRAP::Graphics::Sampler::~Sampler()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Sampler::Sampler(const RendererAPI::SamplerDesc& desc)
+TRAP::Graphics::Sampler::Sampler(const SamplerDesc& desc)
 	: m_samplerDesc(desc)
 {
 #ifdef ENABLE_GRAPHICS_DEBUG
@@ -102,7 +102,7 @@ void TRAP::Graphics::Sampler::ClearCache() noexcept
 namespace
 {
 	[[nodiscard]] bool DoesSamplerNeedUpdate(const f32 requestedSamples,
-	                                         const std::pair<const TRAP::Graphics::RendererAPI::SamplerDesc,
+	                                         const std::pair<const TRAP::Graphics::SamplerDesc,
 	                                                         TRAP::Ref<TRAP::Graphics::Sampler>>& samplerEntry)
 	{
 		const auto& [desc, sampler] = samplerEntry;

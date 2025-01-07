@@ -82,18 +82,18 @@ TRAP::Graphics::API::VulkanFence::~VulkanFence()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::RendererAPI::FenceStatus TRAP::Graphics::API::VulkanFence::GetStatus()
+[[nodiscard]] TRAP::Graphics::FenceStatus TRAP::Graphics::API::VulkanFence::GetStatus()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	if(!m_submitted)
-		return RendererAPI::FenceStatus::NotSubmitted;
+		return FenceStatus::NotSubmitted;
 
 	const VkResult res = vkGetFenceStatus(m_device->GetVkDevice(), m_fence);
 	if(res == VK_SUCCESS)
 		ResetState();
 
-	return res == VK_SUCCESS ? RendererAPI::FenceStatus::Complete : RendererAPI::FenceStatus::Incomplete;
+	return res == VK_SUCCESS ? FenceStatus::Complete : FenceStatus::Incomplete;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

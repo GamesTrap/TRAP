@@ -37,7 +37,7 @@ namespace TRAP::Graphics
 		/// @brief Retrieve a new descriptor set from description.
 		/// @param desc Descriptor set description.
 		/// @return New descriptor set.
-		[[nodiscard]] virtual TRAP::Scope<DescriptorSet> RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc) = 0;
+		[[nodiscard]] virtual TRAP::Scope<DescriptorSet> RetrieveDescriptorSet(const DescriptorSetDesc& desc) = 0;
 
 	protected:
 		/// @brief Constructor.

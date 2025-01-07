@@ -63,7 +63,7 @@ void IcoSphereTests::OnAttach()
 	TRAP::Application::GetWindow()->SetTitle("IcoSphere");
 
 	//Load Icosphere vertices
-	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(IcoSphereVerticesIndexed, TRAP::Graphics::UpdateFrequency::Static);
+	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(IcoSphereVerticesIndexed, TRAP::Graphics::DescriptorUpdateFrequency::Static);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
@@ -74,13 +74,13 @@ void IcoSphereTests::OnAttach()
 	m_vertexBuffer->Use();
 
 	//Load Icosphere indices
-	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(IcoSphereIndices, TRAP::Graphics::UpdateFrequency::Static);
+	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(IcoSphereIndices, TRAP::Graphics::DescriptorUpdateFrequency::Static);
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();
 
 	//Load Camera UniformBuffer
 	m_cameraUBO = TRAP::Graphics::UniformBuffer::Create(sizeof(CameraUBOData),
-	                                                    TRAP::Graphics::UpdateFrequency::Dynamic);
+	                                                    TRAP::Graphics::DescriptorUpdateFrequency::Dynamic);
 	m_cameraUBO->AwaitLoading();
 
 	//Load Shader

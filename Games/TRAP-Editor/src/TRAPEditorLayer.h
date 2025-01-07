@@ -47,8 +47,8 @@ private:
 	TRAP::Ref<TRAP::Graphics::Texture> m_iconStop = nullptr;
 
 	//Color RenderTarget
-	TRAP::Graphics::RendererAPI::LoadActionsDesc m_renderTargetLoadActions{};
-	TRAP::Graphics::RendererAPI::RenderTargetDesc m_renderTargetDesc{};
+	TRAP::Graphics::LoadActionsDesc m_renderTargetLoadActions{};
+	TRAP::Graphics::RenderTargetDesc m_renderTargetDesc{};
 	TRAP::Ref<TRAP::Graphics::RenderTarget> m_renderTarget = nullptr;
 	TRAP::Ref<TRAP::Graphics::RenderTarget> m_resolveRenderTarget = nullptr;
 
@@ -72,7 +72,7 @@ private:
 	//Mouse picking
 	u32 m_leftMouseBtnRepeatCount = 0u;
 	bool m_entityChanged = false;
-	TRAP::Graphics::RendererAPI::BufferDesc m_mousePickBufferDesc{};
+	TRAP::Graphics::BufferDesc m_mousePickBufferDesc{};
 	TRAP::Ref<TRAP::Graphics::Buffer> m_mousePickBuffer = nullptr;
 	TRAP::Ref<TRAP::Graphics::RenderTarget> m_IDRenderTarget = nullptr;
 	TRAP::Ref<TRAP::Graphics::RenderTarget> m_IDResolveRenderTarget = nullptr;

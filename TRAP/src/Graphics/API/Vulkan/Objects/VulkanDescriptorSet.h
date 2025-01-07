@@ -44,7 +44,7 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] TRAP::Ref<VulkanRootSignature> GetRootSignature() const noexcept;
 		/// @brief Retrieve the update frequency used by the descriptor set.
 		/// @return Update frequency.
-		[[nodiscard]] constexpr RendererAPI::DescriptorUpdateFrequency GetUpdateFrequency() const noexcept;
+		[[nodiscard]] constexpr DescriptorUpdateFrequency GetUpdateFrequency() const noexcept;
 		/// @brief Retrieve the amount of dynamic offsets used by the descriptor set.
 		/// @return Amount of dynamic offsets.
 		[[nodiscard]] constexpr u8 GetDynamicOffsetCount() const noexcept;
@@ -61,7 +61,7 @@ namespace TRAP::Graphics::API
 		/// @brief Update the descriptor set.
 		/// @param index Index of the set to update.
 		/// @param params Data to update.
-		void Update(u32 index, std::span<const RendererAPI::DescriptorData> params) override;
+		void Update(u32 index, std::span<const DescriptorData> params) override;
 
 	private:
 		std::vector<VkDescriptorSet> m_vkDescriptorSetHandles;
@@ -94,10 +94,10 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency TRAP::Graphics::API::VulkanDescriptorSet::GetUpdateFrequency() const noexcept
+[[nodiscard]] constexpr TRAP::Graphics::DescriptorUpdateFrequency TRAP::Graphics::API::VulkanDescriptorSet::GetUpdateFrequency() const noexcept
 {
-	return m_set > 0 ? RendererAPI::DescriptorUpdateFrequency::Dynamic :
-	                   RendererAPI::DescriptorUpdateFrequency::Static;
+	return m_set > 0 ? DescriptorUpdateFrequency::Dynamic :
+	                   DescriptorUpdateFrequency::Static;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -12,7 +12,7 @@ namespace TRAP::Graphics::API
 	public:
 		/// @brief Constructor.
 		/// @param desc Root signature description.
-		explicit VulkanRootSignature(const RendererAPI::RootSignatureDesc& desc);
+		explicit VulkanRootSignature(const RootSignatureDesc& desc);
 		/// @brief Destructor.
 		~VulkanRootSignature() override;
 
@@ -64,7 +64,7 @@ namespace TRAP::Graphics::API
 
 		/// @brief Retrieve a descriptor via its name.
 		/// @return Descriptor if found, nullptr otherwise.
-		[[nodiscard]] const RendererAPI::DescriptorInfo* GetDescriptor(std::string_view resName) const;
+		[[nodiscard]] const DescriptorInfo* GetDescriptor(std::string_view resName) const;
 
 	private:
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();

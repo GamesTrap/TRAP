@@ -11,7 +11,7 @@ namespace TRAP::Graphics
 		/// @brief Create a new command signature from the given description.
 		/// @param desc Command signature description.
 		/// @return Created command signature.
-		[[nodiscard]] static TRAP::Ref<CommandSignature> Create(const RendererAPI::CommandSignatureDesc& desc);
+		[[nodiscard]] static TRAP::Ref<CommandSignature> Create(const CommandSignatureDesc& desc);
 
 		/// @brief Destructor.
 		virtual ~CommandSignature();

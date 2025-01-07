@@ -12,10 +12,10 @@ namespace
 {
 	constinit std::atomic<u64> CurrentRenderTargetID = 1;
 
-	[[nodiscard]] TRAP::Ref<TRAP::Graphics::API::VulkanTexture> CreateRenderTargetTexture(const TRAP::Graphics::RendererAPI::RenderTargetDesc& desc,
+	[[nodiscard]] TRAP::Ref<TRAP::Graphics::API::VulkanTexture> CreateRenderTargetTexture(const TRAP::Graphics::RenderTargetDesc& desc,
 	                                                                                      const TRAP::Graphics::API::VulkanPhysicalDevice& physicalDevice)
 	{
-		TRAP::Graphics::RendererAPI::TextureDesc textureDesc{};
+		TRAP::Graphics::TextureDesc textureDesc{};
 		textureDesc.Flags = desc.Flags;
 		textureDesc.Width = desc.Width;
 		textureDesc.Height = desc.Height;
@@ -32,34 +32,34 @@ namespace
 		const bool isDepth = TRAP::Graphics::API::ImageFormatIsDepthOnly(desc.Format) ||
 							 TRAP::Graphics::API::ImageFormatIsDepthAndStencil(desc.Format);
 
-		TRAP_ASSERT(!((isDepth) && (desc.Descriptors & TRAP::Graphics::RendererAPI::DescriptorType::RWTexture) != TRAP::Graphics::RendererAPI::DescriptorType::Undefined),
+		TRAP_ASSERT(!((isDepth) && (desc.Descriptors & TRAP::Graphics::DescriptorType::RWTexture) != TRAP::Graphics::DescriptorType::Undefined),
 					"VulkanRenderTarget::CreateRenderTargetTexture(): Cannot use depth stencil as UAV");
 
 		if (!isDepth)
-			textureDesc.StartState |= TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
+			textureDesc.StartState |= TRAP::Graphics::ResourceState::RenderTarget;
 		else
-			textureDesc.StartState |= TRAP::Graphics::RendererAPI::ResourceState::DepthWrite;
+			textureDesc.StartState |= TRAP::Graphics::ResourceState::DepthWrite;
 
-		if((desc.StartState & TRAP::Graphics::RendererAPI::ResourceState::ShadingRateSource) != TRAP::Graphics::RendererAPI::ResourceState::Undefined)
-			textureDesc.StartState |= TRAP::Graphics::RendererAPI::ResourceState::ShadingRateSource;
+		if((desc.StartState & TRAP::Graphics::ResourceState::ShadingRateSource) != TRAP::Graphics::ResourceState::Undefined)
+			textureDesc.StartState |= TRAP::Graphics::ResourceState::ShadingRateSource;
 
 		//Set this by default to be able to sample the renderTarget in shader
 		textureDesc.Descriptors = desc.Descriptors;
 		//Create SRV by default for a render target unless this is on tile texture
 		//where SRV is not supported
-		if((desc.Flags & TRAP::Graphics::RendererAPI::TextureCreationFlags::OnTile) == TRAP::Graphics::RendererAPI::TextureCreationFlags::None)
-			textureDesc.Descriptors |= TRAP::Graphics::RendererAPI::DescriptorType::Texture;
+		if((desc.Flags & TRAP::Graphics::TextureCreationFlags::OnTile) == TRAP::Graphics::TextureCreationFlags::None)
+			textureDesc.Descriptors |= TRAP::Graphics::DescriptorType::Texture;
 		else
 		{
-			if((textureDesc.Descriptors & TRAP::Graphics::RendererAPI::DescriptorType::Texture) != TRAP::Graphics::RendererAPI::DescriptorType::Undefined ||
-			   (textureDesc.Descriptors & TRAP::Graphics::RendererAPI::DescriptorType::RWTexture) != TRAP::Graphics::RendererAPI::DescriptorType::Undefined)
+			if((textureDesc.Descriptors & TRAP::Graphics::DescriptorType::Texture) != TRAP::Graphics::DescriptorType::Undefined ||
+			   (textureDesc.Descriptors & TRAP::Graphics::DescriptorType::RWTexture) != TRAP::Graphics::DescriptorType::Undefined)
 			{
 				TP_WARN(TRAP::Log::RendererVulkanRenderTargetPrefix, "On tile textures do not support DescriptorType::Texture or DescriptorType::RWTexture");
 			}
 
 			//On tile textures do not support SRV/UAV as there is no backing memory
 			//You can only read these textures as input attachments inside same render pass
-			textureDesc.Descriptors &= TRAP::Graphics::RendererAPI::DescriptorType::Texture | TRAP::Graphics::RendererAPI::DescriptorType::RWTexture;
+			textureDesc.Descriptors &= TRAP::Graphics::DescriptorType::Texture | TRAP::Graphics::DescriptorType::RWTexture;
 		}
 
 		if(isDepth)
@@ -115,8 +115,8 @@ namespace
 		const u32 depthOrArraySize = texture.GetArraySize() * texture.GetDepth();
 
 		u32 numRTVs = texture.GetMipLevels();
-		if(((texture.GetDescriptorTypes() & TRAP::Graphics::RendererAPI::DescriptorType::RenderTargetArraySlices) != TRAP::Graphics::RendererAPI::DescriptorType::Undefined) ||
-		   ((texture.GetDescriptorTypes() & TRAP::Graphics::RendererAPI::DescriptorType::RenderTargetDepthSlices) != TRAP::Graphics::RendererAPI::DescriptorType::Undefined))
+		if(((texture.GetDescriptorTypes() & TRAP::Graphics::DescriptorType::RenderTargetArraySlices) != TRAP::Graphics::DescriptorType::Undefined) ||
+		   ((texture.GetDescriptorTypes() & TRAP::Graphics::DescriptorType::RenderTargetDepthSlices) != TRAP::Graphics::DescriptorType::Undefined))
 		{
 			numRTVs *= depthOrArraySize;
 		}
@@ -128,8 +128,8 @@ namespace
 		for(u32 i = 0; i < texture.GetMipLevels(); ++i)
 		{
 			rtvDesc.subresourceRange.baseMipLevel = i;
-			if (((texture.GetDescriptorTypes() & TRAP::Graphics::RendererAPI::DescriptorType::RenderTargetArraySlices) != TRAP::Graphics::RendererAPI::DescriptorType::Undefined) ||
-				((texture.GetDescriptorTypes() & TRAP::Graphics::RendererAPI::DescriptorType::RenderTargetDepthSlices) != TRAP::Graphics::RendererAPI::DescriptorType::Undefined))
+			if (((texture.GetDescriptorTypes() & TRAP::Graphics::DescriptorType::RenderTargetArraySlices) != TRAP::Graphics::DescriptorType::Undefined) ||
+				((texture.GetDescriptorTypes() & TRAP::Graphics::DescriptorType::RenderTargetDepthSlices) != TRAP::Graphics::DescriptorType::Undefined))
 			{
 				for (u32 j = 0; j < depthOrArraySize; ++j)
 				{
@@ -149,7 +149,7 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::RenderTargetDesc& desc)
+TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RenderTargetDesc& desc)
 	: RenderTarget(desc), m_ID(CurrentRenderTargetID++)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);

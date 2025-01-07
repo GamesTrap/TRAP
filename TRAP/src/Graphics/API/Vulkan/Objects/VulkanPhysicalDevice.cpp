@@ -112,31 +112,31 @@ namespace
 		gpuSettings.MaxPushConstantSize = devProps.limits.maxPushConstantsSize;
 		gpuSettings.MaxSamplerAllocationCount = devProps.limits.maxSamplerAllocationCount;
 		gpuSettings.MaxTessellationControlPoints = devProps.limits.maxTessellationPatchSize;
-		gpuSettings.MaxMSAASampleCount = static_cast<TRAP::Graphics::RendererAPI::SampleCount>(TRAP::Math::Min(GetMaxUsableMSAASampleCount(devProps), static_cast<u32>(VK_SAMPLE_COUNT_16_BIT)));
+		gpuSettings.MaxMSAASampleCount = static_cast<TRAP::Graphics::SampleCount>(TRAP::Math::Min(GetMaxUsableMSAASampleCount(devProps), static_cast<u32>(VK_SAMPLE_COUNT_16_BIT)));
 		gpuSettings.MaxColorRenderTargets = devProps.limits.maxColorAttachments;
 
 		// maxBoundDescriptorSets not needed because engine is always limited to 4 descriptor sets
 
 		gpuSettings.WaveLaneCount = devSubGroupProps.subgroupSize;
-		gpuSettings.WaveOpsSupportFlags = TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::None;
+		gpuSettings.WaveOpsSupportFlags = TRAP::Graphics::WaveOpsSupportFlags::None;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_BASIC_BIT) != 0u)
-			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Basic;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::WaveOpsSupportFlags::Basic;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_VOTE_BIT) != 0u)
-			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Vote;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::WaveOpsSupportFlags::Vote;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_ARITHMETIC_BIT) != 0u)
-			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Arithmetic;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::WaveOpsSupportFlags::Arithmetic;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_BALLOT_BIT) != 0u)
-			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Ballot;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::WaveOpsSupportFlags::Ballot;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_SHUFFLE_BIT) != 0u)
-			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Shuffle;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::WaveOpsSupportFlags::Shuffle;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT) != 0u)
-			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::ShuffleRelative;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::WaveOpsSupportFlags::ShuffleRelative;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_CLUSTERED_BIT) != 0u)
-			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Clustered;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::WaveOpsSupportFlags::Clustered;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_QUAD_BIT) != 0u)
-			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::Quad;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::WaveOpsSupportFlags::Quad;
 		if ((devSubGroupProps.supportedOperations & VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV) != 0u)
-			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::RendererAPI::WaveOpsSupportFlags::PartitionedNV;
+			gpuSettings.WaveOpsSupportFlags |= TRAP::Graphics::WaveOpsSupportFlags::PartitionedNV;
 
 		gpuSettings.TessellationSupported = (devFeatures.tessellationShader != 0u);
 		gpuSettings.GeometryShaderSupported = (devFeatures.geometryShader != 0u);
@@ -234,17 +234,14 @@ namespace
 	void UpdateShadingRateCaps(const VkPhysicalDeviceFragmentShadingRateFeaturesKHR& shadingRateFeatures,
 	                           VkPhysicalDevice physicalDevice)
 	{
-		using namespace TRAP::Graphics::API;
-		using RendererAPI = TRAP::Graphics::RendererAPI;
-
 		if(shadingRateFeatures.pipelineFragmentShadingRate != 0u)
-			RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerDraw;
+			TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps |= TRAP::Graphics::ShadingRateCaps::PerDraw;
 		if(shadingRateFeatures.primitiveFragmentShadingRate != 0u)
-			RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerPrimitive;
+			TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps |= TRAP::Graphics::ShadingRateCaps::PerPrimitive;
 		if(shadingRateFeatures.attachmentFragmentShadingRate != 0u)
-			RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerTile;
+			TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps |= TRAP::Graphics::ShadingRateCaps::PerTile;
 
-		if(RendererAPI::GPUSettings.ShadingRateCaps == RendererAPI::ShadingRateCaps::NotSupported)
+		if(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps == TRAP::Graphics::ShadingRateCaps::NotSupported)
 			return;
 
 		VkPhysicalDeviceFragmentShadingRatePropertiesKHR fragmentShadingRateProperties{};
@@ -254,16 +251,16 @@ namespace
 		deviceProperties2.pNext = &fragmentShadingRateProperties;
 		vkGetPhysicalDeviceProperties2(physicalDevice, &deviceProperties2);
 
-		RendererAPI::GPUSettings.ShadingRateTexelWidth = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.width;
-		RendererAPI::GPUSettings.ShadingRateTexelHeight = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.height;
+		TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateTexelWidth = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.width;
+		TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateTexelHeight = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.height;
 
-		RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Passthrough;
-		RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Override;
+		TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCombiner |= TRAP::Graphics::ShadingRateCombiner::Passthrough;
+		TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCombiner |= TRAP::Graphics::ShadingRateCombiner::Override;
 		if(fragmentShadingRateProperties.fragmentShadingRateNonTrivialCombinerOps != 0u)
 		{
-			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Min;
-			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Max;
-			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Sum;
+			TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCombiner |= TRAP::Graphics::ShadingRateCombiner::Min;
+			TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCombiner |= TRAP::Graphics::ShadingRateCombiner::Max;
+			TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCombiner |= TRAP::Graphics::ShadingRateCombiner::Sum;
 		}
 
 		u32 fragmentShadingRatesCount = 0;
@@ -278,21 +275,21 @@ namespace
 		for(const auto& rate : fragmentShadingRates)
 		{
 			if(rate.fragmentSize.width == 1 && rate.fragmentSize.height == 2)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::OneXTwo;
+				TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates |= TRAP::Graphics::ShadingRate::OneXTwo;
 			if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 1)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::TwoXOne;
+				TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates |= TRAP::Graphics::ShadingRate::TwoXOne;
 			if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 4)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::TwoXFour;
+				TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates |= TRAP::Graphics::ShadingRate::TwoXFour;
 			if(rate.fragmentSize.width == 4 && rate.fragmentSize.height == 2)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::FourXTwo;
+				TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates |= TRAP::Graphics::ShadingRate::FourXTwo;
 			if(rate.fragmentSize.width == 4 && rate.fragmentSize.height == 4)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Quarter;
+				TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates |= TRAP::Graphics::ShadingRate::Quarter;
 			if(rate.fragmentSize.width == 8 && rate.fragmentSize.height == 8)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Eighth;
+				TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates |= TRAP::Graphics::ShadingRate::Eighth;
 			if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 2)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Half;
+				TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates |= TRAP::Graphics::ShadingRate::Half;
 			if(rate.fragmentSize.width == 1 && rate.fragmentSize.height == 1)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Full;
+				TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates |= TRAP::Graphics::ShadingRate::Full;
 		}
 	}
 }

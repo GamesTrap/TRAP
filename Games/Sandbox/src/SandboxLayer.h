@@ -63,7 +63,7 @@ public:
 			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f,    0.0f, 0.0f
 		};
 		m_indexedVertexBuffer = TRAP::Graphics::VertexBuffer::Create(indexedVertices,
-																	 TRAP::Graphics::UpdateFrequency::Static);
+																	 TRAP::Graphics::DescriptorUpdateFrequency::Static);
 		m_indexedVertexBuffer->AwaitLoading();
 
 		const TRAP::Graphics::VertexBufferLayout layout =
@@ -78,7 +78,7 @@ public:
 		{
 			0u, 1u, 2u, 2u, 3u, 0u
 		};
-		m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices, TRAP::Graphics::UpdateFrequency::Static);
+		m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices, TRAP::Graphics::DescriptorUpdateFrequency::Static);
 		m_indexBuffer->AwaitLoading();
 
 		//Non-Indexed
@@ -96,11 +96,11 @@ public:
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 1.0f
 		};
 		m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices,
-															  TRAP::Graphics::UpdateFrequency::Static);
+															  TRAP::Graphics::DescriptorUpdateFrequency::Static);
 		m_vertexBuffer->AwaitLoading();
 		m_vertexBuffer->SetLayout(layout);
 
-		const TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc
+		const TRAP::Graphics::SamplerDesc samplerDesc
 		{
 			.AddressU = TRAP::Graphics::AddressMode::Repeat,
 			.AddressV = TRAP::Graphics::AddressMode::Repeat,

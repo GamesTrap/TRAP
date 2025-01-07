@@ -16,7 +16,7 @@ namespace TRAP::Graphics::API
 	public:
 		/// @brief Constructor.
 		/// @param desc Render target description.
-		explicit VulkanRenderTarget(const RendererAPI::RenderTargetDesc& desc);
+		explicit VulkanRenderTarget(const RenderTargetDesc& desc);
 		/// @brief Destructor.
 		~VulkanRenderTarget() override;
 

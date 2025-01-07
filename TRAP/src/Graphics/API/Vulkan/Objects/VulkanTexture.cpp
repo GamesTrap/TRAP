@@ -62,9 +62,9 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] constexpr VkImageUsageFlags StartStateToVkImageUsageFlags(const TRAP::Graphics::RendererAPI::ResourceState startState)
+	[[nodiscard]] constexpr VkImageUsageFlags StartStateToVkImageUsageFlags(const TRAP::Graphics::ResourceState startState)
 	{
-		using enum TRAP::Graphics::RendererAPI::ResourceState;
+		using enum TRAP::Graphics::ResourceState;
 
 		VkImageUsageFlags usageFlags = 0;
 
@@ -81,15 +81,15 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] constexpr VkImageType GetVkImageType(const TRAP::Graphics::RendererAPI::TextureDesc& desc)
+	[[nodiscard]] constexpr VkImageType GetVkImageType(const TRAP::Graphics::TextureDesc& desc)
 	{
-		if ((desc.Flags & TRAP::Graphics::RendererAPI::TextureCreationFlags::Force2D) != TRAP::Graphics::RendererAPI::TextureCreationFlags::None)
+		if ((desc.Flags & TRAP::Graphics::TextureCreationFlags::Force2D) != TRAP::Graphics::TextureCreationFlags::None)
 		{
 			TRAP_ASSERT(desc.Depth == 1, "VulkanTexture::Init(): 2D Texture cannot have depth");
 			return VK_IMAGE_TYPE_2D;
 		}
 
-		if ((desc.Flags & TRAP::Graphics::RendererAPI::TextureCreationFlags::Force3D) != TRAP::Graphics::RendererAPI::TextureCreationFlags::None)
+		if ((desc.Flags & TRAP::Graphics::TextureCreationFlags::Force3D) != TRAP::Graphics::TextureCreationFlags::None)
 			return VK_IMAGE_TYPE_3D;
 
 		if (desc.Depth > 1)
@@ -103,12 +103,12 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::DescriptorType GetFinalDescriptorTypes(const TRAP::Graphics::RendererAPI::TextureDesc& desc)
+	[[nodiscard]] constexpr TRAP::Graphics::DescriptorType GetFinalDescriptorTypes(const TRAP::Graphics::TextureDesc& desc)
 	{
-		TRAP::Graphics::RendererAPI::DescriptorType descriptors = desc.Descriptors;
+		TRAP::Graphics::DescriptorType descriptors = desc.Descriptors;
 
-		if((desc.Flags & TRAP::Graphics::RendererAPI::TextureCreationFlags::Storage) != TRAP::Graphics::RendererAPI::TextureCreationFlags::None)
-			descriptors |= TRAP::Graphics::RendererAPI::DescriptorType::RWTexture;
+		if((desc.Flags & TRAP::Graphics::TextureCreationFlags::Storage) != TRAP::Graphics::TextureCreationFlags::None)
+			descriptors |= TRAP::Graphics::DescriptorType::RWTexture;
 
 		return descriptors;
 	}
@@ -116,7 +116,7 @@ namespace
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	[[nodiscard]] constexpr VkImageViewType GetVkImageViewType(const VkImageType imageType,
-	                                                           const TRAP::Graphics::RendererAPI::TextureDesc& desc,
+	                                                           const TRAP::Graphics::TextureDesc& desc,
 															   const bool cubeMapRequired)
 	{
 		switch (imageType)
@@ -176,10 +176,10 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] VkImageCreateInfo CreateVkImageCreateInfo(const TRAP::Graphics::RendererAPI::TextureDesc& desc,
+	[[nodiscard]] VkImageCreateInfo CreateVkImageCreateInfo(const TRAP::Graphics::TextureDesc& desc,
                                                             const VkImageType imageType,
 													        const bool cubeMapRequired,
-															const TRAP::Graphics::RendererAPI::DescriptorType descriptors,
+															const TRAP::Graphics::DescriptorType descriptors,
 															const TRAP::Graphics::API::VulkanDevice& device)
 	{
 		VkImageCreateInfo info = TRAP::Graphics::API::VulkanInits::ImageCreateInfo(imageType, ImageFormatToVkFormat(desc.Format),
@@ -299,7 +299,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(std::string name, std::vector<
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanTexture::VulkanTexture(std::string name, std::vector<std::filesystem::path> filePaths,
-                                                  const TRAP::Optional<TextureCubeFormat>& cubeFormat)
+                                                  const TRAP::Optional<TextureCubeType>& cubeFormat)
 	: Texture(std::move(name), std::move(filePaths), cubeFormat)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -318,12 +318,12 @@ TRAP::Graphics::API::VulkanTexture::~VulkanTexture()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc& desc)
+void TRAP::Graphics::API::VulkanTexture::Init(const TextureDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(desc.Width && desc.Height && (desc.Depth || desc.ArraySize), "VulkanTexture::Init(): Invalid resolution");
-	TRAP_ASSERT(!(desc.SampleCount > RendererAPI::SampleCount::One && desc.MipLevels > 1), "VulkanTexture::Init(): Multi-Sampled texture cannot have mip maps");
+	TRAP_ASSERT(!(desc.SampleCount > SampleCount::One && desc.MipLevels > 1), "VulkanTexture::Init(): Multi-Sampled texture cannot have mip maps");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanTexturePrefix, "Creating Texture");
@@ -337,11 +337,11 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc& de
 	else
 		m_ownsImage = true;
 
-	const RendererAPI::DescriptorType descriptors = GetFinalDescriptorTypes(desc);
+	const DescriptorType descriptors = GetFinalDescriptorTypes(desc);
 	const VkImageType imageType = GetVkImageType(desc);
 
-	const bool cubeMapRequired = (descriptors & RendererAPI::DescriptorType::TextureCube) ==
-						         RendererAPI::DescriptorType::TextureCube;
+	const bool cubeMapRequired = (descriptors & DescriptorType::TextureCube) ==
+						         DescriptorType::TextureCube;
 
 	if (m_vkImage == VK_NULL_HANDLE)
 		CreateVkImage(desc, imageType, cubeMapRequired, descriptors);
@@ -426,10 +426,10 @@ void TRAP::Graphics::API::VulkanTexture::PreInit()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanTexture::CreateVkImage(const TRAP::Graphics::RendererAPI::TextureDesc& desc,
+void TRAP::Graphics::API::VulkanTexture::CreateVkImage(const TRAP::Graphics::TextureDesc& desc,
                                                        const VkImageType imageType,
 													   const bool cubeMapRequired,
-													   const TRAP::Graphics::RendererAPI::DescriptorType descriptors)
+													   const TRAP::Graphics::DescriptorType descriptors)
 {
 	const u32 numOfPlanes = TRAP::Graphics::API::ImageFormatNumOfPlanes(desc.Format);
 	const bool isSinglePlane = TRAP::Graphics::API::ImageFormatIsSinglePlane(desc.Format);
@@ -447,12 +447,12 @@ void TRAP::Graphics::API::VulkanTexture::CreateVkImage(const TRAP::Graphics::Ren
 	if (isSinglePlane)
 	{
 		VmaAllocationCreateInfo memReqs{};
-		if ((desc.Flags & RendererAPI::TextureCreationFlags::OwnMemory) != RendererAPI::TextureCreationFlags::None)
+		if ((desc.Flags & TextureCreationFlags::OwnMemory) != TextureCreationFlags::None)
 			memReqs.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
 		memReqs.usage = VMA_MEMORY_USAGE_GPU_ONLY;
 
 		// If lazy allocation is requested check that the hardware supports it
-		const bool lazyAllocation = (desc.Flags & RendererAPI::TextureCreationFlags::OnTile) != RendererAPI::TextureCreationFlags::None;
+		const bool lazyAllocation = (desc.Flags & TextureCreationFlags::OnTile) != TextureCreationFlags::None;
 		if (lazyAllocation)
 			m_lazilyAllocated = SetupLazyAllocation(info, memReqs, *m_vma);
 
@@ -490,9 +490,9 @@ void TRAP::Graphics::API::VulkanTexture::CreateVkImage(const TRAP::Graphics::Ren
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanTexture::CreateVkImageViews(const TRAP::Graphics::RendererAPI::TextureDesc& desc,
+void TRAP::Graphics::API::VulkanTexture::CreateVkImageViews(const TRAP::Graphics::TextureDesc& desc,
                                                             const VkImageType imageType, const bool cubeMapRequired,
-                                                            const TRAP::Graphics::RendererAPI::DescriptorType descriptors)
+                                                            const TRAP::Graphics::DescriptorType descriptors)
 {
 	const VkImageViewType imageViewType = GetVkImageViewType(imageType, desc, cubeMapRequired);
 	const VkFormat imageFormat = ImageFormatToVkFormat(desc.Format);
@@ -504,19 +504,19 @@ void TRAP::Graphics::API::VulkanTexture::CreateVkImageViews(const TRAP::Graphics
 		imageViewDesc.pNext = desc.VkSamplerYcbcrConversionInfo;
 
 	//SRV
-	if ((descriptors & RendererAPI::DescriptorType::Texture) != RendererAPI::DescriptorType::Undefined)
+	if ((descriptors & DescriptorType::Texture) != DescriptorType::Undefined)
 		VkCall(vkCreateImageView(m_device->GetVkDevice(), &imageViewDesc, nullptr, &m_vkSRVDescriptor));
 
 	//SRV Stencil
 	if (TRAP::Graphics::API::ImageFormatHasStencil(desc.Format) &&
-		((descriptors & RendererAPI::DescriptorType::Texture) != RendererAPI::DescriptorType::Undefined))
+		((descriptors & DescriptorType::Texture) != DescriptorType::Undefined))
 	{
 		imageViewDesc.subresourceRange.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
 		VkCall(vkCreateImageView(m_device->GetVkDevice(), &imageViewDesc, nullptr, &m_vkSRVStencilDescriptor));
 	}
 
 	//UAV
-	if ((descriptors & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined)
+	if ((descriptors & DescriptorType::RWTexture) != DescriptorType::Undefined)
 	{
 		m_vkUAVDescriptors.resize(desc.MipLevels);
 

@@ -13,7 +13,7 @@ namespace
 	requires std::same_as<T, u16> || std::same_as<T, u32>
 	void SetDataInternal(const TRAP::Ref<TRAP::Graphics::Buffer>& indexBuffer,
 	                     TRAP::Graphics::API::SyncToken& outSyncToken,
-						 TRAP::Graphics::RendererAPI::IndexType& outIndexType,
+						 TRAP::Graphics::IndexType& outIndexType,
 						 const std::span<const T, Size> indices, const u64 offset = 0)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
@@ -22,7 +22,7 @@ namespace
 		TRAP_ASSERT(!indices.empty(), "IndexBuffer::SetDataInternal(): Indices is empty!");
 		TRAP_ASSERT(indices.size_bytes() + offset <= indexBuffer->GetSize(), "IndexBuffer::SetDataInternal(): Out of bounds!");
 
-		TRAP::Graphics::RendererAPI::BufferUpdateDesc desc{};
+		TRAP::Graphics::BufferUpdateDesc desc{};
 		desc.Buffer = indexBuffer;
 		desc.DstOffset = offset;
 		TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(desc);
@@ -30,16 +30,16 @@ namespace
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &outSyncToken);
 
 		if constexpr(std::same_as<T, u16>)
-			outIndexType = TRAP::Graphics::RendererAPI::IndexType::UInt16;
+			outIndexType = TRAP::Graphics::IndexType::UInt16;
 		else if constexpr(std::same_as<T, u32>)
-			outIndexType = TRAP::Graphics::RendererAPI::IndexType::UInt32;
+			outIndexType = TRAP::Graphics::IndexType::UInt32;
 	}
 
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::IndexBuffer::IndexBuffer(const RendererAPI::IndexType indexType, const API::SyncToken syncToken,
+TRAP::Graphics::IndexBuffer::IndexBuffer(const IndexType indexType, const API::SyncToken syncToken,
                                          const TRAP::Ref<TRAP::Graphics::Buffer>& indexBuffer) noexcept
 	: m_indexBuffer(indexBuffer), m_token(syncToken), m_indexType(indexType)
 {
@@ -48,7 +48,7 @@ TRAP::Graphics::IndexBuffer::IndexBuffer(const RendererAPI::IndexType indexType,
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const std::span<const u32> indices,
-                                                                                           const UpdateFrequency updateFrequency)
+                                                                                           const DescriptorUpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -58,7 +58,7 @@ TRAP::Graphics::IndexBuffer::IndexBuffer(const RendererAPI::IndexType indexType,
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const std::span<const u16> indices,
-                                                                                           const UpdateFrequency updateFrequency)
+                                                                                           const DescriptorUpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -68,7 +68,7 @@ TRAP::Graphics::IndexBuffer::IndexBuffer(const RendererAPI::IndexType indexType,
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const u64 size,
-                                                                                           const UpdateFrequency updateFrequency)
+                                                                                           const DescriptorUpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -83,7 +83,7 @@ TRAP::Graphics::IndexBuffer::IndexBuffer(const RendererAPI::IndexType indexType,
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
 	return NumericCast<u32>(m_indexBuffer->GetSize() /
-	                             ((m_indexType == RendererAPI::IndexType::UInt16) ? sizeof(u16) :
+	                             ((m_indexType == IndexType::UInt16) ? sizeof(u16) :
 	                                                                                sizeof(u32)));
 }
 
@@ -99,13 +99,13 @@ TRAP::Graphics::IndexBuffer::IndexBuffer(const RendererAPI::IndexType indexType,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::UpdateFrequency TRAP::Graphics::IndexBuffer::GetUpdateFrequency() const noexcept
+[[nodiscard]] TRAP::Graphics::DescriptorUpdateFrequency TRAP::Graphics::IndexBuffer::GetUpdateFrequency() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
 
-	return (m_indexBuffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly) ? UpdateFrequency::Static :
-	                                                                                        UpdateFrequency::Dynamic;
+	return (m_indexBuffer->GetMemoryUsage() == ResourceMemoryUsage::GPUOnly) ? DescriptorUpdateFrequency::Static :
+	                                                                                        DescriptorUpdateFrequency::Dynamic;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -167,39 +167,39 @@ void TRAP::Graphics::IndexBuffer::AwaitLoading() const
 template<typename T>
 requires std::same_as<T, u16> || std::same_as<T, u32>
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Init(const T* const indices, const u64 size,
-															                             const TRAP::Graphics::UpdateFrequency updateFrequency)
+															                             const TRAP::Graphics::DescriptorUpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	TRAP::Graphics::RendererAPI::IndexType indexType = TRAP::Graphics::RendererAPI::IndexType::UInt32;
+	TRAP::Graphics::IndexType indexType = TRAP::Graphics::IndexType::UInt32;
 	if(indices)
 	{
 		if constexpr(std::same_as<T, u16>)
-			indexType = TRAP::Graphics::RendererAPI::IndexType::UInt16;
+			indexType = TRAP::Graphics::IndexType::UInt16;
 		else if constexpr(std::same_as<T, u32>)
-			indexType = TRAP::Graphics::RendererAPI::IndexType::UInt32;
+			indexType = TRAP::Graphics::IndexType::UInt32;
 	}
 	else
 	{
 		if(size / sizeof(u16) < std::numeric_limits<u16>::max())
-			indexType = TRAP::Graphics::RendererAPI::IndexType::UInt16;
+			indexType = TRAP::Graphics::IndexType::UInt16;
 		else
-			indexType = TRAP::Graphics::RendererAPI::IndexType::UInt32;
+			indexType = TRAP::Graphics::IndexType::UInt32;
 	}
 
-	const RendererAPI::BufferDesc bufferDesc
+	const BufferDesc bufferDesc
 	{
 		.Size = size,
-		.MemoryUsage = (updateFrequency == TRAP::Graphics::UpdateFrequency::Static) ? TRAP::Graphics::RendererAPI::ResourceMemoryUsage::GPUOnly :
-																					  TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU,
-		.Flags = (updateFrequency != TRAP::Graphics::UpdateFrequency::Static) ? TRAP::Graphics::RendererAPI::BufferCreationFlags::PersistentMap :
-																				TRAP::Graphics::RendererAPI::BufferCreationFlags::None,
+		.MemoryUsage = (updateFrequency == TRAP::Graphics::DescriptorUpdateFrequency::Static) ? TRAP::Graphics::ResourceMemoryUsage::GPUOnly :
+																					  TRAP::Graphics::ResourceMemoryUsage::CPUToGPU,
+		.Flags = (updateFrequency != TRAP::Graphics::DescriptorUpdateFrequency::Static) ? TRAP::Graphics::BufferCreationFlags::PersistentMap :
+																				TRAP::Graphics::BufferCreationFlags::None,
 		.ElementCount = size / sizeof(T),
 		.StructStride = sizeof(T),
-		.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::IndexBuffer
+		.Descriptors = TRAP::Graphics::DescriptorType::IndexBuffer
 	};
 
-	TRAP::Graphics::RendererAPI::BufferLoadDesc desc
+	TRAP::Graphics::BufferLoadDesc desc
 	{
 		.Data = indices,
 		.Desc = bufferDesc

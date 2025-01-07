@@ -15,7 +15,7 @@ namespace TRAP::Graphics
 		/// @param indexType Index type of the index buffer.
 		/// @param syncToken Synchronization token of the index buffer.
 		/// @param indexBuffer Interal index buffer object.
-		IndexBuffer(RendererAPI::IndexType indexType, API::SyncToken syncToken, const TRAP::Ref<TRAP::Graphics::Buffer>& indexBuffer) noexcept;
+		IndexBuffer(IndexType indexType, API::SyncToken syncToken, const TRAP::Ref<TRAP::Graphics::Buffer>& indexBuffer) noexcept;
 
 	public:
 		/// @brief Move constructor.
@@ -38,7 +38,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] u64 GetSize() const noexcept;
 		/// @brief Retrieve the update frequency used by this buffer.
 		/// @return Update frequency.
-		[[nodiscard]] UpdateFrequency GetUpdateFrequency() const noexcept;
+		[[nodiscard]] DescriptorUpdateFrequency GetUpdateFrequency() const noexcept;
 
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Use this buffer for rendering on the given window.
@@ -70,17 +70,17 @@ namespace TRAP::Graphics
 		/// @param indices Pointer to the data to upload.
 		/// @param updateFrequency Update frequency for the buffer.
 		/// @return New index buffer.
-		[[nodiscard]] static Scope<IndexBuffer> Create(std::span<const u16> indices, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<IndexBuffer> Create(std::span<const u16> indices, DescriptorUpdateFrequency updateFrequency);
 		/// @brief Create a new index buffer and set its data.
 		/// @param indices Pointer to the data to upload.
 		/// @param updateFrequency Update frequency for the buffer.
 		/// @return New index buffer.
-		[[nodiscard]] static Scope<IndexBuffer> Create(std::span<const u32> indices, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<IndexBuffer> Create(std::span<const u32> indices, DescriptorUpdateFrequency updateFrequency);
 		/// @brief Create a new index buffer and set its size.
 		/// @param size Byte size for the index buffer.
 		/// @param updateFrequency Update frequency for the buffer.
 		/// @return New index buffer.
-		[[nodiscard]] static Scope<IndexBuffer> Create(u64 size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<IndexBuffer> Create(u64 size, DescriptorUpdateFrequency updateFrequency);
 
 	private:
 		/// @brief Initialize index buffer with given data.
@@ -90,13 +90,13 @@ namespace TRAP::Graphics
 		/// @return New index buffer.
 		template<typename T>
 		requires std::same_as<T, u16> || std::same_as<T, u32>
-		[[nodiscard]] static TRAP::Scope<IndexBuffer> Init(const T* indices, u64 size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static TRAP::Scope<IndexBuffer> Init(const T* indices, u64 size, DescriptorUpdateFrequency updateFrequency);
 
 		TRAP::Ref<TRAP::Graphics::Buffer> m_indexBuffer = nullptr;
 
 		API::SyncToken m_token{};
 
-		RendererAPI::IndexType m_indexType;
+		IndexType m_indexType;
 	};
 }
 

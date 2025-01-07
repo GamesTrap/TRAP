@@ -11,7 +11,7 @@ namespace TRAP::Graphics
 		/// @brief Create a new pipeline from the given description.
 		/// @param desc Pipeline description.
 		/// @return Created pipeline.
-		[[nodiscard]] static TRAP::Ref<Pipeline> Create(const RendererAPI::PipelineDesc& desc);
+		[[nodiscard]] static TRAP::Ref<Pipeline> Create(const PipelineDesc& desc);
 
 		/// @brief Destructor.
 		virtual ~Pipeline();

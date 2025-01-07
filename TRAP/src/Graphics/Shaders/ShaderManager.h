@@ -12,7 +12,7 @@ namespace TRAP::Graphics::ShaderManager
 	/// @param userMacros Optional user defined macros. Default: nullptr.
 	/// @return Loaded shader.
 	Ref<Shader> LoadFile(const std::filesystem::path& filepath,
-	                     RendererAPI::ShaderType shaderType,
+	                     ShaderType shaderType,
 					     const std::vector<Shader::Macro>& userMacros = {});
 	/// @brief Load a shader from file.
 	/// @param name Name for the shader.
@@ -22,7 +22,7 @@ namespace TRAP::Graphics::ShaderManager
 	/// @return Loaded shader.
 	Ref<Shader> LoadFile(const std::string& name,
 	                     const std::filesystem::path& filepath,
-						 RendererAPI::ShaderType shaderType,
+						 ShaderType shaderType,
 					     const std::vector<Shader::Macro>& userMacros = {});
 	/// @brief Load a shader from GLSL source.
 	/// @param name Name for the shader.
@@ -32,7 +32,7 @@ namespace TRAP::Graphics::ShaderManager
 	/// @return Loaded shader.
 	Ref<Shader> LoadSource(const std::string& name,
 					       const std::string& glslSource,
-						   RendererAPI::ShaderType shaderType,
+						   ShaderType shaderType,
 					       const std::vector<Shader::Macro>& userMacros = {});
 
 	/// @brief Add a shader to the ShaderManager.
@@ -50,7 +50,7 @@ namespace TRAP::Graphics::ShaderManager
 	/// @param name Name of the shader to retrieve.
 	/// @param shaderType Type of the shader to retrieve.
 	/// @return Shader, Fallback shader if not found.
-	[[nodiscard]] Ref<Shader> Get(std::string_view name, RendererAPI::ShaderType shaderType);
+	[[nodiscard]] Ref<Shader> Get(std::string_view name, ShaderType shaderType);
 	/// @brief Retrieve a graphics shader from the ShaderManager.
 	/// @param name Name of the shader to retrieve.
 	/// @return Shader, Fallback shader if not found.

@@ -12,7 +12,7 @@ namespace TRAP::Graphics
 		/// @brief Create a new command pool from the given description.
 		/// @param desc Command pool description.
 		/// @return Created command pool.
-		[[nodiscard]] static TRAP::Ref<CommandPool> Create(const RendererAPI::CommandPoolDesc& desc);
+		[[nodiscard]] static TRAP::Ref<CommandPool> Create(const CommandPoolDesc& desc);
 
 		/// @brief Destructor.
 		virtual ~CommandPool();

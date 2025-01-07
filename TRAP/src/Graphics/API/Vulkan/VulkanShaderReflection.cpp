@@ -7,7 +7,7 @@
 
 namespace
 {
-	[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::DescriptorType SPIRVToDescriptorType(const TRAP::Graphics::API::SPIRVTools::ResourceType resourceType)
+	[[nodiscard]] constexpr TRAP::Graphics::DescriptorType SPIRVToDescriptorType(const TRAP::Graphics::API::SPIRVTools::ResourceType resourceType)
 	{
 		using namespace TRAP::Graphics;
 		using namespace TRAP::Graphics::API::SPIRVTools;
@@ -15,47 +15,47 @@ namespace
 		switch(resourceType)
 		{
 		case ResourceType::Inputs:
-			return RendererAPI::DescriptorType::Undefined;
+			return DescriptorType::Undefined;
 
 		case ResourceType::Outputs:
-			return RendererAPI::DescriptorType::Undefined;
+			return DescriptorType::Undefined;
 
 		case ResourceType::UniformBuffers:
-			return RendererAPI::DescriptorType::UniformBuffer;
+			return DescriptorType::UniformBuffer;
 
 		case ResourceType::StorageBuffers:
-			return RendererAPI::DescriptorType::RWBuffer;
+			return DescriptorType::RWBuffer;
 
 		case ResourceType::Images:
-			return RendererAPI::DescriptorType::Texture;
+			return DescriptorType::Texture;
 
 		case ResourceType::StorageImages:
-			return RendererAPI::DescriptorType::RWTexture;
+			return DescriptorType::RWTexture;
 
 		case ResourceType::Samplers:
-			return RendererAPI::DescriptorType::Sampler;
+			return DescriptorType::Sampler;
 
 		case ResourceType::PushConstant:
-			return RendererAPI::DescriptorType::RootConstant;
+			return DescriptorType::RootConstant;
 
 		case ResourceType::SubpassInputs:
-			return RendererAPI::DescriptorType::InputAttachment;
+			return DescriptorType::InputAttachment;
 
 		case ResourceType::UniformTexelBuffers:
-			return RendererAPI::DescriptorType::TexelBuffer;
+			return DescriptorType::TexelBuffer;
 
 		case ResourceType::StorageTexelBuffers:
-			return RendererAPI::DescriptorType::RWTexelBuffer;
+			return DescriptorType::RWTexelBuffer;
 
 		case ResourceType::AccelerationStructures:
-			return RendererAPI::DescriptorType::RayTracing;
+			return DescriptorType::RayTracing;
 
 		case ResourceType::CombinedSamplers:
-			return RendererAPI::DescriptorType::CombinedImageSampler;
+			return DescriptorType::CombinedImageSampler;
 		}
 
 		TRAP_ASSERT(false, "SPIRVToDescriptorType(): Unknown TRAP::Graphics::API::SPIRVTools::ResourceType!");
-		return RendererAPI::DescriptorType::Undefined;
+		return DescriptorType::Undefined;
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -108,7 +108,7 @@ namespace
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	[[nodiscard]] constexpr bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& resource,
-												const TRAP::Graphics::RendererAPI::ShaderStage currentStage) noexcept
+												const TRAP::Graphics::ShaderStage currentStage) noexcept
 	{
 		bool filter = false;
 
@@ -124,7 +124,7 @@ namespace
 
 		//Remove stage inputs that are not on the vertex shader
 		filter |= (resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::Inputs &&
-				   currentStage != TRAP::Graphics::RendererAPI::ShaderStage::Vertex);
+				   currentStage != TRAP::Graphics::ShaderStage::Vertex);
 
 		return filter;
 	}
@@ -139,7 +139,7 @@ namespace
 		for(const auto& resource : shaderResources)
 		{
 			//Filter out what we don't use
-			if(!FilterResource(resource, TRAP::Graphics::RendererAPI::ShaderStage::Vertex) &&
+			if(!FilterResource(resource, TRAP::Graphics::ShaderStage::Vertex) &&
 			   resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::Inputs)
 			{
 				vertexInputs.emplace_back(resource.Size, resource.Name);
@@ -153,7 +153,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] constexpr std::vector<TRAP::Graphics::API::ShaderReflection::ShaderResource> GetShaderResources(const TRAP::Graphics::RendererAPI::ShaderStage shaderStage,
+	[[nodiscard]] constexpr std::vector<TRAP::Graphics::API::ShaderReflection::ShaderResource> GetShaderResources(const TRAP::Graphics::ShaderStage shaderStage,
 	                                                                                                              const std::span<const TRAP::Graphics::API::SPIRVTools::Resource> shaderResources)
 	{
 		std::vector<TRAP::Graphics::API::ShaderReflection::ShaderResource> resources{};
@@ -178,7 +178,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] constexpr std::vector<u32> GetIndexMap(const TRAP::Graphics::RendererAPI::ShaderStage shaderStage,
+	[[nodiscard]] constexpr std::vector<u32> GetIndexMap(const TRAP::Graphics::ShaderStage shaderStage,
 	                                                     const std::span<const TRAP::Graphics::API::SPIRVTools::Resource> shaderResources)
 	{
 		std::vector<u32> indexRemap(shaderResources.size(), std::numeric_limits<u32>::max());
@@ -201,7 +201,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] constexpr std::vector<TRAP::Graphics::API::ShaderReflection::ShaderVariable> GetShaderVariables(const TRAP::Graphics::RendererAPI::ShaderStage shaderStage,
+	[[nodiscard]] constexpr std::vector<TRAP::Graphics::API::ShaderReflection::ShaderVariable> GetShaderVariables(const TRAP::Graphics::ShaderStage shaderStage,
 	                                                                                                              const std::span<const TRAP::Graphics::API::SPIRVTools::Variable> uniformVariables,
 																												  const std::span<const TRAP::Graphics::API::SPIRVTools::Resource> shaderResources)
 	{
@@ -230,7 +230,7 @@ namespace
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkCreateShaderReflection(const std::span<const u32> shaderCode,
-                                                                                                                    const RendererAPI::ShaderStage shaderStage)
+                                                                                                                    const ShaderStage shaderStage)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -263,11 +263,11 @@ namespace
 		.EntryPoint = cc.GetEntryPoint()
 	};
 
-	if(shaderStage == RendererAPI::ShaderStage::Vertex)
+	if(shaderStage == ShaderStage::Vertex)
 		out.VertexInputs = GetVertexInputs(cc.GetShaderResources());
-	else if (shaderStage == RendererAPI::ShaderStage::Compute)
+	else if (shaderStage == ShaderStage::Compute)
 		out.NumThreadsPerGroup = cc.GetComputeShaderWorkGroupSize();
-	else if (shaderStage == RendererAPI::ShaderStage::TessellationControl)
+	else if (shaderStage == ShaderStage::TessellationControl)
 		out.NumControlPoint = cc.GetTessellationControlShaderControlPoint();
 
 	return out;

@@ -52,7 +52,7 @@ void MultiWindowTests::OnAttach()
 	}
 
 	//Load Triangle vertices
-	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(TriangleVertices, TRAP::Graphics::UpdateFrequency::Static);
+	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(TriangleVertices, TRAP::Graphics::DescriptorUpdateFrequency::Static);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
@@ -63,15 +63,15 @@ void MultiWindowTests::OnAttach()
 	m_vertexBuffer->Use();
 
 	//Load Triangle indices
-	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(TriangleIndices, TRAP::Graphics::UpdateFrequency::Static);
+	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(TriangleIndices, TRAP::Graphics::DescriptorUpdateFrequency::Static);
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();
 
 	//Load UniformBuffers
 	m_sizeMultiplicatorUniformBuffer = TRAP::Graphics::UniformBuffer::Create(sizeof(SizeMultiplicatorData),
-																			 TRAP::Graphics::UpdateFrequency::Dynamic);
+																			 TRAP::Graphics::DescriptorUpdateFrequency::Dynamic);
 	m_colorUniformBuffer = TRAP::Graphics::UniformBuffer::Create(sizeof(ColorData),
-																 TRAP::Graphics::UpdateFrequency::Dynamic);
+																 TRAP::Graphics::DescriptorUpdateFrequency::Dynamic);
 	m_sizeMultiplicatorUniformBuffer->AwaitLoading();
 	m_colorUniformBuffer->AwaitLoading();
 
@@ -92,9 +92,9 @@ void MultiWindowTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 	if(m_window)
 	{
 		if(m_wireFrameSecondWindow)
-			TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line, *m_window);
+			TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::FillMode::Line, *m_window);
 		else
-			TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Solid, *m_window);
+			TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::FillMode::Solid, *m_window);
 
 		m_vertexBuffer->Use(*m_window);
 		m_indexBuffer->Use(*m_window);
@@ -145,9 +145,9 @@ void MultiWindowTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 	//Main Window OnUpdate
 	{
 		if(m_wireFrameMainWindow)
-			TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line);
+			TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::FillMode::Line);
 		else
-			TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Solid);
+			TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::FillMode::Solid);
 
 		m_vertexBuffer->Use();
 		m_indexBuffer->Use();

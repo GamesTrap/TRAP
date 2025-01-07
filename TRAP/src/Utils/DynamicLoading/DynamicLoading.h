@@ -12,6 +12,7 @@
 	#pragma warning(pop)
 #endif /*_MSC_VER*/
 
+#include "Core/Base.h"
 #include "Core/PlatformDetection.h"
 #include "Utils/String/String.h"
 #include "Utils/Linux.h"

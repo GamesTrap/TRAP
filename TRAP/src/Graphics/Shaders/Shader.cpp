@@ -30,34 +30,34 @@ namespace
 
 	struct ShaderStageData
 	{
-		TRAP::Graphics::RendererAPI::ShaderStage Stage;
+		TRAP::Graphics::ShaderStage Stage;
 		std::string_view StageString;
 		EShLanguage StageGLSLang;
 	};
 
-	[[nodiscard]] constexpr TRAP::Optional<ShaderStageData> ShaderStages(const TRAP::Graphics::RendererAPI::ShaderStage shaderStage)
+	[[nodiscard]] constexpr TRAP::Optional<ShaderStageData> ShaderStages(const TRAP::Graphics::ShaderStage shaderStage)
 	{
 		switch(shaderStage)
 		{
-		case TRAP::Graphics::RendererAPI::ShaderStage::None:
+		case TRAP::Graphics::ShaderStage::None:
 			[[fallthrough]];
-		case TRAP::Graphics::RendererAPI::ShaderStage::AllGraphics:
+		case TRAP::Graphics::ShaderStage::AllGraphics:
 			break;
 
-		case TRAP::Graphics::RendererAPI::ShaderStage::Vertex:
-			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::RendererAPI::ShaderStage::Vertex, "Vertex", EShLanguage::EShLangVertex);
-		case TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl:
-			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl, "TessellationControl", EShLanguage::EShLangTessControl);
-		case TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation:
-			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation, "TessellationEvaluation", EShLanguage::EShLangTessEvaluation);
-		case TRAP::Graphics::RendererAPI::ShaderStage::Geometry:
-			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::RendererAPI::ShaderStage::Geometry, "Geometry", EShLanguage::EShLangGeometry);
-		case TRAP::Graphics::RendererAPI::ShaderStage::Fragment:
-			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::RendererAPI::ShaderStage::Fragment, "Fragment", EShLanguage::EShLangFragment);
-		case TRAP::Graphics::RendererAPI::ShaderStage::Compute:
-			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::RendererAPI::ShaderStage::Compute, "Compute", EShLanguage::EShLangCompute);
-		case TRAP::Graphics::RendererAPI::ShaderStage::RayTracing:
-			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::RendererAPI::ShaderStage::RayTracing, "RayTracing", EShLanguage::EShLangCount); //TODO RayTracing Shader support
+		case TRAP::Graphics::ShaderStage::Vertex:
+			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::ShaderStage::Vertex, "Vertex", EShLanguage::EShLangVertex);
+		case TRAP::Graphics::ShaderStage::TessellationControl:
+			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::ShaderStage::TessellationControl, "TessellationControl", EShLanguage::EShLangTessControl);
+		case TRAP::Graphics::ShaderStage::TessellationEvaluation:
+			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::ShaderStage::TessellationEvaluation, "TessellationEvaluation", EShLanguage::EShLangTessEvaluation);
+		case TRAP::Graphics::ShaderStage::Geometry:
+			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::ShaderStage::Geometry, "Geometry", EShLanguage::EShLangGeometry);
+		case TRAP::Graphics::ShaderStage::Fragment:
+			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::ShaderStage::Fragment, "Fragment", EShLanguage::EShLangFragment);
+		case TRAP::Graphics::ShaderStage::Compute:
+			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::ShaderStage::Compute, "Compute", EShLanguage::EShLangCompute);
+		case TRAP::Graphics::ShaderStage::RayTracing:
+			return TRAP::MakeOptional<ShaderStageData>(TRAP::Graphics::ShaderStage::RayTracing, "RayTracing", EShLanguage::EShLangCount); //TODO RayTracing Shader support
 		}
 
 		return TRAP::NullOpt;
@@ -65,7 +65,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] constexpr std::string_view ShaderStageToString(const TRAP::Graphics::RendererAPI::ShaderStage stage)
+	[[nodiscard]] constexpr std::string_view ShaderStageToString(const TRAP::Graphics::ShaderStage stage)
 	{
 		if(const auto data = ShaderStages(stage))
 			return data->StageString;
@@ -75,7 +75,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] constexpr EShLanguage ShaderStageToEShLanguage(const TRAP::Graphics::RendererAPI::ShaderStage stage)
+	[[nodiscard]] constexpr EShLanguage ShaderStageToEShLanguage(const TRAP::Graphics::ShaderStage stage)
 	{
 		if(const auto data = ShaderStages(stage))
 			return data->StageGLSLang;
@@ -116,7 +116,7 @@ namespace
 	struct GLSLSourceStages
 	{
 		std::string GLSLSource{};
-		TRAP::Graphics::RendererAPI::ShaderStage Stage = TRAP::Graphics::RendererAPI::ShaderStage::None;
+		TRAP::Graphics::ShaderStage Stage = TRAP::Graphics::ShaderStage::None;
 	};
 
 
@@ -125,7 +125,7 @@ namespace
 		std::vector<GLSLSourceStages> shaders{};
 
 		const std::vector<std::string_view> glslLines = TRAP::Utils::String::GetLinesStringView(glslSource);
-		TRAP::Graphics::RendererAPI::ShaderStage currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::None;
+		TRAP::Graphics::ShaderStage currentShaderStage = TRAP::Graphics::ShaderStage::None;
 		std::string lowerLine{}; //Used for lines starting with '#'
 
 		//Go through every line of the shader source
@@ -139,33 +139,33 @@ namespace
 			{
 				//Detect shader type
 				if (TRAP::Utils::String::Contains(lowerLine, "vertex"))
-					currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::Vertex;
+					currentShaderStage = TRAP::Graphics::ShaderStage::Vertex;
 				else if (TRAP::Utils::String::Contains(lowerLine, "fragment") ||
 						 TRAP::Utils::String::Contains(lowerLine, "pixel"))
 				{
-					currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::Fragment;
+					currentShaderStage = TRAP::Graphics::ShaderStage::Fragment;
 				}
 				else if (TRAP::Utils::String::Contains(lowerLine, "geometry"))
-					currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::Geometry;
+					currentShaderStage = TRAP::Graphics::ShaderStage::Geometry;
 				else if (TRAP::Utils::String::Contains(lowerLine, "tessellation"))
 				{
 					//Either Control or Evaluation
 					if (TRAP::Utils::String::Contains(lowerLine, "control"))
-						currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl;
+						currentShaderStage = TRAP::Graphics::ShaderStage::TessellationControl;
 					else if (TRAP::Utils::String::Contains(lowerLine, "evaluation"))
-						currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation;
+						currentShaderStage = TRAP::Graphics::ShaderStage::TessellationEvaluation;
 				}
 				else if(TRAP::Utils::String::Contains(lowerLine, "hull"))
-					currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::Hull;
+					currentShaderStage = TRAP::Graphics::ShaderStage::Hull;
 				else if(TRAP::Utils::String::Contains(lowerLine, "domain"))
-					currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::Domain;
+					currentShaderStage = TRAP::Graphics::ShaderStage::Domain;
 				else if (TRAP::Utils::String::Contains(lowerLine, "compute"))
-					currentShaderStage = TRAP::Graphics::RendererAPI::ShaderStage::Compute;
+					currentShaderStage = TRAP::Graphics::ShaderStage::Compute;
 				//TODO RayTracing Shaders i.e. "RayGen" "AnyHit" "ClosestHit" "Miss" "Intersection" ("Callable")
 
 				//Check for duplicate "#shader XXX" defines
 				if (std::ranges::any_of(shaders,
-					[currentShaderStage](const auto& element){return (element.Stage & currentShaderStage) != TRAP::Graphics::RendererAPI::ShaderStage::None;}))
+					[currentShaderStage](const auto& element){return (element.Stage & currentShaderStage) != TRAP::Graphics::ShaderStage::None;}))
 				{
 					TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Found duplicate \"#shader\" define: \"", glslLines[i], '\"');
 					return TRAP::NullOpt;
@@ -179,14 +179,14 @@ namespace
 				TP_WARN(TRAP::Log::ShaderGLSLPrefix, "Found unnecessary \"#version\" tag! Skipping line: ", i);
 				lowerLine.clear();
 			}
-			else if(currentShaderStage != TRAP::Graphics::RendererAPI::ShaderStage::None) //Add shader code to detected shader stage
+			else if(currentShaderStage != TRAP::Graphics::ShaderStage::None) //Add shader code to detected shader stage
 			{
-				if(currentShaderStage == TRAP::Graphics::RendererAPI::ShaderStage::RayTracing)
+				if(currentShaderStage == TRAP::Graphics::ShaderStage::RayTracing)
 				{
 					TP_WARN(TRAP::Log::ShaderGLSLPrefix, "RayTracing shader support is WIP!");
 					return TRAP::NullOpt;
 				}
-				if(currentShaderStage == TRAP::Graphics::RendererAPI::ShaderStage::None)
+				if(currentShaderStage == TRAP::Graphics::ShaderStage::None)
 				{
 					TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Unsupported shader type!");
 					return TRAP::NullOpt;
@@ -317,27 +317,27 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] constexpr bool ContainsGraphicsShaderStage(const TRAP::Graphics::RendererAPI::ShaderStage stages)
+	[[nodiscard]] constexpr bool ContainsGraphicsShaderStage(const TRAP::Graphics::ShaderStage stages)
 	{
-		return ((TRAP::Graphics::RendererAPI::ShaderStage::Vertex & stages) != TRAP::Graphics::RendererAPI::ShaderStage::None) ||
-			   ((TRAP::Graphics::RendererAPI::ShaderStage::Fragment & stages) != TRAP::Graphics::RendererAPI::ShaderStage::None) ||
-			   ((TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl & stages) != TRAP::Graphics::RendererAPI::ShaderStage::None) ||
-			   ((TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation & stages) != TRAP::Graphics::RendererAPI::ShaderStage::None) ||
-			   ((TRAP::Graphics::RendererAPI::ShaderStage::Geometry & stages) != TRAP::Graphics::RendererAPI::ShaderStage::None);
+		return ((TRAP::Graphics::ShaderStage::Vertex & stages) != TRAP::Graphics::ShaderStage::None) ||
+			   ((TRAP::Graphics::ShaderStage::Fragment & stages) != TRAP::Graphics::ShaderStage::None) ||
+			   ((TRAP::Graphics::ShaderStage::TessellationControl & stages) != TRAP::Graphics::ShaderStage::None) ||
+			   ((TRAP::Graphics::ShaderStage::TessellationEvaluation & stages) != TRAP::Graphics::ShaderStage::None) ||
+			   ((TRAP::Graphics::ShaderStage::Geometry & stages) != TRAP::Graphics::ShaderStage::None);
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] constexpr bool ContainsComputeShaderStage(const TRAP::Graphics::RendererAPI::ShaderStage stages)
+	[[nodiscard]] constexpr bool ContainsComputeShaderStage(const TRAP::Graphics::ShaderStage stages)
 	{
-		return (TRAP::Graphics::RendererAPI::ShaderStage::Compute & stages) != TRAP::Graphics::RendererAPI::ShaderStage::None;
+		return (TRAP::Graphics::ShaderStage::Compute & stages) != TRAP::Graphics::ShaderStage::None;
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] constexpr bool ContainsRayTracingShaderStage(const TRAP::Graphics::RendererAPI::ShaderStage stages)
+	[[nodiscard]] constexpr bool ContainsRayTracingShaderStage(const TRAP::Graphics::ShaderStage stages)
 	{
-		return (TRAP::Graphics::RendererAPI::ShaderStage::RayTracing & stages) != TRAP::Graphics::RendererAPI::ShaderStage::None;
+		return (TRAP::Graphics::ShaderStage::RayTracing & stages) != TRAP::Graphics::ShaderStage::None;
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -350,15 +350,15 @@ namespace
 	/// 4. Checks if Vertex and Fragment shaders are combined.
 	/// @param shaders Shader stages to validate.
 	/// @return True if validation was successful, false otherwise.
-	[[nodiscard]] constexpr bool ValidateShaderStages(const TRAP::Graphics::RendererAPI::ShaderType shaderType,
+	[[nodiscard]] constexpr bool ValidateShaderStages(const TRAP::Graphics::ShaderType shaderType,
 	                                                  const std::span<const GLSLSourceStages> shaders)
 	{
-		TRAP::Graphics::RendererAPI::ShaderStage combinedStages = TRAP::Graphics::RendererAPI::ShaderStage::None;
+		TRAP::Graphics::ShaderStage combinedStages = TRAP::Graphics::ShaderStage::None;
 		for(const auto& [glsl, stage] : shaders)
 			combinedStages |= stage;
 
 		//Check if any Shader Stage is set
-		if (combinedStages == TRAP::Graphics::RendererAPI::ShaderStage::None)
+		if (combinedStages == TRAP::Graphics::ShaderStage::None)
 		{
 			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "No shader stage found!");
 			return false;
@@ -387,15 +387,15 @@ namespace
 		}
 
 		//Check for Vertex Shader Stage & required Fragment/Pixel Shader Stage
-		if(((TRAP::Graphics::RendererAPI::ShaderStage::Vertex & combinedStages) != TRAP::Graphics::RendererAPI::ShaderStage::None) &&
-		   (((TRAP::Graphics::RendererAPI::ShaderStage::Fragment & combinedStages)) == TRAP::Graphics::RendererAPI::ShaderStage::None))
+		if(((TRAP::Graphics::ShaderStage::Vertex & combinedStages) != TRAP::Graphics::ShaderStage::None) &&
+		   (((TRAP::Graphics::ShaderStage::Fragment & combinedStages)) == TRAP::Graphics::ShaderStage::None))
 		{
 			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Only vertex shader stage provided! Missing fragment/pixel shader stage");
 			return false;
 		}
 		//Check for Fragment/Pixel Shader Stage & required Vertex Shader Stage
-		if(((TRAP::Graphics::RendererAPI::ShaderStage::Fragment & combinedStages) != TRAP::Graphics::RendererAPI::ShaderStage::None) &&
-		   (((TRAP::Graphics::RendererAPI::ShaderStage::Vertex & combinedStages)) == TRAP::Graphics::RendererAPI::ShaderStage::None))
+		if(((TRAP::Graphics::ShaderStage::Fragment & combinedStages) != TRAP::Graphics::ShaderStage::None) &&
+		   (((TRAP::Graphics::ShaderStage::Vertex & combinedStages)) == TRAP::Graphics::ShaderStage::None))
 		{
 			TP_ERROR(TRAP::Log::ShaderGLSLPrefix, "Only fragment/pixel shader stage provided! Missing vertex shader stage");
 			return false;
@@ -404,12 +404,12 @@ namespace
 		//Validate that given ShaderType matches with ShaderStages
 		switch(shaderType)
 		{
-		case TRAP::Graphics::RendererAPI::ShaderType::Graphics:
+		case TRAP::Graphics::ShaderType::Graphics:
 			if(!graphics)
 				return false;
 			break;
 
-		case TRAP::Graphics::RendererAPI::ShaderType::Compute:
+		case TRAP::Graphics::ShaderType::Compute:
 			if(!compute)
 				return false;
 			break;
@@ -425,7 +425,7 @@ namespace
 	/// @param stage Shader stage to convert.
 	/// @param program glslang::TProgram object to convert.
 	/// @return SPIRV binary data on success, empty vector otherwise.
-	[[nodiscard]] std::vector<u32> ConvertToSPIRV(const TRAP::Graphics::RendererAPI::ShaderStage stage,
+	[[nodiscard]] std::vector<u32> ConvertToSPIRV(const TRAP::Graphics::ShaderStage stage,
 	                                              const glslang::TProgram& program)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
@@ -453,7 +453,7 @@ namespace
 	/// @brief Convert GLSL shaders to SPIRV.
 	/// @param shaders GLSL shader(s) to convert.
 	/// @return RendererAPI::BinaryShaderDesc containing SPIRV binary data.
-	[[nodiscard]] TRAP::Graphics::RendererAPI::BinaryShaderDesc ConvertGLSLToSPIRV(const std::span<const GLSLSourceStages> shaders)
+	[[nodiscard]] TRAP::Graphics::BinaryShaderDesc ConvertGLSLToSPIRV(const std::span<const GLSLSourceStages> shaders)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -464,7 +464,7 @@ namespace
 			GlslangInitialized = true;
 		}
 
-		TRAP::Graphics::RendererAPI::BinaryShaderDesc desc{};
+		TRAP::Graphics::BinaryShaderDesc desc{};
 
 		for(const auto& [glsl, stage] : shaders)
 		{
@@ -500,33 +500,33 @@ namespace
 
 			switch(stage)
 			{
-			case TRAP::Graphics::RendererAPI::ShaderStage::Vertex:
-				desc.Vertex = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV };
+			case TRAP::Graphics::ShaderStage::Vertex:
+				desc.Vertex = TRAP::Graphics::BinaryShaderStageDesc{ SPIRV };
 				break;
-			case TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl:
-				desc.TessellationControl = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV };
+			case TRAP::Graphics::ShaderStage::TessellationControl:
+				desc.TessellationControl = TRAP::Graphics::BinaryShaderStageDesc{ SPIRV };
 				break;
-			case TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation:
-				desc.TessellationEvaluation = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV };
+			case TRAP::Graphics::ShaderStage::TessellationEvaluation:
+				desc.TessellationEvaluation = TRAP::Graphics::BinaryShaderStageDesc{ SPIRV };
 				break;
-			case TRAP::Graphics::RendererAPI::ShaderStage::Geometry:
-				desc.Geometry = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV };
+			case TRAP::Graphics::ShaderStage::Geometry:
+				desc.Geometry = TRAP::Graphics::BinaryShaderStageDesc{ SPIRV };
 				break;
-			case TRAP::Graphics::RendererAPI::ShaderStage::Fragment:
-				desc.Fragment = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV };
-				break;
-
-			case TRAP::Graphics::RendererAPI::ShaderStage::Compute:
-				desc.Compute = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ SPIRV };
+			case TRAP::Graphics::ShaderStage::Fragment:
+				desc.Fragment = TRAP::Graphics::BinaryShaderStageDesc{ SPIRV };
 				break;
 
-			case TRAP::Graphics::RendererAPI::ShaderStage::RayTracing:
+			case TRAP::Graphics::ShaderStage::Compute:
+				desc.Compute = TRAP::Graphics::BinaryShaderStageDesc{ SPIRV };
+				break;
+
+			case TRAP::Graphics::ShaderStage::RayTracing:
 				//TODO
 				return {};
 
-			case TRAP::Graphics::RendererAPI::ShaderStage::AllGraphics:
+			case TRAP::Graphics::ShaderStage::AllGraphics:
 				[[fallthrough]];
-			case TRAP::Graphics::RendererAPI::ShaderStage::None:
+			case TRAP::Graphics::ShaderStage::None:
 				TRAP_ASSERT(false, "Shader::ConvertGLSLToSPIRV: Invalid shader stage!");
 				return {};
 			}
@@ -540,7 +540,7 @@ namespace
 	/// @brief Load SPIRV binary data into RendererAPI::BinaryShaderDesc.
 	/// @param SPIRV SPIRV binary data.
 	/// @return RendererAPI::BinaryShaderDesc containing loaded SPIRV binary data.
-	[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::BinaryShaderDesc LoadSPIRV(const std::span<u8> SPIRV)
+	[[nodiscard]] constexpr TRAP::Graphics::BinaryShaderDesc LoadSPIRV(const std::span<u8> SPIRV)
 	{
 	#ifdef ENABLE_GRAPHICS_DEBUG
 		TP_DEBUG(TRAP::Log::ShaderSPIRVPrefix, "Loading SPIRV");
@@ -562,7 +562,7 @@ namespace
 				return {};
 		}
 
-		TRAP::Graphics::RendererAPI::BinaryShaderDesc desc{};
+		TRAP::Graphics::BinaryShaderDesc desc{};
 		usize index = ShaderMagicNumber.size() + sizeof(u32);
 		const u8 SPIRVSubShaderCount = SPIRV[index++];
 
@@ -577,7 +577,7 @@ namespace
 
 			index += sizeof(usize);
 
-			const TRAP::Graphics::RendererAPI::ShaderStage stage = static_cast<TRAP::Graphics::RendererAPI::ShaderStage>(SPIRV[index++]);
+			const TRAP::Graphics::ShaderStage stage = static_cast<TRAP::Graphics::ShaderStage>(SPIRV[index++]);
 			desc.Stages |= stage;
 
 			const auto spvMagicNumber = TRAP::Utils::Memory::ConvertByte<u32>(SPIRV.subspan(NumericCast<isize>(index)));
@@ -591,37 +591,37 @@ namespace
 
 			switch(stage)
 			{
-			case TRAP::Graphics::RendererAPI::ShaderStage::Vertex:
+			case TRAP::Graphics::ShaderStage::Vertex:
 				outputSPIRV = &desc.Vertex.ByteCode;
 				break;
 
-			case TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl:
+			case TRAP::Graphics::ShaderStage::TessellationControl:
 				outputSPIRV = &desc.TessellationControl.ByteCode;
 				break;
 
-			case TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation:
+			case TRAP::Graphics::ShaderStage::TessellationEvaluation:
 				outputSPIRV = &desc.TessellationEvaluation.ByteCode;
 				break;
 
-			case TRAP::Graphics::RendererAPI::ShaderStage::Geometry:
+			case TRAP::Graphics::ShaderStage::Geometry:
 				outputSPIRV = &desc.Geometry.ByteCode;
 				break;
 
-			case TRAP::Graphics::RendererAPI::ShaderStage::Fragment:
+			case TRAP::Graphics::ShaderStage::Fragment:
 				outputSPIRV = &desc.Fragment.ByteCode;
 				break;
 
-			case TRAP::Graphics::RendererAPI::ShaderStage::Compute:
+			case TRAP::Graphics::ShaderStage::Compute:
 				outputSPIRV = &desc.Compute.ByteCode;
 				break;
 
-			case TRAP::Graphics::RendererAPI::ShaderStage::RayTracing:
+			case TRAP::Graphics::ShaderStage::RayTracing:
 				// TODO RayTracing
 				return {};
 
-			case TRAP::Graphics::RendererAPI::ShaderStage::AllGraphics:
+			case TRAP::Graphics::ShaderStage::AllGraphics:
 				[[fallthrough]];
-			case TRAP::Graphics::RendererAPI::ShaderStage::None:
+			case TRAP::Graphics::ShaderStage::None:
 				TRAP_ASSERT(false, "Shader::LoadSPIRV: Invalid shader stage!");
 				return {};
 			}
@@ -686,10 +686,10 @@ namespace
 	/// @param userMacros Optional user provided macros.
 	/// @param outShaderDesc Output binary shader description.
 	/// @return True on successful pre initialization, false otherwise.
-	[[nodiscard]] bool PreInit(const TRAP::Graphics::RendererAPI::ShaderType shaderType, const std::string& name,
+	[[nodiscard]] bool PreInit(const TRAP::Graphics::ShaderType shaderType, const std::string& name,
 	                           const std::filesystem::path& filePath,
 	                           const std::vector<TRAP::Graphics::Shader::Macro>& userMacros,
-							   TRAP::Graphics::RendererAPI::BinaryShaderDesc& outShaderDesc)
+							   TRAP::Graphics::BinaryShaderDesc& outShaderDesc)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -739,7 +739,7 @@ namespace
 		else
 			outShaderDesc = LoadSPIRV(SPIRVSource);
 
-		if (outShaderDesc.Stages == TRAP::Graphics::RendererAPI::ShaderStage::None)
+		if (outShaderDesc.Stages == TRAP::Graphics::ShaderStage::None)
 			return false;
 
 		return true;
@@ -809,8 +809,8 @@ bool TRAP::Graphics::Shader::Reload()
 		return false;
 	}
 
-	RendererAPI::BinaryShaderDesc desc;
-	m_shaderStages = RendererAPI::ShaderStage::None;
+	BinaryShaderDesc desc;
+	m_shaderStages = ShaderStage::None;
 	if (!isSPIRV)
 	{
 		std::vector<GLSLSourceStages> shaders{};
@@ -826,7 +826,7 @@ bool TRAP::Graphics::Shader::Reload()
 	else
 		desc = LoadSPIRV(SPIRVSource);
 
-	if (desc.Stages == RendererAPI::ShaderStage::None)
+	if (desc.Stages == ShaderStage::None)
 	{
 		m_valid = false;
 		return false;
@@ -862,7 +862,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const RendererAPI::ShaderType shaderType,
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const ShaderType shaderType,
                                                                                        const std::string& name,
                                                                                        const std::filesystem::path& filePath,
 																		               const std::vector<Macro>& userMacros)
@@ -875,7 +875,7 @@ bool TRAP::Graphics::Shader::Reload()
 		return CreateFromFile(shaderType, filePath, userMacros);
 	}
 
-	RendererAPI::BinaryShaderDesc desc{};
+	BinaryShaderDesc desc{};
 	const bool failed = !PreInit(shaderType, name, filePath, userMacros, desc);
 
 	switch (RendererAPI::GetRenderAPI())
@@ -907,13 +907,13 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const RendererAPI::ShaderType shaderType,
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const ShaderType shaderType,
                                                                                        const std::filesystem::path& filePath,
                                                                                        const std::vector<Macro>& userMacros)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	RendererAPI::BinaryShaderDesc desc{};
+	BinaryShaderDesc desc{};
 	const auto name = FileSystem::GetFileNameWithoutEnding(filePath);
 	if(!name)
 	{
@@ -954,7 +954,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const RendererAPI::ShaderType shaderType,
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const ShaderType shaderType,
                                                                                          const std::string& name,
                                                                                          const std::string& glslSource,
 																		                 const std::vector<Macro>& userMacros)
@@ -966,11 +966,11 @@ bool TRAP::Graphics::Shader::Reload()
 
 	bool failed = !PreProcessGLSL(glslSource, shaders, userMacros) || !ValidateShaderStages(shaderType, shaders);
 
-	RendererAPI::BinaryShaderDesc desc{};
+	BinaryShaderDesc desc{};
 	if(!failed)
 	{
 		desc = ConvertGLSLToSPIRV(shaders);
-		if (desc.Stages == RendererAPI::ShaderStage::None)
+		if (desc.Stages == ShaderStage::None)
 			failed = true;
 	}
 
@@ -996,8 +996,8 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Shader::Shader(const RendererAPI::ShaderType shaderType, std::string name, const bool valid,
-                               const RendererAPI::ShaderStage stages, const std::vector<Macro>& userMacros,
+TRAP::Graphics::Shader::Shader(const ShaderType shaderType, std::string name, const bool valid,
+                               const ShaderStage stages, const std::vector<Macro>& userMacros,
 							   std::filesystem::path filepath)
 	: m_name(std::move(name)), m_filepath(std::move(filepath)), m_shaderStages(stages), m_macros(userMacros),
 	  m_valid(valid), m_shaderType(shaderType)

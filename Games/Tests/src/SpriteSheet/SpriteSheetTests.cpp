@@ -126,7 +126,7 @@ void SpriteSheetTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     m_animation2->OnUpdate(deltaTime);
 
 	//Render
-	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBuffer::Color_Depth);
+	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBufferType::Color_Depth);
 
 	TRAP::Graphics::Renderer2D::ResetStats();
 	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());

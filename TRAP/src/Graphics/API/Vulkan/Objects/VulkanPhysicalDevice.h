@@ -136,7 +136,7 @@ namespace TRAP::Graphics::API
 
 		/// @brief Retrieve the vendor of the physical device.
 		/// @return Vendor.
-		[[nodiscard]] constexpr RendererAPI::GPUVendor GetVendor() const noexcept;
+		[[nodiscard]] constexpr GPUVendor GetVendor() const noexcept;
 
 		/// @brief Retrieve the name of the physical device.
 		/// @return Vendor.
@@ -385,7 +385,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::GPUVendor TRAP::Graphics::API::VulkanPhysicalDevice::GetVendor() const noexcept
+[[nodiscard]] constexpr TRAP::Graphics::GPUVendor TRAP::Graphics::API::VulkanPhysicalDevice::GetVendor() const noexcept
 {
 	switch(m_physicalDeviceProperties.vendorID)
 	{
@@ -414,10 +414,10 @@ namespace TRAP::Graphics::API
 	case 0x10004:
 		[[fallthrough]];
 	case 0x10005:
-		return static_cast<RendererAPI::GPUVendor>(m_physicalDeviceProperties.vendorID);
+		return static_cast<GPUVendor>(m_physicalDeviceProperties.vendorID);
 
 	default:
-		return RendererAPI::GPUVendor::Unknown;
+		return GPUVendor::Unknown;
 	}
 }
 

@@ -11,11 +11,11 @@ namespace TRAP::Graphics
 		/// @brief Create a new pipeline cache from the given description.
 		/// @param desc Pipeline cache description.
 		/// @return Created pipeline cache.
-		[[nodiscard]] static TRAP::Ref<PipelineCache> Create(const RendererAPI::PipelineCacheDesc& desc);
+		[[nodiscard]] static TRAP::Ref<PipelineCache> Create(const PipelineCacheDesc& desc);
 		/// @brief Create a new pipeline cache from the given description.
 		/// @param desc Pipeline cache description.
 		/// @return Created pipeline cache.
-		[[nodiscard]] static TRAP::Ref<PipelineCache> Create(const RendererAPI::PipelineCacheLoadDesc& desc);
+		[[nodiscard]] static TRAP::Ref<PipelineCache> Create(const PipelineCacheLoadDesc& desc);
 
 		/// @brief Destructor.
 		virtual ~PipelineCache();

@@ -3,7 +3,7 @@
 
 #include "Graphics/API/Vulkan/Objects/VulkanBuffer.h"
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Buffer> TRAP::Graphics::Buffer::Create(const RendererAPI::BufferDesc& desc)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Buffer> TRAP::Graphics::Buffer::Create(const BufferDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -24,8 +24,8 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Buffer::Buffer(const u64 size, const RendererAPI::DescriptorType descriptorType,
-                               const RendererAPI::ResourceMemoryUsage memoryUsage)
+TRAP::Graphics::Buffer::Buffer(const u64 size, const DescriptorType descriptorType,
+                               const ResourceMemoryUsage memoryUsage)
 	: m_size(size), m_descriptors(descriptorType), m_memoryUsage(memoryUsage)
 {
 #ifdef ENABLE_GRAPHICS_DEBUG

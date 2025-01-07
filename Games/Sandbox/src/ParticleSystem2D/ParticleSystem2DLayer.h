@@ -42,7 +42,7 @@ public:
 	{
 		m_cameraController.OnUpdate(deltaTime);
 
-		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBuffer::Color);
+		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBufferType::Color);
 
 		if(TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Left))
 		{

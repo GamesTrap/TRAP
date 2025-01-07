@@ -20,12 +20,12 @@ void TRAP::Graphics::RenderCommand::Flush()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::Clear(const ClearBuffer clearType, const Window& window)
+void TRAP::Graphics::RenderCommand::Clear(const ClearBufferType clearType, const Window& window)
 {
 	RendererAPI::GetRenderer()->Clear(clearType, window);
 }
 #else
-void TRAP::Graphics::RenderCommand::Clear(const ClearBuffer clearType)
+void TRAP::Graphics::RenderCommand::Clear(const ClearBufferType clearType)
 {
 	RendererAPI::GetRenderer()->Clear(clearType);
 }
@@ -34,12 +34,12 @@ void TRAP::Graphics::RenderCommand::Clear(const ClearBuffer clearType)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetClearColor(const RendererAPI::Color& color, const Window& window)
+void TRAP::Graphics::RenderCommand::SetClearColor(const Color& color, const Window& window)
 {
 	RendererAPI::GetRenderer()->SetClearColor(color, window);
 }
 #else
-void TRAP::Graphics::RenderCommand::SetClearColor(const RendererAPI::Color& color)
+void TRAP::Graphics::RenderCommand::SetClearColor(const Color& color)
 {
 	RendererAPI::GetRenderer()->SetClearColor(color);
 }
@@ -118,13 +118,13 @@ void TRAP::Graphics::RenderCommand::SetDepthFunction(const CompareMode compareMo
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetDepthFail(const StencilOperation front, const StencilOperation back,
+void TRAP::Graphics::RenderCommand::SetDepthFail(const StencilOp front, const StencilOp back,
 												 const Window& window)
 {
 	RendererAPI::GetRenderer()->SetDepthFail(front, back, window);
 }
 #else
-void TRAP::Graphics::RenderCommand::SetDepthFail(const StencilOperation front, const StencilOperation back)
+void TRAP::Graphics::RenderCommand::SetDepthFail(const StencilOp front, const StencilOp back)
 {
 	RendererAPI::GetRenderer()->SetDepthFail(front, back);
 }
@@ -175,13 +175,13 @@ void TRAP::Graphics::RenderCommand::SetStencilTesting(const bool enabled)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetStencilFail(const StencilOperation front, const StencilOperation back,
+void TRAP::Graphics::RenderCommand::SetStencilFail(const StencilOp front, const StencilOp back,
 												   const Window& window)
 {
 	RendererAPI::GetRenderer()->SetStencilFail(front, back, window);
 }
 #else
-void TRAP::Graphics::RenderCommand::SetStencilFail(const StencilOperation front, const StencilOperation back)
+void TRAP::Graphics::RenderCommand::SetStencilFail(const StencilOp front, const StencilOp back)
 {
 	RendererAPI::GetRenderer()->SetStencilFail(front, back);
 }
@@ -190,13 +190,13 @@ void TRAP::Graphics::RenderCommand::SetStencilFail(const StencilOperation front,
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetStencilPass(const StencilOperation front, const StencilOperation back,
+void TRAP::Graphics::RenderCommand::SetStencilPass(const StencilOp front, const StencilOp back,
 												   const Window& window)
 {
 	RendererAPI::GetRenderer()->SetStencilPass(front, back, window);
 }
 #else
-void TRAP::Graphics::RenderCommand::SetStencilPass(const StencilOperation front, const StencilOperation back)
+void TRAP::Graphics::RenderCommand::SetStencilPass(const StencilOp front, const StencilOp back)
 {
 	RendererAPI::GetRenderer()->SetStencilPass(front, back);
 }
@@ -584,7 +584,7 @@ void TRAP::Graphics::RenderCommand::SetPushConstants(const std::string_view name
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::BindRenderTarget(const Graphics::RenderTarget* const colorTarget,
 		                                             const Graphics::RenderTarget* const depthStencil,
-									                 RendererAPI::LoadActionsDesc* const loadActions,
+									                 LoadActionsDesc* const loadActions,
 									                 const Window& window)
 {
 	RendererAPI::GetRenderer()->BindRenderTarget(colorTarget, depthStencil, loadActions, nullptr, nullptr,
@@ -594,7 +594,7 @@ void TRAP::Graphics::RenderCommand::BindRenderTarget(const Graphics::RenderTarge
 #else
 void TRAP::Graphics::RenderCommand::BindRenderTarget(const Graphics::RenderTarget* const colorTarget,
 		                                             const Graphics::RenderTarget* const depthStencil,
-									                 RendererAPI::LoadActionsDesc* const loadActions)
+									                 LoadActionsDesc* const loadActions)
 {
 	RendererAPI::GetRenderer()->BindRenderTarget(colorTarget, depthStencil, loadActions, nullptr, nullptr,
 												 std::numeric_limits<u32>::max(),
@@ -607,7 +607,7 @@ void TRAP::Graphics::RenderCommand::BindRenderTarget(const Graphics::RenderTarge
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<std::reference_wrapper<const Graphics::RenderTarget>>& colorTargets,
 		                                              const Graphics::RenderTarget* const depthStencil,
-									                  RendererAPI::LoadActionsDesc* const loadActions,
+									                  LoadActionsDesc* const loadActions,
 									                  const Window& window)
 {
 	RendererAPI::GetRenderer()->BindRenderTargets(colorTargets, depthStencil, loadActions, nullptr, nullptr,
@@ -617,7 +617,7 @@ void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<std::ref
 #else
 void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<std::reference_wrapper<const Graphics::RenderTarget>>& colorTargets,
 		                                             const Graphics::RenderTarget* const depthStencil,
-									                 RendererAPI::LoadActionsDesc* const loadActions)
+									                 LoadActionsDesc* const loadActions)
 {
 	RendererAPI::GetRenderer()->BindRenderTargets(colorTargets, depthStencil, loadActions, nullptr, nullptr,
 												  std::numeric_limits<u32>::max(),
@@ -656,13 +656,13 @@ void TRAP::Graphics::RenderCommand::StopRenderPass()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::BufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
+void TRAP::Graphics::RenderCommand::BufferBarrier(const TRAP::Graphics::BufferBarrier& bufferBarrier,
                                                   const QueueType queueType, const Window& window)
 {
 	RendererAPI::GetRenderer()->ResourceBufferBarrier(bufferBarrier, queueType, window);
 }
 #else
-void TRAP::Graphics::RenderCommand::BufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
+void TRAP::Graphics::RenderCommand::BufferBarrier(const TRAP::Graphics::BufferBarrier& bufferBarrier,
                                                   const QueueType queueType)
 {
 	RendererAPI::GetRenderer()->ResourceBufferBarrier(bufferBarrier, queueType);
@@ -672,13 +672,13 @@ void TRAP::Graphics::RenderCommand::BufferBarrier(const RendererAPI::BufferBarri
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::BufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
+void TRAP::Graphics::RenderCommand::BufferBarriers(const std::vector<TRAP::Graphics::BufferBarrier>& bufferBarriers,
                                                    const QueueType queueType, const Window& window)
 {
 	RendererAPI::GetRenderer()->ResourceBufferBarriers(bufferBarriers, queueType, window);
 }
 #else
-void TRAP::Graphics::RenderCommand::BufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
+void TRAP::Graphics::RenderCommand::BufferBarriers(const std::vector<TRAP::Graphics::BufferBarrier>& bufferBarriers,
                                                    const QueueType queueType)
 {
 	RendererAPI::GetRenderer()->ResourceBufferBarriers(bufferBarriers, queueType);
@@ -688,13 +688,13 @@ void TRAP::Graphics::RenderCommand::BufferBarriers(const std::vector<RendererAPI
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::TextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
+void TRAP::Graphics::RenderCommand::TextureBarrier(const TRAP::Graphics::TextureBarrier& textureBarrier,
                                                    const QueueType queueType, const Window& window)
 {
 	RendererAPI::GetRenderer()->ResourceTextureBarrier(textureBarrier, queueType, window);
 }
 #else
-void TRAP::Graphics::RenderCommand::TextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
+void TRAP::Graphics::RenderCommand::TextureBarrier(const TRAP::Graphics::TextureBarrier& textureBarrier,
                                                    const QueueType queueType)
 {
 	RendererAPI::GetRenderer()->ResourceTextureBarrier(textureBarrier, queueType);
@@ -704,13 +704,13 @@ void TRAP::Graphics::RenderCommand::TextureBarrier(const RendererAPI::TextureBar
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::TextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
+void TRAP::Graphics::RenderCommand::TextureBarriers(const std::vector<TRAP::Graphics::TextureBarrier>& textureBarriers,
            										    const QueueType queueType, const Window& window)
 {
 	RendererAPI::GetRenderer()->ResourceTextureBarriers(textureBarriers, queueType, window);
 }
 #else
-void TRAP::Graphics::RenderCommand::TextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
+void TRAP::Graphics::RenderCommand::TextureBarriers(const std::vector<TRAP::Graphics::TextureBarrier>& textureBarriers,
            										    const QueueType queueType)
 {
 	RendererAPI::GetRenderer()->ResourceTextureBarriers(textureBarriers, queueType);
@@ -720,13 +720,13 @@ void TRAP::Graphics::RenderCommand::TextureBarriers(const std::vector<RendererAP
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::RenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier,
+void TRAP::Graphics::RenderCommand::RenderTargetBarrier(const TRAP::Graphics::RenderTargetBarrier& renderTargetBarrier,
  														const Window& window)
 {
 	RendererAPI::GetRenderer()->ResourceRenderTargetBarrier(renderTargetBarrier, window);
 }
 #else
-void TRAP::Graphics::RenderCommand::RenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier)
+void TRAP::Graphics::RenderCommand::RenderTargetBarrier(const TRAP::Graphics::RenderTargetBarrier& renderTargetBarrier)
 {
 	RendererAPI::GetRenderer()->ResourceRenderTargetBarrier(renderTargetBarrier);
 }
@@ -735,13 +735,13 @@ void TRAP::Graphics::RenderCommand::RenderTargetBarrier(const RendererAPI::Rende
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::RenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
+void TRAP::Graphics::RenderCommand::RenderTargetBarriers(const std::vector<TRAP::Graphics::RenderTargetBarrier>& renderTargetBarriers,
  														 const Window& window)
 {
 	RendererAPI::GetRenderer()->ResourceRenderTargetBarriers(renderTargetBarriers, window);
 }
 #else
-void TRAP::Graphics::RenderCommand::RenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers)
+void TRAP::Graphics::RenderCommand::RenderTargetBarriers(const std::vector<TRAP::Graphics::RenderTargetBarrier>& renderTargetBarriers)
 {
 	RendererAPI::GetRenderer()->ResourceRenderTargetBarriers(renderTargetBarriers);
 }
@@ -763,8 +763,8 @@ void TRAP::Graphics::RenderCommand::RenderTargetBarriers(const std::vector<Rende
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::Transition(const Ref<Texture>& texture, const RendererAPI::ResourceState oldLayout,
-											   const RendererAPI::ResourceState newLayout, const QueueType queueType)
+void TRAP::Graphics::RenderCommand::Transition(const Ref<Texture>& texture, const ResourceState oldLayout,
+											   const ResourceState newLayout, const QueueType queueType)
 {
 	RendererAPI::Transition(texture, oldLayout, newLayout, queueType);
 }

@@ -13,7 +13,7 @@ namespace TRAP::Graphics
 		/// @brief Create a new render target from the given description.
 		/// @param desc Render target description.
 		/// @return Created render target.
-		[[nodiscard]] static TRAP::Ref<RenderTarget> Create(const RendererAPI::RenderTargetDesc& desc);
+		[[nodiscard]] static TRAP::Ref<RenderTarget> Create(const RenderTargetDesc& desc);
 
 		/// @brief Destructor.
 		virtual ~RenderTarget();
@@ -44,7 +44,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] constexpr u32 GetMipLevels() const noexcept;
 		/// @brief Retrieve the sample count of the render target.
 		/// @return Render target sample count.
-		[[nodiscard]] constexpr RendererAPI::SampleCount GetSampleCount() const noexcept;
+		[[nodiscard]] constexpr SampleCount GetSampleCount() const noexcept;
 		/// @brief Retrieve the sample quality of the render target.
 		/// @return Render target sample quality.
 		[[nodiscard]] constexpr u32 GetSampleQuality() const noexcept;
@@ -53,10 +53,10 @@ namespace TRAP::Graphics
 		[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat GetImageFormat() const noexcept;
 		/// @brief Retrieve the clear color of the render target.
 		/// @return Render target clear color.
-		[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::ClearValue GetClearValue() const noexcept;
+		[[nodiscard]] constexpr TRAP::Graphics::ClearValue GetClearValue() const noexcept;
 		/// @brief Retrieve the descriptor type of the render target.
 		/// @return Render target descriptor type.
-		[[nodiscard]] constexpr RendererAPI::DescriptorType GetDescriptorType() const noexcept;
+		[[nodiscard]] constexpr DescriptorType GetDescriptorType() const noexcept;
 
 		/// @brief Retrieve the texture base of the render target.
 		/// @return Render target texture base.
@@ -64,20 +64,20 @@ namespace TRAP::Graphics
 
 	protected:
 		/// @brief Constructor.
-		explicit RenderTarget(const RendererAPI::RenderTargetDesc& desc);
+		explicit RenderTarget(const RenderTargetDesc& desc);
 
 		TRAP::Ref<TRAP::Graphics::Texture> m_texture = nullptr;
 
-		RendererAPI::ClearValue m_clearValue = RendererAPI::Color{1.0, 1.0, 1.0, 1.0};
+		ClearValue m_clearValue = Color{1.0, 1.0, 1.0, 1.0};
 		u32 m_arraySize = 0;
 		u32 m_depth = 0;
 		u32 m_width = 0;
 		u32 m_height = 0;
-		RendererAPI::DescriptorType m_descriptors = RendererAPI::DescriptorType::Undefined;
+		DescriptorType m_descriptors = DescriptorType::Undefined;
 		u32 m_mipLevels = 0;
 		u32 m_sampleQuality = 0;
 		TRAP::Graphics::API::ImageFormat m_format = TRAP::Graphics::API::ImageFormat::Undefined;
-		RendererAPI::SampleCount m_sampleCount = RendererAPI::SampleCount::One;
+		SampleCount m_sampleCount = SampleCount::One;
 	};
 }
 
@@ -118,7 +118,7 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RenderTarget::GetSampleCount() const noexcept
+[[nodiscard]] constexpr TRAP::Graphics::SampleCount TRAP::Graphics::RenderTarget::GetSampleCount() const noexcept
 {
 	return m_sampleCount;
 }
@@ -139,14 +139,14 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::ClearValue TRAP::Graphics::RenderTarget::GetClearValue() const noexcept
+[[nodiscard]] constexpr TRAP::Graphics::ClearValue TRAP::Graphics::RenderTarget::GetClearValue() const noexcept
 {
 	return m_clearValue;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::RenderTarget::GetDescriptorType() const noexcept
+[[nodiscard]] constexpr TRAP::Graphics::DescriptorType TRAP::Graphics::RenderTarget::GetDescriptorType() const noexcept
 {
 	return m_descriptors;
 }

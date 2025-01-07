@@ -9,12 +9,12 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
-TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::CommandPoolDesc& desc)
+TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const CommandPoolDesc& desc)
 	: CommandPool(desc.Queue)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	using enum TRAP::Graphics::RendererAPI::CommandPoolCreateFlags;
+	using enum TRAP::Graphics::CommandPoolCreateFlags;
 
 	TRAP_ASSERT(m_device, "VulkanCommandPool(): Vulkan Device is nullptr");
 

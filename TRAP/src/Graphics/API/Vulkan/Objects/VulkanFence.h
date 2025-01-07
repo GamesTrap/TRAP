@@ -45,7 +45,7 @@ namespace TRAP::Graphics::API
 
 		/// @brief Retrieve the current status of the fence.
 		/// @return Fence status.
-		[[nodiscard]] RendererAPI::FenceStatus GetStatus() override;
+		[[nodiscard]] FenceStatus GetStatus() override;
 
 		/// @brief Wait for the fence to be signaled.
 		///

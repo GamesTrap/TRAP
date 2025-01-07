@@ -3,14 +3,14 @@
 
 namespace
 {
-	[[nodiscard]] constexpr TRAP::Optional<TRAP::Graphics::RendererAPI::ShaderStage> CollectShaderStages(const std::span<const TRAP::Graphics::API::ShaderReflection::ShaderReflection> reflection)
+	[[nodiscard]] constexpr TRAP::Optional<TRAP::Graphics::ShaderStage> CollectShaderStages(const std::span<const TRAP::Graphics::API::ShaderReflection::ShaderReflection> reflection)
 	{
 		//Sanity checks to make sure we don't have repeated stages.
-		TRAP::Graphics::RendererAPI::ShaderStage combinedShaderStages = TRAP::Graphics::RendererAPI::ShaderStage::None;
+		TRAP::Graphics::ShaderStage combinedShaderStages = TRAP::Graphics::ShaderStage::None;
 
 		for(const TRAP::Graphics::API::ShaderReflection::ShaderReflection& i : reflection)
 		{
-			if((combinedShaderStages & i.ShaderStage) != TRAP::Graphics::RendererAPI::ShaderStage::None)
+			if((combinedShaderStages & i.ShaderStage) != TRAP::Graphics::ShaderStage::None)
 			{
 				TP_ERROR(TRAP::Log::ShaderPrefix, "Duplicate shader stage was detected in shader reflection array.");
 				return TRAP::NullOpt;
@@ -32,31 +32,31 @@ namespace
 
 			switch(srcRef.ShaderStage)
 			{
-			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::Vertex:
+			case TRAP::Graphics::ShaderStage::Vertex:
 				pipelineReflection.VertexStageIndex = i;
 				break;
-			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::TessellationControl:
+			case TRAP::Graphics::ShaderStage::TessellationControl:
 				pipelineReflection.TessellationControlStageIndex = i;
 				break;
-			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::TessellationEvaluation:
+			case TRAP::Graphics::ShaderStage::TessellationEvaluation:
 				pipelineReflection.TessellationControlStageIndex = i;
 				break;
-			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::Geometry:
+			case TRAP::Graphics::ShaderStage::Geometry:
 				pipelineReflection.GeometryStageIndex = i;
 				break;
-			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::Fragment:
+			case TRAP::Graphics::ShaderStage::Fragment:
 				pipelineReflection.FragmentStageIndex = i;
 				break;
 
-			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::Compute: //Compute always has index 0
+			case TRAP::Graphics::ShaderStage::Compute: //Compute always has index 0
 				break;
-			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::RayTracing:
+			case TRAP::Graphics::ShaderStage::RayTracing:
 				//TODO
 				break;
 
-			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::None:
+			case TRAP::Graphics::ShaderStage::None:
 				[[fallthrough]];
-			case TRAP::Graphics::RendererAPI::RendererAPI::ShaderStage::AllGraphics:
+			case TRAP::Graphics::ShaderStage::AllGraphics:
 				break;
 			}
 		}

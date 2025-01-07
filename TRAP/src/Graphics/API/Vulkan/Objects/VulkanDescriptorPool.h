@@ -47,7 +47,7 @@ namespace TRAP::Graphics::API
 		/// @brief Retrieve a new descriptor set from description.
 		/// @param desc Descriptor set description.
 		/// @return New descriptor set.
-		[[nodiscard]] TRAP::Scope<DescriptorSet> RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc) override;
+		[[nodiscard]] TRAP::Scope<DescriptorSet> RetrieveDescriptorSet(const DescriptorSetDesc& desc) override;
 
 		/// @brief Retrieve a new VkDescriptorSet with the given layout.
 		/// @param layout Descriptor set layout.

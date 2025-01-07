@@ -1,59 +1,12 @@
 #ifndef TRAP_RENDERCOMMAND_H
 #define TRAP_RENDERCOMMAND_H
 
+#include <vector>
+
 #include "Application.h"
 
 namespace TRAP::Graphics
 {
-	/// @brief Different buffers for clearing.
-	using ClearBuffer = RendererAPI::ClearBufferType;
-	/// @brief Different compare modes for depth and stencil testing.
-	using CompareMode = RendererAPI::CompareMode;
-	/// @brief Different stencil operation options.
-	using StencilOperation = RendererAPI::StencilOp;
-	/// @brief Different cull modes.
-	using CullMode = RendererAPI::CullMode;
-	/// @brief Different fill modes.
-	using FillMode = RendererAPI::FillMode;
-	/// @brief Different primitive topologies.
-	using PrimitiveTopology = RendererAPI::PrimitiveTopology;
-	/// @brief Different front face options.
-	using FrontFace = RendererAPI::FrontFace;
-	/// @brief Different blend modes.
-	using BlendMode = RendererAPI::BlendMode;
-	/// @brief Different blend constants.
-	using BlendConstant = RendererAPI::BlendConstant;
-	/// @brief Different shading rates.
-	using ShadingRate = RendererAPI::ShadingRate;
-	/// @brief Different shading rate combiners.
-	using ShadingRateCombiner = RendererAPI::ShadingRateCombiner;
-	/// @brief Different queue types.
-	using QueueType = RendererAPI::QueueType;
-	/// @brief Different resource states.
-	using ResourceState = RendererAPI::ResourceState;
-	/// @brief Different anti aliasing methods.
-	using AntiAliasing = RendererAPI::AntiAliasing;
-	/// @brief Different sample counts for anti aliasing.
-	using SampleCount = RendererAPI::SampleCount;
-#ifndef TRAP_HEADLESS_MODE
-	/// @brief Different latency modes for NVIDIA Reflex.
-	/// @remark @headless This is not available in headless mode.
-	using NVIDIAReflexLatencyMode = RendererAPI::NVIDIAReflexLatencyMode;
-	/// @brief Different latency modes for AMD Anti Lag.
-	/// @remark @headless This is not available in headless mode.
-	using AMDAntiLagMode = RendererAPI::AMDAntiLagMode;
-#endif /*TRAP_HEADLESS_MODE*/
-	/// @brief Different texture filtering modes.
-	using FilterType = TRAP::Graphics::RendererAPI::FilterType;
-	/// @brief Different texture addressing modes.
-	using AddressMode = TRAP::Graphics::RendererAPI::AddressMode;
-	/// @brief Different texture mip mapping modes.
-	using MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode;
-	/// @brief Different update frequencies.
-	using UpdateFrequency = RendererAPI::DescriptorUpdateFrequency;
-	/// @brief Different shader types.
-	using ShaderType = RendererAPI::ShaderType;
-
 	/// @brief Utility class for high level rendering commands.
 	/// User with knowledge about OpenGL should be familiar with most of these commands.
 	/// @note Most of these functions are just shortcuts for RendererAPI::* functions.
@@ -87,24 +40,24 @@ namespace TRAP::Graphics
 		/// @param clearType Type of buffer to clear.
 		/// @param window Window to clear RenderTarget for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void Clear(ClearBuffer clearType, const Window& window = *TRAP::Application::GetWindow());
+		void Clear(ClearBufferType clearType, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Clear the given render target.
 		/// @param clearType Type of buffer to clear.
 		/// @remark This function is only available in headless mode.
-		void Clear(ClearBuffer clearType);
+		void Clear(ClearBufferType clearType);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Set the clear color for the given window.
 		/// @param color New clear color. Default: Very dark gray.
 		/// @param window Window to set clear color for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetClearColor(const RendererAPI::Color& color = { 0.1, 0.1, 0.1, 1.0 }, const Window& window = *TRAP::Application::GetWindow());
+		void SetClearColor(const Color& color = { 0.1, 0.1, 0.1, 1.0 }, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the clear color.
 		/// @param color New clear color.
 		/// @remark This function is only available in headless mode.
-		void SetClearColor(const RendererAPI::Color& color = { 0.1, 0.1, 0.1, 1.0 });
+		void SetClearColor(const Color& color = { 0.1, 0.1, 0.1, 1.0 });
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Set the clear depth value for the given window.
@@ -175,13 +128,13 @@ namespace TRAP::Graphics
 		/// @param back Depth/Stencil operation.
 		/// @param window Window to set depth fail operation for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetDepthFail(StencilOperation front, StencilOperation back, const Window& window = *TRAP::Application::GetWindow());
+		void SetDepthFail(StencilOp front, StencilOp back, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the depth action to perform when depth testing fails.
 		/// @param front Depth action to perform when depth testing fails.
 		/// @param back Depth action to perform when depth testing fails.
 		/// @remark This function is only available in headless mode.
-		void SetDepthFail(StencilOperation front, StencilOperation back);
+		void SetDepthFail(StencilOp front, StencilOp back);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Set depth bias constant factor for the given window.
@@ -228,13 +181,13 @@ namespace TRAP::Graphics
 		/// @param back Stencil operation.
 		/// @param window Window to set stencil fail operation for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetStencilFail(StencilOperation front, StencilOperation back, const Window& window = *TRAP::Application::GetWindow());
+		void SetStencilFail(StencilOp front, StencilOp back, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set the stencil action to perform when stencil testing fails.
 		/// @param front Stencil action to perform when stencil testing fails.
 		/// @param back Stencil action to perform when stencil testing fails.
 		/// @remark This function is only available in headless mode.
-		void SetStencilFail(StencilOperation front, StencilOperation back);
+		void SetStencilFail(StencilOp front, StencilOp back);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Set operation for when stencil testing passes for the given window.
@@ -242,13 +195,13 @@ namespace TRAP::Graphics
 		/// @param back Stencil operation.
 		/// @param window Window to set stencil pass operation for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void SetStencilPass(StencilOperation front, StencilOperation back, const Window& window = *TRAP::Application::GetWindow());
+		void SetStencilPass(StencilOp front, StencilOp back, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set operation for when stencil testing passes.
 		/// @param front Stencil action to perform when passed.
 		/// @param back Stencil action to perform when passed.
 		/// @remark This function is only available in headless mode.
-		void SetStencilPass(StencilOperation front, StencilOperation back);
+		void SetStencilPass(StencilOp front, StencilOp back);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Set stencil function for the given window.
@@ -679,7 +632,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		void BindRenderTarget(const Graphics::RenderTarget* colorTarget,
 		                      const Graphics::RenderTarget* depthStencil = nullptr,
-							  RendererAPI::LoadActionsDesc* loadActions = nullptr,
+							  LoadActionsDesc* loadActions = nullptr,
 							  const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set render target.
@@ -689,7 +642,7 @@ namespace TRAP::Graphics
 		/// @remark This function is only available in headless mode.
 		void BindRenderTarget(const Graphics::RenderTarget* colorTarget,
 		                      const Graphics::RenderTarget* depthStencil = nullptr,
-							  RendererAPI::LoadActionsDesc* loadActions = nullptr);
+							  LoadActionsDesc* loadActions = nullptr);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Set multiple render targets for the given window.
@@ -700,7 +653,7 @@ namespace TRAP::Graphics
 		/// @remark @headless This function is not available in headless mode.
 		void BindRenderTargets(const std::vector<std::reference_wrapper<const Graphics::RenderTarget>>& colorTargets,
 		                       const Graphics::RenderTarget* depthStencil,
-							   RendererAPI::LoadActionsDesc* loadActions = nullptr,
+							   LoadActionsDesc* loadActions = nullptr,
 							   const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Set multiple render targets.
@@ -710,7 +663,7 @@ namespace TRAP::Graphics
 		/// @remark This function is only available in headless mode.
 		void BindRenderTargets(const std::vector<std::reference_wrapper<const Graphics::RenderTarget>>& colorTargets,
 		                       const Graphics::RenderTarget* depthStencil,
-							   RendererAPI::LoadActionsDesc* loadActions = nullptr);
+							   LoadActionsDesc* loadActions = nullptr);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Start a new render pass for the given window.
@@ -740,14 +693,14 @@ namespace TRAP::Graphics
 		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
 		/// @param window Window to sync and transition buffer for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void BufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
+		void BufferBarrier(const BufferBarrier& bufferBarrier,
 		                   QueueType queueType = QueueType::Graphics, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Buffer barrier used to synchronize and transition the buffer.
 		/// @param bufferBarrier Buffer barrier to use.
 		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
 		/// @remark This function is only available in headless mode.
-		void BufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
+		void BufferBarrier(const BufferBarrier& bufferBarrier,
 		                   QueueType queueType = QueueType::Graphics);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
@@ -756,14 +709,14 @@ namespace TRAP::Graphics
 		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
 		/// @param window Window to sync and transition buffers for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void BufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
+		void BufferBarriers(const std::vector<TRAP::Graphics::BufferBarrier>& bufferBarriers,
 							QueueType queueType = QueueType::Graphics, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Buffer barrier used to synchronize and transition multiple buffers.
 		/// @param bufferBarriers Buffer barriers to use.
 		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
 		/// @remark This function is only available in headless mode.
-		void BufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
+		void BufferBarriers(const std::vector<TRAP::Graphics::BufferBarrier>& bufferBarriers,
 							QueueType queueType = QueueType::Graphics);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
@@ -772,14 +725,14 @@ namespace TRAP::Graphics
 		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
 		/// @param window Window to sync and transition texture for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void TextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
+		void TextureBarrier(const TextureBarrier& textureBarrier,
 		                    QueueType queueType = QueueType::Graphics, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Texture barrier used to synchronize and transition the texture.
 		/// @param textureBarrier Texture barrier to use.
 		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
 		/// @remark This function is only available in headless mode.
-		void TextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
+		void TextureBarrier(const TextureBarrier& textureBarrier,
 		                    QueueType queueType = QueueType::Graphics);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
@@ -788,14 +741,14 @@ namespace TRAP::Graphics
 		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
 		/// @param window Window to sync and transition textures for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void TextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
+		void TextureBarriers(const std::vector<TRAP::Graphics::TextureBarrier>& textureBarriers,
 		                     QueueType queueType = QueueType::Graphics, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief Texture barrier used to synchronize and transition multiple textures.
 		/// @param textureBarriers Texture barriers to use.
 		/// @param queueType Queue type on which to perform the barrier operation. Default: Graphics.
 		/// @remark This function is only available in headless mode.
-		void TextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
+		void TextureBarriers(const std::vector<TRAP::Graphics::TextureBarrier>& textureBarriers,
 		                     QueueType queueType = QueueType::Graphics);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
@@ -803,24 +756,24 @@ namespace TRAP::Graphics
 		/// @param renderTargetBarrier RenderTarget barrier to use.
 		/// @param window Window to sync and transition RenderTarget for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void RenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier, const Window& window = *TRAP::Application::GetWindow());
+		void RenderTargetBarrier(const RenderTargetBarrier& renderTargetBarrier, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief RenderTarget barrier used to synchronize and transition the RenderTarget.
 		/// @param renderTargetBarrier RenderTarget barrier to use.
 		/// @remark This function is only available in headless mode.
-		void RenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier);
+		void RenderTargetBarrier(const RenderTargetBarrier& renderTargetBarrier);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief RenderTarget barrier used to synchronize and transition multiple RenderTargets.
 		/// @param renderTargetBarriers RenderTarget barriers to use.
 		/// @param window Window to sync and transition RenderTargets for. Default: Main Window.
 		/// @remark @headless This function is not available in headless mode.
-		void RenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers, const Window& window = *TRAP::Application::GetWindow());
+		void RenderTargetBarriers(const std::vector<TRAP::Graphics::RenderTargetBarrier>& renderTargetBarriers, const Window& window = *TRAP::Application::GetWindow());
 #else
 		/// @brief RenderTarget barrier used to synchronize and transition multiple RenderTargets.
 		/// @param renderTargetBarriers RenderTarget barriers to use.
 		/// @remark This function is only available in headless mode.
-		void RenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers);
+		void RenderTargetBarriers(const std::vector<TRAP::Graphics::RenderTargetBarrier>& renderTargetBarriers);
 #endif /*TRAP_HEADLESS_MODE*/
 
 		//Utility
@@ -844,8 +797,8 @@ namespace TRAP::Graphics
 		/// @param oldLayout Current resource state of the given texture.
 		/// @param newLayout New resource state for the given texture.
 		/// @param queueType Queue type on which to perform the transition. Default: Graphics.
-		void Transition(const Ref<Texture>& texture, RendererAPI::ResourceState oldLayout,
-		                RendererAPI::ResourceState newLayout,
+		void Transition(const Ref<Texture>& texture, ResourceState oldLayout,
+		                ResourceState newLayout,
 		                QueueType queueType = QueueType::Graphics);
 
 #ifndef TRAP_HEADLESS_MODE

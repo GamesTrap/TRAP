@@ -601,7 +601,7 @@ namespace TRAP::Graphics::API::VulkanInits
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] constexpr VkClearColorValue ClearColorValue(const RendererAPI::Color& color, ImageFormat format);
+	[[nodiscard]] constexpr VkClearColorValue ClearColorValue(const Color& color, ImageFormat format);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -620,14 +620,14 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param marker Marker/Timestamp to record.
 	/// @return VkSetLatencyMarkerInfoNV.
 	[[nodiscard]] constexpr VkSetLatencyMarkerInfoNV SetLatencyMarkerInfo(u64 presentID,
-	                                                                      RendererAPI::NVIDIAReflexLatencyMarker marker) noexcept;
+	                                                                      NVIDIAReflexLatencyMarker marker) noexcept;
 
 	/// @brief Create a Vulkan latency sleep mode info.
 	/// @param latencyMode Latency mode to use.
 	/// @param fpsLimit Optional: FPS limiter. Set 0 to disable limiter.
 	/// @win32 FPS limiting of the engine will be done with this extension, instead of TRAP::Application, if the VK_NV_low_latency2 is supported by the used GPU.
 	/// @return VkLatencySleepModeInfoNV.
-	[[nodiscard]] constexpr VkLatencySleepModeInfoNV LatencySleepModeInfo(RendererAPI::NVIDIAReflexLatencyMode latencyMode, u32 fpsLimit = 0u) noexcept;
+	[[nodiscard]] constexpr VkLatencySleepModeInfoNV LatencySleepModeInfo(NVIDIAReflexLatencyMode latencyMode, u32 fpsLimit = 0u) noexcept;
 
 	/// @brief Create a Vulkan latency sleep info.
 	/// @param semaphore A semaphore that gets signaled to indicate that the application *should* resume input sampling work.
@@ -646,14 +646,14 @@ namespace TRAP::Graphics::API::VulkanInits
 	///                  vkQueuePresentKHR command using VkPresentIdKHR::pPresentIds for a given present.
 	/// @param marker Marker/Timestamp to record.
 	/// @return VkAntiLagPresentationInfoAMD.
-	[[nodiscard]] constexpr VkAntiLagPresentationInfoAMD AntiLagPresentationInfo(u64 presentID, RendererAPI::AMDAntiLagMarker marker) noexcept;
+	[[nodiscard]] constexpr VkAntiLagPresentationInfoAMD AntiLagPresentationInfo(u64 presentID, AMDAntiLagMarker marker) noexcept;
 
 	/// @brief Create a Vulkan AMD Anti Lag data.
 	/// @param mode Anti Lag mode to use.
 	/// @param fpsLimit Optional: FPS limiter. Set 0 to disable limiter.
 	/// @param antiLagPresentationInfo Optional: Anti Lag presentation info.
 	/// @return VkAntiLagDataAMD.
-	[[nodiscard]] constexpr VkAntiLagDataAMD AntiLagData(RendererAPI::AMDAntiLagMode mode, u32 fpsLimit = 0u,
+	[[nodiscard]] constexpr VkAntiLagDataAMD AntiLagData(AMDAntiLagMode mode, u32 fpsLimit = 0u,
 	                                                     const VkAntiLagPresentationInfoAMD* antiLagPresentationInfo = nullptr) noexcept;
 #endif /*TRAP_HEADLESS_MODE*/
 }
@@ -1183,7 +1183,7 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkClearColorValue TRAP::Graphics::API::VulkanInits::ClearColorValue(const RendererAPI::Color& color,
+[[nodiscard]] constexpr VkClearColorValue TRAP::Graphics::API::VulkanInits::ClearColorValue(const Color& color,
                                                                                             const ImageFormat format)
 {
 	VkClearColorValue clearColor{};
@@ -1254,7 +1254,7 @@ namespace TRAP::Graphics::API::VulkanInits
 
 #ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] constexpr VkSetLatencyMarkerInfoNV TRAP::Graphics::API::VulkanInits::SetLatencyMarkerInfo(const u64 presentID,
-	                                                                                                    const RendererAPI::NVIDIAReflexLatencyMarker marker) noexcept
+	                                                                                                    const NVIDIAReflexLatencyMarker marker) noexcept
 {
 	return VkSetLatencyMarkerInfoNV
 	{
@@ -1269,15 +1269,15 @@ namespace TRAP::Graphics::API::VulkanInits
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-[[nodiscard]] constexpr VkLatencySleepModeInfoNV TRAP::Graphics::API::VulkanInits::LatencySleepModeInfo(const RendererAPI::NVIDIAReflexLatencyMode latencyMode,
+[[nodiscard]] constexpr VkLatencySleepModeInfoNV TRAP::Graphics::API::VulkanInits::LatencySleepModeInfo(const NVIDIAReflexLatencyMode latencyMode,
                                                                                                         const u32 fpsLimit) noexcept
 {
 	return VkLatencySleepModeInfoNV
 	{
 		.sType = VK_STRUCTURE_TYPE_LATENCY_SLEEP_MODE_INFO_NV,
 		.pNext = nullptr,
-		.lowLatencyMode = static_cast<VkBool32>(latencyMode != RendererAPI::NVIDIAReflexLatencyMode::Disabled),
-		.lowLatencyBoost = static_cast<VkBool32>(latencyMode == RendererAPI::NVIDIAReflexLatencyMode::EnabledBoost),
+		.lowLatencyMode = static_cast<VkBool32>(latencyMode != NVIDIAReflexLatencyMode::Disabled),
+		.lowLatencyBoost = static_cast<VkBool32>(latencyMode == NVIDIAReflexLatencyMode::EnabledBoost),
 		.minimumIntervalUs = (fpsLimit == 0u) ? fpsLimit : NumericCast<u32>(((1000.0f / NumericCast<f32>(fpsLimit)) * 1000.0f)) //Convert fpsLimit to microseconds if not 0.
 	};
 }
@@ -1303,7 +1303,7 @@ namespace TRAP::Graphics::API::VulkanInits
 
 #ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] constexpr VkAntiLagPresentationInfoAMD TRAP::Graphics::API::VulkanInits::AntiLagPresentationInfo(const u64 presentID,
-                                                                                                               const RendererAPI::AMDAntiLagMarker marker) noexcept
+                                                                                                               const AMDAntiLagMarker marker) noexcept
 {
 	return VkAntiLagPresentationInfoAMD
 	{
@@ -1318,7 +1318,7 @@ namespace TRAP::Graphics::API::VulkanInits
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-[[nodiscard]] constexpr VkAntiLagDataAMD TRAP::Graphics::API::VulkanInits::AntiLagData(const RendererAPI::AMDAntiLagMode mode,
+[[nodiscard]] constexpr VkAntiLagDataAMD TRAP::Graphics::API::VulkanInits::AntiLagData(const AMDAntiLagMode mode,
                                                                                        const u32 fpsLimit,
 	                                                                                   const VkAntiLagPresentationInfoAMD* const antiLagPresentationInfo) noexcept
 {

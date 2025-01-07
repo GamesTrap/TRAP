@@ -27,9 +27,9 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] u64 GetAlignedBufferSize(const u64 allocationSize, const TRAP::Graphics::RendererAPI::DescriptorType bufferType)
+	[[nodiscard]] u64 GetAlignedBufferSize(const u64 allocationSize, const TRAP::Graphics::DescriptorType bufferType)
 	{
-		using enum TRAP::Graphics::RendererAPI::DescriptorType;
+		using enum TRAP::Graphics::DescriptorType;
 
 		//Align the buffer size to multiples of the dynamic uniform buffer minimum size
 		if((bufferType & UniformBuffer) != Undefined)
@@ -43,7 +43,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] VkBufferCreateInfo GetBufferCreateInfo(const TRAP::Graphics::RendererAPI::BufferDesc& desc)
+	[[nodiscard]] VkBufferCreateInfo GetBufferCreateInfo(const TRAP::Graphics::BufferDesc& desc)
 	{
 		using namespace TRAP::Graphics;
 
@@ -52,8 +52,8 @@ namespace
 		VkBufferCreateInfo info = TRAP::Graphics::API::VulkanInits::BufferCreateInfo(alignedAllocSize, usageFlags);
 
 		//Buffer can be used as dest in a transfer command (Uploading data to a storage buffer, Readback query data)
-		if (desc.MemoryUsage == RendererAPI::ResourceMemoryUsage::GPUOnly ||
-			desc.MemoryUsage == RendererAPI::ResourceMemoryUsage::GPUToCPU)
+		if (desc.MemoryUsage == ResourceMemoryUsage::GPUOnly ||
+			desc.MemoryUsage == ResourceMemoryUsage::GPUToCPU)
 		{
 			info.usage |= VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 		}
@@ -63,10 +63,10 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] VmaAllocationCreateInfo GetVMAAllocationCreateInfo(const TRAP::Graphics::RendererAPI::ResourceMemoryUsage memoryUsage,
-	                                                                 const TRAP::Graphics::RendererAPI::BufferCreationFlags creationFlags)
+	[[nodiscard]] VmaAllocationCreateInfo GetVMAAllocationCreateInfo(const TRAP::Graphics::ResourceMemoryUsage memoryUsage,
+	                                                                 const TRAP::Graphics::BufferCreationFlags creationFlags)
 	{
-		using enum TRAP::Graphics::RendererAPI::BufferCreationFlags;
+		using enum TRAP::Graphics::BufferCreationFlags;
 
 		VmaAllocationCreateInfo vmaMemReqs{};
 		vmaMemReqs.usage = static_cast<VmaMemoryUsage>(memoryUsage);
@@ -111,7 +111,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	void CreateTexelBufferView(const TRAP::Graphics::RendererAPI::BufferDesc& desc,
+	void CreateTexelBufferView(const TRAP::Graphics::BufferDesc& desc,
 	                           const VkBufferUsageFlagBits bufferUsage,
 	                           VkBuffer& buffer, const TRAP::Graphics::API::VulkanDevice& device,
 							   VkBufferView& outBufferView)
@@ -149,7 +149,7 @@ namespace
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& desc)
+TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const BufferDesc& desc)
 	: TRAP::Graphics::Buffer(desc.Size, desc.Descriptors, desc.MemoryUsage)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
@@ -207,11 +207,11 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::Graphics::API::VulkanBuffer::MapBuffer(const RendererAPI::ReadRange& range)
+[[nodiscard]] bool TRAP::Graphics::API::VulkanBuffer::MapBuffer(const ReadRange& range)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan)  != ProfileSystems::None);
 
-	TRAP_ASSERT(m_memoryUsage != RendererAPI::ResourceMemoryUsage::GPUOnly,
+	TRAP_ASSERT(m_memoryUsage != ResourceMemoryUsage::GPUOnly,
 	            "VulkanBuffer::MapBuffer(): Trying to map non-CPU accessible resource");
 	TRAP_ASSERT((NumericCast<i64>(m_size) - range.Offset) > 0,
 	            "VulkanBuffer::MapBuffer(): range - offset is <= 0");
@@ -238,7 +238,7 @@ void TRAP::Graphics::API::VulkanBuffer::UnMapBuffer()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	TRAP_ASSERT(m_memoryUsage != RendererAPI::ResourceMemoryUsage::GPUOnly,
+	TRAP_ASSERT(m_memoryUsage != ResourceMemoryUsage::GPUOnly,
 	            "VulkanBuffer::UnMapBuffer(): Trying to unmap non-CPU accessible resource");
 
 #ifndef TRAP_RELEASE

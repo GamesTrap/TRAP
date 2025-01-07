@@ -11,7 +11,7 @@ namespace TRAP::Graphics
 		/// @brief Create a new query pool from the given description.
 		/// @param desc Query pool description.
 		/// @return Created query pool.
-		[[nodiscard]] static TRAP::Ref<QueryPool> Create(const RendererAPI::QueryPoolDesc& desc);
+		[[nodiscard]] static TRAP::Ref<QueryPool> Create(const QueryPoolDesc& desc);
 
 		/// @brief Destructor.
 		virtual ~QueryPool();

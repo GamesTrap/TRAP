@@ -6,7 +6,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RenderTarget::RenderTarget(const RendererAPI::RenderTargetDesc& desc)
+TRAP::Graphics::RenderTarget::RenderTarget(const RenderTargetDesc& desc)
 	: m_clearValue(desc.ClearValue), m_arraySize(desc.ArraySize), m_depth(desc.Depth), m_width(desc.Width),
 	  m_height(desc.Height), m_descriptors(desc.Descriptors),
 	  m_mipLevels(TRAP::Math::Max(1U, desc.MipLevels)), m_sampleQuality(desc.SampleQuality), m_format(desc.Format),
@@ -30,7 +30,7 @@ TRAP::Graphics::RenderTarget::~RenderTarget()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::RenderTarget> TRAP::Graphics::RenderTarget::Create(const RendererAPI::RenderTargetDesc& desc)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::RenderTarget> TRAP::Graphics::RenderTarget::Create(const RenderTargetDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);

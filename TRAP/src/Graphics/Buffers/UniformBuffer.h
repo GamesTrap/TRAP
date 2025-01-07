@@ -32,7 +32,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] u64 GetSize() const noexcept;
 		/// @brief Retrieve the update frequency of the UBO.
 		/// @return Update frequency of the UBO.
-		[[nodiscard]] constexpr UpdateFrequency GetUpdateFrequency() const noexcept;
+		[[nodiscard]] constexpr DescriptorUpdateFrequency GetUpdateFrequency() const noexcept;
 		/// @brief Retrieve the underlying buffers.
 		/// @return Underlying buffers.
 		[[nodiscard]] constexpr const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetUBOs() const noexcept;
@@ -57,14 +57,14 @@ namespace TRAP::Graphics
 		/// @param size Byte size for the uniform buffer.
 		/// @param updateFrequency Update frequency for the buffer.
 		/// @return New uniform buffer.
-		[[nodiscard]] static Scope<UniformBuffer> Create(u64 size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<UniformBuffer> Create(u64 size, DescriptorUpdateFrequency updateFrequency);
 		/// @brief Create a new uniform buffer and set its data.
 		/// @param data Pointer to the data to upload.
 		/// @param size Byte size of the data to upload.
 		/// @param updateFrequency Update frequency for the buffer.
 		/// @return New uniform buffer.
 		template<typename T>
-		[[nodiscard]] static Scope<UniformBuffer> Create(const T* data, u64 size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<UniformBuffer> Create(const T* data, u64 size, DescriptorUpdateFrequency updateFrequency);
 
 	private:
 		/// @brief Initialize uniform buffer with given data.
@@ -73,7 +73,7 @@ namespace TRAP::Graphics
 		/// @param updateFrequency Update frequency for the buffer.
 		/// @return New uniform buffer.
 		template<typename T>
-		[[nodiscard]] static Scope<UniformBuffer> Init(const T* data, u64 size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<UniformBuffer> Init(const T* data, u64 size, DescriptorUpdateFrequency updateFrequency);
 
 		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_uniformBuffers;
 
@@ -91,9 +91,9 @@ constexpr TRAP::Graphics::UniformBuffer::UniformBuffer(const std::vector<TRAP::R
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Graphics::UpdateFrequency TRAP::Graphics::UniformBuffer::GetUpdateFrequency() const noexcept
+[[nodiscard]] constexpr TRAP::Graphics::DescriptorUpdateFrequency TRAP::Graphics::UniformBuffer::GetUpdateFrequency() const noexcept
 {
-	return m_uniformBuffers.size() == 1 ? UpdateFrequency::Static : UpdateFrequency::Dynamic;
+	return m_uniformBuffers.size() == 1 ? DescriptorUpdateFrequency::Static : DescriptorUpdateFrequency::Dynamic;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -108,7 +108,7 @@ constexpr TRAP::Graphics::UniformBuffer::UniformBuffer(const std::vector<TRAP::R
 template<typename T>
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const T* const data,
 																				               const u64 size,
-																				               const UpdateFrequency updateFrequency)
+																				               const DescriptorUpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -119,29 +119,29 @@ template<typename T>
 
 template<typename T>
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Init(const T* const data, const u64 size,
-																			                 const UpdateFrequency updateFrequency)
+																			                 const DescriptorUpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
-	const RendererAPI::BufferDesc bufferDesc
+	const BufferDesc bufferDesc
 	{
 		.Size = size,
-		.MemoryUsage = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
-	                                                                  RendererAPI::ResourceMemoryUsage::CPUToGPU,
-		.Flags = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::BufferCreationFlags::None :
-																RendererAPI::BufferCreationFlags::PersistentMap,
+		.MemoryUsage = (updateFrequency == DescriptorUpdateFrequency::Static) ? ResourceMemoryUsage::GPUOnly :
+	                                                                  ResourceMemoryUsage::CPUToGPU,
+		.Flags = (updateFrequency == DescriptorUpdateFrequency::Static) ? BufferCreationFlags::None :
+																BufferCreationFlags::PersistentMap,
 		.ElementCount = size / sizeof(T),
 		.StructStride = sizeof(T),
-		.Descriptors = RendererAPI::DescriptorType::UniformBuffer
+		.Descriptors = DescriptorType::UniformBuffer
 	};
 
-	RendererAPI::BufferLoadDesc desc
+	BufferLoadDesc desc
 	{
 		.Data = data,
 		.Desc = bufferDesc
 	};
 
-	std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> uniformBuffers((updateFrequency == UpdateFrequency::Static) ? 1 : RendererAPI::ImageCount);
+	std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> uniformBuffers((updateFrequency == DescriptorUpdateFrequency::Static) ? 1 : RendererAPI::ImageCount);
 	std::vector<API::SyncToken> syncTokens(uniformBuffers.size());
 	for(u32 i = 0; i < uniformBuffers.size(); ++i)
 	{

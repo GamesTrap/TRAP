@@ -36,33 +36,33 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] constexpr const std::vector<TRAP::Graphics::API::ImageFormat>& GetColorFormats() const noexcept;
 		/// @brief Retrieve the used color load action types.
 		/// @return Used color load action types.
-		[[nodiscard]] constexpr const std::vector<RendererAPI::LoadActionType>& GetLoadActionsColor() const noexcept;
+		[[nodiscard]] constexpr const std::vector<LoadActionType>& GetLoadActionsColor() const noexcept;
 		/// @brief Retrieve the number of used render targets.
 		/// @return Number of used render targets.
 		[[nodiscard]] constexpr u32 GetRenderTargetCount() const noexcept;
 		/// @brief Retrieve the used sample count.
 		/// @return Used sample count.
-		[[nodiscard]] constexpr RendererAPI::SampleCount GetSampleCount() const noexcept;
+		[[nodiscard]] constexpr SampleCount GetSampleCount() const noexcept;
 		/// @brief Retrieve the used depth stencil format.
 		/// @return Used depth stencil format.
 		[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat GetDepthStencilFormat() const noexcept;
 		/// @brief Retrieve the used depth load action type.
 		/// @return Used depth load action type.
-		[[nodiscard]] constexpr RendererAPI::LoadActionType GetLoadActionTypeDepth() const noexcept;
+		[[nodiscard]] constexpr LoadActionType GetLoadActionTypeDepth() const noexcept;
 		/// @brief Retrieve the used stencil load action type.
 		/// @return Used stencil load action type.
-		[[nodiscard]] constexpr RendererAPI::LoadActionType GetLoadActionTypeStencil() const noexcept;
+		[[nodiscard]] constexpr LoadActionType GetLoadActionTypeStencil() const noexcept;
 
 	private:
 		VkRenderPass m_renderPass = VK_NULL_HANDLE;
 
 		std::vector<TRAP::Graphics::API::ImageFormat> m_colorFormats;
-		std::vector<RendererAPI::LoadActionType> m_loadActionsColor;
+		std::vector<LoadActionType> m_loadActionsColor;
 		u32 m_renderTargetCount;
-		RendererAPI::SampleCount m_sampleCount;
+		SampleCount m_sampleCount;
 		TRAP::Graphics::API::ImageFormat m_depthStencilFormat;
-		RendererAPI::LoadActionType m_loadActionDepth;
-		RendererAPI::LoadActionType m_loadActionStencil;
+		LoadActionType m_loadActionDepth;
+		LoadActionType m_loadActionStencil;
 
 		TRAP::Ref<VulkanDevice> m_device = nullptr;
 	};
@@ -77,7 +77,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr const std::vector<TRAP::Graphics::RendererAPI::LoadActionType>& TRAP::Graphics::API::VulkanRenderPass::GetLoadActionsColor() const noexcept
+[[nodiscard]] constexpr const std::vector<TRAP::Graphics::LoadActionType>& TRAP::Graphics::API::VulkanRenderPass::GetLoadActionsColor() const noexcept
 {
 	return m_loadActionsColor;
 }
@@ -98,7 +98,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::API::VulkanRenderPass::GetSampleCount() const noexcept
+[[nodiscard]] constexpr TRAP::Graphics::SampleCount TRAP::Graphics::API::VulkanRenderPass::GetSampleCount() const noexcept
 {
 	return m_sampleCount;
 }
@@ -112,14 +112,14 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::LoadActionType TRAP::Graphics::API::VulkanRenderPass::GetLoadActionTypeDepth() const noexcept
+[[nodiscard]] constexpr TRAP::Graphics::LoadActionType TRAP::Graphics::API::VulkanRenderPass::GetLoadActionTypeDepth() const noexcept
 {
 	return m_loadActionDepth;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::LoadActionType TRAP::Graphics::API::VulkanRenderPass::GetLoadActionTypeStencil() const noexcept
+[[nodiscard]] constexpr TRAP::Graphics::LoadActionType TRAP::Graphics::API::VulkanRenderPass::GetLoadActionTypeStencil() const noexcept
 {
 	return m_loadActionStencil;
 }

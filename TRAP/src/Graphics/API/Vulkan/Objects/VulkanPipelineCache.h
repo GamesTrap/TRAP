@@ -14,7 +14,7 @@ namespace TRAP::Graphics::API
 	public:
 		/// @brief Constructor.
 		/// @param desc Pipeline cache description.
-		explicit VulkanPipelineCache(const RendererAPI::PipelineCacheDesc& desc);
+		explicit VulkanPipelineCache(const PipelineCacheDesc& desc);
 		/// @brief Destructor.
 		~VulkanPipelineCache() override;
 

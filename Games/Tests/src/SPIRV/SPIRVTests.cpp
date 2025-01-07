@@ -32,7 +32,7 @@ void SPIRVTests::OnAttach()
 
 	//Load Quad vertices
     m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(QuadVerticesIndexed,
-                                                          TRAP::Graphics::UpdateFrequency::Static);
+                                                          TRAP::Graphics::DescriptorUpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout layout =
     {
         { TRAP::Graphics::ShaderDataType::Float3, "Pos" },
@@ -43,7 +43,7 @@ void SPIRVTests::OnAttach()
 
     //Load Quad indices
     m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(QuadIndices,
-                                                        TRAP::Graphics::UpdateFrequency::Static);
+                                                        TRAP::Graphics::DescriptorUpdateFrequency::Static);
     m_indexBuffer->AwaitLoading();
 
     //Load Shader

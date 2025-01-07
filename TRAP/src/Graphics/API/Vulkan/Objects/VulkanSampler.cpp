@@ -9,26 +9,26 @@
 
 namespace
 {
-	void CheckFormatProperties(const TRAP::Graphics::RendererAPI::SamplerDesc& samplerDesc,
+	void CheckFormatProperties(const TRAP::Graphics::SamplerDesc& samplerDesc,
 	                           const TRAP::Graphics::API::VulkanDevice& device)
 	{
 		TRAP_ASSERT(device.GetPhysicalDevice().IsFeatureEnabled(TRAP::Graphics::API::VulkanPhysicalDeviceFeature::SamplerYcbcrConversion),
 		            "VulkanSampler::CheckFormatProperties(): Sampler YCbCr Conversion Extension is not supported by this device!");
 
 		const VkFormatProperties formatProps = device.GetPhysicalDevice().GetVkPhysicalDeviceFormatProperties(samplerDesc.SamplerConversionDesc.Format);
-		if(samplerDesc.SamplerConversionDesc.ChromaOffsetX == TRAP::Graphics::RendererAPI::SampleLocation::Midpoint)
+		if(samplerDesc.SamplerConversionDesc.ChromaOffsetX == TRAP::Graphics::SampleLocation::Midpoint)
 		{
 			TRAP_ASSERT(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_MIDPOINT_CHROMA_SAMPLES_BIT,
 			            "VulkanSampler::CheckFormatProperties(): Format does not support Midpoint Chroma Sampling!");
 		}
-		else if(samplerDesc.SamplerConversionDesc.ChromaOffsetX == TRAP::Graphics::RendererAPI::SampleLocation::Cosited)
+		else if(samplerDesc.SamplerConversionDesc.ChromaOffsetX == TRAP::Graphics::SampleLocation::Cosited)
 		{
 			TRAP_ASSERT(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT,
 			            "VulkanSampler::CheckFormatProperties(): Format does not support Cosited Chroma Sampling!");
 		}
 	}
 
-	void CreatePlanarImageSampler(const TRAP::Graphics::RendererAPI::SamplerDesc& samplerDesc,
+	void CreatePlanarImageSampler(const TRAP::Graphics::SamplerDesc& samplerDesc,
 	                              const TRAP::Graphics::API::VulkanDevice& device,
 								  VkSamplerCreateInfo& samplerCreateInfo,
 			                      VkSampler& sampler, VkSamplerYcbcrConversion& samplerYcbcrConversion)
@@ -53,7 +53,7 @@ namespace
 		VkCall(vkCreateSampler(device.GetVkDevice(), &samplerCreateInfo, nullptr, &sampler));
 	}
 
-	void Init(const TRAP::Graphics::RendererAPI::SamplerDesc& samplerDesc,
+	void Init(const TRAP::Graphics::SamplerDesc& samplerDesc,
 	          const TRAP::Graphics::API::VulkanDevice& device,
 			  VkSampler& sampler, VkSamplerYcbcrConversion& samplerYcbcrConversion)
 	{
@@ -64,7 +64,7 @@ namespace
 		//Default sampler lod values
 		//Used if not overriden by SetLogRange or not Linear mipmaps
 		f32 minSamplerLod = 0;
-		f32 maxSampledLod = samplerDesc.MipMapMode == TRAP::Graphics::RendererAPI::MipMapMode::Linear ? VK_LOD_CLAMP_NONE : 0;
+		f32 maxSampledLod = samplerDesc.MipMapMode == TRAP::Graphics::MipMapMode::Linear ? VK_LOD_CLAMP_NONE : 0;
 
 		//User provided lods
 		if(samplerDesc.SetLodRange)
@@ -119,7 +119,7 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc& desc)
+TRAP::Graphics::API::VulkanSampler::VulkanSampler(const SamplerDesc& desc)
 	: Sampler(desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);

@@ -28,7 +28,7 @@ void ComputeTests::OnAttach()
         return;
 
     //Load Quad vertices
-    m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(QuadVerticesIndexed, TRAP::Graphics::UpdateFrequency::Static);
+    m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(QuadVerticesIndexed, TRAP::Graphics::DescriptorUpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout layout =
     {
         { TRAP::Graphics::ShaderDataType::Float3, "Pos" },
@@ -38,7 +38,7 @@ void ComputeTests::OnAttach()
     m_vertexBuffer->AwaitLoading();
 
     //Load Quad indices
-    m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(QuadIndices, TRAP::Graphics::UpdateFrequency::Static);
+    m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(QuadIndices, TRAP::Graphics::DescriptorUpdateFrequency::Static);
     m_indexBuffer->AwaitLoading();
 
     //Load Texture
@@ -57,7 +57,7 @@ void ComputeTests::OnAttach()
     TRAP::Graphics::ShaderManager::LoadFile("Texture", "./Assets/Shaders/testtextureseperate.shader", TRAP::Graphics::ShaderType::Graphics);
     TRAP::Graphics::ShaderManager::LoadFile("ComputeEmboss", "./Assets/Shaders/emboss.compute.shader", TRAP::Graphics::ShaderType::Compute);
 
-    static const TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc
+    static const TRAP::Graphics::SamplerDesc samplerDesc
     {
         .MinFilter = TRAP::Graphics::FilterType::Linear,
         .MagFilter = TRAP::Graphics::FilterType::Linear,
@@ -119,11 +119,11 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
         TRAP::Graphics::RenderCommand::Dispatch({m_compTex->GetWidth(), m_compTex->GetHeight(), 1u});
 
         //Transition textures (to use as sampled images)
-        TRAP::Graphics::RendererAPI::TextureBarrier barrier
+        TRAP::Graphics::TextureBarrier barrier
         {
             .Texture = *m_colTex,
-            .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess,
-            .NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource
+            .CurrentState = TRAP::Graphics::ResourceState::UnorderedAccess,
+            .NewState = TRAP::Graphics::ResourceState::ShaderResource
         };
         TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
         barrier.Texture = *m_compTex;

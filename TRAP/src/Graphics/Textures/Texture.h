@@ -13,9 +13,6 @@ namespace TRAP::Graphics
 		TextureCube
 	};
 
-	using TextureCubeFormat = RendererAPI::TextureCubeType;
-	using TextureCreationFlags = RendererAPI::TextureCreationFlags;
-
 	class Texture
 	{
 	public:
@@ -44,7 +41,7 @@ namespace TRAP::Graphics
 		/// @param flags Additional flags. Default: None.
 		/// @return Loaded texture on success, Fallback texture if texture loading failed, nullptr otherwise.
 		[[nodiscard]] static Ref<Texture> CreateCube(std::string name, const std::filesystem::path& filePath,
-		                                             TextureCubeFormat cubeFormat,
+		                                             TextureCubeType cubeFormat,
 													 TextureCreationFlags flags = TextureCreationFlags::None);
 		/// @brief Create a cube texture from 1 TRAP::Image.
 		/// @param name Name for the texture.
@@ -53,7 +50,7 @@ namespace TRAP::Graphics
 		/// @param flags Additional flags. Default: None.
 		/// @return Loaded texture on success, Fallback texture if texture loading failed, nullptr otherwise.
 		/// @note The image must be valid till IsLoaded() returns true.
-		[[nodiscard]] static Ref<Texture> CreateCube(std::string name, const Image& image, TextureCubeFormat cubeFormat,
+		[[nodiscard]] static Ref<Texture> CreateCube(std::string name, const Image& image, TextureCubeType cubeFormat,
 		                                             TextureCreationFlags flags = TextureCreationFlags::None);
 		/// @brief Create an empty cube texture.
 		/// @param name Name for the texture.
@@ -97,7 +94,7 @@ namespace TRAP::Graphics
 		/// @brief Create a custom texture.
 		/// @param desc Texture description.
 		/// @return Create texture on success, nullptr otherwise.
-        [[nodiscard]] static Ref<Texture> CreateCustom(const RendererAPI::TextureDesc& desc);
+        [[nodiscard]] static Ref<Texture> CreateCustom(const TextureDesc& desc);
 		/// @brief Create the fallback 2D texture.
 		/// @return Fallback 2D texture.
 		[[nodiscard]] static Ref<Texture> CreateFallback2D();
@@ -118,7 +115,7 @@ namespace TRAP::Graphics
 
 		/// @brief Initialize the Texture.
 		/// @param desc Texture description.
-		virtual void Init(const RendererAPI::TextureDesc& desc) = 0;
+		virtual void Init(const TextureDesc& desc) = 0;
 
 		/// @brief Reload texture.
 		/// @return True on successful reload (valid texture), else (invalid texture) otherwise.
@@ -160,7 +157,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat GetImageFormat() const noexcept;
 		/// @brief Retrieve the textures used descriptor types.
 		/// @return Used descriptor types.
-		[[nodiscard]] constexpr RendererAPI::DescriptorType GetDescriptorTypes() const noexcept;
+		[[nodiscard]] constexpr DescriptorType GetDescriptorTypes() const noexcept;
 
 		/// @brief Retrieve the textures bits per channel.
 		/// @return Textures bits per channel.
@@ -191,7 +188,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] constexpr const std::vector<std::filesystem::path>& GetFilePaths() const noexcept;
 		/// @brief Retrieve the cube format of the texture.
 		/// @return Cube format of the texture.
-		[[nodiscard]] constexpr TRAP::Optional<TextureCubeFormat> GetCubeFormat() const noexcept;
+		[[nodiscard]] constexpr TRAP::Optional<TextureCubeType> GetCubeFormat() const noexcept;
 
 		/// @brief Update the texture with raw pixel data.
 		/// @param data Raw pixel data.
@@ -253,7 +250,7 @@ namespace TRAP::Graphics
 		/// @brief Constructor.
 		Texture(std::string name, std::vector<std::filesystem::path> filePaths);
 		/// @brief Constructor.
-		Texture(std::string name, std::vector<std::filesystem::path> filePaths, const TRAP::Optional<TextureCubeFormat>& cubeFormat);
+		Texture(std::string name, std::vector<std::filesystem::path> filePaths, const TRAP::Optional<TextureCubeType>& cubeFormat);
 
 		//RenderAPI independent data
 		std::string m_name;
@@ -265,10 +262,10 @@ namespace TRAP::Graphics
 		u32 m_mipLevels = 1;
 		Graphics::API::ImageFormat m_imageFormat = Graphics::API::ImageFormat::R8G8B8A8_UNORM;
 		u32 m_aspectMask = 0;
-		RendererAPI::DescriptorType m_descriptorTypes = RendererAPI::DescriptorType::Texture;
+		DescriptorType m_descriptorTypes = DescriptorType::Texture;
 		bool m_ownsImage = true;
 		std::vector<std::filesystem::path> m_filepaths;
-		TRAP::Optional<TextureCubeFormat> m_textureCubeFormat = TRAP::NullOpt;
+		TRAP::Optional<TextureCubeType> m_textureCubeFormat = TRAP::NullOpt;
 	};
 }
 
@@ -283,7 +280,7 @@ namespace TRAP::Graphics
 
 [[nodiscard]] constexpr TRAP::Graphics::TextureType TRAP::Graphics::Texture::GetType() const noexcept
 {
-	if((m_descriptorTypes & RendererAPI::DescriptorType::TextureCube) == RendererAPI::DescriptorType::TextureCube)
+	if((m_descriptorTypes & DescriptorType::TextureCube) == DescriptorType::TextureCube)
 		return TextureType::TextureCube;
 
 	return TextureType::Texture2D;
@@ -354,7 +351,7 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::Texture::GetDescriptorTypes() const noexcept
+[[nodiscard]] constexpr TRAP::Graphics::DescriptorType TRAP::Graphics::Texture::GetDescriptorTypes() const noexcept
 {
 	return m_descriptorTypes;
 }
@@ -423,7 +420,7 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Optional<TRAP::Graphics::TextureCubeFormat> TRAP::Graphics::Texture::GetCubeFormat() const noexcept
+[[nodiscard]] constexpr TRAP::Optional<TRAP::Graphics::TextureCubeType> TRAP::Graphics::Texture::GetCubeFormat() const noexcept
 {
 	return m_textureCubeFormat;
 }

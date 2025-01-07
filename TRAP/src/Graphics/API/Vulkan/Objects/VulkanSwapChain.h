@@ -20,7 +20,7 @@ namespace TRAP::Graphics::API
 	public:
 		/// @brief Constructor.
 		/// @param desc Swap chain description.
-		explicit VulkanSwapChain(RendererAPI::SwapChainDesc& desc);
+		explicit VulkanSwapChain(SwapChainDesc& desc);
 		/// @brief Destructor.
 		~VulkanSwapChain() override;
 
@@ -61,11 +61,11 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] std::vector<VkLatencyTimingsFrameReportNV> ReflexGetLatency(u32 numLatencyData) const override;
 		/// @brief Set a timestamp for NVIDIA-Reflex.
 		/// @param marker Enum value of the marker to set.
-		void ReflexSetMarker(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMarker marker) override;
+		void ReflexSetMarker(TRAP::Graphics::NVIDIAReflexLatencyMarker marker) override;
 		/// @brief Set the latency mode for NVIDIA-Reflex.
 		/// @param latencyMode Latency mode to use.
 		/// @param fpsLimit Optional: FPS limit, use 0 to disable limiter.
-		void ReflexSetLatencyMode(TRAP::Graphics::RendererAPI::NVIDIAReflexLatencyMode latencyMode, u32 fpsLimit = 0u) const override;
+		void ReflexSetLatencyMode(TRAP::Graphics::NVIDIAReflexLatencyMode latencyMode, u32 fpsLimit = 0u) const override;
 		/// @brief Delay host CPU work for low latency rendering.
 		/// @param reflexSemaphore Semaphore to use for sleep.
 		void ReflexSleep(const Semaphore& reflexSemaphore) const override;
@@ -73,11 +73,11 @@ namespace TRAP::Graphics::API
 		/// @brief Set a timestamp for AMD Anti Lag.
 		/// @param marker Enum value of the marker to set.
 		/// @param viewportData The viewport to set the marker for.
-		void AntiLagSetMarker(TRAP::Graphics::RendererAPI::AMDAntiLagMarker marker, const RendererAPI::PerViewportData& viewportData) override;
+		void AntiLagSetMarker(TRAP::Graphics::AMDAntiLagMarker marker, const RendererAPI::PerViewportData& viewportData) override;
 		/// @brief Set the mode for AMD Anti Lag.
 		/// @param mode Mode to use.
 		/// @param fpsLimit Optional: FPS limit, use 0 to disable limiter.
-		void AntiLagSetMode(TRAP::Graphics::RendererAPI::AMDAntiLagMode mode, u32 fpsLimit = 0u) const override;
+		void AntiLagSetMode(TRAP::Graphics::AMDAntiLagMode mode, u32 fpsLimit = 0u) const override;
 
 		/// @brief Retrieve the Vulkan swap chain handle.
 		/// @return Vulkan swap chain handle.
@@ -94,7 +94,7 @@ namespace TRAP::Graphics::API
 		/// @brief Initialize the swap chain.
 		/// @param desc Swap chain description.
 		/// @param oldSwapChain Optional: Old Vulkan swapchain, potentially speeds up creation of new swapchain.
-		void InitSwapchain(RendererAPI::SwapChainDesc& desc, VkSwapchainKHR oldSwapChain = nullptr);
+		void InitSwapchain(SwapChainDesc& desc, VkSwapchainKHR oldSwapChain = nullptr);
 		/// @brief Uninitialize the swap chain.
 		void DeInitSwapchain();
 		/// @brief Reinitialize the swap chain while reusing the old one.
@@ -112,7 +112,7 @@ namespace TRAP::Graphics::API
 
 		u64 m_presentCounter = 0u;
 
-		RendererAPI::SwapChainDesc m_desc{};
+		SwapChainDesc m_desc{};
 	};
 }
 

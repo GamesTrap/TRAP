@@ -85,7 +85,7 @@ void VRSTests::OnAttach()
         m_shadingRateTexture = CreateShadingRateTexture(texRes.x(), texRes.y());
     }
 
-    if((TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerDraw) != TRAP::Graphics::RendererAPI::ShadingRateCaps::NotSupported)
+    if((TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::ShadingRateCaps::PerDraw) != TRAP::Graphics::ShadingRateCaps::NotSupported)
         m_shadingRate = TRAP::Graphics::ShadingRate::Full;
 
 	//Load Textures
@@ -121,7 +121,7 @@ void VRSTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 	m_cameraController.OnUpdate(deltaTime);
 
 	//Render
-	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBuffer::Color_Depth);
+	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBufferType::Color_Depth);
 
     if(m_supportsPerDrawVRS && m_perDrawActive)
     {
@@ -193,12 +193,12 @@ TRAP::Ref<TRAP::Graphics::RenderTarget> VRSTests::CreateShadingRateTexture(const
                                                                            const u32 framebufferHeight)
 {
     //Create empty texture for shading rate
-    TRAP::Graphics::RendererAPI::RenderTargetDesc rTDesc{};
+    TRAP::Graphics::RenderTargetDesc rTDesc{};
     rTDesc.Width = NumericCast<u32>(TRAP::Math::Ceil(NumericCast<f32>(framebufferWidth) / NumericCast<f32>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateTexelWidth)));
 	rTDesc.Height = NumericCast<u32>(TRAP::Math::Ceil(NumericCast<f32>(framebufferHeight) / NumericCast<f32>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateTexelHeight)));
 	rTDesc.Format = TRAP::Graphics::API::ImageFormat::R8_UINT;
 	rTDesc.StartState = TRAP::Graphics::ResourceState::ShadingRateSource;
-	rTDesc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
+	rTDesc.Descriptors = TRAP::Graphics::DescriptorType::Texture;
     rTDesc.Depth = 1u;
     rTDesc.ArraySize = 1u;
     rTDesc.MipLevels = 1u;
@@ -207,12 +207,12 @@ TRAP::Ref<TRAP::Graphics::RenderTarget> VRSTests::CreateShadingRateTexture(const
 
     TRAP::Ref<TRAP::Graphics::RenderTarget> shadingRateTex = TRAP::Graphics::RenderTarget::Create(rTDesc);
 
-	// TRAP::Graphics::RendererAPI::TextureDesc texDesc{};
+	// TRAP::Graphics::TextureDesc texDesc{};
 	// texDesc.Width = NumericCast<u32>(TRAP::Math::Ceil(NumericCast<f32>(framebufferWidth) / NumericCast<f32>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateTexelWidth)));
 	// texDesc.Height = NumericCast<u32>(TRAP::Math::Ceil(NumericCast<f32>(framebufferHeight) / NumericCast<f32>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateTexelHeight)));
 	// texDesc.Format = TRAP::Graphics::API::ImageFormat::R8_UINT;
 	// texDesc.StartState = TRAP::Graphics::ResourceState::ShadingRateSource;
-	// texDesc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
+	// texDesc.Descriptors = TRAP::Graphics::DescriptorType::Texture;
 	// texDesc.Name = "Shading Rate Texture";
 	// TRAP::Ref<TRAP::Graphics::Texture> shadingRateTex = TRAP::Graphics::Texture::CreateCustom(texDesc);
 	// shadingRateTex->AwaitLoading();

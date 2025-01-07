@@ -19,16 +19,16 @@ namespace TRAP::Graphics::API
 		/// @param filepath Filepath of the shader.
 		/// @param desc Binary shader description.
 		/// @param userMacros Optional user defined macros. Default: nullptr.
-		VulkanShader(RendererAPI::ShaderType shaderType, std::string name,
-		             const std::filesystem::path& filepath, const RendererAPI::BinaryShaderDesc& desc,
+		VulkanShader(ShaderType shaderType, std::string name,
+		             const std::filesystem::path& filepath, const BinaryShaderDesc& desc,
 		             const std::vector<Macro>& userMacros = {});
 		/// @brief Constructor.
 		/// @param shaderType Type of the shader.
 		/// @param name Name for the shader.
 		/// @param desc Binary shader description.
 		/// @param userMacros Optional user defined macros. Default: nullptr.
-		VulkanShader(RendererAPI::ShaderType shaderType, std::string name,
-		             const RendererAPI::BinaryShaderDesc& desc,
+		VulkanShader(ShaderType shaderType, std::string name,
+		             const BinaryShaderDesc& desc,
 		             const std::vector<Macro>& userMacros = {});
 		/// @brief Constructor. Creates an invalid placeholder shader.
 		/// @param shaderType Type of the shader.
@@ -37,7 +37,7 @@ namespace TRAP::Graphics::API
 		/// @param userMacros Optional user defined macros. Default: nullptr.
 		/// @param stages Optional Stages of the shader. Default: None.
 		/// @note Used for invalid shaders, this doesn't create a usable shader.
-		VulkanShader(RendererAPI::ShaderType shaderType, std::string name,
+		VulkanShader(ShaderType shaderType, std::string name,
 		             const std::filesystem::path& filepath,
 		             const std::vector<Macro>& userMacros = {});
 		/// @brief Destructor.
@@ -199,7 +199,7 @@ namespace TRAP::Graphics::API
 	private:
 		/// @brief Initialize API dependent shader.
 		/// @param desc Binary shader description.
-		void Init(const RendererAPI::BinaryShaderDesc& desc) override;
+		void Init(const BinaryShaderDesc& desc) override;
 		/// @brief Shutdown API dependent shader.
 		void Shutdown() override;
 

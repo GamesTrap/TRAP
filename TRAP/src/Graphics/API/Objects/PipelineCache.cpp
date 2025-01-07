@@ -18,7 +18,7 @@ void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path) cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(const RendererAPI::PipelineCacheDesc& desc)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(const PipelineCacheDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -39,7 +39,7 @@ void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path) cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(const RendererAPI::PipelineCacheLoadDesc& desc)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(const PipelineCacheLoadDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 
@@ -47,7 +47,7 @@ void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path) cons
 	{
 	case RenderAPI::Vulkan:
 	{
-		TRAP::Graphics::RendererAPI::PipelineCacheDesc cacheDesc{.Data = {}, .Flags = desc.Flags, .Name = desc.Name};
+		TRAP::Graphics::PipelineCacheDesc cacheDesc{.Data = {}, .Flags = desc.Flags, .Name = desc.Name};
 		if(!TRAP::FileSystem::Exists(desc.Path))
 			return TRAP::Graphics::PipelineCache::Create(cacheDesc); //Empty cache
 

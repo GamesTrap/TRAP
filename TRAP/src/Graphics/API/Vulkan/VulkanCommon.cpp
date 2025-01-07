@@ -97,7 +97,7 @@ void TRAP::Graphics::API::VkSetObjectName(const VulkanDevice& device, const u64 
 //Determines pipeline stages involved for given accesses
 [[nodiscard]] VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const VulkanPhysicalDevice& physicalDevice,
                                                                                       const VkAccessFlags accessFlags,
-                                                                                      const RendererAPI::QueueType queueType) noexcept
+                                                                                      const QueueType queueType) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -106,7 +106,7 @@ void TRAP::Graphics::API::VkSetObjectName(const VulkanDevice& device, const u64 
 
 	switch(queueType)
 	{
-	case RendererAPI::QueueType::Graphics:
+	case QueueType::Graphics:
 	{
 		if ((accessFlags & (VK_ACCESS_INDEX_READ_BIT | VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT)) != 0)
 			flags |= VK_PIPELINE_STAGE_VERTEX_INPUT_BIT;
@@ -141,7 +141,7 @@ void TRAP::Graphics::API::VkSetObjectName(const VulkanDevice& device, const u64 
 		break;
 	}
 
-	case RendererAPI::QueueType::Compute:
+	case QueueType::Compute:
 	{
 		if ((accessFlags & (VK_ACCESS_INDEX_READ_BIT | VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT)) != 0 ||
 			(accessFlags & VK_ACCESS_INPUT_ATTACHMENT_READ_BIT) != 0 ||
@@ -155,7 +155,7 @@ void TRAP::Graphics::API::VkSetObjectName(const VulkanDevice& device, const u64 
 		break;
 	}
 
-	case RendererAPI::QueueType::Transfer:
+	case QueueType::Transfer:
 		return VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
 	}
 

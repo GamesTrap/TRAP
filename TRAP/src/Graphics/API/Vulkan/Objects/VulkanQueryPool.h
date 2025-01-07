@@ -13,7 +13,7 @@ namespace TRAP::Graphics::API
 	public:
 		/// @brief Constructor.
 		/// @param desc Query pool description.
-		explicit VulkanQueryPool(const RendererAPI::QueryPoolDesc& desc);
+		explicit VulkanQueryPool(const QueryPoolDesc& desc);
 		/// @brief Destructor.
 		~VulkanQueryPool() override;
 

@@ -45,7 +45,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] u32 GetCount() const noexcept;
 		/// @brief Retrieve the update frequency used by this buffer.
 		/// @return Update frequency.
-		[[nodiscard]] UpdateFrequency GetUpdateFrequency() const noexcept;
+		[[nodiscard]] DescriptorUpdateFrequency GetUpdateFrequency() const noexcept;
 
 		/// @brief Update the buffers vertex data.
 		/// @param data Pointer to the updated data.
@@ -73,12 +73,12 @@ namespace TRAP::Graphics
 		/// @param vertices Pointer to the data to upload.
 		/// @param updateFrequency Update frequency for the buffer.
 		/// @return New vertex buffer.
-		[[nodiscard]] static Scope<VertexBuffer> Create(std::span<const f32> vertices, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<VertexBuffer> Create(std::span<const f32> vertices, DescriptorUpdateFrequency updateFrequency);
 		/// @brief Create a new vertex buffer and set its size.
 		/// @param size Byte size for the vertex buffer.
 		/// @param updateFrequency Update frequency for the buffer.
 		/// @return New vertex buffer.
-		[[nodiscard]] static Scope<VertexBuffer> Create(u64 size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<VertexBuffer> Create(u64 size, DescriptorUpdateFrequency updateFrequency);
 
 	private:
 		/// @brief Initialize vertex buffer with given data.
@@ -86,7 +86,7 @@ namespace TRAP::Graphics
 		/// @param size Byte size of the data to upload.
 		/// @param updateFrequency Update frequency for the buffer.
 		/// @return New vertex buffer.
-		[[nodiscard]] static Scope<VertexBuffer> Init(const f32* vertices, u64 size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<VertexBuffer> Init(const f32* vertices, u64 size, DescriptorUpdateFrequency updateFrequency);
 
 		TRAP::Ref<TRAP::Graphics::Buffer> m_vertexBuffer = nullptr;
 
