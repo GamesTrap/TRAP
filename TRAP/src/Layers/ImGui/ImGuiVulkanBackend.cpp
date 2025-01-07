@@ -1303,18 +1303,18 @@ void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* const viewport, [[mayb
         if(v.UseDynamicRendering)
         {
             //Transition swapchain image to a layout suitable for drawing.
-            std::vector<TRAP::Graphics::RendererAPI::TextureBarrier> barriers
+            std::vector<TRAP::Graphics::TextureBarrier> barriers
             {
-                TRAP::Graphics::RendererAPI::TextureBarrier
+                TRAP::Graphics::TextureBarrier
                 {
                     .Texture = dynamic_cast<TRAP::Graphics::Texture*>(fd.Backbuffer->GetTexture().get()),
-                    .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
-                    .NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource,
+                    .CurrentState = TRAP::Graphics::ResourceState::Undefined,
+                    .NewState = TRAP::Graphics::ResourceState::ShaderResource,
                     .BeginOnly = false,
                     .EndOnly = false,
                     .Acquire = false,
                     .Release = false,
-                    .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
+                    .QueueType = TRAP::Graphics::QueueType::Graphics,
                     .SubresourceBarrier = false,
                     .MipLevel = 0u,
                     .ArrayLayer = 0u
@@ -1381,18 +1381,18 @@ void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* const viewport, [[mayb
             vkCmdEndRenderingKHR(fd.CommandBuffer->GetVkCommandBuffer());
 
             //Transition image to a layout suitable for presentation
-            std::vector<TRAP::Graphics::RendererAPI::TextureBarrier> barriers
+            std::vector<TRAP::Graphics::TextureBarrier> barriers
             {
-                TRAP::Graphics::RendererAPI::TextureBarrier
+                TRAP::Graphics::TextureBarrier
                 {
                     .Texture = dynamic_cast<TRAP::Graphics::Texture*>(fd.Backbuffer->GetTexture().get()),
-                    .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource,
-                    .NewState = TRAP::Graphics::RendererAPI::ResourceState::Present,
+                    .CurrentState = TRAP::Graphics::ResourceState::ShaderResource,
+                    .NewState = TRAP::Graphics::ResourceState::Present,
                     .BeginOnly = false,
                     .EndOnly = false,
                     .Acquire = false,
                     .Release = false,
-                    .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
+                    .QueueType = TRAP::Graphics::QueueType::Graphics,
                     .SubresourceBarrier = false,
                     .MipLevel = 0u,
                     .ArrayLayer = 0u

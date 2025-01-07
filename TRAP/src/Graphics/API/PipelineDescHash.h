@@ -135,9 +135,9 @@ namespace std
 					TRAP::Utils::HashCombine(res, i);
 			}
 
-			//if (std::holds_alternative<TRAP::Graphics::RendererAPI::RayTracingPipelineDesc>(p.Pipeline))
+			//if (std::holds_alternative<TRAP::Graphics::RayTracingPipelineDesc>(p.Pipeline))
 			//{
-			//	const auto& r = std::get<TRAP::Graphics::RendererAPI::RayTracingPipelineDesc>(p.Pipeline);
+			//	const auto& r = std::get<TRAP::Graphics::RayTracingPipelineDesc>(p.Pipeline);
 
 			//	//TODO Implement When RayTracing is implemented
 			//}

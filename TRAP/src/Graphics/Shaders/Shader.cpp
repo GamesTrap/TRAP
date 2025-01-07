@@ -452,7 +452,7 @@ namespace
 
 	/// @brief Convert GLSL shaders to SPIRV.
 	/// @param shaders GLSL shader(s) to convert.
-	/// @return RendererAPI::BinaryShaderDesc containing SPIRV binary data.
+	/// @return BinaryShaderDesc containing SPIRV binary data.
 	[[nodiscard]] TRAP::Graphics::BinaryShaderDesc ConvertGLSLToSPIRV(const std::span<const GLSLSourceStages> shaders)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
@@ -537,9 +537,9 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// @brief Load SPIRV binary data into RendererAPI::BinaryShaderDesc.
+	/// @brief Load SPIRV binary data into BinaryShaderDesc.
 	/// @param SPIRV SPIRV binary data.
-	/// @return RendererAPI::BinaryShaderDesc containing loaded SPIRV binary data.
+	/// @return BinaryShaderDesc containing loaded SPIRV binary data.
 	[[nodiscard]] constexpr TRAP::Graphics::BinaryShaderDesc LoadSPIRV(const std::span<u8> SPIRV)
 	{
 	#ifdef ENABLE_GRAPHICS_DEBUG
