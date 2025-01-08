@@ -14,7 +14,6 @@
 #include "VulkanPhysicalDevice.h"
 #include "VulkanDevice.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "VulkanInits.h"
 
 namespace

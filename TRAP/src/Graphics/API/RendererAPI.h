@@ -1273,8 +1273,6 @@ namespace TRAP::Graphics
 			bool AntiLagSupported;
 		} GPUSettings{};
 
-		static constexpr u32 ImageCount = 3u; //Triple Buffered
-
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Retrieve the image index currently used for rendering from the given window.
 		/// @param window Window to retrieve image index from.

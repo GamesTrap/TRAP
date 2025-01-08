@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "FileSystem/FileSystem.h"
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
+#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Queue.h"
 #include "FileSystem/FileSystemWatcher.h"
 

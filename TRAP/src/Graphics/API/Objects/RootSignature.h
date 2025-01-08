@@ -1,10 +1,20 @@
 #ifndef TRAP_ROOTSIGNATURE_H
 #define TRAP_ROOTSIGNATURE_H
 
-#include "Graphics/API/RendererAPI.h"
+#include <vector>
+
+#include "Core/Types.h"
+#include "Utils/SmartPtr.h"
+#include "Utils/Map.h"
 
 namespace TRAP::Graphics
 {
+	struct RootSignatureDesc;
+    struct DescriptorInfo;
+    enum class PipelineType : u32;
+
+    using DescriptorIndexMap = TRAP::Utils::UnorderedStringMap<u32>;
+
 	class RootSignature
 	{
 	public:
@@ -42,7 +52,7 @@ namespace TRAP::Graphics
 		//Graphics or Compute
 		PipelineType m_pipelineType;
 		//Array of all descriptors declared in the root signature layout
-		std::vector<DescriptorInfo> m_descriptors{};
+		std::vector<DescriptorInfo> m_descriptors;
 		//Translates hash of descriptor name to descriptor index in m_descriptors array
 		DescriptorIndexMap m_descriptorNameToIndexMap{};
 	};

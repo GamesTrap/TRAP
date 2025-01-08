@@ -1,7 +1,7 @@
 #ifndef TRAP_VULKANQUERYPOOL_H
 #define TRAP_VULKANQUERYPOOL_H
 
-#include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Graphics/API/Objects/QueryPool.h"
 
 namespace TRAP::Graphics::API

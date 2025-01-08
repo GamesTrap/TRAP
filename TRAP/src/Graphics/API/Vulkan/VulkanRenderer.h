@@ -3,6 +3,7 @@
 
 #include <thread>
 
+#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/ShaderReflection.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Objects/VulkanDebug.h"

@@ -1,11 +1,12 @@
 #ifndef TRAP_COMMANDPOOL_H
 #define TRAP_COMMANDPOOL_H
 
-#include "Graphics/API/RendererAPI.h"
 #include "CommandBuffer.h"
 
 namespace TRAP::Graphics
 {
+	struct CommandPoolDesc;
+
 	class CommandPool
 	{
 	public:

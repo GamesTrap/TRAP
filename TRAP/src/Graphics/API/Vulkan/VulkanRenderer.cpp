@@ -294,7 +294,7 @@ namespace
 #ifndef TRAP_HEADLESS_MODE
 		return AcquireNextSwapchainImage(*p.SwapChain, *p.ImageAcquiredSemaphores[p.ImageIndex]);
 #else
-		return (p.CurrentSwapChainImageIndex + 1) % TRAP::Graphics::RendererAPI::ImageCount;
+		return (p.CurrentSwapChainImageIndex + 1) % TRAP::Graphics::ImageCount;
 #endif
 	}
 
@@ -847,7 +847,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData& p) const
 
 #ifndef TRAP_HEADLESS_MODE
 
-	p.SwapChain->AntiLagSetMarker(TRAP::Graphics::AMDAntiLagMarker::PresentStage, p);
+	p.SwapChain->AntiLagSetMarker(TRAP::Graphics::AMDAntiLagMarker::PresentStage, p.AntiLagMode, p.FPSLimit);
 	p.SwapChain->ReflexSetMarker(TRAP::Graphics::NVIDIAReflexLatencyMarker::PresentStart);
 
 	const QueuePresentDesc presentDesc
@@ -864,7 +864,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData& p) const
 
 	FrameMark;
 
-	p.ImageIndex = (p.ImageIndex + 1) % RendererAPI::ImageCount;
+	p.ImageIndex = (p.ImageIndex + 1) % ImageCount;
 
 #ifndef TRAP_HEADLESS_MODE
 	if (presentStatus == PresentStatus::OutOfDate || p.ResizeSwapChain)
@@ -902,7 +902,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData& p) const
 			rTDesc.Format = GetRecommendedSwapchainFormat(true, false);
 			rTDesc.StartState = ResourceState::RenderTarget;
 			rTDesc.SampleCount = SampleCount::One;
-			for(u32 i = 0; i < RendererAPI::ImageCount; ++i)
+			for(u32 i = 0; i < ImageCount; ++i)
 			{
 				rTDesc.Name = fmt::format("Color RenderTarget (Index: {})", i);
 				p.RenderTargets[i] = RenderTarget::Create(rTDesc);
@@ -2337,7 +2337,7 @@ void TRAP::Graphics::API::VulkanRenderer::AntiLagMarker(const AMDAntiLagMarker m
 	if(swapChain == nullptr)
 		return;
 
-	swapChain->AntiLagSetMarker(marker, *viewportData);
+	swapChain->AntiLagSetMarker(marker, viewportData->AntiLagMode, viewportData->FPSLimit);
 }
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -2583,7 +2583,7 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 #ifndef TRAP_HEADLESS_MODE
 		const u32 imageCount = NumericCast<u32>(viewportData.SwapChain->GetRenderTargets().size());
 #else
-		static constexpr u32 imageCount = RendererAPI::ImageCount;
+		static constexpr u32 imageCount = ImageCount;
 #endif /*TRAP_HEADLESS_MODE*/
 		viewportData.InternalRenderTargets.resize(imageCount);
 		for(u32 i = 0; i < imageCount; ++i)
@@ -2858,7 +2858,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 	};
 
 	//For each buffered image
-	for (u32 i = 0; i < RendererAPI::ImageCount; ++i)
+	for (u32 i = 0; i < ImageCount; ++i)
 	{
 		//Graphics
 		//Create Graphic Command Pool
@@ -2935,7 +2935,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 	{
 		.Window = &window,
 		.PresentQueues = { s_graphicQueue },
-		.ImageCount = RendererAPI::ImageCount,
+		.ImageCount = ImageCount,
 		.Width = window.GetFrameBufferWidth(),
 		.Height = window.GetFrameBufferHeight(),
 		.ColorFormat = GetRecommendedSwapchainFormat(true, false),
@@ -2963,7 +2963,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 			.Format = GetRecommendedSwapchainFormat(true, false),
 			.StartState = ResourceState::RenderTarget
 		};
-		for(u32 i = 0; i < RendererAPI::ImageCount; ++i)
+		for(u32 i = 0; i < ImageCount; ++i)
 		{
 			rTMSAADesc.Name = fmt::format("MSAA RenderTarget (Index: {})", i);
 			p->InternalRenderTargets[i] = RenderTarget::Create(rTMSAADesc);
@@ -2981,7 +2981,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 		.Format = GetRecommendedSwapchainFormat(true, false),
 		.StartState = ResourceState::RenderTarget
 	};
-	for(u32 i = 0; i < RendererAPI::ImageCount; ++i)
+	for(u32 i = 0; i < ImageCount; ++i)
 	{
 		rTDesc.Name = fmt::format("Color RenderTarget (Index: {})", i);
 		p->RenderTargets[i] = RenderTarget::Create(rTDesc);
@@ -2989,7 +2989,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 	if(p->CurrentAntiAliasing == AntiAliasing::MSAA)
 	{
 		rTDesc.SampleCount = p->CurrentSampleCount;
-		for(u32 i = 0; i < RendererAPI::ImageCount; ++i)
+		for(u32 i = 0; i < ImageCount; ++i)
 		{
 			rTDesc.Name = fmt::format("MSAA RenderTarget (Index: {})", i);
 			p->InternalRenderTargets[i] = RenderTarget::Create(rTDesc);

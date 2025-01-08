@@ -43,7 +43,7 @@ namespace TRAP::Graphics::API
 
 		VkSemaphore m_semaphore = VK_NULL_HANDLE;
 
-		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
+		TRAP::Ref<VulkanDevice> m_device = nullptr;
 	};
 }
 

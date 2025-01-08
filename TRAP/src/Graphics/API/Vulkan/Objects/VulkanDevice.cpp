@@ -3,7 +3,6 @@
 
 #include "Utils/String/String.h"
 #include "VulkanPhysicalDevice.h"
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Objects/AftermathTracker.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"

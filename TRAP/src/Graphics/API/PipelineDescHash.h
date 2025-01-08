@@ -3,7 +3,6 @@
 
 #include "Graphics/API/Objects/RenderTarget.h"
 #include "Graphics/Shaders/Shader.h"
-#include "RendererAPI.h"
 
 namespace std
 {

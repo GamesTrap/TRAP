@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "StorageBuffer.h"
 
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/Shaders/Shader.h"
 
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const u64 size,

@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "VulkanShader.h"
 
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/ShaderReflection.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
@@ -164,7 +163,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const ShaderType shaderType, std
                                                 const std::filesystem::path& filepath,
 												const BinaryShaderDesc& desc,
                                                 const std::vector<Macro>& userMacros)
-	: Shader(shaderType, std::move(name), true, desc.Stages, userMacros, filepath)
+	: Shader(shaderType, std::move(name), true, desc.Stages, userMacros, filepath),
+	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -178,7 +178,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const ShaderType shaderType, std
 TRAP::Graphics::API::VulkanShader::VulkanShader(const ShaderType shaderType, std::string name,
                                                 const BinaryShaderDesc& desc,
                                                 const std::vector<Macro>& userMacros)
-	: Shader(shaderType, std::move(name), true, desc.Stages, userMacros)
+	: Shader(shaderType, std::move(name), true, desc.Stages, userMacros),
+	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -192,7 +193,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const ShaderType shaderType, std
 TRAP::Graphics::API::VulkanShader::VulkanShader(const ShaderType shaderType, std::string name,
                                                 const std::filesystem::path& filepath,
                                                 const std::vector<Macro>& userMacros)
-	: Shader(shaderType, std::move(name), false, ShaderStage::None, userMacros, filepath)
+	: Shader(shaderType, std::move(name), false, ShaderStage::None, userMacros, filepath),
+	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -272,7 +274,7 @@ void TRAP::Graphics::API::VulkanShader::Use()
 			if(root->GetVkDescriptorSetLayouts()[i] == VK_NULL_HANDLE)
 				continue;
 
-			setDesc.MaxSets = (i == 0) ? 1 : RendererAPI::ImageCount;
+			setDesc.MaxSets = (i == 0) ? 1 : ImageCount;
 			setDesc.Set = NumericCast<u32>(i);
 			m_descriptorSets[i] = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
 		}
@@ -517,7 +519,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const BinaryShaderDesc& desc)
 			continue;
 
 		DescriptorSetDesc setDesc{};
-		setDesc.MaxSets = (i == 0) ? 1 : RendererAPI::ImageCount;
+		setDesc.MaxSets = (i == 0) ? 1 : ImageCount;
 		setDesc.RootSignature = m_rootSignature;
 		setDesc.Set = NumericCast<u32>(i);
 		m_descriptorSets[i] = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);

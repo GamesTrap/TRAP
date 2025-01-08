@@ -1,7 +1,7 @@
 #ifndef TRAP_RENDERTARGET_H
 #define TRAP_RENDERTARGET_H
 
-#include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/RendererAPI/Types.h"
 
 namespace TRAP::Graphics
 {

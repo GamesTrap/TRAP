@@ -3,9 +3,9 @@
 
 #ifndef TRAP_HEADLESS_MODE
 
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/SwapChain.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+#include "Graphics/API/RendererAPI/Types.h"
 
 namespace TRAP::Graphics::API
 {
@@ -72,8 +72,9 @@ namespace TRAP::Graphics::API
 
 		/// @brief Set a timestamp for AMD Anti Lag.
 		/// @param marker Enum value of the marker to set.
-		/// @param viewportData The viewport to set the marker for.
-		void AntiLagSetMarker(TRAP::Graphics::AMDAntiLagMarker marker, const RendererAPI::PerViewportData& viewportData) override;
+		/// @param antiLagMode Mode to use for AMD AntiLag.
+		/// @param fpsLimit Optional: FPS limit, use 0 to disable limiter.
+		void AntiLagSetMarker(TRAP::Graphics::AMDAntiLagMarker marker, AMDAntiLagMode antiLagMode, u32 fpsLimit) override;
 		/// @brief Set the mode for AMD Anti Lag.
 		/// @param mode Mode to use.
 		/// @param fpsLimit Optional: FPS limit, use 0 to disable limiter.
@@ -100,9 +101,9 @@ namespace TRAP::Graphics::API
 		/// @brief Reinitialize the swap chain while reusing the old one.
 		void ReInitSwapChain();
 
-		TRAP::Ref<VulkanMemoryAllocator> m_vma = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetVMA();
-		TRAP::Ref<VulkanInstance> m_instance = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetInstance();
-		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
+		TRAP::Ref<VulkanMemoryAllocator> m_vma = nullptr;
+		TRAP::Ref<VulkanInstance> m_instance = nullptr;
+		TRAP::Ref<VulkanDevice> m_device = nullptr;
 
 		//Present queue if one exists (queuePresent will use this queue if the hardware has a dedicated
 		//present queue)

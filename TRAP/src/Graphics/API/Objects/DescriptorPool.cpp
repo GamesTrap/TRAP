@@ -2,6 +2,7 @@
 #include "DescriptorPool.h"
 
 #include "Graphics/API/Vulkan/Objects/VulkanDescriptorPool.h"
+#include "Graphics/API/RendererAPI.h"
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create(const u32 numDescriptorSets,
                                                                                                [[maybe_unused]] const std::string_view name)

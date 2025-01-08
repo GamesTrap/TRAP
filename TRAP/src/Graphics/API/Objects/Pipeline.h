@@ -1,10 +1,12 @@
 #ifndef TRAP_PIPELINE_H
 #define TRAP_PIPELINE_H
 
-#include "Graphics/API/RendererAPI.h"
+#include "Utils/SmartPtr.h"
 
 namespace TRAP::Graphics
 {
+	struct PipelineDesc;
+
 	class Pipeline
 	{
 	public:

@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "VulkanCommandSignature.h"
 
+#include "Graphics/API/RendererAPI/Types.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const CommandSignatureDesc& desc)

@@ -1,9 +1,8 @@
 #ifndef TRAP_VULKANPIPELINECACHE_H
 #define TRAP_VULKANPIPELINECACHE_H
 
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/PipelineCache.h"
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
 namespace TRAP::Graphics::API
 {
@@ -38,7 +37,7 @@ namespace TRAP::Graphics::API
 	private:
 		VkPipelineCache m_cache = VK_NULL_HANDLE;
 
-		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
+		TRAP::Ref<VulkanDevice> m_device = nullptr;
 	};
 }
 

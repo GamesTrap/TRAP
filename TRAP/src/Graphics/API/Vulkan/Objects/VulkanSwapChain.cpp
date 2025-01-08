@@ -388,11 +388,14 @@ namespace
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(SwapChainDesc& desc)
+	: m_vma(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetVMA()),
+	  m_instance(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetInstance()),
+	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
 	TRAP_ASSERT(m_device, "VulkanSwapChain(): Vulkan Device is nullptr!");
-	TRAP_ASSERT(desc.ImageCount >= RendererAPI::ImageCount, "VulkanSwapChain(): ImageCount is too low!");
+	TRAP_ASSERT(desc.ImageCount >= ImageCount, "VulkanSwapChain(): ImageCount is too low!");
 	TRAP_ASSERT(desc.Window, "VulkanSwapChain(): Window is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -681,7 +684,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ReflexSleep(const Semaphore& reflexSe
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanSwapChain::AntiLagSetMarker(const TRAP::Graphics::AMDAntiLagMarker marker,
-                                                            const RendererAPI::PerViewportData& viewportData)
+                                                            const AMDAntiLagMode antiLagMode, const u32 fpsLimit)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -690,7 +693,7 @@ void TRAP::Graphics::API::VulkanSwapChain::AntiLagSetMarker(const TRAP::Graphics
 
 	const VkAntiLagPresentationInfoAMD antiLagPresentationInfo = TRAP::Graphics::API::VulkanInits::AntiLagPresentationInfo(m_presentCounter, marker);
 
-	const VkAntiLagDataAMD antiLagData = TRAP::Graphics::API::VulkanInits::AntiLagData(viewportData.AntiLagMode, viewportData.FPSLimit, &antiLagPresentationInfo);
+	const VkAntiLagDataAMD antiLagData = TRAP::Graphics::API::VulkanInits::AntiLagData(antiLagMode, fpsLimit, &antiLagPresentationInfo);
 	vkAntiLagUpdateAMD(m_device->GetVkDevice(), &antiLagData);
 
 	if(marker == AMDAntiLagMarker::PresentStage)

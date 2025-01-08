@@ -1,11 +1,9 @@
 #ifndef TRAP_VULKANQUEUE_H
 #define TRAP_VULKANQUEUE_H
 
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Queue.h"
 #include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
 #include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API
 {
@@ -67,7 +65,7 @@ namespace TRAP::Graphics::API
 #endif /*TRAP_HEADLESS_MODE*/
 
 	private:
-		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
+		TRAP::Ref<VulkanDevice> m_device = nullptr;
 
 		VkQueue m_vkQueue = VK_NULL_HANDLE;
 		u8 m_vkQueueFamilyIndex = std::numeric_limits<u8>::max();

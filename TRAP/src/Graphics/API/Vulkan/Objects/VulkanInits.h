@@ -1,7 +1,7 @@
 #ifndef TRAP_VULKANINITS_H
 #define TRAP_VULKANINITS_H
 
-#include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/RendererAPI/Types.h"
 #include "VulkanMemoryAllocator.h"
 
 #include "Graphics/API/ImageFormat.h"

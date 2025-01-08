@@ -1,7 +1,6 @@
 #ifndef TRAP_SEMAPHORE_H
 #define TRAP_SEMAPHORE_H
 
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/Objects/VulkanQueue.h"
 
 namespace TRAP::Graphics

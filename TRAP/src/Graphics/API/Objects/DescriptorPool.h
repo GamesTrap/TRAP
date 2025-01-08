@@ -1,10 +1,14 @@
 #ifndef TRAP_DESCRIPTORPOOL_H
 #define TRAP_DESCRIPTORPOOL_H
 
-#include "Graphics/API/RendererAPI.h"
+#include "Core/Types.h"
+#include "Utils/SmartPtr.h"
 
 namespace TRAP::Graphics
 {
+	class DescriptorSet;
+	struct DescriptorSetDesc;
+
 	class DescriptorPool
 	{
 	public:

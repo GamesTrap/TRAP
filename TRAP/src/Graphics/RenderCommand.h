@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Application.h"
+#include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::Graphics
 {

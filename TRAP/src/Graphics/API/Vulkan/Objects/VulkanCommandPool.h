@@ -1,9 +1,8 @@
 #ifndef TRAP_VULKANCOMMANDPOOL_H
 #define TRAP_VULKANCOMMANDPOOL_H
 
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/CommandPool.h"
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
 namespace TRAP::Graphics::API
 {
@@ -49,7 +48,7 @@ namespace TRAP::Graphics::API
 		void Reset() const override;
 
 	private:
-		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
+		TRAP::Ref<VulkanDevice> m_device = nullptr;
 
 		VkCommandPool m_vkCommandPool = VK_NULL_HANDLE;
 	};

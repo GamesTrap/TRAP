@@ -1,7 +1,19 @@
 #ifndef TRAP_COMMANDBUFFER_H
 #define TRAP_COMMANDBUFFER_H
 
-#include "Graphics/API/RendererAPI.h"
+#include <span>
+#include <vector>
+
+#include "Core/Types.h"
+#include "Utils/SmartPtr.h"
+#include "Maths/Types.h"
+
+namespace TRAP::Math
+{
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    struct Vec<3, T>;
+}
 
 namespace TRAP::Graphics
 {
@@ -13,6 +25,17 @@ namespace TRAP::Graphics
 	class RenderTarget;
 	class RootSignature;
 	class Texture;
+	class Queue;
+    struct LoadActionsDesc;
+    struct SubresourceDataDesc;
+    struct QueryDesc;
+    struct BufferBarrier;
+    struct TextureBarrier;
+    struct RenderTargetBarrier;
+    struct Color;
+    enum class IndexType : u8;
+    enum class ShadingRate : u8;
+    enum class ShadingRateCombiner : u8;
 
 	class CommandBuffer
 	{

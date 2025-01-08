@@ -12,7 +12,6 @@
 #include "ImGuiWindowing.h"
 #include "Graphics/Textures/Texture.h"
 #include "Graphics/RenderCommand.h"
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/CommandBuffer.h"
 #include "Graphics/API/Objects/SwapChain.h"
 #include "Graphics/API/Objects/PipelineCache.h"
@@ -169,8 +168,8 @@ namespace
 			.DescriptorPoolSizes = GlobalDescriptorPoolSizes(),
 			.DescriptorPool = VK_NULL_HANDLE,
 			.RenderPass = cmdBuffer->GetActiveVkRenderPass(),
-			.MinImageCount = TRAP::Graphics::RendererAPI::ImageCount,
-			.ImageCount = TRAP::Graphics::RendererAPI::ImageCount,
+			.MinImageCount = TRAP::Graphics::ImageCount,
+			.ImageCount = TRAP::Graphics::ImageCount,
 			.MSAASamples = aaMethod == TRAP::Graphics::AntiAliasing::MSAA ? static_cast<VkSampleCountFlagBits>(aaSamples) : VK_SAMPLE_COUNT_1_BIT,
 			.PipelineCache = pipelineCache,
 			.UseDynamicRendering = false,

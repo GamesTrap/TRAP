@@ -1,9 +1,13 @@
 #ifndef TRAP_VULKANPIPELINE_H
 #define TRAP_VULKANPIPELINE_H
 
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Pipeline.h"
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+
+namespace TRAP::Graphics
+{
+    enum class PipelineType : u32;
+}
 
 namespace TRAP::Graphics::API
 {
@@ -48,7 +52,7 @@ namespace TRAP::Graphics::API
 		//But for Vulkan we need to store it manually.
 		std::vector<std::string> m_shaderStageNames{};
 
-		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
+		TRAP::Ref<VulkanDevice> m_device = nullptr;
 	};
 }
 

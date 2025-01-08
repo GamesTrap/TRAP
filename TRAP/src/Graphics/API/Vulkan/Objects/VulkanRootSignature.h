@@ -1,7 +1,6 @@
 #ifndef TRAP_VULKANROOTSIGNATURE_H
 #define TRAP_VULKANROOTSIGNATURE_H
 
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/RootSignature.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 

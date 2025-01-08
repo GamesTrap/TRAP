@@ -53,7 +53,7 @@ namespace TRAP::Graphics
 				std::vector<const Texture*> TextureSlots = std::vector<const Texture*>(MaxTextureSlots);
 				u32 QuadCount = 0;
 			};
-			std::array<std::vector<QuadBuffers>, RendererAPI::ImageCount> DataBuffers{};
+			std::array<std::vector<QuadBuffers>, ImageCount> DataBuffers{};
 			u32 DataBufferIndex = 0;
 			QuadVertex* VertexBufferPtr = nullptr;
 			u32 TextureSlotIndex = 1; //0 = White texture
@@ -122,7 +122,7 @@ namespace TRAP::Graphics
 				std::vector<CircleVertex> Vertices = std::vector<CircleVertex>(MaxCircleVertices);
 				u32 CircleCount = 0;
 			};
-			std::array<std::vector<CircleBuffers>, RendererAPI::ImageCount> DataBuffers{};
+			std::array<std::vector<CircleBuffers>, ImageCount> DataBuffers{};
 			u32 DataBufferIndex = 0;
 			CircleVertex* VertexBufferPtr = nullptr;
 
@@ -172,7 +172,7 @@ namespace TRAP::Graphics
 				std::vector<LineVertex> Vertices = std::vector<LineVertex>(MaxLineVertices);
 				u32 LineCount = 0;
 			};
-			std::array<std::vector<LineBuffers>, RendererAPI::ImageCount> DataBuffers{};
+			std::array<std::vector<LineBuffers>, ImageCount> DataBuffers{};
 			u32 DataBufferIndex = 0;
 			LineVertex* VertexBufferPtr = nullptr;
 

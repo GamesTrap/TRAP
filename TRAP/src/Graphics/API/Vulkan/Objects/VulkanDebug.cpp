@@ -3,7 +3,6 @@
 
 #include "VulkanInits.h"
 #include "VulkanInstance.h"
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
 namespace

@@ -1,9 +1,7 @@
 #ifndef TRAP_VULKANSHADER_H
 #define TRAP_VULKANSHADER_H
 
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/ShaderReflection.h"
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/Shaders/Shader.h"
 
 namespace TRAP::Graphics::API
@@ -226,15 +224,15 @@ namespace TRAP::Graphics::API
 		               u64 size, u64 offset) const;
 #endif /*TRAP_HEADLESS_MODE*/
 
-		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
+		TRAP::Ref<VulkanDevice> m_device = nullptr;
 
 		std::array<u32, 3> m_numThreadsPerGroup{};
 
 		std::vector<VkShaderModule> m_shaderModules{};
 		TRAP::Ref<ShaderReflection::PipelineReflection> m_reflection = nullptr;
 
-		std::array<std::vector<TRAP::Scope<DescriptorSet>>, RendererAPI::ImageCount> m_dirtyDescriptorSets{};
-		std::array<std::vector<TRAP::Scope<DescriptorSet>>, RendererAPI::ImageCount> m_cleanedDescriptorSets{};
+		std::array<std::vector<TRAP::Scope<DescriptorSet>>, ImageCount> m_dirtyDescriptorSets{};
+		std::array<std::vector<TRAP::Scope<DescriptorSet>>, ImageCount> m_cleanedDescriptorSets{};
 		TRAP::Optional<u32> m_lastImageIndex = TRAP::NullOpt;
 	};
 }

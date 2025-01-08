@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "VulkanCommon.h"
 
-#include "VulkanRenderer.h"
 #include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
 #include "Graphics/API/Vulkan/Objects/VulkanInstance.h"
 #include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"

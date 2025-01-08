@@ -196,7 +196,7 @@ template<typename T>
 		.Desc = bufferDesc
 	};
 
-	std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> storageBuffers((updateFrequency == DescriptorUpdateFrequency::Static) ? 1 : RendererAPI::ImageCount);
+	std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> storageBuffers((updateFrequency == DescriptorUpdateFrequency::Static) ? 1 : ImageCount);
 	std::vector<API::SyncToken> syncTokens(storageBuffers.size());
 	for(u32 i = 0; i < storageBuffers.size(); ++i)
 	{

@@ -1,9 +1,16 @@
 #ifndef TRAP_VULKANCOMMANDBUFFER_H
 #define TRAP_VULKANCOMMANDBUFFER_H
 
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/CommandBuffer.h"
 #include "Graphics/API/Objects/Queue.h"
+
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+
+namespace TRAP::Graphics
+{
+    enum class ResourceState : u32;
+    enum class FilterType : u8;
+}
 
 namespace TRAP::Graphics::API
 {

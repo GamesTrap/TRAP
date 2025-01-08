@@ -6,6 +6,7 @@
 #endif /*TRAP_HEADLESS_MODE*/
 
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/RendererAPI.h"
 
 #ifndef TRAP_HEADLESS_MODE
 

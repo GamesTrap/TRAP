@@ -3,6 +3,7 @@
 
 #include "Graphics/Textures/Texture.h"
 #include "Graphics/API/Vulkan/Objects/VulkanRenderTarget.h"
+#include "Graphics/API/RendererAPI.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 

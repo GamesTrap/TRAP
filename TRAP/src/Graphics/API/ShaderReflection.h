@@ -1,7 +1,19 @@
 #ifndef TRAP_SHADERREFLECTION_H
 #define TRAP_SHADERREFLECTION_H
 
-#include "RendererAPI.h"
+#include <string>
+#include <vector>
+#include <array>
+#include <optional>
+
+#include "Core/Types.h"
+#include "Utils/SmartPtr.h"
+
+namespace TRAP::Graphics
+{
+    enum class DescriptorType : u32;
+    enum class ShaderStage : u32;
+}
 
 namespace TRAP::Graphics::API::ShaderReflection
 {

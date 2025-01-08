@@ -1,8 +1,16 @@
 #ifndef TRAP_VULKANDEVICE_H
 #define TRAP_VULKANDEVICE_H
 
+#include <vector>
+
+#include "Core/Types.h"
 #include "Utils/SmartPtr.h"
-#include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+
+namespace TRAP::Graphics
+{
+    enum class QueueType : u8;
+}
 
 namespace TRAP::Graphics::API
 {

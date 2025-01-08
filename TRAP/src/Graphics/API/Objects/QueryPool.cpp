@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "QueryPool.h"
 
+#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/Objects/VulkanQueryPool.h"
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::QueryPool> TRAP::Graphics::QueryPool::Create(const QueryPoolDesc& desc)

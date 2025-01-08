@@ -1,7 +1,11 @@
 #ifndef TRAP_VERTEXBUFFERLAYOUT_H
 #define TRAP_VERTEXBUFFERLAYOUT_H
 
-#include "Graphics/API/RendererAPI.h"
+#include <string>
+#include <vector>
+#include "TRAP_Assert.h"
+
+#include "Core/Types.h"
 
 namespace TRAP::Graphics
 {

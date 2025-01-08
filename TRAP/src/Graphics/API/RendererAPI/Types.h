@@ -1620,6 +1620,8 @@ namespace TRAP::Graphics
             MappedMemoryRange MappedRange;
         } Internal;
     };
+
+    static constexpr u32 ImageCount = 3u; //Triple Buffered
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

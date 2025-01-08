@@ -1,10 +1,12 @@
 #ifndef TRAP_QUERYPOOL_H
 #define TRAP_QUERYPOOL_H
 
-#include "Graphics/API/RendererAPI.h"
+#include "Utils/SmartPtr.h"
 
 namespace TRAP::Graphics
 {
+	struct QueryPoolDesc;
+
 	class QueryPool
 	{
 	public:

@@ -1,8 +1,13 @@
 #ifndef TRAP_VULKANINDIRECTCOMMANDSIGNATURE_H
 #define TRAP_VULKANINDIRECTCOMMANDSIGNATURE_H
 
-#include "Graphics/API/RendererAPI.h"
+#include "Core/Types.h"
 #include "Graphics/API/Objects/CommandSignature.h"
+
+namespace TRAP::Graphics
+{
+    enum class IndirectArgumentType : u8;
+}
 
 namespace TRAP::Graphics::API
 {

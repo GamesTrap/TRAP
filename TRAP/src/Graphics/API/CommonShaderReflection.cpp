@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "ShaderReflection.h"
 
+#include "RendererAPI/Types.h"
+
 namespace
 {
 	[[nodiscard]] constexpr TRAP::Optional<TRAP::Graphics::ShaderStage> CollectShaderStages(const std::span<const TRAP::Graphics::API::ShaderReflection::ShaderReflection> reflection)

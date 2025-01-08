@@ -1,10 +1,17 @@
 #ifndef TRAP_PIPELINECACHE_H
 #define TRAP_PIPELINECACHE_H
 
-#include "Graphics/API/RendererAPI.h"
+#include <vector>
+#include <filesystem>
+
+#include "Core/Types.h"
+#include "Utils/SmartPtr.h"
 
 namespace TRAP::Graphics
 {
+	struct PipelineCacheDesc;
+	struct PipelineCacheLoadDesc;
+
 	class PipelineCache
 	{
 	public:

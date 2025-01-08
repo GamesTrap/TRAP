@@ -150,7 +150,9 @@ namespace
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const BufferDesc& desc)
-	: TRAP::Graphics::Buffer(desc.Size, desc.Descriptors, desc.MemoryUsage)
+	: TRAP::Graphics::Buffer(desc.Size, desc.Descriptors, desc.MemoryUsage),
+	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
+	  m_VMA(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetVMA())
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
