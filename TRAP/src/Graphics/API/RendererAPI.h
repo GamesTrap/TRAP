@@ -1222,9 +1222,6 @@ namespace TRAP::Graphics
 		/// @note The first call to this function will run the Vulkan capability tester.
 		[[nodiscard]] static bool IsVulkanCapable();
 
-		/// @brief The maximum amount of descriptor sets that can be used.
-		static constexpr u32 MaxDescriptorSets = 4;
-
 		/// @brief Struct holding data about a GPUs features, limits and other properties.
 		inline static struct GPUSettings
 		{

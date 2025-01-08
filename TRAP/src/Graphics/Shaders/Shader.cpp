@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "FileSystem/FileSystem.h"
 #include "Graphics/API/Vulkan/Objects/VulkanShader.h"
+#include "Graphics/API/RendererAPI.h"
 #include "Utils/String/String.h"
 #include "Utils/Memory.h"
 

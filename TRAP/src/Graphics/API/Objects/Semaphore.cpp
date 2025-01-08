@@ -2,6 +2,7 @@
 #include "Semaphore.h"
 
 #include "Graphics/API/Vulkan/Objects/VulkanSemaphore.h"
+#include "Graphics/API/RendererAPI.h"
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::Semaphore> TRAP::Graphics::Semaphore::Create(const SemaphoreType semaphoreType,
                                                                                      const std::string_view name)

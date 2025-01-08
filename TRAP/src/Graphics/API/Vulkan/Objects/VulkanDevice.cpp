@@ -7,6 +7,7 @@
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/Objects/VulkanSemaphore.h"
+#include "Graphics/API/RendererAPI.h"
 
 namespace
 {

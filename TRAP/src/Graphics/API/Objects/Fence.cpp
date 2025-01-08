@@ -2,6 +2,7 @@
 #include "Fence.h"
 
 #include "Graphics/API/Vulkan/Objects/VulkanFence.h"
+#include "Graphics/API/RendererAPI.h"
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create(const bool signalled, [[maybe_unused]] const std::string_view name)
 {

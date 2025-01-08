@@ -3,8 +3,12 @@
 
 #include <map>
 
-#include "Graphics/API/RendererAPI.h"
 #include "Utils/Optional.h"
+#include "Utils/SmartPtr.h"
+#include "Utils/Utils.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+#include "Graphics/API/ImageFormat.h"
+#include "Graphics/API/RendererAPI/Types.h"
 
 namespace TRAP::Graphics::API
 {
@@ -148,17 +152,15 @@ namespace TRAP::Graphics::API
 		/// @return List of rated physical devices.
 		[[nodiscard]] static const std::multimap<u32, RatedVulkanPhysicalDevice>& GetAllRatedPhysicalDevices(const VulkanInstance& instance);
 
-	private:
-		friend bool TRAP::Graphics::RendererAPI::IsVulkanCapable();
-
-		/// @brief Loads physical device properties and features for future use.
-		void LoadDevicePropertiesAndFeatures();
-
 		/// @brief Retrieve a list of all rated physical devices.
 		/// Key is the devices score, value is the UUID of the physical device.
 		/// @param instance Vulkan instance handle.
 		/// @return List of rated physical devices.
 		[[nodiscard]] static const std::multimap<u32, RatedVulkanPhysicalDevice>& GetAllRatedPhysicalDevices(VkInstance instance);
+
+	private:
+		/// @brief Loads physical device properties and features for future use.
+		void LoadDevicePropertiesAndFeatures();
 
 		VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
 		VkPhysicalDeviceProperties m_physicalDeviceProperties{};

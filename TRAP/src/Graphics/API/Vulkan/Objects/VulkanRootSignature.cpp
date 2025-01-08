@@ -184,7 +184,7 @@ namespace
 		{
 			const TRAP::Graphics::API::ShaderReflection::ShaderResource& res = shaderResources[i];
 			u32 setIndex = res.Set;
-			if(setIndex >= TRAP::Graphics::RendererAPI::MaxDescriptorSets &&
+			if(setIndex >= TRAP::Graphics::MaxDescriptorSets &&
 			   res.Type != TRAP::Graphics::DescriptorType::RootConstant)
 			{
 				TP_ERROR(TRAP::Log::RendererVulkanRootSignaturePrefix, "Trying to use descriptor set ", setIndex, " which is not supported");
@@ -248,7 +248,7 @@ namespace
 	{
 		//Create descriptor layouts
 		//Put most frequently changed params first
-		for(u32 i = TRAP::Graphics::RendererAPI::MaxDescriptorSets; i-- > 0U;)
+		for(u32 i = TRAP::Graphics::MaxDescriptorSets; i-- > 0U;)
 		{
 			TRAP::Graphics::API::VulkanRenderer::UpdateFrequencyLayoutInfo& layout = outLayouts[i];
 
@@ -271,7 +271,7 @@ namespace
 			//Check if we need to create an empty layout in case there is an empty set between two used sets
 			//Example: set = 0 is used, set = 2 is used.
 			//In this case, set = 1 needs to exist even if it is empty
-			if (!createLayout && i < (TRAP::Graphics::RendererAPI::MaxDescriptorSets - 1))
+			if (!createLayout && i < (TRAP::Graphics::MaxDescriptorSets - 1))
 				createLayout = outVkDescriptorSetLayouts[i + 1u] != VK_NULL_HANDLE;
 
 			if(createLayout)
@@ -500,7 +500,7 @@ namespace
 								   const std::span<u8> outVkRayTracingDescriptorCounts)
 	{
 		//Update templates
-		for(u32 setIndex = 0; setIndex < TRAP::Graphics::RendererAPI::MaxDescriptorSets; ++setIndex)
+		for(u32 setIndex = 0; setIndex < TRAP::Graphics::MaxDescriptorSets; ++setIndex)
 		{
 			UpdateDescriptorSetTemplate(device, pipelineType, pipelineLayout, setIndex, layouts,
 		                                vkDescriptorCounts, vkCumulativeDescriptorCounts, vkDescriptorSetLayouts,
@@ -531,7 +531,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RootSignatur
 	auto [shaderResources, indexMap] = CollectUniqueShaderResources(desc);
 	m_descriptorNameToIndexMap = indexMap;
 
-	std::array<VulkanRenderer::UpdateFrequencyLayoutInfo, RendererAPI::MaxDescriptorSets> layouts{};
+	std::array<VulkanRenderer::UpdateFrequencyLayoutInfo, MaxDescriptorSets> layouts{};
 	std::vector<VkPushConstantRange> pushConstants{};
 	FillDescriptors(shaderResources, desc, pushConstants, layouts, m_descriptors);
 	m_vkPushConstantCount = NumericCast<u32>(pushConstants.size());
@@ -556,7 +556,7 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 	TP_DEBUG(Log::RendererVulkanRootSignaturePrefix, "Destroying RootSignature");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	for(u32 i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
+	for(u32 i = 0; i < MaxDescriptorSets; ++i)
 	{
 		vkDestroyDescriptorSetLayout(m_device->GetVkDevice(), m_vkDescriptorSetLayouts[i], nullptr);
 		if (m_updateTemplates[i] != VK_NULL_HANDLE)

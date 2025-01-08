@@ -1853,7 +1853,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader& shader) const
 	if(cmdBuffer != nullptr)
 	{
 		//Bind Descriptors
-		for(u32 i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
+		for(u32 i = 0; i < MaxDescriptorSets; ++i)
 		{
 			if(actualShader.get().GetDescriptorSets()[i])
 			{

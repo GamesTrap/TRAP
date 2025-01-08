@@ -2,6 +2,7 @@
 #include "Queue.h"
 
 #include "Graphics/API/Vulkan/Objects/VulkanQueue.h"
+#include "Graphics/API/RendererAPI.h"
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::Queue::Create(const QueueDesc& desc)
 {

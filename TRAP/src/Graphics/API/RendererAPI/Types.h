@@ -1622,6 +1622,8 @@ namespace TRAP::Graphics
     };
 
     static constexpr u32 ImageCount = 3u; //Triple Buffered
+    /// @brief The maximum amount of descriptor sets that can be used.
+    static constexpr u32 MaxDescriptorSets = 4;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

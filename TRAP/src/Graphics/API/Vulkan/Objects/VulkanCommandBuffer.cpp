@@ -138,7 +138,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindDescriptorSet(const u32 index
 
 		//Vulkan requires to bind all descriptor sets up to the highest set number even if they are empty
 		//Example: If shader uses only set 2, we still have to bind empty sets for set = 0 and set = 1
-		for(u32 setIndex = 0; setIndex < RendererAPI::MaxDescriptorSets; ++setIndex)
+		for(u32 setIndex = 0; setIndex < MaxDescriptorSets; ++setIndex)
 		{
 			if(rootSignature->GetVkEmptyDescriptorSets()[setIndex] == VK_NULL_HANDLE)
 				continue;
