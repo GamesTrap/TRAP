@@ -3,8 +3,7 @@
 
 #include "Graphics/API/Objects/CommandBuffer.h"
 #include "Graphics/API/Objects/Queue.h"
-
-#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 namespace TRAP::Graphics
 {

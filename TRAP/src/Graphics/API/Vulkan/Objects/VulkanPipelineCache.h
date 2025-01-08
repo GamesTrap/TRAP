@@ -2,7 +2,7 @@
 #define TRAP_VULKANPIPELINECACHE_H
 
 #include "Graphics/API/Objects/PipelineCache.h"
-#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 namespace TRAP::Graphics::API
 {

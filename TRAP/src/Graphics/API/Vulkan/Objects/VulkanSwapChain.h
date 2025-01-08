@@ -4,7 +4,7 @@
 #ifndef TRAP_HEADLESS_MODE
 
 #include "Graphics/API/Objects/SwapChain.h"
-#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 #include "Graphics/API/RendererAPI/Types.h"
 
 namespace TRAP::Graphics::API

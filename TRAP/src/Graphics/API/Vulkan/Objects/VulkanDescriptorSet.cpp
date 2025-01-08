@@ -7,6 +7,7 @@
 #include "VulkanRootSignature.h"
 #include "VulkanTexture.h"
 #include "Graphics/Textures/Texture.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
 TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDevice> device,
 	                                                          std::vector<VkDescriptorSet> vkDescriptorSetHandles,

@@ -3,6 +3,7 @@
 
 #include "VulkanCommandBuffer.h"
 #include "Graphics/API/Objects/RenderTarget.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 namespace TRAP::Graphics::API
 {

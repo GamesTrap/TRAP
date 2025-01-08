@@ -6,7 +6,9 @@
 #include <vector>
 #include <optional>
 
-#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+#include "Core/Types.h"
+#include "Utils/Optional.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 namespace TRAP::Graphics::API
 {

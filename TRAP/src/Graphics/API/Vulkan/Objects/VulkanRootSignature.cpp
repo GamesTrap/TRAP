@@ -11,6 +11,7 @@
 #include "VulkanInits.h"
 #include "VulkanTexture.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
 namespace
 {

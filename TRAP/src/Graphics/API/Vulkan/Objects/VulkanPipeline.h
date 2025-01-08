@@ -1,8 +1,11 @@
 #ifndef TRAP_VULKANPIPELINE_H
 #define TRAP_VULKANPIPELINE_H
 
+#include <vector>
+
+#include "Core/Types.h"
 #include "Graphics/API/Objects/Pipeline.h"
-#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 namespace TRAP::Graphics
 {

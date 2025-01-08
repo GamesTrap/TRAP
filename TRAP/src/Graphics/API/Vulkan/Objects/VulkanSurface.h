@@ -5,7 +5,7 @@
 
 #include "Utils/SmartPtr.h"
 #include "Window/Window.h"
-#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 namespace TRAP::Graphics::API
 {

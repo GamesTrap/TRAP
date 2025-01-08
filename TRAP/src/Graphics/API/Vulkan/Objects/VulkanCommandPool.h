@@ -2,7 +2,7 @@
 #define TRAP_VULKANCOMMANDPOOL_H
 
 #include "Graphics/API/Objects/CommandPool.h"
-#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 namespace TRAP::Graphics::API
 {

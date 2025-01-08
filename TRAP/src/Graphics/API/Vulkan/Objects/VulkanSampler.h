@@ -2,6 +2,7 @@
 #define TRAP_VULKANSAMPLER_H
 
 #include "Graphics/API/Objects/Sampler.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 namespace TRAP::Graphics::API
 {
@@ -35,7 +36,7 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanDevice> m_device = nullptr;
 
 		//Native handle of the underlying resource
-		VkSampler m_vkSampler = VK_NULL_HANDLE;
+		VkSampler m_vkSampler = nullptr;
 		VkSamplerYcbcrConversion m_vkSamplerYcbcrConversion{};
 	};
 }

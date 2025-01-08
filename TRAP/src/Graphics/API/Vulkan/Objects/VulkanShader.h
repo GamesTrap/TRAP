@@ -3,7 +3,7 @@
 
 #include "Graphics/API/ShaderReflection.h"
 #include "Graphics/Shaders/Shader.h"
-#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 namespace TRAP::Graphics::API
 {

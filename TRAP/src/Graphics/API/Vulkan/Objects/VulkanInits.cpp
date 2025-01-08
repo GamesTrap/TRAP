@@ -3,6 +3,7 @@
 
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
+#include "Graphics/API/Vulkan/Objects/VulkanMemoryAllocator.h"
 #include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
 #include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
 #include "Graphics/API/RendererAPI.h"

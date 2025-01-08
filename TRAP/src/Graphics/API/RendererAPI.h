@@ -9,7 +9,6 @@
 #include "Utils/SmartPtr.h"
 #include "Window/Window.h"
 #include "ImageFormat.h"
-#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Utils/Utils.h"
 #include "Maths/Types.h"
 #include "Maths/Vec3.h"

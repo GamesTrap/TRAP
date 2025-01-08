@@ -7,6 +7,7 @@
 #include "Graphics/API/Vulkan/VulkanShaderReflection.h"
 #include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
 #include "Graphics/API/Vulkan/Objects/VulkanRootSignature.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Graphics/API/Objects/RootSignature.h"
 #include "Graphics/API/Objects/DescriptorSet.h"
 #include "Graphics/API/Objects/DescriptorPool.h"

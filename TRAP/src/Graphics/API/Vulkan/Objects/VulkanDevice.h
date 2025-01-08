@@ -1,11 +1,13 @@
 #ifndef TRAP_VULKANDEVICE_H
 #define TRAP_VULKANDEVICE_H
 
+#include <array>
 #include <vector>
+#include <unordered_map>
 
 #include "Core/Types.h"
 #include "Utils/SmartPtr.h"
-#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 namespace TRAP::Graphics
 {

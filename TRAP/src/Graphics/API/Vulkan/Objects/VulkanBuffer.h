@@ -1,7 +1,7 @@
 #ifndef TRAP_VULKANBUFFER_H
 #define TRAP_VULKANBUFFER_H
 
-#include "Graphics/API/Vulkan/Objects/VulkanMemoryAllocator.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 #include "Graphics/API/Objects/Buffer.h"
 
 namespace TRAP::Graphics::API
