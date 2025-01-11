@@ -50,7 +50,7 @@ namespace TRAP::Graphics::API
 	private:
 		TRAP::Ref<VulkanDevice> m_device = nullptr;
 
-		VkCommandPool m_vkCommandPool = VK_NULL_HANDLE;
+		VkCommandPool m_vkCommandPool{};
 	};
 }
 

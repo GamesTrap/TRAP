@@ -49,7 +49,7 @@ namespace TRAP::Graphics::API
 		/// @param desc Pipeline description
 		void InitGraphicsPipeline(const PipelineDesc& desc);
 
-		VkPipeline m_vkPipeline = VK_NULL_HANDLE;
+		VkPipeline m_vkPipeline{};
 		PipelineType m_type;
 		//In DX12 this information is stored in ID3D12StateObject.
 		//But for Vulkan we need to store it manually.

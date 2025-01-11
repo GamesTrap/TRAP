@@ -8,22 +8,14 @@
 #include "Graphics/Cameras/Editor/EditorCamera.h"
 #include "Utils/Hash/UID.h"
 
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif /*_MSC_VER*/
 #include <box2d/b2_world.h>
 #include <box2d/b2_body.h>
 #include <box2d/b2_fixture.h>
 #include <box2d/b2_polygon_shape.h>
 #include <box2d/b2_circle_shape.h>
 
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif /*_MSC_VER*/
-
 namespace
-{	//-------------------------------------------------------------------------------------------------------------------//
-
+{
 	template<typename... Component>
 	void CopyComponent(entt::registry& dst, const entt::registry& src, const std::unordered_map<entt::entity, entt::entity>& enttMap)
 	{

@@ -58,7 +58,7 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] VkDescriptorSet RetrieveVkDescriptorSet(VkDescriptorSetLayout layout);
 
 	private:
-		VkDescriptorPool m_currentPool = VK_NULL_HANDLE;
+		VkDescriptorPool m_currentPool{};
 		std::vector<VkDescriptorPool> m_descriptorPools;
 		std::vector<VkDescriptorPoolSize> m_descriptorPoolSizes;
 		u32 m_usedDescriptorSetCount = 0;

@@ -5,16 +5,10 @@
 #include "Utils/Win.h"
 #include "Utils/SmartPtr.h"
 
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif /*_MSC_VER*/
 #define VMA_STATIC_VULKAN_FUNCTIONS 0
 #define VMA_DYNAMIC_VULKAN_FUNCTIONS 0
 #define VK_NO_PROTOTYPES
 #include <vk_mem_alloc.h>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif /*_MSC_VER*/
 
 namespace TRAP::Graphics::API
 {

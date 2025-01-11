@@ -1,17 +1,11 @@
 #ifndef TRAP_SHADER_H
 #define TRAP_SHADER_H
 
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif /*_MSC_VER*/
 //SPIRV
 #include <glslang/Public/ShaderLang.h>
 #include <SPIRV/GlslangToSpv.h>
 //SPIRV to GLSL
 #include <spirv_glsl.hpp>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif /*_MSC_VER*/
 
 #include "Utils/SmartPtr.h"
 #include "Application.h"

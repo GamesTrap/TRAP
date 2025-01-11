@@ -35,7 +35,7 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] constexpr VkPipelineCache GetVkPipelineCache() const noexcept;
 
 	private:
-		VkPipelineCache m_cache = VK_NULL_HANDLE;
+		VkPipelineCache m_cache{};
 
 		TRAP::Ref<VulkanDevice> m_device = nullptr;
 	};

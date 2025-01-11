@@ -302,13 +302,13 @@ namespace TRAP::Graphics::API
 	private:
 		TRAP::Ref<API::VulkanDevice> m_device = nullptr;
 
-		VkCommandBuffer m_vkCommandBuffer = VK_NULL_HANDLE;
+		VkCommandBuffer m_vkCommandBuffer{};
 
-		VkCommandPool m_vkCommandPool = VK_NULL_HANDLE;
+		VkCommandPool m_vkCommandPool{};
 		bool m_secondary = false;
 
-		VkRenderPass m_activeRenderPass = VK_NULL_HANDLE;
-		VkPipelineLayout m_boundPipelineLayout = VK_NULL_HANDLE;
+		VkRenderPass m_activeRenderPass{};
+		VkPipelineLayout m_boundPipelineLayout{};
 	};
 }
 

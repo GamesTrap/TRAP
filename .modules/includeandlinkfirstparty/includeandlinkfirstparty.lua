@@ -56,6 +56,15 @@ end
 function IncludeTRAPShared()
     filter {}
 
+    filter {"toolset:msc-v143"}
+        disablewarnings
+        {
+            "4996",
+            "4324"
+        }
+
+    filter {}
+
     -- Nsight Aftermath stuff
 	thirdparty.IncludeNsightAftermathSDK()
 	-- Steamworks SDK stuff

@@ -107,7 +107,7 @@ namespace TRAP::Graphics::API
 		u8 m_transferQueueIndex = 0;
 		u8 m_computeQueueIndex = 0;
 
-		VkDevice m_device = VK_NULL_HANDLE;
+		VkDevice m_device{};
 	};
 }
 

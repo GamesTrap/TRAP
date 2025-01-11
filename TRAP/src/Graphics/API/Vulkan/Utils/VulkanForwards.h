@@ -3,10 +3,6 @@
 
 #include <cstdint>
 
-#ifndef VK_NULL_HANDLE
-#define VK_NULL_HANDLE nullptr;
-#endif /*VK_NULL_HANDLE*/
-
 using VkFlags = std::uint32_t;
 using VkQueueFlags = VkFlags;
 using VkImageUsageFlags = VkFlags;

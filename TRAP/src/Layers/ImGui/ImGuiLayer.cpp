@@ -31,10 +31,6 @@
 
 namespace
 {
-	#ifdef _MSC_VER
-	#pragma warning(disable: 4702)
-	#endif /*_MSC_VER*/
-
 	//Circumvent cert-err58-cpp
 	[[nodiscard]] const std::vector<VkDescriptorPoolSize>& GlobalDescriptorPoolSizes()
 	{
@@ -54,10 +50,6 @@ namespace
 			std::terminate();
 		}
 	}
-
-	#ifdef _MSC_VER
-	#pragma warning(default: 4702)
-	#endif /*_MSC_VER*/
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

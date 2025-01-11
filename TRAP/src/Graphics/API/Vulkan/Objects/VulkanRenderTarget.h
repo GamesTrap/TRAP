@@ -41,7 +41,7 @@ namespace TRAP::Graphics::API
 	private:
 		TRAP::Ref<VulkanDevice> m_device = nullptr;
 
-		VkImageView m_vkDescriptor = VK_NULL_HANDLE;
+		VkImageView m_vkDescriptor{};
 		std::vector<VkImageView> m_vkSliceDescriptors{};
 
 		u64 m_ID;

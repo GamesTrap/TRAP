@@ -173,7 +173,11 @@ function m.IncludeSteamworksSDK()
     defines "USE_STEAMWORKS_SDK"
 
     filter {"toolset:msc-v143"}
-        disablewarnings "4828"
+        disablewarnings
+        {
+            "4828",
+            "4996"
+        }
 
     filter {}
 

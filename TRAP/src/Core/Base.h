@@ -62,11 +62,6 @@ inline constexpr TRAP::SemanticVersion<0, 11, 71> TRAP_VERSION{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wshadow"
-#endif /*__GNUC__ && !__clang__*/
-
 //Settings for Profiling (with Tracy)
 
 enum class ProfileSystems : u32
@@ -102,10 +97,6 @@ MAKE_ENUM_FLAG(ProfileSystems);
 /// @brief Set the TRAP systems to profile.
 /// @param systems Systems to profile.
 void SetTRAPProfileSystems(ProfileSystems systems) noexcept;
-
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic pop
-#endif /*__GNUC__ && !__clang__*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

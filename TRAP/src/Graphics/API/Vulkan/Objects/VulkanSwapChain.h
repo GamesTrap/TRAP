@@ -107,8 +107,8 @@ namespace TRAP::Graphics::API
 
 		//Present queue if one exists (queuePresent will use this queue if the hardware has a dedicated
 		//present queue)
-		VkQueue m_presentQueue = VK_NULL_HANDLE;
-		VkSwapchainKHR m_swapChain = VK_NULL_HANDLE;
+		VkQueue m_presentQueue{};
+		VkSwapchainKHR m_swapChain{};
 		TRAP::Ref<VulkanSurface> m_surface = nullptr;
 
 		u64 m_presentCounter = 0u;

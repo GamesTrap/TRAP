@@ -8,14 +8,8 @@
 
 #include <fmt/core.h>
 
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif /*_MSC_VER*/
 //Tracy - Profiler
 #include <tracy/Tracy.hpp>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif /*_MSC_VER*/
 
 #include "TRAP_Assert.h"
 

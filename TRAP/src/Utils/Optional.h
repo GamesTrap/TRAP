@@ -15,11 +15,6 @@
     #define TRAP_OPTIONAL_NO_EXCEPTIONS
 #endif
 
-#ifdef _MSC_VER
-    #pragma warning( push )
-    #pragma warning( disable: 4582 4583 )
-#endif /*_MSC_VER*/
-
 namespace TRAP
 {
     template<typename T>
@@ -1508,9 +1503,5 @@ namespace std
         }
     };
 }
-
-#ifdef _MSC_VER
-    #pragma warning( pop )
-#endif /*_MSC_VER*/
 
 #endif /*TRAP_OPTIONAL_H*/

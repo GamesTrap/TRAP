@@ -54,12 +54,12 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanMemoryAllocator> m_VMA = nullptr;
 
 		//Native handle of the underlying resource
-		VkBuffer m_vkBuffer = VK_NULL_HANDLE;
+		VkBuffer m_vkBuffer{};
 		//Buffer view
-		VkBufferView m_vkStorageTexelView = VK_NULL_HANDLE;
-		VkBufferView m_vkUniformTexelView = VK_NULL_HANDLE;
+		VkBufferView m_vkStorageTexelView{};
+		VkBufferView m_vkUniformTexelView{};
 		//Contains resource allocation info such as parent heap, offset in heap
-		VmaAllocation m_allocation = VK_NULL_HANDLE;
+		VmaAllocation m_allocation{};
 	};
 }
 
