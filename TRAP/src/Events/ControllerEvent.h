@@ -171,8 +171,6 @@ constexpr TRAP::Events::ControllerConnectEvent::ControllerConnectEvent(const Inp
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-//-------------------------------------------------------------------------------------------------------------------//
-
 constexpr TRAP::Events::ControllerDisconnectEvent::ControllerDisconnectEvent(const Input::Controller controller) noexcept
 	: ControllerEvent(controller)
 {

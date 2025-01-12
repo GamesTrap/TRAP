@@ -1,7 +1,18 @@
 #ifndef TRAP_DIALOGS_H
 #define TRAP_DIALOGS_H
 
+#include <string>
+#include <vector>
+#include <utility>
+
 #include <ModernDialogs.h>
+
+namespace MD
+{
+	enum class Style;
+	enum class Buttons;
+	enum class Selection;
+}
 
 namespace TRAP::Utils::Dialogs
 {

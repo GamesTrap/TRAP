@@ -2,6 +2,7 @@
 #include <catch2/matchers/catch_matchers.hpp>
 
 #include "Network/IP/IPv6Address.h"
+#include "Utils/Optional.h"
 
 TEST_CASE("TRAP::Network::IPv6Address", "[network][ipv6address]")
 {

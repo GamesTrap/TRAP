@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "RenderCommand.h"
 
-#include "Application.h"
 #include "ImageLoader/Image.h"
 #include "Maths/Math.h"
 

@@ -2,8 +2,6 @@
 #define TRAP_CORE_H
 
 #include "PlatformDetection.h"
-#include "TRAP_Assert.h"
-#include "Backports.h"
 #include "Version.h"
 #include "Utils/Bit.h"
 #include "Utils/Enum.h"
@@ -58,7 +56,7 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 /// @brief TRAP version number created with TRAP_MAKE_VERSION
-inline constexpr TRAP::SemanticVersion<0, 11, 71> TRAP_VERSION{};
+inline constexpr TRAP::SemanticVersion<0, 11, 72> TRAP_VERSION{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 

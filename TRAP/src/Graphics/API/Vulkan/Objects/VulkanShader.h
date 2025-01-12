@@ -1,12 +1,16 @@
 #ifndef TRAP_VULKANSHADER_H
 #define TRAP_VULKANSHADER_H
 
-#include "Graphics/API/ShaderReflection.h"
 #include "Graphics/Shaders/Shader.h"
 #include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 namespace TRAP::Graphics::API
 {
+	namespace ShaderReflection
+	{
+		struct PipelineReflection;
+	}
+
 	class VulkanDevice;
 
 	class VulkanShader final : public Shader

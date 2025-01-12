@@ -1,6 +1,8 @@
 #ifndef TRAP_VULKANSHADERREFLECTION_H
 #define TRAP_VULKANSHADERREFLECTION_H
 
+#include <span>
+
 #include "Graphics/API/ShaderReflection.h"
 
 namespace TRAP::Graphics::API

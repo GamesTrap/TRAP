@@ -8,7 +8,6 @@
 #include "Objects/Semaphore.h"
 #include "Graphics/Textures/Texture.h"
 #include "Vulkan/VulkanRenderer.h"
-#include "Utils/String/String.h"
 #include "FileSystem/FileSystem.h"
 
 #include "Vulkan/VulkanCommon.h"

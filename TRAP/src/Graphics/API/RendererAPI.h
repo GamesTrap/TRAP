@@ -5,15 +5,12 @@
 #include <unordered_map>
 
 #include "Utils/Bit.h"
-#include "Utils/Map.h"
 #include "Utils/SmartPtr.h"
-#include "Window/Window.h"
-#include "ImageFormat.h"
 #include "Utils/Utils.h"
 #include "Maths/Types.h"
 #include "Maths/Vec3.h"
-#include "Utils/Optional.h"
 #include "Graphics/API/RendererAPI/Types.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 namespace TRAP
 {

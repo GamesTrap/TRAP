@@ -1,11 +1,10 @@
 #ifndef TRAP_VULKANRENDERER_H
 #define TRAP_VULKANRENDERER_H
 
-#include <thread>
-
+#include "Graphics/API/ImageFormat.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/ShaderReflection.h"
-#include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Objects/VulkanDebug.h"
 #include "Utils/Concurrency/Safe.h"
 

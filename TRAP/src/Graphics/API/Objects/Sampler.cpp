@@ -2,6 +2,7 @@
 #include "Sampler.h"
 
 #include "Graphics/API/Vulkan/Objects/VulkanSampler.h"
+#include "Graphics/API/RendererAPI.h"
 
 namespace
 {
@@ -116,7 +117,7 @@ void TRAP::Graphics::Sampler::UpdateSamplers()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
-	const f32 usedSamples = NumericCast<f32>(std::to_underlying(RenderCommand::GetAnisotropyLevel()));
+	const f32 usedSamples = NumericCast<f32>(std::to_underlying(RendererAPI::GetAnisotropyLevel()));
 
 	std::vector<Ref<Sampler>> samplersToUpdate{};
 	for(const auto& [desc, sampler] : CachedSamplers | std::views::filter(std::bind_front(DoesSamplerNeedUpdate, usedSamples)))

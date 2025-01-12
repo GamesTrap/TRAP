@@ -17,7 +17,6 @@
 #include "Graphics/API/Objects/PipelineCache.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
-#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
 #include "Graphics/API/Vulkan/Objects/VulkanCommandBuffer.h"
 #include "Graphics/API/Vulkan/Objects/VulkanPipelineCache.h"
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"

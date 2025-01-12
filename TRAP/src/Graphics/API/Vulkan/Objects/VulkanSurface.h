@@ -4,8 +4,12 @@
 #ifndef TRAP_HEADLESS_MODE
 
 #include "Utils/SmartPtr.h"
-#include "Window/Window.h"
-#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+
+namespace TRAP
+{
+	class Window;
+}
 
 namespace TRAP::Graphics::API
 {

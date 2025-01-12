@@ -7,9 +7,6 @@
 
 #include <fmt/format.h>
 
-//Tracy - Profiler
-#include <tracy/Tracy.hpp>
-
 #include "Core/Backports.h"
 #include "TRAP_Assert.h"
 #include "Utils/String/PrimitiveTypeNameToString.h"

@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "TextureManager.h"
 
-#include "Texture.h"
 #include "FileSystem/FileSystem.h"
 
 namespace

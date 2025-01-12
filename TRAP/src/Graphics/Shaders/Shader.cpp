@@ -1,14 +1,19 @@
 #include "TRAPPCH.h"
 #include "Shader.h"
 
-#include "Application.h"
 #include "FileSystem/FileSystem.h"
 #include "Graphics/API/Vulkan/Objects/VulkanShader.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Utils/String/String.h"
 #include "Utils/Memory.h"
 
+//SPIRV
+#include <glslang/Public/ShaderLang.h>
+#include <SPIRV/GlslangToSpv.h>
 #include <glslang/Public/ResourceLimits.h>
+
+//SPIRV to GLSL
+#include <spirv_glsl.hpp>
 
 namespace
 {

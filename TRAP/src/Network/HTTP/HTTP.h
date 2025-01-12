@@ -33,6 +33,8 @@
 #include "Network/IP/IPv6Address.h"
 #include "Network/Sockets/TCPSocket.h"
 #include "Network/Sockets/TCPSocketIPv6.h"
+#include "Utils/Bit.h"
+#include "Utils/Enum.h"
 
 namespace TRAP::Network
 {

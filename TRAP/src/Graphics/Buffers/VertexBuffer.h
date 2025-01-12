@@ -2,12 +2,16 @@
 #define TRAP_VERTEXBUFFER_H
 
 #include "Application.h"
-#include "Graphics/RenderCommand.h"
+#include "Graphics/API/RendererAPI/Types.h"
 #include "VertexBufferLayout.h"
-#include "Graphics/API/ResourceLoader.h"
 
 namespace TRAP::Graphics
 {
+	namespace API
+	{
+		using SyncToken = u64;
+	}
+
 	class Buffer;
 
 	class VertexBuffer

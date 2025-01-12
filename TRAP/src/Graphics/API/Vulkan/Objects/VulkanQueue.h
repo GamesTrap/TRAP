@@ -1,9 +1,11 @@
 #ifndef TRAP_VULKANQUEUE_H
 #define TRAP_VULKANQUEUE_H
 
+#include <limits>
+
 #include "Graphics/API/Objects/Queue.h"
-#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
-#include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
+#include "Utils/NumericCasts.h"
 
 namespace TRAP::Graphics::API
 {
@@ -67,11 +69,11 @@ namespace TRAP::Graphics::API
 	private:
 		TRAP::Ref<VulkanDevice> m_device = nullptr;
 
-		VkQueue m_vkQueue = VK_NULL_HANDLE;
+		VkQueue m_vkQueue = nullptr;
 		u8 m_vkQueueFamilyIndex = std::numeric_limits<u8>::max();
 		u8 m_vkQueueIndex = std::numeric_limits<u8>::max();
 		u32 m_flags = 0;
-		f32 m_timestampPeriod = m_device->GetPhysicalDevice().GetVkPhysicalDeviceProperties().limits.timestampPeriod;
+		f32 m_timestampPeriod = 0.0f;
 	};
 }
 

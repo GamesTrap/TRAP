@@ -8,7 +8,12 @@
 #include <fmt/ostream.h>
 
 #include "Utils/Time/TimeStep.h"
-#include "Utils/Optional.h"
+
+namespace TRAP
+{
+	template<typename T>
+	class Optional;
+}
 
 namespace TRAP::Network
 {

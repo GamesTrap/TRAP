@@ -3,6 +3,7 @@
 
 #include "VulkanSwapChain.h"
 #include "Graphics/API/Objects/Fence.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 #ifndef TRAP_HEADLESS_MODE
 struct ImGuiViewport;
@@ -64,7 +65,7 @@ namespace TRAP::Graphics::API
 		friend void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* viewport, void* render_arg);
 #endif /*TRAP_HEADLESS_MODE*/
 
-		VkFence m_fence = VK_NULL_HANDLE;
+		VkFence m_fence = nullptr;
 		TRAP::Ref<VulkanDevice> m_device = nullptr;
 	};
 }

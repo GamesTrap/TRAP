@@ -4,6 +4,7 @@
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
 #include "Graphics/API/Objects/AftermathTracker.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 

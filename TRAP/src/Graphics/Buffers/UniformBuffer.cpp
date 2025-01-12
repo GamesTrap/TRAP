@@ -2,7 +2,6 @@
 #include "UniformBuffer.h"
 
 #include "Graphics/API/Objects/Buffer.h"
-#include "Graphics/Shaders/Shader.h"
 
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const u64 size,
 																				               const DescriptorUpdateFrequency updateFrequency)

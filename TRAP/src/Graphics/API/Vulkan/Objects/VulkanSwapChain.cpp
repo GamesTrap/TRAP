@@ -5,7 +5,6 @@
 
 #include "VulkanSemaphore.h"
 #include "VulkanFence.h"
-#include "VulkanCommandPool.h"
 #include "VulkanInits.h"
 #include "VulkanPhysicalDevice.h"
 #include "VulkanDevice.h"
@@ -15,6 +14,7 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/Textures/Texture.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
+#include "Window/Window.h"
 
 namespace
 {

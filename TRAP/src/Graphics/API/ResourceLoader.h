@@ -6,9 +6,8 @@
 #include <thread>
 #include <shared_mutex>
 
-#include "Graphics/API/RendererAPI/Types.h"
 #include "ImageLoader/Image.h"
-#include "Maths/Math.h"
+#include "Graphics/API/RendererAPI/Types.h"
 
 namespace TRAP::Graphics
 {

@@ -3,12 +3,17 @@
 
 #include <map>
 
-#include "Utils/Optional.h"
 #include "Utils/SmartPtr.h"
 #include "Utils/Utils.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Graphics/API/ImageFormat.h"
 #include "Graphics/API/RendererAPI/Types.h"
+
+namespace TRAP
+{
+	template<typename T>
+	class Optional;
+}
 
 namespace TRAP::Graphics::API
 {

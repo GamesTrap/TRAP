@@ -18,6 +18,7 @@
 #include "VulkanInstance.h"
 #include "VulkanInits.h"
 #include "VulkanTexture.h"
+#include "VulkanPhysicalDevice.h"
 
 TRAP::Graphics::API::VulkanCommandBuffer::~VulkanCommandBuffer()
 {

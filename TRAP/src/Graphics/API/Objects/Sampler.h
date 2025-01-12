@@ -1,7 +1,8 @@
 #ifndef TRAP_SAMPLER_H
 #define TRAP_SAMPLER_H
 
-#include "Graphics/RenderCommand.h"
+#include "Graphics/API/RendererAPI/Types.h"
+#include "Utils/Utils.h"
 
 namespace TRAP::Graphics
 {

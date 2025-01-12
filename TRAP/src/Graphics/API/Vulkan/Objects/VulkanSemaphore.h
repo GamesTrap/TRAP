@@ -3,6 +3,7 @@
 
 #include "VulkanSwapChain.h"
 #include "Graphics/API/Objects/Semaphore.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 namespace TRAP::Graphics::API
 {
@@ -41,7 +42,7 @@ namespace TRAP::Graphics::API
 		friend std::optional<u32> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(Fence& fence) const;
 #endif /*TRAP_HEADLESS_MODE*/
 
-		VkSemaphore m_semaphore = VK_NULL_HANDLE;
+		VkSemaphore m_semaphore = nullptr;
 
 		TRAP::Ref<VulkanDevice> m_device = nullptr;
 	};

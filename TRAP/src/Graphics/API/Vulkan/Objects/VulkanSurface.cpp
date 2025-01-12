@@ -7,6 +7,8 @@
 #include "VulkanDevice.h"
 #include "VulkanInstance.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Window/WindowingAPI.h"
+#include "Window/Window.h"
 
 namespace
 {

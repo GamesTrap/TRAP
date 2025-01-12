@@ -7,9 +7,6 @@
 #include <string>
 #include <vector>
 
-//SPIRV
-#include <glslang/Public/ShaderLang.h>
-#include <SPIRV/GlslangToSpv.h>
 //SPIRV to GLSL
 #include <spirv_glsl.hpp>
 

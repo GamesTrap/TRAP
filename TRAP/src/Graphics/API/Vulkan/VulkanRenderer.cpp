@@ -8,9 +8,7 @@
 #include "Utils/ErrorCodes/ErrorCodes.h"
 #include "FileSystem/FileSystem.h"
 #include "VulkanCommon.h"
-#include "Layers/ImGui/ImGuiLayer.h"
 
-#include "Objects/VulkanSemaphore.h"
 #include "Objects/VulkanFence.h"
 #include "Objects/VulkanSampler.h"
 #include "Objects/VulkanBuffer.h"
@@ -21,8 +19,6 @@
 #include "Objects/VulkanPhysicalDevice.h"
 #include "Objects/VulkanInstance.h"
 #include "Objects/VulkanTexture.h"
-#include "Objects/VulkanInits.h"
-#include "Objects/VulkanShader.h"
 #include "Objects/VulkanMemoryAllocator.h"
 
 #include "Graphics/API/ResourceLoader.h"
@@ -32,6 +28,7 @@
 #include "Graphics/API/Objects/PipelineCache.h"
 #include "Graphics/API/Objects/QueryPool.h"
 #include "Graphics/API/Objects/SwapChain.h"
+#include "Graphics/API/Objects/Semaphore.h"
 #include "Graphics/Buffers/VertexBufferLayout.h"
 #include "Graphics/Shaders/Shader.h"
 #include "Graphics/Shaders/ShaderManager.h"

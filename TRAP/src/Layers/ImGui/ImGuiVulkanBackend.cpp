@@ -45,6 +45,7 @@ Modified by Jan "GamesTrap" Schuerkamp
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 #include "Graphics/API/Vulkan/Objects/VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/RendererAPI.h"
 #include "Graphics/Textures/Texture.h"
 #include "FileSystem/FileSystem.h"
 

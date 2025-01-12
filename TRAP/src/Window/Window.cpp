@@ -13,7 +13,6 @@
 #include "Embed.h"
 #include "Layers/ImGui/ImGuiWindowing.h"
 #include "Utils/Utils.h"
-#include "Application.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
 namespace

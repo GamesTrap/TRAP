@@ -8,6 +8,7 @@
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 #include "Maths/Math.h"
+#include "Window/WindowingAPI.h"
 
 namespace
 {

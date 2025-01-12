@@ -30,6 +30,9 @@ using VkPhysicalDevice = struct VkPhysicalDevice_T*;
 using VkShaderModule = struct VkShaderModule_T*;
 using VkBuffer = struct VkBuffer_T*;
 using VkBufferView = struct VkBufferView_T*;
+using VkSemaphore = struct VkSemaphore_T*;
+using VkFence = struct VkFence_T*;
+using VkSurfaceKHR = struct VkSurfaceKHR_T*;
 using VmaAllocation = struct VmaAllocation_T*;
 
 struct VkDescriptorPoolSize;
@@ -45,7 +48,13 @@ struct VkPhysicalDeviceIDProperties;
 struct VkPhysicalDeviceMemoryProperties;
 struct VkPhysicalDeviceFeatures;
 struct VkPhysicalDeviceDriverProperties;
+struct VkSurfaceCapabilitiesKHR;
 struct VmaVulkanFunctions;
 struct VmaAllocatorCreateInfo;
+struct VkSurfaceFormatKHR;
+struct VkDescriptorImageInfo;
+struct VkDescriptorBufferInfo;
+struct VkDescriptorSetLayoutBinding;
+struct VkLatencyTimingsFrameReportNV;
 
 #endif /*TRAP_VULKANFORWARDS_H*/

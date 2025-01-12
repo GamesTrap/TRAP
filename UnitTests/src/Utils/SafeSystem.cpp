@@ -1,6 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "Utils/SafeSystem.h"
+#include "Utils/Expected.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
 #include "Utils/Win.h"

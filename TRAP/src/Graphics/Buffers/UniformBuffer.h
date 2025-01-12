@@ -2,7 +2,7 @@
 #define TRAP_UNIFORMBUFFER_H
 
 #include "Graphics/API/ResourceLoader.h"
-#include "Graphics/RenderCommand.h"
+#include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::Graphics
 {

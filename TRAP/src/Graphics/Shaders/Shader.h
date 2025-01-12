@@ -1,12 +1,6 @@
 #ifndef TRAP_SHADER_H
 #define TRAP_SHADER_H
 
-//SPIRV
-#include <glslang/Public/ShaderLang.h>
-#include <SPIRV/GlslangToSpv.h>
-//SPIRV to GLSL
-#include <spirv_glsl.hpp>
-
 #include "Utils/SmartPtr.h"
 #include "Application.h"
 #include "Graphics/API/RendererAPI/Types.h"

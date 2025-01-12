@@ -1,9 +1,9 @@
 #include "TRAPPCH.h"
 #include "Monitor.h"
 
-#include "Utils/ErrorCodes/ErrorCodes.h"
-
 #ifndef TRAP_HEADLESS_MODE
+
+#include "Utils/ErrorCodes/ErrorCodes.h"
 
 [[nodiscard]] std::vector<TRAP::Monitor::VideoMode> TRAP::Monitor::GetVideoModes() const
 {

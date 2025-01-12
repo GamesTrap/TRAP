@@ -34,8 +34,13 @@
 #include <span>
 
 #include "Core/Types.h"
-#include "Utils/Optional.h"
 #include "Log/Log.h"
+
+namespace TRAP
+{
+	template<typename T>
+	class Optional;
+}
 
 namespace TRAP::FileSystem
 {

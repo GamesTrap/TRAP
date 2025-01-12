@@ -5,7 +5,6 @@
 
 #if defined(TRAP_PLATFORM_LINUX) && !defined(TRAP_HEADLESS_MODE)
 
-#include "Utils/String/String.h"
 #include "Utils/DBus/DBus.h"
 
 //-------------------------------------------------------------------------------------------------------------------//

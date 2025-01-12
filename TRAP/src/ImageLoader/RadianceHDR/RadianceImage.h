@@ -3,8 +3,6 @@
 
 #include "ImageLoader/Image.h"
 
-#include <optional>
-
 namespace TRAP::INTERNAL
 {
 	class RadianceImage final : public Image

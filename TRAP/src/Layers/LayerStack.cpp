@@ -1,8 +1,6 @@
 #include "TRAPPCH.h"
 #include "LayerStack.h"
 
-#include "Layers/Layer.h"
-
 void TRAP::LayerStack::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);

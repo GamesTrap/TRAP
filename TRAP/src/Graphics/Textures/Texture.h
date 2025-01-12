@@ -1,11 +1,18 @@
 #ifndef TRAP_TEXTURE_H
 #define TRAP_TEXTURE_H
 
-#include "Graphics/API/ResourceLoader.h"
+#include "Graphics/API/ImageFormat.h"
+#include "Graphics/API/RendererAPI/Types.h"
 #include "ImageLoader/Image.h"
+#include "Maths/Math.h"
 
 namespace TRAP::Graphics
 {
+	namespace API
+	{
+		using SyncToken = u64;
+	}
+
 	/// @brief Different texture types.
 	enum class TextureType
 	{

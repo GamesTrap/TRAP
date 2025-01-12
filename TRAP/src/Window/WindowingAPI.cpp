@@ -32,7 +32,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifndef TRAP_HEADLESS_MODE
 
-#include "Window.h"
 #include "Events/KeyEvent.h"
 #include "Layers/ImGui/ImGuiWindowing.h"
 #include "Application.h"
@@ -1680,8 +1679,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorPos(InternalWindow& window, const f6
 		return;
 	}
 
-	if (xPos < -DBL_MAX || xPos > DBL_MAX ||
-	    yPos < -DBL_MAX || yPos > DBL_MAX)
+	if (xPos < -std::numeric_limits<f64>::max() || xPos > std::numeric_limits<f64>::max() ||
+	    yPos < -std::numeric_limits<f64>::max() || yPos > std::numeric_limits<f64>::max())
 	{
 		InputError(Error::Invalid_Value, fmt::format(" Invalid cursor position: {}x{}", xPos, yPos));
 		return;

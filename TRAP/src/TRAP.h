@@ -95,6 +95,7 @@
 
 //----BUFFERS------------
 #include "../src/Graphics/Buffers/VertexBufferLayout.h"
+#include "../src/Graphics/API/Objects/Buffer.h"
 #include "../src/Graphics/Buffers/IndexBuffer.h"
 #include "../src/Graphics/Buffers/VertexBuffer.h"
 #include "../src/Graphics/Buffers/UniformBuffer.h"

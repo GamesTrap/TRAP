@@ -5,6 +5,7 @@
 
 #include "Input/Input.h"
 #include "Events/WindowEvent.h"
+#include "Utils/Time/TimeStep.h"
 
 void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeStep& deltaTime)
 {

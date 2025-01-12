@@ -2,7 +2,6 @@
 #include "Application.h"
 
 #include "FileSystem/FileSystem.h"
-#include "FileSystem/FileSystemWatcher.h"
 #include "Embed.h"
 #include "Graphics/RenderCommand.h"
 #include "Graphics/Renderer2D.h"

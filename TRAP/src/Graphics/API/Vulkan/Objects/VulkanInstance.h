@@ -7,8 +7,13 @@
 #include <optional>
 
 #include "Core/Types.h"
-#include "Utils/Optional.h"
 #include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
+
+namespace TRAP
+{
+	template<typename T>
+	class Optional;
+}
 
 namespace TRAP::Graphics::API
 {

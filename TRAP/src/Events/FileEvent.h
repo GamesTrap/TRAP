@@ -1,8 +1,9 @@
 #ifndef TRAP_FILEEVENT_H
 #define TRAP_FILEEVENT_H
 
+#include <filesystem>
+
 #include "Event.h"
-#include "FileSystem/FileSystemWatcher.h"
 #include "Utils/Optional.h"
 
 namespace TRAP::FileSystem

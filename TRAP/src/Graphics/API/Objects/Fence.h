@@ -5,6 +5,8 @@
 
 namespace TRAP::Graphics
 {
+    enum class FenceStatus : u8;
+
 	class Fence
 	{
 	public:
@@ -55,10 +57,6 @@ namespace TRAP::Graphics
 
 	private:
 		friend void TRAP::Graphics::API::VulkanQueue::Submit(const QueueSubmitDesc& desc) const;
-
-#ifndef TRAP_HEADLESS_MODE
-		friend TRAP::Graphics::PresentStatus TRAP::Graphics::API::VulkanQueue::Present(const QueuePresentDesc& desc) const;
-#endif /*TRAP_HEADLESS_MODE*/
 	};
 }
 

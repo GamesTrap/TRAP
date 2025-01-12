@@ -1,6 +1,10 @@
 #include "TRAPPCH.h"
 #include "IndexBuffer.h"
 
+#include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Objects/Buffer.h"
+#include "Graphics/API/ResourceLoader.h"
+
 namespace
 {
 	/// @brief Set new index buffer data.
