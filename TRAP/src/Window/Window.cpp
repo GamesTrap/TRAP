@@ -3,6 +3,7 @@
 
 #ifndef TRAP_HEADLESS_MODE
 
+#include "Core/Backports/RangesContains.h"
 #include "Core/PlatformDetection.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"

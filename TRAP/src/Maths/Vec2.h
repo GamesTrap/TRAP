@@ -35,6 +35,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAP_Assert.h"
 #include "Types.h"
 #include "Utils/Utils.h"
+#include "Core/Backports/Unreachable.h"
 
 namespace TRAP::Math
 {

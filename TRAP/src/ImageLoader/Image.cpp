@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "Image.h"
 
+#include "Core/Backports/RangesContains.h"
 #include "FileSystem/FileSystem.h"
 #include "Utils/String/String.h"
 

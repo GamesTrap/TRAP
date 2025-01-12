@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "Application.h"
 
+#include "Core/Backports/RangesContains.h"
 #include "FileSystem/FileSystem.h"
 #include "Embed.h"
 #include "Graphics/RenderCommand.h"

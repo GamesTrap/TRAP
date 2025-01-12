@@ -1,7 +1,7 @@
 #ifndef TRAP_UTILS_ENUM_H
 #define TRAP_UTILS_ENUM_H
 
-#include "Core/Backports.h"
+#include "Core/Backports/ToUnderlying.h"
 
 #ifndef MAKE_ENUM_FLAG
 #define MAKE_ENUM_FLAG(ENUM_TYPE) \

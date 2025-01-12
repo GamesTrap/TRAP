@@ -7,7 +7,7 @@
 
 #include <fmt/format.h>
 
-#include "Core/Backports.h"
+#include "Core/Backports/IsScopedEnum.h"
 #include "TRAP_Assert.h"
 #include "Utils/String/PrimitiveTypeNameToString.h"
 

@@ -2,7 +2,6 @@
 #define TRAP_CONTENTIONFREESHAREDMUTEX_H
 
 #include "Core/Types.h"
-#include "Core/Backports.h"
 
 #include <array>
 #include <atomic>

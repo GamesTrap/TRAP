@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "FileSystemWatcher.h"
 
+#include "Core/Backports/RangesContains.h"
+#include "Core/Backports/RangeAssign.h"
 #include "FileSystem.h"
 #include "Events/FileEvent.h"
 #include "Utils/String/String.h"

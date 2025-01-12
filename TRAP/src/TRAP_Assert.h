@@ -2,7 +2,7 @@
 #define TRAP_TRAPASSERT_H
 
 #include "Core/PlatformDetection.h"
-#include "Core/Backports.h"
+#include "Core/Backports/Debugging.h"
 #include "Log/Log.h"
 
 #include <source_location>

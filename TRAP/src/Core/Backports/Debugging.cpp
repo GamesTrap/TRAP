@@ -1,31 +1,5 @@
 #include "TRAPPCH.h"
-#include "Backports.h"
-
-#ifndef __cpp_lib_unreachable
-
-namespace std
-{
-    [[noreturn]] void unreachable()
-    {
-#ifdef __GNUC__
-        __builtin_unreachable();
-#elif defined(_MSC_VER)
-        __assume(false);
-#endif
-    }
-}
-
-#else
-
-#if __cplusplus >= 202302L
-#warning "Backported std::unreachable() should be removed!"
-#endif /*__cplusplus >= 202302L*/
-
-#endif /*__cpp_lib_unreachable*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
+#include "Debugging.h"
 
 #ifndef __cpp_lib_debugging
 

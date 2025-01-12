@@ -49,7 +49,6 @@
 #include <version>
 #include <concepts>
 
-#include "Core/Backports.h"
 #include "Core/Types.h"
 
 //Tracy - Profiler

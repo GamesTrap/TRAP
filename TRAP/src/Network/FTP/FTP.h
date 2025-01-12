@@ -32,7 +32,6 @@
 
 #include <fmt/ostream.h>
 
-#include "Core/Backports.h"
 #include "Network/Sockets/TCPSocket.h"
 #include "TRAP_Assert.h"
 
