@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "RendererAPI.h"
 
-#include "Application.h"
 #include "Vulkan/VulkanRenderer.h"
 #include "Vulkan/VulkanCommon.h"
 #include "Vulkan/Objects/VulkanInits.h"
@@ -15,6 +14,7 @@
 #include "Objects/SwapChain.h"
 #include "Graphics/Textures/Texture.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
+#include "Window/Window.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 

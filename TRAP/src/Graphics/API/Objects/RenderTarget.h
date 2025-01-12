@@ -1,7 +1,7 @@
 #ifndef TRAP_RENDERTARGET_H
 #define TRAP_RENDERTARGET_H
 
-#include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/RendererAPI/Types.h"
 
 namespace TRAP::Graphics
 {
@@ -76,7 +76,7 @@ namespace TRAP::Graphics
 		DescriptorType m_descriptors = DescriptorType::Undefined;
 		u32 m_mipLevels = 0;
 		u32 m_sampleQuality = 0;
-		TRAP::Graphics::API::ImageFormat m_format = TRAP::Graphics::API::ImageFormat::Undefined;
+		TRAP::Graphics::API::ImageFormat m_format;
 		SampleCount m_sampleCount = SampleCount::One;
 	};
 }

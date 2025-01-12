@@ -3,8 +3,8 @@
 
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
 #include "Graphics/API/Objects/AftermathTracker.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
@@ -47,7 +47,7 @@ namespace
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanFence::VulkanFence(const bool signalled, [[maybe_unused]] const std::string_view name)
-	: Fence(signalled)
+	: Fence(signalled), m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 

@@ -8,24 +8,17 @@
 
 #include <fmt/core.h>
 
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif /*_MSC_VER*/
-//Tracy - Profiler
-#include <tracy/Tracy.hpp>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif /*_MSC_VER*/
-
 #include "TRAP_Assert.h"
 
-#include "Utils/Optional.h"
+#include "Core/PlatformDetection.h"
 #include "Utils/UniqueResource.h"
 #include "Utils/Concurrency/Safe.h"
 
-#ifdef TRAP_PLATFORM_WINDOWS
-    #include "Utils/Win.h"
-#endif
+namespace TRAP
+{
+    template<typename T>
+    class Optional;
+}
 
 namespace TRAP::Events
 {
@@ -50,7 +43,7 @@ namespace TRAP::FileSystem
 		using EventCallbackFn = std::function<void(Events::Event&)>;
 
 #ifdef TRAP_PLATFORM_WINDOWS
-        using KillEvent = TRAP::UniqueResource<HANDLE, void(*)(HANDLE)>;
+        using KillEvent = TRAP::UniqueResource<void*, void(*)(void*)>;
 #elif defined(TRAP_PLATFORM_LINUX)
         using KillEvent = TRAP::UniqueResource<i32, void(*)(i32)>;
 #endif

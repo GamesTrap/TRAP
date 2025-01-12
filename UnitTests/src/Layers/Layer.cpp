@@ -2,6 +2,8 @@
 
 #include "Layers/Layer.h"
 #include "Events/FileEvent.h"
+#include "FileSystem/FileSystemWatcher.h"
+#include "Utils/Time/TimeStep.h"
 
 TEST_CASE("TRAP::Layer", "[layer]")
 {

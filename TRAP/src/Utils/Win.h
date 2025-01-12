@@ -72,9 +72,6 @@
 	#define OCR_HAND 32649
 #endif /*OCR_HAND*/
 
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif /*_MSC_VER*/
 //WinAPI
 #include <Dbt.h>
 #include <dwmapi.h>
@@ -99,9 +96,6 @@
 #include <winsock.h>
 #include <WS2tcpip.h>
 #include <shellapi.h>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif /*_MSC_VER*/
 
 #ifdef far
 	#undef far

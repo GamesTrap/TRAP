@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-#include "Maths/Math.h"
+#include "Maths/Types.h"
 #include "Window/WindowingAPI.h"
 
 namespace TRAP

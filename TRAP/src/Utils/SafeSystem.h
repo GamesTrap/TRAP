@@ -3,8 +3,13 @@
 
 #include <string>
 #include <span>
+#include <vector>
 
-#include "Utils/Expected.h"
+namespace TRAP
+{
+    template<typename T, typename E>
+    class Expected;
+}
 
 namespace TRAP::Utils
 {

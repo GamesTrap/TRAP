@@ -52,10 +52,6 @@
 #include "Core/Backports.h"
 #include "Core/Types.h"
 
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif /*_MSC_VER*/
-
 //Tracy - Profiler
 #include <tracy/Tracy.hpp>
 
@@ -71,9 +67,5 @@
 #include "Utils/Enum.h"
 #include "Utils/Bit.h"
 #include "Utils/SmartPtr.h"
-
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif /*_MSC_VER*/
 
 #endif /*TRAP_TRAPPCH_H*/

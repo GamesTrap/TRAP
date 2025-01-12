@@ -18,6 +18,7 @@ workspace "TRAP"
 	vectorextensions "AVX2"
 	warnings "Extra"
 	fatalwarnings "All"
+	externalwarnings "Off"
 
 	flags
 	{

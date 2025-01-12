@@ -30,7 +30,6 @@
 #define TRAP_VULKANCOMMON_H
 
 #include "Core/PlatformDetection.h"
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/Objects/VulkanInits.h"
 #include "Utils/ConstexprMap.h"
 

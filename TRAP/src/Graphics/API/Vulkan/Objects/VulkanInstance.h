@@ -6,7 +6,14 @@
 #include <vector>
 #include <optional>
 
-#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+#include "Core/Types.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
+
+namespace TRAP
+{
+	template<typename T>
+	class Optional;
+}
 
 namespace TRAP::Graphics::API
 {
@@ -75,7 +82,7 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] static bool IsExtensionSupported(VulkanInstanceExtension extension);
 
 	private:
-		VkInstance m_instance = VK_NULL_HANDLE;
+		VkInstance m_instance{};
 
 		std::vector<std::string> m_instanceLayers{};
 		std::vector<std::string> m_instanceExtensions{};

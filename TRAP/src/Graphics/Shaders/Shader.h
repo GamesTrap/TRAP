@@ -1,21 +1,9 @@
 #ifndef TRAP_SHADER_H
 #define TRAP_SHADER_H
 
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif /*_MSC_VER*/
-//SPIRV
-#include <glslang/Public/ShaderLang.h>
-#include <SPIRV/GlslangToSpv.h>
-//SPIRV to GLSL
-#include <spirv_glsl.hpp>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif /*_MSC_VER*/
-
 #include "Utils/SmartPtr.h"
 #include "Application.h"
-#include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/RendererAPI/Types.h"
 #include "Graphics/API/Objects/DescriptorSet.h"
 
 namespace TRAP::Graphics
@@ -79,7 +67,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] TRAP::Ref<RootSignature> GetRootSignature() const noexcept;
 		/// @brief Retrieve the descriptor sets of the shader.
 		/// @return Descriptor sets of the shader.
-		[[nodiscard]] constexpr const std::array<TRAP::Scope<DescriptorSet>, RendererAPI::MaxDescriptorSets>& GetDescriptorSets() const noexcept;
+		[[nodiscard]] constexpr const std::array<TRAP::Scope<DescriptorSet>, MaxDescriptorSets>& GetDescriptorSets() const noexcept;
 
 		/// @brief Retrieve whether the shader is valid (i.e. loaded and compiled) or not.
 		/// @return True if shader is valid, false otherwise.
@@ -264,7 +252,7 @@ namespace TRAP::Graphics
 		std::filesystem::path m_filepath;
 		ShaderStage m_shaderStages{};
 		TRAP::Ref<RootSignature> m_rootSignature;
-		std::array<TRAP::Scope<DescriptorSet>, RendererAPI::MaxDescriptorSets> m_descriptorSets{};
+		std::array<TRAP::Scope<DescriptorSet>, MaxDescriptorSets> m_descriptorSets{};
 		std::vector<Macro> m_macros;
 		bool m_valid{};
 		ShaderType m_shaderType;
@@ -295,7 +283,7 @@ namespace TRAP::Graphics
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr const std::array<TRAP::Scope<TRAP::Graphics::DescriptorSet>,
-                                         TRAP::Graphics::RendererAPI::MaxDescriptorSets>& TRAP::Graphics::Shader::GetDescriptorSets() const noexcept
+                                         TRAP::Graphics::MaxDescriptorSets>& TRAP::Graphics::Shader::GetDescriptorSets() const noexcept
 {
 	return m_descriptorSets;
 }

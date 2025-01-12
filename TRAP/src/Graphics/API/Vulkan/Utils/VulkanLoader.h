@@ -11,8 +11,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_VULKANLOADER_H
 #define TRAP_VULKANLOADER_H
 
-#include <optional>
-
 #include "Core/Types.h"
 #include "Utils/Optional.h"
 

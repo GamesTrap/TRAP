@@ -32,7 +32,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_VEC2_H
 #define TRAP_VEC2_H
 
-#include "Core/Base.h"
 #include "TRAP_Assert.h"
 #include "Types.h"
 #include "Utils/Utils.h"

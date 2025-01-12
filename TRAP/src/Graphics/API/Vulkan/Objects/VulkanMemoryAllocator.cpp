@@ -2,19 +2,12 @@
 #include "VulkanMemoryAllocator.h"
 
 #define VMA_IMPLEMENTATION
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif /*_MSC_VER*/
 #include <vk_mem_alloc.h>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif /*_MSC_VER*/
 
 #include "VulkanInstance.h"
 #include "VulkanPhysicalDevice.h"
 #include "VulkanDevice.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "VulkanInits.h"
 
 namespace

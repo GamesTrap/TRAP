@@ -6,11 +6,6 @@
 #include "Utils/SmartPtr.h"
 #include "Utils/Time/TimeStep.h"
 
-namespace TRAP::Utils
-{
-	class TimeStep;
-}
-
 namespace TRAP::Graphics
 {
 	class SubTexture2D;

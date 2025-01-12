@@ -4,6 +4,7 @@
 #include "Maths/Types.h"
 #include "Maths/Mat4.h"
 #include "Maths/Vec3.h"
+#include "Utils/SmartPtr.h"
 
 namespace TRAP
 {

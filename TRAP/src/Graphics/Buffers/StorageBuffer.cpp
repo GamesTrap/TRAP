@@ -1,8 +1,7 @@
 #include "TRAPPCH.h"
 #include "StorageBuffer.h"
 
-#include "Graphics/API/RendererAPI.h"
-#include "Graphics/Shaders/Shader.h"
+#include "Graphics/API/Objects/Buffer.h"
 
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const u64 size,
 																				               const DescriptorUpdateFrequency updateFrequency)
@@ -43,6 +42,44 @@ void TRAP::Graphics::StorageBuffer::SetData(const void* const data, const u64 si
 	}
 	AwaitLoading();
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+void TRAP::Graphics::StorageBuffer::GetData(const auto* const data, const u64 size, const u64 offset, const Window& window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+
+	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize(), "StorageBuffer::GetData(): Out of bounds!");
+
+	BufferUpdateDesc desc{};
+	const u32 imageIndex = GetUpdateFrequency() ==
+								DescriptorUpdateFrequency::Static ?
+									0 : RendererAPI::GetCurrentImageIndex(window);
+	desc.Buffer = m_storageBuffers[imageIndex];
+	desc.DstOffset = offset;
+	API::ResourceLoader::BeginUpdateResource(desc);
+	std::copy_n(desc.MappedData.data(), size, data);
+	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_tokens[imageIndex]);
+}
+#else
+void TRAP::Graphics::StorageBuffer::GetData(const auto* const data, const u64 size, const u64 offset)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
+
+	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize(), "StorageBuffer::GetData(): Out of bounds!");
+
+	BufferUpdateDesc desc{};
+	const u32 imageIndex = GetUpdateFrequency() ==
+								DescriptorUpdateFrequency::Static ?
+									0 : RendererAPI::GetCurrentImageIndex();
+	desc.Buffer = m_storageBuffers[imageIndex];
+	desc.DstOffset = offset;
+	API::ResourceLoader::BeginUpdateResource(desc);
+	std::copy_n(desc.MappedData.data(), size, data);
+	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_tokens[imageIndex]);
+}
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

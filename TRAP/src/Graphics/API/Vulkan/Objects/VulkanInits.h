@@ -1,11 +1,17 @@
 #ifndef TRAP_VULKANINITS_H
 #define TRAP_VULKANINITS_H
 
-#include "Graphics/API/RendererAPI.h"
-#include "VulkanMemoryAllocator.h"
+#include "Graphics/API/RendererAPI/Types.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 #include "Graphics/API/ImageFormat.h"
 #include "Maths/Math.h"
+
+namespace TRAP::Graphics::API
+{
+	class VulkanDevice;
+}
 
 namespace TRAP::Graphics::API::VulkanInits
 {

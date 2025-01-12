@@ -2,6 +2,7 @@
 #include "Pipeline.h"
 
 #include "Graphics/API/Vulkan/Objects/VulkanPipeline.h"
+#include "Graphics/API/RendererAPI.h"
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::Pipeline> TRAP::Graphics::Pipeline::Create(const PipelineDesc& desc)
 {

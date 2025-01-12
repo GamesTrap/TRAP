@@ -1,12 +1,12 @@
 #include "TRAPPCH.h"
 #include "VulkanTexture.h"
 
-#include "VulkanCommandBuffer.h"
 #include "VulkanPhysicalDevice.h"
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Graphics/API/Vulkan/Objects/VulkanMemoryAllocator.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
 namespace

@@ -1,9 +1,12 @@
 #ifndef TRAP_VULKANDESCRIPTORPOOL_H
 #define TRAP_VULKANDESCRIPTORPOOL_H
 
-#include "Graphics/API/RendererAPI.h"
+#include <vector>
+
+#include <tracy/Tracy.hpp>
+
 #include "Graphics/API/Objects/DescriptorPool.h"
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 namespace TRAP::Graphics::API
 {
@@ -55,13 +58,13 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] VkDescriptorSet RetrieveVkDescriptorSet(VkDescriptorSetLayout layout);
 
 	private:
-		VkDescriptorPool m_currentPool = VK_NULL_HANDLE;
-		std::vector<VkDescriptorPool> m_descriptorPools{};
-		std::vector<VkDescriptorPoolSize> m_descriptorPoolSizes{};
+		VkDescriptorPool m_currentPool{};
+		std::vector<VkDescriptorPool> m_descriptorPools;
+		std::vector<VkDescriptorPoolSize> m_descriptorPoolSizes;
 		u32 m_usedDescriptorSetCount = 0;
 		TracyLockable(std::mutex, m_mutex);
 
-		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
+		TRAP::Ref<VulkanDevice> m_device = nullptr;
 	};
 }
 

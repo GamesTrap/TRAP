@@ -6,7 +6,7 @@
 #include "VulkanInits.h"
 #include "VulkanRenderPass.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
-#include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
 namespace
 {

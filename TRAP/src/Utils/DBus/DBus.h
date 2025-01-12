@@ -8,7 +8,11 @@
 
 #include <string>
 
-#include "Utils/Optional.h"
+namespace TRAP
+{
+    template<typename T>
+    class Optional;
+}
 
 /// @brief DBus communication API (wrapper based around libdbus).
 /// @note All DBus related objects must be destroyed before TRAP::Application's

@@ -3,14 +3,8 @@
 
 #include <string>
 
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif /*_MSC_VER*/
 //Tracy - Profiler
 #include <tracy/Tracy.hpp>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif /*_MSC_VER*/
 
 #include "Core/Base.h"
 #include "Core/PlatformDetection.h"

@@ -5,16 +5,12 @@
 #include <unordered_map>
 
 #include "Utils/Bit.h"
-#include "Utils/Map.h"
 #include "Utils/SmartPtr.h"
-#include "Window/Window.h"
-#include "ImageFormat.h"
-#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Utils/Utils.h"
 #include "Maths/Types.h"
 #include "Maths/Vec3.h"
-#include "Utils/Optional.h"
 #include "Graphics/API/RendererAPI/Types.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 namespace TRAP
 {
@@ -1222,9 +1218,6 @@ namespace TRAP::Graphics
 		/// @note The first call to this function will run the Vulkan capability tester.
 		[[nodiscard]] static bool IsVulkanCapable();
 
-		/// @brief The maximum amount of descriptor sets that can be used.
-		static constexpr u32 MaxDescriptorSets = 4;
-
 		/// @brief Struct holding data about a GPUs features, limits and other properties.
 		inline static struct GPUSettings
 		{
@@ -1272,8 +1265,6 @@ namespace TRAP::Graphics
 			//AMD Anti Lag
 			bool AntiLagSupported;
 		} GPUSettings{};
-
-		static constexpr u32 ImageCount = 3u; //Triple Buffered
 
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Retrieve the image index currently used for rendering from the given window.

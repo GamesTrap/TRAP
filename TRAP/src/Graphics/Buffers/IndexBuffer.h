@@ -2,12 +2,17 @@
 #define TRAP_INDEXBUFFER_H
 
 #include "Application.h"
-#include "Graphics/API/ResourceLoader.h"
-#include "Graphics/API/Objects/Buffer.h"
-#include "Graphics/RenderCommand.h"
+#include "Graphics/API/RendererAPI/Types.h"
 
 namespace TRAP::Graphics
 {
+	namespace API
+	{
+		using SyncToken = u64;
+	}
+
+	class Buffer;
+
 	class IndexBuffer
 	{
 	protected:

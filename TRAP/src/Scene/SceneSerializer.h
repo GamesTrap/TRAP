@@ -2,11 +2,12 @@
 #define TRAP_SCENESERIALIZER_H
 
 #include <filesystem>
-
-#include "Scene.h"
+#include "Utils/SmartPtr.h"
 
 namespace TRAP
 {
+	class Scene;
+
 	class SceneSerializer
 	{
 	public:

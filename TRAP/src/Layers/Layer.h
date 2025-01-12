@@ -3,8 +3,6 @@
 
 #include <string>
 
-#include "Utils/Time/TimeStep.h"
-
 namespace TRAP::Events
 {
 	class Event;
@@ -12,6 +10,11 @@ namespace TRAP::Events
 
 namespace TRAP
 {
+	namespace Utils
+	{
+		class TimeStep;
+	}
+
 	class Layer
 	{
 	public:

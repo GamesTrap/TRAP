@@ -30,8 +30,13 @@
 #include <vector>
 
 #include "Socket.h"
-#include "Utils/Optional.h"
 #include "Utils/Time/TimeStep.h"
+
+namespace TRAP
+{
+	template<typename T>
+	class Optional;
+}
 
 namespace TRAP::Network
 {

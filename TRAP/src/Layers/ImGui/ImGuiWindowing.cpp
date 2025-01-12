@@ -30,6 +30,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Application.h"
 #include "Maths/Math.h"
+#include "Graphics/API/RendererAPI/Types.h"
+#include "Utils/Time/TimeStep.h"
 
 namespace
 {

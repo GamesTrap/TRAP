@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "CommandSignature.h"
 
+#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/Objects/VulkanCommandSignature.h"
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::CommandSignature> TRAP::Graphics::CommandSignature::Create(const CommandSignatureDesc& desc)

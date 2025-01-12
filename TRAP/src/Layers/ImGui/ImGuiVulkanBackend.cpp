@@ -31,7 +31,6 @@ Modified by Jan "GamesTrap" Schuerkamp
 
 #include "Application.h"
 #include "Maths/Math.h"
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
 #include "Graphics/API/Vulkan/Objects/VulkanCommandPool.h"
 #include "Graphics/API/Vulkan/Objects/VulkanCommandBuffer.h"
@@ -46,6 +45,7 @@ Modified by Jan "GamesTrap" Schuerkamp
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 #include "Graphics/API/Vulkan/Objects/VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/RendererAPI.h"
 #include "Graphics/Textures/Texture.h"
 #include "FileSystem/FileSystem.h"
 

@@ -62,10 +62,6 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#ifdef _MSC_VER
-#pragma warning(disable: 4702)
-#endif /*_MSC_VER*/
-
 [[noreturn]] void TRAP::Utils::DisplayError(const ErrorCode error)
 {
     const auto errorData = ErrorCodesMap.at(error);
@@ -96,7 +92,3 @@ namespace
     throw std::runtime_error(std::string(errorData->LogMessage));
     std::terminate(); //Make sure we exit program even when using try/catch
 }
-
-#ifdef _MSC_VER
-#pragma warning(default: 4702)
-#endif /*_MSC_VER*/

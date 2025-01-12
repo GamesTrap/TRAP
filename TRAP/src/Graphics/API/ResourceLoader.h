@@ -6,9 +6,8 @@
 #include <thread>
 #include <shared_mutex>
 
-#include "RendererAPI.h"
 #include "ImageLoader/Image.h"
-#include "Maths/Math.h"
+#include "Graphics/API/RendererAPI/Types.h"
 
 namespace TRAP::Graphics
 {
@@ -298,7 +297,7 @@ namespace TRAP::Graphics::API
 
 		TracySharedLockable(std::shared_mutex, m_semaphoreMutex);
 
-		std::array<SyncToken, TRAP::Graphics::RendererAPI::ImageCount> m_currentTokenState{};
+		std::array<SyncToken, TRAP::Graphics::ImageCount> m_currentTokenState{};
 
 		struct CopyEngine
 		{

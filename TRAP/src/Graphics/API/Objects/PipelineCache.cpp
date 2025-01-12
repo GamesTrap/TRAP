@@ -2,6 +2,7 @@
 #include "PipelineCache.h"
 
 #include "Graphics/API/Vulkan/Objects/VulkanPipelineCache.h"
+#include "Graphics/API/RendererAPI.h"
 #include "FileSystem/FileSystem.h"
 
 void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path) const

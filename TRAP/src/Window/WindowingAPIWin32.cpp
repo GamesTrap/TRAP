@@ -32,10 +32,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifndef TRAP_HEADLESS_MODE
 
-#include "Utils/Dialogs/Dialogs.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
-#include "Application.h"
-#include "Utils/Time/TimeStep.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS

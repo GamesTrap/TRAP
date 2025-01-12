@@ -2,11 +2,20 @@
 #define TRAP_SWAPCHAIN_H
 
 #include <optional>
+#include <vector>
 
-#include "Graphics/API/RendererAPI.h"
+#include "Core/Types.h"
+#include "Utils/SmartPtr.h"
+
+struct VkLatencyTimingsFrameReportNV;
 
 namespace TRAP::Graphics
 {
+	namespace API
+	{
+    	enum class ImageFormat : u32;
+	}
+
 	/// @brief Retrieve the recommended swap chain image format.
 	/// @param HDR Use HDR?
 	/// @param SRGB Use SRGB?
@@ -15,8 +24,14 @@ namespace TRAP::Graphics
 
 #ifndef TRAP_HEADLESS_MODE
 
+	struct SwapChainDesc;
 	class Semaphore;
 	class Fence;
+	class RenderTarget;
+    enum class NVIDIAReflexLatencyMarker : u8;
+    enum class NVIDIAReflexLatencyMode : u8;
+    enum class AMDAntiLagMarker : u8;
+    enum class AMDAntiLagMode : u8;
 
 	class SwapChain
 	{
@@ -82,8 +97,9 @@ namespace TRAP::Graphics
 
 		/// @brief Set a timestamp for AMD Anti Lag.
 		/// @param marker Enum value of the marker to set.
-		/// @param viewportData The viewport to set the marker for.
-		virtual void AntiLagSetMarker(TRAP::Graphics::AMDAntiLagMarker marker, const RendererAPI::PerViewportData& viewportData) = 0;
+		/// @param antiLagMode Mode to use for AMD AntiLag.
+		/// @param fpsLimit Optional: FPS limit, use 0 to disable limiter.
+		virtual void AntiLagSetMarker(TRAP::Graphics::AMDAntiLagMarker marker, AMDAntiLagMode antiLagMode, u32 fpsLimit) = 0;
 		/// @brief Set the mode for AMD Anti Lag.
 		/// @param mode Mode to use.
 		/// @param fpsLimit Optional: FPS limit, use 0 to disable limiter.

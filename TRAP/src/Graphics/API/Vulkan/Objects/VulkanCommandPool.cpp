@@ -10,7 +10,7 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const CommandPoolDesc& desc)
-	: CommandPool(desc.Queue)
+	: CommandPool(desc.Queue), m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 

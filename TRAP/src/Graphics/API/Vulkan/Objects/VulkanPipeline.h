@@ -1,9 +1,16 @@
 #ifndef TRAP_VULKANPIPELINE_H
 #define TRAP_VULKANPIPELINE_H
 
-#include "Graphics/API/RendererAPI.h"
+#include <vector>
+
+#include "Core/Types.h"
 #include "Graphics/API/Objects/Pipeline.h"
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
+
+namespace TRAP::Graphics
+{
+    enum class PipelineType : u32;
+}
 
 namespace TRAP::Graphics::API
 {
@@ -42,13 +49,13 @@ namespace TRAP::Graphics::API
 		/// @param desc Pipeline description
 		void InitGraphicsPipeline(const PipelineDesc& desc);
 
-		VkPipeline m_vkPipeline = VK_NULL_HANDLE;
+		VkPipeline m_vkPipeline{};
 		PipelineType m_type;
 		//In DX12 this information is stored in ID3D12StateObject.
 		//But for Vulkan we need to store it manually.
 		std::vector<std::string> m_shaderStageNames{};
 
-		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
+		TRAP::Ref<VulkanDevice> m_device = nullptr;
 	};
 }
 

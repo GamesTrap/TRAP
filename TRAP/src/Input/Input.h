@@ -46,7 +46,7 @@ The above license only applies to some of the Controller specific parts of this 
 #include "Utils/Win.h"
 
 #include "Events/Event.h"
-#include <Maths/Types.h>
+#include "Maths/Types.h"
 
 namespace TRAP
 {

@@ -3,10 +3,15 @@
 
 #ifndef TRAP_HEADLESS_MODE
 
-#include "Input/Input.h"
 #include "Event.h"
 #include "Maths/Types.h"
 #include "Maths/Vec2.h"
+#include "Input/Input.h"
+
+namespace TRAP
+{
+	class Window;
+}
 
 namespace TRAP::Events
 {

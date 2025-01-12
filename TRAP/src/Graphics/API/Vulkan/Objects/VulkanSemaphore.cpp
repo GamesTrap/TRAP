@@ -3,8 +3,11 @@
 
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
 
 TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore(const SemaphoreType semaphoreType, [[maybe_unused]] const std::string_view name)
+	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 

@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "FileEvent.h"
 
+#include "FileSystem/FileSystemWatcher.h"
+
 TRAP::Events::FileSystemChangeEvent::FileSystemChangeEvent(TRAP::FileSystem::FileSystemStatus status, std::filesystem::path path,
                                                const TRAP::Optional<std::filesystem::path>& oldPath) noexcept
     : m_status(status), m_path(std::move(path)), m_oldPath(oldPath)

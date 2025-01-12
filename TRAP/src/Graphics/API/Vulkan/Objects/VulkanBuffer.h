@@ -1,10 +1,8 @@
 #ifndef TRAP_VULKANBUFFER_H
 #define TRAP_VULKANBUFFER_H
 
-#include "Graphics/API/RendererAPI.h"
-#include "Graphics/API/Vulkan/Objects/VulkanMemoryAllocator.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 #include "Graphics/API/Objects/Buffer.h"
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API
 {
@@ -52,16 +50,16 @@ namespace TRAP::Graphics::API
 		void UnMapBuffer() override;
 
 	private:
-		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
-		TRAP::Ref<VulkanMemoryAllocator> m_VMA = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetVMA();
+		TRAP::Ref<VulkanDevice> m_device = nullptr;
+		TRAP::Ref<VulkanMemoryAllocator> m_VMA = nullptr;
 
 		//Native handle of the underlying resource
-		VkBuffer m_vkBuffer = VK_NULL_HANDLE;
+		VkBuffer m_vkBuffer{};
 		//Buffer view
-		VkBufferView m_vkStorageTexelView = VK_NULL_HANDLE;
-		VkBufferView m_vkUniformTexelView = VK_NULL_HANDLE;
+		VkBufferView m_vkStorageTexelView{};
+		VkBufferView m_vkUniformTexelView{};
 		//Contains resource allocation info such as parent heap, offset in heap
-		VmaAllocation m_allocation = VK_NULL_HANDLE;
+		VmaAllocation m_allocation{};
 	};
 }
 

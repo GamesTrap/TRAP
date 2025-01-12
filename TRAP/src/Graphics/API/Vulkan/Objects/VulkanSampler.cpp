@@ -120,7 +120,7 @@ namespace
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanSampler::VulkanSampler(const SamplerDesc& desc)
-	: Sampler(desc)
+	: Sampler(desc), m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 

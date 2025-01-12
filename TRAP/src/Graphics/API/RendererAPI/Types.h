@@ -5,13 +5,11 @@
 #include <variant>
 
 #include "Core/Types.h"
-#include "Graphics/API/ImageFormat.h"
 #include "Utils/Bit.h"
 #include "Utils/Enum.h"
 #include "Utils/Map.h"
 #include "Utils/Optional.h"
 #include "Utils/SmartPtr.h"
-#include "Utils/Utils.h"
 #include "Utils/String/ConvertToType.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -45,6 +43,11 @@ namespace TRAP
         namespace API::ShaderReflection
         {
 	        enum class TextureDimension : u32;
+        }
+
+        namespace API
+        {
+            enum class ImageFormat : u32;
         }
     }
 }
@@ -1620,6 +1623,10 @@ namespace TRAP::Graphics
             MappedMemoryRange MappedRange;
         } Internal;
     };
+
+    static constexpr u32 ImageCount = 3u; //Triple Buffered
+    /// @brief The maximum amount of descriptor sets that can be used.
+    static constexpr u32 MaxDescriptorSets = 4;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

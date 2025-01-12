@@ -1,8 +1,8 @@
 #ifndef TRAP_VULKANTEXTURE_H
 #define TRAP_VULKANTEXTURE_H
 
-#include "Graphics/API/RendererAPI.h"
-#include "Graphics/API/Vulkan/Objects/VulkanMemoryAllocator.h"
+#include "Graphics/API/Vulkan/Utils//VulkanForwards.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Graphics/Textures/Texture.h"
 
 namespace TRAP::Graphics::API

@@ -1,11 +1,9 @@
 #ifndef TRAP_IMAGE_H
 #define TRAP_IMAGE_H
 
-#include <algorithm>
 #include <vector>
 #include <filesystem>
 
-#include "Utils/NumericCasts.h"
 #include "Utils/SmartPtr.h"
 
 #include "Maths/Types.h"

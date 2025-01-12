@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 
+#include "Core/Types.h"
 #include "Layers/Layer.h"
 
 namespace TRAP

@@ -4,9 +4,13 @@
 #ifndef TRAP_HEADLESS_MODE
 
 #include "OrthographicCamera.h"
-#include "Utils/Time/TimeStep.h"
 #include "Events/MouseEvent.h"
 #include "Events/WindowEvent.h"
+
+namespace TRAP::Utils
+{
+	class TimeStep;
+}
 
 namespace TRAP::Graphics
 {

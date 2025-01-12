@@ -1,8 +1,18 @@
 #ifndef TRAP_VULKANDEVICE_H
 #define TRAP_VULKANDEVICE_H
 
+#include <array>
+#include <vector>
+#include <unordered_map>
+
+#include "Core/Types.h"
 #include "Utils/SmartPtr.h"
-#include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
+
+namespace TRAP::Graphics
+{
+    enum class QueueType : u8;
+}
 
 namespace TRAP::Graphics::API
 {
@@ -97,7 +107,7 @@ namespace TRAP::Graphics::API
 		u8 m_transferQueueIndex = 0;
 		u8 m_computeQueueIndex = 0;
 
-		VkDevice m_device = VK_NULL_HANDLE;
+		VkDevice m_device{};
 	};
 }
 

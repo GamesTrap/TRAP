@@ -1,9 +1,15 @@
 #ifndef TRAP_VULKANCOMMANDBUFFER_H
 #define TRAP_VULKANCOMMANDBUFFER_H
 
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/CommandBuffer.h"
-#include "Graphics/API/Objects/Queue.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
+
+namespace TRAP::Graphics
+{
+    enum class ResourceState : u32;
+    enum class FilterType : u8;
+    enum class QueueType : u8;
+}
 
 namespace TRAP::Graphics::API
 {
@@ -296,13 +302,13 @@ namespace TRAP::Graphics::API
 	private:
 		TRAP::Ref<API::VulkanDevice> m_device = nullptr;
 
-		VkCommandBuffer m_vkCommandBuffer = VK_NULL_HANDLE;
+		VkCommandBuffer m_vkCommandBuffer{};
 
-		VkCommandPool m_vkCommandPool = VK_NULL_HANDLE;
+		VkCommandPool m_vkCommandPool{};
 		bool m_secondary = false;
 
-		VkRenderPass m_activeRenderPass = VK_NULL_HANDLE;
-		VkPipelineLayout m_boundPipelineLayout = VK_NULL_HANDLE;
+		VkRenderPass m_activeRenderPass{};
+		VkPipelineLayout m_boundPipelineLayout{};
 	};
 }
 

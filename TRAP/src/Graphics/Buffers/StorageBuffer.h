@@ -2,12 +2,13 @@
 #define TRAP_STORAGEBUFFER_H
 
 #include "Graphics/API/ResourceLoader.h"
-#include "Graphics/API/Objects/Buffer.h"
-#include "Graphics/RenderCommand.h"
+#include "Graphics/API/RendererAPI.h"
 #include "Application.h"
 
 namespace TRAP::Graphics
 {
+	class Buffer;
+
 	class StorageBuffer
 	{
 	protected:
@@ -117,44 +118,6 @@ constexpr TRAP::Graphics::StorageBuffer::StorageBuffer(const std::vector<TRAP::R
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#ifndef TRAP_HEADLESS_MODE
-inline void TRAP::Graphics::StorageBuffer::GetData(const auto* const data, const u64 size, const u64 offset, const Window& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize(), "StorageBuffer::GetData(): Out of bounds!");
-
-	BufferUpdateDesc desc{};
-	const u32 imageIndex = GetUpdateFrequency() ==
-								DescriptorUpdateFrequency::Static ?
-									0 : RendererAPI::GetCurrentImageIndex(window);
-	desc.Buffer = m_storageBuffers[imageIndex];
-	desc.DstOffset = offset;
-	API::ResourceLoader::BeginUpdateResource(desc);
-	std::copy_n(desc.MappedData.data(), size, data);
-	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_tokens[imageIndex]);
-}
-#else
-inline void TRAP::Graphics::StorageBuffer::GetData(const auto* const data, const u64 size, const u64 offset)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
-
-	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize(), "StorageBuffer::GetData(): Out of bounds!");
-
-	BufferUpdateDesc desc{};
-	const u32 imageIndex = GetUpdateFrequency() ==
-								DescriptorUpdateFrequency::Static ?
-									0 : RendererAPI::GetCurrentImageIndex();
-	desc.Buffer = m_storageBuffers[imageIndex];
-	desc.DstOffset = offset;
-	API::ResourceLoader::BeginUpdateResource(desc);
-	std::copy_n(desc.MappedData.data(), size, data);
-	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_tokens[imageIndex]);
-}
-#endif /*TRAP_HEADLESS_MODE*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] constexpr const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::StorageBuffer::GetSSBOs() const noexcept
 {
 	return m_storageBuffers;
@@ -196,7 +159,7 @@ template<typename T>
 		.Desc = bufferDesc
 	};
 
-	std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> storageBuffers((updateFrequency == DescriptorUpdateFrequency::Static) ? 1 : RendererAPI::ImageCount);
+	std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> storageBuffers((updateFrequency == DescriptorUpdateFrequency::Static) ? 1 : ImageCount);
 	std::vector<API::SyncToken> syncTokens(storageBuffers.size());
 	for(u32 i = 0; i < storageBuffers.size(); ++i)
 	{

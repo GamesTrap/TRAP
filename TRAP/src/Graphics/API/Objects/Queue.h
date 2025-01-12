@@ -1,10 +1,17 @@
 #ifndef TRAP_QUEUE_H
 #define TRAP_QUEUE_H
 
-#include "Graphics/API/RendererAPI.h"
+#include "Core/Types.h"
+#include "Utils/SmartPtr.h"
 
 namespace TRAP::Graphics
 {
+	struct QueueDesc;
+	struct QueueSubmitDesc;
+	struct QueuePresentDesc;
+    enum class QueueType : u8;
+    enum class PresentStatus : u8;
+
 	class Queue
 	{
 	public:
@@ -48,7 +55,7 @@ namespace TRAP::Graphics
 		/// @brief Constructor.
 		explicit Queue(QueueType queueType);
 
-		QueueType m_type = QueueType::Graphics;
+		QueueType m_type;
 	};
 }
 

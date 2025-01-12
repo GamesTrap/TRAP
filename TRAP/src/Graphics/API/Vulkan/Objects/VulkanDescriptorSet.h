@@ -1,12 +1,13 @@
 #ifndef TRAP_VULKANDESCRIPTORSET_H
 #define TRAP_VULKANDESCRIPTORSET_H
 
-#include "VulkanDescriptorPool.h"
 #include "Graphics/API/Objects/DescriptorSet.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API
 {
+	class VulkanRootSignature;
+
 	class VulkanDescriptorSet final : public DescriptorSet
 	{
 	public:

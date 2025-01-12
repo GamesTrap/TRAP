@@ -1,10 +1,8 @@
 #ifndef TRAP_VULKANRENDERTARGET_H
 #define TRAP_VULKANRENDERTARGET_H
 
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
-#include "VulkanCommandBuffer.h"
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/RenderTarget.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 namespace TRAP::Graphics::API
 {
@@ -40,9 +38,9 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] constexpr u64 GetID() const noexcept;
 
 	private:
-		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
+		TRAP::Ref<VulkanDevice> m_device = nullptr;
 
-		VkImageView m_vkDescriptor = VK_NULL_HANDLE;
+		VkImageView m_vkDescriptor{};
 		std::vector<VkImageView> m_vkSliceDescriptors{};
 
 		u64 m_ID;

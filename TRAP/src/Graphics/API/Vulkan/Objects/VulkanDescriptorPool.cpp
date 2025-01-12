@@ -48,7 +48,8 @@ namespace
 
 TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const u32 numDescriptorSets,
                                                                 [[maybe_unused]] const std::string_view name)
-	: DescriptorPool(numDescriptorSets), m_descriptorPoolSizes(DefaultDescriptorPoolSizes())
+	: DescriptorPool(numDescriptorSets), m_descriptorPoolSizes(DefaultDescriptorPoolSizes()),
+	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 

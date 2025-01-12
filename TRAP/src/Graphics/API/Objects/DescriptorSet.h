@@ -1,10 +1,14 @@
 #ifndef TRAP_DESCRIPTORSET_H
 #define TRAP_DESCRIPTORSET_H
 
-#include "Graphics/API/RendererAPI.h"
+#include <span>
+
+#include "Core/Types.h"
 
 namespace TRAP::Graphics
 {
+	struct DescriptorData;
+
 	class DescriptorSet
 	{
 	public:

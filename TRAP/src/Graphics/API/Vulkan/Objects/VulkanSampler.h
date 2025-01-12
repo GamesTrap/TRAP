@@ -1,9 +1,8 @@
 #ifndef TRAP_VULKANSAMPLER_H
 #define TRAP_VULKANSAMPLER_H
 
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Sampler.h"
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 namespace TRAP::Graphics::API
 {
@@ -34,10 +33,10 @@ namespace TRAP::Graphics::API
 	private:
 		void UpdateAnisotropy(f32 anisotropy) override;
 
-		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
+		TRAP::Ref<VulkanDevice> m_device = nullptr;
 
 		//Native handle of the underlying resource
-		VkSampler m_vkSampler = VK_NULL_HANDLE;
+		VkSampler m_vkSampler = nullptr;
 		VkSamplerYcbcrConversion m_vkSamplerYcbcrConversion{};
 	};
 }

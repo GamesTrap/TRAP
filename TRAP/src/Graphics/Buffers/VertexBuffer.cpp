@@ -1,8 +1,9 @@
 #include "TRAPPCH.h"
 #include "VertexBuffer.h"
 
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Buffer.h"
+#include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/ResourceLoader.h"
 
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const std::span<const f32> vertices,
                                                                                              const DescriptorUpdateFrequency updateFrequency)

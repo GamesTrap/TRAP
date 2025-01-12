@@ -150,7 +150,9 @@ namespace
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RenderTargetDesc& desc)
-	: RenderTarget(desc), m_ID(CurrentRenderTargetID++)
+	: RenderTarget(desc),
+	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
+	  m_ID(CurrentRenderTargetID++)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 

@@ -1,10 +1,12 @@
 #ifndef TRAP_COMMANDSIGNATURE_H
 #define TRAP_COMMANDSIGNATURE_H
 
-#include "Graphics/API/RendererAPI.h"
+#include "Utils/SmartPtr.h"
 
 namespace TRAP::Graphics
 {
+	struct CommandSignatureDesc;
+
 	class CommandSignature
 	{
 	public:

@@ -2,8 +2,6 @@
 #define TRAP_CORE_H
 
 #include "PlatformDetection.h"
-#include "TRAP_Assert.h"
-#include "Backports.h"
 #include "Version.h"
 #include "Utils/Bit.h"
 #include "Utils/Enum.h"
@@ -58,14 +56,9 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 /// @brief TRAP version number created with TRAP_MAKE_VERSION
-inline constexpr TRAP::SemanticVersion<0, 11, 70> TRAP_VERSION{};
+inline constexpr TRAP::SemanticVersion<0, 11, 72> TRAP_VERSION{};
 
 //-------------------------------------------------------------------------------------------------------------------//
-
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wshadow"
-#endif /*__GNUC__ && !__clang__*/
 
 //Settings for Profiling (with Tracy)
 
@@ -102,10 +95,6 @@ MAKE_ENUM_FLAG(ProfileSystems);
 /// @brief Set the TRAP systems to profile.
 /// @param systems Systems to profile.
 void SetTRAPProfileSystems(ProfileSystems systems) noexcept;
-
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic pop
-#endif /*__GNUC__ && !__clang__*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

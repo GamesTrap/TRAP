@@ -6,13 +6,13 @@
 
 #include "Core/Types.h"
 #include "FileSystem/FileSystemWatcher.h"
-#include "Graphics/API/RendererAPI.h"
 #include "Utils/Config/Config.h"
 #include "Layers/LayerStack.h"
 #include "ThreadPool/ThreadPool.h"
 #include "Utils/Concurrency/Safe.h"
 #include "Utils/Time/Timer.h"
 #include "Utils/Utils.h"
+#include "Window/Window.h"
 
 #if !defined(DOXYGEN_DOCUMENTATION_BUILD) && !defined(TRAP_UNITTESTS)
 int main(i32 argc, const char* const* argv);
@@ -21,8 +21,12 @@ int main(i32 argc, const char* const* argv);
 namespace TRAP
 {
 	class ImGuiLayer;
-	class Window;
 	struct WindowProps;
+
+	namespace Graphics
+	{
+		enum class RenderAPI : u8;
+	}
 
 	namespace Events
 	{
@@ -244,7 +248,7 @@ namespace TRAP
 		f32 m_timeScale = 1.0f;
 		std::string m_gameName = "TRAP™";
 		bool m_running = true;
-		Graphics::RenderAPI m_newRenderAPI = Graphics::RenderAPI::NONE;
+		Graphics::RenderAPI m_newRenderAPI{};
 
 #ifndef TRAP_UNITTESTS
 		friend int ::main(i32 argc, const char* const* argv);

@@ -8,6 +8,7 @@
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
 
 namespace
 {
@@ -17,7 +18,8 @@ namespace
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanQueue::VulkanQueue(const QueueDesc& desc)
-	: Queue(desc.Type)
+	: Queue(desc.Type), m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
+	  m_timestampPeriod(m_device->GetPhysicalDevice().GetVkPhysicalDeviceProperties().limits.timestampPeriod)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
