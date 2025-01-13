@@ -5,6 +5,7 @@
 #include <functional>
 #include <future>
 #include <thread>
+#include <span>
 
 #include <fmt/core.h>
 

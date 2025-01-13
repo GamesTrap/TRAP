@@ -32,6 +32,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifndef TRAP_HEADLESS_MODE
 
+#include "Core/Backports/RangesContains.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 

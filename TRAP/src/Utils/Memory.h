@@ -1,6 +1,8 @@
 #ifndef TRAP_MEMORY_H
 #define TRAP_MEMORY_H
 
+#include <span>
+
 #include "Core/Backports/ByteSwap.h"
 #include "TRAP_Assert.h"
 #include "Utils/NumericCasts.h"
