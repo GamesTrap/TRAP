@@ -5,6 +5,7 @@
 
 #include "Core/Backports/RangesContains.h"
 #include "Core/PlatformDetection.h"
+#include "Core/TRAP_Version.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/WindowEvent.h"
