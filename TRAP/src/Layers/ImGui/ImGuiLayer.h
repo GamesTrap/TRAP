@@ -8,6 +8,7 @@
 #include <fmt/format.h>
 #include <imgui.h>
 
+#include "Core/Types.h"
 #include "Utils/SmartPtr.h"
 #include "Layers/Layer.h"
 
