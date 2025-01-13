@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "VulkanInits.h"
 
+#include "Core/TRAP_Version.h"
+
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
 #include "Graphics/API/Vulkan/Objects/VulkanMemoryAllocator.h"

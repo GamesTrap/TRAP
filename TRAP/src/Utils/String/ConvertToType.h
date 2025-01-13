@@ -5,6 +5,7 @@
 
 #include "Core/Base.h"
 #include "Core/Types.h"
+#include "Core/Profiling.h"
 #include "Utils/String/String.h"
 
 namespace TRAP::Utils::String

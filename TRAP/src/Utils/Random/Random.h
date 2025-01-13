@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include "Core/Base.h"
+#include "Core/Profiling.h"
 #include "RandomInternal.h"
 #include "TRAP_Assert.h"
 #include "Utils/NumericCasts.h"

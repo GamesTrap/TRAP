@@ -56,6 +56,7 @@
 
 //TRAP
 #include "Core/Base.h"
+#include "Core/Profiling.h"
 #include "TRAP_Assert.h"
 #include "Log/Log.h"
 #include "Utils/NumericCasts.h"

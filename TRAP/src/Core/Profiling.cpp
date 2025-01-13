@@ -1,5 +1,5 @@
 #include "TRAPPCH.h"
-#include "Base.h"
+#include "Profiling.h"
 
 namespace
 {

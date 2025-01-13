@@ -3,7 +3,7 @@
 
 #ifndef TRAP_HEADLESS_MODE
 
-#include "Log/Log.h"
+#include "Core/TRAP_Version.h"
 
 #ifdef USE_DISCORD_GAME_SDK
 

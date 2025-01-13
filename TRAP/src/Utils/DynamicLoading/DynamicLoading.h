@@ -7,6 +7,7 @@
 #include <tracy/Tracy.hpp>
 
 #include "Core/Base.h"
+#include "Core/Profiling.h"
 #include "Core/PlatformDetection.h"
 #include "Utils/String/String.h"
 #include "Utils/Linux.h"
