@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "Log.h"
 
+#include <fmt/color.h>
+
 #include "FileSystem/FileSystem.h"
 #include "Utils/String/String.h"
 
@@ -27,6 +29,52 @@ namespace
 		return dateTimeStamp;
 	}
 #endif /*TRAP_UNITTESTS*/
+
+	/// @threadsafe
+	[[maybe_unused]] [[nodiscard]] constexpr TRAP::Optional<fmt::color> LogLevelToFmtColor(TRAP::LogLevel level)
+	{
+		switch(level)
+		{
+		case TRAP::LogLevel::Trace:
+			return fmt::color::magenta;
+		case TRAP::LogLevel::Debug:
+			return fmt::color::cyan;
+		case TRAP::LogLevel::Info:
+			return fmt::color::green;
+		case TRAP::LogLevel::Warn:
+			return fmt::color::yellow;
+		case TRAP::LogLevel::Error:
+			return fmt::color::red;
+		case TRAP::LogLevel::Critical:
+			return fmt::color::dark_red;
+		}
+
+		return TRAP::NullOpt;
+	}
+
+#ifdef TRACY_ENABLE
+	/// @threadsafe
+	[[nodiscard]] constexpr TRAP::Optional<tracy::Color::ColorType> LogLevelToTracyColor(TRAP::LogLevel level)
+	{
+		switch(level)
+		{
+		case TRAP::LogLevel::Trace:
+			return tracy::Color::ColorType::Magenta;
+		case TRAP::LogLevel::Debug:
+			return tracy::Color::ColorType::Cyan;
+		case TRAP::LogLevel::Info:
+			return tracy::Color::ColorType::Green;
+		case TRAP::LogLevel::Warn:
+			return tracy::Color::ColorType::Yellow;
+		case TRAP::LogLevel::Error:
+			return tracy::Color::ColorType::Red;
+		case TRAP::LogLevel::Critical:
+			return tracy::Color::ColorType::DarkRed;
+		}
+
+		return TRAP::NullOpt;
+	}
+#endif /*TRACY_ENABLE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -151,6 +199,32 @@ void TRAP::Log::Clear() noexcept
 	ZoneScoped;
 
 	while(const auto entry = m_buffer.TryPop());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Log::LogMessageImpl(const LogEntry& entry)
+{
+#if !defined(TRAP_RELEASE)
+	if (std::to_underlying(m_importance & entry.Level) != 0u)
+	{
+		const auto fmtColor = LogLevelToFmtColor(entry.Level);
+		const bool isError = std::to_underlying(entry.Level & LogLevel::Error) != 0u ||
+							std::to_underlying(entry.Level & LogLevel::Critical) != 0u;
+
+		fmt::print(isError ? stderr : stdout, "{}\n", fmt::styled(entry.Message, fmtColor ? fmt::fg(*fmtColor) : fmt::text_style{}));
+	}
+#endif
+
+#ifdef TRACY_ENABLE
+	const auto tracyColor = LogLevelToTracyColor(level);
+	if(tracyColor)
+		TracyMessageC(logMsg.c_str(), logMsg.size(), *tracyColor);
+	else
+		TracyMessage(logMsg.c_str(), logMsg.size());
+#endif
+
+	m_buffer.Push(entry);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

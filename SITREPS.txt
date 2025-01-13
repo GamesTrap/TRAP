@@ -5567,3 +5567,4 @@ SITREP 01/13/2025|25w03b1
     - Updated ImGui and VulkanMemoryAllocator licenses ~<5 mins
     - Updated ImGui license in source files ~<5 min
     - Splitted up Base.h to separate headers ~<10 mins
+    - Reduce compile time of Log.h ~<10 mins

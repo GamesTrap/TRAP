@@ -4,18 +4,14 @@
 #include <vector>
 #include <shared_mutex>
 #include <string>
-#include <cstdio>
 #include <filesystem>
 
-#include <fmt/color.h>
-#include <fmt/format.h>
 #include <fmt/std.h>
 
 #include "Core/Backports/ToUnderlying.h"
 #include "Core/Types.h"
 #include "Utils/Concurrency/LockFreeQueue.h"
 #include "Utils/Concurrency/Safe.h"
-#include "Utils/Optional.h"
 
 namespace TRAP
 {
@@ -264,17 +260,13 @@ namespace TRAP
 		static constexpr auto UtilsPrefix =                          "[Utils] ";
 
 	private:
+		/// @threadsafe
+		void LogMessageImpl(const LogEntry& entry);
+
 		/// @brief Get a time stamp with [HH:MM:SS] format.
 		/// @return Time stamp as a string.
 		/// @threadsafe
 		[[nodiscard]] static std::string GetTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& time);
-
-		/// @threadsafe
-		[[nodiscard]] static constexpr TRAP::Optional<fmt::color> LogLevelToFmtColor(LogLevel level);
-#ifdef TRACY_ENABLE
-		/// @threadsafe
-		[[nodiscard]] static constexpr TRAP::Optional<tracy::Color::ColorType> LogLevelToTracyColor(LogLevel level);
-#endif /*TRACY_ENABLE*/
 
 		TRAP::Utils::LockFreeQueue<LogEntry> m_buffer{};
 		Utils::Safe<std::filesystem::path, SharedLockableBase(std::shared_mutex)> m_path{};
@@ -403,54 +395,6 @@ constexpr void TRAP::Log::Critical(Args&& ... args)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Optional<fmt::color> TRAP::Log::LogLevelToFmtColor(const LogLevel level)
-{
-	switch(level)
-	{
-	case LogLevel::Trace:
-		return fmt::color::magenta;
-	case LogLevel::Debug:
-		return fmt::color::cyan;
-	case LogLevel::Info:
-		return fmt::color::green;
-	case LogLevel::Warn:
-		return fmt::color::yellow;
-	case LogLevel::Error:
-		return fmt::color::red;
-	case LogLevel::Critical:
-		return fmt::color::dark_red;
-	}
-
-	return TRAP::NullOpt;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#ifdef TRACY_ENABLE
-[[nodiscard]] constexpr TRAP::Optional<tracy::Color::ColorType> TRAP::Log::LogLevelToTracyColor(const LogLevel level)
-{
-	switch(level)
-	{
-	case LogLevel::Trace:
-		return tracy::Color::ColorType::Magenta;
-	case LogLevel::Debug:
-		return tracy::Color::ColorType::Cyan;
-	case LogLevel::Info:
-		return tracy::Color::ColorType::Green;
-	case LogLevel::Warn:
-		return tracy::Color::ColorType::Yellow;
-	case LogLevel::Error:
-		return tracy::Color::ColorType::Red;
-	case LogLevel::Critical:
-		return tracy::Color::ColorType::DarkRed;
-	}
-
-	return TRAP::NullOpt;
-}
-#endif /*TRACY_ENABLE*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 template<typename... Args>
 constexpr void TRAP::Log::LogMessage(const LogLevel level, Args&&... args)
 {
@@ -458,28 +402,9 @@ constexpr void TRAP::Log::LogMessage(const LogLevel level, Args&&... args)
 	{
 		const auto logTime = std::chrono::system_clock::now();
 
-		const std::string logMsg = fmt::format("{}[{}]{}", GetTimeStamp(logTime), level, (fmt::format("{}", args) + ...));
+		const std::string logMsg = fmt::format("{}[{}]{}", GetTimeStamp(logTime), level, (fmt::format("{}", std::forward<Args>(args)) + ...));
 
-	#if !defined(TRAP_RELEASE)
-		if (std::to_underlying(m_importance & level) != 0u)
-		{
-			const auto fmtColor = LogLevelToFmtColor(level);
-			const bool isError = std::to_underlying(level & LogLevel::Error) != 0u ||
-								std::to_underlying(level & LogLevel::Critical) != 0u;
-
-			fmt::print(isError ? stderr : stdout, "{}\n", fmt::styled(logMsg, fmtColor ? fmt::fg(*fmtColor) : fmt::text_style{}));
-		}
-	#endif
-
-	#ifdef TRACY_ENABLE
-		const auto tracyColor = LogLevelToTracyColor(level);
-		if(tracyColor)
-			TracyMessageC(logMsg.c_str(), logMsg.size(), *tracyColor);
-		else
-			TracyMessage(logMsg.c_str(), logMsg.size());
-	#endif
-
-		m_buffer.Push({.Level = level, .Message = logMsg, .Time = logTime});
+		LogMessageImpl(LogEntry{.Level = level, .Message = logMsg, .Time = logTime});
 	}
 }
 
