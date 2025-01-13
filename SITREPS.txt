@@ -5561,3 +5561,7 @@ SITREP 01/12/2025|25w02a4
     - Changed TRAP Engine version to 25w02a4(0.11.72)
     - Reorganized various includes ~>60 mins
     - Splitted up Backports.h to separate headers ~<15 mins
+
+SITREP 01/13/2025|25w03b1
+    - Changed TRAP Engine version to 25w03b1(0.11.73)
+    - Updated ImGui and VulkanMemoryAllocator licenses ~<5 mins
