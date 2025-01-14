@@ -1,11 +1,13 @@
 #ifndef TRAP_VULKANINITS_H
 #define TRAP_VULKANINITS_H
 
+#include "Core/TRAP_Version.h"
 #include "Graphics/API/RendererAPI/Types.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Graphics/API/Vulkan/Utils/VulkanForwards.h"
 
 #include "Graphics/API/ImageFormat.h"
+#include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Maths/Math.h"
 
 namespace TRAP::Graphics::API
@@ -18,7 +20,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @brief Create a Vulkan application info from app name.
 	/// @param appName Application name.
 	/// @return VkApplicationInfo.
-	[[nodiscard]] VkApplicationInfo ApplicationInfo(std::string_view appName);
+	[[nodiscard]] constexpr VkApplicationInfo ApplicationInfo(const std::string& appName);
 
 	/// @brief Create a Vulkan instance create info from app info, instance layers and extensions.
 	/// @param appInfo Vulkan application info.
@@ -34,28 +36,28 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @brief Create a Vulkan debug utils messenger create info.
 	/// @param callback Debug callback.
 	/// @return VkDebugUtilsMessengerCreateInfoEXT.
-	[[nodiscard]] VkDebugUtilsMessengerCreateInfoEXT DebugUtilsMessengerCreateInfo(PFN_vkDebugUtilsMessengerCallbackEXT callback);
+	[[nodiscard]] constexpr VkDebugUtilsMessengerCreateInfoEXT DebugUtilsMessengerCreateInfo(PFN_vkDebugUtilsMessengerCallbackEXT callback);
 
 	/// @brief Create a Vulkan debug report callback create info.
 	/// @param callback Debug callback.
 	/// @return VkDebugReportCallbackCreateInfoEXT.
-	[[nodiscard]] VkDebugReportCallbackCreateInfoEXT DebugReportCallbackCreateInfo(PFN_vkDebugReportCallbackEXT callback);
+	[[nodiscard]] constexpr VkDebugReportCallbackCreateInfoEXT DebugReportCallbackCreateInfo(PFN_vkDebugReportCallbackEXT callback);
 
 	/// @brief Create a Vulkan debug utils object name info.
 	/// @param type Vulkan object type.
 	/// @param handle Vulkan handle.
 	/// @param name Debug object name to set.
 	/// @return VkDebugUtilsObjectNameInfoEXT.
-	[[nodiscard]] VkDebugUtilsObjectNameInfoEXT DebugUtilsObjectNameInfo(VkObjectType type, u64 handle,
-	                                                                     std::string_view name);
+	[[nodiscard]] constexpr VkDebugUtilsObjectNameInfoEXT DebugUtilsObjectNameInfo(VkObjectType type, u64 handle,
+	                                                                               const std::string& name);
 
 	/// @brief Create a Vulkan debug marker object name info.
 	/// @param type Vulkan debug report object type.
 	/// @param handle Vulkan handle.
 	/// @param name Debug object name to set.
 	/// @return VkDebugMarkerObjectNameInfoEXT.
-	[[nodiscard]] VkDebugMarkerObjectNameInfoEXT DebugMarkerObjectNameInfo(VkDebugReportObjectTypeEXT type, u64 handle,
-	                                                                       std::string_view name);
+	[[nodiscard]] constexpr VkDebugMarkerObjectNameInfoEXT DebugMarkerObjectNameInfo(VkDebugReportObjectTypeEXT type, u64 handle,
+	                                                                                 const std::string& name);
 
 	/// @brief Create a Vulkan debug utils label.
 	/// @param r Red color.
@@ -63,7 +65,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param b Blue color.
 	/// @param name Name for the label.
 	/// @return VkDebugUtilsLabelEXT.
-	[[nodiscard]] VkDebugUtilsLabelEXT DebugUtilsLabelExt(f32 r, f32 g, f32 b, std::string_view name);
+	[[nodiscard]] constexpr VkDebugUtilsLabelEXT DebugUtilsLabelExt(f32 r, f32 g, f32 b, const std::string& name);
 
 	/// @brief Create a Vulkan debug marker.
 	/// @param r Red color.
@@ -71,7 +73,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param b Blue color.
 	/// @param name Name for the label.
 	/// @return VkDebugMarkerMarkerInfoEXT.
-	[[nodiscard]] VkDebugMarkerMarkerInfoEXT DebugMarkerMarkerInfo(f32 r, f32 g, f32 b, std::string_view name);
+	[[nodiscard]] constexpr VkDebugMarkerMarkerInfoEXT DebugMarkerMarkerInfo(f32 r, f32 g, f32 b, const std::string& name);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -80,9 +82,9 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param deviceExtensions Optional: Device extensions to use.
 	/// @param pNext Optional: Next pointer.
 	/// @return VkDeviceCreateInfo.
-	[[nodiscard]] VkDeviceCreateInfo DeviceCreateInfo(std::span<VkDeviceQueueCreateInfo> queueCreateInfos,
-	                                                  std::span<const char*> deviceExtensions = {},
-													  const void* pNext = nullptr);
+	[[nodiscard]] constexpr VkDeviceCreateInfo DeviceCreateInfo(std::span<VkDeviceQueueCreateInfo> queueCreateInfos,
+	                                                            std::span<const char*> deviceExtensions = {},
+													            const void* pNext = nullptr);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -100,15 +102,15 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param descriptorPoolSizes Descriptor pool sizes to allocate by the pool.
 	/// @param numDescriptorSets Max number of descriptor sets which should be allocated from the pool.
 	/// @return VkDescriptorPoolCreateInfo.
-	[[nodiscard]] VkDescriptorPoolCreateInfo DescriptorPoolCreateInfo(std::span<const VkDescriptorPoolSize> descriptorPoolSizes,
-	                                                                  u32 numDescriptorSets);
+	[[nodiscard]] constexpr VkDescriptorPoolCreateInfo DescriptorPoolCreateInfo(std::span<const VkDescriptorPoolSize> descriptorPoolSizes,
+	                                                                            u32 numDescriptorSets);
 
 	/// @brief Create a Vulkan descriptor set allocation info.
 	/// @param descriptorPool Vulkan descriptor pool to use.
 	/// @param descriptorLayout Vulkan descriptor set layout to use.
 	/// @return VkDescriptorSetAllocateInfo.
-	[[nodiscard]] VkDescriptorSetAllocateInfo DescriptorSetAllocateInfo(VkDescriptorPool descriptorPool,
-														                const VkDescriptorSetLayout& descriptorLayout);
+	[[nodiscard]] constexpr VkDescriptorSetAllocateInfo DescriptorSetAllocateInfo(VkDescriptorPool descriptorPool,
+														                          const VkDescriptorSetLayout& descriptorLayout);
 
 	/// @brief Create a Vulkan descriptor set layout create info.
 	/// @param bindings List of Vulkan descriptor set layout bindings.
@@ -122,11 +124,11 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param pipelineLayout Vulkan pipeline layout to use.
 	/// @param setIndex Set index of the Descriptor set.
 	/// @return VkDescriptorUpdateTemplateCreateInfo.
-	[[nodiscard]] VkDescriptorUpdateTemplateCreateInfo DescriptorUpdateTemplateCreateInfo(VkDescriptorSetLayout descriptorSetLayout,
-		                                                                                  std::span<const VkDescriptorUpdateTemplateEntry> entries,
-		                                                                                  VkPipelineBindPoint bindPoint,
-		                                                                                  VkPipelineLayout pipelineLayout,
-		                                                                                  u32 setIndex);
+	[[nodiscard]] constexpr VkDescriptorUpdateTemplateCreateInfo DescriptorUpdateTemplateCreateInfo(VkDescriptorSetLayout descriptorSetLayout,
+		                                                                                            std::span<const VkDescriptorUpdateTemplateEntry> entries,
+		                                                                                            VkPipelineBindPoint bindPoint,
+		                                                                                            VkPipelineLayout pipelineLayout,
+		                                                                                            u32 setIndex);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -149,7 +151,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param semaphore Semaphore to wait on.
 	/// @param value Signal value to set.
 	/// @return VkSemaphoreWaitInfoKHR
-	[[nodiscard]] VkSemaphoreWaitInfoKHR SemaphoreWaitInfo(VkSemaphore semaphore, const u64& value);
+	[[nodiscard]] constexpr VkSemaphoreWaitInfoKHR SemaphoreWaitInfo(VkSemaphore semaphore, const u64& value);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -172,11 +174,11 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param layout Initial Vulkan image layout used when render pass starts.
 	/// @param finalLayout Final Vulkan image layout to transition to when render pass ends.
 	/// @return VkAttachmentDescription.
-	[[nodiscard]] VkAttachmentDescription AttachmentDescription(VkFormat format, VkSampleCountFlagBits sampleCount,
-	                                                            VkAttachmentLoadOp loadOp, VkAttachmentStoreOp storeOp,
-	                                                            VkAttachmentLoadOp stencilLoadOp,
-												                VkAttachmentStoreOp stencilStoreOp,
-	                                                            VkImageLayout layout, VkImageLayout finalLayout);
+	[[nodiscard]] constexpr VkAttachmentDescription AttachmentDescription(VkFormat format, VkSampleCountFlagBits sampleCount,
+	                                                                      VkAttachmentLoadOp loadOp, VkAttachmentStoreOp storeOp,
+	                                                                      VkAttachmentLoadOp stencilLoadOp,
+												                          VkAttachmentStoreOp stencilStoreOp,
+	                                                                      VkImageLayout layout, VkImageLayout finalLayout);
 
 	/// @brief Create a Vulkan attachment description.
 	/// @param format Vulkan format.
@@ -188,11 +190,11 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param layout Initial Vulkan image layout used when render pass starts.
 	/// @param finalLayout Final Vulkan image layout to transition to when render pass ends.
 	/// @return VkAttachmentDescription2KHR.
-	[[nodiscard]] VkAttachmentDescription2KHR AttachmentDescription2(VkFormat format, VkSampleCountFlagBits sampleCount,
-	                                                                 VkAttachmentLoadOp loadOp, VkAttachmentStoreOp storeOp,
-	                                                                 VkAttachmentLoadOp stencilLoadOp,
-												                     VkAttachmentStoreOp stencilStoreOp,
-	                                                                 VkImageLayout layout, VkImageLayout finalLayout);
+	[[nodiscard]] constexpr VkAttachmentDescription2KHR AttachmentDescription2(VkFormat format, VkSampleCountFlagBits sampleCount,
+	                                                                           VkAttachmentLoadOp loadOp, VkAttachmentStoreOp storeOp,
+	                                                                           VkAttachmentLoadOp stencilLoadOp,
+												                               VkAttachmentStoreOp stencilStoreOp,
+	                                                                           VkImageLayout layout, VkImageLayout finalLayout);
 
 	/// @brief Create a Vulkan subpass description.
 	/// @param bindPoint Vulkan pipeline bind point.
@@ -260,8 +262,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param renderArea Vulkan render area.
 	/// @param colorValues List of Vulkan clear values for color attachments.
 	/// @return VkRenderPassBeginInfo.
-	[[nodiscard]] VkRenderPassBeginInfo RenderPassBeginInfo(VkRenderPass renderPass, VkFramebuffer frameBuffer,
-	                                                        const VkRect2D& renderArea, std::span<const VkClearValue> colorValues);
+	[[nodiscard]] constexpr VkRenderPassBeginInfo RenderPassBeginInfo(VkRenderPass renderPass, VkFramebuffer frameBuffer,
+	                                                                  const VkRect2D& renderArea, std::span<const VkClearValue> colorValues);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -272,9 +274,9 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param height Height of the frame buffer.
 	/// @param layerCount Number of layers in the frame buffer.
 	/// @return VkFramebufferCreateInfo.
-	[[nodiscard]] VkFramebufferCreateInfo FramebufferCreateInfo(VkRenderPass renderPass,
-	                                                            std::span<const VkImageView> attachments, u32 width,
-		                                                        u32 height, u32 layerCount);
+	[[nodiscard]] constexpr VkFramebufferCreateInfo FramebufferCreateInfo(VkRenderPass renderPass,
+	                                                                      std::span<const VkImageView> attachments, u32 width,
+		                                                                  u32 height, u32 layerCount);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -285,8 +287,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param levelCount Number of mip levels.
 	/// @param layerCount Number of layers.
 	/// @return VkImageViewCreateInfo.
-	[[nodiscard]] VkImageViewCreateInfo ImageViewCreateInfo(VkImage image, VkImageViewType imageViewType, VkFormat format,
-		                                                    u32 levelCount, u32 layerCount);
+	[[nodiscard]] constexpr VkImageViewCreateInfo ImageViewCreateInfo(VkImage image, VkImageViewType imageViewType, VkFormat format,
+		                                                              u32 levelCount, u32 layerCount);
 
 	/// @brief Create a Vulkan image create info.
 	/// @param imageType Vulkan image type.
@@ -300,10 +302,10 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param tiling Vulkan image tiling.
 	/// @param usage Vulkan image usage.
 	/// @return VkImageCreateInfo.
-	[[nodiscard]] VkImageCreateInfo ImageCreateInfo(VkImageType imageType, VkFormat imageFormat, u32 width, u32 height,
-		                                            u32 depth, u32 mipLevels, u32 arrayLayers,
-		                                            VkSampleCountFlagBits sampleCount, VkImageTiling tiling,
-									                VkImageUsageFlags usage);
+	[[nodiscard]] constexpr VkImageCreateInfo ImageCreateInfo(VkImageType imageType, VkFormat imageFormat, u32 width, u32 height,
+		                                                      u32 depth, u32 mipLevels, u32 arrayLayers,
+		                                                      VkSampleCountFlagBits sampleCount, VkImageTiling tiling,
+									                          VkImageUsageFlags usage);
 
 	/// @brief Create a Vulkan buffer image copy.
 	/// @param bufferRowLength Row length of the buffer.
@@ -311,8 +313,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param height Height of the image.
 	/// @param depth Depth of the image.
 	/// @param layers Number of Vulkan image subresource layers.
-	[[nodiscard]] VkBufferImageCopy ImageCopy(u32 bufferRowLength, u32 width, u32 height, u32 depth,
-							                  VkImageSubresourceLayers layers);
+	[[nodiscard]] constexpr VkBufferImageCopy ImageCopy(u32 bufferRowLength, u32 width, u32 height, u32 depth,
+							                            VkImageSubresourceLayers layers);
 
 	/// @brief Create a Vulkan buffer image copy.
 	/// @param bufferOffset Start offset of the buffer.
@@ -322,8 +324,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param height Height of the image.
 	/// @param depth Depth of the image.
 	/// @param layers Number of Vulkan image subresource layers.
-	[[nodiscard]] VkBufferImageCopy ImageCopy(u64 bufferOffset, u32 bufferRowLength, u32 bufferImageHeight,
-							                  u32 width, u32 height, u32 depth, VkImageSubresourceLayers layers);
+	[[nodiscard]] constexpr VkBufferImageCopy ImageCopy(u64 bufferOffset, u32 bufferRowLength, u32 bufferImageHeight,
+							                            u32 width, u32 height, u32 depth, VkImageSubresourceLayers layers);
 
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -332,7 +334,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param allocationSize Size of the buffer.
 	/// @param usageFlags Vulkan buffer usage flags.
 	/// @return VkBufferCreateInfo.
-	[[nodiscard]] VkBufferCreateInfo BufferCreateInfo(u64 allocationSize, VkBufferUsageFlags usageFlags);
+	[[nodiscard]] constexpr VkBufferCreateInfo BufferCreateInfo(u64 allocationSize, VkBufferUsageFlags usageFlags);
 
 	/// @brief Create a Vulkan buffer view create info.
 	/// @param buffer Vulkan buffer to use.
@@ -340,7 +342,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param offset Offset of the buffer.
 	/// @param range Range of the buffer.
 	/// @return VkBufferViewCreateInfo.
-	[[nodiscard]] VkBufferViewCreateInfo BufferViewCreateInfo(VkBuffer buffer, VkFormat format, u64 offset, u64 range);
+	[[nodiscard]] constexpr VkBufferViewCreateInfo BufferViewCreateInfo(VkBuffer buffer, VkFormat format, u64 offset, u64 range);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -353,7 +355,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param commandPool Vulkan command pool to use.
 	/// @param secondary Optional: Set to true to allocate as a secondary command buffer.
 	/// @return VkCommandBufferAllocateInfo.
-	[[nodiscard]] VkCommandBufferAllocateInfo CommandBufferAllocateInfo(VkCommandPool commandPool, bool secondary = false);
+	[[nodiscard]] constexpr VkCommandBufferAllocateInfo CommandBufferAllocateInfo(VkCommandPool commandPool, bool secondary = false);
 
 	/// @brief Create a Vulkan command buffer begin info.
 	/// @param oneTimeSubmit Specify that each recording of the command buffer will only be submitted once, and the
@@ -451,8 +453,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param module Vulkan shader module.
 	/// @param name Shader entry point name, usually "main".
 	/// @return VkPipelineShaderStageCreateInfo.
-	[[nodiscard]] VkPipelineShaderStageCreateInfo PipelineShaderStageCreateInfo(VkShaderStageFlagBits stage, VkShaderModule shaderModule,
-	                                                                            std::string_view name);
+	[[nodiscard]] constexpr VkPipelineShaderStageCreateInfo PipelineShaderStageCreateInfo(VkShaderStageFlagBits stage, VkShaderModule shaderModule,
+	                                                                                      const std::string& name);
 
 	/// @brief Create a Vulkan pipeline vertex input state create info.
 	/// @param inputBindings Vulkan vertex input binding descrptions.
@@ -502,8 +504,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param stage Vulkan pipeline shader stage create info.
 	/// @param layout Vulkan pipeline layout.
 	/// @return VkComputePipelineCreateInfo.
-	[[nodiscard]] VkComputePipelineCreateInfo ComputePipelineCreateInfo(const VkPipelineShaderStageCreateInfo& stage,
-	                                                                    VkPipelineLayout layout);
+	[[nodiscard]] constexpr VkComputePipelineCreateInfo ComputePipelineCreateInfo(const VkPipelineShaderStageCreateInfo& stage,
+	                                                                              VkPipelineLayout layout);
 
 	/// @brief Create a Vulkan graphics pipeline create info.
 	/// @param stageCount Number of shader stages.
@@ -569,15 +571,15 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @param presentMode Vulkan present mode to use.
 	/// @param oldSwapchain Old Vulkan swapchain to aid in resource reusage. Default. VK_NULL_HANDLE
 	/// @return VkSwapchainCreateInfoKHR.
-	[[nodiscard]] VkSwapchainCreateInfoKHR SwapchainCreateInfoKHR(VkSurfaceKHR surface, u32 imageCount,
-	                                                              const VkSurfaceFormatKHR& surfaceFormat,
-																  const VkExtent2D& imageExtent,
-	                                                              VkSharingMode sharingMode,
-	                                                              std::span<const u32> queueFamilyIndices,
-	                                                              VkSurfaceTransformFlagBitsKHR preTransform,
-													              VkCompositeAlphaFlagBitsKHR compositeAlpha,
-													              VkPresentModeKHR presentMode,
-																  VkSwapchainKHR oldSwapchain = VK_NULL_HANDLE);
+	[[nodiscard]] constexpr VkSwapchainCreateInfoKHR SwapchainCreateInfoKHR(VkSurfaceKHR surface, u32 imageCount,
+	                                                                        const VkSurfaceFormatKHR& surfaceFormat,
+																            const VkExtent2D& imageExtent,
+	                                                                        VkSharingMode sharingMode,
+	                                                                        std::span<const u32> queueFamilyIndices,
+	                                                                        VkSurfaceTransformFlagBitsKHR preTransform,
+													                        VkCompositeAlphaFlagBitsKHR compositeAlpha,
+													                        VkPresentModeKHR presentMode,
+																            VkSwapchainKHR oldSwapchain = VK_NULL_HANDLE);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -666,6 +668,24 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::string& appName)
+{
+	TRAP_ASSERT(!appName.empty(), "VulkanInits::ApplicationInfo(): Application name can't be empty!");
+
+	return VkApplicationInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
+		.pNext = nullptr,
+		.pApplicationName = appName.c_str(),
+		.applicationVersion = VK_MAKE_VERSION(1, 0, 0),
+		.pEngineName = "TRAP",
+		.engineVersion = TRAP_VERSION.GetPackedVersion(),
+		.apiVersion = VK_API_VERSION_1_1
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr VkInstanceCreateInfo TRAP::Graphics::API::VulkanInits::InstanceCreateInfo(const VkApplicationInfo& appInfo,
 	                                                                                              const std::span<const char*> instanceLayers,
 	                                                                                              const std::span<const char*> instanceExtensions) noexcept
@@ -685,6 +705,175 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr VkDebugUtilsMessengerCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsMessengerCreateInfo(const PFN_vkDebugUtilsMessengerCallbackEXT callback)
+{
+	TRAP_ASSERT(callback, "VulkanInits::DebugUtilsMessengerCreateInfo(): Callback can't be nullptr!");
+
+	return VkDebugUtilsMessengerCreateInfoEXT
+	{
+		.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
+		.pNext = nullptr,
+		.flags = 0,
+		.messageSeverity = static_cast<u32>(VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) |
+						   static_cast<u32>(VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) |
+						   static_cast<u32>(VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT),
+		.messageType = static_cast<u32>(VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT) |
+					   static_cast<u32>(VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT) |
+					   static_cast<u32>(VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT),
+		.pfnUserCallback = callback,
+		.pUserData = nullptr
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkDebugReportCallbackCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugReportCallbackCreateInfo(const PFN_vkDebugReportCallbackEXT callback)
+{
+	TRAP_ASSERT(callback, "VulkanInits::DebugReportCallbackCreateInfo(): Callback can't be nullptr!");
+
+	return VkDebugReportCallbackCreateInfoEXT
+	{
+		.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT,
+		.pNext = nullptr,
+		.flags = static_cast<u32>(VK_DEBUG_REPORT_WARNING_BIT_EXT) | static_cast<u32>(VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT) |
+				 static_cast<u32>(VK_DEBUG_REPORT_ERROR_BIT_EXT) | static_cast<u32>(VK_DEBUG_REPORT_DEBUG_BIT_EXT),
+		.pfnCallback = callback,
+		.pUserData = nullptr
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkDebugUtilsObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsObjectNameInfo(const VkObjectType type,
+	                                                                                                             const u64 handle,
+	                                                                                                             const std::string& name)
+{
+	TRAP_ASSERT(!name.empty(), "VulkanInits::DebugUtilsObjectNameInfo(): Name can't be empty!");
+	TRAP_ASSERT(!(type == VK_OBJECT_TYPE_UNKNOWN && handle == 0), "VulkanInits::DebugUtilsObjectNameInfo(): Type and Handle can't be VK_OBJECT_TYPE_UNKNOWN and VK_NULL_HANDLE!");
+
+	return VkDebugUtilsObjectNameInfoEXT
+	{
+		.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT,
+		.pNext = nullptr,
+		.objectType = type,
+		.objectHandle = handle,
+		.pObjectName = name.c_str()
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkDebugMarkerObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerObjectNameInfo(const VkDebugReportObjectTypeEXT type,
+	                                                                                                               const u64 handle,
+	                                                                                                               const std::string& name)
+{
+	TRAP_ASSERT(!name.empty(), "VulkanInits::DebugMarkerObjectNameInfo(): Name can't be empty!");
+	TRAP_ASSERT(type != VK_DEBUG_REPORT_OBJECT_TYPE_UNKNOWN_EXT, "VulkanInits::DebugMarkerObjectNameInfo(): Type can't be VK_DEBUG_REPORT_OBJECT_TYPE_UNKNOWN_EXT!");
+	TRAP_ASSERT(handle != 0, "VulkanInits::DebugMarkerObjectNameInfo(): Handle can't be VK_NULL_HANDLE!");
+
+	return VkDebugMarkerObjectNameInfoEXT
+	{
+		.sType = VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT,
+		.pNext = nullptr,
+		.objectType = type,
+		.object = handle,
+		.pObjectName = name.c_str()
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkDebugUtilsLabelEXT TRAP::Graphics::API::VulkanInits::DebugUtilsLabelExt(const f32 r, const f32 g,
+                                                                                                  const f32 b, const std::string& name)
+{
+	TRAP_ASSERT(!name.empty(), "VulkanInits::DebugUtilsLabelExt(): Name can't be empty!");
+
+	return VkDebugUtilsLabelEXT
+	{
+		.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT,
+		.pNext = nullptr,
+		.pLabelName = name.c_str(),
+		.color = {r, g, b, 1.0f}
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkDebugMarkerMarkerInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerMarkerInfo(const f32 r, const f32 g,
+                                                                                                           const f32 b, const std::string& name)
+{
+	TRAP_ASSERT(!name.empty(), "VulkanInits::DebugMarkerMarkerInfo(): Name can't be empty!");
+
+	return VkDebugMarkerMarkerInfoEXT
+	{
+		.sType = VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT,
+		.pNext = nullptr,
+		.pMarkerName = name.c_str(),
+		.color = {r, g, b, 1.0f},
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkDeviceCreateInfo TRAP::Graphics::API::VulkanInits::DeviceCreateInfo(const std::span<VkDeviceQueueCreateInfo> queueCreateInfos,
+																	                          const std::span<const char*> deviceExtensions,
+																					          const void* const pNext)
+{
+	TRAP_ASSERT(!queueCreateInfos.empty(), "VulkanInits::DeviceCreateInfo(): QueueCreateInfos can't be empty!");
+
+	return VkDeviceCreateInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+		.pNext = pNext,
+		.flags = 0,
+		.queueCreateInfoCount = NumericCast<u32>(queueCreateInfos.size()),
+		.pQueueCreateInfos = queueCreateInfos.data(),
+		.enabledLayerCount = 0,
+		.ppEnabledLayerNames = nullptr,
+		.enabledExtensionCount = NumericCast<u32>(deviceExtensions.size()),
+		.ppEnabledExtensionNames = deviceExtensions.data(),
+		.pEnabledFeatures = nullptr
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkDescriptorPoolCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(const std::span<const VkDescriptorPoolSize> descriptorPoolSizes,
+                                                                                                              const u32 numDescriptorSets)
+{
+	TRAP_ASSERT(numDescriptorSets != 0, "VulkanInits::DescriptorPoolCreateInfo(): NumDescriptorSets can't be 0!");
+
+	return VkDescriptorPoolCreateInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
+		.pNext = nullptr,
+		.flags = 0,
+		.maxSets = numDescriptorSets,
+		.poolSizeCount = NumericCast<u32>(descriptorPoolSizes.size()),
+		.pPoolSizes = descriptorPoolSizes.data()
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkDescriptorSetAllocateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetAllocateInfo(VkDescriptorPool descriptorPool,
+	                                                                                                            const VkDescriptorSetLayout& descriptorLayout)
+{
+	TRAP_ASSERT(descriptorPool != VK_NULL_HANDLE, "VulkanInits::DescriptorSetAllocateInfo(): DescriptorPool can't be VK_NULL_HANDLE!");
+	TRAP_ASSERT(descriptorLayout != VK_NULL_HANDLE, "VulkanInits::DescriptorSetAllocateInfo(): DescriptorLayout can't be VK_NULL_HANDLE!");
+
+	return VkDescriptorSetAllocateInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+		.pNext = nullptr,
+		.descriptorPool = descriptorPool,
+		.descriptorSetCount = 1,
+		.pSetLayouts = &descriptorLayout
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr VkDescriptorSetLayoutCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetLayoutCreateInfo(const std::span<const VkDescriptorSetLayoutBinding> bindings) noexcept
 {
 	return VkDescriptorSetLayoutCreateInfo
@@ -694,6 +883,32 @@ namespace TRAP::Graphics::API::VulkanInits
 		.flags = 0,
 		.bindingCount = NumericCast<u32>(bindings.size()),
 		.pBindings = bindings.data()
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkDescriptorUpdateTemplateCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorUpdateTemplateCreateInfo(VkDescriptorSetLayout descriptorSetLayout,
+	                                                                                                                              const std::span<const VkDescriptorUpdateTemplateEntry> entries,
+	                                                                                                                              const VkPipelineBindPoint bindPoint,
+	                                                                                                                              VkPipelineLayout pipelineLayout,
+	                                                                                                                              const u32 setIndex)
+{
+	TRAP_ASSERT(descriptorSetLayout != VK_NULL_HANDLE, "VulkanInits::DescriptorUpdateTemplateCreateInfo(): DescriptorSetLayout can't be VK_NULL_HANDLE!");
+	TRAP_ASSERT(!entries.empty(), "VulkanInits::DescriptorUpdateTemplateCreateInfo(): Entries can't be empty!");
+
+	return VkDescriptorUpdateTemplateCreateInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO,
+		.pNext = nullptr,
+		.flags = 0,
+		.descriptorUpdateEntryCount = NumericCast<u32>(entries.size()),
+		.pDescriptorUpdateEntries = entries.data(),
+		.templateType = VK_DESCRIPTOR_UPDATE_TEMPLATE_TYPE_DESCRIPTOR_SET,
+		.descriptorSetLayout = descriptorSetLayout,
+		.pipelineBindPoint = bindPoint,
+		.pipelineLayout = pipelineLayout,
+		.set = setIndex
 	};
 }
 
@@ -737,6 +952,83 @@ namespace TRAP::Graphics::API::VulkanInits
 		.pNext = nullptr,
 		.semaphoreType = semaphoreType,
 		.initialValue = initialValue
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkSemaphoreWaitInfoKHR TRAP::Graphics::API::VulkanInits::SemaphoreWaitInfo(VkSemaphore semaphore, const u64& value)
+{
+	TRAP_ASSERT(semaphore != VK_NULL_HANDLE, "VulkanInits::SemaphoreWaitInfo(): Semaphore can't be VK_NULL_HANDLE!");
+
+	return VkSemaphoreWaitInfoKHR
+	{
+		.sType = VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO_KHR,
+		.pNext = nullptr,
+		.flags = 0,
+		.semaphoreCount = 1,
+		.pSemaphores = &semaphore,
+		.pValues = &value
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkAttachmentDescription TRAP::Graphics::API::VulkanInits::AttachmentDescription(const VkFormat format,
+	                                                                                                    const VkSampleCountFlagBits sampleCount,
+	                                                                                                    const VkAttachmentLoadOp loadOp,
+	                                                                                                    const VkAttachmentStoreOp storeOp,
+	                                                                                                    const VkAttachmentLoadOp stencilLoadOp,
+	                                                                                                    const VkAttachmentStoreOp stencilStoreOp,
+	                                                                                                    const VkImageLayout layout,
+	                                                                                                    const VkImageLayout finalLayout)
+{
+	TRAP_ASSERT(format != VK_FORMAT_UNDEFINED, "VulkanInits::AttachmentDescription(): Format can't be VK_FORMAT_UNDEFINED!");
+	TRAP_ASSERT(finalLayout != VK_IMAGE_LAYOUT_UNDEFINED, "VulkanInits::AttachmentDescription(): FinalLayout can't be VK_IMAGE_LAYOUT_UNDEFINED!");
+	TRAP_ASSERT(finalLayout != VK_IMAGE_LAYOUT_PREINITIALIZED, "VulkanInits::AttachmentDescription(): FinalLayout can't be VK_IMAGE_LAYOUT_PREINITIALIZED!");
+
+	return VkAttachmentDescription
+	{
+		.flags = 0,
+		.format = format,
+		.samples = sampleCount,
+		.loadOp = loadOp,
+		.storeOp = storeOp,
+		.stencilLoadOp = stencilLoadOp,
+		.stencilStoreOp = stencilStoreOp,
+		.initialLayout = layout,
+		.finalLayout = finalLayout
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkAttachmentDescription2KHR TRAP::Graphics::API::VulkanInits::AttachmentDescription2(const VkFormat format,
+	                                                                                                         const VkSampleCountFlagBits sampleCount,
+	                                                                                                         const VkAttachmentLoadOp loadOp,
+	                                                                                                         const VkAttachmentStoreOp storeOp,
+	                                                                                                         const VkAttachmentLoadOp stencilLoadOp,
+	                                                                                                         const VkAttachmentStoreOp stencilStoreOp,
+	                                                                                                         const VkImageLayout layout,
+	                                                                                                         const VkImageLayout finalLayout)
+{
+	TRAP_ASSERT(format != VK_FORMAT_UNDEFINED, "VulkanInits::AttachmentDescription2(): Format can't be VK_FORMAT_UNDEFINED!");
+	TRAP_ASSERT(finalLayout != VK_IMAGE_LAYOUT_UNDEFINED, "VulkanInits::AttachmentDescription2(): FinalLayout can't be VK_IMAGE_LAYOUT_UNDEFINED!");
+	TRAP_ASSERT(finalLayout != VK_IMAGE_LAYOUT_PREINITIALIZED, "VulkanInits::AttachmentDescription2(): FinalLayout can't be VK_IMAGE_LAYOUT_PREINITIALIZED!");
+
+	return VkAttachmentDescription2KHR
+	{
+		.sType = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2_KHR,
+		.pNext = nullptr,
+		.flags = 0,
+		.format = format,
+		.samples = sampleCount,
+		.loadOp = loadOp,
+		.storeOp = storeOp,
+		.stencilLoadOp = stencilLoadOp,
+		.stencilStoreOp = stencilStoreOp,
+		.initialLayout = layout,
+		.finalLayout = finalLayout
 	};
 }
 
@@ -876,6 +1168,252 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr VkRenderPassBeginInfo TRAP::Graphics::API::VulkanInits::RenderPassBeginInfo(VkRenderPass renderPass,
+	                                                                                                VkFramebuffer frameBuffer,
+	                                                                                                const VkRect2D& renderArea,
+	                                                                                                const std::span<const VkClearValue> colorValues)
+{
+	TRAP_ASSERT(renderPass != VK_NULL_HANDLE, "VulkanInits::RenderPassBeginInfo(): RenderPass can't be VK_NULL_HANDLE!");
+	TRAP_ASSERT(frameBuffer != VK_NULL_HANDLE, "VulkanInits::RenderPassBeginInfo(): FrameBuffer can't be VK_NULL_HANDLE!");
+
+	return VkRenderPassBeginInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+		.pNext = nullptr,
+		.renderPass = renderPass,
+		.framebuffer = frameBuffer,
+		.renderArea = renderArea,
+		.clearValueCount = NumericCast<u32>(colorValues.size()),
+		.pClearValues = colorValues.data()
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkFramebufferCreateInfo TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo(VkRenderPass renderPass,
+	                                                                                                    const std::span<const VkImageView> attachments,
+	                                                                                                    const u32 width,
+	                                                                                                    const u32 height,
+	                                                                                                    const u32 layerCount)
+{
+	TRAP_ASSERT(width != 0, "VulkanInits::FramebufferCreateInfo(): Width can't be 0!");
+	TRAP_ASSERT(height != 0, "VulkanInits::FramebufferCreateInfo(): Height can't be 0!");
+	TRAP_ASSERT(layerCount != 0, "VulkanInits::FramebufferCreateInfo(): LayerCount can't be 0!");
+	TRAP_ASSERT(renderPass != VK_NULL_HANDLE, "VulkanInits::FramebufferCreateInfo(): RenderPass can't be VK_NULL_HANDLE!");
+
+	return VkFramebufferCreateInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
+		.pNext = nullptr,
+		.flags = 0,
+		.renderPass = renderPass,
+		.attachmentCount = NumericCast<u32>(attachments.size()),
+		.pAttachments = attachments.data(),
+		.width = width,
+		.height = height,
+		.layers = layerCount
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkImageViewCreateInfo TRAP::Graphics::API::VulkanInits::ImageViewCreateInfo(VkImage image,
+	                                                                                                const VkImageViewType imageViewType,
+	                                                                                                const VkFormat format,
+																			                        const u32 levelCount,
+	                                                                                                const u32 layerCount)
+{
+	TRAP_ASSERT(image != VK_NULL_HANDLE, "VulkanInits::ImageViewCreateInfo(): Image can't be VK_NULL_HANDLE!");
+
+	constexpr VkComponentMapping componentMapping
+	{
+        .r = VK_COMPONENT_SWIZZLE_R,
+		.g = VK_COMPONENT_SWIZZLE_G,
+		.b = VK_COMPONENT_SWIZZLE_B,
+		.a = VK_COMPONENT_SWIZZLE_A
+	};
+
+	const VkImageSubresourceRange subresourceRange
+	{
+        .aspectMask = DetermineAspectMask(format, true),
+		.baseMipLevel = 0,
+		.levelCount = levelCount,
+		.baseArrayLayer = 0,
+		.layerCount = layerCount
+	};
+
+	return VkImageViewCreateInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+		.pNext = nullptr,
+		.flags = 0,
+		.image = image,
+		.viewType = imageViewType,
+		.format = format,
+		.components = componentMapping,
+		.subresourceRange = subresourceRange
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkImageCreateInfo TRAP::Graphics::API::VulkanInits::ImageCreateInfo(const VkImageType imageType,
+                                                                                            const VkFormat imageFormat, const u32 width,
+                                                                                            const u32 height, const u32 depth,
+                                                                                            const u32 mipLevels,
+																	                        const u32 arrayLayers,
+																	                        const VkSampleCountFlagBits sampleCount,
+																	                        const VkImageTiling tiling,
+																	                        const VkImageUsageFlags usage)
+{
+	TRAP_ASSERT(width != 0, "VulkanInits::ImageCreateInfo(): Width can't be 0!");
+	TRAP_ASSERT(height != 0, "VulkanInits::ImageCreateInfo(): Height can't be 0!");
+	TRAP_ASSERT(depth != 0, "VulkanInits::ImageCreateInfo(): Depth can't be 0!");
+	TRAP_ASSERT(mipLevels != 0, "VulkanInits::ImageCreateInfo(): MipLevels can't be 0!");
+	TRAP_ASSERT(arrayLayers != 0, "VulkanInits::ImageCreateInfo(): ArrayLayers can't be 0!");
+
+	const VkExtent3D extent
+	{
+		.width = width,
+		.height = height,
+		.depth = depth
+	};
+
+	return VkImageCreateInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
+		.pNext = nullptr,
+		.flags = 0,
+		.imageType = imageType,
+		.format = imageFormat,
+		.extent = extent,
+		.mipLevels = mipLevels,
+		.arrayLayers = arrayLayers,
+		.samples = sampleCount,
+		.tiling = tiling,
+		.usage = usage,
+		.sharingMode = VK_SHARING_MODE_EXCLUSIVE,
+		.queueFamilyIndexCount = 0,
+		.pQueueFamilyIndices = nullptr,
+		.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkBufferImageCopy TRAP::Graphics::API::VulkanInits::ImageCopy(const u32 bufferRowLength, const u32 width,
+															                          const u32 height, const u32 depth,
+							    							                          const VkImageSubresourceLayers layers)
+{
+	TRAP_ASSERT(width != 0, "VulkanInits::ImageCopy(): Width can't be 0!");
+	TRAP_ASSERT(height != 0, "VulkanInits::ImageCopy(): Height can't be 0!");
+	TRAP_ASSERT(depth != 0, "VulkanInits::ImageCopy(): Depth can't be 0!");
+
+	constexpr VkOffset3D offset
+	{
+		.x = 0,
+		.y = 0,
+		.z = 0
+	};
+
+	const VkExtent3D extent
+	{
+		.width = width,
+		.height = height,
+		.depth = depth
+	};
+
+	return VkBufferImageCopy
+	{
+		.bufferOffset = 0,
+		.bufferRowLength = bufferRowLength,
+		.bufferImageHeight = 0,
+		.imageSubresource = layers,
+		.imageOffset = offset,
+		.imageExtent = extent
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkBufferImageCopy TRAP::Graphics::API::VulkanInits::ImageCopy(const u64 bufferOffset, const u32 bufferRowLength,
+ 															                          const u32 bufferImageHeight, const u32 width,
+															                          const u32 height, const u32 depth,
+							    							                          const VkImageSubresourceLayers layers)
+{
+	TRAP_ASSERT(width != 0, "VulkanInits::ImageCopy(): Width can't be 0!");
+	TRAP_ASSERT(height != 0, "VulkanInits::ImageCopy(): Height can't be 0!");
+	TRAP_ASSERT(depth != 0, "VulkanInits::ImageCopy(): Depth can't be 0!");
+
+	constexpr VkOffset3D offset
+	{
+		.x = 0,
+		.y = 0,
+		.z = 0
+	};
+
+	const VkExtent3D extent
+	{
+		.width = width,
+		.height = height,
+		.depth = depth
+	};
+
+	return VkBufferImageCopy
+	{
+		.bufferOffset = bufferOffset,
+		.bufferRowLength = bufferRowLength,
+		.bufferImageHeight = bufferImageHeight,
+		.imageSubresource = layers,
+		.imageOffset = offset,
+		.imageExtent = extent
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkBufferCreateInfo TRAP::Graphics::API::VulkanInits::BufferCreateInfo(const u64 allocationSize,
+                                                                                              const VkBufferUsageFlags usageFlags)
+{
+	TRAP_ASSERT(allocationSize != 0, "VulkanInits::BufferCreateInfo(): AllocationSize can't be 0!");
+	TRAP_ASSERT(usageFlags != 0, "VulkanInits::BufferCreateInfo(): UsageFlags can't be 0!");
+
+	return VkBufferCreateInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+		.pNext = nullptr,
+		.flags = 0,
+		.size = allocationSize,
+		.usage = usageFlags,
+		.sharingMode = VK_SHARING_MODE_EXCLUSIVE,
+		.queueFamilyIndexCount = 0,
+		.pQueueFamilyIndices = nullptr
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkBufferViewCreateInfo TRAP::Graphics::API::VulkanInits::BufferViewCreateInfo(VkBuffer buffer,
+                                                                                                      const VkFormat format,
+	                                                                                                  const u64 offset,
+	                                                                                                  const u64 range)
+{
+	TRAP_ASSERT(buffer != VK_NULL_HANDLE, "VulkanInits::BufferViewCreateInfo(): Buffer can't be VK_NULL_HANDLE!");
+
+	return VkBufferViewCreateInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO,
+		.pNext = nullptr,
+		.flags = 0,
+		.buffer = buffer,
+		.format = format,
+		.offset = offset,
+		.range = range
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr VkCommandPoolCreateInfo TRAP::Graphics::API::VulkanInits::CommandPoolCreateInfo(const u32 queueFamilyIndex) noexcept
 {
 	return VkCommandPoolCreateInfo
@@ -884,6 +1422,23 @@ namespace TRAP::Graphics::API::VulkanInits
 		.pNext = nullptr,
 		.flags = 0,
 		.queueFamilyIndex = queueFamilyIndex
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkCommandBufferAllocateInfo TRAP::Graphics::API::VulkanInits::CommandBufferAllocateInfo(VkCommandPool commandPool,
+                                                                                                                const bool secondary)
+{
+	TRAP_ASSERT(commandPool != VK_NULL_HANDLE, "VulkanInits::CommandBufferAllocateInfo(): CommandPool can't be VK_NULL_HANDLE!");
+
+	return VkCommandBufferAllocateInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+		.pNext = nullptr,
+		.commandPool = commandPool,
+		.level = secondary ? VK_COMMAND_BUFFER_LEVEL_SECONDARY : VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+		.commandBufferCount = 1
 	};
 }
 
@@ -1052,6 +1607,26 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr VkPipelineShaderStageCreateInfo TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo(const VkShaderStageFlagBits stage,
+	                                                                                                                    VkShaderModule shaderModule,
+	                                                                                                                    const std::string& name)
+{
+	TRAP_ASSERT(!name.empty(), "VulkanInits::PipelineShaderStageCreateInfo(): Shader name can not be empty!");
+
+	return VkPipelineShaderStageCreateInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+		.pNext = nullptr,
+		.flags = 0,
+		.stage = stage,
+		.module = shaderModule,
+		.pName = name.c_str(),
+		.pSpecializationInfo = nullptr
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr VkPipelineDynamicStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineDynamicStateCreateInfo(const std::span<const VkDynamicState> dynamicStates) noexcept
 {
 	return VkPipelineDynamicStateCreateInfo
@@ -1061,6 +1636,25 @@ namespace TRAP::Graphics::API::VulkanInits
 		.flags = 0,
 		.dynamicStateCount = NumericCast<u32>(dynamicStates.size()),
 		.pDynamicStates = dynamicStates.data(),
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkComputePipelineCreateInfo TRAP::Graphics::API::VulkanInits::ComputePipelineCreateInfo(const VkPipelineShaderStageCreateInfo& stage,
+	                                                                                                            VkPipelineLayout layout)
+{
+	TRAP_ASSERT(layout, "VulkanInits::ComputePipelineCreateInfo(): Invalid Pipeline Layout!");
+
+	return VkComputePipelineCreateInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO,
+		.pNext = nullptr,
+		.flags = 0,
+		.stage = stage,
+		.layout = layout,
+		.basePipelineHandle = nullptr,
+		.basePipelineIndex = 0
 	};
 }
 
@@ -1137,6 +1731,46 @@ namespace TRAP::Graphics::API::VulkanInits
 		.queryType = queryType,
 		.queryCount = count,
 		.pipelineStatistics = 0
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkSwapchainCreateInfoKHR TRAP::Graphics::API::VulkanInits::SwapchainCreateInfoKHR(VkSurfaceKHR surface,
+	                                                                                                      const u32 imageCount,
+	                                                                                                      const VkSurfaceFormatKHR& surfaceFormat,
+	                                                                                                      const VkExtent2D& imageExtent,
+	                                                                                                      const VkSharingMode sharingMode,
+	                                                                                                      const std::span<const u32> queueFamilyIndices,
+	                                                                                                      const VkSurfaceTransformFlagBitsKHR preTransform,
+	                                                                                                      const VkCompositeAlphaFlagBitsKHR compositeAlpha,
+	                                                                                                      const VkPresentModeKHR presentMode,
+																								          VkSwapchainKHR oldSwapchain)
+{
+	TRAP_ASSERT(surface, "VulkanInits::SwapchainCreateInfoKHR(): Invalid Surface!");
+
+	return VkSwapchainCreateInfoKHR
+	{
+		.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+		.pNext = nullptr,
+		.flags = 0,
+		.surface = surface,
+		.minImageCount = imageCount,
+		.imageFormat = surfaceFormat.format,
+		.imageColorSpace = surfaceFormat.colorSpace,
+		.imageExtent = imageExtent,
+		.imageArrayLayers = 1,
+		.imageUsage = static_cast<u32>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+		              static_cast<u32>(VK_IMAGE_USAGE_TRANSFER_SRC_BIT) |
+					  static_cast<u32>(VK_IMAGE_USAGE_TRANSFER_DST_BIT),
+		.imageSharingMode = sharingMode,
+		.queueFamilyIndexCount = NumericCast<u32>(queueFamilyIndices.size()),
+		.pQueueFamilyIndices = queueFamilyIndices.data(),
+		.preTransform = preTransform,
+		.compositeAlpha = compositeAlpha,
+		.presentMode = presentMode,
+		.clipped = VK_TRUE,
+		.oldSwapchain = oldSwapchain
 	};
 }
 

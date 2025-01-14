@@ -260,9 +260,13 @@ namespace
 				currInputBindingDesc = &bindingDescs.emplace_back();
 			}
 
-			currInputBindingDesc->binding = bindingValue;
-			currInputBindingDesc->inputRate = TRAP::Graphics::API::VkVertexInputRateTranslator(attribute.Rate);
-			currInputBindingDesc->stride += TRAP::Graphics::API::ImageFormatBitSizeOfBlock(attribute.Format) / 8;
+			if(currInputBindingDesc != nullptr)
+			{
+				currInputBindingDesc->binding = bindingValue;
+				currInputBindingDesc->inputRate = TRAP::Graphics::API::VkVertexInputRateTranslator(attribute.Rate);
+				currInputBindingDesc->stride += TRAP::Graphics::API::ImageFormatBitSizeOfBlock(attribute.Format) / 8;
+			}
+
 		}
 
 		return bindingDescs;

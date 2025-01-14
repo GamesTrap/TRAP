@@ -25,18 +25,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Pipeline::~Pipeline()
+void TRAP::Graphics::Pipeline::DebugLog(const std::string_view msg)
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererPipelinePrefix, "Destroying Pipeline");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::Pipeline::Pipeline()
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererPipelinePrefix, "Creating Pipeline");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
+	TP_DEBUG(TRAP::Log::RendererPipelinePrefix, msg);
 }

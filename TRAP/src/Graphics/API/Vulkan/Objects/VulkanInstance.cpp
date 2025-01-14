@@ -94,7 +94,7 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appName,
+TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string& appName,
 													std::vector<std::string> instanceLayers,
                                                     std::vector<std::string> instanceExtensions)
 	: m_instanceLayers(std::move(instanceLayers)),

@@ -918,7 +918,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData& p) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view gameName)
+void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string& gameName)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 

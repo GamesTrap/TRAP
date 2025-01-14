@@ -57,7 +57,7 @@ TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::CommandBuffer& TRAP::Graphics::API::VulkanCommandPool::GetCommandBuffer(const bool secondary, const std::string_view name)
+[[nodiscard]] TRAP::Graphics::CommandBuffer& TRAP::Graphics::API::VulkanCommandPool::GetCommandBuffer(const bool secondary, const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 

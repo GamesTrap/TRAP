@@ -5,13 +5,6 @@
 
 #include "Window/Window.h"
 
-TRAP::Events::MouseMoveEvent::MouseMoveEvent(const f32 x, const f32 y, TRAP::Window& window)
-	: m_mouseX(x), m_mouseY(y), m_window(window)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] std::string TRAP::Events::MouseMoveEvent::ToString() const
 {
 	return fmt::format("MouseMoveEvent: {}, {} (\"{}\")", m_mouseX, m_mouseY, m_window.get().GetTitle());
@@ -21,13 +14,6 @@ TRAP::Events::MouseMoveEvent::MouseMoveEvent(const f32 x, const f32 y, TRAP::Win
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::MouseScrollEvent::MouseScrollEvent(const f32 xOffset, const f32 yOffset, TRAP::Window& window)
-	: m_xOffset(xOffset), m_yOffset(yOffset), m_window(window)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] std::string TRAP::Events::MouseScrollEvent::ToString() const
 {
 	return fmt::format("MouseScrollEvent: {}, {} (\"{}\")", m_xOffset, m_yOffset, m_window.get().GetTitle());
@@ -35,13 +21,6 @@ TRAP::Events::MouseScrollEvent::MouseScrollEvent(const f32 xOffset, const f32 yO
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Events::MouseButtonPressEvent::MouseButtonPressEvent(const Input::MouseButton button, TRAP::Window& window)
-	: MouseButtonEvent(button), m_window(window)
-{
-}
-
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] std::string TRAP::Events::MouseButtonPressEvent::ToString() const
@@ -54,13 +33,6 @@ TRAP::Events::MouseButtonPressEvent::MouseButtonPressEvent(const Input::MouseBut
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::MouseButtonReleaseEvent::MouseButtonReleaseEvent(const Input::MouseButton button, TRAP::Window& window)
-	: MouseButtonEvent(button), m_window(window)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] std::string TRAP::Events::MouseButtonReleaseEvent::ToString() const
 {
 	return fmt::format("MouseButtonReleaseEvent: {}({}) (\"{}\")", GetMouseButton(), std::to_underlying(GetMouseButton()),
@@ -71,13 +43,6 @@ TRAP::Events::MouseButtonReleaseEvent::MouseButtonReleaseEvent(const Input::Mous
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::MouseEnterEvent::MouseEnterEvent(TRAP::Window& window)
-	: m_window(window)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] std::string TRAP::Events::MouseEnterEvent::ToString() const
 {
 	return fmt::format("MouseEnterEvent: (\"{}\")", m_window.get().GetTitle());
@@ -85,13 +50,6 @@ TRAP::Events::MouseEnterEvent::MouseEnterEvent(TRAP::Window& window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Events::MouseLeaveEvent::MouseLeaveEvent(TRAP::Window& window)
-	: m_window(window)
-{
-}
-
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] std::string TRAP::Events::MouseLeaveEvent::ToString() const

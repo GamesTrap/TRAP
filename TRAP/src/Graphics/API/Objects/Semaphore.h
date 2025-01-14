@@ -1,6 +1,7 @@
 #ifndef TRAP_SEMAPHORE_H
 #define TRAP_SEMAPHORE_H
 
+#include "Core/Base.h"
 #include "Graphics/API/Vulkan/Objects/VulkanQueue.h"
 
 namespace TRAP::Graphics
@@ -18,10 +19,10 @@ namespace TRAP::Graphics
 		/// @param semaphoreType Type of semaphore to create. Default: Binary.
 		/// @param name Optional: Debug name used in GPU-profile
 		/// @return Created semaphore.
-		[[nodiscard]] static TRAP::Ref<Semaphore> Create(SemaphoreType semaphoreType = SemaphoreType::Binary, std::string_view name = "");
+		[[nodiscard]] static TRAP::Ref<Semaphore> Create(SemaphoreType semaphoreType = SemaphoreType::Binary, const std::string& name = "");
 
 		/// @brief Destructor.
-		virtual ~Semaphore();
+		constexpr virtual ~Semaphore();
 
 		/// @brief Copy constructor.
 		consteval Semaphore(const Semaphore&) noexcept = delete;
@@ -30,7 +31,7 @@ namespace TRAP::Graphics
 		/// @brief Move constructor.
 		constexpr Semaphore(Semaphore&&) noexcept = default;
 		/// @brief Move assignment operator.
-		Semaphore& operator=(Semaphore&&) noexcept = default;
+		constexpr Semaphore& operator=(Semaphore&&) noexcept = default;
 
 		/// @brief Is the semaphore signaled?
 		/// @return True if the semaphore is signaled, false otherwise.
@@ -38,7 +39,7 @@ namespace TRAP::Graphics
 
 	protected:
 		/// @brief Constructor.
-		Semaphore();
+		constexpr Semaphore();
 
 		bool m_signaled = false;
 
@@ -49,6 +50,22 @@ namespace TRAP::Graphics
 		friend TRAP::Graphics::PresentStatus TRAP::Graphics::API::VulkanQueue::Present(const QueuePresentDesc& desc) const;
 #endif /*TRAP_HEADLESS_MODE*/
 	};
+}
+
+constexpr TRAP::Graphics::Semaphore::~Semaphore()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererSemaphorePrefix, "Destroying Semaphore");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::Semaphore::Semaphore()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererSemaphorePrefix, "Creating Semaphore");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

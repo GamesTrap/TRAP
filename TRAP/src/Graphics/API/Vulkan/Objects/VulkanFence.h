@@ -25,7 +25,7 @@ namespace TRAP::Graphics::API
 		/// Fence is not signaled.
 		/// @param signalled Whether the Fence should be in signalled state or not. Default: Not signalled.
 		/// @param name Optional: Name for the Fence.
-		explicit VulkanFence(bool signalled = false, [[maybe_unused]] std::string_view name = "");
+		explicit VulkanFence(bool signalled = false, [[maybe_unused]] const std::string& name = "");
 		/// @brief Destructor.
 		~VulkanFence() override;
 

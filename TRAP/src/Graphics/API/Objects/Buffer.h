@@ -1,6 +1,7 @@
 #ifndef TRAP_BUFFER_H
 #define TRAP_BUFFER_H
 
+#include "Core/Base.h"
 #include "Graphics/API/RendererAPI/Types.h"
 
 namespace TRAP::Graphics
@@ -14,7 +15,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] static TRAP::Ref<Buffer> Create(const BufferDesc& desc);
 
 		/// @brief Destructor.
-		virtual ~Buffer();
+		constexpr virtual ~Buffer();
 
 		/// @brief Copy constructor.
 		consteval Buffer(const Buffer&) noexcept = delete;
@@ -23,7 +24,7 @@ namespace TRAP::Graphics
 		/// @brief Move constructor.
 		constexpr Buffer(Buffer&&) noexcept = default;
 		/// @brief Move assignment operator.
-		Buffer& operator=(Buffer&&) noexcept = default;
+		constexpr Buffer& operator=(Buffer&&) noexcept = default;
 
 		/// @brief Retrieve the size of the buffer in bytes.
 		/// @return Size of the buffer in bytes.
@@ -52,7 +53,7 @@ namespace TRAP::Graphics
 
 	protected:
 		/// @brief Constructor.
-		Buffer(u64 size, DescriptorType descriptorType, ResourceMemoryUsage memoryUsage);
+		constexpr Buffer(u64 size, DescriptorType descriptorType, ResourceMemoryUsage memoryUsage);
 
 		//CPU address of the mapped buffer (applicable to buffers created in CPU accessible heaps
 		//(CPU, CPUToGPU, GPUToCPU))
@@ -62,6 +63,26 @@ namespace TRAP::Graphics
 		DescriptorType m_descriptors = DescriptorType::Undefined;
 		ResourceMemoryUsage m_memoryUsage = ResourceMemoryUsage::Unknown;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::Buffer::Buffer(const u64 size, const DescriptorType descriptorType,
+                                         const ResourceMemoryUsage memoryUsage)
+	: m_size(size), m_descriptors(descriptorType), m_memoryUsage(memoryUsage)
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererBufferPrefix, "Creating Buffer");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::Buffer::~Buffer()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererBufferPrefix, "Destroying Buffer");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

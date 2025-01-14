@@ -50,7 +50,7 @@ namespace TRAP::Graphics::API
 		void InitGraphicsPipeline(const PipelineDesc& desc);
 
 		VkPipeline m_vkPipeline{};
-		PipelineType m_type;
+		PipelineType m_type{};
 		//In DX12 this information is stored in ID3D12StateObject.
 		//But for Vulkan we need to store it manually.
 		std::vector<std::string> m_shaderStageNames{};

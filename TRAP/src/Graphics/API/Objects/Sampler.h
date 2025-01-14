@@ -1,6 +1,7 @@
 #ifndef TRAP_SAMPLER_H
 #define TRAP_SAMPLER_H
 
+#include "Core/Base.h"
 #include "Graphics/API/RendererAPI/Types.h"
 #include "Utils/Utils.h"
 
@@ -15,7 +16,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] static TRAP::Ref<Sampler> Create(SamplerDesc desc);
 
 		/// @brief Destructor.
-		virtual ~Sampler();
+		constexpr virtual ~Sampler();
 
 		/// @brief Copy constructor.
 		consteval Sampler(const Sampler&) noexcept = delete;
@@ -24,7 +25,7 @@ namespace TRAP::Graphics
 		/// @brief Move constructor.
 		constexpr Sampler(Sampler&&) noexcept = default;
 		/// @brief Move assignment operator.
-		Sampler& operator=(Sampler&&) noexcept = default;
+		constexpr Sampler& operator=(Sampler&&) noexcept = default;
 
 		/// @brief Retrieve the minification filter of the sampler.
 		/// @return Minification filter.
@@ -66,7 +67,7 @@ namespace TRAP::Graphics
 
 	protected:
 		/// @brief Constructor.
-		explicit Sampler(const SamplerDesc& desc);
+		constexpr explicit Sampler(SamplerDesc desc);
 
 		/// @brief Update the anisotropy value of the sampler.
 		/// @param anisotropy New anisotropy to use.
@@ -75,6 +76,25 @@ namespace TRAP::Graphics
 		SamplerDesc m_samplerDesc{};
 		bool m_usesEngineAnisotropyLevel = false;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::Sampler::~Sampler()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererSamplerPrefix, "Destroying Sampler");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::Sampler::Sampler(SamplerDesc desc)
+	: m_samplerDesc(std::move(desc))
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererSamplerPrefix, "Creating Sampler");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

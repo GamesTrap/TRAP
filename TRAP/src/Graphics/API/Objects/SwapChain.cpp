@@ -31,20 +31,9 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::SwapChain::SwapChain()
+void TRAP::Graphics::SwapChain::DebugLog(const std::string_view msg)
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererSwapChainPrefix, "Creating SwapChain");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::SwapChain::~SwapChain()
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererSwapChainPrefix, "Destroying SwapChain");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
+	TP_DEBUG(TRAP::Log::RendererSwapChainPrefix, msg);
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

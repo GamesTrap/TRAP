@@ -1,6 +1,7 @@
 #ifndef TRAP_RENDERTARGET_H
 #define TRAP_RENDERTARGET_H
 
+#include "Core/Base.h"
 #include "Graphics/API/RendererAPI/Types.h"
 
 namespace TRAP::Graphics
@@ -64,7 +65,7 @@ namespace TRAP::Graphics
 
 	protected:
 		/// @brief Constructor.
-		explicit RenderTarget(const RenderTargetDesc& desc);
+		constexpr explicit RenderTarget(const RenderTargetDesc& desc);
 
 		TRAP::Ref<TRAP::Graphics::Texture> m_texture = nullptr;
 
@@ -79,6 +80,19 @@ namespace TRAP::Graphics
 		TRAP::Graphics::API::ImageFormat m_format;
 		SampleCount m_sampleCount = SampleCount::One;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::RenderTarget::RenderTarget(const RenderTargetDesc& desc)
+	: m_clearValue(desc.ClearValue), m_arraySize(desc.ArraySize), m_depth(desc.Depth), m_width(desc.Width),
+	  m_height(desc.Height), m_descriptors(desc.Descriptors),
+	  m_mipLevels(desc.MipLevels > 0u ? desc.MipLevels : 1u), m_sampleQuality(desc.SampleQuality), m_format(desc.Format),
+	  m_sampleCount(desc.SampleCount)
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererRenderTargetPrefix, "Creating RenderTarget");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

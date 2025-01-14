@@ -25,18 +25,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::QueryPool::~QueryPool()
+void TRAP::Graphics::QueryPool::DebugLog(const std::string_view msg)
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererQueryPoolPrefix, "Destroying QueryPool");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::QueryPool::QueryPool()
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererQueryPoolPrefix, "Creating QueryPool");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
+	TP_DEBUG(TRAP::Log::RendererQueryPoolPrefix, msg);
 }

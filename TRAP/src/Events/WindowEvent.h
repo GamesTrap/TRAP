@@ -24,7 +24,7 @@ namespace TRAP::Events
 		/// @param height New Window height.
 		/// @param window The affected window.
 		/// @note The window must outlive the WindowResizeEvent!
-		WindowResizeEvent(u32 width, u32 height, TRAP::Window& window);
+		constexpr WindowResizeEvent(u32 width, u32 height, TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowResizeEvent() override = default;
 		/// @brief Copy constructor.
@@ -76,7 +76,7 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param window The affected window.
 		/// @note The window must outlive the WindowMinimizeEvent!
-		explicit WindowMinimizeEvent(TRAP::Window& window);
+		constexpr explicit WindowMinimizeEvent(TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowMinimizeEvent() override = default;
 		/// @brief Copy constructor.
@@ -120,7 +120,7 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param window The affected window.
 		/// @note The window must outlive the WindowMaximizeEvent!
-		explicit WindowMaximizeEvent(TRAP::Window& window);
+		constexpr explicit WindowMaximizeEvent(TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowMaximizeEvent() override = default;
 		/// @brief Copy constructor.
@@ -164,7 +164,7 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param window The affected window.
 		/// @note The window must outlive the WindowRestoreEvent!
-		explicit WindowRestoreEvent(TRAP::Window& window);
+		constexpr explicit WindowRestoreEvent(TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowRestoreEvent() override = default;
 		/// @brief Copy constructor.
@@ -208,7 +208,7 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param window The affected window.
 		/// @note The window must outlive the WindowCloseEvent!
-		explicit WindowCloseEvent(TRAP::Window& window);
+		constexpr explicit WindowCloseEvent(TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowCloseEvent() override = default;
 		/// @brief Copy constructor.
@@ -254,7 +254,7 @@ namespace TRAP::Events
 		/// @param y New y position.
 		/// @param window The affected window.
 		/// @note The window must outlive the WindowMoveEvent!
-		WindowMoveEvent(i32 x, i32 y, TRAP::Window& window);
+		constexpr WindowMoveEvent(i32 x, i32 y, TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowMoveEvent() override = default;
 		/// @brief Copy constructor.
@@ -309,7 +309,7 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param window The affected window.
 		/// @note The window must outlive the WindowFocusEvent!
-		explicit WindowFocusEvent(TRAP::Window& window);
+		constexpr explicit WindowFocusEvent(TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowFocusEvent() override = default;
 		/// @brief Copy constructor.
@@ -353,7 +353,7 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param window The affected window.
 		/// @note The window must outlive the WindowLostFocusEvent!
-		explicit WindowLostFocusEvent(TRAP::Window& window);
+		constexpr explicit WindowLostFocusEvent(TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowLostFocusEvent() override = default;
 		/// @brief Copy constructor.
@@ -398,7 +398,7 @@ namespace TRAP::Events
 		/// @param paths Path(s) to the file(s) or folder(s) dropped onto the window.
 		/// @param window The affected window.
 		/// @note The window must outlive the WindowDropEvent!
-		WindowDropEvent(std::vector<std::string> paths, TRAP::Window& window);
+		constexpr WindowDropEvent(std::vector<std::string> paths, TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowDropEvent() override = default;
 		/// @brief Copy constructor.
@@ -448,7 +448,7 @@ namespace TRAP::Events
 		/// @param yScale New y content scale.
 		/// @param window The affected window.
 		/// @note The window must outlive the WindowContentScaleEvent!
-		explicit WindowContentScaleEvent(f32 xScale, f32 yScale, TRAP::Window& window);
+		constexpr explicit WindowContentScaleEvent(f32 xScale, f32 yScale, TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~WindowContentScaleEvent() override = default;
 		/// @brief Copy constructor.
@@ -505,7 +505,7 @@ namespace TRAP::Events
 		/// @param height New framebuffer height.
 		/// @param window The affected window.
 		/// @note The window must outlive the FrameBufferResizeEvent!
-		FrameBufferResizeEvent(u32 width, u32 height, TRAP::Window& window);
+		constexpr FrameBufferResizeEvent(u32 width, u32 height, TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~FrameBufferResizeEvent() override = default;
 		/// @brief Copy constructor.
@@ -555,6 +555,15 @@ namespace TRAP::Events
 		std::reference_wrapper<TRAP::Window> m_window;
 	};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::WindowResizeEvent::WindowResizeEvent(const u32 width, const u32 height, TRAP::Window& window)
+	: m_width(width), m_height(height), m_window(window)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr u32 TRAP::Events::WindowResizeEvent::GetWidth() const noexcept
 {
@@ -607,6 +616,13 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
+constexpr TRAP::Events::WindowMinimizeEvent::WindowMinimizeEvent(TRAP::Window& window)
+	: m_window(window)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr TRAP::Window& TRAP::Events::WindowMinimizeEvent::GetWindow() const noexcept
 {
 	return m_window;
@@ -642,6 +658,13 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::WindowMaximizeEvent::WindowMaximizeEvent(TRAP::Window& window)
+	: m_window(window)
+{
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr TRAP::Window& TRAP::Events::WindowMaximizeEvent::GetWindow() const noexcept
@@ -681,6 +704,13 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
+constexpr TRAP::Events::WindowRestoreEvent::WindowRestoreEvent(TRAP::Window& window)
+	: m_window(window)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr TRAP::Window& TRAP::Events::WindowRestoreEvent::GetWindow() const noexcept
 {
 	return m_window;
@@ -718,6 +748,13 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
+constexpr TRAP::Events::WindowCloseEvent::WindowCloseEvent(TRAP::Window& window)
+	: m_window(window)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr TRAP::Window& TRAP::Events::WindowCloseEvent::GetWindow() const noexcept
 {
 	return m_window;
@@ -753,6 +790,13 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::WindowMoveEvent::WindowMoveEvent(const i32 x, const i32 y, TRAP::Window& window)
+	: m_x(x), m_y(y), m_window(window)
+{
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr i32 TRAP::Events::WindowMoveEvent::GetX() const noexcept
@@ -813,6 +857,13 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
+constexpr TRAP::Events::WindowFocusEvent::WindowFocusEvent(TRAP::Window& window)
+	: m_window(window)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr TRAP::Window& TRAP::Events::WindowFocusEvent::GetWindow() const noexcept
 {
 	return m_window;
@@ -850,6 +901,13 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
+constexpr TRAP::Events::WindowLostFocusEvent::WindowLostFocusEvent(TRAP::Window& window)
+	: m_window(window)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr TRAP::Window& TRAP::Events::WindowLostFocusEvent::GetWindow() const noexcept
 {
 	return m_window;
@@ -885,6 +943,13 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::WindowDropEvent::WindowDropEvent(std::vector<std::string> paths, TRAP::Window& window)
+	: m_paths(std::move(paths)), m_window(window)
+{
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr TRAP::Window& TRAP::Events::WindowDropEvent::GetWindow() const noexcept
@@ -929,6 +994,13 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::WindowContentScaleEvent::WindowContentScaleEvent(const f32 xScale, const f32 yScale, TRAP::Window& window)
+	: m_XScale(xScale), m_YScale(yScale), m_window(window)
+{
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr f32 TRAP::Events::WindowContentScaleEvent::GetXScale() const noexcept
@@ -987,6 +1059,15 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::FrameBufferResizeEvent::FrameBufferResizeEvent(const u32 width, const u32 height, TRAP::Window& window)
+	: m_width(width), m_height(height), m_window(window)
+{
+	TRAP_ASSERT(m_width > 0, "Events::FrameBufferResizeEvent(): Width is 0!");
+	TRAP_ASSERT(m_height > 0, "Events::FrameBufferResizeEvent(): Height is 0!");
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr u32 TRAP::Events::FrameBufferResizeEvent::GetWidth() const noexcept

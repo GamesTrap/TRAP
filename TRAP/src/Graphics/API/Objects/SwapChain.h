@@ -4,6 +4,7 @@
 #include <optional>
 #include <vector>
 
+#include "Core/Base.h"
 #include "Core/Types.h"
 #include "Utils/SmartPtr.h"
 
@@ -43,7 +44,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] static TRAP::Ref<SwapChain> Create(SwapChainDesc& desc);
 
 		/// @brief Destructor.
-		virtual ~SwapChain();
+		constexpr virtual ~SwapChain();
 
 		/// @brief Copy constructor.
 		consteval SwapChain(const SwapChain&) noexcept = delete;
@@ -52,7 +53,7 @@ namespace TRAP::Graphics
 		/// @brief Move constructor.
 		constexpr SwapChain(SwapChain&&) noexcept = default;
 		/// @brief Move assignment operator.
-		SwapChain& operator=(SwapChain&&) noexcept = default;
+		constexpr SwapChain& operator=(SwapChain&&) noexcept = default;
 
 		/// @brief Acquire the next presentable image from the swapchain to render to.
 		/// @param signalSemaphore Semaphore to signal when the image is ready to be presented.
@@ -107,10 +108,13 @@ namespace TRAP::Graphics
 
 	protected:
 		/// @brief Constructor.
-		SwapChain();
+		constexpr SwapChain();
 
 		//Render targets created from the swapchain back buffers
 		std::vector<TRAP::Ref<RenderTarget>> m_renderTargets{};
+
+	private:
+		static void DebugLog(std::string_view msg);
 	};
 #endif /*TRAP_HEADLESS_MODE*/
 }
@@ -118,6 +122,30 @@ namespace TRAP::Graphics
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
+
+constexpr TRAP::Graphics::SwapChain::SwapChain()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if(!std::is_constant_evaluated())
+	{
+		DebugLog("Creating SwapChain");
+	}
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::SwapChain::~SwapChain()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if(!std::is_constant_evaluated())
+	{
+		DebugLog("Destroying SwapChain");
+	}
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr const std::vector<TRAP::Ref<TRAP::Graphics::RenderTarget>>& TRAP::Graphics::SwapChain::GetRenderTargets() const noexcept
 {

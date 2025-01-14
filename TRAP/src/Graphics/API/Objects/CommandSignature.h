@@ -1,6 +1,7 @@
 #ifndef TRAP_COMMANDSIGNATURE_H
 #define TRAP_COMMANDSIGNATURE_H
 
+#include "Core/Base.h"
 #include "Utils/SmartPtr.h"
 
 namespace TRAP::Graphics
@@ -16,7 +17,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] static TRAP::Ref<CommandSignature> Create(const CommandSignatureDesc& desc);
 
 		/// @brief Destructor.
-		virtual ~CommandSignature();
+		constexpr virtual ~CommandSignature();
 
 		/// @brief Copy constructor.
 		consteval CommandSignature(const CommandSignature&) noexcept = delete;
@@ -25,14 +26,41 @@ namespace TRAP::Graphics
 		/// @brief Move constructor.
 		constexpr CommandSignature(CommandSignature&&) noexcept = default;
 		/// @brief Move assignment operator.
-		CommandSignature& operator=(CommandSignature&&) noexcept = default;
+		constexpr CommandSignature& operator=(CommandSignature&&) noexcept = default;
 
 	protected:
 		/// @brief Constructor.
-		CommandSignature();
+		constexpr CommandSignature();
 
 		//No Graphic API independent data
+
+	private:
+		static void DebugLog(std::string_view msg);
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::CommandSignature::CommandSignature()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if(!std::is_constant_evaluated())
+	{
+		DebugLog("Creating CommandSignature");
+	}
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::CommandSignature::~CommandSignature()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if(!std::is_constant_evaluated())
+	{
+		DebugLog("Destroying CommandSignature");
+	}
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 #endif /*TRAP_COMMANDSIGNATURE_H*/

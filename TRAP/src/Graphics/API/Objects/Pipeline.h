@@ -1,6 +1,7 @@
 #ifndef TRAP_PIPELINE_H
 #define TRAP_PIPELINE_H
 
+#include "Core/Base.h"
 #include "Utils/SmartPtr.h"
 
 namespace TRAP::Graphics
@@ -16,7 +17,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] static TRAP::Ref<Pipeline> Create(const PipelineDesc& desc);
 
 		/// @brief Destructor.
-		virtual ~Pipeline();
+		constexpr virtual ~Pipeline();
 
 		/// @brief Copy constructor.
 		consteval Pipeline(const Pipeline&) noexcept = delete;
@@ -25,14 +26,41 @@ namespace TRAP::Graphics
 		/// @brief Move constructor.
 		constexpr Pipeline(Pipeline&&) noexcept = default;
 		/// @brief Move assignment operator.
-		Pipeline& operator=(Pipeline&&) noexcept = default;
+		constexpr Pipeline& operator=(Pipeline&&) noexcept = default;
 
 	protected:
 		/// @brief Constructor.
-		Pipeline();
+		constexpr Pipeline();
 
 		//No Graphic API independent data
+
+	private:
+		static void DebugLog(std::string_view msg);
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::Pipeline::~Pipeline()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if(!std::is_constant_evaluated())
+	{
+		DebugLog("Destroying Pipeline");
+	}
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::Pipeline::Pipeline()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if(!std::is_constant_evaluated())
+	{
+		DebugLog("Creating Pipeline");
+	}
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 #endif /*TRAP_PIPELINE_H*/

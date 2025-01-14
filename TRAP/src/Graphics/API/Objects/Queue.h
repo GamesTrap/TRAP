@@ -1,6 +1,7 @@
 #ifndef TRAP_QUEUE_H
 #define TRAP_QUEUE_H
 
+#include "Core/Base.h"
 #include "Core/Types.h"
 #include "Utils/SmartPtr.h"
 
@@ -21,7 +22,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] static TRAP::Ref<Queue> Create(const QueueDesc& desc);
 
 		/// @brief Destructor.
-		virtual ~Queue();
+		constexpr virtual ~Queue();
 
 		/// @brief Copy constructor.
 		consteval Queue(const Queue&) noexcept = delete;
@@ -30,7 +31,7 @@ namespace TRAP::Graphics
 		/// @brief Move constructor.
 		constexpr Queue(Queue&&) noexcept = default;
 		/// @brief Move assignment operator.
-		Queue& operator=(Queue&&) noexcept = default;
+		constexpr Queue& operator=(Queue&&) noexcept = default;
 
 		/// @brief Wait for the queue to finish all submitted commands.
 		virtual void WaitQueueIdle() const = 0;
@@ -53,10 +54,38 @@ namespace TRAP::Graphics
 
 	protected:
 		/// @brief Constructor.
-		explicit Queue(QueueType queueType);
+		constexpr explicit Queue(QueueType queueType);
 
 		QueueType m_type;
+
+	private:
+		static void DebugLog(std::string_view msg);
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::Queue::~Queue()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if(!std::is_constant_evaluated())
+	{
+		DebugLog("Destroying Queue");
+	}
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::Queue::Queue(const QueueType queueType)
+	: m_type(queueType)
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if(!std::is_constant_evaluated())
+	{
+		DebugLog("Creating Queue");
+	}
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

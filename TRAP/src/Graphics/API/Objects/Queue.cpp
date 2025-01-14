@@ -25,19 +25,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Queue::~Queue()
+void TRAP::Graphics::Queue::DebugLog(const std::string_view msg)
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererQueuePrefix, "Destroying Queue");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::Queue::Queue(const QueueType queueType)
-	: m_type(queueType)
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererQueuePrefix, "Creating Queue");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
+	TP_DEBUG(TRAP::Log::RendererQueuePrefix, msg);
 }

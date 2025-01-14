@@ -5,7 +5,7 @@
 #include "Graphics/API/RendererAPI.h"
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create(const u32 numDescriptorSets,
-                                                                                               [[maybe_unused]] const std::string_view name)
+                                                                                               [[maybe_unused]] const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -24,25 +24,4 @@
 		TRAP_ASSERT(false, "DescriptorPool::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::DescriptorPool::~DescriptorPool()
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Destroying DescriptorPool");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::DescriptorPool::DescriptorPool(const u32 numDescriptorSets)
-	: m_numDescriptorSets(numDescriptorSets)
-{
-	TRAP_ASSERT(numDescriptorSets > 0, "DescriptorPool::DescriptorPool(): m_numDescriptorSets is 0");
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Creating DescriptorPool");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
 }

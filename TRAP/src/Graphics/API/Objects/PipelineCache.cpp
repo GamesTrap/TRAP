@@ -72,18 +72,7 @@ void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path) cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::PipelineCache::~PipelineCache()
+void TRAP::Graphics::PipelineCache::DebugLog(const std::string_view msg)
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererPipelineCachePrefix, "Destroying PipelineCache");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::PipelineCache::PipelineCache()
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererPipelineCachePrefix, "Creating PipelineCache");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
+	TP_DEBUG(TRAP::Log::RendererPipelineCachePrefix, msg);
 }

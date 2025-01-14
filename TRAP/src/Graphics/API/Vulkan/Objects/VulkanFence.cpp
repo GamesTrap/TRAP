@@ -47,7 +47,7 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanFence::VulkanFence(const bool signalled, [[maybe_unused]] const std::string_view name)
+TRAP::Graphics::API::VulkanFence::VulkanFence(const bool signalled, [[maybe_unused]] const std::string& name)
 	: Fence(signalled), m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);

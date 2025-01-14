@@ -1,13 +1,10 @@
 #ifndef TRAP_VULKANINDIRECTCOMMANDSIGNATURE_H
 #define TRAP_VULKANINDIRECTCOMMANDSIGNATURE_H
 
+#include "Core/Base.h"
 #include "Core/Types.h"
 #include "Graphics/API/Objects/CommandSignature.h"
-
-namespace TRAP::Graphics
-{
-    enum class IndirectArgumentType : u8;
-}
+#include "Graphics/API/RendererAPI/Types.h"
 
 namespace TRAP::Graphics::API
 {
@@ -16,9 +13,9 @@ namespace TRAP::Graphics::API
 	public:
 		/// @brief Constructor.
 		/// @param desc Command signature description.
-		explicit VulkanCommandSignature(const CommandSignatureDesc& desc);
+		constexpr explicit VulkanCommandSignature(const CommandSignatureDesc& desc);
 		/// @brief Destructor.
-		~VulkanCommandSignature() override;
+		constexpr ~VulkanCommandSignature() override;
 
 		/// @brief Copy constructor.
 		consteval VulkanCommandSignature(const VulkanCommandSignature&) noexcept = delete;
@@ -27,7 +24,7 @@ namespace TRAP::Graphics::API
 		/// @brief Move constructor.
 		constexpr VulkanCommandSignature(VulkanCommandSignature&&) noexcept = default;
 		/// @brief Move assignment operator.
-		VulkanCommandSignature& operator=(VulkanCommandSignature&&) noexcept = default;
+		constexpr VulkanCommandSignature& operator=(VulkanCommandSignature&&) noexcept = default;
 
 		/// @brief Retrieve the draw type used for indirect drawing.
 		/// @return Draw type.
@@ -40,6 +37,53 @@ namespace TRAP::Graphics::API
 		IndirectArgumentType m_drawType{};
 		u32 m_stride{};
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const CommandSignatureDesc& desc)
+{
+#ifdef VERBOSE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Creating CommandSignature");
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
+
+	for(const auto& argDesc : desc.ArgDescs) //Counting for all types
+	{
+		switch(argDesc.Type)
+		{
+		case IndirectArgumentType::IndirectDraw:
+			m_drawType = IndirectArgumentType::IndirectDraw;
+			m_stride += sizeof(IndirectDrawArguments);
+			break;
+
+		case IndirectArgumentType::IndirectDrawIndex:
+			m_drawType = IndirectArgumentType::IndirectDrawIndex;
+			m_stride += sizeof(IndirectDrawIndexArguments);
+			break;
+
+		case IndirectArgumentType::IndirectDispatch:
+			m_drawType = IndirectArgumentType::IndirectDispatch;
+			m_stride += sizeof(IndirectDispatchArguments);
+			break;
+
+		default:
+			TRAP_ASSERT(false, "VulkanCommandSignature(): Vulkan runtime only supports IndirectDraw, IndirectDrawIndex and IndirectDispatch "
+			                   "at this point!");
+			break;
+		}
+	}
+
+	if (!desc.Packed)
+		m_stride = ((m_stride + 16 - 1) / 16) * 16;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::API::VulkanCommandSignature::~VulkanCommandSignature()
+{
+#ifdef VERBOSE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Destroying CommandSignature");
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

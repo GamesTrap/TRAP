@@ -100,7 +100,7 @@ struct fmt::formatter<TRAP::SemanticVersion<major, minor, patch>>
         return ctx.begin();
     }
 
-    fmt::format_context::iterator format(const TRAP::SemanticVersion<major, minor, patch>& semVer, fmt::format_context& ctx) const
+    fmt::format_context::iterator format(const TRAP::SemanticVersion<major, minor, patch>& semVer, const fmt::format_context& ctx) const
     {
         auto out = ctx.out();
         out = fmt::format_to(out, "{}.{}.{}", major, minor, patch);

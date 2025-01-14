@@ -31,7 +31,7 @@ namespace TRAP::Graphics::API
 		/// @param secondary Is this a secondary command buffer?
 		/// @param name Optional: Name for the command buffer
 		VulkanCommandBuffer(TRAP::Ref<VulkanDevice> device, TRAP::Ref<Queue> queue, VkCommandPool commandPool,
-		                    bool secondary, [[maybe_unused]] std::string_view name = "");
+		                    bool secondary, [[maybe_unused]] const std::string& name = "");
 
 		/// @brief Destructor.
 		~VulkanCommandBuffer() override;
@@ -111,11 +111,11 @@ namespace TRAP::Graphics::API
 		/// @brief Add a debug marker to the command buffer.
 		/// @param color Color for the debug marker.
 		/// @param name Name of the marker.
-		void AddDebugMarker(const TRAP::Math::Vec3& color, std::string_view name) const override;
+		void AddDebugMarker(const TRAP::Math::Vec3& color, const std::string& name) const override;
 		/// @brief Start a debug marker region.
 		/// @param color Color for the debug marker.
 		/// @param name Name of the marker.
-		void BeginDebugMarker(const TRAP::Math::Vec3& color, std::string_view name) const override;
+		void BeginDebugMarker(const TRAP::Math::Vec3& color, const std::string& name) const override;
 		/// @brief End the currently running debug marker region.
 		void EndDebugMarker() const override;
 

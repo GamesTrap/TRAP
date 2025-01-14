@@ -76,7 +76,7 @@ namespace TRAP::Graphics
 		/// @brief Initialize the Renderer.
 		/// @param gameName Name of the game.
 		/// @param renderAPI Render API to use.
-		static void Init(std::string_view gameName, RenderAPI renderAPI);
+		static void Init(const std::string& gameName, RenderAPI renderAPI);
 		/// @brief Shutdown the Renderer.
 		static void Shutdown();
 
@@ -113,7 +113,7 @@ namespace TRAP::Graphics
 
 		/// @brief Initialize the internal renderer.
 		/// @param gameName Name of the game.
-		virtual void InitInternal(std::string_view gameName) = 0;
+		virtual void InitInternal(const std::string& gameName) = 0;
 
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Flush renderer for the given window.

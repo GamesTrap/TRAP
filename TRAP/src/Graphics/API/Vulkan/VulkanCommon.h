@@ -30,11 +30,14 @@
 #define TRAP_VULKANCOMMON_H
 
 #include "Core/PlatformDetection.h"
-#include "Graphics/API/Vulkan/Objects/VulkanInits.h"
+#include "Graphics/API/ImageFormat.h"
 #include "Utils/ConstexprMap.h"
+#include "Graphics/API/RendererAPI/Types.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
 namespace TRAP::Graphics::API
 {
+	class VulkanDevice;
 	class VulkanQueue;
 	class VulkanPhysicalDevice;
 
@@ -151,8 +154,8 @@ namespace TRAP::Graphics::API
 	/// @param planesCount Number of planes.
 	/// @param memReq Output Vulkan memory requirement.
 	/// @param planesOffsets Output plane offsets.
-	void UtilGetPlanarVkImageMemoryRequirement(VkDevice device, VkImage image, u32 planesCount,
-	                                           VkMemoryRequirements& memReq, std::vector<u64>& planesOffsets);
+	constexpr void UtilGetPlanarVkImageMemoryRequirement(VkDevice device, VkImage image, u32 planesCount,
+	                                                     VkMemoryRequirements& memReq, std::vector<u64>& planesOffsets);
 	/// @brief Utility to create the VkFragmentShadingRateCombinerOpKHR from
 	/// a ShadingRateCombiner.
 	/// @param combiner ShadingRateCombiner.
@@ -188,7 +191,7 @@ namespace TRAP::Graphics::API
 	/// @param handle Vulkan object.
 	/// @param type Vulkan object type.
 	/// @param name Name to set.
-	void VkSetObjectName(const VulkanDevice& device, u64 handle, VkObjectType type, std::string_view name);
+	void VkSetObjectName(const VulkanDevice& device, u64 handle, VkObjectType type, const std::string& name);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
 	[[nodiscard]] constexpr VkAttachmentLoadOp VkAttachmentLoadOpTranslator(const LoadActionType loadActionType)
@@ -1205,7 +1208,17 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 			++blendDescIndex;
 	}
 
-	return VulkanInits::PipelineColorBlendStateCreateInfo(attachments);
+	return VkPipelineColorBlendStateCreateInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+		.pNext = nullptr,
+		.flags = 0,
+		.logicOpEnable = VK_FALSE,
+		.logicOp = VK_LOGIC_OP_CLEAR,
+		.attachmentCount = NumericCast<u32>(attachments.size()),
+		.pAttachments = attachments.data(),
+		.blendConstants = {0.0f, 0.0f, 0.0f, 0.0f}
+	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1271,6 +1284,58 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 		.depthBiasSlopeFactor = desc.SlopeScaledDepthBias,
 		.lineWidth = 1.0f
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device, VkImage image,
+																          const u32 planesCount,
+                                                                          VkMemoryRequirements& memReq,
+                                                                          std::vector<u64>& planesOffsets)
+{
+	memReq = {};
+
+	VkImagePlaneMemoryRequirementsInfo imagePlaneMemReqInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO,
+		.pNext = nullptr,
+		.planeAspect = VK_IMAGE_ASPECT_NONE
+	};
+
+	const VkImageMemoryRequirementsInfo2 imagePlaneMemReqInfo2
+	{
+		.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2,
+		.pNext = &imagePlaneMemReqInfo,
+		.image = image
+	};
+
+	VkMemoryDedicatedRequirements memDedicatedReq
+	{
+		.sType = VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS,
+		.pNext = nullptr,
+		.prefersDedicatedAllocation = VK_FALSE,
+		.requiresDedicatedAllocation = VK_FALSE
+	};
+
+	VkMemoryRequirements2 memReq2
+	{
+		.sType = VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2,
+		.pNext = &memDedicatedReq,
+		.memoryRequirements = {}
+	};
+
+	planesOffsets.resize(planesCount);
+	for(u32 i = 0; i < planesCount; ++i)
+	{
+		imagePlaneMemReqInfo.planeAspect = static_cast<VkImageAspectFlagBits>(VK_IMAGE_ASPECT_PLANE_0_BIT << i);
+		vkGetImageMemoryRequirements2(device, &imagePlaneMemReqInfo2, &memReq2);
+
+		planesOffsets[i] += memReq.size;
+		memReq.alignment = memReq2.memoryRequirements.alignment > memReq.alignment ? memReq2.memoryRequirements.alignment : memReq.alignment;
+		memReq.size += ((memReq2.memoryRequirements.size + memReq2.memoryRequirements.alignment - 1) /
+		                memReq2.memoryRequirements.alignment) * memReq2.memoryRequirements.alignment;
+		memReq.memoryTypeBits |= memReq2.memoryRequirements.memoryTypeBits;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -111,11 +111,11 @@ namespace TRAP::Graphics
 		/// @brief Add a debug marker to the command buffer.
 		/// @param color Color for the debug marker.
 		/// @param name Name of the marker.
-		virtual void AddDebugMarker(const TRAP::Math::Vec3& color, std::string_view name) const = 0;
+		virtual void AddDebugMarker(const TRAP::Math::Vec3& color, const std::string& name) const = 0;
 		/// @brief Start a debug marker region.
 		/// @param color Color for the debug marker.
 		/// @param name Name of the marker.
-		virtual void BeginDebugMarker(const TRAP::Math::Vec3& color, std::string_view name) const = 0;
+		virtual void BeginDebugMarker(const TRAP::Math::Vec3& color, const std::string& name) const = 0;
 		/// @brief End the currently running debug marker region.
 		virtual void EndDebugMarker() const = 0;
 

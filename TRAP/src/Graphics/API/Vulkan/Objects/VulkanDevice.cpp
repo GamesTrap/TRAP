@@ -10,8 +10,8 @@
 namespace
 {
 #ifdef VERBOSE_GRAPHICS_DEBUG
-	void DebugPrintActiveDeviceExtensions(const std::span<const std::string> deviceExtensions,
-	                                      const TRAP::Graphics::API::VulkanPhysicalDevice& physicalDevice)
+	constexpr void DebugPrintActiveDeviceExtensions(const std::span<const std::string> deviceExtensions,
+	                                                const TRAP::Graphics::API::VulkanPhysicalDevice& physicalDevice)
 	{
 		if (deviceExtensions.empty())
 			return;

@@ -1,6 +1,7 @@
 #ifndef TRAP_FENCE_H
 #define TRAP_FENCE_H
 
+#include "Core/Base.h"
 #include "Graphics/API/Vulkan/Objects/VulkanQueue.h"
 
 namespace TRAP::Graphics
@@ -14,10 +15,10 @@ namespace TRAP::Graphics
 		/// @return Created fence.
 		/// @param signalled Whether the Fence should be in signalled state or not. Default: Not signalled.
 		/// @param name Optional: Name for the Fence.
-		[[nodiscard]] static TRAP::Ref<Fence> Create(bool signalled = false, [[maybe_unused]] std::string_view name = "");
+		[[nodiscard]] static TRAP::Ref<Fence> Create(bool signalled = false, [[maybe_unused]] const std::string& name = "");
 
 		/// @brief Destructor.
-		virtual ~Fence();
+		constexpr virtual ~Fence();
 
 		/// @brief Copy constructor.
 		consteval Fence(const Fence&) noexcept = delete;
@@ -26,7 +27,7 @@ namespace TRAP::Graphics
 		/// @brief Move constructor.
 		constexpr Fence(Fence&&) noexcept = default;
 		/// @brief Move assignment operator.
-		Fence& operator=(Fence&&) noexcept = default;
+		constexpr Fence& operator=(Fence&&) noexcept = default;
 
 		/// @brief Retrieve whether the Fence was submitted or not.
 		/// @return True if Fence was submitted, false otherwise.
@@ -51,13 +52,32 @@ namespace TRAP::Graphics
 	protected:
 		/// @brief Constructor. Fence is not signaled.
 		/// @param signalled Whether the Fence should be in signalled state or not. Default: Not signalled.
-		explicit Fence(bool signalled);
+		constexpr explicit Fence(bool signalled);
 
 		bool m_submitted = false;
 
 	private:
 		friend void TRAP::Graphics::API::VulkanQueue::Submit(const QueueSubmitDesc& desc) const;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::Fence::Fence(const bool signalled)
+	: m_submitted(signalled)
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererFencePrefix, "Creating Fence");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::Fence::~Fence()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererFencePrefix, "Destroying Fence");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

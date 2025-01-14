@@ -73,7 +73,7 @@ namespace
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 void TRAP::Graphics::API::VkSetObjectName(const VulkanDevice& device, const u64 handle, const VkObjectType type,
-                                          const std::string_view name)
+                                          const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -173,58 +173,4 @@ void TRAP::Graphics::API::VkSetObjectName(const VulkanDevice& device, const u64 
 		flags = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 
 	return flags;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device, VkImage image,
-																const u32 planesCount,
-                                                                VkMemoryRequirements& memReq,
-                                                                std::vector<u64>& planesOffsets)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
-
-	memReq = {};
-
-	VkImagePlaneMemoryRequirementsInfo imagePlaneMemReqInfo
-	{
-		.sType = VK_STRUCTURE_TYPE_IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO,
-		.pNext = nullptr,
-		.planeAspect = VK_IMAGE_ASPECT_NONE
-	};
-
-	const VkImageMemoryRequirementsInfo2 imagePlaneMemReqInfo2
-	{
-		.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2,
-		.pNext = &imagePlaneMemReqInfo,
-		.image = image
-	};
-
-	VkMemoryDedicatedRequirements memDedicatedReq
-	{
-		.sType = VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS,
-		.pNext = nullptr,
-		.prefersDedicatedAllocation = VK_FALSE,
-		.requiresDedicatedAllocation = VK_FALSE
-	};
-
-	VkMemoryRequirements2 memReq2
-	{
-		.sType = VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2,
-		.pNext = &memDedicatedReq,
-		.memoryRequirements = {}
-	};
-
-	planesOffsets.resize(planesCount);
-	for(u32 i = 0; i < planesCount; ++i)
-	{
-		imagePlaneMemReqInfo.planeAspect = static_cast<VkImageAspectFlagBits>(VK_IMAGE_ASPECT_PLANE_0_BIT << i);
-		vkGetImageMemoryRequirements2(device, &imagePlaneMemReqInfo2, &memReq2);
-
-		planesOffsets[i] += memReq.size;
-		memReq.alignment = TRAP::Math::Max(memReq2.memoryRequirements.alignment, memReq.alignment);
-		memReq.size += ((memReq2.memoryRequirements.size + memReq2.memoryRequirements.alignment - 1) /
-		                memReq2.memoryRequirements.alignment) * memReq2.memoryRequirements.alignment;
-		memReq.memoryTypeBits |= memReq2.memoryRequirements.memoryTypeBits;
-	}
 }

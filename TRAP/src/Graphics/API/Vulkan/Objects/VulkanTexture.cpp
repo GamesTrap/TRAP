@@ -12,7 +12,7 @@
 namespace
 {
 #ifdef ENABLE_GRAPHICS_DEBUG
-	void SetTextureName(const TRAP::Graphics::API::VulkanDevice& device, const std::string_view name,
+	void SetTextureName(const TRAP::Graphics::API::VulkanDevice& device, const std::string& name,
 	                    VkImage image, VkImageView imageSRV, VkImageView imageSRVStencil,
 						const std::span<const VkImageView> imageUAV)
 	{

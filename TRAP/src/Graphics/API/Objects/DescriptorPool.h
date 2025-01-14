@@ -2,7 +2,9 @@
 #define TRAP_DESCRIPTORPOOL_H
 
 #include "Core/Types.h"
+#include "Core/Base.h"
 #include "Utils/SmartPtr.h"
+#include "TRAP_Assert.h"
 
 namespace TRAP::Graphics
 {
@@ -16,10 +18,10 @@ namespace TRAP::Graphics
 		/// @param numDescriptorSets Max amount of descriptors sets to be managed by the pool.
 		/// @param name Optional: Name for the descriptor pool.
 		/// @return Created descriptor pool.
-		[[nodiscard]] static TRAP::Ref<DescriptorPool> Create(u32 numDescriptorSets, [[maybe_unused]] std::string_view name = "");
+		[[nodiscard]] static TRAP::Ref<DescriptorPool> Create(u32 numDescriptorSets, [[maybe_unused]] const std::string& name = "");
 
 		/// @brief Destructor.
-		virtual ~DescriptorPool();
+		constexpr virtual ~DescriptorPool();
 
 		/// @brief Copy constructor.
 		consteval DescriptorPool(const DescriptorPool&) noexcept = delete;
@@ -28,7 +30,7 @@ namespace TRAP::Graphics
 		/// @brief Move constructor.
 		constexpr DescriptorPool(DescriptorPool&&) noexcept = default;
 		/// @brief Move assignment operator.
-		DescriptorPool& operator=(DescriptorPool&&) noexcept = default;
+		constexpr DescriptorPool& operator=(DescriptorPool&&) noexcept = default;
 
 		/// @brief Reset the descriptor pool.
 		/// @note This implicitly frees all descriptor sets allocated from the pool.
@@ -46,11 +48,33 @@ namespace TRAP::Graphics
 	protected:
 		/// @brief Constructor.
 		/// @param numDescriptorSets Max amount of descriptors sets to be managed by the pool.
-		explicit DescriptorPool(u32 numDescriptorSets);
+		constexpr explicit DescriptorPool(u32 numDescriptorSets);
 
 		u32 m_numDescriptorSets = 0;
 	};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::DescriptorPool::~DescriptorPool()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Destroying DescriptorPool");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::DescriptorPool::DescriptorPool(const u32 numDescriptorSets)
+	: m_numDescriptorSets(numDescriptorSets)
+{
+	TRAP_ASSERT(numDescriptorSets > 0, "DescriptorPool::DescriptorPool(): m_numDescriptorSets is 0");
+
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Creating DescriptorPool");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+
 
 //-------------------------------------------------------------------------------------------------------------------//
 

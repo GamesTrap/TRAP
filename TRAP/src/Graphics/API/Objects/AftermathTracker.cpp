@@ -159,5 +159,107 @@ void TRAP::Graphics::AftermathTracker::Shutdown()
 
     return AftermathGetGPUCrashDumpStatus(&outStatus);
 }
+#endif /*ENABLE_NSIGHT_AFTERMATH*/
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef ENABLE_NSIGHT_AFTERMATH
+void TRAP::Graphics::AftermathTracker::INTERNAL::AftermathCallImpl(const GFSDK_Aftermath_Result res)
+{
+    if(res == GFSDK_Aftermath_Result_Success)
+        return;
+
+    switch(res)
+    {
+    case GFSDK_Aftermath_Result_FAIL_VersionMismatch:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "Version mismatch (wrong .dll/.so version?");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_NotInitialized:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "Not initialized");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_InvalidAdapter:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "Invalid adapter (only NVIDIA GPUs are supported)");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_InvalidParameter:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "Invalid parameter (nullptr or bad handle)");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_ApiError:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "API error");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_NvApiIncompatible:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "NvAPI incompatible (NvAPI not up to date?)");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_GettingContextDataWithNewCommandList:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "Getting context data with new command list");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_AlreadyInitialized:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "Already initialized");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_D3DDebugLayerNotCompatible:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "D3D Debug Layer not compatible");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_DriverInitFailed:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "Driver init failed");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_DriverVersionNotSupported:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "Driver version not supported (requires NVIDIA driver 387.xx or newer)");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_OutOfMemory:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "Out of memory");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_GetDataOnBundle:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "Get data on bundle");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_GetDataOnDeferredContext:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "Get data on deferred context");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_FeatureNotEnabled:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "Feature not enabled (missing feature flag?)");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_NoResourcesRegistered:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "No resources registered");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_ThisResourceNeverRegistered:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "This resource never registered");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_NotSupportedInUWP:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "Not supported in UWP");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_D3dDllNotSupported:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "D3D DLL not supported");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_D3dDllInterceptionNotSupported:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "D3D DLL interception not supported");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_Disabled:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "Disabled by user");
+        break;
+
+    case GFSDK_Aftermath_Result_FAIL_Unknown:
+        [[fallthrough]];
+    default:
+        TP_ERROR(Log::RendererAftermathTrackerPrefix, "Unknown AftermathTracker error");
+        break;
+    }
+}
 #endif /*ENABLE_NSIGHT_AFTERMATH*/

@@ -25,18 +25,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::CommandSignature::CommandSignature()
+void TRAP::Graphics::CommandSignature::DebugLog(const std::string_view msg)
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererCommandSignaturePrefix, "Creating CommandSignature");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::CommandSignature::~CommandSignature()
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererCommandSignaturePrefix, "Destroying CommandSignature");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
+	TP_DEBUG(TRAP::Log::RendererCommandSignaturePrefix, msg);
 }

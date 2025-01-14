@@ -6,13 +6,6 @@
 #include "Utils/String/String.h"
 #include "Window/Window.h"
 
-TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, TRAP::Window& window)
-	: KeyEvent(key, window)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] std::string TRAP::Events::KeyPressEvent::ToString() const
 {
 	const std::string name = TRAP::Input::GetKeyName(GetKey());
@@ -21,13 +14,6 @@ TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, TRAP::Window& w
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Events::KeyRepeatEvent::KeyRepeatEvent(const Input::Key key, TRAP::Window& window)
-	: KeyEvent(key, window)
-{
-}
-
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] std::string TRAP::Events::KeyRepeatEvent::ToString() const
@@ -40,13 +26,6 @@ TRAP::Events::KeyRepeatEvent::KeyRepeatEvent(const Input::Key key, TRAP::Window&
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, TRAP::Window& window)
-	: KeyEvent(key, window)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] std::string TRAP::Events::KeyReleaseEvent::ToString() const
 {
 	const std::string name = TRAP::Input::GetKeyName(GetKey());
@@ -55,13 +34,6 @@ TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, TRAP::Windo
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Events::KeyTypeEvent::KeyTypeEvent(const u32 codePoint, TRAP::Window& window)
-	: m_window(window), m_codePoint(codePoint)
-{
-}
-
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] std::string TRAP::Events::KeyTypeEvent::ToString() const

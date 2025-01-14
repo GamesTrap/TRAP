@@ -4,7 +4,6 @@
 #include "Graphics/API/Vulkan/Objects/VulkanRootSignature.h"
 
 TRAP::Graphics::RootSignature::RootSignature()
-	: m_pipelineType()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None);
 

@@ -33,7 +33,7 @@ namespace TRAP::Graphics
 		/// @return Newly created command buffer.
 		/// @note The lifetime of the command buffer ends when the command pool gets
 		///       destroyed or when ReleaseCommandBuffer() gets called.
-		[[nodiscard]] virtual CommandBuffer& GetCommandBuffer(bool secondary, std::string_view name = "") = 0;
+		[[nodiscard]] virtual CommandBuffer& GetCommandBuffer(bool secondary, const std::string& name = "") = 0;
 		/// @brief Release a command buffer
 		/// @param cmdBuffer Command buffer to release.
 		virtual void ReleaseCommandBuffer(const CommandBuffer& cmdBuffer) = 0;

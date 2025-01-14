@@ -152,7 +152,7 @@ struct fmt::formatter<TRAP::FileSystem::FileSystemStatus>
         return ctx.begin();
     }
 
-    static fmt::format_context::iterator format(const TRAP::FileSystem::FileSystemStatus& status, fmt::format_context& ctx)
+    static fmt::format_context::iterator format(const TRAP::FileSystem::FileSystemStatus& status, const fmt::format_context& ctx)
     {
         std::string enumStr{};
         switch(status)

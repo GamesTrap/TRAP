@@ -4,7 +4,7 @@
 #include "Graphics/API/Vulkan/Objects/VulkanFence.h"
 #include "Graphics/API/RendererAPI.h"
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create(const bool signalled, [[maybe_unused]] const std::string_view name)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create(const bool signalled, [[maybe_unused]] const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Graphics) != ProfileSystems::None &&
 	                                       (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
@@ -21,25 +21,6 @@
 		TRAP_ASSERT(false, "Fence::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::Fence::~Fence()
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererFencePrefix, "Destroying Fence");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::Fence::Fence(const bool signalled)
-	: m_submitted(signalled)
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererFencePrefix, "Creating Fence");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

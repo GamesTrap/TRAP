@@ -50,7 +50,7 @@ namespace TRAP::Graphics::API
 
 		/// @brief Initialize the internal Vulkan renderer.
 		/// @param gameName Name of the game.
-		void InitInternal(std::string_view gameName) override;
+		void InitInternal(const std::string& gameName) override;
 
 #ifndef TRAP_HEADLESS_MODE
 		/// @brief Flush renderer for the given window.

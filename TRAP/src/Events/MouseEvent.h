@@ -25,7 +25,7 @@ namespace TRAP::Events
 		/// @param y New mouse y position.
 		/// @param window The affected window.
 		/// @note The window must outlive the MouseMoveEvent!
-		MouseMoveEvent(f32 x, f32 y, TRAP::Window& window);
+		constexpr MouseMoveEvent(f32 x, f32 y, TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~MouseMoveEvent() override = default;
 		/// @brief Copy constructor.
@@ -82,7 +82,7 @@ namespace TRAP::Events
 		/// @param yOffset New mouse scroll wheel y offset.
 		/// @param window The affected window.
 		/// @note The window must outlive the MouseScrollEvent!
-		MouseScrollEvent(f32 xOffset, f32 yOffset, TRAP::Window& window);
+		constexpr MouseScrollEvent(f32 xOffset, f32 yOffset, TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~MouseScrollEvent() override = default;
 		/// @brief Copy constructor.
@@ -172,7 +172,7 @@ namespace TRAP::Events
 		/// @param button Pressed mouse button.
 		/// @param window The affected window.
 		/// @note The window must outlive the MouseButtonPressEvent!
-		MouseButtonPressEvent(Input::MouseButton button, TRAP::Window& window);
+		constexpr MouseButtonPressEvent(Input::MouseButton button, TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~MouseButtonPressEvent() override = default;
 		/// @brief Copy constructor.
@@ -214,7 +214,7 @@ namespace TRAP::Events
 		/// @param button Released mouse button.
 		/// @param window The affected window.
 		/// @note The window must outlive the MouseButtonReleaseEvent!
-		MouseButtonReleaseEvent(Input::MouseButton button, TRAP::Window& window);
+		constexpr MouseButtonReleaseEvent(Input::MouseButton button, TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~MouseButtonReleaseEvent() override = default;
 		/// @brief Copy constructor.
@@ -255,7 +255,7 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param window The affected window.
 		/// @note The window must outlive the MouseEnterEvent!
-		explicit MouseEnterEvent(TRAP::Window& window);
+		constexpr explicit MouseEnterEvent(TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~MouseEnterEvent() override = default;
 		/// @brief Copy constructor.
@@ -299,7 +299,7 @@ namespace TRAP::Events
 		/// @brief Constructor.
 		/// @param window The affected window.
 		/// @note The window must outlive the MouseLeaveEvent!
-		explicit MouseLeaveEvent(TRAP::Window& window);
+		constexpr explicit MouseLeaveEvent(TRAP::Window& window);
 		/// @brief Destructor.
 		constexpr ~MouseLeaveEvent() override = default;
 		/// @brief Copy constructor.
@@ -334,6 +334,13 @@ namespace TRAP::Events
 	private:
 		std::reference_wrapper<TRAP::Window> m_window;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::MouseMoveEvent::MouseMoveEvent(const f32 x, const f32 y, TRAP::Window& window)
+	: m_mouseX(x), m_mouseY(y), m_window(window)
+{
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -396,6 +403,13 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
+constexpr TRAP::Events::MouseScrollEvent::MouseScrollEvent(const f32 xOffset, const f32 yOffset, TRAP::Window& window)
+	: m_xOffset(xOffset), m_yOffset(yOffset), m_window(window)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr f32 TRAP::Events::MouseScrollEvent::GetXOffset() const noexcept
 {
 	return m_xOffset;
@@ -454,6 +468,13 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
+constexpr TRAP::Events::MouseButtonPressEvent::MouseButtonPressEvent(const Input::MouseButton button, TRAP::Window& window)
+	: MouseButtonEvent(button), m_window(window)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr TRAP::Input::MouseButton TRAP::Events::MouseButtonEvent::GetMouseButton() const noexcept
 {
 	return m_button;
@@ -507,6 +528,13 @@ constexpr TRAP::Events::MouseButtonEvent::MouseButtonEvent(const Input::MouseBut
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
+constexpr TRAP::Events::MouseButtonReleaseEvent::MouseButtonReleaseEvent(const Input::MouseButton button, TRAP::Window& window)
+	: MouseButtonEvent(button), m_window(window)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr TRAP::Window& TRAP::Events::MouseButtonReleaseEvent::GetWindow() const noexcept
 {
 	return m_window;
@@ -535,6 +563,13 @@ constexpr TRAP::Events::MouseButtonEvent::MouseButtonEvent(const Input::MouseBut
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::MouseEnterEvent::MouseEnterEvent(TRAP::Window& window)
+	: m_window(window)
+{
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr TRAP::Window& TRAP::Events::MouseEnterEvent::GetWindow() const noexcept
@@ -572,6 +607,13 @@ constexpr TRAP::Events::MouseButtonEvent::MouseButtonEvent(const Input::MouseBut
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::MouseLeaveEvent::MouseLeaveEvent(TRAP::Window& window)
+	: m_window(window)
+{
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr TRAP::Window& TRAP::Events::MouseLeaveEvent::GetWindow() const noexcept

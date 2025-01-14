@@ -372,7 +372,7 @@ namespace
 	/// @param gameName Name of the game.
 	/// @param renderAPI RenderAPI to use.
 	/// @param config Config to load data from.
-	[[maybe_unused]] void InitializeRendererAPI(const std::string_view gameName,
+	[[maybe_unused]] void InitializeRendererAPI(const std::string& gameName,
 	                                            const TRAP::Graphics::RenderAPI& renderAPI,
 	                                            const TRAP::Utils::Config& config)
 	{

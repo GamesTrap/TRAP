@@ -32,7 +32,7 @@ namespace TRAP::Graphics::API
 		/// @param appName Application name.
 		/// @param instanceLayers Optional: Instance layers to use.
 		/// @param instanceExtensions Optional: Instance extensions to use.
-		explicit VulkanInstance(std::string_view appName,
+		explicit VulkanInstance(const std::string& appName,
 		                        std::vector<std::string> instanceLayers = {},
 		                        std::vector<std::string> instanceExtensions = {});
 		/// @brief Destructor.

@@ -1,6 +1,7 @@
 #ifndef TRAP_QUERYPOOL_H
 #define TRAP_QUERYPOOL_H
 
+#include "Core/Base.h"
 #include "Utils/SmartPtr.h"
 
 namespace TRAP::Graphics
@@ -16,7 +17,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] static TRAP::Ref<QueryPool> Create(const QueryPoolDesc& desc);
 
 		/// @brief Destructor.
-		virtual ~QueryPool();
+		constexpr virtual ~QueryPool();
 
 		/// @brief Copy constructor.
 		consteval QueryPool(const QueryPool&) noexcept = delete;
@@ -25,14 +26,41 @@ namespace TRAP::Graphics
 		/// @brief Move constructor.
 		constexpr QueryPool(QueryPool&&) noexcept = default;
 		/// @brief Move assignment operator.
-		QueryPool& operator=(QueryPool&&) noexcept = default;
+		constexpr QueryPool& operator=(QueryPool&&) noexcept = default;
 
 	protected:
 		/// @brief Constructor.
-		QueryPool();
+		constexpr QueryPool();
 
 		//No Graphic API independent data
+
+	private:
+		static void DebugLog(std::string_view msg);
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::QueryPool::~QueryPool()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if(!std::is_constant_evaluated())
+	{
+		DebugLog("Destroying QueryPool");
+	}
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::QueryPool::QueryPool()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if(!std::is_constant_evaluated())
+	{
+		DebugLog("Creating QueryPool");
+	}
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 #endif /*TRAP_QUERYPOOL_H*/
