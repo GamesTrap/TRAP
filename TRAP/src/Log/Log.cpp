@@ -217,11 +217,11 @@ void TRAP::Log::LogMessageImpl(const LogEntry& entry)
 #endif
 
 #ifdef TRACY_ENABLE
-	const auto tracyColor = LogLevelToTracyColor(level);
+	const auto tracyColor = LogLevelToTracyColor(entry.Level);
 	if(tracyColor)
-		TracyMessageC(logMsg.c_str(), logMsg.size(), *tracyColor);
+		TracyMessageC(entry.Message.c_str(), entry.Message.size(), *tracyColor);
 	else
-		TracyMessage(logMsg.c_str(), logMsg.size());
+		TracyMessage(entry.Message.c_str(), entry.Message.size());
 #endif
 
 	m_buffer.Push(entry);
