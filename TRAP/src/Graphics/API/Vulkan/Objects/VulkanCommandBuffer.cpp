@@ -639,7 +639,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::AddDebugMarker(const TRAP::Math::
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
 	if(m_device->GetPhysicalDevice().IsFeatureEnabled(VulkanPhysicalDeviceFeature::NsightAftermath))
-		vkCmdSetCheckpointNV(m_vkCommandBuffer, name.data());
+		vkCmdSetCheckpointNV(m_vkCommandBuffer, name.c_str());
 #endif /*ENABLE_NSIGHT_AFTERMATH*/
 }
 

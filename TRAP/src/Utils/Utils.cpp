@@ -450,17 +450,17 @@ void TRAP::Utils::RegisterSIGINTCallback()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef TRACY_ENABLE
-void TRAP::Utils::SetThreadName(const std::string_view name)
+void TRAP::Utils::SetThreadName(const std::string& name)
 {
-	tracy::SetThreadName(name.data());
+	tracy::SetThreadName(name.c_str());
 }
 #endif /*TRACY_ENABLE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef TRACY_ENABLE
-void TRAP::Utils::SetThreadName(const std::string_view name, const ThreadGroup group)
+void TRAP::Utils::SetThreadName(const std::string& name, const ThreadGroup group)
 {
-	tracy::SetThreadNameWithHint(name.data(), std::to_underlying(group));
+	tracy::SetThreadNameWithHint(name.c_str(), std::to_underlying(group));
 }
 #endif /*TRACY_ENABLE*/

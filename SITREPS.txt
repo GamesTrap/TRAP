@@ -5572,3 +5572,4 @@ SITREP 01/13/2025|25w03b1
 SITREP 01/15/2025|25w03b2
     - Changed TRAP Engine version to 25w03b2(0.11.74)
     - Made various functions constexpr ~<30 mins
+    - Changed some std::string_views back to std::string ~<10 mins

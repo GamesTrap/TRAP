@@ -161,7 +161,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	EnableNsightAftermath(*m_physicalDevice, base, diagnosticsCreateInfoNV);
 
 	std::vector<const char*> extensions(m_deviceExtensions.size());
-	std::ranges::transform(m_deviceExtensions, extensions.begin(), [](const std::string_view ext){return ext.data();});
+	std::ranges::transform(m_deviceExtensions, extensions.begin(), [](const std::string& ext){return ext.c_str();});
 
 	const VkDeviceCreateInfo deviceCreateInfo = VulkanInits::DeviceCreateInfo(queueCreateInfos, extensions,
 	                                                                          &devFeatures2);

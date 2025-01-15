@@ -184,7 +184,7 @@ namespace
 			case TRAP::Graphics::ShaderStage::Vertex:
 			{
 				const u32 stageIndex = vkShader.GetReflection()->VertexStageIndex.value();
-				stageInfo.pName = vkShader.GetReflection()->StageReflections[stageIndex].EntryPoint.data();
+				stageInfo.pName = vkShader.GetReflection()->StageReflections[stageIndex].EntryPoint.c_str();
 				stageInfo.module = vkShader.GetVkShaderModules()[stageIndex];
 				break;
 			}
@@ -192,7 +192,7 @@ namespace
 			case TRAP::Graphics::ShaderStage::TessellationControl:
 			{
 				const u32 stageIndex = vkShader.GetReflection()->TessellationControlStageIndex.value();
-				stageInfo.pName = vkShader.GetReflection()->StageReflections[stageIndex].EntryPoint.data();
+				stageInfo.pName = vkShader.GetReflection()->StageReflections[stageIndex].EntryPoint.c_str();
 				stageInfo.module = vkShader.GetVkShaderModules()[stageIndex];
 				break;
 			}
@@ -200,7 +200,7 @@ namespace
 			case TRAP::Graphics::ShaderStage::TessellationEvaluation:
 			{
 				const u32 stageIndex = vkShader.GetReflection()->TessellationEvaluationStageIndex.value();
-				stageInfo.pName = vkShader.GetReflection()->StageReflections[stageIndex].EntryPoint.data();
+				stageInfo.pName = vkShader.GetReflection()->StageReflections[stageIndex].EntryPoint.c_str();
 				stageInfo.module = vkShader.GetVkShaderModules()[stageIndex];
 				break;
 			}
@@ -208,7 +208,7 @@ namespace
 			case TRAP::Graphics::ShaderStage::Geometry:
 			{
 				const u32 stageIndex = vkShader.GetReflection()->GeometryStageIndex.value();
-				stageInfo.pName = vkShader.GetReflection()->StageReflections[stageIndex].EntryPoint.data();
+				stageInfo.pName = vkShader.GetReflection()->StageReflections[stageIndex].EntryPoint.c_str();
 				stageInfo.module = vkShader.GetVkShaderModules()[stageIndex];
 				break;
 			}
@@ -216,7 +216,7 @@ namespace
 			case TRAP::Graphics::ShaderStage::Fragment:
 			{
 				const u32 stageIndex = vkShader.GetReflection()->FragmentStageIndex.value();
-				stageInfo.pName = vkShader.GetReflection()->StageReflections[stageIndex].EntryPoint.data();
+				stageInfo.pName = vkShader.GetReflection()->StageReflections[stageIndex].EntryPoint.c_str();
 				stageInfo.module = vkShader.GetVkShaderModules()[stageIndex];
 				break;
 			}

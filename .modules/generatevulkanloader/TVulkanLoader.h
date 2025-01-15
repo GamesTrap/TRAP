@@ -147,24 +147,24 @@ static void* loadedModule = NULL;
 static VkInstance loadedInstance = VK_NULL_HANDLE;
 static VkDevice loadedDevice = VK_NULL_HANDLE;
 
-using VkGenLoaderFunction = PFN_vkVoidFunction (*)(void* const, const std::string_view);
+using VkGenLoaderFunction = PFN_vkVoidFunction (*)(void* const, const std::string&);
 
 static void VkGenLoadLoader(void* const context, VkGenLoaderFunction load);
 static void VkGenLoadInstance(VkInstance instance, VkGenLoaderFunction load);
 static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load);
 static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoaderFunction load);
 
-static PFN_vkVoidFunction vkGetInstanceProcAddrStub(void* const context, const std::string_view name)
+static PFN_vkVoidFunction vkGetInstanceProcAddrStub(void* const context, const std::string& name)
 {
-	return vkGetInstanceProcAddr(static_cast<VkInstance>(context), name.data());
+	return vkGetInstanceProcAddr(static_cast<VkInstance>(context), name.c_str());
 }
 
-static PFN_vkVoidFunction vkGetDeviceProcAddrStub(void* const context, const std::string_view name)
+static PFN_vkVoidFunction vkGetDeviceProcAddrStub(void* const context, const std::string& name)
 {
-	return vkGetDeviceProcAddr(static_cast<VkDevice>(context), name.data());
+	return vkGetDeviceProcAddr(static_cast<VkDevice>(context), name.c_str());
 }
 
-static PFN_vkVoidFunction nullProcAddrStub([[maybe_unused]] void* const context, [[maybe_unused]] const std::string_view name) noexcept
+static PFN_vkVoidFunction nullProcAddrStub([[maybe_unused]] void* const context, [[maybe_unused]] const std::string& name) noexcept
 {
 	return nullptr;
 }
