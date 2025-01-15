@@ -32,7 +32,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_QUATERNION_H
 #define TRAP_QUATERNION_H
 
-#include "TRAP_Assert.h"
 #include "Utils/Utils.h"
 
 namespace TRAP::Math

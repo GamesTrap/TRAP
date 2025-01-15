@@ -1,7 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "TRAP_Assert.h"
-
 #include "Utils/ConstexprMap.h"
 
 TEST_CASE("TRAP::Utils::ConstexprMap", "[utils][constexprmap]")

@@ -34,7 +34,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include <array>
 
-#include "TRAP_Assert.h"
 #include "Utils/Utils.h"
 #include "Vec3.h"
 

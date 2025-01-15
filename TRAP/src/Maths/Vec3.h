@@ -32,7 +32,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_VEC3_H
 #define TRAP_VEC3_H
 
-#include "TRAP_Assert.h"
 #include "Types.h"
 #include "Utils/Utils.h"
 #include "Core/Backports/Unreachable.h"

@@ -7,6 +7,7 @@
 #include <optional>
 
 #include "Core/Types.h"
+#include "TRAP_Assert.h"
 
 namespace TRAP::Utils
 {
