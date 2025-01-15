@@ -443,7 +443,7 @@ namespace
 
         CreateShaderModules(device, allocator);
 
-        static constexpr std::string entryPoint = "main";
+        static const std::string entryPoint = "main";
         const std::array<VkPipelineShaderStageCreateInfo, 2u> stage
         {
             TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo(VK_SHADER_STAGE_VERTEX_BIT, bd->ShaderModuleVert, entryPoint),

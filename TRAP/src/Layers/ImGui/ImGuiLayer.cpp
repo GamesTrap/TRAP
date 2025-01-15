@@ -46,7 +46,6 @@ namespace
 		{
 			TP_CRITICAL(TRAP::Log::ImGuiPrefix, "ImGuiVulkanBackend::GlobalDescriptorPoolSizes(): std::vector constructor threw an exception!");
 			throw std::runtime_error("ImGuiVulkanBackend::GlobalDescriptorPoolSizes(): std::vector constructor threw an exception!");
-			std::terminate();
 		}
 	}
 

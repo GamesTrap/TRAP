@@ -77,7 +77,6 @@ namespace
         TP_CRITICAL(Log::ApplicationPrefix, "Unknown error occurred!");
 
         throw std::runtime_error("Unknown error occurred!");
-        std::terminate(); //Make sure we exit program even when using try/catch
     }
 
 #if !defined(TRAP_HEADLESS_MODE) && !defined(TRAP_UNITTESTS)
@@ -90,5 +89,4 @@ namespace
     TRAP_ASSERT(false, errorData->LogPrefix, errorData->LogMessage);
 
     throw std::runtime_error(std::string(errorData->LogMessage));
-    std::terminate(); //Make sure we exit program even when using try/catch
 }
