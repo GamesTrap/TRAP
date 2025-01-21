@@ -5574,3 +5574,7 @@ SITREP 01/15/2025|25w03b2
     - Made various functions constexpr ~<30 mins
     - Changed some std::string_views back to std::string ~<10 mins
     - Removed some unnecessary TRAP_Assert.h includes ~<5 mins
+
+SITREP 01/22/2025|25w04a1
+    - Changed TRAP Engine version to 25w04a1(0.11.75)
+    - Updated ImGuiVulkanBackend ~<5 mins

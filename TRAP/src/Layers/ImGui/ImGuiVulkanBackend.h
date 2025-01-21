@@ -57,6 +57,10 @@ namespace TRAP::Graphics::API
 
 namespace ImGui::INTERNAL::Vulkan
 {
+    /// @brief Current version of the backend uses 1 descriptor for the font atlas + as mancy as additional calls done to ImGui::INTERNAL::Vulkan::AddTexture().
+    ///        It is expected that as early as Q1 2025 the backend will use a few more descriptors. Use this value + number of desired calls to ImGui::INTERNAL::Vulkan::AddTexture().
+    constexpr u32 MinimumImageSamplerPoolSize = 1u;
+
     /// @brief Initialization data, for ImGui_ImplVulkan_Init()
 	/// @remark @headless This struct is not available in headless mode.
     /// @note - VkDescriptorPool should be created with a pool size large enough to hold an ImGui VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER descriptor.

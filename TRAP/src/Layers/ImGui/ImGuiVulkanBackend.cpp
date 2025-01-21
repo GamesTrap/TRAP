@@ -1022,6 +1022,13 @@ namespace
 
         InitInfo& v = bd->VulkanInitInfo;
 
+        if(const auto it = std::ranges::find_if(v.DescriptorPoolSizes,
+                                                [](const VkDescriptorPoolSize& size){return size.type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;});
+           it != v.DescriptorPoolSizes.end())
+        {
+            IM_ASSERT(it->descriptorCount > MinimumImageSamplerPoolSize);
+        }
+
         const VkDescriptorPoolCreateInfo poolInfo = TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(v.DescriptorPoolSizes, 100u * NumericCast<u32>(v.DescriptorPoolSizes.size()));
 
         VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
