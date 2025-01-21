@@ -197,13 +197,13 @@ namespace TRAP::Utils
 	/// @param name Name to set
 	/// @note Only used when compiling with profiling configuration, no-op otherwise.
 	/// @threadsafe
-    void SetThreadName(const std::string_view name);
+    void SetThreadName(const std::string& name);
 	/// @brief Set the name of the current thread.
 	/// @param name Name to set
 	/// @param groupHint Number to group threads together with in the profiler UI.
 	/// @note Only used when compiling with profiling configuration, no-op otherwise.
 	/// @threadsafe
-    void SetThreadName(const std::string_view name, const ThreadGroup group);
+    void SetThreadName(const std::string& name, const ThreadGroup group);
 #else
 	/// @brief Set the name of the current thread.
 	/// @param name Name to set
