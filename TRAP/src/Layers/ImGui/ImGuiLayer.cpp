@@ -37,7 +37,7 @@ namespace
 		{
 			static const std::vector<VkDescriptorPoolSize> DescriptorPoolSizes =
 			{
-				{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100 }
+				{ .type=VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, .descriptorCount=ImGui::INTERNAL::Vulkan::MinimumImageSamplerPoolSize + 100u }
 			};
 
 			return DescriptorPoolSizes;
