@@ -35,6 +35,10 @@ TEST_CASE("TRAP::Events::ControllerConnectEvent", "[events][controllerconnecteve
 
         TRAP::Events::ControllerConnectEvent cevent1 = TRAP::Events::ControllerConnectEvent{TRAP::Input::Controller::One};
         const TRAP::Events::ControllerConnectEvent cevent1MoveConstructor = TRAP::Events::ControllerConnectEvent(std::move(cevent1));
+
+        TRAP::Input::Controller controller = TRAP::Input::Controller::Six;
+        REQUIRE(controller == TRAP::Input::Controller::Six);
+        TRAP::Events::ControllerConnectEvent ceventruntime{controller};
     }
 
     SECTION("Assignment")
@@ -106,6 +110,10 @@ TEST_CASE("TRAP::Events::ControllerDisconnectEvent", "[events][controllerdisconn
 
         TRAP::Events::ControllerDisconnectEvent cevent1 = TRAP::Events::ControllerDisconnectEvent{TRAP::Input::Controller::One};
         const TRAP::Events::ControllerDisconnectEvent cevent1MoveConstructor = TRAP::Events::ControllerDisconnectEvent(std::move(cevent1));
+
+        TRAP::Input::Controller controller = TRAP::Input::Controller::Six;
+        REQUIRE(controller == TRAP::Input::Controller::Six);
+        TRAP::Events::ControllerDisconnectEvent ceventruntime{controller};
     }
 
     SECTION("Assignment")

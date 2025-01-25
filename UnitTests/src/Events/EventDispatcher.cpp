@@ -37,7 +37,7 @@ TEST_CASE("TRAP::Events::EventDispatcher", "[events][eventdispatcher]")
     SECTION("Dispatch()")
     {
         TRAP::Events::ControllerConnectEvent cevent = TRAP::Events::ControllerConnectEvent{TRAP::Input::Controller::One};
-        const TRAP::Events::EventDispatcher eventDispatcher{cevent};
+        TRAP::Events::EventDispatcher eventDispatcher{cevent};
 
         static constexpr auto Callback = [](const TRAP::Events::ControllerConnectEvent& conEvent) -> bool
         {
@@ -48,5 +48,9 @@ TEST_CASE("TRAP::Events::EventDispatcher", "[events][eventdispatcher]")
 
         REQUIRE(eventDispatcher.Dispatch<TRAP::Events::ControllerConnectEvent>(Callback));
         REQUIRE_FALSE(eventDispatcher.Dispatch<TRAP::Events::ControllerConnectEvent>(Callback)); //Event was handled
+
+        //Dispatch event where event types dont match
+        eventDispatcher = TRAP::Events::EventDispatcher{cevent};
+        REQUIRE_FALSE(eventDispatcher.Dispatch<TRAP::Events::ControllerDisconnectEvent>([](const TRAP::Events::ControllerDisconnectEvent&) -> bool{return true;}));
     }
 }
