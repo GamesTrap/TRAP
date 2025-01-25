@@ -73,7 +73,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Get a string representation of the event.
 		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
@@ -109,7 +109,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Get a string representation of the event.
 		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
@@ -162,7 +162,7 @@ constexpr TRAP::Events::ControllerConnectEvent::ControllerConnectEvent(const Inp
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::ControllerConnectEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::ControllerConnectEvent::GetName() const noexcept
 {
 	return "ControllerConnect";
 }
@@ -190,7 +190,7 @@ constexpr TRAP::Events::ControllerDisconnectEvent::ControllerDisconnectEvent(con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::ControllerDisconnectEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::ControllerDisconnectEvent::GetName() const noexcept
 {
 	return "ControllerDisconnect";
 }

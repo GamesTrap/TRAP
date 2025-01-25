@@ -79,7 +79,7 @@ namespace TRAP::Events
 
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Get a string representation of the event.
 		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
@@ -114,7 +114,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Get a string representation of the event.
 		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
@@ -149,7 +149,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Get a string representation of the event.
 		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
@@ -191,7 +191,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -235,7 +235,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -300,7 +300,7 @@ constexpr TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, TRAP:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::KeyPressEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::KeyPressEvent::GetName() const noexcept
 {
 	return "KeyPress";
 }
@@ -330,7 +330,7 @@ constexpr TRAP::Events::KeyRepeatEvent::KeyRepeatEvent(const Input::Key key, TRA
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::KeyRepeatEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::KeyRepeatEvent::GetName() const noexcept
 {
 	return "KeyRepeat";
 }
@@ -360,7 +360,7 @@ constexpr TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, T
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::KeyReleaseEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::KeyReleaseEvent::GetName() const noexcept
 {
 	return "KeyRelease";
 }
@@ -404,7 +404,7 @@ constexpr TRAP::Events::KeyTypeEvent::KeyTypeEvent(const u32 codePoint, TRAP::Wi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::KeyTypeEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::KeyTypeEvent::GetName() const noexcept
 {
 	return "KeyType";
 }
@@ -441,7 +441,7 @@ constexpr TRAP::Events::KeyLayoutEvent::KeyLayoutEvent(std::string layout) noexc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::KeyLayoutEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::KeyLayoutEvent::GetName() const noexcept
 {
 	return "KeyLayout";
 }

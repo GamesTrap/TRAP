@@ -53,7 +53,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -91,7 +91,7 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::FileSystemChangeEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::FileSystemChangeEvent::GetName() const noexcept
 {
 	return "FileSystemChange";
 }

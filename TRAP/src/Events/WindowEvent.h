@@ -54,7 +54,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -100,7 +100,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -144,7 +144,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -188,7 +188,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -232,7 +232,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -287,7 +287,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -333,7 +333,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -377,7 +377,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -425,7 +425,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -481,7 +481,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -541,7 +541,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -607,7 +607,7 @@ constexpr TRAP::Events::WindowResizeEvent::WindowResizeEvent(const u32 width, co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::WindowResizeEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::WindowResizeEvent::GetName() const noexcept
 {
 	return "WindowResize";
 }
@@ -651,7 +651,7 @@ constexpr TRAP::Events::WindowMinimizeEvent::WindowMinimizeEvent(TRAP::Window& w
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::WindowMinimizeEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::WindowMinimizeEvent::GetName() const noexcept
 {
 	return "WindowMinimize";
 }
@@ -695,7 +695,7 @@ constexpr TRAP::Events::WindowMaximizeEvent::WindowMaximizeEvent(TRAP::Window& w
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::WindowMaximizeEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::WindowMaximizeEvent::GetName() const noexcept
 {
 	return "WindowMaximize";
 }
@@ -739,7 +739,7 @@ constexpr TRAP::Events::WindowRestoreEvent::WindowRestoreEvent(TRAP::Window& win
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::WindowRestoreEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::WindowRestoreEvent::GetName() const noexcept
 {
 	return "WindowRestore";
 }
@@ -783,7 +783,7 @@ constexpr TRAP::Events::WindowCloseEvent::WindowCloseEvent(TRAP::Window& window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::WindowCloseEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::WindowCloseEvent::GetName() const noexcept
 {
 	return "WindowClose";
 }
@@ -848,7 +848,7 @@ constexpr TRAP::Events::WindowMoveEvent::WindowMoveEvent(const i32 x, const i32 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::WindowMoveEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::WindowMoveEvent::GetName() const noexcept
 {
 	return "WindowMove";
 }
@@ -892,7 +892,7 @@ constexpr TRAP::Events::WindowFocusEvent::WindowFocusEvent(TRAP::Window& window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::WindowFocusEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::WindowFocusEvent::GetName() const noexcept
 {
 	return "WindowFocus";
 }
@@ -936,7 +936,7 @@ constexpr TRAP::Events::WindowLostFocusEvent::WindowLostFocusEvent(TRAP::Window&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::WindowLostFocusEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::WindowLostFocusEvent::GetName() const noexcept
 {
 	return "WindowLostFocus";
 }
@@ -987,7 +987,7 @@ constexpr TRAP::Events::WindowDropEvent::WindowDropEvent(std::vector<std::string
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::WindowDropEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::WindowDropEvent::GetName() const noexcept
 {
 	return "WindowDrop";
 }
@@ -1052,7 +1052,7 @@ constexpr TRAP::Events::WindowContentScaleEvent::WindowContentScaleEvent(const f
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::WindowContentScaleEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::WindowContentScaleEvent::GetName() const noexcept
 {
 	return "WindowContentScale";
 }
@@ -1126,7 +1126,7 @@ constexpr TRAP::Events::FrameBufferResizeEvent::FrameBufferResizeEvent(const u32
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::FrameBufferResizeEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::FrameBufferResizeEvent::GetName() const noexcept
 {
 	return "FrameBufferResize";
 }

@@ -69,7 +69,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Get a string representation of the event.
 		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
@@ -102,7 +102,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Get a string representation of the event.
 		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
@@ -146,7 +146,7 @@ constexpr TRAP::Events::MonitorConnectEvent::MonitorConnectEvent(const Monitor& 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::MonitorConnectEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::MonitorConnectEvent::GetName() const noexcept
 {
 	return "MonitorConnect";
 }
@@ -175,7 +175,7 @@ constexpr TRAP::Events::MonitorDisconnectEvent::MonitorDisconnectEvent(const Mon
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::MonitorDisconnectEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::MonitorDisconnectEvent::GetName() const noexcept
 {
 	return "MonitorDisconnect";
 }

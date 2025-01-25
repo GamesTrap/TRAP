@@ -79,7 +79,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr virtual EventType GetEventType() const noexcept = 0;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr virtual std::string GetName() const = 0;
+		[[nodiscard]] constexpr virtual std::string_view GetName() const noexcept = 0;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr virtual EventCategory GetCategoryFlags() const noexcept = 0;

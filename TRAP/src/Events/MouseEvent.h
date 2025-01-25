@@ -58,7 +58,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -115,7 +115,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -196,7 +196,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Get a string representation of the event.
 		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
@@ -238,7 +238,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Get a string representation of the event.
 		/// @return String representation.
 		[[nodiscard]] std::string ToString() const override;
@@ -279,7 +279,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -323,7 +323,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// @brief Retrieve the name of the event.
 		/// @return Name.
-		[[nodiscard]] constexpr std::string GetName() const override;
+		[[nodiscard]] constexpr std::string_view GetName() const noexcept override;
 		/// @brief Retrieve the category flags of the event.
 		/// @return Combination of one or more EventCategory's.
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
@@ -394,7 +394,7 @@ constexpr TRAP::Events::MouseMoveEvent::MouseMoveEvent(const f32 x, const f32 y,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::MouseMoveEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::MouseMoveEvent::GetName() const noexcept
 {
 	return "MouseMove";
 }
@@ -459,7 +459,7 @@ constexpr TRAP::Events::MouseScrollEvent::MouseScrollEvent(const f32 xOffset, co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::MouseScrollEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::MouseScrollEvent::GetName() const noexcept
 {
 	return "MouseScroll";
 }
@@ -519,7 +519,7 @@ constexpr TRAP::Events::MouseButtonEvent::MouseButtonEvent(const Input::MouseBut
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::MouseButtonPressEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::MouseButtonPressEvent::GetName() const noexcept
 {
 	return "MouseButtonPress";
 }
@@ -556,7 +556,7 @@ constexpr TRAP::Events::MouseButtonReleaseEvent::MouseButtonReleaseEvent(const I
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::MouseButtonReleaseEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::MouseButtonReleaseEvent::GetName() const noexcept
 {
 	return "MouseButtonRelease";
 }
@@ -600,7 +600,7 @@ constexpr TRAP::Events::MouseEnterEvent::MouseEnterEvent(TRAP::Window& window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::MouseEnterEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::MouseEnterEvent::GetName() const noexcept
 {
 	return "MouseEnter";
 }
@@ -644,7 +644,7 @@ constexpr TRAP::Events::MouseLeaveEvent::MouseLeaveEvent(TRAP::Window& window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Events::MouseLeaveEvent::GetName() const
+[[nodiscard]] constexpr std::string_view TRAP::Events::MouseLeaveEvent::GetName() const noexcept
 {
 	return "MouseLeave";
 }
