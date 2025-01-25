@@ -5578,3 +5578,7 @@ SITREP 01/15/2025|25w03b2
 SITREP 01/22/2025|25w04a1
     - Changed TRAP Engine version to 25w04a1(0.11.75)
     - Updated ImGuiVulkanBackend ~<5 mins
+
+SITREP 01/25/2025|25w04b1
+    - Changed TRAP Engine version to 25w04a1(0.11.76)
+    - UnitTests Added tests for Profiling.h ~<5 mins
