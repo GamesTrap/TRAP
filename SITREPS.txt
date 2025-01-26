@@ -5589,3 +5589,4 @@ SITREP 01/27/2025|25w05a1
     - Changed TRAP Engine version to 25w05a1(0.11.77)
     - Image return fallback image when unable to retrieve file ending ~<5 mins
     - UnitTests Vec2 code coverage for conversion constructor from Vec3 ~<5 mins
+    - Updated ImGuiVulkanBackend ~<5 mins
