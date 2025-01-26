@@ -98,6 +98,9 @@ TEMPLATE_TEST_CASE("TRAP::Math::Vec2", "[math][vec][vec2]", i8, i16, i32, i64, u
 
             STATIC_REQUIRE(v.x() == TestType(10));
             STATIC_REQUIRE(v.y() == TestType(127));
+
+            TRAP::Math::tVec3<f64> v3(f64(10.0), f64(127.0), f64(80.0));
+            const Vec2 v2(v3);
         }
 
         //Conversion Vec4 constructor
