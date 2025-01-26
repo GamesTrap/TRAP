@@ -59,7 +59,7 @@ namespace
 
 	const auto fileEnding = FileSystem::GetFileEnding(filepath);
 	if(!fileEnding)
-		return nullptr;
+		return MakeScope<INTERNAL::CustomImage>(filepath, 32u, 32u, ColorFormat::RGBA, std::vector<u8>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 
 	const std::string fileFormat = Utils::String::ToLower(*fileEnding);
 
