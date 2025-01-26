@@ -5590,3 +5590,4 @@ SITREP 01/27/2025|25w05a1
     - Image return fallback image when unable to retrieve file ending ~<5 mins
     - UnitTests Vec2 code coverage for conversion constructor from Vec3 ~<5 mins
     - Updated ImGuiVulkanBackend ~<5 mins
+    - Partially revert commit eb71454 ~<5 mins
