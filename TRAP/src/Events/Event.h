@@ -145,12 +145,7 @@ constexpr bool TRAP::Events::EventDispatcher::Dispatch(F&& func) const& noexcept
 	static_assert(std::derived_from<T, TRAP::Events::Event>, "T must be derived from TRAP::Events::Event!");
 	static_assert(std::is_invocable_r_v<bool, F, const T&>, "F must have the signature bool Foo(const T&)!");
 
-	if (m_event.get().GetEventType() != T::GetStaticType())
-	{
-		TRAP_ASSERT(false, "Dispatch type must match the stored event of the EventDispatcher!");
-		return false;
-	}
-	if(m_event.get().Handled)
+	if (m_event.get().GetEventType() != T::GetStaticType() || m_event.get().Handled)
 		return false;
 
 	m_event.get().Handled |= std::invoke(std::forward<F>(func), static_cast<const T&>(m_event.get()));

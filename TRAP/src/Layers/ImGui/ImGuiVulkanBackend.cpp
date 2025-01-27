@@ -240,6 +240,7 @@ namespace
         ImGui_ImplVulkanH_WindowRenderBuffers RenderBuffers{}; // Used by all viewports
         bool WindowOwned = false;
         bool SwapChainNeedsRebuild = false; // Flag when viewport swapchain resized in the middle of processing a frame
+        bool SwapChainSuboptimal = false; // Flag when VK_SUBOPTIMAL_KHR was returned
     };
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -1205,16 +1206,16 @@ namespace
         const VkPresentInfoKHR info = TRAP::Graphics::API::VulkanInits::PresentInfo(waitSemaphores, wd.Swapchain, present_index);
 
         err = vkQueuePresentKHR(v.Queue->GetVkQueue(), &info);
-        if (err == VK_ERROR_OUT_OF_DATE_KHR || err == VK_SUBOPTIMAL_KHR)
+        if (err == VK_ERROR_OUT_OF_DATE_KHR)
         {
             vd->SwapChainNeedsRebuild = true;
-            if(err == VK_ERROR_OUT_OF_DATE_KHR)
-                return;
+            return;
         }
+        if(err == VK_SUBOPTIMAL_KHR)
+            vd->SwapChainSuboptimal = true;
         else
             CheckVkResult(err);
 
-        wd.FrameIndex = (wd.FrameIndex + 1u) % wd.ImageCount;         // This is for the next vkWaitForFences()
         wd.SemaphoreIndex = (wd.SemaphoreIndex + 1u) % NumericCast<u32>(wd.FrameSemaphores.size()); // Now we can use the next set of semaphores
     }
 
@@ -1277,10 +1278,10 @@ void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* const viewport, [[mayb
     const InitInfo& v = bd->VulkanInitInfo;
     VkResult err = VK_SUCCESS;
 
-    if(vd->SwapChainNeedsRebuild)
+    if(vd->SwapChainNeedsRebuild || vd->SwapChainSuboptimal)
     {
         CreateOrResizeWindow(*v.Device, wd, v.Queue, v.Allocator, NumericCast<i32>(viewport->Size.x), NumericCast<i32>(viewport->Size.y), v.MinImageCount);
-        vd->SwapChainNeedsRebuild = false;
+        vd->SwapChainNeedsRebuild = vd->SwapChainSuboptimal = false;
     }
 
     const ImGui_ImplVulkanH_FrameSemaphores& fsd = wd.FrameSemaphores[wd.SemaphoreIndex];
@@ -1293,7 +1294,10 @@ void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* const viewport, [[mayb
                 vd->SwapChainNeedsRebuild = true;
                 return;
             }
-            CheckVkResult(err);
+            if(err == VK_SUBOPTIMAL_KHR)
+                vd->SwapChainSuboptimal = true;
+            else
+                CheckVkResult(err);
         }
 
         const ImGui_ImplVulkanH_Frame& fd = wd.Frames[wd.FrameIndex];
