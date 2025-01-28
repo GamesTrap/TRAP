@@ -5591,3 +5591,7 @@ SITREP 01/27/2025|25w05a1
     - UnitTests Vec2 code coverage for conversion constructor from Vec3 ~<5 mins
     - Updated ImGuiVulkanBackend ~<5 mins
     - Partially revert commit eb71454 ~<5 mins
+
+SITREP 01/28/2025|25w05a2
+    - Changed TRAP Engine version to 25w05a2(0.11.78)
+    - Math Added structured binding support for Vec2/3/4, Mat3/4 and Quat ~<30 mins

@@ -603,6 +603,21 @@ TEMPLATE_TEST_CASE("TRAP::Math::Mat3", "[math][mat][mat3]", TRAP::Math::Mat3f, T
         STATIC_REQUIRE(std::get<2u>(m) == Col{7, 8, 9});
     }
 
+    SECTION("Structured bindings")
+    {
+        static constexpr TestType m(Scalar(1), Scalar(2), Scalar(3), Scalar(4), Scalar(5), Scalar(6), Scalar(7), Scalar(8), Scalar(9));
+        const auto& [x, y, z] = m;
+        REQUIRE(x == Col{1, 2, 3});
+        REQUIRE(y == Col{4, 5, 6});
+        REQUIRE(z == Col{7, 8, 9});
+
+        TestType m2(Scalar(1), Scalar(2), Scalar(3), Scalar(4), Scalar(5), Scalar(6), Scalar(7), Scalar(8), Scalar(9));
+        auto& [x2, y2, z2] = m2;
+        REQUIRE(x2 == Col{1, 2, 3});
+        REQUIRE(y2 == Col{4, 5, 6});
+        REQUIRE(z2 == Col{7, 8, 9});
+    }
+
     SECTION("std::swap")
     {
         {

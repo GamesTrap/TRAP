@@ -681,6 +681,23 @@ TEMPLATE_TEST_CASE("TRAP::Math::Mat4", "[math][mat][mat4]", TRAP::Math::Mat4f, T
         STATIC_REQUIRE(std::get<3u>(m) == Col{13, 14, 15, 16});
     }
 
+    SECTION("Structured bindings")
+    {
+        static constexpr TestType m(Scalar(1), Scalar(2), Scalar(3), Scalar(4), Scalar(5), Scalar(6), Scalar(7), Scalar(8), Scalar(9), Scalar(10), Scalar(11), Scalar(12), Scalar(13), Scalar(14), Scalar(15), Scalar(16));
+        const auto& [x, y, z, w] = m;
+        REQUIRE(x == Col{1, 2, 3, 4});
+        REQUIRE(y == Col{5, 6, 7, 8});
+        REQUIRE(z == Col{9, 10, 11, 12});
+        REQUIRE(w == Col{13, 14, 15, 16});
+
+        TestType m2(Scalar(1), Scalar(2), Scalar(3), Scalar(4), Scalar(5), Scalar(6), Scalar(7), Scalar(8), Scalar(9), Scalar(10), Scalar(11), Scalar(12), Scalar(13), Scalar(14), Scalar(15), Scalar(16));
+        auto& [x2, y2, z2, w2] = m2;
+        REQUIRE(x2 == Col{1, 2, 3, 4});
+        REQUIRE(y2 == Col{5, 6, 7, 8});
+        REQUIRE(z2 == Col{9, 10, 11, 12});
+        REQUIRE(w2 == Col{13, 14, 15, 16});
+    }
+
     SECTION("std::swap")
     {
         {

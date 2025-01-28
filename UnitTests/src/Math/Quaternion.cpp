@@ -498,6 +498,23 @@ TEMPLATE_TEST_CASE("TRAP::Math::Quat", "[math][quat]", TRAP::Math::Quatf, TRAP::
         STATIC_REQUIRE(std::get<3u>(q) == Scalar(4));
     }
 
+    SECTION("Structured bindings")
+    {
+        static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+        const auto& [x, y, z, w] = q;
+        REQUIRE(x == Scalar(1));
+        REQUIRE(y == Scalar(2));
+        REQUIRE(z == Scalar(3));
+        REQUIRE(w == Scalar(4));
+
+        TestType q2(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
+        auto& [x2, y2, z2, w2] = q2;
+        REQUIRE(x2 == Scalar(1));
+        REQUIRE(y2 == Scalar(2));
+        REQUIRE(z2 == Scalar(3));
+        REQUIRE(w2 == Scalar(4));
+    }
+
     SECTION("std::swap")
     {
         {

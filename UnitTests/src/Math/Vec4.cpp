@@ -930,6 +930,23 @@ TEMPLATE_TEST_CASE("TRAP::Math::Vec4", "[math][vec][vec4]", i8, i16, i32, i64, u
         STATIC_REQUIRE(std::get<1u>(std::move(v)) == TestType(10));
     }
 
+    SECTION("Structured bindings")
+    {
+        static constexpr Vec4 v(TestType(1), TestType(2), TestType(3), TestType(4));
+        const auto& [x, y, z, w] = v;
+        REQUIRE(x == TestType(1));
+        REQUIRE(y == TestType(2));
+        REQUIRE(z == TestType(3));
+        REQUIRE(w == TestType(4));
+
+        Vec4 v2(TestType(1), TestType(2), TestType(3), TestType(4));
+        auto& [x2, y2, z2, w2] = v2;
+        REQUIRE(x2 == TestType(1));
+        REQUIRE(y2 == TestType(2));
+        REQUIRE(z2 == TestType(3));
+        REQUIRE(w2 == TestType(4));
+    }
+
     SECTION("std::swap")
     {
         {

@@ -32,6 +32,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_VEC2_H
 #define TRAP_VEC2_H
 
+#include <utility>
+
 #include "Types.h"
 #include "Utils/Utils.h"
 #include "Core/Backports/Unreachable.h"
@@ -1153,7 +1155,128 @@ requires std::is_arithmetic_v<T>
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+//Structured bindings support
+namespace std
+{
+	template<typename T>
+	struct tuple_size<::TRAP::Math::Vec<2u, T>>
+	{
+		static constexpr usize value = 2u;
+	};
+
+	template<usize I, typename T>
+	struct tuple_element<I, ::TRAP::Math::Vec<2u, T>>
+	{
+		static_assert(I < 2u, "Index out of bounds");
+		using type = T;
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 //std::get support
+
+namespace TRAP::Math
+{
+	/// @brief Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 2).
+	/// This is enforced at compile time!
+	/// @param v Vector whose contents to extract.
+	/// @return A reference to the Ith element of v.
+	template<usize I, typename T>
+	requires std::is_arithmetic_v<T>
+	[[nodiscard]] constexpr T& get(TRAP::Math::Vec<2u, T>& v) noexcept
+	{
+		static_assert(I < TRAP::Math::Vec<2u, T>::Length());
+
+		if constexpr(I == 0)
+		{
+			return v.x();
+		}
+		else if constexpr(I == 1)
+		{
+			return v.y();
+		}
+		else
+		{
+			std::unreachable();
+		}
+	}
+
+	/// @brief Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 2).
+	/// This is enforced at compile time!
+	/// @param v Vector whose contents to extract.
+	/// @return A reference to the Ith element of v.
+	template<usize I, typename T>
+	requires std::is_arithmetic_v<T>
+	[[nodiscard]] constexpr T&& get(TRAP::Math::Vec<2u, T>&& v) noexcept
+	{
+		static_assert(I < TRAP::Math::Vec<2u, T>::Length());
+
+		if constexpr(I == 0)
+		{
+			return std::move(v.x());
+		}
+		else if constexpr(I == 1)
+		{
+			return std::move(v.y());
+		}
+		else
+		{
+			std::unreachable();
+		}
+	}
+
+	/// @brief Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 2).
+	/// This is enforced at compile time!
+	/// @param v Vector whose contents to extract.
+	/// @return A reference to the Ith element of v.
+	template<usize I, typename T>
+	requires std::is_arithmetic_v<T>
+	[[nodiscard]] constexpr const T& get(const TRAP::Math::Vec<2u, T>& v) noexcept
+	{
+		static_assert(I < TRAP::Math::Vec<2u, T>::Length());
+
+		if constexpr(I == 0)
+		{
+			return v.x();
+		}
+		else if constexpr(I == 1)
+		{
+			return v.y();
+		}
+		else
+		{
+			std::unreachable();
+		}
+	}
+
+	/// @brief Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 2).
+	/// This is enforced at compile time!
+	/// @param v Vector whose contents to extract.
+	/// @return A reference to the Ith element of v.
+	template<usize I, typename T>
+	requires std::is_arithmetic_v<T>
+	[[nodiscard]] constexpr const T&& get(const TRAP::Math::Vec<2u, T>&& v) noexcept
+	{
+		static_assert(I < TRAP::Math::Vec<2u, T>::Length());
+
+		if constexpr(I == 0)
+		{
+			return std::move(v.x());
+		}
+		else if constexpr(I == 1)
+		{
+			return std::move(v.y());
+		}
+		else
+		{
+			std::unreachable();
+		}
+	}
+}
 
 namespace std
 {
@@ -1164,22 +1287,9 @@ namespace std
 	/// @return A reference to the Ith element of v.
 	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr T& get(TRAP::Math::Vec<2, T>& v) noexcept
+	[[nodiscard]] constexpr T& get(TRAP::Math::Vec<2u, T>& v) noexcept
 	{
-		static_assert(I < TRAP::Math::Vec<2, T>::Length());
-
-		if constexpr(I == 0)
-		{
-			return v.x();
-		}
-		else if constexpr(I == 1)
-		{
-			return v.y();
-		}
-		else
-		{
-			std::unreachable();
-		}
+		return TRAP::Math::get<I>(v);
 	}
 
 	/// @brief Extracts the Ith element from the vector.
@@ -1189,22 +1299,9 @@ namespace std
 	/// @return A reference to the Ith element of v.
 	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr T&& get(TRAP::Math::Vec<2, T>&& v) noexcept
+	[[nodiscard]] constexpr T&& get(TRAP::Math::Vec<2u, T>&& v) noexcept
 	{
-		static_assert(I < TRAP::Math::Vec<2, T>::Length());
-
-		if constexpr(I == 0)
-		{
-			return std::move(v.x());
-		}
-		else if constexpr(I == 1)
-		{
-			return std::move(v.y());
-		}
-		else
-		{
-			std::unreachable();
-		}
+		return TRAP::Math::get<I>(std::forward<TRAP::Math::Vec<2u, T>>(v));
 	}
 
 	/// @brief Extracts the Ith element from the vector.
@@ -1214,22 +1311,9 @@ namespace std
 	/// @return A reference to the Ith element of v.
 	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr const T& get(const TRAP::Math::Vec<2, T>& v) noexcept
+	[[nodiscard]] constexpr const T& get(const TRAP::Math::Vec<2u, T>& v) noexcept
 	{
-		static_assert(I < TRAP::Math::Vec<2, T>::Length());
-
-		if constexpr(I == 0)
-		{
-			return v.x();
-		}
-		else if constexpr(I == 1)
-		{
-			return v.y();
-		}
-		else
-		{
-			std::unreachable();
-		}
+		return TRAP::Math::get<I>(v);
 	}
 
 	/// @brief Extracts the Ith element from the vector.
@@ -1239,22 +1323,9 @@ namespace std
 	/// @return A reference to the Ith element of v.
 	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr const T&& get(const TRAP::Math::Vec<2, T>&& v) noexcept
+	[[nodiscard]] constexpr const T&& get(const TRAP::Math::Vec<2u, T>&& v) noexcept
 	{
-		static_assert(I < TRAP::Math::Vec<2, T>::Length());
-
-		if constexpr(I == 0)
-		{
-			return std::move(v.x());
-		}
-		else if constexpr(I == 1)
-		{
-			return std::move(v.y());
-		}
-		else
-		{
-			std::unreachable();
-		}
+		return TRAP::Math::get<I>(std::forward<const TRAP::Math::Vec<2u, T>>(v));
 	}
 }
 

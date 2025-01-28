@@ -1197,9 +1197,27 @@ requires std::is_arithmetic_v<T>
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+//Structured bindings support
+namespace std
+{
+	template<typename T>
+	struct tuple_size<::TRAP::Math::Vec<3u, T>>
+	{
+		static constexpr usize value = 3u;
+	};
+
+	template<usize I, typename T>
+	struct tuple_element<I, ::TRAP::Math::Vec<3u, T>>
+	{
+		static_assert(I < 3u, "Index out of bounds");
+		using type = T;
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 //std::get support
 
-namespace std
+namespace TRAP::Math
 {
     /// @brief Extracts the Ith element from the vector.
     /// I must be an integer value in range [0, 3).
@@ -1316,6 +1334,57 @@ namespace std
             std::unreachable();
         }
     }
+}
+
+namespace std
+{
+	/// @brief Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 2).
+	/// This is enforced at compile time!
+	/// @param v Vector whose contents to extract.
+	/// @return A reference to the Ith element of v.
+	template<usize I, typename T>
+	requires std::is_arithmetic_v<T>
+	[[nodiscard]] constexpr T& get(TRAP::Math::Vec<3u, T>& v) noexcept
+	{
+		return TRAP::Math::get<I>(v);
+	}
+
+	/// @brief Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 3).
+	/// This is enforced at compile time!
+	/// @param v Vector whose contents to extract.
+	/// @return A reference to the Ith element of v.
+	template<usize I, typename T>
+	requires std::is_arithmetic_v<T>
+	[[nodiscard]] constexpr T&& get(TRAP::Math::Vec<3u, T>&& v) noexcept
+	{
+		return TRAP::Math::get<I>(std::forward<TRAP::Math::Vec<3u, T>>(v));
+	}
+
+	/// @brief Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 3).
+	/// This is enforced at compile time!
+	/// @param v Vector whose contents to extract.
+	/// @return A reference to the Ith element of v.
+	template<usize I, typename T>
+	requires std::is_arithmetic_v<T>
+	[[nodiscard]] constexpr const T& get(const TRAP::Math::Vec<3u, T>& v) noexcept
+	{
+		return TRAP::Math::get<I>(v);
+	}
+
+	/// @brief Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 3).
+	/// This is enforced at compile time!
+	/// @param v Vector whose contents to extract.
+	/// @return A reference to the Ith element of v.
+	template<usize I, typename T>
+	requires std::is_arithmetic_v<T>
+	[[nodiscard]] constexpr const T&& get(const TRAP::Math::Vec<3u, T>&& v) noexcept
+	{
+		return TRAP::Math::get<I>(std::forward<const TRAP::Math::Vec<3u, T>>(v));
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
