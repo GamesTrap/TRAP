@@ -301,6 +301,58 @@ namespace TRAP::Math
 		{
 			std::swap(value, other.value);
 		}
+
+		/// @brief Extracts the Ith element from the matrix.
+		/// I must be an integer value in range [0, 3).
+		/// This is enforced at compile time!
+		/// @param m Matrix whose contents to extract.
+		/// @return A reference to the Ith element of v.
+		template<usize I>
+		[[nodiscard]] constexpr col_type& get() & noexcept
+		{
+			static_assert(I < TRAP::Math::Mat<3, 3, T>::Length());
+
+			return value[I];
+		}
+
+		/// @brief Extracts the Ith element from the matrix.
+		/// I must be an integer value in range [0, 3).
+		/// This is enforced at compile time!
+		/// @param m Matrix whose contents to extract.
+		/// @return A reference to the Ith element of v.
+		template<usize I>
+		[[nodiscard]] constexpr col_type&& get() && noexcept
+		{
+			static_assert(I < TRAP::Math::Mat<3, 3, T>::Length());
+
+			return std::move(value[I]);
+		}
+
+		/// @brief Extracts the Ith element from the matrix.
+		/// I must be an integer value in range [0, 3).
+		/// This is enforced at compile time!
+		/// @param m Matrix whose contents to extract.
+		/// @return A reference to the Ith element of v.
+		template<usize I>
+		[[nodiscard]] constexpr const col_type& get() const& noexcept
+		{
+			static_assert(I < TRAP::Math::Mat<3, 3, T>::Length());
+
+			return value[I];
+		}
+
+		/// @brief Extracts the Ith element from the matrix.
+		/// I must be an integer value in range [0, 3).
+		/// This is enforced at compile time!
+		/// @param m Matrix whose contents to extract.
+		/// @return A reference to the Ith element of v.
+		template<usize I>
+		[[nodiscard]] constexpr const col_type&& get() const&& noexcept
+		{
+			static_assert(I < TRAP::Math::Mat<3, 3, T>::Length());
+
+			return std::move(value[I]);
+		}
 	};
 
 	//Unary operators
@@ -858,65 +910,6 @@ namespace std
 //-------------------------------------------------------------------------------------------------------------------//
 //std::get support
 
-namespace TRAP::Math
-{
-	/// @brief Extracts the Ith element from the matrix.
-	/// I must be an integer value in range [0, 3).
-	/// This is enforced at compile time!
-	/// @param m Matrix whose contents to extract.
-	/// @return A reference to the Ith element of v.
-	template<usize I, typename T>
-	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::col_type& get(TRAP::Math::Mat<3, 3, T>& m) noexcept
-	{
-		static_assert(I < TRAP::Math::Mat<3, 3, T>::Length());
-
-		return m[I];
-	}
-
-	/// @brief Extracts the Ith element from the matrix.
-	/// I must be an integer value in range [0, 3).
-	/// This is enforced at compile time!
-	/// @param m Matrix whose contents to extract.
-	/// @return A reference to the Ith element of v.
-	template<usize I, typename T>
-	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::col_type&& get(TRAP::Math::Mat<3, 3, T>&& m) noexcept
-	{
-		static_assert(I < TRAP::Math::Mat<3, 3, T>::Length());
-
-		return std::move(m[I]);
-	}
-
-	/// @brief Extracts the Ith element from the matrix.
-	/// I must be an integer value in range [0, 3).
-	/// This is enforced at compile time!
-	/// @param m Matrix whose contents to extract.
-	/// @return A reference to the Ith element of v.
-	template<usize I, typename T>
-	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::col_type& get(const TRAP::Math::Mat<3, 3, T>& m) noexcept
-	{
-		static_assert(I < TRAP::Math::Mat<3, 3, T>::Length());
-
-		return m[I];
-	}
-
-	/// @brief Extracts the Ith element from the matrix.
-	/// I must be an integer value in range [0, 3).
-	/// This is enforced at compile time!
-	/// @param m Matrix whose contents to extract.
-	/// @return A reference to the Ith element of v.
-	template<usize I, typename T>
-	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::col_type&& get(const TRAP::Math::Mat<3, 3, T>&& m) noexcept
-	{
-		static_assert(I < TRAP::Math::Mat<3, 3, T>::Length());
-
-		return std::move(m[I]);
-	}
-}
-
 namespace std
 {
 	/// @brief Extracts the Ith element from the matrix.
@@ -928,7 +921,7 @@ namespace std
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::col_type& get(TRAP::Math::Mat<3, 3, T>& m) noexcept
 	{
-		return TRAP::Math::get<I>(m);
+		return m.template get<I>();
 	}
 
 	/// @brief Extracts the Ith element from the matrix.
@@ -940,7 +933,7 @@ namespace std
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::col_type&& get(TRAP::Math::Mat<3, 3, T>&& m) noexcept
 	{
-		return TRAP::Math::get<I>(std::forward<TRAP::Math::Mat<3, 3, T>>(m));
+		return std::move(m.template get<I>());
 	}
 
 	/// @brief Extracts the Ith element from the matrix.
@@ -952,7 +945,7 @@ namespace std
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::col_type& get(const TRAP::Math::Mat<3, 3, T>& m) noexcept
 	{
-		return TRAP::Math::get<I>(m);
+		return m.template get<I>();
 	}
 
 	/// @brief Extracts the Ith element from the matrix.
@@ -964,7 +957,7 @@ namespace std
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::col_type&& get(const TRAP::Math::Mat<3, 3, T>&& m) noexcept
 	{
-		return TRAP::Math::get<I>(std::forward<const TRAP::Math::Mat<3, 3, T>>(m));
+		return std::move(m.template get<I>());
 	}
 }
 

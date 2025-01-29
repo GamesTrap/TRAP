@@ -181,6 +181,58 @@ public:
 		{
 			std::swap(data, other.data);
 		}
+
+		/// @brief Extracts the Ith element from the quaternion.
+		/// I must be an integer value in range [0, 4).
+		/// This is enforced at compile time!
+		/// @param q Quaternion whose contents to extract.
+		/// @return A reference to the Ith element of q.
+		template<usize I>
+		[[nodiscard]] constexpr T& get() & noexcept
+		{
+			static_assert(I < TRAP::Math::tQuat<T>::Length());
+
+			return data[I];
+		}
+
+		/// @brief Extracts the Ith element from the quaternion.
+		/// I must be an integer value in range [0, 4).
+		/// This is enforced at compile time!
+		/// @param q Quaternion whose contents to extract.
+		/// @return A reference to the Ith element of q.
+		template<usize I>
+		[[nodiscard]] constexpr T get() && noexcept
+		{
+			static_assert(I < TRAP::Math::tQuat<T>::Length());
+
+			return data[I];
+		}
+
+		/// @brief Extracts the Ith element from the quaternion.
+		/// I must be an integer value in range [0, 4).
+		/// This is enforced at compile time!
+		/// @param q Quaternion whose contents to extract.
+		/// @return A reference to the Ith element of q.
+		template<usize I>
+		[[nodiscard]] constexpr T get() const& noexcept
+		{
+			static_assert(I < TRAP::Math::tQuat<T>::Length());
+
+			return data[I];
+		}
+
+		/// @brief Extracts the Ith element from the quaternion.
+		/// I must be an integer value in range [0, 4).
+		/// This is enforced at compile time!
+		/// @param q Quaternion whose contents to extract.
+		/// @return A reference to the Ith element of q.
+		template<usize I>
+		[[nodiscard]] constexpr T get() const&& noexcept
+		{
+			static_assert(I < TRAP::Math::tQuat<T>::Length());
+
+			return data[I];
+		}
 	};
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -715,77 +767,19 @@ namespace std
 	template<typename T>
 	struct tuple_size<::TRAP::Math::tQuat<T>>
 	{
-		static constexpr usize value = 4u;
+		static constexpr usize value = ::TRAP::Math::tQuat<T>::Length();
 	};
 
 	template<usize I, typename T>
 	struct tuple_element<I, ::TRAP::Math::tQuat<T>>
 	{
-		static_assert(I < 4u, "Index out of bounds");
+		static_assert(I < ::TRAP::Math::tQuat<T>::Length(), "Index out of bounds");
 		using type = T;
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 //std::get support
-namespace TRAP::Math
-{
-	/// @brief Extracts the Ith element from the quaternion.
-	/// I must be an integer value in range [0, 4).
-	/// This is enforced at compile time!
-	/// @param q Quaternion whose contents to extract.
-	/// @return A reference to the Ith element of q.
-	template<usize I, typename T>
-	requires std::floating_point<T>
-	[[nodiscard]] constexpr T& get(TRAP::Math::tQuat<T>& q) noexcept
-	{
-		static_assert(I < TRAP::Math::tQuat<T>::Length());
-
-		return q[I];
-	}
-
-	/// @brief Extracts the Ith element from the quaternion.
-	/// I must be an integer value in range [0, 4).
-	/// This is enforced at compile time!
-	/// @param q Quaternion whose contents to extract.
-	/// @return A reference to the Ith element of q.
-	template<usize I, typename T>
-	requires std::floating_point<T>
-	[[nodiscard]] constexpr T&& get(TRAP::Math::tQuat<T>&& q) noexcept
-	{
-		static_assert(I < TRAP::Math::tQuat<T>::Length());
-
-		return std::move(q[I]);
-	}
-
-	/// @brief Extracts the Ith element from the quaternion.
-	/// I must be an integer value in range [0, 4).
-	/// This is enforced at compile time!
-	/// @param q Quaternion whose contents to extract.
-	/// @return A reference to the Ith element of q.
-	template<usize I, typename T>
-	requires std::floating_point<T>
-	[[nodiscard]] constexpr const T& get(const TRAP::Math::tQuat<T>& q) noexcept
-	{
-		static_assert(I < TRAP::Math::tQuat<T>::Length());
-
-		return q[I];
-	}
-
-	/// @brief Extracts the Ith element from the quaternion.
-	/// I must be an integer value in range [0, 4).
-	/// This is enforced at compile time!
-	/// @param q Quaternion whose contents to extract.
-	/// @return A reference to the Ith element of q.
-	template<usize I, typename T>
-	requires std::floating_point<T>
-	[[nodiscard]] constexpr const T&& get(const TRAP::Math::tQuat<T>&& q) noexcept
-	{
-		static_assert(I < TRAP::Math::tQuat<T>::Length());
-
-		return std::move(q[I]);
-	}
-}
 
 namespace std
 {
@@ -798,9 +792,7 @@ namespace std
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr T& get(TRAP::Math::tQuat<T>& q) noexcept
 	{
-		static_assert(I < TRAP::Math::tQuat<T>::Length());
-
-		return q[I];
+		return q.template get<I>();
 	}
 
 	/// @brief Extracts the Ith element from the quaternion.
@@ -810,11 +802,9 @@ namespace std
 	/// @return A reference to the Ith element of q.
 	template<usize I, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] constexpr T&& get(TRAP::Math::tQuat<T>&& q) noexcept
+	[[nodiscard]] constexpr T get(TRAP::Math::tQuat<T>&& q) noexcept
 	{
-		static_assert(I < TRAP::Math::tQuat<T>::Length());
-
-		return std::move(q[I]);
+		return q.template get<I>();
 	}
 
 	/// @brief Extracts the Ith element from the quaternion.
@@ -824,11 +814,9 @@ namespace std
 	/// @return A reference to the Ith element of q.
 	template<usize I, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] constexpr const T& get(const TRAP::Math::tQuat<T>& q) noexcept
+	[[nodiscard]] constexpr T get(const TRAP::Math::tQuat<T>& q) noexcept
 	{
-		static_assert(I < TRAP::Math::tQuat<T>::Length());
-
-		return q[I];
+		return q.template get<I>();
 	}
 
 	/// @brief Extracts the Ith element from the quaternion.
@@ -838,11 +826,9 @@ namespace std
 	/// @return A reference to the Ith element of q.
 	template<usize I, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] constexpr const T&& get(const TRAP::Math::tQuat<T>&& q) noexcept
+	[[nodiscard]] constexpr T get(const TRAP::Math::tQuat<T>&& q) noexcept
 	{
-		static_assert(I < TRAP::Math::tQuat<T>::Length());
-
-		return std::move(q[I]);
+		return q.template get<I>();
 	}
 }
 
