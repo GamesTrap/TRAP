@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "FileSystem.h"
 
+#include "Core/Backports/RangeAssign.h"
 #include "Utils/SafeSystem.h"
 #include "Utils/String/String.h"
 #include "Application.h"
@@ -9,8 +10,8 @@
 
 namespace
 {
-    [[nodiscard]] TRAP::Optional<uintmax_t> GetFolderSizeInternal(const std::filesystem::path& path, bool recursive);
-    [[nodiscard]] TRAP::Optional<uintmax_t> GetFileSizeInternal(const std::filesystem::path& path);
+    [[nodiscard]] TRAP::Optional<uintmax_t> GetApproxFolderSizeInternal(const std::filesystem::path& path, bool recursive);
+    [[nodiscard]] TRAP::Optional<uintmax_t> GetApproxFileSizeInternal(const std::filesystem::path& path);
     [[nodiscard]] bool OpenFolderInFileBrowserInternal(const std::filesystem::path& p);
     [[nodiscard]] bool OpenFileInFileBrowserInternal(const std::filesystem::path& p);
 
@@ -53,6 +54,34 @@ void TRAP::FileSystem::Init()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+namespace
+{
+    template<typename T>
+    requires std::same_as<T, u8> || std::same_as<T, char>
+    [[nodiscard]] std::vector<T> ReadNBytes(std::ifstream& file, const std::streamsize bytesToRead)
+    {
+        TRAP_ASSERT(bytesToRead > 0, "FileSystem::ReadNBytes(): bytesToRead must be > 0!");
+
+        std::vector<T> bytes(bytesToRead);
+
+        if constexpr(std::same_as<T, u8>)
+        {
+            file.read(reinterpret_cast<char*>(bytes.data()), bytesToRead);
+        }
+        else
+        {
+            file.read(bytes.data(), bytesToRead);
+        }
+
+        if(file.gcount() < NumericCast<std::streamsize>(bytes.size()))
+            bytes.resize(file.gcount());
+
+        return bytes;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] TRAP::Optional<std::vector<u8>> TRAP::FileSystem::ReadFile(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
@@ -62,11 +91,8 @@ void TRAP::FileSystem::Init()
     if(!IsFile(path))
         return TRAP::NullOpt;
 
-    const auto fileSize = GetFileSizeInternal(path);
-    if(!fileSize)
-        return TRAP::NullOpt;
-
-    if(*fileSize == 0)
+    const auto fileSize = GetApproxFileSizeInternal(path).ValueOr(4096u);
+    if(fileSize == 0u)
         return std::vector<u8>{};
 
     std::ifstream file(path, std::ios::binary);
@@ -76,10 +102,14 @@ void TRAP::FileSystem::Init()
         return TRAP::NullOpt;
     }
 
-    std::vector<u8> buffer(*fileSize);
+    std::vector<u8> buffer{};
 
-    file.read(reinterpret_cast<char*>(buffer.data()), NumericCast<std::streamsize>(buffer.size()));
-    if(file.fail())
+    //Read file in blocks till eof is hit
+    //In best case scenario this only does one iteration
+    while(file.good() && !file.eof())
+        ContainerAppendRange(buffer, ReadNBytes<u8>(file, NumericCast<std::streamsize>(fileSize)));
+
+    if(file.fail() && !file.eof())
     {
 		TP_ERROR(Log::FileSystemPrefix, "Couldn't read file: ", path, " (failed to read data)!");
         return TRAP::NullOpt;
@@ -99,10 +129,8 @@ void TRAP::FileSystem::Init()
     if(!IsFile(path))
         return TRAP::NullOpt;
 
-    const auto fileSize = GetFileSizeInternal(path);
-    if(!fileSize)
-        return TRAP::NullOpt;
-    if(*fileSize == 0)
+    const usize fileSize = GetApproxFileSizeInternal(path).ValueOr(4096u);
+    if(fileSize == 0u)
         return "";
 
     std::ifstream file(path, std::ios::binary);
@@ -112,11 +140,14 @@ void TRAP::FileSystem::Init()
         return TRAP::NullOpt;
     }
 
-    std::string result(*fileSize, '\0');
+    std::string result{};
 
-    file.read(result.data(), NumericCast<std::streamsize>(*fileSize));
+    //Read file in blocks till eof is hit
+    //In best case scenario this only does one iteration
+    while(file.good() && !file.eof())
+        ContainerAppendRange(result, ReadNBytes<char>(file, NumericCast<std::streamsize>(fileSize)));
 
-    if(file.fail())
+    if(file.fail() && !file.eof())
     {
 		TP_ERROR(Log::FileSystemPrefix, "Couldn't read file: ", path, " (failed to read data)!");
         return TRAP::NullOpt;
@@ -318,17 +349,17 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Optional<uintmax_t> TRAP::FileSystem::GetSize(const std::filesystem::path& path, const bool recursive)
+[[nodiscard]] TRAP::Optional<uintmax_t> TRAP::FileSystem::GetApproxSize(const std::filesystem::path& path, const bool recursive)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
-    TRAP_ASSERT(!path.empty(), "FileSystem::GetSize(): Path is empty!");
+    TRAP_ASSERT(!path.empty(), "FileSystem::GetApproxSize(): Path is empty!");
 
     if(IsFile(path))
-        return GetFileSizeInternal(path);
+        return GetApproxFileSizeInternal(path);
 
     if(IsFolder(path))
-        return GetFolderSizeInternal(path, recursive);
+        return GetApproxFolderSizeInternal(path, recursive);
 
     return TRAP::NullOpt;
 }
@@ -856,11 +887,11 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
 
 namespace
 {
-    [[nodiscard]] TRAP::Optional<uintmax_t> GetFileSizeFallbackInternal(const std::filesystem::path& path)
+    [[nodiscard]] TRAP::Optional<uintmax_t> GetApproxFileSizeFallbackInternal(const std::filesystem::path& path)
     {
     	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
-        TRAP_ASSERT(!path.empty(), "FileSystem::GetFileSizeFallbackInternal(): Path is empty!");
+        TRAP_ASSERT(!path.empty(), "FileSystem::GetApproxFileSizeFallbackInternal(): Path is empty!");
 
         std::ifstream file(path, std::ios::binary | std::ios::ate);
         if(!file.is_open() || !file.good())
@@ -882,17 +913,17 @@ namespace
 
     //-------------------------------------------------------------------------------------------------------------------//
 
-    [[nodiscard]] TRAP::Optional<uintmax_t> GetFileSizeInternal(const std::filesystem::path& path)
+    [[nodiscard]] TRAP::Optional<uintmax_t> GetApproxFileSizeInternal(const std::filesystem::path& path)
     {
     	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
-        TRAP_ASSERT(!path.empty(), "FileSystem::GetFileSizeInternal(): Path is empty!");
+        TRAP_ASSERT(!path.empty(), "FileSystem::GetApproxFileSizeInternal(): Path is empty!");
 
         std::error_code ec{};
         const uintmax_t size = std::filesystem::file_size(path, ec);
 
         if(ec || size == std::numeric_limits<uintmax_t>::max())
-            return GetFileSizeFallbackInternal(path);
+            return GetApproxFileSizeFallbackInternal(path);
 
         return size;
     }
@@ -902,7 +933,7 @@ namespace
     template<typename T>
     requires std::same_as<T, std::filesystem::recursive_directory_iterator> ||
              std::same_as<T, std::filesystem::directory_iterator>
-    [[nodiscard]] TRAP::Optional<uintmax_t> GetFolderSizeInternal(const T& dirIt)
+    [[nodiscard]] TRAP::Optional<uintmax_t> GetApproxFolderSizeInternal(const T& dirIt)
     {
     	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
@@ -918,7 +949,7 @@ namespace
 
             if(ec || fileSize == std::numeric_limits<std::uintmax_t>::max())
             {
-                const auto fileSizeFallback = GetFileSizeFallbackInternal(entry.path());
+                const auto fileSizeFallback = GetApproxFileSizeFallbackInternal(entry.path());
                 if (!fileSizeFallback)
                     return TRAP::NullOpt;
 
@@ -933,7 +964,7 @@ namespace
 
     //-------------------------------------------------------------------------------------------------------------------//
 
-    [[nodiscard]] TRAP::Optional<uintmax_t> GetFolderSizeInternal(const std::filesystem::path& path, const bool recursive)
+    [[nodiscard]] TRAP::Optional<uintmax_t> GetApproxFolderSizeInternal(const std::filesystem::path& path, const bool recursive)
     {
     	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
@@ -948,7 +979,7 @@ namespace
                 return TRAP::NullOpt;
             }
 
-            return GetFolderSizeInternal(rDIt);
+            return GetApproxFolderSizeInternal(rDIt);
         }
 
         const std::filesystem::directory_iterator dIt(path, ec);
@@ -958,7 +989,7 @@ namespace
             return TRAP::NullOpt;
         }
 
-        return GetFolderSizeInternal(dIt);
+        return GetApproxFolderSizeInternal(dIt);
     }
 
     //-------------------------------------------------------------------------------------------------------------------//

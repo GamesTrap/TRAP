@@ -131,7 +131,8 @@ namespace TRAP::FileSystem
 	/// @param path Path to a file or folder.
 	/// @param recursive Recursively count file sizes. This only has an effect if path leads to a folder.
 	/// @return File or folder size in bytes. Empty optional if an error has occurred.
-	[[nodiscard]] TRAP::Optional<uintmax_t> GetSize(const std::filesystem::path& path, bool recursive = true);
+	/// @note Only take this as an approximate hint, the actual file size might be different or files may have already been changed after this function returns.
+	[[nodiscard]] TRAP::Optional<uintmax_t> GetApproxSize(const std::filesystem::path& path, bool recursive = true);
 	/// @brief Get the last write time of a file or folder.
 	/// @param path Path to a file or folder.
 	/// @return Last write time of the file or folder. Empty optional if an error has occurred.

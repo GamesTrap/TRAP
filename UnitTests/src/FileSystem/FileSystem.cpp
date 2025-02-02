@@ -376,28 +376,28 @@ TEST_CASE("TRAP::FileSystem::GetSize()", "[filesystem][getsize]")
 
     SECTION("Valid file path")
     {
-        const auto size = TRAP::FileSystem::GetSize(TestFilesPath / "read.txt", false);
+        const auto size = TRAP::FileSystem::GetApproxSize(TestFilesPath / "read.txt", false);
         REQUIRE(size);
         // REQUIRE(*size == 11);
 
-        const auto size2 = TRAP::FileSystem::GetSize(TestFilesPath / "read.txt", true);
+        const auto size2 = TRAP::FileSystem::GetApproxSize(TestFilesPath / "read.txt", true);
         REQUIRE(size2);
         // REQUIRE(*size2 == 11);
     }
 
     SECTION("Valid folder path")
     {
-        const auto size = TRAP::FileSystem::GetSize(TestFilesPath, false);
+        const auto size = TRAP::FileSystem::GetApproxSize(TestFilesPath, false);
         REQUIRE(size);
 
-        const auto size2 = TRAP::FileSystem::GetSize(TestFilesPath, true);
+        const auto size2 = TRAP::FileSystem::GetApproxSize(TestFilesPath, true);
         REQUIRE(size2);
     }
 
     SECTION("Empty path")
     {
-        REQUIRE_FALSE(TRAP::FileSystem::GetSize("", false));
-        REQUIRE_FALSE(TRAP::FileSystem::GetSize("", true));
+        REQUIRE_FALSE(TRAP::FileSystem::GetApproxSize("", false));
+        REQUIRE_FALSE(TRAP::FileSystem::GetApproxSize("", true));
     }
 }
 
