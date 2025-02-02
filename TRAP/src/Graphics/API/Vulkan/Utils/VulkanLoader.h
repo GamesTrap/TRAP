@@ -19,7 +19,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 306
+#define VULKANLOADER_HEADER_VERSION 307
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -814,6 +814,14 @@ struct VkDeviceTable
 #if defined(VK_NV_clip_space_w_scaling)
 	PFN_vkCmdSetViewportWScalingNV vkCmdSetViewportWScalingNV;
 #endif /* defined(VK_NV_clip_space_w_scaling) */
+#if defined(VK_NV_cluster_acceleration_structure)
+	PFN_vkCmdBuildClusterAccelerationStructureIndirectNV vkCmdBuildClusterAccelerationStructureIndirectNV;
+	PFN_vkGetClusterAccelerationStructureBuildSizesNV vkGetClusterAccelerationStructureBuildSizesNV;
+#endif /* defined(VK_NV_cluster_acceleration_structure) */
+#if defined(VK_NV_cooperative_vector)
+	PFN_vkCmdConvertCooperativeVectorMatrixNV vkCmdConvertCooperativeVectorMatrixNV;
+	PFN_vkConvertCooperativeVectorMatrixNV vkConvertCooperativeVectorMatrixNV;
+#endif /* defined(VK_NV_cooperative_vector) */
 #if defined(VK_NV_copy_memory_indirect)
 	PFN_vkCmdCopyMemoryIndirectNV vkCmdCopyMemoryIndirectNV;
 	PFN_vkCmdCopyMemoryToImageIndirectNV vkCmdCopyMemoryToImageIndirectNV;
@@ -879,6 +887,10 @@ struct VkDeviceTable
 	PFN_vkCreateOpticalFlowSessionNV vkCreateOpticalFlowSessionNV;
 	PFN_vkDestroyOpticalFlowSessionNV vkDestroyOpticalFlowSessionNV;
 #endif /* defined(VK_NV_optical_flow) */
+#if defined(VK_NV_partitioned_acceleration_structure)
+	PFN_vkCmdBuildPartitionedAccelerationStructuresNV vkCmdBuildPartitionedAccelerationStructuresNV;
+	PFN_vkGetPartitionedAccelerationStructuresBuildSizesNV vkGetPartitionedAccelerationStructuresBuildSizesNV;
+#endif /* defined(VK_NV_partitioned_acceleration_structure) */
 #if defined(VK_NV_ray_tracing)
 	PFN_vkBindAccelerationStructureMemoryNV vkBindAccelerationStructureMemoryNV;
 	PFN_vkCmdBuildAccelerationStructureNV vkCmdBuildAccelerationStructureNV;
@@ -1901,12 +1913,21 @@ extern PFN_vkGetWinrtDisplayNV vkGetWinrtDisplayNV;
 #if defined(VK_NV_clip_space_w_scaling)
 extern PFN_vkCmdSetViewportWScalingNV vkCmdSetViewportWScalingNV;
 #endif /* defined(VK_NV_clip_space_w_scaling) */
+#if defined(VK_NV_cluster_acceleration_structure)
+extern PFN_vkCmdBuildClusterAccelerationStructureIndirectNV vkCmdBuildClusterAccelerationStructureIndirectNV;
+extern PFN_vkGetClusterAccelerationStructureBuildSizesNV vkGetClusterAccelerationStructureBuildSizesNV;
+#endif /* defined(VK_NV_cluster_acceleration_structure) */
 #if defined(VK_NV_cooperative_matrix)
 extern PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV vkGetPhysicalDeviceCooperativeMatrixPropertiesNV;
 #endif /* defined(VK_NV_cooperative_matrix) */
 #if defined(VK_NV_cooperative_matrix2)
 extern PFN_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV;
 #endif /* defined(VK_NV_cooperative_matrix2) */
+#if defined(VK_NV_cooperative_vector)
+extern PFN_vkCmdConvertCooperativeVectorMatrixNV vkCmdConvertCooperativeVectorMatrixNV;
+extern PFN_vkConvertCooperativeVectorMatrixNV vkConvertCooperativeVectorMatrixNV;
+extern PFN_vkGetPhysicalDeviceCooperativeVectorPropertiesNV vkGetPhysicalDeviceCooperativeVectorPropertiesNV;
+#endif /* defined(VK_NV_cooperative_vector) */
 #if defined(VK_NV_copy_memory_indirect)
 extern PFN_vkCmdCopyMemoryIndirectNV vkCmdCopyMemoryIndirectNV;
 extern PFN_vkCmdCopyMemoryToImageIndirectNV vkCmdCopyMemoryToImageIndirectNV;
@@ -1979,6 +2000,10 @@ extern PFN_vkCreateOpticalFlowSessionNV vkCreateOpticalFlowSessionNV;
 extern PFN_vkDestroyOpticalFlowSessionNV vkDestroyOpticalFlowSessionNV;
 extern PFN_vkGetPhysicalDeviceOpticalFlowImageFormatsNV vkGetPhysicalDeviceOpticalFlowImageFormatsNV;
 #endif /* defined(VK_NV_optical_flow) */
+#if defined(VK_NV_partitioned_acceleration_structure)
+extern PFN_vkCmdBuildPartitionedAccelerationStructuresNV vkCmdBuildPartitionedAccelerationStructuresNV;
+extern PFN_vkGetPartitionedAccelerationStructuresBuildSizesNV vkGetPartitionedAccelerationStructuresBuildSizesNV;
+#endif /* defined(VK_NV_partitioned_acceleration_structure) */
 #if defined(VK_NV_ray_tracing)
 extern PFN_vkBindAccelerationStructureMemoryNV vkBindAccelerationStructureMemoryNV;
 extern PFN_vkCmdBuildAccelerationStructureNV vkCmdBuildAccelerationStructureNV;
@@ -2485,6 +2510,9 @@ static void VkGenLoadInstance(VkInstance instance, VkGenLoaderFunction load)
 #if defined(VK_NV_cooperative_matrix2)
 	vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV = reinterpret_cast<PFN_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV>(load(instance, "vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV"));
 #endif /* defined(VK_NV_cooperative_matrix2) */
+#if defined(VK_NV_cooperative_vector)
+	vkGetPhysicalDeviceCooperativeVectorPropertiesNV = reinterpret_cast<PFN_vkGetPhysicalDeviceCooperativeVectorPropertiesNV>(load(instance, "vkGetPhysicalDeviceCooperativeVectorPropertiesNV"));
+#endif /* defined(VK_NV_cooperative_vector) */
 #if defined(VK_NV_coverage_reduction_mode)
 	vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV = reinterpret_cast<PFN_vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV>(load(instance, "vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV"));
 #endif /* defined(VK_NV_coverage_reduction_mode) */
@@ -3211,6 +3239,14 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 #if defined(VK_NV_clip_space_w_scaling)
 	vkCmdSetViewportWScalingNV = reinterpret_cast<PFN_vkCmdSetViewportWScalingNV>(load(context, "vkCmdSetViewportWScalingNV"));
 #endif /* defined(VK_NV_clip_space_w_scaling) */
+#if defined(VK_NV_cluster_acceleration_structure)
+	vkCmdBuildClusterAccelerationStructureIndirectNV = reinterpret_cast<PFN_vkCmdBuildClusterAccelerationStructureIndirectNV>(load(context, "vkCmdBuildClusterAccelerationStructureIndirectNV"));
+	vkGetClusterAccelerationStructureBuildSizesNV = reinterpret_cast<PFN_vkGetClusterAccelerationStructureBuildSizesNV>(load(context, "vkGetClusterAccelerationStructureBuildSizesNV"));
+#endif /* defined(VK_NV_cluster_acceleration_structure) */
+#if defined(VK_NV_cooperative_vector)
+	vkCmdConvertCooperativeVectorMatrixNV = reinterpret_cast<PFN_vkCmdConvertCooperativeVectorMatrixNV>(load(context, "vkCmdConvertCooperativeVectorMatrixNV"));
+	vkConvertCooperativeVectorMatrixNV = reinterpret_cast<PFN_vkConvertCooperativeVectorMatrixNV>(load(context, "vkConvertCooperativeVectorMatrixNV"));
+#endif /* defined(VK_NV_cooperative_vector) */
 #if defined(VK_NV_copy_memory_indirect)
 	vkCmdCopyMemoryIndirectNV = reinterpret_cast<PFN_vkCmdCopyMemoryIndirectNV>(load(context, "vkCmdCopyMemoryIndirectNV"));
 	vkCmdCopyMemoryToImageIndirectNV = reinterpret_cast<PFN_vkCmdCopyMemoryToImageIndirectNV>(load(context, "vkCmdCopyMemoryToImageIndirectNV"));
@@ -3276,6 +3312,10 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkCreateOpticalFlowSessionNV = reinterpret_cast<PFN_vkCreateOpticalFlowSessionNV>(load(context, "vkCreateOpticalFlowSessionNV"));
 	vkDestroyOpticalFlowSessionNV = reinterpret_cast<PFN_vkDestroyOpticalFlowSessionNV>(load(context, "vkDestroyOpticalFlowSessionNV"));
 #endif /* defined(VK_NV_optical_flow) */
+#if defined(VK_NV_partitioned_acceleration_structure)
+	vkCmdBuildPartitionedAccelerationStructuresNV = reinterpret_cast<PFN_vkCmdBuildPartitionedAccelerationStructuresNV>(load(context, "vkCmdBuildPartitionedAccelerationStructuresNV"));
+	vkGetPartitionedAccelerationStructuresBuildSizesNV = reinterpret_cast<PFN_vkGetPartitionedAccelerationStructuresBuildSizesNV>(load(context, "vkGetPartitionedAccelerationStructuresBuildSizesNV"));
+#endif /* defined(VK_NV_partitioned_acceleration_structure) */
 #if defined(VK_NV_ray_tracing)
 	vkBindAccelerationStructureMemoryNV = reinterpret_cast<PFN_vkBindAccelerationStructureMemoryNV>(load(context, "vkBindAccelerationStructureMemoryNV"));
 	vkCmdBuildAccelerationStructureNV = reinterpret_cast<PFN_vkCmdBuildAccelerationStructureNV>(load(context, "vkCmdBuildAccelerationStructureNV"));
@@ -4127,6 +4167,14 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 #if defined(VK_NV_clip_space_w_scaling)
 	table.vkCmdSetViewportWScalingNV = reinterpret_cast<PFN_vkCmdSetViewportWScalingNV>(load(device, "vkCmdSetViewportWScalingNV"));
 #endif /* defined(VK_NV_clip_space_w_scaling) */
+#if defined(VK_NV_cluster_acceleration_structure)
+	table.vkCmdBuildClusterAccelerationStructureIndirectNV = reinterpret_cast<PFN_vkCmdBuildClusterAccelerationStructureIndirectNV>(load(device, "vkCmdBuildClusterAccelerationStructureIndirectNV"));
+	table.vkGetClusterAccelerationStructureBuildSizesNV = reinterpret_cast<PFN_vkGetClusterAccelerationStructureBuildSizesNV>(load(device, "vkGetClusterAccelerationStructureBuildSizesNV"));
+#endif /* defined(VK_NV_cluster_acceleration_structure) */
+#if defined(VK_NV_cooperative_vector)
+	table.vkCmdConvertCooperativeVectorMatrixNV = reinterpret_cast<PFN_vkCmdConvertCooperativeVectorMatrixNV>(load(device, "vkCmdConvertCooperativeVectorMatrixNV"));
+	table.vkConvertCooperativeVectorMatrixNV = reinterpret_cast<PFN_vkConvertCooperativeVectorMatrixNV>(load(device, "vkConvertCooperativeVectorMatrixNV"));
+#endif /* defined(VK_NV_cooperative_vector) */
 #if defined(VK_NV_copy_memory_indirect)
 	table.vkCmdCopyMemoryIndirectNV = reinterpret_cast<PFN_vkCmdCopyMemoryIndirectNV>(load(device, "vkCmdCopyMemoryIndirectNV"));
 	table.vkCmdCopyMemoryToImageIndirectNV = reinterpret_cast<PFN_vkCmdCopyMemoryToImageIndirectNV>(load(device, "vkCmdCopyMemoryToImageIndirectNV"));
@@ -4192,6 +4240,10 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkCreateOpticalFlowSessionNV = reinterpret_cast<PFN_vkCreateOpticalFlowSessionNV>(load(device, "vkCreateOpticalFlowSessionNV"));
 	table.vkDestroyOpticalFlowSessionNV = reinterpret_cast<PFN_vkDestroyOpticalFlowSessionNV>(load(device, "vkDestroyOpticalFlowSessionNV"));
 #endif /* defined(VK_NV_optical_flow) */
+#if defined(VK_NV_partitioned_acceleration_structure)
+	table.vkCmdBuildPartitionedAccelerationStructuresNV = reinterpret_cast<PFN_vkCmdBuildPartitionedAccelerationStructuresNV>(load(device, "vkCmdBuildPartitionedAccelerationStructuresNV"));
+	table.vkGetPartitionedAccelerationStructuresBuildSizesNV = reinterpret_cast<PFN_vkGetPartitionedAccelerationStructuresBuildSizesNV>(load(device, "vkGetPartitionedAccelerationStructuresBuildSizesNV"));
+#endif /* defined(VK_NV_partitioned_acceleration_structure) */
 #if defined(VK_NV_ray_tracing)
 	table.vkBindAccelerationStructureMemoryNV = reinterpret_cast<PFN_vkBindAccelerationStructureMemoryNV>(load(device, "vkBindAccelerationStructureMemoryNV"));
 	table.vkCmdBuildAccelerationStructureNV = reinterpret_cast<PFN_vkCmdBuildAccelerationStructureNV>(load(device, "vkCmdBuildAccelerationStructureNV"));
@@ -5222,12 +5274,21 @@ inline PFN_vkGetWinrtDisplayNV vkGetWinrtDisplayNV;
 #if defined(VK_NV_clip_space_w_scaling)
 inline PFN_vkCmdSetViewportWScalingNV vkCmdSetViewportWScalingNV;
 #endif /* defined(VK_NV_clip_space_w_scaling) */
+#if defined(VK_NV_cluster_acceleration_structure)
+inline PFN_vkCmdBuildClusterAccelerationStructureIndirectNV vkCmdBuildClusterAccelerationStructureIndirectNV;
+inline PFN_vkGetClusterAccelerationStructureBuildSizesNV vkGetClusterAccelerationStructureBuildSizesNV;
+#endif /* defined(VK_NV_cluster_acceleration_structure) */
 #if defined(VK_NV_cooperative_matrix)
 inline PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV vkGetPhysicalDeviceCooperativeMatrixPropertiesNV;
 #endif /* defined(VK_NV_cooperative_matrix) */
 #if defined(VK_NV_cooperative_matrix2)
 inline PFN_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV;
 #endif /* defined(VK_NV_cooperative_matrix2) */
+#if defined(VK_NV_cooperative_vector)
+inline PFN_vkCmdConvertCooperativeVectorMatrixNV vkCmdConvertCooperativeVectorMatrixNV;
+inline PFN_vkConvertCooperativeVectorMatrixNV vkConvertCooperativeVectorMatrixNV;
+inline PFN_vkGetPhysicalDeviceCooperativeVectorPropertiesNV vkGetPhysicalDeviceCooperativeVectorPropertiesNV;
+#endif /* defined(VK_NV_cooperative_vector) */
 #if defined(VK_NV_copy_memory_indirect)
 inline PFN_vkCmdCopyMemoryIndirectNV vkCmdCopyMemoryIndirectNV;
 inline PFN_vkCmdCopyMemoryToImageIndirectNV vkCmdCopyMemoryToImageIndirectNV;
@@ -5300,6 +5361,10 @@ inline PFN_vkCreateOpticalFlowSessionNV vkCreateOpticalFlowSessionNV;
 inline PFN_vkDestroyOpticalFlowSessionNV vkDestroyOpticalFlowSessionNV;
 inline PFN_vkGetPhysicalDeviceOpticalFlowImageFormatsNV vkGetPhysicalDeviceOpticalFlowImageFormatsNV;
 #endif /* defined(VK_NV_optical_flow) */
+#if defined(VK_NV_partitioned_acceleration_structure)
+inline PFN_vkCmdBuildPartitionedAccelerationStructuresNV vkCmdBuildPartitionedAccelerationStructuresNV;
+inline PFN_vkGetPartitionedAccelerationStructuresBuildSizesNV vkGetPartitionedAccelerationStructuresBuildSizesNV;
+#endif /* defined(VK_NV_partitioned_acceleration_structure) */
 #if defined(VK_NV_ray_tracing)
 inline PFN_vkBindAccelerationStructureMemoryNV vkBindAccelerationStructureMemoryNV;
 inline PFN_vkCmdBuildAccelerationStructureNV vkCmdBuildAccelerationStructureNV;
