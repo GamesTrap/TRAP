@@ -525,7 +525,7 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
 #elif defined(TRAP_PLATFORM_LINUX)
     return GetDocumentsFolderPathLinux();
 #else
-    assert(false, "GetDocumentsFolderPath() not implemented!");
+    TRAP_ASSERT(false, "GetDocumentsFolderPath() not implemented!");
     return TRAP::NullOpt;
 #endif
 }
@@ -876,7 +876,7 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
 #elif defined(TRAP_PLATFORM_LINUX)
     return OpenExternallyLinux(*absPath);
 #else
-    assert(false, "OpenExternally() not implemented!");
+    TRAP_ASSERT(false, "OpenExternally() not implemented!");
     return false;
 #endif
 }
@@ -892,6 +892,9 @@ namespace
     	ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
         TRAP_ASSERT(!path.empty(), "FileSystem::GetApproxFileSizeFallbackInternal(): Path is empty!");
+
+        if(!TRAP::FileSystem::IsFile(path))
+            return TRAP::NullOpt;
 
         std::ifstream file(path, std::ios::binary | std::ios::ate);
         if(!file.is_open() || !file.good())
@@ -1010,7 +1013,7 @@ namespace
 #elif defined(TRAP_PLATFORM_LINUX)
         return OpenFolderInFileBrowserLinux(p);
 #else
-        assert(false, "OpenFolderInFileBrowserInternal() not implemented!");
+        TRAP_ASSERT(false, "OpenFolderInFileBrowserInternal() not implemented!");
         return false;
 #endif
     }
@@ -1033,7 +1036,7 @@ namespace
     #elif defined(TRAP_PLATFORM_LINUX)
         return OpenFileInFileBrowserLinux(p);
     #else
-        assert(false, "OpenFileInFileBrowser() not implemented!");
+        TRAP_ASSERT(false, "OpenFileInFileBrowser() not implemented!");
         return false;
     #endif
     }

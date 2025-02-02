@@ -3,7 +3,7 @@
 #include <fstream>
 
 #include "Core/PlatformDetection.h"
-#include "TRAP/src/FileSystem/FileSystem.h"
+#include "TRAP/src/FileSystem/FileSystem.cpp"
 #include "TRAP/src/Application.h"
 
 namespace
@@ -370,7 +370,7 @@ TEST_CASE("TRAP::FileSystem::Exists()", "[filesystem][exists]")
     }
 }
 
-TEST_CASE("TRAP::FileSystem::GetSize()", "[filesystem][getsize]")
+TEST_CASE("TRAP::FileSystem::GetApproxSize()", "[filesystem][getapproxsize]")
 {
     TRAP::GetTRAPLog().SetImportance(TRAP::LogLevel::Critical);
 
@@ -398,6 +398,24 @@ TEST_CASE("TRAP::FileSystem::GetSize()", "[filesystem][getsize]")
     {
         REQUIRE_FALSE(TRAP::FileSystem::GetApproxSize("", false));
         REQUIRE_FALSE(TRAP::FileSystem::GetApproxSize("", true));
+    }
+}
+
+TEST_CASE("TRAP::FileSystem::GetApproxFileSizeFallbackInternal()", "[filesystem][getapproxfilesizefallbackinternal][internal]")
+{
+    SECTION("Valid file path")
+    {
+        REQUIRE(GetApproxFileSizeFallbackInternal(TestFilesPath / "read.txt"));
+    }
+
+    SECTION("Valid folder path")
+    {
+        REQUIRE_FALSE(GetApproxFileSizeFallbackInternal(TestFilesPath));
+    }
+
+    SECTION("Empty path")
+    {
+        REQUIRE_FALSE(GetApproxFileSizeFallbackInternal(""));
     }
 }
 
@@ -510,7 +528,7 @@ TEST_CASE("TRAP::FileSystem::GetFolderPath()", "[filesystem][getfolderpath]")
 
     SECTION("Empty path")
     {
-        REQUIRE_FALSE(TRAP::FileSystem::GetFileNameWithoutEnding(""));
+        REQUIRE_FALSE(TRAP::FileSystem::GetFolderPath(""));
     }
 }
 
@@ -657,6 +675,16 @@ TEST_CASE("TRAP::FileSystem::IsEmpty()", "[filesystem][isempty]")
         REQUIRE(TRAP::FileSystem::CreateFolder(TestFilesPath / "folder_empty"));
         REQUIRE(TRAP::FileSystem::IsEmpty(TestFilesPath / "folder_empty"));
         REQUIRE(TRAP::FileSystem::Delete(TestFilesPath / "folder_empty"));
+    }
+
+    SECTION("Invalid file path")
+    {
+        REQUIRE_FALSE(TRAP::FileSystem::Delete(TestFilesPath / "non-existing.txt"));
+    }
+
+    SECTION("Invalid folder path")
+    {
+        REQUIRE_FALSE(TRAP::FileSystem::Delete(TestFilesPath / "non-existing-folder"));
     }
 
     SECTION("Empty path")

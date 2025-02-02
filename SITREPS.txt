@@ -5599,3 +5599,4 @@ SITREP 01/28/2025|25w05a2
 SITREP 02/02/2025|25w05b1
     - Changed TRAP Engine version to 25w05b1(0.11.79)
     - FileSystem Made ReadFile() and ReadTextFile() now read till eof of file is hit ~<15 mins
+    - UnitTests Added test for FileSystem::GetApproxFileSizeFallbackInternal() ~<5 mins
