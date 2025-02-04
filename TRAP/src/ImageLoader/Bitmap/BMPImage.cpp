@@ -108,7 +108,7 @@ namespace
 			return "Failed to read encoded pixel data!";
 
 		case BMPErrorCode::FailedToOpenFile:
-			return "Failed to open file for reading";
+			return "Failed to open file for reading!";
 
 		case BMPErrorCode::FailedRLE8Decompression:
 			return "Failed to decompress RLE8 pixel data!";

@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "ImageLoader/PortableMaps/PPMImage.h"
+#include "ImageLoader/PortableMaps/PPMImage.cpp"
 
 #include "../Testfiles/Utils/ImageUtils_Src.h"
 
@@ -126,5 +126,15 @@ TEST_CASE("TRAP::INTERNAL::PPMImage", "[imageloader][ppmimage]")
     SECTION("IsSupportedImageFile()")
     {
         REQUIRE(TRAP::Image::IsSupportedImageFile("Testfiles/ImageLoader/PM/PPM/Test24BPP.ppm"));
+    }
+
+    SECTION("PPMErrorCodeToString()")
+    {
+        STATIC_REQUIRE(PPMErrorCodeToString(PPMErrorCode::InvalidMagicNumber) == "Invalid magic number detected, expected \"P3\" or \"P6\"!");
+        STATIC_REQUIRE(PPMErrorCodeToString(PPMErrorCode::InvalidWidth) == "Width is invalid!");
+        STATIC_REQUIRE(PPMErrorCodeToString(PPMErrorCode::InvalidHeight) == "Height is invalid!");
+        STATIC_REQUIRE(PPMErrorCodeToString(PPMErrorCode::InvalidMaxValue) == "MaxValue is invalid, expected value between [1, 65535)!");
+        STATIC_REQUIRE(PPMErrorCodeToString(PPMErrorCode::FailedToReadPixelData) == "Failed to read pixel data!");
+        STATIC_REQUIRE(PPMErrorCodeToString(static_cast<PPMErrorCode>(-1)) == "<UNKNOWN PPMErrorCode>");
     }
 }

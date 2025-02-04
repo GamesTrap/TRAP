@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "ImageLoader/PortableMaps/PNMImage.h"
+#include "ImageLoader/PortableMaps/PNMImage.cpp"
 
 #include "../Testfiles/Utils/ImageUtils_Src.h"
 
@@ -182,5 +182,15 @@ TEST_CASE("TRAP::INTERNAL::PNMImage", "[imageloader][pnmimage]")
     SECTION("IsSupportedImageFile()")
     {
         REQUIRE(TRAP::Image::IsSupportedImageFile("Testfiles/ImageLoader/PM/PNM/Test24BPP.pnm"));
+    }
+
+    SECTION("PNMErrorCodeToString()")
+    {
+        STATIC_REQUIRE(PNMErrorCodeToString(PNMErrorCode::InvalidMagicNumber) == "Invalid magic number detected, expected \"P2\", \"P3\", \"P5\" or \"P6\"!");
+        STATIC_REQUIRE(PNMErrorCodeToString(PNMErrorCode::InvalidWidth) == "Width is invalid!");
+        STATIC_REQUIRE(PNMErrorCodeToString(PNMErrorCode::InvalidHeight) == "Height is invalid!");
+        STATIC_REQUIRE(PNMErrorCodeToString(PNMErrorCode::InvalidMaxValue) == "MaxValue is invalid, expected value between [1, 65535)!");
+        STATIC_REQUIRE(PNMErrorCodeToString(PNMErrorCode::FailedToReadPixelData) == "Failed to read pixel data!");
+        STATIC_REQUIRE(PNMErrorCodeToString(static_cast<PNMErrorCode>(-1)) == "<UNKNOWN PNMErrorCode>");
     }
 }

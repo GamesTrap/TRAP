@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "ImageLoader/PortableMaps/PFMImage.h"
+#include "ImageLoader/PortableMaps/PFMImage.cpp"
 
 #include "../Testfiles/Utils/ImageUtils_Src.h"
 
@@ -126,5 +126,14 @@ TEST_CASE("TRAP::INTERNAL::PFMImage", "[imageloader][pfmimage]")
     SECTION("IsSupportedImageFile()")
     {
         REQUIRE(TRAP::Image::IsSupportedImageFile("Testfiles/ImageLoader/PM/PFM/TestHDR.pfm"));
+    }
+
+    SECTION("PFMErrorCodeToString()")
+    {
+        STATIC_REQUIRE(PFMErrorCodeToString(PFMErrorCode::InvalidMagicNumber) == "Invalid magic number detected, expected \"PF\", \"PF4\" or \"Pf\"!");
+        STATIC_REQUIRE(PFMErrorCodeToString(PFMErrorCode::InvalidWidth) == "Width is invalid!");
+        STATIC_REQUIRE(PFMErrorCodeToString(PFMErrorCode::InvalidHeight) == "Height is invalid!");
+        STATIC_REQUIRE(PFMErrorCodeToString(PFMErrorCode::FailedToReadPixelData) == "Failed to read pixel data!");
+        STATIC_REQUIRE(PFMErrorCodeToString(static_cast<PFMErrorCode>(-1)) == "<UNKNOWN PFMErrorCode>");
     }
 }

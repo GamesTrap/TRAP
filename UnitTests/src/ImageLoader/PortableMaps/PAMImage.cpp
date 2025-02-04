@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "ImageLoader/PortableMaps/PAMImage.h"
+#include "ImageLoader/PortableMaps/PAMImage.cpp"
 
 #include "../Testfiles/Utils/ImageUtils_Src.h"
 
@@ -182,5 +182,20 @@ TEST_CASE("TRAP::INTERNAL::PAMImage", "[imageloader][pamimage]")
     SECTION("IsSupportedImageFile()")
     {
         REQUIRE(TRAP::Image::IsSupportedImageFile("Testfiles/ImageLoader/PM/PAM/Test24BPP.pam"));
+    }
+
+    SECTION("PAMErrorCodeToString()")
+    {
+        STATIC_REQUIRE(PAMErrorCodeToString(PAMErrorCode::InvalidMagicNumber) == "Invalid magic number detected, expected \"P7\"!");
+        STATIC_REQUIRE(PAMErrorCodeToString(PAMErrorCode::InvalidWidth) == "Width is invalid!");
+        STATIC_REQUIRE(PAMErrorCodeToString(PAMErrorCode::InvalidHeight) == "Height is invalid!");
+        STATIC_REQUIRE(PAMErrorCodeToString(PAMErrorCode::InvalidDepth) == "Depth is invalid!");
+        STATIC_REQUIRE(PAMErrorCodeToString(PAMErrorCode::InvalidMaxValue) == "Max value is invalid!");
+        STATIC_REQUIRE(PAMErrorCodeToString(PAMErrorCode::InvalidTuplType) == "TuplType is invalid, expected one of \"GRAYSCALE\", \"GRAYSCALE_ALPHA\", \"RGB\", \"RGB_ALPHA\"!");
+        STATIC_REQUIRE(PAMErrorCodeToString(PAMErrorCode::InvalidTuplTypeAndDepthCombination) == "TuplType and depth combination is invalid!");
+        STATIC_REQUIRE(PAMErrorCodeToString(PAMErrorCode::InvalidHeaderEnd) == "Header end is invalid, expected \"ENDHDR\"!");
+        STATIC_REQUIRE(PAMErrorCodeToString(PAMErrorCode::UnsupportedTuplTypeBlackAndWhite) == "TuplType \"BLACKANDWHITE\" & \"BLACKANDWHITE_ALPHA\" are unsupported!");
+        STATIC_REQUIRE(PAMErrorCodeToString(PAMErrorCode::FailedToReadPixelData) == "Failed to read pixel data!");
+        STATIC_REQUIRE(PAMErrorCodeToString(static_cast<PAMErrorCode>(-1)) == "<UNKNOWN PAMErrorCode>");
     }
 }

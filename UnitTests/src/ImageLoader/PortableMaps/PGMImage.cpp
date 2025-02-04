@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "ImageLoader/PortableMaps/PGMImage.h"
+#include "ImageLoader/PortableMaps/PGMImage.cpp"
 
 #include "../Testfiles/Utils/ImageUtils_Src.h"
 
@@ -126,5 +126,15 @@ TEST_CASE("TRAP::INTERNAL::PGMImage", "[imageloader][pgmimage]")
     SECTION("IsSupportedImageFile()")
     {
         REQUIRE(TRAP::Image::IsSupportedImageFile("Testfiles/ImageLoader/PM/PGM/Test8BPPGrayscale.pgm"));
+    }
+
+    SECTION("PGMErrorCodeToString()")
+    {
+        STATIC_REQUIRE(PGMErrorCodeToString(PGMErrorCode::InvalidMagicNumber) == "Invalid magic number detected, expected \"P2\" or \"P5\"!");
+        STATIC_REQUIRE(PGMErrorCodeToString(PGMErrorCode::InvalidWidth) == "Width is invalid!");
+        STATIC_REQUIRE(PGMErrorCodeToString(PGMErrorCode::InvalidHeight) == "Height is invalid!");
+        STATIC_REQUIRE(PGMErrorCodeToString(PGMErrorCode::InvalidMaxValue) == "MaxValue is invalid, expected value between [1, 65535)!");
+        STATIC_REQUIRE(PGMErrorCodeToString(PGMErrorCode::FailedToReadPixelData) == "Failed to read pixel data!");
+        STATIC_REQUIRE(PGMErrorCodeToString(static_cast<PGMErrorCode>(-1)) == "<UNKNOWN PGMErrorCode>");
     }
 }

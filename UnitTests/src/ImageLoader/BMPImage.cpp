@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "ImageLoader/Bitmap/BMPImage.h"
+#include "ImageLoader/Bitmap/BMPImage.cpp"
 
 #include "../Testfiles/Utils/ImageUtils_Src.h"
 
@@ -464,5 +464,40 @@ TEST_CASE("TRAP::INTERNAL::BMPImage", "[imageloader][bmpimage]")
     SECTION("IsSupportedImageFile()")
     {
         REQUIRE(TRAP::Image::IsSupportedImageFile("Testfiles/ImageLoader/BMP/Test24BPP.bmp"));
+    }
+
+    SECTION("BMPErrorCodeToString()")
+    {
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::InvalidBitField) == "Invalid bitfield detected!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::InvalidBitFieldMaskParameter) == "Invalid masks parameter size, expected 3 or 4!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::FailedReadingBitmapFileHeader) == "Failed to read bitmap file header!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::InvalidMagicNumber) == "Invalid or unsupported magic number found, expected \"BM\"!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::FailedReadingDIBHeader) == "Failed to read DIB header!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::UnsupportedOS21X) == "OS/2 1.x BMPs are unsupported!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::UnsupportedOS22X) == "OS/2 2.x BMPs are unsupported!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::InvalidNumberOfPlanes) == "Invalid number of planes found, expected 1!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::UnsupportedBPP) == "Unsupported bits per pixel detected, only 8, 16, 24, 32 bits per pixel images are supported!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::InvalidCompression) == "Invalid compressin type!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::UnsupportedRLE4) == "RLE4 encoded BMP images are unsupported!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::UnsupportedPNG) == "PNG encoded BMP images are unsupported!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::UnsupportedJPEG) == "JPEG encoded BMP images are unsupported!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::UnsupportedCMYK) == "CMYK/CMYKRLE8/CMYKRLE4 encoded BMP images are unsupported!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::InvalidWidth) == "Invalid width detected!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::InvalidHeight) == "Invalid height detected!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::InvalidImageSizeForUncompressed) == "Image size 0 is invalid for compressed BMP images!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::InvalidBitPerPixelForRLE8) == "RLE8 compressed image must have 8 bits per pixel!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::FailedReadingBitFieldMasks) == "Failed to read bitfield masks!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::InvalidColorTableSize) == "Invalid color table size detected!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::FailedReadingColorTable) == "Failed to read color table!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::FailedReadingEncodedPixelData) == "Failed to read encoded pixel data!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::FailedToOpenFile) == "Failed to open file for reading!");
+        STATIC_REQUIRE(BMPErrorCodeToString(BMPErrorCode::FailedRLE8Decompression) == "Failed to decompress RLE8 pixel data!");
+        STATIC_REQUIRE(BMPErrorCodeToString(static_cast<BMPErrorCode>(-1)) == "<UNKNOWN BMPErrorCode>");
+    }
+
+    SECTION("IsValidCompression()")
+    {
+        STATIC_REQUIRE(!IsValidCompression(static_cast<BMPCompression>(-1)));
+        STATIC_REQUIRE(IsValidCompression(BMPCompression::RLE8));
     }
 }
