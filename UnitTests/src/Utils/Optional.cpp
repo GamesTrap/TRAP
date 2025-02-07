@@ -86,6 +86,14 @@ TEST_CASE("TRAP::Optional<T>", "[utils][optional]")
 
         o1 = std::move(o4);
         REQUIRE(*o1 == 42);
+
+        TRAP::Optional<i32> o5{TRAP::NullOpt};
+        o5 = TRAP::NullOpt;
+
+        TRAP::Optional<std::string> o6{"Hello"};
+        o6 = "World";
+        o6 = TRAP::NullOpt;
+        o6 = "Hello World";
     }
 
     SECTION("Triviality")
@@ -282,6 +290,8 @@ TEST_CASE("TRAP::Optional<T>", "[utils][optional]")
         REQUIRE_FALSE(nullOpt.HasValue());
         REQUIRE_THROWS_AS(nullOpt.Value(), TRAP::BadOptionalAccess);
         REQUIRE_THROWS_AS(std::move(nullOpt).Value(), TRAP::BadOptionalAccess);
+        static constexpr TRAP::Optional<i32> constexprNullOpt(TRAP::NullOpt);
+        REQUIRE_THROWS_AS(constexprNullOpt.Value(), TRAP::BadOptionalAccess);
 
         {
             TRAP::Optional<i64> conversionOpt = 10;
@@ -845,6 +855,10 @@ TEST_CASE("TRAP::Optional<T>", "[utils][optional]")
         auto o38r = o38.Transform([](i32& i) -> const i32& {return i;});
         REQUIRE(o38r);
         REQUIRE(*o38r == 42);
+
+        TRAP::Optional<i32> o39 = TRAP::NullOpt;
+        const auto o39r = o39.Transform([](i32){return 42;});
+        REQUIRE(!o39r);
     }
 
     SECTION("AndThen")
@@ -1096,6 +1110,8 @@ TEST_CASE("TRAP::Optional<T&>", "[utils][optional]")
         static constexpr TRAP::Optional<Derived&> empty;
         static constexpr TRAP::Optional<Base&> fromEmpty{empty};
         static constexpr TRAP::Optional<Base&> fromEmpty2 = empty;
+
+        STATIC_REQUIRE_FALSE(TRAP::Optional<i32&>(TRAP::NullOpt));
     }
 
     SECTION("Assignment")
@@ -1133,6 +1149,20 @@ TEST_CASE("TRAP::Optional<T&>", "[utils][optional]")
         const TRAP::Optional<i32&> o1{i1};
         const TRAP::Optional<i32&> o2{i2};
         static constexpr TRAP::Optional<i32&> o3{};
+        static constexpr TRAP::Optional<i32&> oNullOpt{TRAP::NullOpt};
+
+        REQUIRE_FALSE(o1 == oNullOpt);
+        REQUIRE(oNullOpt == oNullOpt);
+        REQUIRE(o1 != oNullOpt);
+        REQUIRE_FALSE(oNullOpt != oNullOpt);
+        REQUIRE(oNullOpt < o1);
+        REQUIRE_FALSE(o1 < oNullOpt);
+        REQUIRE_FALSE(oNullOpt > o1);
+        REQUIRE(o1 > oNullOpt);
+        REQUIRE(oNullOpt <= o1);
+        REQUIRE_FALSE(o1 <= oNullOpt);
+        REQUIRE_FALSE(oNullOpt >= o1);
+        REQUIRE(o1 >= oNullOpt);
 
         REQUIRE_FALSE(o1 == o2);
         REQUIRE(o1 == o1);
@@ -1479,6 +1509,11 @@ TEST_CASE("TRAP::Optional<T&>", "[utils][optional]")
         STATIC_REQUIRE(std::same_as<decltype(ob2->I), i32>);
         STATIC_REQUIRE(std::same_as<decltype(ob3->I), i32>);
         STATIC_REQUIRE(std::same_as<decltype(std::move(ob1)->I), i32>);
+
+        static constexpr TRAP::Optional<i32&> o4(TRAP::NullOpt);
+        REQUIRE_THROWS_AS(o4.Value(), TRAP::BadOptionalAccess);
+        TRAP::Optional<i32&> o5(TRAP::NullOpt);
+        REQUIRE_THROWS_AS(o5.Value(), TRAP::BadOptionalAccess);
     }
 
     SECTION("Move check")

@@ -151,7 +151,7 @@ namespace TRAP
 		/// @threadsafe
 		void Clear() noexcept;
 
-		static constexpr auto WindowVersion =                        "[25w06a1]";
+		static constexpr auto WindowVersion =                        "[25w06a2]";
 		static constexpr auto WindowPrefix =                         "[Window] ";
 		static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -314,9 +314,9 @@ struct fmt::formatter<TRAP::LogLevel>
 		return ctx.begin();
 	}
 
-	static fmt::format_context::iterator format(const TRAP::LogLevel logLevel, fmt::format_context& ctx)
+	static fmt::format_context::iterator format(const TRAP::LogLevel logLevel, const fmt::format_context& ctx)
 	{
-		std::string enumStr{};
+		std::string enumStr{"<UNKNOWN LogLevel>"};
 		switch(logLevel)
 		{
 		case TRAP::LogLevel::Trace:

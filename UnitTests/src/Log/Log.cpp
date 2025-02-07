@@ -5,7 +5,7 @@
 
 #include <barrier>
 
-#include "Log/Log.h"
+#include "Log/Log.cpp"
 
 namespace
 {
@@ -246,5 +246,27 @@ TEST_CASE("TRAP::Log", "[log]")
 
         REQUIRE_FALSE(log.GetBufferAndFlush().empty());
         REQUIRE(log.GetBufferAndFlush().empty());
+    }
+
+    SECTION("TRAP::Log::LogLevelToFmtColor()")
+    {
+        STATIC_REQUIRE(LogLevelToFmtColor(TRAP::LogLevel::Trace) == fmt::color::magenta);
+        STATIC_REQUIRE(LogLevelToFmtColor(TRAP::LogLevel::Debug) == fmt::color::cyan);
+        STATIC_REQUIRE(LogLevelToFmtColor(TRAP::LogLevel::Info) == fmt::color::green);
+        STATIC_REQUIRE(LogLevelToFmtColor(TRAP::LogLevel::Warn) == fmt::color::yellow);
+        STATIC_REQUIRE(LogLevelToFmtColor(TRAP::LogLevel::Error) == fmt::color::red);
+        STATIC_REQUIRE(LogLevelToFmtColor(TRAP::LogLevel::Critical) == fmt::color::dark_red);
+        STATIC_REQUIRE(!LogLevelToFmtColor(static_cast<TRAP::LogLevel>(-1)));
+    }
+
+    SECTION("fmt::format")
+    {
+        REQUIRE(fmt::format("{}", static_cast<TRAP::LogLevel>(-1)) == "<UNKNOWN LogLevel>");
+        REQUIRE(fmt::format("{}", TRAP::LogLevel::Trace) == "Trace");
+        REQUIRE(fmt::format("{}", TRAP::LogLevel::Debug) == "Debug");
+        REQUIRE(fmt::format("{}", TRAP::LogLevel::Info) == "Info");
+        REQUIRE(fmt::format("{}", TRAP::LogLevel::Warn) == "Warn");
+        REQUIRE(fmt::format("{}", TRAP::LogLevel::Error) == "Error");
+        REQUIRE(fmt::format("{}", TRAP::LogLevel::Critical) == "Critical");
     }
 }

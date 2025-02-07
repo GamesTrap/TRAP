@@ -604,6 +604,16 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
             STATIC_REQUIRE_FALSE(e);
             STATIC_REQUIRE(e.Error() == 42);
         }
+        {
+            const TRAP::Expected<std::string, std::string> e{"Hello World"};
+            const TRAP::Expected<std::string, std::string> eCopy(e);
+
+            const TRAP::Expected<std::string, std::string> eErr{TRAP::Unexpect, "Hello Error"};
+            const TRAP::Expected<std::string, std::string> eErrCopy(eErr);
+        }
+        {
+            const TRAP::Expected<std::string, std::string> e{TRAP::Unexpected<std::string>("Hello Error")};
+        }
     }
 
     SECTION("Emplace")
@@ -693,6 +703,8 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
         STATIC_REQUIRE(o1 != o2);
         STATIC_REQUIRE(o1 == o3);
         STATIC_REQUIRE(o3 == o3);
+        STATIC_REQUIRE(o2 == o2);
+        STATIC_REQUIRE(!(o2 == o3));
 
         const TRAP::Expected<void, i32> o6;
         REQUIRE(o6 == o6);
@@ -1428,6 +1440,7 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
         const TRAP::BadExpectedAccess<i32> err(12);
         [[maybe_unused]] const char* test = err.what();
         REQUIRE(err.Error() == 12);
+        REQUIRE(TRAP::BadExpectedAccess<i32>{10}.what() == "Bad access to TRAP::Expected without expected value");
 
         REQUIRE_THROWS_AS(TRAP::INTERNAL::ThrowOrAbort(err), TRAP::BadExpectedAccess<i32>);
 
