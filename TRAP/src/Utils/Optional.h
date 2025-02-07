@@ -6,6 +6,8 @@
 #ifndef TRAP_OPTIONAL_H
 #define TRAP_OPTIONAL_H
 
+#include <fmt/base.h>
+
 #include <exception>
 #include <functional>
 #include <initializer_list>
@@ -1503,5 +1505,48 @@ namespace std
         }
     };
 }
+
+template <typename T, typename Char>
+struct fmt::formatter<TRAP::Optional<T>, Char,
+                 std::enable_if_t<fmt::is_formattable<T, Char>::value>>
+{
+public:
+    constexpr auto parse(parse_context<Char>& ctx)
+    {
+        maybe_set_debug_format(m_underlying, true);
+        return m_underlying.parse(ctx);
+    }
+
+    template <typename FormatContext>
+    auto format(const TRAP::Optional<T>& opt, FormatContext& ctx) const
+        -> decltype(ctx.out())
+    {
+        if (!opt)
+            return fmt::format_to(ctx.out(), "{}", s_none);
+
+        auto out = ctx.out();
+        out = fmt::format_to(out, "{}", s_optional);
+        ctx.advance_to(out);
+        out = m_underlying.format(*opt, ctx);
+
+        return fmt::format_to(out, "{}", ')');
+    }
+
+private:
+    fmt::formatter<T, Char> m_underlying;
+    static constexpr std::basic_string_view<Char> s_optional = "optional(";
+    static constexpr std::basic_string_view<Char> s_none = "none";
+
+    template <class U>
+    constexpr static auto maybe_set_debug_format(U& u, bool set)
+        -> decltype(u.set_debug_format(set))
+    {
+        u.set_debug_format(set);
+    }
+
+    template <class U>
+    constexpr static void maybe_set_debug_format(U&, ...)
+    {}
+};
 
 #endif /*TRAP_OPTIONAL_H*/
