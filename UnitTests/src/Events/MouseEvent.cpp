@@ -1,4 +1,4 @@
-#include <catch2/catch_test_macros.hpp>
+#include "Catch2FmtSupport.h"
 
 #include "TRAP/src/Utils/Win.h"
 #include "TRAP/src/Events/MouseEvent.h"

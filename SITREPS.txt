@@ -5608,3 +5608,4 @@ SITREP 02/04/2025|25w06a1
 SITREP 02/07/2025|25w06a2
     - Changed TRAP Engine version to 25w06a2(0.11.81)
     - UnitTests Improved code coverage ~<30 mins
+    - Catch2 Added support for string formatting using fmt ~<5 mins

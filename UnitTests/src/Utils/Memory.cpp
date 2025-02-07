@@ -1,4 +1,4 @@
-#include <catch2/catch_test_macros.hpp>
+#include "Catch2FmtSupport.h"
 
 #include "Utils/Memory.h"
 

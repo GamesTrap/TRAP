@@ -2,7 +2,7 @@
 #include <cmath>
 #include <limits>
 
-#include <catch2/catch_test_macros.hpp>
+#include "Catch2FmtSupport.h"
 #include <catch2/catch_template_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
