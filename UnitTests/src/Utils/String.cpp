@@ -568,4 +568,9 @@ TEST_CASE("TRAP::Utils::String", "[utils][string]")
         STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<std::uint32_t>() == "u32");
         STATIC_REQUIRE(TRAP::Utils::String::PrimitiveTypeNameToString<std::uint64_t>() == "u64");
     }
+
+    SECTION("GetStrError()")
+    {
+        std::ignore = TRAP::Utils::String::GetStrError();
+    }
 }
