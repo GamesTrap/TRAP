@@ -75,11 +75,6 @@ bool TRAP::Utils::Config::LoadFromFile(const std::filesystem::path& file)
 			continue;
 
 		const auto& [key, value] = *parsedLine;
-
-		if (key.empty())
-			continue;
-
-		//If the line is not empty or a comment save it to the vector
 		m_data.emplace_back(key, value);
 	}
 

@@ -1433,6 +1433,8 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
 
     SECTION("BadExpectedAccess")
     {
+        using namespace std::string_view_literals;
+
         STATIC_REQUIRE(std::is_final_v<TRAP::BadExpectedAccess<i32>>);
         STATIC_REQUIRE(std::copyable<TRAP::BadExpectedAccess<i32>>);
         STATIC_REQUIRE(std::movable<TRAP::BadExpectedAccess<i32>>);
@@ -1440,7 +1442,7 @@ TEST_CASE("TRAP::Expected", "[utils][expected]")
         const TRAP::BadExpectedAccess<i32> err(12);
         [[maybe_unused]] const char* test = err.what();
         REQUIRE(err.Error() == 12);
-        REQUIRE(TRAP::BadExpectedAccess<i32>{10}.what() == "Bad access to TRAP::Expected without expected value");
+        REQUIRE("Bad access to TRAP::Expected without expected value"sv == TRAP::BadExpectedAccess<i32>{10}.what());
 
         REQUIRE_THROWS_AS(TRAP::INTERNAL::ThrowOrAbort(err), TRAP::BadExpectedAccess<i32>);
 
