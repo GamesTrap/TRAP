@@ -5615,3 +5615,4 @@ SITREP 02/07/2025|25w06a2
 SITREP 02/08/2025|25w06a3
     - Changed TRAP Engine version to 25w06a3(0.11.82)
     - UnitTests Added Config integration test ~<20 mins
+    - UnitTests Added test for TRAP::Utils::DisplayError() ~<5 mins
