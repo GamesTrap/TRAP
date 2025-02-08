@@ -5,6 +5,9 @@
 
 TEST_CASE("TRAP::Utils::Config", "[utils][config]")
 {
+    static const std::filesystem::path TestConfigFolderPath = "Testfiles/Utils/Config";
+    static const std::filesystem::path TestConfigPath = TestConfigFolderPath / "testconfig.cfg";
+
     SECTION("Class requirements")
     {
         STATIC_REQUIRE(std::is_final_v<TRAP::Utils::Config>);
@@ -39,25 +42,27 @@ TEST_CASE("TRAP::Utils::Config", "[utils][config]")
         REQUIRE_FALSE(TRAP::Utils::Config{}.LoadFromFile(""));
         REQUIRE_FALSE(TRAP::Utils::Config{}.LoadFromFile("nonexistingfile.cfg"));
 
-        REQUIRE(TRAP::Utils::Config{}.LoadFromFile("Testfiles/Utils/Config/emptyconfig.cfg"));
+        REQUIRE(TRAP::Utils::Config{}.LoadFromFile(TestConfigFolderPath / "emptyconfig.cfg"));
 
-        REQUIRE(TRAP::Utils::Config{}.LoadFromFile("Testfiles/Utils/Config/testconfig.cfg"));
+        REQUIRE(TRAP::Utils::Config{}.LoadFromFile(TestConfigPath));
     }
 
     SECTION("SaveToFile()")
     {
         TRAP::Utils::Config config{};
 
-        REQUIRE(config.LoadFromFile("Testfiles/Utils/Config/testconfig.cfg"));
-        REQUIRE(config.SaveToFile("Testfiles/Utils/Config/savetofile.cfg"));
+        TRAP::FileSystem::Delete(TestConfigFolderPath / "savetofile.cfg");
 
-        REQUIRE(TRAP::FileSystem::ReadTextFile("Testfiles/Utils/Config/savetofile_expected.cfg") == TRAP::FileSystem::ReadTextFile("Testfiles/Utils/Config/savetofile.cfg"));
+        REQUIRE(config.LoadFromFile(TestConfigPath));
+        REQUIRE(config.SaveToFile(TestConfigFolderPath / "savetofile.cfg"));
 
-        REQUIRE(config.SaveToFile("Testfiles/Utils/Config/savetofile.cfg"));
+        REQUIRE(TRAP::FileSystem::ReadTextFile(TestConfigFolderPath / "savetofile_expected.cfg") == TRAP::FileSystem::ReadTextFile(TestConfigFolderPath / "savetofile.cfg"));
 
-        REQUIRE(TRAP::FileSystem::ReadTextFile("Testfiles/Utils/Config/savetofile_expected.cfg") == TRAP::FileSystem::ReadTextFile("Testfiles/Utils/Config/savetofile.cfg"));
+        REQUIRE(config.SaveToFile(TestConfigFolderPath / "savetofile.cfg"));
 
-        TRAP::FileSystem::Delete("Testfiles/Utils/Config/savetofile.cfg");
+        REQUIRE(TRAP::FileSystem::ReadTextFile(TestConfigFolderPath / "savetofile_expected.cfg") == TRAP::FileSystem::ReadTextFile(TestConfigFolderPath / "savetofile.cfg"));
+
+        TRAP::FileSystem::Delete(TestConfigFolderPath / "savetofile.cfg");
     }
 
     SECTION("HasChanged()")
@@ -75,7 +80,7 @@ TEST_CASE("TRAP::Utils::Config", "[utils][config]")
     {
         TRAP::Utils::Config config{};
 
-        REQUIRE(config.LoadFromFile("Testfiles/Utils/Config/testconfig.cfg"));
+        REQUIRE(config.LoadFromFile(TestConfigPath));
 
         REQUIRE(*config.Get<std::string>("Str") == "Value");
         REQUIRE(*config.Get<std::string>("STR") == "Value");
@@ -108,7 +113,7 @@ TEST_CASE("TRAP::Utils::Config", "[utils][config]")
     {
         TRAP::Utils::Config config{};
 
-        REQUIRE(config.LoadFromFile("Testfiles/Utils/Config/testconfig.cfg"));
+        REQUIRE(config.LoadFromFile(TestConfigPath));
 
         REQUIRE(*config.GetVector<std::string>("List") == std::vector<std::string>{"hello", "world", "this engine rocks!"});
         REQUIRE(*config.GetVector<std::string>("LIST") == std::vector<std::string>{"hello", "world", "this engine rocks!"});
@@ -156,5 +161,32 @@ TEST_CASE("TRAP::Utils::Config", "[utils][config]")
         config.Set("List", std::vector<std::string>{"new", "list"});
 
         REQUIRE(*config.GetVector<std::string>("List") == std::vector<std::string>{"new", "list"});
+    }
+
+    SECTION("Integration")
+    {
+        static const std::filesystem::path IntegrationTestConfigPath = TestConfigFolderPath / "integrationtest.cfg";
+        static const std::filesystem::path IntegrationTestExpectedConfigPath = TestConfigFolderPath / "integrationtest_expected.cfg";
+
+        REQUIRE(TRAP::FileSystem::Copy(TestConfigPath, IntegrationTestConfigPath, true));
+
+        TRAP::Utils::Config config{};
+        REQUIRE(config.LoadFromFile(IntegrationTestConfigPath));
+
+        REQUIRE(*config.Get<i32>("Integer") == 100);
+        config.Set("Integer", 200);
+        REQUIRE(*config.Get<i32>("Integer") == 200);
+        config.Set("NewValue", "Hello World");
+        REQUIRE(*config.Get<std::string>("NewValue") == "Hello World");
+
+        REQUIRE(config.SaveToFile(IntegrationTestConfigPath));
+        REQUIRE(config.LoadFromFile(IntegrationTestConfigPath));
+
+        REQUIRE(*config.Get<i32>("Integer") == 200);
+        REQUIRE(*config.Get<std::string>("NewValue") == "Hello World");
+
+        REQUIRE(TRAP::FileSystem::ReadTextFile(IntegrationTestExpectedConfigPath) == TRAP::FileSystem::ReadTextFile(IntegrationTestConfigPath));
+
+        TRAP::FileSystem::Delete(IntegrationTestConfigPath);
     }
 }

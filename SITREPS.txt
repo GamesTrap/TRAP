@@ -5610,3 +5610,8 @@ SITREP 02/07/2025|25w06a2
     - UnitTests Improved code coverage ~<30 mins
     - Catch2 Added support for string formatting using fmt ~<45 mins
     - Optional Added fmt::formatter specialization ~<10 mins
+    - Config reduced string copying (more std::string_view) ~<30 mins
+
+SITREP 02/08/2025|25w06a3
+    - Changed TRAP Engine version to 25w06a3(0.11.82)
+    - UnitTests Added Config integration test ~<20 mins

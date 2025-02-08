@@ -4,6 +4,6 @@
 #include "Version.h"
 
 /// @brief TRAP version number created with TRAP_MAKE_VERSION
-constexpr TRAP::SemanticVersion<0, 11, 81> TRAP_VERSION{};
+constexpr TRAP::SemanticVersion<0, 11, 82> TRAP_VERSION{};
 
 #endif /*TRAP_CORE_TRAP_VERSION_H*/
