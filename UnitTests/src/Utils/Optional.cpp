@@ -999,6 +999,21 @@ TEST_CASE("TRAP::Optional<T>", "[utils][optional]")
         const TRAP::BadOptionalAccess boa{};
         REQUIRE("BadOptionalAccess in TRAP::Optional"sv == boa.what());
     }
+
+    SECTION("fmt::format")
+    {
+        static constexpr TRAP::Optional<i32> o1 = 12;
+        REQUIRE(fmt::format("{}", o1) == "optional(12)");
+
+        static constexpr TRAP::Optional<i32> o2 = TRAP::NullOpt;
+        REQUIRE(fmt::format("{}", o2) == "none");
+
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Optional<i32>>::value);
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Optional<i32>&>::value);
+        STATIC_REQUIRE(fmt::is_formattable<const TRAP::Optional<i32>>::value);
+        STATIC_REQUIRE(fmt::is_formattable<const TRAP::Optional<i32>&>::value);
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Optional<const i32>>::value);
+    }
 }
 
 namespace
@@ -1760,5 +1775,21 @@ TEST_CASE("TRAP::Optional<T&>", "[utils][optional]")
 
         TRAP::Optional<i32&> o2;
         REQUIRE(*(o2.OrElse([&]{return TRAP::Optional<i32&>(thirteen);})) == 13);
+    }
+
+    SECTION("fmt::format")
+    {
+        static constexpr i32 num = 12;
+        static constexpr TRAP::Optional<const i32&> o1 = num;
+        REQUIRE(fmt::format("{}", o1) == "optional(12)");
+
+        static constexpr TRAP::Optional<const i32&> o2 = TRAP::NullOpt;
+        REQUIRE(fmt::format("{}", o2) == "none");
+
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Optional<i32&>>::value);
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Optional<i32&>&>::value);
+        STATIC_REQUIRE(fmt::is_formattable<const TRAP::Optional<i32&>>::value);
+        STATIC_REQUIRE(fmt::is_formattable<const TRAP::Optional<i32&>&>::value);
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Optional<const i32&>>::value);
     }
 }

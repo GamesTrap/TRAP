@@ -1507,8 +1507,8 @@ namespace std
 }
 
 template <typename T, typename Char>
-struct fmt::formatter<TRAP::Optional<T>, Char,
-                 std::enable_if_t<fmt::is_formattable<T, Char>::value>>
+requires (fmt::is_formattable<T, Char>::value)
+struct fmt::formatter<TRAP::Optional<T>, Char>
 {
 public:
     constexpr auto parse(parse_context<Char>& ctx)
@@ -1533,7 +1533,7 @@ public:
     }
 
 private:
-    fmt::formatter<T, Char> m_underlying;
+    fmt::formatter<std::remove_cvref_t<T>, Char> m_underlying;
     static constexpr std::basic_string_view<Char> s_optional = "optional(";
     static constexpr std::basic_string_view<Char> s_none = "none";
 
