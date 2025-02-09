@@ -261,6 +261,7 @@ TEST_CASE("TRAP::Log", "[log]")
 
     SECTION("fmt::format")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::LogLevel>::value);
         REQUIRE(fmt::format("{}", static_cast<TRAP::LogLevel>(-1)) == "<UNKNOWN LogLevel>");
         REQUIRE(fmt::format("{}", TRAP::LogLevel::Trace) == "Trace");
         REQUIRE(fmt::format("{}", TRAP::LogLevel::Debug) == "Debug");

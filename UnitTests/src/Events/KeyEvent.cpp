@@ -81,6 +81,7 @@ TEST_CASE("TRAP::Events::KeyPressEvent", "[events][keypressevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::KeyPressEvent>::value);
         // REQUIRE(fmt::format("{}", kpevent) == fmt::format("KeyPressEvent: {}({}) (\"{}\")", TRAP::Input::GetKeyName(kpevent.GetKey()), std::to_underlying(kpevent.GetKey()), kpevent.GetWindow().GetTitle()));
     }
 }
@@ -163,6 +164,7 @@ TEST_CASE("TRAP::Events::KeyRepeatEvent", "[events][keyrepeatevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::KeyRepeatEvent>::value);
         // REQUIRE(fmt::format("{}", krpevent) == fmt::format("KeyRepeatEvent: {}({}) (\"{}\")", TRAP::Input::GetKeyName(krpevent.GetKey()), std::to_underlying(krpevent.GetKey()), krpevent.GetWindow().GetTitle()));
     }
 }
@@ -245,6 +247,7 @@ TEST_CASE("TRAP::Events::KeyReleaseEvent", "[events][keyreleaseevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::KeyReleaseEvent>::value);
         // REQUIRE(fmt::format("{}", krevent) == fmt::format("KeyReleaseEvent: {}({}) (\"{}\")", TRAP::Input::GetKeyName(krevent.GetKey()), std::to_underlying(krevent.GetKey()), krevent.GetWindow().GetTitle()));
     }
 }
@@ -326,6 +329,7 @@ TEST_CASE("TRAP::Events::KeyTypeEvent", "[events][keytypeevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::KeyTypeEvent>::value);
         // REQUIRE(fmt::format("{}", ktevent) == fmt::format("KeyTypeEvent: {}({}) (\"{}\")", TRAP::Utils::String::EncodeUTF8(ktevent.GetCodePoint()), ktevent.GetCodePoint(), ktevent.GetWindow().GetTitle()));
     }
 }
@@ -398,6 +402,7 @@ TEST_CASE("TRAP::Events::KeyLayoutEvent", "[events][keylayoutevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::KeyLayoutEvent>::value);
         REQUIRE(fmt::format("{}", klevent) == fmt::format("KeyLayoutEvent: {}", klevent.GetLayout()));
     }
 }

@@ -115,6 +115,7 @@ TEST_CASE("TRAP::Utils", "[utils]")
 
     SECTION("fmt specialization TRAP::Utils::LinuxWindowManager")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Utils::LinuxWindowManager>::value);
         REQUIRE(fmt::format("{}", TRAP::Utils::LinuxWindowManager::Unknown) == "Unknown");
         REQUIRE(fmt::format("{}", TRAP::Utils::LinuxWindowManager::X11) == "X11");
         REQUIRE(fmt::format("{}", TRAP::Utils::LinuxWindowManager::Wayland) == "Wayland");

@@ -160,4 +160,12 @@ TEST_CASE("TRAP::Network::IPv4Address", "[network][ipv4address]")
         std::istringstream("") >> ipAddress3;
         REQUIRE_FALSE(ipAddress3);
     }
+
+    SECTION("fmt::format")
+    {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Network::IPv4Address>::value);
+
+        static constexpr auto ipAddress = TRAP::Network::IPv4Address(142u, 250u, 69u, 238u);
+        REQUIRE(fmt::format("{}", ipAddress) == "142.250.69.238");
+    }
 }

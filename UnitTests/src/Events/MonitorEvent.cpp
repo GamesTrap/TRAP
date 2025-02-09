@@ -72,6 +72,7 @@ TEST_CASE("TRAP::Events::MonitorConnectEvent", "[events][monitorconnectevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::MonitorConnectEvent>::value);
         // REQUIRE(fmt::format("{}", mcevent) == fmt::format("MonitorConnectEvent: {} ({})", mcevent.GetMonitor().GetName(), mcevent.GetMonitor().GetID()));
     }
 }
@@ -146,6 +147,7 @@ TEST_CASE("TRAP::Events::MonitorDisconnectEvent", "[events][monitordisconnecteve
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::MonitorDisconnectEvent>::value);
         // REQUIRE(fmt::format("{}", mdcevent) == fmt::format("MonitorDisconnectEvent: {} ({})", mdcevent.GetMonitor().GetName(), mdcevent.GetMonitor().GetID()));
     }
 }

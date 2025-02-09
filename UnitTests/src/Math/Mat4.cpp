@@ -643,6 +643,7 @@ TEMPLATE_TEST_CASE("TRAP::Math::Mat4", "[math][mat][mat4]", TRAP::Math::Mat4f, T
 
     SECTION("fmt::format")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TestType>::value);
         static constexpr TestType m(Scalar(1), Scalar(2), Scalar(3), Scalar(4), Scalar(5), Scalar(6), Scalar(7), Scalar(8), Scalar(9), Scalar(10), Scalar(11), Scalar(12), Scalar(13), Scalar(14), Scalar(15), Scalar(16));
 
         if constexpr(std::same_as<Scalar, f32>)

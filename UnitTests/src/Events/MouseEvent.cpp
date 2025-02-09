@@ -95,6 +95,7 @@ TEST_CASE("TRAP::Events::MouseMoveEvent", "[events][mousemoveevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::MouseMoveEvent>::value);
         // REQUIRE(fmt::format("{}", mmevent) == fmt::format("MouseMoveEvent: {}, {} (\"{}\")", mmevent.GetX(), mmevent.GetY(), mmevent.GetWindow().GetTitle()));
     }
 }
@@ -191,6 +192,7 @@ TEST_CASE("TRAP::Events::MouseScrollEvent", "[events][mousescrollevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::MouseScrollEvent>::value);
         // REQUIRE(fmt::format("{}", msevent) == fmt::format("MouseScrollEvent: {}, {} (\"{}\")", msevent.GetXOffset(), msevent.GetYOffset(), msevent.GetWindow().GetTitle()));
     }
 }
@@ -274,6 +276,7 @@ TEST_CASE("TRAP::Events::MouseButtonPressEvent", "[events][mousebuttonpressevent
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::MouseButtonPressEvent>::value);
         // REQUIRE(fmt::format("{}", mbpevent) == fmt::format("MouseButtonPressEvent: {}({}) (\"{}\")", mbpevent.GetMouseButton(), std::to_underlying(mbpevent.GetMouseButton()), mbpevent.GetWindow().GetTitle()));
     }
 }
@@ -357,6 +360,7 @@ TEST_CASE("TRAP::Events::MouseButtonReleaseEvent", "[events][mousebuttonreleasee
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::MouseButtonReleaseEvent>::value);
         // REQUIRE(fmt::format("{}", mbrevent) == fmt::format("MouseButtonReleaseEvent: {}({}) (\"{}\")", mbpevent.GetMouseButton(), std::to_underlying(mbpevent.GetMouseButton()), mbpevent.GetWindow().GetTitle()));
     }
 }
@@ -432,6 +436,7 @@ TEST_CASE("TRAP::Events::MouseEnterEvent", "[events][mouseenterevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::MouseEnterEvent>::value);
         // REQUIRE(fmt::format("{}", meevent) == fmt::format("MouseEnterEvent: (\"{}\")", meevent.GetWindow().GetTitle()));
     }
 }
@@ -507,6 +512,7 @@ TEST_CASE("TRAP::Events::MouseLeaveEvent", "[events][mouseleaveevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::MouseLeaveEvent>::value);
         // REQUIRE(fmt::format("{}", mlevent) == fmt::format("MouseLeaveEvent: (\"{}\")", mlevent.GetWindow().GetTitle()));
     }
 }

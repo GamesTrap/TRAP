@@ -85,6 +85,7 @@ TEST_CASE("TRAP::Events::WindowResizeEvent", "[events][windowresizevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::WindowResizeEvent>::value);
         // REQUIRE(fmt::format("{}", wresievent) == fmt::format("WindowResizeEvent: {}x{} (\"{}\")", wresievent.GetWidth(), wresievent.GetHeight(), wresievent.GetWindow().GetTitle()));
     }
 }
@@ -158,6 +159,7 @@ TEST_CASE("TRAP::Events::WindowMinimizeEvent", "[events][windowminimizeevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::WindowMinimizeEvent>::value);
         // REQUIRE(fmt::format("{}", wmievent) == fmt::format("WindowMinimizeEvent: (\"{}\")", wmievent.GetWindow().GetTitle()));
     }
 }
@@ -231,6 +233,7 @@ TEST_CASE("TRAP::Events::WindowMaximizeEvent", "[events][windowmaximizeevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::WindowMaximizeEvent>::value);
         // REQUIRE(fmt::format("{}", wmaevent) == fmt::format("WindowMaximizeEvent: (\"{}\")", wmaevent.GetWindow().GetTitle()));
     }
 }
@@ -304,6 +307,7 @@ TEST_CASE("TRAP::Events::WindowRestoreEvent", "[events][windowrestoreevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::WindowRestoreEvent>::value);
         // REQUIRE(fmt::format("{}", wrestevent) == fmt::format("WindowRestoreEvent: (\"{}\")", wrestevent.GetWindow().GetTitle()));
     }
 }
@@ -377,6 +381,7 @@ TEST_CASE("TRAP::Events::WindowCloseEvent", "[events][windowcloseevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::WindowCloseEvent>::value);
         // REQUIRE(fmt::format("{}", wcevent) == fmt::format("WindowCloseEvent: (\"{}\")", wcevent.GetWindow().GetTitle()));
     }
 }
@@ -471,6 +476,7 @@ TEST_CASE("TRAP::Events::WindowMoveEvent", "[events][windowmoveevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::WindowMoveEvent>::value);
         // REQUIRE(fmt::format("{}", wmevent) == fmt::format("WindowMoveEvent: {}, {} (\"{}\")", wmevent.GetX(), wmevent.GetY(), wmevent.GetWindow().GetTitle()));
     }
 }
@@ -544,6 +550,7 @@ TEST_CASE("TRAP::Events::WindowFocusEvent", "[events][windowfocusevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::WindowFocusEvent>::value);
         // REQUIRE(fmt::format("{}", wfevent) == fmt::format("WindowFocusEvent: (\"{}\")", wfevent.GetWindow().GetTitle()));
     }
 }
@@ -617,6 +624,7 @@ TEST_CASE("TRAP::Events::WindowLostFocusEvent", "[events][windowlostfocusevent]"
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::WindowLostFocusEvent>::value);
         // REQUIRE(fmt::format("{}", wlfevent) == fmt::format("WindowLostFocusEvent: (\"{}\")", wlfevent.GetWindow().GetTitle()));
     }
 }
@@ -702,6 +710,7 @@ TEST_CASE("TRAP::Events::WindowDropEvent", "[events][windowdropevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::WindowDropEvent>::value);
         // const TRAP::Events::WindowDropEvent wdevent1 = TRAP::Events::WindowDropEvent{{}, WINDOW};
         // REQUIRE(fmt::format("{}", wdevent1) == fmt::format("WindowDropEvent: (\"{}\")", wdevent1.GetWindow().GetTitle()));
 
@@ -799,6 +808,7 @@ TEST_CASE("TRAP::Events::WindowContentScaleEvent", "[events][windowcontentscalee
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::WindowContentScaleEvent>::value);
         // REQUIRE(fmt::format("{}", wcsevent) == fmt::format("WindowContentScaleEvent: {}x{} (\"{}\")", wcsevent.GetXScale(), wcsevent.GetYScale(), wcsevent.GetWindow().GetTitle()));
     }
 }
@@ -900,6 +910,7 @@ TEST_CASE("TRAP::Events::FrameBufferResizeEvent", "[events][framebufferresizeeve
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::FrameBufferResizeEvent>::value);
         // REQUIRE(fmt::format("{}", frevent) == fmt::format("FrameBufferResizeEvent: {}x{} (\"{}\")", frevent.GetWidth(), frevent.GetHeight(), wcsevent.GetWindow().GetTitle()));
     }
 }

@@ -569,7 +569,8 @@ struct fmt::formatter<TRAP::Network::FTP::Response::Status>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-struct fmt::formatter<T, std::enable_if_t<std::is_base_of_v<TRAP::Network::FTP::Response, T>, char>>
+requires (std::is_base_of_v<TRAP::Network::FTP::Response, T>)
+struct fmt::formatter<T>
 {
     static constexpr auto parse(const fmt::format_parse_context& ctx)
     {

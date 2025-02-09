@@ -475,6 +475,7 @@ TEMPLATE_TEST_CASE("TRAP::Math::Quat", "[math][quat]", TRAP::Math::Quatf, TRAP::
 
     SECTION("fmt::format")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TestType>::value);
         static constexpr TestType q(Scalar(1), Scalar(2), Scalar(3), Scalar(4));
         std::string str = fmt::format("{}", q);
 

@@ -46,6 +46,8 @@ TEST_CASE("TRAP::SemanticVersion", "[core][semanticversion]")
 
     SECTION("format specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::SemanticVersion<1u, 10u, 3u>>::value);
+
         static constexpr TRAP::SemanticVersion<1u, 10u, 3u> ver1{};
         const std::string expected1 = fmt::format("{}.{}.{}", ver1.Major(), ver1.Minor(), ver1.Patch());
         REQUIRE(fmt::format("{}", ver1) == expected1);

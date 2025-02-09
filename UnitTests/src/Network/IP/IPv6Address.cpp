@@ -200,4 +200,13 @@ TEST_CASE("TRAP::Network::IPv6Address", "[network][ipv6address]")
         std::istringstream("") >> ipAddress3;
         REQUIRE_FALSE(ipAddress3);
     }
+
+    SECTION("fmt::format")
+    {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Network::IPv6Address>::value);
+
+        static constexpr std::array<u8, 16u> arr{0x2Au, 0x02u, 0x09u, 0x08u, 0x22u, 0x26u, 0x12u, 0x20u, 0xA2u, 0xE6u, 0x22u, 0xC4u, 0x86u, 0xBDu, 0x20u, 0xC0u};
+        static constexpr auto ipAddress = TRAP::Network::IPv6Address(arr);
+        REQUIRE(fmt::format("{}", ipAddress) == "2a02:908:2226:1220:a2e6:22c4:86bd:20c0");
+    }
 }

@@ -715,6 +715,8 @@ TEMPLATE_TEST_CASE("TRAP::Math::Vec2", "[math][vec][vec2]", i8, i16, i32, i64, u
 
     SECTION("fmt::format")
     {
+        STATIC_REQUIRE(fmt::is_formattable<Vec2>::value);
+
         static constexpr Vec2 v(TestType(5), TestType(10));
         std::string str = fmt::format("{}", v);
 

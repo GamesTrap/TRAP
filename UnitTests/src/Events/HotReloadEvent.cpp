@@ -73,6 +73,8 @@ TEST_CASE("TRAP::Events::TextureReloadEvent", "[events][texturereloadevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::TextureReloadEvent>::value);
+
         REQUIRE(fmt::format("{}", tevent) == fmt::format("TextureReloadEvent: nullptr"));
 
         //TODO Add test with a valid Texture object.
@@ -150,6 +152,8 @@ TEST_CASE("TRAP::Events::ShaderReloadEvent", "[events][shaderreloadevent]")
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::ShaderReloadEvent>::value);
+
         REQUIRE(fmt::format("{}", sevent) == fmt::format("ShaderReloadEvent: nullptr"));
 
         //TODO Add test with a valid Shader object.

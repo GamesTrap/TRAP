@@ -5622,3 +5622,4 @@ SITREP 02/09/2025|25w06a4
     - Changed TRAP Engine version to 25w06a4(0.11.83)
     - Optional Added fmt::formatter specialization for Optional& ~<5 mins
     - UnitTests Added fmt::format test for Optional and Optional& ~<10 mins
+    - UnitTests Added fmt::format tests for types with custom fmt::formatter specializations ~<20 mins

@@ -330,6 +330,8 @@ TEST_CASE("TRAP::FileSystem::FileSystemWatcher - Recursive", "[filesystem][files
 
 TEST_CASE("TRAP::FileSystem::FileSystemStatus", "[filesystem][filesystemstatus]")
 {
+    STATIC_REQUIRE(fmt::is_formattable<TRAP::FileSystem::FileSystemStatus>::value);
+
     REQUIRE(fmt::format("{}", TRAP::FileSystem::FileSystemStatus::Created) == "Created");
     REQUIRE(fmt::format("{}", TRAP::FileSystem::FileSystemStatus::Renamed) == "Renamed");
     REQUIRE(fmt::format("{}", TRAP::FileSystem::FileSystemStatus::Modified) == "Modified");

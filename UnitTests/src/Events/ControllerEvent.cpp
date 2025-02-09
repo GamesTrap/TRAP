@@ -87,6 +87,7 @@ TEST_CASE("TRAP::Events::ControllerConnectEvent", "[events][controllerconnecteve
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::ControllerConnectEvent>::value);
         REQUIRE(fmt::format("{}", cevent) == fmt::format("ControllerConnectEvent: {}", (std::to_underlying(TRAP::Input::Controller::One) + 1u)));
     }
 }
@@ -162,6 +163,7 @@ TEST_CASE("TRAP::Events::ControllerDisconnectEvent", "[events][controllerdisconn
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::ControllerDisconnectEvent>::value);
         REQUIRE(fmt::format("{}", cevent) == fmt::format("ControllerDisconnectEvent: {}", (std::to_underlying(TRAP::Input::Controller::One) + 1u)));
     }
 }

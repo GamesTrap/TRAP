@@ -93,6 +93,8 @@ TEST_CASE("TRAP::Events::FileSystemChangeEvent", "[events][filesystemchangeevent
 
     SECTION("fmt specialization")
     {
+        STATIC_REQUIRE(fmt::is_formattable<TRAP::Events::FileSystemChangeEvent>::value);
+
         REQUIRE(fmt::format("{}", fevent) == fmt::format("FileSystemChangeEvent: Path: {} Status: {}", fevent.GetPath(), fevent.GetStatus()));
 
         const TRAP::Events::FileSystemChangeEvent fevent1 = TRAP::Events::FileSystemChangeEvent{TRAP::FileSystem::FileSystemStatus::Created, "someFile.txt", "someOldFile.txt"};
