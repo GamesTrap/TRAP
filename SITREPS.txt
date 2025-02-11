@@ -5623,6 +5623,8 @@ SITREP 02/09/2025|25w06a4
     - Optional Added fmt::formatter specialization for Optional& ~<5 mins
     - UnitTests Added fmt::format test for Optional and Optional& ~<10 mins
     - UnitTests Added fmt::format tests for types with custom fmt::formatter specializations ~<20 mins
+
 SITREP 02/12/2025|25w07a1
     - Changed TRAP Engine version to 25w07a1(0.11.84)
     - VulkanLoader Updated license ~<5 mins
+    - VulkanLoader Added additional version macros ~<30 mins

@@ -72,8 +72,18 @@ if __name__ == "__main__":
 	blocks = {}
 
 	version = spec.find('types/type[name="VK_HEADER_VERSION"]')
+	versionComplete = spec.find('types/type[name="VK_HEADER_VERSION_COMPLETE"]').find('type').tail.strip().replace("VK_HEADER_VERSION", "VULKANLOADER_HEADER_VERSION")
+	versionSubs = re.sub('[() ]', "", versionComplete).split(',')
+	versionMajor = versionSubs[1]
+	versionMinor = versionSubs[2]
+	versionPatch = version.find('name').tail.strip()
+
 	blocks['VERSION'] = version.find('name').tail.strip() + '\n'
 	blocks['VERSION_DEFINE'] = '#define VULKANLOADER_HEADER_VERSION ' + version.find('name').tail.strip() + '\n'
+	blocks['COMPLETE_VERSION_DEFINE'] = '#define VULKANLOADER_HEADER_VERSION_COMPLETE ' + versionComplete + '\n'
+	blocks['MAJOR_VERSION_DEFINE'] = '#define VULKANLOADER_HEADER_VERSION_MAJOR ' + versionMajor + '\n'
+	blocks['MINOR_VERSION_DEFINE'] = '#define VULKANLOADER_HEADER_VERSION_MINOR ' + versionMinor + '\n'
+	blocks['PATCH_VERSION_DEFINE'] = '#define VULKANLOADER_HEADER_VERSION_PATCH ' + versionPatch + '\n'
 
 	command_groups = OrderedDict()
 	instance_commands = set()
