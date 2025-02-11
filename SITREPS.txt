@@ -5628,3 +5628,4 @@ SITREP 02/12/2025|25w07a1
     - Changed TRAP Engine version to 25w07a1(0.11.84)
     - VulkanLoader Updated license ~<5 mins
     - VulkanLoader Added additional version macros ~<30 mins
+    - UpdateVulkanLoader Action now adds correct Vulkan version to PR and branch name ~<5 mins
