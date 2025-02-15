@@ -63,6 +63,10 @@ namespace TRAP::Math
 		using const_reference = const T&;
 		using size_type = u32;
 		using difference_type = isize;
+		using iterator = std::array<T, 4>::iterator;
+		using const_iterator = std::array<T, 4>::const_iterator;
+		using reverse_iterator = std::array<T, 4>::reverse_iterator;
+		using const_reverse_iterator = std::array<T, 4>::const_reverse_iterator;
 
 		//Data
 private:
@@ -173,6 +177,57 @@ public:
 		/// @param i Position of the element to return.
 		/// @return Constant reference to the requested element.
 		[[nodiscard]] constexpr const T& at(usize i) const;
+
+		//Iterator
+
+		/// @brief Returns an iterator to the first element of the quaternion.
+		/// @return Iterator to the first element.
+		[[nodiscard]] constexpr const_iterator begin() const noexcept;
+		/// @brief Returns an iterator to the first element of the quaternion.
+		/// @return Iterator to the first element.
+		[[nodiscard]] constexpr iterator begin() noexcept;
+		/// @brief Returns an iterator to the first element of the quaternion.
+		/// @return Iterator to the first element.
+		[[nodiscard]] constexpr const_iterator cbegin() const noexcept;
+		/// @brief Returns a reverse iterator to the first element of the reversed quaternion.
+		///        It corresponds to the last element of the non-reversed quaternion.
+		/// @return Reverse iterator to the first element.
+		[[nodiscard]] constexpr const_reverse_iterator rbegin() const noexcept;
+		/// @brief Returns a reverse iterator to the first element of the reversed quaternion.
+		///        It corresponds to the last element of the non-reversed quaternion.
+		/// @return Reverse iterator to the first element.
+		[[nodiscard]] constexpr reverse_iterator rbegin() noexcept;
+		/// @brief Returns a reverse iterator to the first element of the reversed quaternion.
+		///        It corresponds to the last element of the non-reversed quaternion.
+		/// @return Reverse iterator to the first element.
+		[[nodiscard]] constexpr const_reverse_iterator crbegin() const noexcept;
+		/// @brief Returns an iterator to the element following the last element of the quaternion.
+		/// @return Iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
+		[[nodiscard]] constexpr const_iterator end() const noexcept;
+		/// @brief Returns an iterator to the element following the last element of the quaternion.
+		/// @return Iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
+		[[nodiscard]] constexpr iterator end() noexcept;
+		/// @brief Returns an iterator to the element following the last element of the quaternion.
+		/// @return Iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
+		[[nodiscard]] constexpr const_iterator cend() const noexcept;
+		/// @brief Returns a reverse iterator to the element following the last element of the reversed quaternion.
+		///        It corresponds to the element preceding the first element of the non-reversed quaternion.
+		/// @return Reverse iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
+		[[nodiscard]] constexpr const_reverse_iterator rend() const noexcept;
+		/// @brief Returns a reverse iterator to the element following the last element of the reversed quaternion.
+		///        It corresponds to the element preceding the first element of the non-reversed quaternion.
+		/// @return Reverse iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
+		[[nodiscard]] constexpr reverse_iterator rend() noexcept;
+		/// @brief Returns a reverse iterator to the element following the last element of the reversed quaternion.
+		///        It corresponds to the element preceding the first element of the non-reversed quaternion.
+		/// @return Reverse iterator to the element following the last element.
+		/// @note This element acts as a placeholder; attempting to access it results in undefined behaviour.
+		[[nodiscard]] constexpr const_reverse_iterator crend() const noexcept;
 
 		[[nodiscard]] consteval auto operator<=>(const tQuat<T>& rhs) const noexcept = delete;
 
@@ -613,6 +668,92 @@ requires std::floating_point<T>
 		throw std::out_of_range(fmt::format("Math::tQuat<T>::at(): Index {} is out of range!", i));
 
 	return data[i];
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<class T>
+requires std::floating_point<T>
+[[nodiscard]] constexpr TRAP::Math::tQuat<T>::const_iterator TRAP::Math::tQuat<T>::begin() const noexcept
+{
+	return data.begin();
+}
+
+template<class T>
+requires std::floating_point<T>
+[[nodiscard]] constexpr TRAP::Math::tQuat<T>::iterator TRAP::Math::tQuat<T>::begin() noexcept
+{
+	return data.begin();
+}
+
+template<class T>
+requires std::floating_point<T>
+[[nodiscard]] constexpr TRAP::Math::tQuat<T>::const_iterator TRAP::Math::tQuat<T>::cbegin() const noexcept
+{
+	return data.cbegin();
+}
+
+template<class T>
+requires std::floating_point<T>
+[[nodiscard]] constexpr TRAP::Math::tQuat<T>::const_reverse_iterator TRAP::Math::tQuat<T>::rbegin() const noexcept
+{
+	return data.rbegin();
+}
+
+template<class T>
+requires std::floating_point<T>
+[[nodiscard]] constexpr TRAP::Math::tQuat<T>::reverse_iterator TRAP::Math::tQuat<T>::rbegin() noexcept
+{
+	return data.rbegin();
+}
+
+template<class T>
+requires std::floating_point<T>
+[[nodiscard]] constexpr TRAP::Math::tQuat<T>::const_reverse_iterator TRAP::Math::tQuat<T>::crbegin() const noexcept
+{
+	return data.crbegin();
+}
+
+template<class T>
+requires std::floating_point<T>
+[[nodiscard]] constexpr TRAP::Math::tQuat<T>::const_iterator TRAP::Math::tQuat<T>::end() const noexcept
+{
+	return data.end();
+}
+
+template<class T>
+requires std::floating_point<T>
+[[nodiscard]] constexpr TRAP::Math::tQuat<T>::iterator TRAP::Math::tQuat<T>::end() noexcept
+{
+	return data.end();
+}
+
+template<class T>
+requires std::floating_point<T>
+[[nodiscard]] constexpr TRAP::Math::tQuat<T>::const_iterator TRAP::Math::tQuat<T>::cend() const noexcept
+{
+	return data.cend();
+}
+
+template<class T>
+requires std::floating_point<T>
+[[nodiscard]] constexpr TRAP::Math::tQuat<T>::const_reverse_iterator TRAP::Math::tQuat<T>::rend() const noexcept
+{
+	return data.rend();
+}
+
+template<class T>
+requires std::floating_point<T>
+[[nodiscard]] constexpr TRAP::Math::tQuat<T>::reverse_iterator TRAP::Math::tQuat<T>::rend() noexcept
+{
+	return data.rend();
+}
+
+template<class T>
+requires std::floating_point<T>
+[[nodiscard]] constexpr TRAP::Math::tQuat<T>::const_reverse_iterator TRAP::Math::tQuat<T>::crend() const noexcept
+{
+	return data.crend();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

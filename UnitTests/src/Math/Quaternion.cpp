@@ -27,6 +27,10 @@ TEMPLATE_TEST_CASE("TRAP::Math::Quat", "[math][quat]", TRAP::Math::Quatf, TRAP::
         STATIC_REQUIRE(std::same_as<typename TestType::const_reference, const Scalar&>);
         STATIC_REQUIRE(std::same_as<typename TestType::size_type, u32>);
         STATIC_REQUIRE(std::same_as<typename TestType::difference_type, isize>);
+        STATIC_REQUIRE(std::same_as<typename TestType::iterator, typename std::array<typename TestType::value_type, 4u>::iterator>);
+        STATIC_REQUIRE(std::same_as<typename TestType::const_iterator, typename std::array<typename TestType::value_type, 4u>::const_iterator>);
+        STATIC_REQUIRE(std::same_as<typename TestType::reverse_iterator, typename std::array<typename TestType::value_type, 4u>::reverse_iterator>);
+        STATIC_REQUIRE(std::same_as<typename TestType::const_reverse_iterator, typename std::array<typename TestType::value_type, 4u>::const_reverse_iterator>);
     }
 
     SECTION("Constructors")
@@ -253,6 +257,33 @@ TEMPLATE_TEST_CASE("TRAP::Math::Quat", "[math][quat]", TRAP::Math::Quatf, TRAP::
             //Check that v2.at(0) returns T&
             STATIC_REQUIRE((std::is_reference_v<decltype(v2.at(0))> && !std::is_const_v<std::remove_reference_t<decltype(v2.at(0))>>));
         }
+
+#ifndef TRAP_PLATFORM_WINDOWS
+        //iterators
+        {
+            static constexpr TestType v(typename TestType::value_type(10), typename TestType::value_type(5), typename TestType::value_type(15), typename TestType::value_type(20));
+
+            STATIC_REQUIRE(v.begin() == &v.w());
+            STATIC_REQUIRE(v.cbegin() == &v.w());
+            STATIC_REQUIRE(v.rbegin() == std::reverse_iterator<typename TestType::const_pointer>((&v.z()) + 1));
+            STATIC_REQUIRE(v.crbegin() == std::reverse_iterator<typename TestType::const_pointer>((&v.z()) + 1));
+            STATIC_REQUIRE(v.end() == ((&v.z()) + 1));
+            STATIC_REQUIRE(v.cend() == ((&v.z()) + 1));
+            STATIC_REQUIRE(v.rend() == std::reverse_iterator<typename TestType::const_pointer>(&v.w()));
+            STATIC_REQUIRE(v.crend() == std::reverse_iterator<typename TestType::const_pointer>(&v.w()));
+
+            TestType v1(typename TestType::value_type(10), typename TestType::value_type(5), typename TestType::value_type(15), typename TestType::value_type(20));
+
+            REQUIRE(v1.begin() == &v1.w());
+            REQUIRE(v1.cbegin() == &v1.w());
+            REQUIRE(v1.rbegin() == std::reverse_iterator<typename TestType::const_pointer>((&v1.z()) + 1));
+            REQUIRE(v1.crbegin() == std::reverse_iterator<typename TestType::const_pointer>((&v1.z()) + 1));
+            REQUIRE(v1.end() == ((&v1.z()) + 1));
+            REQUIRE(v1.cend() == ((&v1.z()) + 1));
+            REQUIRE(v1.rend() == std::reverse_iterator<typename TestType::const_pointer>(&v1.w()));
+            REQUIRE(v1.crend() == std::reverse_iterator<typename TestType::const_pointer>(&v1.w()));
+        }
+#endif
     }
 
     SECTION("Operators")
