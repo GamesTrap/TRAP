@@ -92,11 +92,6 @@ function IncludeTRAPShared()
 	}
 
     filter "system:linux"
-        if m.AlreadyExecutedWaylandGenerator == nil or m.AlreadyExecutedWaylandGenerator == false then
-            local wayland = require "generatewayland"
-            wayland.GenerateWayland()
-            m.AlreadyExecutedWaylandGenerator = true
-        end
         externalincludedirs "%{IncludeDir.WAYLAND}"
 
     filter {}

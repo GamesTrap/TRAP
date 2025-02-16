@@ -5630,6 +5630,12 @@ SITREP 02/12/2025|25w07a1
     - VulkanLoader Added additional version macros ~<30 mins
     - UpdateVulkanLoader Action now adds correct Vulkan version to PR and branch name ~<5 mins
 
-SITREP 02/12/2025|25w07a1
-    - Changed TRAP Engine version to 25w07a1(0.11.85)
+SITREP 02/12/2025|25w07a2
+    - Changed TRAP Engine version to 25w07a2(0.11.85)
     - Quaternion Added begin() / end() iterator support ~<15 mins
+
+SITREP 02/16/2025|25w07b1
+    - Changed TRAP Engine version to 25w07b1(0.11.86)
+    - Added Wayland protocol files ~<5 mins
+    - GeneratorScripts Added script to generate Wayland protocol files ~<5 mins
+    - Actions Added workflow to weekly update Wayland protocol files ~<5 mins

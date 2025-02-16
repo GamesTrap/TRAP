@@ -73,17 +73,19 @@ function m.GenerateWayland()
         return
     end
 
+	local targetDir = "../Dependencies/Wayland/"
+
     local files = {};
-	files["https://gitlab.freedesktop.org/wayland/wayland/-/raw/main/protocol/wayland.xml"] = path.join(_MAIN_SCRIPT_DIR, "Dependencies/Wayland/wayland-client-protocol")
-	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/stable/xdg-shell/xdg-shell.xml"] = path.join(_MAIN_SCRIPT_DIR, "Dependencies/Wayland/wayland-xdg-shell-client-protocol")
-	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/unstable/xdg-decoration/xdg-decoration-unstable-v1.xml"] = path.join(_MAIN_SCRIPT_DIR, "Dependencies/Wayland/wayland-xdg-decoration-client-protocol")
-	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/stable/viewporter/viewporter.xml"] = path.join(_MAIN_SCRIPT_DIR, "Dependencies/Wayland/wayland-viewporter-client-protocol")
-	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/unstable/relative-pointer/relative-pointer-unstable-v1.xml"] = path.join(_MAIN_SCRIPT_DIR, "Dependencies/Wayland/wayland-relative-pointer-unstable-v1-client-protocol")
-	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/unstable/pointer-constraints/pointer-constraints-unstable-v1.xml"] = path.join(_MAIN_SCRIPT_DIR, "Dependencies/Wayland/wayland-pointer-constraints-unstable-v1-client-protocol")
-	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/unstable/idle-inhibit/idle-inhibit-unstable-v1.xml"] = path.join(_MAIN_SCRIPT_DIR, "Dependencies/Wayland/wayland-idle-inhibit-unstable-v1-client-protocol")
-	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/staging/xdg-activation/xdg-activation-v1.xml"] = path.join(_MAIN_SCRIPT_DIR, "Dependencies/Wayland/wayland-xdg-activation-v1-client-protocol")
-	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/staging/content-type/content-type-v1.xml"] = path.join(_MAIN_SCRIPT_DIR, "Dependencies/Wayland/wayland-content-type-v1-client-protocol")
-	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/staging/fractional-scale/fractional-scale-v1.xml"] = path.join(_MAIN_SCRIPT_DIR, "Dependencies/Wayland/wayland-fractional-scale-v1-client-protocol")
+	files["https://gitlab.freedesktop.org/wayland/wayland/-/raw/main/protocol/wayland.xml"] = path.join(targetDir, "wayland-client-protocol")
+	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/stable/xdg-shell/xdg-shell.xml"] = path.join(targetDir, "wayland-xdg-shell-client-protocol")
+	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/unstable/xdg-decoration/xdg-decoration-unstable-v1.xml"] = path.join(targetDir, "wayland-xdg-decoration-client-protocol")
+	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/stable/viewporter/viewporter.xml"] = path.join(targetDir, "wayland-viewporter-client-protocol")
+	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/unstable/relative-pointer/relative-pointer-unstable-v1.xml"] = path.join(targetDir, "wayland-relative-pointer-unstable-v1-client-protocol")
+	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/unstable/pointer-constraints/pointer-constraints-unstable-v1.xml"] = path.join(targetDir, "wayland-pointer-constraints-unstable-v1-client-protocol")
+	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/unstable/idle-inhibit/idle-inhibit-unstable-v1.xml"] = path.join(targetDir, "wayland-idle-inhibit-unstable-v1-client-protocol")
+	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/staging/xdg-activation/xdg-activation-v1.xml"] = path.join(targetDir, "wayland-xdg-activation-v1-client-protocol")
+	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/staging/content-type/content-type-v1.xml"] = path.join(targetDir, "wayland-content-type-v1-client-protocol")
+	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/staging/fractional-scale/fractional-scale-v1.xml"] = path.join(targetDir, "wayland-fractional-scale-v1-client-protocol")
 
 	local mirrorURLs = {};
 	mirrorURLs["https://gitlab.freedesktop.org/wayland/wayland/-/raw/main/protocol/wayland.xml"] = "https://cgit.freedesktop.org/wayland/wayland/plain/protocol/wayland.xml"
@@ -128,5 +130,17 @@ function m.GenerateWayland()
 		end
 	end
 end
+
+newaction
+{
+	trigger = "genwaylandprotocols",
+	description = "Generate Wayland protocol headers from upstream",
+
+	execute = function()
+		print("Generating Wayland Protocols...")
+
+		m.GenerateWayland()
+	end
+}
 
 return m
