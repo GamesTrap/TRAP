@@ -43,31 +43,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VK_NO_PROTOTYPES*/
 
 #ifndef VULKAN_H_
-    #ifdef VK_USE_PLATFORM_WIN32_KHR
-        #include <vulkan/vk_platform.h>
-        #include <vulkan/vulkan_core.h>
-
-        /*
-		When VK_USE_PLATFORM_WIN32_KHR is defined, instead of including vulkan.h directly, we include individual parts of the SDK
-		This is necessary to avoid including <windows.h> which is very heavy - it takes 200ms to parse without WIN32_LEAN_AND_MEAN
-		and 100ms to parse with it. vulkan_win32.h only needs a few symbols that are easy to redefine ourselves.
-		*/
-		using DWORD = unsigned long;
-		using LPCWSTR = const wchar_t*;
-		using HANDLE = void*;
-		using HINSTANCE = struct HINSTANCE__*;
-		using HWND = struct HWND__*;
-		using HMONITOR = struct HMONITOR__*;
-		using SECURITY_ATTRIBUTES = struct _SECURITY_ATTRIBUTES;
-
-        #include <vulkan/vulkan_win32.h>
-
-        #ifdef VK_ENABLE_BETA_EXTENSIONS
-            #include <vulkan/vulkan_beta.h>
-        #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-    #else
-        #include <vulkan/vulkan.h>
-    #endif
+	/* Platform headers included below */
+	#include <vulkan/vk_platform.h>
+	#include <vulkan/vulkan_core.h>
 #endif /*VULKAN_H_*/
 
 #ifdef _MSC_VER
@@ -121,6 +99,101 @@ void VkLoadDevice(VkDevice device);
 /// @param table Table where to store loaded functions into.
 /// @param device Device from which function pointers should be loaded.
 void VkLoadDeviceTable(VkDeviceTable& table, VkDevice device);
+
+/* Instead of directly including vulkan.h, we include platform-specific parts of the SDK manually
+ * This is necessary to avoid including platform headers in some cases (which vulkan.h does unconditionally)
+ * and replace them with forward declarations, which makes build times faster and avoids macro conflicts.
+ *
+ * Note that we only replace platform-specific headers when the headers are known to be problematic: very large
+ * or slow to compile (Windows), or introducing unprefixed macros which can cause conflicts (Windows, XLib).
+*/
+#if !defined(VULKAN_H_)
+	#ifdef VK_USE_PLATFORM_ANDROID_KHR
+		#include <vulkan/vulkan_android.h>
+	#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+
+	#ifdef VK_USE_PLATFORM_FUCHSIA
+		#include <zircon/types.h>
+		#include <vulkan/vulkan_fuchsia.h>
+	#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+	#ifdef VK_USE_PLATFORM_IOS_MVK
+		#include <vulkan/vulkan_ios.h>
+	#endif /*VK_USE_PLATFORM_IOS_MVK*/
+
+	#ifdef VK_USE_PLATFORM_MACOS_MVK
+		#include <vulkan/vulkan_macos.h>
+	#endif /*VK_USE_PLATFORM_MACOS_MVK*/
+
+	#ifdef VK_USE_PLATFORM_METAL_EXT
+		#include <vulkan/vulkan_metal.h>
+	#endif /*VK_USE_PLATFORM_METAL_EXT*/
+
+	#ifdef VK_USE_PLATFORM_VI_NN
+		#include <vulkan/vulkan_vi.h>
+	#endif /*VK_USE_PLATFORM_VI_NN*/
+
+	#ifdef VK_USE_PLATFORM_WAYLAND_KHR
+		#include <vulkan/vulkan_wayland.h>
+	#endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
+
+	#ifdef VK_USE_PLATFORM_WIN32_KHR
+		using DWORD = unsigned long;
+		using LPCWSTR = const wchar_t*;
+		using HANDLE = void*;
+		using HINSTANCE = struct HINSTANCE__*;
+		using HWND = struct HWND__*;
+		using HMONITOR = struct HMONITOR__*;
+		using SECURITY_ATTRIBUTES = struct _SECURITY_ATTRIBUTES;
+
+		#include <vulkan/vulkan_win32.h>
+	#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+	#ifdef VK_USE_PLATFORM_XCB_KHR
+		#include <xcb/xcb.h>
+		#include <vulkan/vulkan_xcb.h>
+	#endif /*VK_USE_PLATFORM_XCB_KHR*/
+
+	#ifdef VK_USE_PLATFORM_XLIB_KHR
+		using Display = struct _XDisplay;
+		using Window = unsigned long;
+		using VisualID = unsigned long;
+
+		#include <vulkan/vulkan_xlib.h>
+	#endif /*VK_USE_PLATFORM_XLIB_KHR*/
+
+	#ifdef VK_USE_PLATFORM_DIRECTFB_EXT
+		#include <directfb.h>
+		#include <vulkan/vulkan_directfb.h>
+	#endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
+
+	#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
+		using Display = struct _XDisplay;
+		using RROutput = unsigned long;
+
+		#include <vulkan/vulkan_xlib_xrandr.h>
+	#endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
+
+	#ifdef VK_USE_PLATFORM_GGP
+		#include <ggp_c/vulkan_types.h>
+		#include <vulkan/vulkan_ggp.h>
+	#endif /*VK_USE_PLATFORM_GGP*/
+
+	#ifdef VK_USE_PLATFORM_SCREEN_QNX
+		#include <screen/screen.h>
+		#include <vulkan/vulkan_screen.h>
+	#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+	#ifdef VK_USE_PLATFORM_SCI
+		#include <nvscisync.h>
+		#include <nvscibuf.h>
+		#include <vulkan/vulkan_sci.h>
+	#endif /*VK_USE_PLATFORM_SCI*/
+
+	#ifdef VK_ENABLE_BETA_EXTENSIONS
+		#include <vulkan/vulkan_beta.h>
+	#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#endif /*!defined(VULKAN_H_)*/
 
 //Device-specific function pointer table
 struct VkDeviceTable

@@ -5639,3 +5639,7 @@ SITREP 02/16/2025|25w07b1
     - Added Wayland protocol files ~<5 mins
     - GeneratorScripts Added script to generate Wayland protocol files ~<5 mins
     - Actions Added workflow to weekly update Wayland protocol files ~<5 mins
+
+SITREP 02/20/2025|25w08a1
+    - Changed TRAP Engine version to 25w08a1(0.11.87)
+    - Updated VulkanLoader ~<10 mins
