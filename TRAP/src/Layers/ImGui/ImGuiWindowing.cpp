@@ -75,7 +75,6 @@ namespace
 		std::vector<const TRAP::INTERNAL::WindowingAPI::InternalWindow*> KeyOwnerWindows = std::vector<const TRAP::INTERNAL::WindowingAPI::InternalWindow*>(std::to_underlying(TRAP::Input::Key::Menu), nullptr);
 		bool InstalledCallbacks{};
 		bool CallbacksChainForAllWindows{};
-		bool WantUpdateMonitors{};
 		TRAP::INTERNAL::WindowingAPI::InternalCursor* CustomCursor = nullptr;
 
 		//Chain WindowingAPI callbacks; our callbacks will call the user's previously installed callbacks, if any.
@@ -502,13 +501,7 @@ namespace
 	void MonitorCallback([[maybe_unused]] const TRAP::INTERNAL::WindowingAPI::InternalMonitor& monitor,
 	                     [[maybe_unused]] const bool connected)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None &&
-		                                         (GetTRAPProfileSystems() & ProfileSystems::Verbose) != ProfileSystems::None);
-
-		ImGuiTRAPData* const bd = GetBackendData();
-        TRAP_ASSERT(bd, "ImGuiWindowing::MonitorCallback(): Backend data is nullptr!");
-
-		bd->WantUpdateMonitors = true;
+		//This function is technically part of the API even if we stopped using the callback, so leaving it around.
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -736,13 +729,9 @@ namespace
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-		ImGuiTRAPData* const bd = GetBackendData();
-        TRAP_ASSERT(bd, "ImGuiWindowing::UpdateMonitors(): Backend data is nullptr!");
-
 		ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
 		const auto& monitors = TRAP::INTERNAL::WindowingAPI::GetMonitors();
 		platformIO.Monitors.resize(0u);
-		bd->WantUpdateMonitors = false;
 		for (TRAP::INTERNAL::WindowingAPI::InternalMonitor* const n : monitors)
 		{
 			if(n == nullptr)
@@ -1240,7 +1229,6 @@ namespace
 
 	bd->Window = &window;
 	bd->Time = 0.0;
-	bd->WantUpdateMonitors = true;
 
 	ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
 	platformIO.Platform_SetClipboardTextFn = SetClipboardText;
@@ -1342,8 +1330,7 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 	if (width > 0 && height > 0)
 		io.DisplayFramebufferScale = ImVec2(NumericCast<f32>(displayWidth) / io.DisplaySize.x,
 		                                    NumericCast<f32>(displayHeight) / io.DisplaySize.y);
-	if (bd->WantUpdateMonitors)
-		UpdateMonitors();
+	UpdateMonitors();
 
 	//Setup time step
 	f64 currentTime = static_cast<f64>(Application::GetTime());
