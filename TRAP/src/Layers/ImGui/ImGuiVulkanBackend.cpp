@@ -1244,6 +1244,15 @@ namespace
 
         ImGui::DestroyPlatformWindows();
     }
+
+    [[nodiscard]] u32 GetDefaultAPIVersion()
+    {
+#ifdef VK_HEADER_VERSION_COMPLETE
+        return VK_HEADER_VERSION_COMPLETE;
+#else
+        return VK_API_VERSION_1_0;
+#endif
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1363,7 +1372,10 @@ void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* const viewport, [[mayb
                 .pStencilAttachment = nullptr
             };
 
-            vkCmdBeginRenderingKHR(fd.CommandBuffer->GetVkCommandBuffer(), &renderingInfo);
+            if(v.APIVersion < VK_API_VERSION_1_3)
+                vkCmdBeginRenderingKHR(fd.CommandBuffer->GetVkCommandBuffer(), &renderingInfo);
+            else
+                vkCmdBeginRendering(fd.CommandBuffer->GetVkCommandBuffer(), &renderingInfo);
         }
         else
 #endif /*IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING*/
@@ -1390,7 +1402,10 @@ void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* const viewport, [[mayb
 #ifdef IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING
         if(v.UseDynamicRendering)
         {
-            vkCmdEndRenderingKHR(fd.CommandBuffer->GetVkCommandBuffer());
+            if(v.APIVersion < VK_API_VERSION_1_3)
+                vkCmdEndRenderingKHR(fd.CommandBuffer->GetVkCommandBuffer());
+            else
+                vkCmdEndRendering(fd.CommandBuffer->GetVkCommandBuffer());
 
             //Transition image to a layout suitable for presentation
             std::vector<TRAP::Graphics::TextureBarrier> barriers
@@ -1821,9 +1836,12 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui::INTERNAL::Vulkan::Init(const InitInfo& info)
+void ImGui::INTERNAL::Vulkan::Init(InitInfo& info)
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
+
+    if(info.APIVersion == 0u)
+        info.APIVersion = GetDefaultAPIVersion();
 
     ImGuiIO& io = ImGui::GetIO();
     IMGUI_CHECKVERSION();

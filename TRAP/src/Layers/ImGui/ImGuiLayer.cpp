@@ -150,7 +150,7 @@ namespace
 		);
 		TRAP_ASSERT(cmdBuffer != nullptr, "ImGuiLayer::OnAttach(): cmdBuffer is nullptr!");
 
-		const ImGui::INTERNAL::Vulkan::InitInfo initInfo
+		ImGui::INTERNAL::Vulkan::InitInfo initInfo
 		{
 			.Instance = renderer->GetInstance(),
 			.Device = renderer->GetDevice(),

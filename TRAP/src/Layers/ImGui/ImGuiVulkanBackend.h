@@ -69,6 +69,7 @@ namespace ImGui::INTERNAL::Vulkan
     {
         using PFN_CheckVkResultFn = void(*)(VkResult err);
 
+        u32 APIVersion = VK_API_VERSION_1_0; //Fill with API version of Instance, e.g. VK_API_VERSION_1_3 or your value of VkApplicationInfo::apiVersion. May be lower than header version (VK_HEADER_VERSION_COMPLETE)
         TRAP::Ref<TRAP::Graphics::API::VulkanInstance> Instance = nullptr;
         TRAP::Ref<TRAP::Graphics::API::VulkanDevice> Device = nullptr;
         TRAP::Ref<TRAP::Graphics::API::VulkanQueue> Queue = nullptr;
@@ -93,7 +94,7 @@ namespace ImGui::INTERNAL::Vulkan
     };
 
     // Called by user code
-                  void        Init(const InitInfo& info);
+                  void        Init(InitInfo& info);
                   void        Shutdown();
                   void        NewFrame();
                   void        RenderDrawData(const ImDrawData& draw_data, const TRAP::Graphics::API::VulkanCommandBuffer& command_buffer, VkPipeline pipeline = VK_NULL_HANDLE);
