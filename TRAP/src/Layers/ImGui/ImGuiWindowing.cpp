@@ -1302,6 +1302,9 @@ void TRAP::INTERNAL::ImGuiWindowing::Shutdown()
 
 	for (ImGuiMouseCursor cursorN = 0; cursorN < ImGuiMouseCursor_COUNT; ++cursorN)
 	{
+		if(bd->MouseCursors[NumericCast<usize>(cursorN)] == nullptr)
+			continue;
+
 		WindowingAPI::DestroyCursor(bd->MouseCursors[NumericCast<usize>(cursorN)]);
 		bd->MouseCursors[NumericCast<usize>(cursorN)] = nullptr;
 	}
