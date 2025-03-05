@@ -5647,3 +5647,7 @@ SITREP 02/20/2025|25w08a1
 SITREP 02/23/2025|25w08a2
     - Changed TRAP Engine version to 25w08a2(0.11.88)
     - Updated ImGuiVulkanBackend ~<10 mins
+
+SITREP 03/05/2025|25w10a1
+    - Changed TRAP Engine version to 25w10a1(0.11.89)
+    - Updated ImGuiLayer ~<5 mins
