@@ -425,8 +425,8 @@ void TRAP::ImGuiLayer::SetImGuizmoStyle()
 //-------------------------------------------------------------------------------------------------------------------//
 
 void ImGui::Image(const TRAP::Graphics::Texture& image, const TRAP::Graphics::Sampler& sampler,
-                  const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col,
-				  const ImVec4& border_col)
+                  const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& bg_col,
+				  const ImVec4& tint_col)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
@@ -438,14 +438,14 @@ void ImGui::Image(const TRAP::Graphics::Texture& image, const TRAP::Graphics::Sa
 		const auto* const vkSampler = dynamic_cast<const TRAP::Graphics::API::VulkanSampler*>(&sampler);
 		ImTextureID texID = ImGui::INTERNAL::Vulkan::AddTexture(*vkSampler, *vkImage,
 		                                                        VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
+		ImGui::ImageWithBg(texID, size, uv0, uv1, bg_col, tint_col);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void ImGui::Image(const TRAP::Graphics::Texture& image, const ImVec2& size, const ImVec2& uv0,
-                  const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col)
+                  const ImVec2& uv1, const ImVec4& bg_col, const ImVec4& tint_col)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
@@ -456,7 +456,7 @@ void ImGui::Image(const TRAP::Graphics::Texture& image, const ImVec2& size, cons
 		const auto* const vkImage = dynamic_cast<const TRAP::Graphics::API::VulkanTexture*>(&image);
 		ImTextureID texID = ImGui::INTERNAL::Vulkan::AddTexture(*TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler,
 		                                                        *vkImage, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
+		ImGui::ImageWithBg(texID, size, uv0, uv1, bg_col, tint_col);
 	}
 }
 
