@@ -47,7 +47,7 @@ jobs:
         cd Dependencies/DiscordGameSDK
         git init
         git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_DISCORDGAMESDK }}
-        git pull origin main
+        git pull origin main --depth 1
         cd ../..
     - name: Checkout NVIDIA Nsight Aftermath SDK
       if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_NSIGHTAFTERMATH
@@ -58,7 +58,7 @@ jobs:
         cd Dependencies/Nsight-Aftermath
         git init
         git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_NSIGHTAFTERMATH }}
-        git pull origin main
+        git pull origin main --depth 1
         cd ../..
     - name: Checkout Steamworks SDK
       if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_STEAMWORKSSDK
@@ -69,7 +69,7 @@ jobs:
         cd Dependencies/SteamworksSDK
         git init
         git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
-        git pull origin main
+        git pull origin main --depth 1
         cd ../..
     - name: Add toolchain ppa
       run: sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/ppa
@@ -187,7 +187,7 @@ jobs:
           cd Dependencies/DiscordGameSDK
           git init
           git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_DISCORDGAMESDK }}
-          git pull origin main
+          git pull origin main --depth 1
           cd ../..
       - name: Checkout NVIDIA Nsight Aftermath SDK
         if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_NSIGHTAFTERMATH
@@ -198,7 +198,7 @@ jobs:
           cd Dependencies/Nsight-Aftermath
           git init
           git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_NSIGHTAFTERMATH }}
-          git pull origin main
+          git pull origin main --depth 1
           cd ../..
       - name: Checkout Steamworks SDK
         if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_STEAMWORKSSDK
@@ -209,7 +209,7 @@ jobs:
           cd Dependencies/SteamworksSDK
           git init
           git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
-          git pull origin main
+          git pull origin main --depth 1
           cd ../..
       - name: Setup developer console
         uses: ilammy/msvc-dev-cmd@v1
