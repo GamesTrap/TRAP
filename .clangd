@@ -1,4 +1,6 @@
 Diagnostics:
+  ClangTidy:
+    Remove: [modernize-macro-to-enum, cppcoreguidelines-macro-to-enum]
   UnusedIncludes: None
   MissingIncludes: None
   Includes:
