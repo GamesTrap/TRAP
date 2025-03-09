@@ -260,7 +260,7 @@ namespace TRAP::Utils
 			continue;
 
 		const u8 convertedCharacter = String::IsDigit(c) ? NumericCast<u8>(c - '0') :
-		                                                   NumericCast<u8>(String::ToLower(c) - 'a' + 10u);
+		                                                   NumericCast<u8>(String::ToLower(c) - 'a' + 10);
 		if(index % 2u == 0u)
 			result[index / 2u] = NumericCast<u8>(convertedCharacter << 4u);
 		else

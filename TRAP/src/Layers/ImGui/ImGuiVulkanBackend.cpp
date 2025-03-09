@@ -1735,8 +1735,8 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
                 {
                     std::ranges::copy(draw_list->VtxBuffer, vtxDst.begin());
                     std::ranges::copy(draw_list->IdxBuffer, idxDst.begin());
-                    vtxDst = vtxDst.subspan(draw_list->VtxBuffer.Size);
-                    idxDst = idxDst.subspan(draw_list->IdxBuffer.Size);
+                    vtxDst = vtxDst.subspan(NumericCast<usize>(draw_list->VtxBuffer.Size));
+                    idxDst = idxDst.subspan(NumericCast<usize>(draw_list->IdxBuffer.Size));
                 }
             }
             rb.IndexBuffer->UnMapBuffer();

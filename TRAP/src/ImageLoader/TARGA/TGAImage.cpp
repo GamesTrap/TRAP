@@ -435,7 +435,7 @@ namespace
 		Footer footer{};
 
 		file.seekg(-26, std::ios::end);
-		footer.FooterOffset = file.tellg();
+		footer.FooterOffset = static_cast<usize>(file.tellg());
 
 		file.read(reinterpret_cast<char*>(&footer.ExtensionAreaOffset), sizeof(u32));
 		file.read(reinterpret_cast<char*>(&footer.DeveloperDirectoryOffset), sizeof(u32));
@@ -462,7 +462,7 @@ namespace
 			const auto endPos = file.tellg();
 			file.seekg(currPos);
 
-			return endPos;
+			return static_cast<usize>(endPos);
 		}
 
 		std::size_t endPos = footer->FooterOffset;

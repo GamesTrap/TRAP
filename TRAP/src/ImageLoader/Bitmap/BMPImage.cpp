@@ -663,7 +663,7 @@ namespace
 		if(infoHeader.Compression == BMPCompression::Uncompressed) //infoHeader.SizeImage may be 0 for uncompressed images!
 		{
 			const u32 rowSize = NumericCast<u32>(TRAP::Math::Ceil<f32>(NumericCast<f32>((infoHeader.BitsPerPixel * infoHeader.Width) / 32u)) * 4u);
-			const u32 pixelDataSize = rowSize * TRAP::Math::Abs(infoHeader.Height);
+			const u32 pixelDataSize = rowSize * NumericCast<u32>(TRAP::Math::Abs(infoHeader.Height));
 
 			imageData.resize(pixelDataSize);
 		}

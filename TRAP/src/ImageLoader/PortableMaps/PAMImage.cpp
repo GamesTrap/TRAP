@@ -92,13 +92,21 @@ namespace
 		Header header{};
 		header.MagicNumber = SkipComments();
 		[[maybe_unused]] const std::string widthStr = SkipComments();
-		header.Width = std::stoi(SkipComments());
+		const std::string widthValueStr = SkipComments();
+		if(std::from_chars(widthValueStr.data(), widthValueStr.data() + widthValueStr.size(), header.Width).ec != std::errc{})
+			header.Width = 0u;
 		[[maybe_unused]] const std::string heightStr = SkipComments();
-		header.Height = std::stoi(SkipComments());
+		const std::string heightValueStr = SkipComments();
+		if(std::from_chars(heightValueStr.data(), heightValueStr.data() + heightValueStr.size(), header.Height).ec != std::errc{})
+			header.Height = 0u;
 		[[maybe_unused]] const std::string depthStr = SkipComments();
-		header.Depth = std::stoi(SkipComments());
+		const std::string depthValueStr = SkipComments();
+		if(std::from_chars(depthValueStr.data(), depthValueStr.data() + depthValueStr.size(), header.Depth).ec != std::errc{})
+			header.Depth = 0u;
 		[[maybe_unused]] const std::string maxValStr = SkipComments();
-		header.MaxValue = std::stoi(SkipComments());
+		const std::string maxValValueStr = SkipComments();
+		if(std::from_chars(maxValValueStr.data(), maxValValueStr.data() + maxValValueStr.size(), header.MaxValue).ec != std::errc{})
+			header.MaxValue = std::numeric_limits<u32>::max();
 		[[maybe_unused]] const std::string tuplTypeStr = SkipComments();
 		header.TuplType = SkipComments();
 		const std::string endHdrStr = SkipComments();

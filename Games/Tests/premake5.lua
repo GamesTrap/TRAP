@@ -16,7 +16,7 @@ project "Tests"
 	firstparty.IncludeTRAP()
 	firstparty.LinkTRAP()
 
-	filter { "toolset:gcc" }
+	filter { "toolset:gcc or clang" }
 		buildoptions
 		{
 			"-Wpedantic", "-Wconversion", "-Wshadow"

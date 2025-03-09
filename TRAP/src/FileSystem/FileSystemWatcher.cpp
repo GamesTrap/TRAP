@@ -284,7 +284,7 @@ namespace
     {
 	    ZoneNamedC(__tracy, tracy::Color::Blue, (GetTRAPProfileSystems() & ProfileSystems::FileSystem) != ProfileSystems::None);
 
-        isize toSend = sizeof(KILLTHREAD);
+        usize toSend = sizeof(KILLTHREAD);
         while (toSend > 0)
         {
             const isize res = write(killEvent, &KILLTHREAD, toSend);
@@ -294,7 +294,7 @@ namespace
                 TP_ERROR(TRAP::Log::FileWatcherLinuxPrefix, "Error writing to eventfd (", errStr, ")");
                 throw std::runtime_error(fmt::format("FileWatcher::StopCallback(): Failed to set kill event ({}), aborting!", errStr));
             }
-            toSend -= res;
+            toSend -= NumericCast<usize>(res);
         }
     }
 #elif defined(TRAP_PLATFORM_WINDOWS)

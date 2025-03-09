@@ -63,9 +63,15 @@ namespace
 
 		Header header{};
 		header.MagicNumber = SkipComments();
-		header.Width = std::stoi(SkipComments());
-		header.Height = std::stoi(SkipComments());
-		header.ByteOrder = std::stof(SkipComments());
+		const std::string widthStr = SkipComments();
+		if(std::from_chars(widthStr.data(), widthStr.data() + widthStr.size(), header.Width).ec != std::errc{})
+			header.Width = 0u;
+		const std::string heightStr = SkipComments();
+		if(std::from_chars(heightStr.data(), heightStr.data() + heightStr.size(), header.Height).ec != std::errc{})
+			header.Height = 0u;
+		const std::string ByteOrderStr = SkipComments();
+		if(std::from_chars(ByteOrderStr.data(), ByteOrderStr.data() + ByteOrderStr.size(), header.ByteOrder).ec != std::errc{})
+			header.ByteOrder = -1.0f;
 
 		if (header.MagicNumber != "PF" && header.MagicNumber != "Pf" && header.MagicNumber != "PF4")
 			return TRAP::MakeUnexpected(PFMErrorCode::InvalidMagicNumber);

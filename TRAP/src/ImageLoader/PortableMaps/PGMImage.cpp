@@ -69,9 +69,15 @@ namespace
 
 		Header header{};
 		header.MagicNumber = SkipComments();
-		header.Width = std::stoi(SkipComments());
-		header.Height = std::stoi(SkipComments());
-		header.MaxValue = std::stoi(SkipComments());
+		const std::string widthStr = SkipComments();
+		if(std::from_chars(widthStr.data(), widthStr.data() + widthStr.size(), header.Width).ec != std::errc{})
+			header.Width = 0u;
+		const std::string heightStr = SkipComments();
+		if(std::from_chars(heightStr.data(), heightStr.data() + heightStr.size(), header.Height).ec != std::errc{})
+			header.Height = 0u;
+		const std::string maxValueStr = SkipComments();
+		if(std::from_chars(maxValueStr.data(), maxValueStr.data() + maxValueStr.size(), header.MaxValue).ec != std::errc{})
+			header.MaxValue = std::numeric_limits<u32>::max();
 
 		if (!(header.MagicNumber == "P2" || header.MagicNumber == "P5"))
 			return TRAP::MakeUnexpected(PGMErrorCode::InvalidMagicNumber);

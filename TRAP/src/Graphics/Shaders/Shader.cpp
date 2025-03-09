@@ -574,7 +574,7 @@ namespace
 
 		for(u32 i = 0; i < SPIRVSubShaderCount; ++i)
 		{
-			const auto SPIRVSize = TRAP::Utils::Memory::ConvertByte<usize>(SPIRV.subspan(NumericCast<isize>(index)));
+			const auto SPIRVSize = TRAP::Utils::Memory::ConvertByte<usize>(SPIRV.subspan(index));
 			if(!SPIRVSize)
 			{
 				TRAP_ASSERT(false);
@@ -586,7 +586,7 @@ namespace
 			const TRAP::Graphics::ShaderStage stage = static_cast<TRAP::Graphics::ShaderStage>(SPIRV[index++]);
 			desc.Stages |= stage;
 
-			const auto spvMagicNumber = TRAP::Utils::Memory::ConvertByte<u32>(SPIRV.subspan(NumericCast<isize>(index)));
+			const auto spvMagicNumber = TRAP::Utils::Memory::ConvertByte<u32>(SPIRV.subspan(index));
 			if(spvMagicNumber.ValueOr(0u) != SPIRVMagicNumber || (SPIRV.size() - index) < SPIRVSize)
 			{
 				TRAP_ASSERT(false);

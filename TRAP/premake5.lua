@@ -66,7 +66,7 @@ project "TRAP"
 
 	firstparty.IncludeTRAP()
 
-	filter { "toolset:gcc" }
+	filter { "toolset:gcc or clang" }
 		buildoptions
 		{
 			"-Wpedantic", "-Wconversion", "-Wshadow"
@@ -104,7 +104,7 @@ project "TRAP-UnitTests"
 	filter { "options:gencodecoverage" }
 		defines "CATCH_CONFIG_RUNTIME_STATIC_REQUIRE"
 
-	filter { "toolset:gcc" }
+	filter { "toolset:gcc or clang" }
 		buildoptions
 		{
 			"-Wpedantic", "-Wconversion", "-Wshadow"
@@ -159,7 +159,7 @@ project "TRAP-Headless"
 
 	firstparty.IncludeTRAPHeadless()
 
-	filter { "toolset:gcc" }
+	filter { "toolset:gcc or clang" }
 		buildoptions
 		{
 			"-Wpedantic", "-Wconversion", "-Wshadow"

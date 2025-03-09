@@ -1499,7 +1499,7 @@ namespace std
         [[nodiscard]] constexpr std::size_t operator()(const TRAP::Optional<T>& o) const
         {
             if(!o)
-                return -1;
+                return (std::size_t)(-1);
 
             return std::hash<std::decay_t<T>>{}(*o);
         }

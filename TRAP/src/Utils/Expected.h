@@ -2113,9 +2113,12 @@ namespace TRAP
             : m_unexpected(std::forward<Fn>(fn)()), m_hasValue(false)
         {}
 
+        struct Void
+        {};
+
         union
         {
-            struct{} m_void;
+            Void m_void;
             E m_unexpected;
         };
         bool m_hasValue;

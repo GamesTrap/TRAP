@@ -80,23 +80,23 @@ namespace TRAP::Utils
 
             if(registerIndex >= 0)
             {
-                const i32 recursionDepth = m_sharedLocksArray[registerIndex].Value.load(std::memory_order_acquire);
+                const i32 recursionDepth = m_sharedLocksArray[static_cast<usize>(registerIndex)].Value.load(std::memory_order_acquire);
                 assert(recursionDepth >= 1);
 
                 if(recursionDepth > 1)
-                    m_sharedLocksArray[registerIndex].Value.store(recursionDepth + 1, std::memory_order_release); //if recursive -> release
+                    m_sharedLocksArray[static_cast<usize>(registerIndex)].Value.store(recursionDepth + 1, std::memory_order_release); //if recursive -> release
                 else
                 {
-                    m_sharedLocksArray[registerIndex].Value.store(recursionDepth + 1, std::memory_order_seq_cst); //If first -> sequential
+                    m_sharedLocksArray[static_cast<usize>(registerIndex)].Value.store(recursionDepth + 1, std::memory_order_seq_cst); //If first -> sequential
                     while(m_wantXLock.load(std::memory_order_seq_cst))
                     {
-                        m_sharedLocksArray[registerIndex].Value.store(recursionDepth, std::memory_order_seq_cst);
+                        m_sharedLocksArray[static_cast<usize>(registerIndex)].Value.store(recursionDepth, std::memory_order_seq_cst);
                         for(/*volatile*/ usize i = 0u; m_wantXLock.load(std::memory_order_seq_cst); ++i)
                         {
                             if(i % 100000 == 0)
                                 std::this_thread::yield();
                         }
-                        m_sharedLocksArray[registerIndex].Value.store(recursionDepth + 1, std::memory_order_seq_cst);
+                        m_sharedLocksArray[static_cast<usize>(registerIndex)].Value.store(recursionDepth + 1, std::memory_order_seq_cst);
                     }
                 }
             }
@@ -120,10 +120,10 @@ namespace TRAP::Utils
 
             if(registerIndex >= 0)
             {
-                const i32 recursionDepth = m_sharedLocksArray[registerIndex].Value.load(std::memory_order_acquire);
+                const i32 recursionDepth = m_sharedLocksArray[static_cast<usize>(registerIndex)].Value.load(std::memory_order_acquire);
                 assert(recursionDepth > 1);
 
-                m_sharedLocksArray[registerIndex].Value.store(recursionDepth - 1, std::memory_order_release);
+                m_sharedLocksArray[static_cast<usize>(registerIndex)].Value.store(recursionDepth - 1, std::memory_order_release);
             }
             else
             {
@@ -140,7 +140,7 @@ namespace TRAP::Utils
             //Forbidden upgrade S-lock to X-lock - This is an excellent opportunity to get a deadlock
             const i32 registerIndex = GetOrSetIndex();
             if(registerIndex >= 0)
-                assert(m_sharedLocksArray[registerIndex].Value.load(std::memory_order_acquire) == 1);
+                assert(m_sharedLocksArray[static_cast<usize>(registerIndex)].Value.load(std::memory_order_acquire) == 1);
 
             if(m_ownerThreadID.load(std::memory_order_acquire) != GetFastThisThreadID())
             {
@@ -167,7 +167,7 @@ namespace TRAP::Utils
             //Forbidden upgrade S-lock to X-lock - This is an excellent opportunity to get a deadlock
             const i32 registerIndex = GetOrSetIndex();
             if(registerIndex >= 0)
-                assert(m_sharedLocksArray[registerIndex].Value.load(std::memory_order_acquire) == 1);
+                assert(m_sharedLocksArray[static_cast<usize>(registerIndex)].Value.load(std::memory_order_acquire) == 1);
 
             if(m_ownerThreadID.load(std::memory_order_acquire) != GetFastThisThreadID())
             {
@@ -244,7 +244,7 @@ namespace TRAP::Utils
             ~Unregister()
             {
                 if(ArraySlockPtr.use_count() > 0)
-                    --(*ArraySlockPtr)[ThreadIndex].Value;
+                    --(*ArraySlockPtr)[static_cast<usize>(ThreadIndex)].Value;
             }
 
             Unregister(const Unregister&) = delete;
@@ -266,7 +266,7 @@ namespace TRAP::Utils
 
             if(indexOp == IndexOp::UnregisterThreadOp) //Unregister thread
             {
-                if(m_sharedLocksArray[setIndex].Value == 1) //If isn't shared_lock now
+                if(m_sharedLocksArray[static_cast<usize>(setIndex)].Value == 1) //If isn't shared_lock now
                     threadLocalIndexHashmap.erase(&m_sharedLocksArray);
                 else
                     return -1;
@@ -278,7 +278,7 @@ namespace TRAP::Utils
                 //Remove info about deleted contentionfree-mutexes
                 for(auto it = threadLocalIndexHashmap.begin(), ite = threadLocalIndexHashmap.end(); it != ite;)
                 {
-                    if((*it->second.ArraySlockPtr)[it->second.ThreadIndex].Value < 0) //If contentionfree-mutex was deleted
+                    if((*it->second.ArraySlockPtr)[static_cast<usize>(it->second.ThreadIndex)].Value < 0) //If contentionfree-mutex was deleted
                         it = threadLocalIndexHashmap.erase(it);
                     else
                         ++it;

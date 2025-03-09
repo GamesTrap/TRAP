@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "Texture.h"
 
+#include <cstddef>
+
 #include "Application.h"
 #include "FileSystem/FileSystem.h"
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
@@ -194,11 +196,11 @@ namespace
 						updateDesc.MappedData.begin());
 		else //Needs row by row copy
 		{
-			for(usize r = 0; r < updateDesc.RowCount; ++r)
+			for(u32 r = 0; r < updateDesc.RowCount; ++r)
 			{
-				std::copy_n(data.begin() + r * updateDesc.SrcRowStride,
+				std::copy_n(data.begin() + NumericCast<isize>(r * updateDesc.SrcRowStride),
 							updateDesc.SrcRowStride,
-							updateDesc.MappedData.subspan(r * updateDesc.DstRowStride).begin());
+							updateDesc.MappedData.subspan(static_cast<usize>(r) * updateDesc.DstRowStride).begin());
 			}
 		}
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(updateDesc, &syncToken);

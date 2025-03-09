@@ -237,7 +237,7 @@ namespace TRAP::Utils
         std::vector<T> newData(width * height * RGBAChannels);
         for(usize oldDataIndex = 0u, newDataIndex = 0u; oldDataIndex < data.size(); oldDataIndex += RGBChannels, newDataIndex += RGBAChannels)
         {
-            std::copy_n(data.begin() + oldDataIndex, RGBChannels, &newData[newDataIndex]); //Copy RGB
+            std::copy_n(data.begin() + NumericCast<isize>(oldDataIndex), RGBChannels, &newData[newDataIndex]); //Copy RGB
             newData[newDataIndex + RGBChannels] = whitePixelColor; //Add alpha channel
         }
 

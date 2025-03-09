@@ -48,6 +48,7 @@
 #include <regex>
 #include <version>
 #include <concepts>
+#include <charconv>
 
 #include "Core/Types.h"
 

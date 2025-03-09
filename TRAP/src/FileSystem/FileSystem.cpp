@@ -62,7 +62,7 @@ namespace
     {
         TRAP_ASSERT(bytesToRead > 0, "FileSystem::ReadNBytes(): bytesToRead must be > 0!");
 
-        std::vector<T> bytes(bytesToRead);
+        std::vector<T> bytes(NumericCast<usize>(bytesToRead));
 
         if constexpr(std::same_as<T, u8>)
         {
@@ -74,7 +74,7 @@ namespace
         }
 
         if(file.gcount() < NumericCast<std::streamsize>(bytes.size()))
-            bytes.resize(file.gcount());
+            bytes.resize(NumericCast<usize>(file.gcount()));
 
         return bytes;
     }

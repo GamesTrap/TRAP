@@ -216,7 +216,7 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 
 	TRAP_ASSERT(m_memoryUsage != ResourceMemoryUsage::GPUOnly,
 	            "VulkanBuffer::MapBuffer(): Trying to map non-CPU accessible resource");
-	TRAP_ASSERT((NumericCast<i64>(m_size) - range.Offset) > 0,
+	TRAP_ASSERT((NumericCast<i64>(m_size) - NumericCast<i64>(range.Offset)) > 0,
 	            "VulkanBuffer::MapBuffer(): range - offset is <= 0");
 
 	if(!m_CPUMappedAddress.empty())

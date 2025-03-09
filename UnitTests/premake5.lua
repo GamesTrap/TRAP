@@ -28,7 +28,7 @@ project "UnitTests"
 	filter { "options:gencodecoverage" }
 		defines "CATCH_CONFIG_RUNTIME_STATIC_REQUIRE"
 
-	filter { "toolset:gcc" }
+	filter { "toolset:gcc or clang" }
 		buildoptions
 		{
 			"-Wpedantic", "-Wconversion", "-Wshadow"

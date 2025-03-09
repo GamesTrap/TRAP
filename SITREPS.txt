@@ -5655,3 +5655,7 @@ SITREP 03/05/2025|25w10a1
 SITREP 03/08/2025|25w10a2
     - Changed TRAP Engine version to 25w10a2(0.11.90)
     - Build-CI/NightlyBuild Improved checkout speed of NDA dependencies ~<5 mins
+
+SITREP 03/09/2025|25w10a3
+    - Changed TRAP Engine version to 25w10a3(0.11.91)
+    - Enabled Wpedantic, Wconversion, Wshadow warnings on clang ~<15 mins
