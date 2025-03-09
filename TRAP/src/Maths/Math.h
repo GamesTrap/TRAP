@@ -4265,9 +4265,9 @@ requires std::floating_point<T>
 	std::array<Vec<3, T>, 3> row{};
 
 	//Now get scale and shear.
-	for(u32 i = 0; i < row.size(); ++i)
+	for(usize i = 0; i < row.size(); ++i)
 	{
-		for(u32 j = 0; j < row[i].Length(); ++j)
+		for(u32 j = 0; j < decltype(row)::value_type::Length(); ++j)
 			row[i][j] = m[i][j];
 	}
 
