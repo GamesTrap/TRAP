@@ -5661,3 +5661,7 @@ SITREP 03/09/2025|25w10a3
     - Enabled Wpedantic, Wconversion, Wshadow warnings on clang ~<15 mins
     - Clangd-20 Disable bogus diagnostics ~<5 mins
     - Premake GenerateProjectVSCode***.sh generated compile_commands now uses correct compiler ~<5 mins
+
+SITREP 03/21/2025|25w12a1
+    - Changed TRAP Engine version to 25w12a1(0.11.92)
+    - Updated ImGuiWindowing ~<5 mins
