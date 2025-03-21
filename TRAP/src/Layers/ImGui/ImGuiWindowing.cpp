@@ -210,6 +210,8 @@ namespace
 		case TRAP::Input::Key::Equal: return ImGuiKey_Equal;
 		case TRAP::Input::Key::Left_Bracket: return ImGuiKey_LeftBracket;
 		case TRAP::Input::Key::Backslash: return ImGuiKey_Backslash;
+		case TRAP::Input::Key::World_1: return ImGuiKey_Oem102;
+		case TRAP::Input::Key::World_2: return ImGuiKey_Oem102;
 		case TRAP::Input::Key::Right_Bracket: return ImGuiKey_RightBracket;
 		case TRAP::Input::Key::Grave_Accent: return ImGuiKey_GraveAccent;
 		case TRAP::Input::Key::Caps_Lock: return ImGuiKey_CapsLock;
