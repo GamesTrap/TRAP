@@ -19,7 +19,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 310
+#define VULKANLOADER_HEADER_VERSION 311
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -35,7 +35,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 310
+#define VULKANLOADER_HEADER_VERSION_PATCH 311
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -520,6 +520,9 @@ struct VkDeviceTable
 	PFN_vkGetMemoryMetalHandleEXT vkGetMemoryMetalHandleEXT;
 	PFN_vkGetMemoryMetalHandlePropertiesEXT vkGetMemoryMetalHandlePropertiesEXT;
 #endif /* defined(VK_EXT_external_memory_metal) */
+#if defined(VK_EXT_fragment_density_map_offset)
+	PFN_vkCmdEndRendering2EXT vkCmdEndRendering2EXT;
+#endif /* defined(VK_EXT_fragment_density_map_offset) */
 #if defined(VK_EXT_full_screen_exclusive)
 	PFN_vkAcquireFullScreenExclusiveModeEXT vkAcquireFullScreenExclusiveModeEXT;
 	PFN_vkReleaseFullScreenExclusiveModeEXT vkReleaseFullScreenExclusiveModeEXT;
@@ -1513,6 +1516,9 @@ extern PFN_vkGetMemoryHostPointerPropertiesEXT vkGetMemoryHostPointerPropertiesE
 extern PFN_vkGetMemoryMetalHandleEXT vkGetMemoryMetalHandleEXT;
 extern PFN_vkGetMemoryMetalHandlePropertiesEXT vkGetMemoryMetalHandlePropertiesEXT;
 #endif /* defined(VK_EXT_external_memory_metal) */
+#if defined(VK_EXT_fragment_density_map_offset)
+extern PFN_vkCmdEndRendering2EXT vkCmdEndRendering2EXT;
+#endif /* defined(VK_EXT_fragment_density_map_offset) */
 #if defined(VK_EXT_full_screen_exclusive)
 extern PFN_vkAcquireFullScreenExclusiveModeEXT vkAcquireFullScreenExclusiveModeEXT;
 extern PFN_vkGetPhysicalDeviceSurfacePresentModes2EXT vkGetPhysicalDeviceSurfacePresentModes2EXT;
@@ -2945,6 +2951,9 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkGetMemoryMetalHandleEXT = reinterpret_cast<PFN_vkGetMemoryMetalHandleEXT>(load(context, "vkGetMemoryMetalHandleEXT"));
 	vkGetMemoryMetalHandlePropertiesEXT = reinterpret_cast<PFN_vkGetMemoryMetalHandlePropertiesEXT>(load(context, "vkGetMemoryMetalHandlePropertiesEXT"));
 #endif /* defined(VK_EXT_external_memory_metal) */
+#if defined(VK_EXT_fragment_density_map_offset)
+	vkCmdEndRendering2EXT = reinterpret_cast<PFN_vkCmdEndRendering2EXT>(load(context, "vkCmdEndRendering2EXT"));
+#endif /* defined(VK_EXT_fragment_density_map_offset) */
 #if defined(VK_EXT_full_screen_exclusive)
 	vkAcquireFullScreenExclusiveModeEXT = reinterpret_cast<PFN_vkAcquireFullScreenExclusiveModeEXT>(load(context, "vkAcquireFullScreenExclusiveModeEXT"));
 	vkReleaseFullScreenExclusiveModeEXT = reinterpret_cast<PFN_vkReleaseFullScreenExclusiveModeEXT>(load(context, "vkReleaseFullScreenExclusiveModeEXT"));
@@ -3873,6 +3882,9 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkGetMemoryMetalHandleEXT = reinterpret_cast<PFN_vkGetMemoryMetalHandleEXT>(load(device, "vkGetMemoryMetalHandleEXT"));
 	table.vkGetMemoryMetalHandlePropertiesEXT = reinterpret_cast<PFN_vkGetMemoryMetalHandlePropertiesEXT>(load(device, "vkGetMemoryMetalHandlePropertiesEXT"));
 #endif /* defined(VK_EXT_external_memory_metal) */
+#if defined(VK_EXT_fragment_density_map_offset)
+	table.vkCmdEndRendering2EXT = reinterpret_cast<PFN_vkCmdEndRendering2EXT>(load(device, "vkCmdEndRendering2EXT"));
+#endif /* defined(VK_EXT_fragment_density_map_offset) */
 #if defined(VK_EXT_full_screen_exclusive)
 	table.vkAcquireFullScreenExclusiveModeEXT = reinterpret_cast<PFN_vkAcquireFullScreenExclusiveModeEXT>(load(device, "vkAcquireFullScreenExclusiveModeEXT"));
 	table.vkReleaseFullScreenExclusiveModeEXT = reinterpret_cast<PFN_vkReleaseFullScreenExclusiveModeEXT>(load(device, "vkReleaseFullScreenExclusiveModeEXT"));
@@ -4874,6 +4886,9 @@ inline PFN_vkGetMemoryHostPointerPropertiesEXT vkGetMemoryHostPointerPropertiesE
 inline PFN_vkGetMemoryMetalHandleEXT vkGetMemoryMetalHandleEXT;
 inline PFN_vkGetMemoryMetalHandlePropertiesEXT vkGetMemoryMetalHandlePropertiesEXT;
 #endif /* defined(VK_EXT_external_memory_metal) */
+#if defined(VK_EXT_fragment_density_map_offset)
+inline PFN_vkCmdEndRendering2EXT vkCmdEndRendering2EXT;
+#endif /* defined(VK_EXT_fragment_density_map_offset) */
 #if defined(VK_EXT_full_screen_exclusive)
 inline PFN_vkAcquireFullScreenExclusiveModeEXT vkAcquireFullScreenExclusiveModeEXT;
 inline PFN_vkGetPhysicalDeviceSurfacePresentModes2EXT vkGetPhysicalDeviceSurfacePresentModes2EXT;
