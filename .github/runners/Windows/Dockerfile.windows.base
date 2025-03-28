@@ -1,6 +1,6 @@
 # escape=`
 
-FROM mcr.microsoft.com/windows/servercore:ltsc2022
+FROM mcr.microsoft.com/windows/servercore:ltsc2025
 LABEL maintainer="gamestrap@trappedgames.de"
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';"]

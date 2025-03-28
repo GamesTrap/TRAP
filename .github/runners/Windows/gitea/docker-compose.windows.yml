@@ -7,7 +7,7 @@ services:
       GT_HOST: <GITEA_HOST_URL>
       GT_TOKEN: <RUNNER_REGISTRATION_TOKEN>
       RUNNER_NAME: windows-v4-cpu
-      RUNNER_LABELS: windows,x64,server,2022,cpu
+      RUNNER_LABELS: windows,x64,server,2025,cpu
       CONTAINER_MAX_CPUS: 4
     deploy:
       resources:

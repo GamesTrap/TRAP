@@ -29,7 +29,7 @@ function Disable-InternetExplorerESC {
 
     $ieProcess = Get-Process -Name Explorer -ErrorAction SilentlyContinue
 
-    if ($ieProcess){
+    if ($ieProcess) {
         Stop-Process -Name Explorer -Force -ErrorAction Continue
     }
 
@@ -61,11 +61,14 @@ function Disable-WindowsUpdate {
 # Enable $ErrorActionPreference='Stop' for AllUsersAllHosts
 Add-Content -Path $profile.AllUsersAllHosts -Value '$ErrorActionPreference="Stop"'
 
-# Write-Host "Disable Server Manager on Logon"
-# Get-ScheduledTask -TaskName ServerManager | Disable-ScheduledTask
+Write-Host "Disable Server Manager on Logon"
+Get-ScheduledTask -TaskName ServerManager -ErrorAction Ignore | Disable-ScheduledTask -ErrorAction Ignore
 
 Write-Host "Disable 'Allow your PC to be discoverable by other PCs' popup"
 New-Item -Path HKLM:\System\CurrentControlSet\Control\Network -Name NewNetworkWindowOff -Force
+
+Write-Host "Disable Windows Update Medic Service"
+Set-ItemProperty -Path HKLM:\System\CurrentControlSet\Services\WaaSMedicSvc -Name Start -Value 4 -Force
 
 Write-Host "Disable Windows Update"
 Disable-WindowsUpdate
@@ -80,7 +83,7 @@ Write-Host "Disable IE ESC"
 Disable-InternetExplorerESC
 
 Write-Host "Setting local execution policy"
-Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine  -ErrorAction Continue | Out-Null
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine -ErrorAction Continue | Out-Null
 Get-ExecutionPolicy -List
 
 Write-Host "Enable long path behavior"

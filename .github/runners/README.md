@@ -76,7 +76,7 @@ The resulting Image can be run via the provided docker-compose.linux.yml file.
 
 ## Windows
 
-OS: Windows Server Core 2022 LTSC  
+OS: Windows Server Core 2025 LTSC  
 
 Software:
 
@@ -88,6 +88,8 @@ Software:
 - CMake
 - VCRedists
 - Visual Studio 2022 Build Tools (C++ workload only)
+- Python
+- Ninja
 - GitHub Action Runner
 
 Scripts (in execution order):

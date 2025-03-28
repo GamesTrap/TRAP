@@ -8,7 +8,7 @@ services:
       GH_REPOSITORY: TRAP
       GH_TOKEN: <PAT_TOKEN>
       RUNNER_NAME: windows-v4-cpu
-      RUNNER_LABELS: windows,x64,server,2022,cpu
+      RUNNER_LABELS: windows,x64,server,2025,cpu
       CONTAINER_MAX_CPUS: 4
     deploy:
       resources:

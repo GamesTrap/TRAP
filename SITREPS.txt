@@ -5665,3 +5665,8 @@ SITREP 03/09/2025|25w10a3
 SITREP 03/21/2025|25w12a1
     - Changed TRAP Engine version to 25w12a1(0.11.92)
     - Updated ImGuiWindowing ~<5 mins
+
+SITREP 03/28/2025|25w13a1
+    - Changed TRAP Engine version to 25w13a1(0.11.93)
+    - GitHub Actions Windows Runner Updated scripts (also switched to Windows Server 2025 LTSC containers) ~>45 mins
+    - GitHub Actions Windows Runner rebuild and redeployed images ~<15 mins

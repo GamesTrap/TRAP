@@ -3,117 +3,10 @@
 ##  Desc:  Clean up temp folders after installs to save space
 ################################################################################
 
-function Get-WinVersion
-{
-    (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
-}
-
-function Test-IsWin22
-{
-    (Get-WinVersion) -match "2022"
-}
-
-function Connect-Hive {
-    param(
-        [string]$FileName = "C:\Users\Default\NTUSER.DAT",
-        [string]$SubKey = "HKLM\DEFAULT"
-    )
-
-    Write-Host "Loading the file $FileName to the Key $SubKey"
-    if (Test-Path $SubKey.Replace("\",":")) {
-        return
-    }
-
-    $result = reg load $SubKey $FileName *>&1
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "Failed to load hive: $result"
-        exit 1
-    }
-}
-
-function Disconnect-Hive {
-    param(
-        [string]$SubKey = "HKLM\DEFAULT"
-    )
-
-    Write-Host "Unloading the hive $SubKey"
-    if (-not (Test-Path $SubKey.Replace("\",":"))) {
-        return
-    }
-
-    $result = reg unload $SubKey *>&1
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "Failed to unload hive: $result"
-        exit 1
-    }
-}
-
-function Get-DefaultVariable {
-    param(
-        [string]$DefaultVariable,
-        [string]$Name = "DEFAULT\Environment",
-        [bool]$Writable = $false
-    )
-
-    $key = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey($Name, $Writable)
-    $key.GetValue($DefaultVariable, "", "DoNotExpandEnvironmentNames")
-    $key.Handle.Close()
-    [System.GC]::Collect()
-}
-
-function Set-DefaultVariable {
-    param(
-        [string]$DefaultVariable,
-        [string]$Value,
-        [string]$Name = "DEFAULT\Environment",
-        [string]$Kind = "ExpandString",
-        [bool]$Writable = $true
-    )
-
-    $key = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey($Name, $Writable)
-    $key.SetValue($DefaultVariable, $Value, $Kind)
-    Get-DefaultVariable -DefaultVariable $DefaultVariable -Name $Name
-    $key.Handle.Close()
-    [System.GC]::Collect()
-}
-
-function Add-DefaultItem {
-    param(
-        [string]$DefaultVariable,
-        [string]$Value,
-        [string]$Name = "DEFAULT\Environment",
-        [string]$Kind = "ExpandString",
-        [bool]$Writable = $true
-    )
-
-    Connect-Hive
-    $regPath = Join-Path "HKLM:\" $Name
-    if (-not (Test-Path $Name)) {
-        Write-Host "Creating $regPath key"
-        New-Item -Path $regPath -Force | Out-Null
-    }
-    Set-DefaultVariable -DefaultVariable $DefaultVariable -Value $Value -Name $Name -Kind $Kind -Writable $Writable
-    Disconnect-Hive
-}
-
-function New-ItemPath {
-    param (
-        [string]$Path
-    )
-
-    if (-not (Test-Path $Path)) {
-        New-Item -Path $Path -Force -ErrorAction Ignore | Out-Null
-    }
-}
-
 Write-Host "Cleanup WinSxS"
 Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
-
-# Sets the default install version to v1 for new distributions
-# https://github.com/actions/runner-images/issues/5760
-if (Test-IsWin22) {
-    Write-Host "Sets the default install version to v1 for new distributions"
-    Add-DefaultItem -DefaultVariable "DefaultVersion" -Value 1 -Name "DEFAULT\Software\Microsoft\Windows\CurrentVersion\Lxss" -Kind "DWord"
+if ($LASTEXITCODE -ne 0) {
+    throw "Failed to cleanup WinSxS"
 }
 
 Write-Host "Clean up various directories"
@@ -128,7 +21,13 @@ Write-Host "Clean up various directories"
     if (Test-Path $_) {
         Write-Host "Removing $_"
         cmd /c "takeown /d Y /R /f $_ 2>&1" | Out-Null
+        if ($LASTEXITCODE -ne 0) {
+            throw "Failed to take ownership of $_"
+        }
         cmd /c "icacls $_ /grant:r administrators:f /t /c /q 2>&1" | Out-Null
+        if ($LASTEXITCODE -ne 0) {
+            throw "Failed to grant administrators full control of $_"
+        }
         Remove-Item $_ -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
     }
 }
@@ -142,6 +41,9 @@ Remove-Item $profile.AllUsersAllHosts -Force -ErrorAction SilentlyContinue | Out
 # allow msi to write to temp folder
 # see https://github.com/actions/runner-images/issues/1704
 cmd /c "icacls $env:SystemRoot\Temp /grant Users:f /t /c /q 2>&1" | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    throw "Failed to grant Users full control of $env:SystemRoot\Temp"
+}
 
 # Registry settings
 $registrySettings = @(
@@ -166,9 +68,11 @@ $registrySettings = @(
 )
 
 $registrySettings | ForEach-Object {
-    $regPath = $PSItem.Path
-    New-ItemPath -Path $regPath
-    New-ItemProperty @PSItem -Force -ErrorAction Ignore
+    $regPath = $_.Path
+    if(-not (Test-Path $regPath)) {
+        New-Item -Path $regPath -Force -ErrorAction Ignore | Out-Null
+    }
+    New-ItemProperty @_ -Force -ErrorAction Ignore
 } | Out-Null
 
 # Disable Template Services / User Services added by Desktop Experience
@@ -182,26 +86,28 @@ $regUserServicesToDisables = @(
 
 $regUserServicesToDisables | ForEach-Object {
     $regPath = $_
-    New-ItemPath -Path $regPath
+    if(-not (Test-Path $regPath)) {
+        New-Item -Path $regPath -Force -ErrorAction Ignore | Out-Null
+    }
     New-ItemProperty -Path $regPath -Name "Start" -Value 4 -PropertyType DWORD -Force -ErrorAction Ignore
     New-ItemProperty -Path $regPath -Name "UserServiceFlags" -Value 0 -PropertyType DWORD -Force -ErrorAction Ignore
 } | Out-Null
 
+Write-Host 'Disable Windows Update Service'
+Set-ItemProperty -Path HKLM:\System\CurrentControlSet\Services\wuauserv -Name Start -Value 4 -Force
 
 # Disabled services
 $servicesToDisable = @(
     "wuauserv"
     "DiagTrack"
     "dmwappushservice"
-    "PcaSvc"
     "SysMain"
     "gupdate"
     "gupdatem"
-)
-
-$servicesToDisable | ForEach-Object {
-    Set-Service -Name $_ -StartupType Disabled -ErrorAction Ignore
-} | Out-Null
+) | Get-Service -ErrorAction SilentlyContinue
+Stop-Service $servicesToDisable
+$servicesToDisable.WaitForStatus('Stopped', "00:01:00")
+$servicesToDisable | Set-Service -StartupType Disabled
 
 # Disable scheduled tasks
 $allTasksInTaskPath = @(

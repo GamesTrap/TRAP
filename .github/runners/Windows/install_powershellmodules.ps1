@@ -7,6 +7,15 @@ Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 # Specifies the installation policy
 Set-PSRepository -InstallationPolicy Trusted -Name PSGallery
 
+Write-Host 'Warmup PSModuleAnalysisCachePath (speedup first powershell invocation by 20s)'
+$PSModuleAnalysisCachePath = 'C:\PSModuleAnalysisCachePath\ModuleAnalysisCache'
+
+[Environment]::SetEnvironmentVariable('PSModuleAnalysisCachePath', $PSModuleAnalysisCachePath, "Machine")
+# make variable to be available in the current session
+${env:PSModuleAnalysisCachePath} = $PSModuleAnalysisCachePath
+
+New-Item -Path $PSModuleAnalysisCachePath -ItemType 'File' -Force | Out-Null
+
 # Install PowerShell modules
 $modules = @('PowershellGet', 'DockerMsftProvider')
 
