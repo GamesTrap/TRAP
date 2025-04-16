@@ -249,6 +249,8 @@ namespace
     struct ImGui_ImplVulkan_Data
     {
         InitInfo VulkanInitInfo{};
+        std::vector<VkFormat> PipelineRenderingCreateInfoColorAttachmentFormatsCopy{}; //See issue #8282
+
         VkPipelineCreateFlags PipelineCreateFlags{};
         VkDescriptorSetLayout DescriptorSetLayout = VK_NULL_HANDLE;
         VkPipelineLayout PipelineLayout = VK_NULL_HANDLE;
@@ -1864,6 +1866,17 @@ void ImGui::INTERNAL::Vulkan::Init(InitInfo& info)
         TRAP_ASSERT(info.RenderPass != VK_NULL_HANDLE, "ImGuiVulkanBackend::Init(): info.RenderPass is VK_NULL_HANDLE!");
 
     bd->VulkanInitInfo = info;
+
+#ifdef IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING
+    InitInfo* const v = &bd->VulkanInitInfo;
+    if(v->PipelineRenderingCreateInfo.pColorAttachmentFormats != nullptr)
+    {
+        //Deep copy buffer to reduce error-rate for end user (#8282)
+        const std::span<const VkFormat> formatsView(v->PipelineRenderingCreateInfo.pColorAttachmentFormats, v->PipelineRenderingCreateInfo.colorAttachmentCount);
+        bd->PipelineRenderingCreateInfoColorAttachmentFormatsCopy = std::vector<VkFormat>(formatsView.begin(), formatsView.end());
+        v->PipelineRenderingCreateInfo.pColorAttachmentFormats = bd->PipelineRenderingCreateInfoColorAttachmentFormatsCopy.data();
+    }
+#endif /*IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING*/
 
     CreateDeviceObjects();
 
