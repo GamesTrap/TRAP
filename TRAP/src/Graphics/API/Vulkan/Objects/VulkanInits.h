@@ -91,10 +91,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// @brief Create a Vulkan memory allocator (VMA) allocator create info.
 	/// @param device Vulkan device.
 	/// @param instance Vulkan instance.
-	/// @param vulkanFunctions VMA Vulkan functions.
 	/// @return VmaAllocatorCreateInfo.
-	[[nodiscard]] VmaAllocatorCreateInfo VMAAllocatorCreateInfo(const VulkanDevice& device, VkInstance instance,
-	                                                            const VmaVulkanFunctions& vulkanFunctions);
+	[[nodiscard]] VmaAllocatorCreateInfo VMAAllocatorCreateInfo(const VulkanDevice& device, VkInstance instance);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

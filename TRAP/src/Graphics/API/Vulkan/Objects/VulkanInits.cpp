@@ -7,8 +7,7 @@
 #include "Graphics/API/RendererAPI.h"
 
 [[nodiscard]] VmaAllocatorCreateInfo TRAP::Graphics::API::VulkanInits::VMAAllocatorCreateInfo(const VulkanDevice& device,
-	                                                                                          VkInstance instance,
-	                                                                                          const VmaVulkanFunctions& vulkanFunctions)
+	                                                                                          VkInstance instance)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (GetTRAPProfileSystems() & ProfileSystems::Vulkan) != ProfileSystems::None);
 
@@ -27,7 +26,7 @@
 		.pAllocationCallbacks = nullptr,
 		.pDeviceMemoryCallbacks = nullptr,
 		.pHeapSizeLimit = nullptr,
-		.pVulkanFunctions = &vulkanFunctions,
+		.pVulkanFunctions = nullptr,
 		.instance = instance,
 		.vulkanApiVersion = VK_API_VERSION_1_1,
 #if VMA_EXTERNAL_MEMORY
