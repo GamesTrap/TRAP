@@ -19,7 +19,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 312
+#define VULKANLOADER_HEADER_VERSION 313
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -35,7 +35,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 312
+#define VULKANLOADER_HEADER_VERSION_PATCH 313
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -1013,6 +1013,9 @@ struct VkDeviceTable
 	PFN_vkCmdSetCoarseSampleOrderNV vkCmdSetCoarseSampleOrderNV;
 	PFN_vkCmdSetViewportShadingRatePaletteNV vkCmdSetViewportShadingRatePaletteNV;
 #endif /* defined(VK_NV_shading_rate_image) */
+#if defined(VK_QCOM_tile_memory_heap)
+	PFN_vkCmdBindTileMemoryQCOM vkCmdBindTileMemoryQCOM;
+#endif /* defined(VK_QCOM_tile_memory_heap) */
 #if defined(VK_QCOM_tile_properties)
 	PFN_vkGetDynamicRenderingTilePropertiesQCOM vkGetDynamicRenderingTilePropertiesQCOM;
 	PFN_vkGetFramebufferTilePropertiesQCOM vkGetFramebufferTilePropertiesQCOM;
@@ -2139,6 +2142,9 @@ extern PFN_vkCmdBindShadingRateImageNV vkCmdBindShadingRateImageNV;
 extern PFN_vkCmdSetCoarseSampleOrderNV vkCmdSetCoarseSampleOrderNV;
 extern PFN_vkCmdSetViewportShadingRatePaletteNV vkCmdSetViewportShadingRatePaletteNV;
 #endif /* defined(VK_NV_shading_rate_image) */
+#if defined(VK_QCOM_tile_memory_heap)
+extern PFN_vkCmdBindTileMemoryQCOM vkCmdBindTileMemoryQCOM;
+#endif /* defined(VK_QCOM_tile_memory_heap) */
 #if defined(VK_QCOM_tile_properties)
 extern PFN_vkGetDynamicRenderingTilePropertiesQCOM vkGetDynamicRenderingTilePropertiesQCOM;
 extern PFN_vkGetFramebufferTilePropertiesQCOM vkGetFramebufferTilePropertiesQCOM;
@@ -3464,6 +3470,9 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkCmdSetCoarseSampleOrderNV = reinterpret_cast<PFN_vkCmdSetCoarseSampleOrderNV>(load(context, "vkCmdSetCoarseSampleOrderNV"));
 	vkCmdSetViewportShadingRatePaletteNV = reinterpret_cast<PFN_vkCmdSetViewportShadingRatePaletteNV>(load(context, "vkCmdSetViewportShadingRatePaletteNV"));
 #endif /* defined(VK_NV_shading_rate_image) */
+#if defined(VK_QCOM_tile_memory_heap)
+	vkCmdBindTileMemoryQCOM = reinterpret_cast<PFN_vkCmdBindTileMemoryQCOM>(load(context, "vkCmdBindTileMemoryQCOM"));
+#endif /* defined(VK_QCOM_tile_memory_heap) */
 #if defined(VK_QCOM_tile_properties)
 	vkGetDynamicRenderingTilePropertiesQCOM = reinterpret_cast<PFN_vkGetDynamicRenderingTilePropertiesQCOM>(load(context, "vkGetDynamicRenderingTilePropertiesQCOM"));
 	vkGetFramebufferTilePropertiesQCOM = reinterpret_cast<PFN_vkGetFramebufferTilePropertiesQCOM>(load(context, "vkGetFramebufferTilePropertiesQCOM"));
@@ -4405,6 +4414,9 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkCmdSetCoarseSampleOrderNV = reinterpret_cast<PFN_vkCmdSetCoarseSampleOrderNV>(load(device, "vkCmdSetCoarseSampleOrderNV"));
 	table.vkCmdSetViewportShadingRatePaletteNV = reinterpret_cast<PFN_vkCmdSetViewportShadingRatePaletteNV>(load(device, "vkCmdSetViewportShadingRatePaletteNV"));
 #endif /* defined(VK_NV_shading_rate_image) */
+#if defined(VK_QCOM_tile_memory_heap)
+	table.vkCmdBindTileMemoryQCOM = reinterpret_cast<PFN_vkCmdBindTileMemoryQCOM>(load(device, "vkCmdBindTileMemoryQCOM"));
+#endif /* defined(VK_QCOM_tile_memory_heap) */
 #if defined(VK_QCOM_tile_properties)
 	table.vkGetDynamicRenderingTilePropertiesQCOM = reinterpret_cast<PFN_vkGetDynamicRenderingTilePropertiesQCOM>(load(device, "vkGetDynamicRenderingTilePropertiesQCOM"));
 	table.vkGetFramebufferTilePropertiesQCOM = reinterpret_cast<PFN_vkGetFramebufferTilePropertiesQCOM>(load(device, "vkGetFramebufferTilePropertiesQCOM"));
@@ -5539,6 +5551,9 @@ inline PFN_vkCmdBindShadingRateImageNV vkCmdBindShadingRateImageNV;
 inline PFN_vkCmdSetCoarseSampleOrderNV vkCmdSetCoarseSampleOrderNV;
 inline PFN_vkCmdSetViewportShadingRatePaletteNV vkCmdSetViewportShadingRatePaletteNV;
 #endif /* defined(VK_NV_shading_rate_image) */
+#if defined(VK_QCOM_tile_memory_heap)
+inline PFN_vkCmdBindTileMemoryQCOM vkCmdBindTileMemoryQCOM;
+#endif /* defined(VK_QCOM_tile_memory_heap) */
 #if defined(VK_QCOM_tile_properties)
 inline PFN_vkGetDynamicRenderingTilePropertiesQCOM vkGetDynamicRenderingTilePropertiesQCOM;
 inline PFN_vkGetFramebufferTilePropertiesQCOM vkGetFramebufferTilePropertiesQCOM;
