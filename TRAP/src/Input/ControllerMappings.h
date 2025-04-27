@@ -34,11 +34,11 @@ freely, subject to the following restrictions:
 namespace TRAP::Embed
 {
 #ifdef TRAP_BUILD_WIN32_MAPPINGS
-	constexpr usize ControllerMappingsSize = 827;
+	constexpr usize ControllerMappingsSize = 830;
 #endif /*TRAP_BUILD_WIN32_MAPPINGS*/
 
 #ifdef TRAP_BUILD_LINUX_MAPPINGS
-	constexpr usize ControllerMappingsSize = 671;
+	constexpr usize ControllerMappingsSize = 672;
 #endif /*TRAP_BUILD_LINUX_MAPPINGS*/
 
 	constexpr std::array<std::string_view, ControllerMappingsSize> ControllerMappings =
@@ -235,7 +235,7 @@ namespace TRAP::Embed
 		"030000007d0400000640000000000000,Eliminator AfterShock,a:b1,b:b2,back:b9,dpdown:+a3,dpleft:-a5,dpright:+a5,dpup:-a3,leftshoulder:b4,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,righttrigger:b7,rightx:a4,righty:a2,start:b8,x:b0,y:b3,platform:Windows,",
 		"03000000120c0000f61c000000000000,Elite,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:a3,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:a4,rightx:a2,righty:a5,start:b9,x:b0,y:b3,platform:Windows,",
 		"03000000430b00000300000000000000,EMS Production PS2 Adapter,a:b2,b:b1,back:b8,dpdown:b14,dpleft:b15,dpright:b13,dpup:b12,leftshoulder:b6,leftstick:b10,lefttrigger:b4,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b11,righttrigger:b5,rightx:a3,righty:a2,start:b9,x:b3,y:b0,platform:Windows,",
-		"03000000062000001801000000000000,EMS TrioLinker Plus II,a:b0,b:b1,x:b2,y:b3,back:b9,start:b8,leftshoulder:b6,rightshoulder:b7,leftstick:b10,rightstick:b11,dpup:h0.1,dpleft:h0.8,dpdown:h0.4,dpright:h0.2,leftx:a0,lefty:a1,rightx:a2,righty:a3,lefttrigger:b4,righttrigger:b5,platform:Windows,",
+		"03000000062000001801000000000000,EMS TrioLinker Plus II,a:b0,b:b1,back:b9,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b6,leftstick:b10,lefttrigger:b4,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b11,righttrigger:b5,rightx:a2,righty:a3,start:b8,x:b2,y:b3,platform:Windows,",
 		"03000000242f000000b7000000000000,ESM 9110,a:b0,b:b1,back:b7,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b8,lefttrigger:b4,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b9,righttrigger:b5,rightx:a2,righty:a3,start:b6,x:b2,y:b3,platform:Windows,",
 		"03000000101c0000181c000000000000,Essential,a:b2,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b4,leftx:a1,lefty:a0,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a3,righty:a2,start:b9,x:b3,y:b0,platform:Windows,",
 		"030000008f0e00000f31000000000000,EXEQ,a:b0,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b3,y:b2,platform:Windows,",
@@ -621,6 +621,8 @@ namespace TRAP::Embed
 		"030000009b2800001800000000000000,Raphnet Jaguar Adapter,a:b2,b:b1,back:b4,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b13,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b0,righttrigger:b10,start:b3,x:b11,y:b12,platform:Windows,",
 		"030000009b2800006100000000000000,Raphnet N64 Adapter,+rightx:b9,+righty:b7,-rightx:b8,-righty:b6,a:b0,b:b1,dpdown:b11,dpleft:b12,dpright:b13,dpup:b10,leftshoulder:b4,lefttrigger:b2,leftx:a0,lefty:a1,rightshoulder:b5,start:b3,platform:Windows,",
 		"030000009b2800006300000000000000,Raphnet N64 Adapter,+rightx:b9,+righty:b7,-rightx:b8,-righty:b6,a:b0,b:b1,dpdown:b11,dpleft:b12,dpright:b13,dpup:b10,leftshoulder:b4,lefttrigger:b2,leftx:a0,lefty:a1,rightshoulder:b5,start:b3,platform:Windows,",
+		"030000009b2800003c00000000000000,Raphnet N64 Adapter,+rightx:b9,+righty:b7,-rightx:b8,-righty:b6,a:b0,b:b1,dpdown:b11,dpleft:b12,dpright:b13,dpup:b10,leftshoulder:b4,lefttrigger:b2,leftx:a0,lefty:a1,rightshoulder:b5,start:b3,platform:Windows,",
+		"030000009b2800006400000000000000,Raphnet N64 Adapter,+rightx:b9,+righty:b7,-rightx:b8,-righty:b6,a:b0,b:b1,dpdown:b11,dpleft:b12,dpright:b13,dpup:b10,leftshoulder:b4,lefttrigger:b2,leftx:a0,lefty:a1,rightshoulder:b5,start:b3,platform:Windows,",
 		"030000009b2800000200000000000000,Raphnet NES Adapter,a:b7,b:b6,back:b5,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftx:a0,lefty:a1,start:b4,platform:Windows,",
 		"030000009b2800004400000000000000,Raphnet PS1 and PS2 Adapter,a:b1,b:b2,back:b5,dpdown:b13,dpleft:b14,dpright:b15,dpup:b12,leftshoulder:b6,leftstick:b10,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b11,righttrigger:b9,rightx:a3,righty:a4,start:b4,x:b0,y:b3,platform:Windows,",
 		"030000009b2800004300000000000000,Raphnet Saturn,a:b0,b:b1,dpdown:b13,dpleft:b14,dpright:b15,dpup:b12,leftshoulder:b6,lefttrigger:b7,leftx:a0,lefty:a1,rightshoulder:b5,righttrigger:b2,start:b8,x:b3,y:b4,platform:Windows,",
@@ -671,6 +673,7 @@ namespace TRAP::Embed
 		"030000006f0e00001e01000000000000,Rock Candy PS3 Controller,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b0,y:b3,platform:Windows,",
 		"030000006f0e00002801000000000000,Rock Candy PS3 Controller,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b0,y:b3,platform:Windows,",
 		"030000006f0e00002f01000000000000,Rock Candy PS3 Controller,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b0,y:b3,platform:Windows,",
+		"03000000830500007030000000000000,Rockfire Space Ranger,a:b0,b:b1,back:b5,dpdown:+a1,dpleft:-a0,dpright:+a0,dpup:-a1,leftshoulder:b6,lefttrigger:b7,rightshoulder:b9,righttrigger:b8,start:b2,x:b3,y:b4,platform:Windows,",
 		"03000000050b0000e318000000000000,ROG Chakram,a:b1,b:b0,leftx:a0,lefty:a1,x:b2,y:b3,platform:Windows,",
 		"03000000050b0000e518000000000000,ROG Chakram,a:b1,b:b0,leftx:a0,lefty:a1,x:b2,y:b3,platform:Windows,",
 		"03000000050b00005819000000000000,ROG Chakram Core,a:b1,b:b0,leftx:a0,lefty:a1,x:b2,y:b3,platform:Windows,",
@@ -1235,6 +1238,7 @@ namespace TRAP::Embed
 		"030000007e0500001920000011810000,NSO N64 Controller,+rightx:b2,+righty:b3,-rightx:b4,-righty:b10,a:b0,b:b1,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b6,lefttrigger:b8,leftx:a0,lefty:a1,misc1:b5,rightshoulder:b7,righttrigger:b9,start:b11,platform:Linux,",
 		"050000007e0500001920000001000000,NSO N64 Controller,+rightx:b8,+righty:b7,-rightx:b3,-righty:b2,a:b1,b:b0,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,lefttrigger:b6,leftx:a0,lefty:a1,misc1:b13,rightshoulder:b5,righttrigger:b10,start:b9,platform:Linux,",
 		"050000007e0500001920000001800000,NSO N64 Controller,+rightx:b2,+righty:b3,-rightx:b4,-righty:b10,a:b0,b:b1,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b6,lefttrigger:b8,leftx:a0,lefty:a1,misc1:b5,rightshoulder:b7,righttrigger:b9,start:b11,platform:Linux,",
+		"030000007e0500001e20000011810000,NSO Sega Genesis Controller,a:b0,b:b1,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b6,misc1:b3,rightshoulder:b2,righttrigger:b4,start:b5,platform:Linux,",
 		"030000007e0500001720000011810000,NSO SNES Controller,a:b0,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,lefttrigger:b6,rightshoulder:b5,righttrigger:b7,start:b9,x:b3,y:b2,platform:Linux,",
 		"050000007e0500001720000001000000,NSO SNES Controller,a:b0,b:b1,back:b9,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b5,lefttrigger:b7,rightshoulder:b6,righttrigger:b8,start:b10,x:b3,y:b2,platform:Linux,",
 		"050000007e0500001720000001800000,NSO SNES Controller,a:b0,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,lefttrigger:b6,rightshoulder:b5,righttrigger:b7,start:b9,x:b3,y:b2,platform:Linux,",
