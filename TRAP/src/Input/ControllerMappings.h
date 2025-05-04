@@ -34,11 +34,11 @@ freely, subject to the following restrictions:
 namespace TRAP::Embed
 {
 #ifdef TRAP_BUILD_WIN32_MAPPINGS
-	constexpr usize ControllerMappingsSize = 830;
+	constexpr usize ControllerMappingsSize = 833;
 #endif /*TRAP_BUILD_WIN32_MAPPINGS*/
 
 #ifdef TRAP_BUILD_LINUX_MAPPINGS
-	constexpr usize ControllerMappingsSize = 672;
+	constexpr usize ControllerMappingsSize = 674;
 #endif /*TRAP_BUILD_LINUX_MAPPINGS*/
 
 	constexpr std::array<std::string_view, ControllerMappingsSize> ControllerMappings =
@@ -62,7 +62,7 @@ namespace TRAP::Embed
 		"03000000801000000900000000000000,8BitDo F30 Arcade Stick,a:b0,b:b1,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b6,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,righttrigger:b9,rightx:a2,righty:a5,start:b11,x:b3,y:b4,platform:Windows,",
 		"03000000c82d00001038000000000000,8BitDo F30 Pro,a:b1,b:b0,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b2,leftshoulder:b6,leftstick:b13,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b14,righttrigger:b9,rightx:a2,righty:a5,start:b11,x:b4,y:b3,platform:Windows,",
 		"03000000c82d00000090000000000000,8BitDo FC30 Pro,a:b1,b:b0,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b2,leftshoulder:b6,leftstick:b13,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b14,righttrigger:b9,rightx:a3,righty:a4,start:b11,x:b4,y:b3,platform:Windows,",
-		"05000000c82d00006a28000000000000,8BitDo GameCube,a:b0,b:b3,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftstick:b13,lefttrigger:a5,leftx:a0,lefty:a1,paddle1:b9,paddle2:b8,rightshoulder:b10,rightstick:b14,righttrigger:a4,rightx:a2,righty:a3,start:b11,x:b1,y:b4,platform:Windows,",
+		"03000000c82d00006a28000000000000,8BitDo GameCube,a:b0,b:b3,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftstick:b13,lefttrigger:a5,leftx:a0,lefty:a1,paddle1:b9,paddle2:b8,rightshoulder:b10,rightstick:b14,righttrigger:a4,rightx:a2,righty:a3,start:b11,x:b1,y:b4,platform:Windows,",
 		"03000000c82d00001251000000000000,8BitDo Lite 2,a:b1,b:b0,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b6,leftstick:b13,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b14,righttrigger:b9,rightx:a3,righty:a4,start:b11,x:b4,y:b3,platform:Windows,",
 		"03000000c82d00001151000000000000,8BitDo Lite SE,a:b1,b:b0,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b6,leftstick:b13,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b14,righttrigger:b9,rightx:a3,righty:a4,start:b11,x:b4,y:b3,platform:Windows,",
 		"03000000c82d00000150000000000000,8BitDo M30,a:b1,b:b0,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftx:a0,lefty:a1,rightshoulder:b6,righttrigger:b7,rightx:a3,righty:a5,start:b11,x:b4,y:b3,platform:Windows,",
@@ -224,6 +224,9 @@ namespace TRAP::Embed
 		"030000006e0500000a20000000000000,Elecom DUX60 MMO,a:b2,b:b3,back:b17,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b8,leftstick:b14,lefttrigger:b12,leftx:a0,lefty:a1,rightshoulder:b11,rightstick:b15,righttrigger:b13,rightx:a3,righty:a4,start:b20,x:b0,y:b1,platform:Windows,",
 		"03000000b80500000410000000000000,Elecom Gamepad,a:b2,b:b3,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b0,y:b1,platform:Windows,",
 		"03000000b80500000610000000000000,Elecom Gamepad,a:b2,b:b3,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b0,y:b1,platform:Windows,",
+		"03000095090000010000000000000000,Elecom JC-U609,a:b0,b:b1,leftshoulder:b6,lefttrigger:b7,leftx:a0,lefty:a1,rightshoulder:b2,righttrigger:b5,start:b8,x:b3,y:b4,platform:Windows,",
+		"0300004112000000e500000000000000,Elecom JC-U909Z,a:b0,b:b1,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b7,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b2,righttrigger:b5,start:b8,x:b3,y:b4,platform:Windows,",
+		"03000041120000001050000000000000,Elecom JC-U911,a:b1,b:b2,back:b3,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b10,leftshoulder:b6,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,righttrigger:b9,start:b0,x:b4,y:b5,platform:Windows,",
 		"030000006e0500000520000000000000,Elecom P301U PlayStation Controller Adapter,a:b2,b:b3,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b8,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b9,righttrigger:b7,rightx:a2,righty:a3,start:b11,x:b0,y:b1,platform:Windows,",
 		"03000000411200004450000000000000,Elecom U1012,a:b2,b:b3,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b8,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b9,righttrigger:b7,rightx:a2,righty:a3,start:b11,x:b0,y:b1,platform:Windows,",
 		"030000006e0500000320000000000000,Elecom U3613M,a:b2,b:b3,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b8,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b9,righttrigger:b7,rightx:a2,righty:a3,start:b11,x:b0,y:b1,platform:Windows,",
@@ -619,9 +622,9 @@ namespace TRAP::Embed
 		"030000009b2800003200000000000000,Raphnet GC and N64 Adapter,a:b0,b:b7,dpdown:b11,dpleft:b12,dpright:b13,dpup:b10,lefttrigger:+a5,leftx:a0,lefty:a1,rightshoulder:b2,righttrigger:+a2,rightx:a3,righty:a4,start:b3,x:b1,y:b8,platform:Windows,",
 		"030000009b2800006000000000000000,Raphnet GC and N64 Adapter,a:b0,b:b7,dpdown:b11,dpleft:b12,dpright:b13,dpup:b10,lefttrigger:+a5,leftx:a0,lefty:a1,rightshoulder:b2,righttrigger:+a2,rightx:a3,righty:a4,start:b3,x:b1,y:b8,platform:Windows,",
 		"030000009b2800001800000000000000,Raphnet Jaguar Adapter,a:b2,b:b1,back:b4,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b13,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b0,righttrigger:b10,start:b3,x:b11,y:b12,platform:Windows,",
+		"030000009b2800003c00000000000000,Raphnet N64 Adapter,+rightx:b9,+righty:b7,-rightx:b8,-righty:b6,a:b0,b:b1,dpdown:b11,dpleft:b12,dpright:b13,dpup:b10,leftshoulder:b4,lefttrigger:b2,leftx:a0,lefty:a1,rightshoulder:b5,start:b3,platform:Windows,",
 		"030000009b2800006100000000000000,Raphnet N64 Adapter,+rightx:b9,+righty:b7,-rightx:b8,-righty:b6,a:b0,b:b1,dpdown:b11,dpleft:b12,dpright:b13,dpup:b10,leftshoulder:b4,lefttrigger:b2,leftx:a0,lefty:a1,rightshoulder:b5,start:b3,platform:Windows,",
 		"030000009b2800006300000000000000,Raphnet N64 Adapter,+rightx:b9,+righty:b7,-rightx:b8,-righty:b6,a:b0,b:b1,dpdown:b11,dpleft:b12,dpright:b13,dpup:b10,leftshoulder:b4,lefttrigger:b2,leftx:a0,lefty:a1,rightshoulder:b5,start:b3,platform:Windows,",
-		"030000009b2800003c00000000000000,Raphnet N64 Adapter,+rightx:b9,+righty:b7,-rightx:b8,-righty:b6,a:b0,b:b1,dpdown:b11,dpleft:b12,dpright:b13,dpup:b10,leftshoulder:b4,lefttrigger:b2,leftx:a0,lefty:a1,rightshoulder:b5,start:b3,platform:Windows,",
 		"030000009b2800006400000000000000,Raphnet N64 Adapter,+rightx:b9,+righty:b7,-rightx:b8,-righty:b6,a:b0,b:b1,dpdown:b11,dpleft:b12,dpright:b13,dpup:b10,leftshoulder:b4,lefttrigger:b2,leftx:a0,lefty:a1,rightshoulder:b5,start:b3,platform:Windows,",
 		"030000009b2800000200000000000000,Raphnet NES Adapter,a:b7,b:b6,back:b5,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftx:a0,lefty:a1,start:b4,platform:Windows,",
 		"030000009b2800004400000000000000,Raphnet PS1 and PS2 Adapter,a:b1,b:b2,back:b5,dpdown:b13,dpleft:b14,dpright:b15,dpup:b12,leftshoulder:b6,leftstick:b10,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b11,righttrigger:b9,rightx:a3,righty:a4,start:b4,x:b0,y:b3,platform:Windows,",
@@ -1008,6 +1011,7 @@ namespace TRAP::Embed
 		"03000000120c0000200e000011010000,Brook Mars PS4 Controller,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:a3,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:a4,rightx:a2,righty:a5,start:b9,touchpad:b13,x:b0,y:b3,platform:Linux,",
 		"03000000120c0000210e000011010000,Brook Mars PS4 Controller,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,touchpad:b13,x:b0,y:b3,platform:Linux,",
 		"03000000120c0000f70e000011010000,Brook Universal Fighting Board,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:b6,rightshoulder:b5,rightstick:b11,righttrigger:b7,start:b9,x:b0,y:b3,platform:Linux,",
+		"03000000d81d00000b00000010010000,Buffalo BSGP1601,a:b5,b:b3,back:b12,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b15,leftshoulder:b8,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,misc1:b14,rightshoulder:b9,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b13,x:b4,y:b2,platform:Linux,",
 		"03000000e82000006058000001010000,Cideko AK08b,a:b2,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b3,y:b0,platform:Linux,",
 		"03000000af1e00002400000010010000,Clockwork Pi DevTerm,a:b2,b:b1,back:b8,dpdown:+a1,dpleft:-a0,dpright:+a0,dpup:-a1,start:b9,x:b3,y:b0,platform:Linux,",
 		"030000000b0400003365000000010000,Competition Pro,a:b0,b:b1,back:b2,leftx:a0,lefty:a1,start:b3,platform:Linux,",
@@ -1043,6 +1047,7 @@ namespace TRAP::Embed
 		"030000006f0e00000104000000010000,Gamestop Logic3 Controller,a:b0,b:b1,back:b6,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b8,leftshoulder:b4,leftstick:b9,lefttrigger:a2,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b10,righttrigger:a5,rightx:a3,righty:a4,start:b7,x:b2,y:b3,platform:Linux,",
 		"030000008f0e00000800000010010000,Gasia PlayStation Gamepad,a:b2,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b3,y:b0,platform:Linux,",
 		"03000000451300000010000010010000,Genius Maxfire Grandias 12,a:b0,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b2,y:b3,platform:Linux,",
+		"03000000f0250000c283000010010000,Gioteck VX2 PS3 Controller,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b0,y:b3,platform:Linux,",
 		"190000004b4800000010000000010000,GO-Advance Controller,a:b1,b:b0,back:b10,dpdown:b7,dpleft:b8,dpright:b9,dpup:b6,leftshoulder:b4,lefttrigger:b12,leftx:a0,lefty:a1,rightshoulder:b5,righttrigger:b13,start:b15,x:b2,y:b3,platform:Linux,",
 		"190000004b4800000010000001010000,GO-Advance Controller,a:b1,b:b0,back:b12,dpdown:b9,dpleft:b10,dpright:b11,dpup:b8,leftshoulder:b4,leftstick:b13,lefttrigger:b14,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b16,righttrigger:b15,start:b17,x:b2,y:b3,platform:Linux,",
 		"190000004b4800000011000000010000,GO-Super Gamepad,a:b0,b:b1,back:b12,dpdown:b9,dpleft:b10,dpright:b11,dpup:b8,guide:b16,leftshoulder:b4,leftstick:b14,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b15,righttrigger:b7,rightx:a2,righty:a3,start:b13,x:b3,y:b2,platform:Linux,",
