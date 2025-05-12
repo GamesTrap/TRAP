@@ -5678,3 +5678,7 @@ SITREP 04/16/2025|25w16a1
 SITREP 04/17/2025|25w16a2
     - Changed TRAP Engine version to 25w16a2(0.11.95)
     - Updated VulkanMemoryAllocator ~<15 mins
+
+SITREP 05/12/2025|25w20a1
+    - Changed TRAP Engine version to 25w20a1(0.11.96)
+    - Fixed Vulkan compiler errors ~<5 mins
