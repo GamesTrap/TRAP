@@ -5682,3 +5682,4 @@ SITREP 04/17/2025|25w16a2
 SITREP 05/12/2025|25w20a1
     - Changed TRAP Engine version to 25w20a1(0.11.96)
     - Fixed Vulkan compiler errors ~<5 mins
+    - TRAPEditorLayer Fixed compiler errors when Discord Game SDK is not provided ~<5 mins

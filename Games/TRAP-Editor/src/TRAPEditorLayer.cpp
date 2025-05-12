@@ -531,6 +531,7 @@ void TRAPEditorLayer::OnImGuizmoRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef USE_DISCORD_GAME_SDK
 namespace
 {
 	void OnDiscordReconnect()
@@ -551,6 +552,7 @@ namespace
 		(*discordCore)->ActivityManager().UpdateActivity(activity, {});
 	}
 }
+#endif /*USE_DISCORD_GAME_SDK*/
 
 void TRAPEditorLayer::OnAttach()
 {
@@ -570,9 +572,11 @@ void TRAPEditorLayer::OnAttach()
 		}
 	}
 
+#ifdef USE_DISCORD_GAME_SDK
 	//Setup Discord stuff
 	*TRAP::Utils::Discord::OnReconnect.WriteLock() = OnDiscordReconnect;
 	OnDiscordReconnect();
+#endif /*USE_DISCORD_GAME_SDK*/
 
 	//Enable Developer features
 	TRAP::Application::SetHotReloading(true);
