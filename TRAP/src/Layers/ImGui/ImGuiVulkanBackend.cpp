@@ -974,6 +974,38 @@ namespace
 
         CreateWindowSwapChain(device, wnd, allocator, w, h, min_image_count);
         CreateWindowCommandBuffers(wnd, queue);
+
+        const TRAP::Graphics::CommandPoolDesc cmdPoolDesc
+        {
+            .Queue = queue,
+            .CreateFlags = TRAP::Graphics::CommandPoolCreateFlags::ResetCommandBuffer,
+            .Name = fmt::format("ImGui CommandPool CreateOrResizeWindow() (QueueType: \"{}\")", queue->GetQueueType())
+        };
+        const TRAP::Scope<TRAP::Graphics::API::VulkanCommandPool> cmdPool = TRAP::MakeScope<TRAP::Graphics::API::VulkanCommandPool>(cmdPoolDesc);
+
+        const TRAP::Ref<TRAP::Graphics::API::VulkanFence> fence = TRAP::MakeRef<TRAP::Graphics::API::VulkanFence>(false, "ImGui Fence CreateOrResizeWindwo()");
+
+        TRAP::Graphics::CommandBuffer& cmdBuffer = cmdPool->GetCommandBuffer(false, "ImGui CommandBuffer CreateOrResizeWindow()");
+        cmdBuffer.Begin(true);
+
+        //Transition the image to the correct layout for rendering
+        std::vector<TRAP::Graphics::RenderTargetBarrier> rTBarriers{};
+        for(u32 i = 0; i < wnd.ImageCount; ++i)
+            rTBarriers.emplace_back(*wnd.Frames[i].Backbuffer, TRAP::Graphics::ResourceState::Undefined, TRAP::Graphics::ResourceState::Present);
+        cmdBuffer.ResourceBarrier(nullptr, nullptr, &rTBarriers);
+
+        cmdBuffer.End();
+
+        const TRAP::Graphics::QueueSubmitDesc submitDesc
+        {
+            .Cmds = {cmdBuffer},
+            .SignalFence = fence
+        };
+        queue->Submit(submitDesc);
+
+        fence->Wait();
+
+        cmdPool->Reset();
     }
 
     //-------------------------------------------------------------------------------------------------------------------//
