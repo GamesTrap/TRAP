@@ -5684,3 +5684,7 @@ SITREP 05/12/2025|25w20a1
     - Fixed Vulkan compiler errors ~<5 mins
     - TRAPEditorLayer Fixed compiler errors when Discord Game SDK is not provided ~<5 mins
     - Updated ImGuiVulkanBackend ~<15 mins
+
+SITREP 06/02/2025|25w23a1
+    - Changed TRAP Engine version to 25w23a1(0.11.97)
+    - Updated ImGuiVulkanBackend and ImGuiWindowing ~<10 mins
