@@ -1363,7 +1363,7 @@ void ImGui::INTERNAL::Vulkan::RenderWindow(ImGuiViewport* const viewport, [[mayb
                 TRAP::Graphics::TextureBarrier
                 {
                     .Texture = dynamic_cast<TRAP::Graphics::Texture*>(fd.Backbuffer->GetTexture().get()),
-                    .CurrentState = TRAP::Graphics::ResourceState::Undefined,
+                    .CurrentState = TRAP::Graphics::ResourceState::Present,
                     .NewState = TRAP::Graphics::ResourceState::ShaderResource,
                     .BeginOnly = false,
                     .EndOnly = false,

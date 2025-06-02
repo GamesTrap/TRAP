@@ -28,6 +28,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifndef TRAP_HEADLESS_MODE
 
+#include "Core/TRAP_Version.h"
 #include "Application.h"
 #include "Maths/Math.h"
 #include "Graphics/API/RendererAPI/Types.h"
@@ -75,6 +76,7 @@ namespace
 		std::vector<const TRAP::INTERNAL::WindowingAPI::InternalWindow*> KeyOwnerWindows = std::vector<const TRAP::INTERNAL::WindowingAPI::InternalWindow*>(std::to_underlying(TRAP::Input::Key::Menu), nullptr);
 		bool InstalledCallbacks{};
 		bool CallbacksChainForAllWindows{};
+		std::string BackendPlatformName{};
 		TRAP::INTERNAL::WindowingAPI::InternalCursor* CustomCursor = nullptr;
 
 		//Chain WindowingAPI callbacks; our callbacks will call the user's previously installed callbacks, if any.
@@ -1039,6 +1041,50 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	void GetWindowSizeAndFramebufferScale(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window,
+										  ImVec2* const outSize, ImVec2* const outFramebufferScale)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
+
+		//Setup display size (every frame to accommodate for window resizing)
+		i32 width = 0, height = 0;
+		i32 displayWidth = 0, displayHeight = 0;
+		TRAP::INTERNAL::WindowingAPI::GetWindowSize(window, width, height);
+		TRAP::INTERNAL::WindowingAPI::GetFrameBufferSize(window, displayWidth, displayHeight);
+
+		if(outSize != nullptr)
+			*outSize = ImVec2(NumericCast<f32>(width), NumericCast<f32>(height));
+
+		if(outFramebufferScale != nullptr)
+		{
+			if (width > 0 && height > 0)
+			{
+				*outFramebufferScale = ImVec2(NumericCast<f32>(displayWidth) / NumericCast<f32>(width),
+											NumericCast<f32>(displayHeight) / NumericCast<f32>(height));
+			}
+			else
+				*outFramebufferScale = ImVec2(1.0f, 1.0f);
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] ImVec2 GetWindowFramebufferScale(ImGuiViewport* const viewport)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
+
+		TRAP_ASSERT(viewport != nullptr, "ImGuiWindowing::GetWindowFramebufferScale(): viewport is nullptr!");
+
+		const ImGuiViewportDataTRAP* const vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
+
+		ImVec2 framebufferScale{};
+		GetWindowSizeAndFramebufferScale(*vd->Window, nullptr, &framebufferScale);
+
+		return framebufferScale;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
 	/// @brief Set the title for the ImGui Window.
 	/// @param viewport Viewport to set window title on.
 	/// @param title Title to set.
@@ -1172,6 +1218,7 @@ namespace
 		platformIO.Platform_GetWindowPos = GetWindowPos;
 		platformIO.Platform_SetWindowSize = SetWindowSize;
 		platformIO.Platform_GetWindowSize = GetWindowSize;
+		platformIO.Platform_GetWindowFramebufferScale = GetWindowFramebufferScale;
 		platformIO.Platform_SetWindowFocus = SetWindowFocus;
 		platformIO.Platform_GetWindowFocus = GetWindowFocus;
 		platformIO.Platform_GetWindowMinimized = GetWindowMinimized;
@@ -1222,8 +1269,9 @@ namespace
 
 	//Setup back-end capabilities flags
 	ImGuiTRAPData* const bd = IM_NEW(ImGuiTRAPData)();
+	bd->BackendPlatformName = fmt::format("TRAP {}", TRAP_VERSION);
 	io.BackendPlatformUserData = bd;
-	io.BackendPlatformName = "TRAP";
+	io.BackendPlatformName = bd->BackendPlatformName.c_str();
 	io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors; //We can honor GetMouseCursor() values (optional)
 	io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos; //We can honor io.WantSetMousePos requests (optional, rarely used)
 	io.BackendFlags |= ImGuiBackendFlags_PlatformHasViewports; //We can create multi-viewports on the Platform side (optional)
@@ -1327,14 +1375,7 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 	TRAP_ASSERT(bd != nullptr, "ImGuiWindowing::NewFrame(): Context or backend not initialized! Did you call ImGuiWindowing::Init()?");
 
 	//Setup display size (every frame to accommodate for window resizing)
-	i32 width = 0, height = 0;
-	i32 displayWidth = 0, displayHeight = 0;
-	WindowingAPI::GetWindowSize(*bd->Window, width, height);
-	WindowingAPI::GetFrameBufferSize(*bd->Window, displayWidth, displayHeight);
-	io.DisplaySize = ImVec2(NumericCast<f32>(width), NumericCast<f32>(height));
-	if (width > 0 && height > 0)
-		io.DisplayFramebufferScale = ImVec2(NumericCast<f32>(displayWidth) / io.DisplaySize.x,
-		                                    NumericCast<f32>(displayHeight) / io.DisplaySize.y);
+	GetWindowSizeAndFramebufferScale(*bd->Window, &io.DisplaySize, &io.DisplayFramebufferScale);
 	UpdateMonitors();
 
 	//Setup time step
