@@ -19,7 +19,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 316
+#define VULKANLOADER_HEADER_VERSION 317
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -35,7 +35,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 316
+#define VULKANLOADER_HEADER_VERSION_PATCH 317
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -445,6 +445,20 @@ struct VkDeviceTable
 	PFN_vkGetAndroidHardwareBufferPropertiesANDROID vkGetAndroidHardwareBufferPropertiesANDROID;
 	PFN_vkGetMemoryAndroidHardwareBufferANDROID vkGetMemoryAndroidHardwareBufferANDROID;
 #endif /* defined(VK_ANDROID_external_memory_android_hardware_buffer) */
+#if defined(VK_ARM_tensors)
+	PFN_vkBindTensorMemoryARM vkBindTensorMemoryARM;
+	PFN_vkCmdCopyTensorARM vkCmdCopyTensorARM;
+	PFN_vkCreateTensorARM vkCreateTensorARM;
+	PFN_vkCreateTensorViewARM vkCreateTensorViewARM;
+	PFN_vkDestroyTensorARM vkDestroyTensorARM;
+	PFN_vkDestroyTensorViewARM vkDestroyTensorViewARM;
+	PFN_vkGetDeviceTensorMemoryRequirementsARM vkGetDeviceTensorMemoryRequirementsARM;
+	PFN_vkGetTensorMemoryRequirementsARM vkGetTensorMemoryRequirementsARM;
+#endif /* defined(VK_ARM_tensors) */
+#if defined(VK_ARM_tensors) && defined(VK_EXT_descriptor_buffer)
+	PFN_vkGetTensorOpaqueCaptureDescriptorDataARM vkGetTensorOpaqueCaptureDescriptorDataARM;
+	PFN_vkGetTensorViewOpaqueCaptureDescriptorDataARM vkGetTensorViewOpaqueCaptureDescriptorDataARM;
+#endif /* defined(VK_ARM_tensors) && defined(VK_EXT_descriptor_buffer) */
 #if defined(VK_EXT_attachment_feedback_loop_dynamic_state)
 	PFN_vkCmdSetAttachmentFeedbackLoopEnableEXT vkCmdSetAttachmentFeedbackLoopEnableEXT;
 #endif /* defined(VK_EXT_attachment_feedback_loop_dynamic_state) */
@@ -826,6 +840,9 @@ struct VkDeviceTable
 #if defined(VK_KHR_present_wait)
 	PFN_vkWaitForPresentKHR vkWaitForPresentKHR;
 #endif /* defined(VK_KHR_present_wait) */
+#if defined(VK_KHR_present_wait2)
+	PFN_vkWaitForPresent2KHR vkWaitForPresent2KHR;
+#endif /* defined(VK_KHR_present_wait2) */
 #if defined(VK_KHR_push_descriptor)
 	PFN_vkCmdPushDescriptorSetKHR vkCmdPushDescriptorSetKHR;
 #endif /* defined(VK_KHR_push_descriptor) */
@@ -1417,6 +1434,21 @@ extern PFN_vkGetShaderInfoAMD vkGetShaderInfoAMD;
 extern PFN_vkGetAndroidHardwareBufferPropertiesANDROID vkGetAndroidHardwareBufferPropertiesANDROID;
 extern PFN_vkGetMemoryAndroidHardwareBufferANDROID vkGetMemoryAndroidHardwareBufferANDROID;
 #endif /* defined(VK_ANDROID_external_memory_android_hardware_buffer) */
+#if defined(VK_ARM_tensors)
+extern PFN_vkBindTensorMemoryARM vkBindTensorMemoryARM;
+extern PFN_vkCmdCopyTensorARM vkCmdCopyTensorARM;
+extern PFN_vkCreateTensorARM vkCreateTensorARM;
+extern PFN_vkCreateTensorViewARM vkCreateTensorViewARM;
+extern PFN_vkDestroyTensorARM vkDestroyTensorARM;
+extern PFN_vkDestroyTensorViewARM vkDestroyTensorViewARM;
+extern PFN_vkGetDeviceTensorMemoryRequirementsARM vkGetDeviceTensorMemoryRequirementsARM;
+extern PFN_vkGetPhysicalDeviceExternalTensorPropertiesARM vkGetPhysicalDeviceExternalTensorPropertiesARM;
+extern PFN_vkGetTensorMemoryRequirementsARM vkGetTensorMemoryRequirementsARM;
+#endif /* defined(VK_ARM_tensors) */
+#if defined(VK_ARM_tensors) && defined(VK_EXT_descriptor_buffer)
+extern PFN_vkGetTensorOpaqueCaptureDescriptorDataARM vkGetTensorOpaqueCaptureDescriptorDataARM;
+extern PFN_vkGetTensorViewOpaqueCaptureDescriptorDataARM vkGetTensorViewOpaqueCaptureDescriptorDataARM;
+#endif /* defined(VK_ARM_tensors) && defined(VK_EXT_descriptor_buffer) */
 #if defined(VK_EXT_acquire_drm_display)
 extern PFN_vkAcquireDrmDisplayEXT vkAcquireDrmDisplayEXT;
 extern PFN_vkGetDrmDisplayEXT vkGetDrmDisplayEXT;
@@ -1902,6 +1934,9 @@ extern PFN_vkGetPipelineExecutableStatisticsKHR vkGetPipelineExecutableStatistic
 #if defined(VK_KHR_present_wait)
 extern PFN_vkWaitForPresentKHR vkWaitForPresentKHR;
 #endif /* defined(VK_KHR_present_wait) */
+#if defined(VK_KHR_present_wait2)
+extern PFN_vkWaitForPresent2KHR vkWaitForPresent2KHR;
+#endif /* defined(VK_KHR_present_wait2) */
 #if defined(VK_KHR_push_descriptor)
 extern PFN_vkCmdPushDescriptorSetKHR vkCmdPushDescriptorSetKHR;
 #endif /* defined(VK_KHR_push_descriptor) */
@@ -2466,6 +2501,9 @@ static void VkGenLoadInstance(VkInstance instance, VkGenLoaderFunction load)
 #if defined(VK_VERSION_1_3)
 	vkGetPhysicalDeviceToolProperties = reinterpret_cast<PFN_vkGetPhysicalDeviceToolProperties>(load(instance, "vkGetPhysicalDeviceToolProperties"));
 #endif /* defined(VK_VERSION_1_3) */
+#if defined(VK_ARM_tensors)
+	vkGetPhysicalDeviceExternalTensorPropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceExternalTensorPropertiesARM>(load(instance, "vkGetPhysicalDeviceExternalTensorPropertiesARM"));
+#endif /* defined(VK_ARM_tensors) */
 #if defined(VK_EXT_acquire_drm_display)
 	vkAcquireDrmDisplayEXT = reinterpret_cast<PFN_vkAcquireDrmDisplayEXT>(load(instance, "vkAcquireDrmDisplayEXT"));
 	vkGetDrmDisplayEXT = reinterpret_cast<PFN_vkGetDrmDisplayEXT>(load(instance, "vkGetDrmDisplayEXT"));
@@ -2902,6 +2940,20 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkGetAndroidHardwareBufferPropertiesANDROID = reinterpret_cast<PFN_vkGetAndroidHardwareBufferPropertiesANDROID>(load(context, "vkGetAndroidHardwareBufferPropertiesANDROID"));
 	vkGetMemoryAndroidHardwareBufferANDROID = reinterpret_cast<PFN_vkGetMemoryAndroidHardwareBufferANDROID>(load(context, "vkGetMemoryAndroidHardwareBufferANDROID"));
 #endif /* defined(VK_ANDROID_external_memory_android_hardware_buffer) */
+#if defined(VK_ARM_tensors)
+	vkBindTensorMemoryARM = reinterpret_cast<PFN_vkBindTensorMemoryARM>(load(context, "vkBindTensorMemoryARM"));
+	vkCmdCopyTensorARM = reinterpret_cast<PFN_vkCmdCopyTensorARM>(load(context, "vkCmdCopyTensorARM"));
+	vkCreateTensorARM = reinterpret_cast<PFN_vkCreateTensorARM>(load(context, "vkCreateTensorARM"));
+	vkCreateTensorViewARM = reinterpret_cast<PFN_vkCreateTensorViewARM>(load(context, "vkCreateTensorViewARM"));
+	vkDestroyTensorARM = reinterpret_cast<PFN_vkDestroyTensorARM>(load(context, "vkDestroyTensorARM"));
+	vkDestroyTensorViewARM = reinterpret_cast<PFN_vkDestroyTensorViewARM>(load(context, "vkDestroyTensorViewARM"));
+	vkGetDeviceTensorMemoryRequirementsARM = reinterpret_cast<PFN_vkGetDeviceTensorMemoryRequirementsARM>(load(context, "vkGetDeviceTensorMemoryRequirementsARM"));
+	vkGetTensorMemoryRequirementsARM = reinterpret_cast<PFN_vkGetTensorMemoryRequirementsARM>(load(context, "vkGetTensorMemoryRequirementsARM"));
+#endif /* defined(VK_ARM_tensors) */
+#if defined(VK_ARM_tensors) && defined(VK_EXT_descriptor_buffer)
+	vkGetTensorOpaqueCaptureDescriptorDataARM = reinterpret_cast<PFN_vkGetTensorOpaqueCaptureDescriptorDataARM>(load(context, "vkGetTensorOpaqueCaptureDescriptorDataARM"));
+	vkGetTensorViewOpaqueCaptureDescriptorDataARM = reinterpret_cast<PFN_vkGetTensorViewOpaqueCaptureDescriptorDataARM>(load(context, "vkGetTensorViewOpaqueCaptureDescriptorDataARM"));
+#endif /* defined(VK_ARM_tensors) && defined(VK_EXT_descriptor_buffer) */
 #if defined(VK_EXT_attachment_feedback_loop_dynamic_state)
 	vkCmdSetAttachmentFeedbackLoopEnableEXT = reinterpret_cast<PFN_vkCmdSetAttachmentFeedbackLoopEnableEXT>(load(context, "vkCmdSetAttachmentFeedbackLoopEnableEXT"));
 #endif /* defined(VK_EXT_attachment_feedback_loop_dynamic_state) */
@@ -3283,6 +3335,9 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 #if defined(VK_KHR_present_wait)
 	vkWaitForPresentKHR = reinterpret_cast<PFN_vkWaitForPresentKHR>(load(context, "vkWaitForPresentKHR"));
 #endif /* defined(VK_KHR_present_wait) */
+#if defined(VK_KHR_present_wait2)
+	vkWaitForPresent2KHR = reinterpret_cast<PFN_vkWaitForPresent2KHR>(load(context, "vkWaitForPresent2KHR"));
+#endif /* defined(VK_KHR_present_wait2) */
 #if defined(VK_KHR_push_descriptor)
 	vkCmdPushDescriptorSetKHR = reinterpret_cast<PFN_vkCmdPushDescriptorSetKHR>(load(context, "vkCmdPushDescriptorSetKHR"));
 #endif /* defined(VK_KHR_push_descriptor) */
@@ -3846,6 +3901,20 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkGetAndroidHardwareBufferPropertiesANDROID = reinterpret_cast<PFN_vkGetAndroidHardwareBufferPropertiesANDROID>(load(device, "vkGetAndroidHardwareBufferPropertiesANDROID"));
 	table.vkGetMemoryAndroidHardwareBufferANDROID = reinterpret_cast<PFN_vkGetMemoryAndroidHardwareBufferANDROID>(load(device, "vkGetMemoryAndroidHardwareBufferANDROID"));
 #endif /* defined(VK_ANDROID_external_memory_android_hardware_buffer) */
+#if defined(VK_ARM_tensors)
+	table.vkBindTensorMemoryARM = reinterpret_cast<PFN_vkBindTensorMemoryARM>(load(device, "vkBindTensorMemoryARM"));
+	table.vkCmdCopyTensorARM = reinterpret_cast<PFN_vkCmdCopyTensorARM>(load(device, "vkCmdCopyTensorARM"));
+	table.vkCreateTensorARM = reinterpret_cast<PFN_vkCreateTensorARM>(load(device, "vkCreateTensorARM"));
+	table.vkCreateTensorViewARM = reinterpret_cast<PFN_vkCreateTensorViewARM>(load(device, "vkCreateTensorViewARM"));
+	table.vkDestroyTensorARM = reinterpret_cast<PFN_vkDestroyTensorARM>(load(device, "vkDestroyTensorARM"));
+	table.vkDestroyTensorViewARM = reinterpret_cast<PFN_vkDestroyTensorViewARM>(load(device, "vkDestroyTensorViewARM"));
+	table.vkGetDeviceTensorMemoryRequirementsARM = reinterpret_cast<PFN_vkGetDeviceTensorMemoryRequirementsARM>(load(device, "vkGetDeviceTensorMemoryRequirementsARM"));
+	table.vkGetTensorMemoryRequirementsARM = reinterpret_cast<PFN_vkGetTensorMemoryRequirementsARM>(load(device, "vkGetTensorMemoryRequirementsARM"));
+#endif /* defined(VK_ARM_tensors) */
+#if defined(VK_ARM_tensors) && defined(VK_EXT_descriptor_buffer)
+	table.vkGetTensorOpaqueCaptureDescriptorDataARM = reinterpret_cast<PFN_vkGetTensorOpaqueCaptureDescriptorDataARM>(load(device, "vkGetTensorOpaqueCaptureDescriptorDataARM"));
+	table.vkGetTensorViewOpaqueCaptureDescriptorDataARM = reinterpret_cast<PFN_vkGetTensorViewOpaqueCaptureDescriptorDataARM>(load(device, "vkGetTensorViewOpaqueCaptureDescriptorDataARM"));
+#endif /* defined(VK_ARM_tensors) && defined(VK_EXT_descriptor_buffer) */
 #if defined(VK_EXT_attachment_feedback_loop_dynamic_state)
 	table.vkCmdSetAttachmentFeedbackLoopEnableEXT = reinterpret_cast<PFN_vkCmdSetAttachmentFeedbackLoopEnableEXT>(load(device, "vkCmdSetAttachmentFeedbackLoopEnableEXT"));
 #endif /* defined(VK_EXT_attachment_feedback_loop_dynamic_state) */
@@ -4227,6 +4296,9 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 #if defined(VK_KHR_present_wait)
 	table.vkWaitForPresentKHR = reinterpret_cast<PFN_vkWaitForPresentKHR>(load(device, "vkWaitForPresentKHR"));
 #endif /* defined(VK_KHR_present_wait) */
+#if defined(VK_KHR_present_wait2)
+	table.vkWaitForPresent2KHR = reinterpret_cast<PFN_vkWaitForPresent2KHR>(load(device, "vkWaitForPresent2KHR"));
+#endif /* defined(VK_KHR_present_wait2) */
 #if defined(VK_KHR_push_descriptor)
 	table.vkCmdPushDescriptorSetKHR = reinterpret_cast<PFN_vkCmdPushDescriptorSetKHR>(load(device, "vkCmdPushDescriptorSetKHR"));
 #endif /* defined(VK_KHR_push_descriptor) */
@@ -4826,6 +4898,21 @@ inline PFN_vkGetShaderInfoAMD vkGetShaderInfoAMD;
 inline PFN_vkGetAndroidHardwareBufferPropertiesANDROID vkGetAndroidHardwareBufferPropertiesANDROID;
 inline PFN_vkGetMemoryAndroidHardwareBufferANDROID vkGetMemoryAndroidHardwareBufferANDROID;
 #endif /* defined(VK_ANDROID_external_memory_android_hardware_buffer) */
+#if defined(VK_ARM_tensors)
+inline PFN_vkBindTensorMemoryARM vkBindTensorMemoryARM;
+inline PFN_vkCmdCopyTensorARM vkCmdCopyTensorARM;
+inline PFN_vkCreateTensorARM vkCreateTensorARM;
+inline PFN_vkCreateTensorViewARM vkCreateTensorViewARM;
+inline PFN_vkDestroyTensorARM vkDestroyTensorARM;
+inline PFN_vkDestroyTensorViewARM vkDestroyTensorViewARM;
+inline PFN_vkGetDeviceTensorMemoryRequirementsARM vkGetDeviceTensorMemoryRequirementsARM;
+inline PFN_vkGetPhysicalDeviceExternalTensorPropertiesARM vkGetPhysicalDeviceExternalTensorPropertiesARM;
+inline PFN_vkGetTensorMemoryRequirementsARM vkGetTensorMemoryRequirementsARM;
+#endif /* defined(VK_ARM_tensors) */
+#if defined(VK_ARM_tensors) && defined(VK_EXT_descriptor_buffer)
+inline PFN_vkGetTensorOpaqueCaptureDescriptorDataARM vkGetTensorOpaqueCaptureDescriptorDataARM;
+inline PFN_vkGetTensorViewOpaqueCaptureDescriptorDataARM vkGetTensorViewOpaqueCaptureDescriptorDataARM;
+#endif /* defined(VK_ARM_tensors) && defined(VK_EXT_descriptor_buffer) */
 #if defined(VK_EXT_acquire_drm_display)
 inline PFN_vkAcquireDrmDisplayEXT vkAcquireDrmDisplayEXT;
 inline PFN_vkGetDrmDisplayEXT vkGetDrmDisplayEXT;
@@ -5311,6 +5398,9 @@ inline PFN_vkGetPipelineExecutableStatisticsKHR vkGetPipelineExecutableStatistic
 #if defined(VK_KHR_present_wait)
 inline PFN_vkWaitForPresentKHR vkWaitForPresentKHR;
 #endif /* defined(VK_KHR_present_wait) */
+#if defined(VK_KHR_present_wait2)
+inline PFN_vkWaitForPresent2KHR vkWaitForPresent2KHR;
+#endif /* defined(VK_KHR_present_wait2) */
 #if defined(VK_KHR_push_descriptor)
 inline PFN_vkCmdPushDescriptorSetKHR vkCmdPushDescriptorSetKHR;
 #endif /* defined(VK_KHR_push_descriptor) */
