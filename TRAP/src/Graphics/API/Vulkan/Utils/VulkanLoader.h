@@ -19,7 +19,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 320
+#define VULKANLOADER_HEADER_VERSION 321
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -35,7 +35,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 320
+#define VULKANLOADER_HEADER_VERSION_PATCH 321
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -883,6 +883,9 @@ struct VkDeviceTable
 	PFN_vkGetSwapchainImagesKHR vkGetSwapchainImagesKHR;
 	PFN_vkQueuePresentKHR vkQueuePresentKHR;
 #endif /* defined(VK_KHR_swapchain) */
+#if defined(VK_KHR_swapchain_maintenance1)
+	PFN_vkReleaseSwapchainImagesKHR vkReleaseSwapchainImagesKHR;
+#endif /* defined(VK_KHR_swapchain_maintenance1) */
 #if defined(VK_KHR_synchronization2)
 	PFN_vkCmdPipelineBarrier2KHR vkCmdPipelineBarrier2KHR;
 	PFN_vkCmdResetEvent2KHR vkCmdResetEvent2KHR;
@@ -1997,6 +2000,9 @@ extern PFN_vkDestroySwapchainKHR vkDestroySwapchainKHR;
 extern PFN_vkGetSwapchainImagesKHR vkGetSwapchainImagesKHR;
 extern PFN_vkQueuePresentKHR vkQueuePresentKHR;
 #endif /* defined(VK_KHR_swapchain) */
+#if defined(VK_KHR_swapchain_maintenance1)
+extern PFN_vkReleaseSwapchainImagesKHR vkReleaseSwapchainImagesKHR;
+#endif /* defined(VK_KHR_swapchain_maintenance1) */
 #if defined(VK_KHR_synchronization2)
 extern PFN_vkCmdPipelineBarrier2KHR vkCmdPipelineBarrier2KHR;
 extern PFN_vkCmdResetEvent2KHR vkCmdResetEvent2KHR;
@@ -3412,6 +3418,9 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkGetSwapchainImagesKHR = reinterpret_cast<PFN_vkGetSwapchainImagesKHR>(load(context, "vkGetSwapchainImagesKHR"));
 	vkQueuePresentKHR = reinterpret_cast<PFN_vkQueuePresentKHR>(load(context, "vkQueuePresentKHR"));
 #endif /* defined(VK_KHR_swapchain) */
+#if defined(VK_KHR_swapchain_maintenance1)
+	vkReleaseSwapchainImagesKHR = reinterpret_cast<PFN_vkReleaseSwapchainImagesKHR>(load(context, "vkReleaseSwapchainImagesKHR"));
+#endif /* defined(VK_KHR_swapchain_maintenance1) */
 #if defined(VK_KHR_synchronization2)
 	vkCmdPipelineBarrier2KHR = reinterpret_cast<PFN_vkCmdPipelineBarrier2KHR>(load(context, "vkCmdPipelineBarrier2KHR"));
 	vkCmdResetEvent2KHR = reinterpret_cast<PFN_vkCmdResetEvent2KHR>(load(context, "vkCmdResetEvent2KHR"));
@@ -4384,6 +4393,9 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkGetSwapchainImagesKHR = reinterpret_cast<PFN_vkGetSwapchainImagesKHR>(load(device, "vkGetSwapchainImagesKHR"));
 	table.vkQueuePresentKHR = reinterpret_cast<PFN_vkQueuePresentKHR>(load(device, "vkQueuePresentKHR"));
 #endif /* defined(VK_KHR_swapchain) */
+#if defined(VK_KHR_swapchain_maintenance1)
+	table.vkReleaseSwapchainImagesKHR = reinterpret_cast<PFN_vkReleaseSwapchainImagesKHR>(load(device, "vkReleaseSwapchainImagesKHR"));
+#endif /* defined(VK_KHR_swapchain_maintenance1) */
 #if defined(VK_KHR_synchronization2)
 	table.vkCmdPipelineBarrier2KHR = reinterpret_cast<PFN_vkCmdPipelineBarrier2KHR>(load(device, "vkCmdPipelineBarrier2KHR"));
 	table.vkCmdResetEvent2KHR = reinterpret_cast<PFN_vkCmdResetEvent2KHR>(load(device, "vkCmdResetEvent2KHR"));
@@ -5506,6 +5518,9 @@ inline PFN_vkDestroySwapchainKHR vkDestroySwapchainKHR;
 inline PFN_vkGetSwapchainImagesKHR vkGetSwapchainImagesKHR;
 inline PFN_vkQueuePresentKHR vkQueuePresentKHR;
 #endif /* defined(VK_KHR_swapchain) */
+#if defined(VK_KHR_swapchain_maintenance1)
+inline PFN_vkReleaseSwapchainImagesKHR vkReleaseSwapchainImagesKHR;
+#endif /* defined(VK_KHR_swapchain_maintenance1) */
 #if defined(VK_KHR_synchronization2)
 inline PFN_vkCmdPipelineBarrier2KHR vkCmdPipelineBarrier2KHR;
 inline PFN_vkCmdResetEvent2KHR vkCmdResetEvent2KHR;
