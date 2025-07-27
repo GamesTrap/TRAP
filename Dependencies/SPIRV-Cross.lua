@@ -1,8 +1,3 @@
---ODR violation fix
-if os.isfile("SPIRV-Cross/spirv.hpp") then
-    os.remove("SPIRV-Cross/spirv.hpp")
-end
-
 project "SPIRV-Cross"
     kind "StaticLib"
     language "C++"
@@ -12,9 +7,6 @@ project "SPIRV-Cross"
     {
         "SPIRV-Cross/GLSL.std.450.h",
         "SPIRV-Cross/spirv_common.hpp",
-
-        -- "SPIRV-Cross/spirv.hpp", -- Replaced with GLSLangs spirv.hpp to resolve ODR violations
-		"%{IncludeDir.SPIRV}/spirv.hpp",
 
         "SPIRV-Cross/spirv_cross.hpp",
         "SPIRV-Cross/spirv_parser.hpp",
@@ -33,7 +25,9 @@ project "SPIRV-Cross"
         "SPIRV-Cross/spirv_glsl.hpp",
 
         "SPIRV-Cross/spirv_hlsl.cpp",
-        "SPIRV-Cross/spirv_hlsl.hpp"
+        "SPIRV-Cross/spirv_hlsl.hpp",
+
+        "SPIRV-Cross/spirv.hpp"
     }
 
     includedirs "%{IncludeDir.SPIRV}"
