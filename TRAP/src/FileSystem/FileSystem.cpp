@@ -1125,10 +1125,8 @@ namespace
         documentsDir = "$HOME/Documents";
 
         //Get Documents folder
-        const auto userDirsDocumentsFolderPath = GetDocumentsFolderPathFromUserDirs();
-        if(!userDirsDocumentsFolderPath)
-            return TRAP::NullOpt;
-        documentsDir = *userDirsDocumentsFolderPath;
+        if(const auto userDirsDocumentsFolderPath = GetDocumentsFolderPathFromUserDirs())
+            documentsDir = *userDirsDocumentsFolderPath;
 
         static constexpr std::string_view HomeVarName = "$HOME";
         if(const auto homeVar = documentsDir.string().find(HomeVarName); homeVar != std::string::npos)
@@ -1137,6 +1135,7 @@ namespace
             if(!homeFolder)
             {
                 TP_ERROR(TRAP::Log::FileSystemPrefix, "Failed to get documents folder path (failed to retrieve home directory path)!");
+                documentsDir = "";
                 return TRAP::NullOpt;
             }
             documentsDir = documentsDir.string().replace(homeVar, HomeVarName.size(), *homeFolder);
