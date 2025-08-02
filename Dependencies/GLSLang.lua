@@ -104,7 +104,7 @@ project "GLSLang"
         "GLSLang/SPIRV/GLSL.ext.NV.h",
         "GLSLang/SPIRV/GLSL.ext.450.h",
         "GLSLang/SPIRV/NonSemanticDebugPrintf.h",
-        "GLSLang/SPIRV/spirv.hpp",
+        "GLSLang/SPIRV/spirv.hpp11",
 
         "GLSLang/glslang/ResourceLimits/ResourceLimits.cpp"
     }
