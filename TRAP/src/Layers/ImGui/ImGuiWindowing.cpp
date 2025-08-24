@@ -34,6 +34,11 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Graphics/API/RendererAPI/Types.h"
 #include "Utils/Time/TimeStep.h"
 
+namespace ImGui
+{
+	[[nodiscard]] extern ImGuiIO& GetIO(ImGuiContext*);
+}
+
 namespace
 {
 	/// @brief Data struct for an ImGuiViewport.
@@ -65,6 +70,7 @@ namespace
 	/// @brief Data struct for ImGui user data.
 	struct ImGuiTRAPData
 	{
+		ImGuiContext* Context = nullptr;
 		TRAP::INTERNAL::WindowingAPI::InternalWindow* Window{};
 		TRAP::Graphics::RenderAPI ClientAPI{};
 		f64 Time{};
@@ -101,7 +107,33 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// @brief Get the backend data provided by user.
+	class ImGuiWindowToContext
+	{
+	public:
+		static void Add(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window, ImGuiContext& context)
+		{
+			s_windowToContextMap[&window] = &context;
+		}
+
+		static void Remove(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window)
+		{
+			s_windowToContextMap.erase(&window);
+		}
+
+		[[nodiscard]] static ImGuiContext* Get(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window)
+		{
+			return s_windowToContextMap[&window];
+		}
+
+	private:
+		ImGuiWindowToContext() = default;
+
+		inline static std::unordered_map<const TRAP::INTERNAL::WindowingAPI::InternalWindow*, ImGuiContext*> s_windowToContextMap;
+	};
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// @brief Get the backend data provided by user for the current context.
 	///
 	/// Backend data stored in io.BackendPlatformUserData to allow support for multiple Dear ImGui context
 	/// It is STRONGLY preferred that you use docking branch with multi-viewports
@@ -121,15 +153,44 @@ namespace
 		return context != nullptr ? static_cast<ImGuiTRAPData*>(io.BackendPlatformUserData) : nullptr;
 	}
 
+	/// @brief Get the backend data provided by user for the given window.
+	///
+	/// Backend data stored in io.BackendPlatformUserData to allow support for multiple Dear ImGui context
+	/// It is STRONGLY preferred that you use docking branch with multi-viewports
+	/// (== single Dear ImGui context + multiple windows) instead of multiple Dear ImGui contexts.
+	/// @param window Window to get backend data for.
+	/// @return Pointer to backend data.
+	[[nodiscard]] ImGuiTRAPData* GetBackendData(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window)
+	{
+		ImGuiContext* const context = ImGuiWindowToContext::Get(window);
+        TRAP_ASSERT(context != nullptr, "ImGuiWindowing::GetBackendData(): ImGui context is nullptr!");
+
+		const ImGuiIO& io = ImGui::GetIO(context);
+        TRAP_ASSERT(io.BackendPlatformUserData != nullptr, "ImGuiWindowing::GetBackendData(): BackendPlatformUserData is nullptr!");
+
+		return static_cast<ImGuiTRAPData*>(io.BackendPlatformUserData);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// @brief Check if the given window should chain callbacks.
+	/// @param window Window to check for chaining.
+	/// @return True or false.
+	[[nodiscard]] bool ShouldChainCallback(const ImGuiTRAPData& bd, const TRAP::INTERNAL::WindowingAPI::InternalWindow& window)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
+
+		return bd.CallbacksChainForAllWindows ? true : (&window == bd.Window);
+	}
+
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// @brief Update modifier keys.
 	/// @param window Window to check modifier keys on.
-	void UpdateKeyModifiers(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window)
+	void UpdateKeyModifiers(ImGuiIO& io, const TRAP::INTERNAL::WindowingAPI::InternalWindow& window)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-		ImGuiIO& io = ImGui::GetIO();
 		io.AddKeyEvent(ImGuiMod_Ctrl, TRAP::INTERNAL::WindowingAPI::GetKey(window, TRAP::Input::Key::Left_Control) != TRAP::Input::KeyState::Released ||
 									  TRAP::INTERNAL::WindowingAPI::GetKey(window, TRAP::Input::Key::Right_Control) != TRAP::Input::KeyState::Released);
 		io.AddKeyEvent(ImGuiMod_Shift, TRAP::INTERNAL::WindowingAPI::GetKey(window, TRAP::Input::Key::Left_Shift) != TRAP::Input::KeyState::Released ||
@@ -322,17 +383,17 @@ namespace
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-		ImGuiTRAPData* const bd = GetBackendData();
+		ImGuiTRAPData* const bd = GetBackendData(window);
         TRAP_ASSERT(bd, "ImGuiWindowing::WindowFocusCallback(): Backend data is nullptr!");
 
-		if (bd->PrevUserCallbackWindowFocus != nullptr && TRAP::INTERNAL::ImGuiWindowing::ShouldChainCallback(window))
+		if (bd->PrevUserCallbackWindowFocus != nullptr && ShouldChainCallback(*bd, window))
 			bd->PrevUserCallbackWindowFocus(window, focused);
 
 		//Workaround for Linux: when losing focus with MouseIgnoreButtonUpWaitForFocusLoss set, we will temporarily ignore subsequent Mouse Up events
 		bd->MouseIgnoreButtonUp = (bd->MouseIgnoreButtonUpWaitForFocusLoss && !focused);
 		bd->MouseIgnoreButtonUpWaitForFocusLoss = false;
 
-		ImGuiIO& io = ImGui::GetIO();
+		ImGuiIO& io = ImGui::GetIO(bd->Context);
 		io.AddFocusEvent(focused);
 	}
 
@@ -347,13 +408,13 @@ namespace
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-		ImGuiTRAPData* const bd = GetBackendData();
+		ImGuiTRAPData* const bd = GetBackendData(window);
         TRAP_ASSERT(bd, "ImGuiWindowing::CursorEnterCallback(): Backend data is nullptr!");
 
-		if (bd->PrevUserCallbackCursorEnter != nullptr && TRAP::INTERNAL::ImGuiWindowing::ShouldChainCallback(window))
+		if (bd->PrevUserCallbackCursorEnter != nullptr && ShouldChainCallback(*bd, window))
 			bd->PrevUserCallbackCursorEnter(window, entered);
 
-		ImGuiIO& io = ImGui::GetIO();
+		ImGuiIO& io = ImGui::GetIO(bd->Context);
 		if(entered)
 		{
 			bd->MouseWindow = &window;
@@ -377,13 +438,13 @@ namespace
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-		ImGuiTRAPData* const bd = GetBackendData();
+		ImGuiTRAPData* const bd = GetBackendData(window);
         TRAP_ASSERT(bd, "ImGuiWindowing::CursorPosCallback(): Backend data is nullptr!");
 
-		if (bd->PrevUserCallbackCursorPos != nullptr && TRAP::INTERNAL::ImGuiWindowing::ShouldChainCallback(window))
+		if (bd->PrevUserCallbackCursorPos != nullptr && ShouldChainCallback(*bd, window))
 			bd->PrevUserCallbackCursorPos(window, xPos, yPos);
 
-		ImGuiIO& io = ImGui::GetIO();
+		ImGuiIO& io = ImGui::GetIO(bd->Context);
 		if((io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) != 0)
 		{
 			i32 windowX = 0, windowY = 0;
@@ -406,10 +467,10 @@ namespace
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-		const ImGuiTRAPData* const bd = GetBackendData();
+		const ImGuiTRAPData* const bd = GetBackendData(window);
         TRAP_ASSERT(bd, "ImGuiWindowing::MouseButtonCallback(): Backend data is nullptr!");
 
-		if (bd->PrevUserCallbackMouseButton != nullptr && TRAP::INTERNAL::ImGuiWindowing::ShouldChainCallback(window))
+		if (bd->PrevUserCallbackMouseButton != nullptr && ShouldChainCallback(*bd, window))
 			bd->PrevUserCallbackMouseButton(window, mouseButton, state);
 
 		//Workaround for Linux: ignore mouse up events which are following an focus loss following a viewport creation
@@ -417,9 +478,10 @@ namespace
 			return;
 
 		TRAP_ASSERT(bd->Window != nullptr, "ImGuiWindowing::MouseButtonCallback(): bd->Window is nullptr!");
-		UpdateKeyModifiers(*bd->Window);
 
-		ImGuiIO& io = ImGui::GetIO();
+		ImGuiIO& io = ImGui::GetIO(bd->Context);
+		UpdateKeyModifiers(io, *bd->Window);
+
 		if(std::to_underlying(mouseButton) < ImGuiMouseButton_COUNT)
 			io.AddMouseButtonEvent(NumericCast<i32>(std::to_underlying(mouseButton)), (state == TRAP::Input::KeyState::Pressed));
 	}
@@ -435,13 +497,13 @@ namespace
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-		const ImGuiTRAPData* const bd = GetBackendData();
+		const ImGuiTRAPData* const bd = GetBackendData(window);
         TRAP_ASSERT(bd, "ImGuiWindowing::ScrollCallback(): Backend data is nullptr!");
 
-		if (bd->PrevUserCallbackScroll != nullptr && TRAP::INTERNAL::ImGuiWindowing::ShouldChainCallback(window))
+		if (bd->PrevUserCallbackScroll != nullptr && ShouldChainCallback(*bd, window))
 			bd->PrevUserCallbackScroll(window, xOffset, yOffset);
 
-		ImGuiIO& io = ImGui::GetIO();
+		ImGuiIO& io = ImGui::GetIO(bd->Context);
 		io.AddMouseWheelEvent(NumericCast<f32>(xOffset), NumericCast<f32>(yOffset));
 	}
 
@@ -456,24 +518,25 @@ namespace
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-		ImGuiTRAPData* const bd = GetBackendData();
+		ImGuiTRAPData* const bd = GetBackendData(window);
         TRAP_ASSERT(bd, "ImGuiWindowing::KeyCallback(): Backend data is nullptr!");
 
-		if (bd->PrevUserCallbackKey != nullptr && TRAP::INTERNAL::ImGuiWindowing::ShouldChainCallback(window))
+		if (bd->PrevUserCallbackKey != nullptr && ShouldChainCallback(*bd, window))
 			bd->PrevUserCallbackKey(window, key, state);
 
 		if(state != TRAP::Input::KeyState::Pressed && state != TRAP::Input::KeyState::Released)
 			return;
 
 		TRAP_ASSERT(bd->Window != nullptr, "ImGuiWindowing::KeyCallback(): bd->Window is nullptr!");
-		UpdateKeyModifiers(*bd->Window);
+
+		ImGuiIO& io = ImGui::GetIO(bd->Context);
+		UpdateKeyModifiers(io, *bd->Window);
 
 		if(std::to_underlying(key) >= 0 && std::cmp_less(std::to_underlying(key), bd->KeyOwnerWindows.size()))
 			bd->KeyOwnerWindows[NumericCast<usize>(std::to_underlying(key))] = (state == TRAP::Input::KeyState::Pressed) ? &window : nullptr;
 
 		key = TranslateUntranslateKey(key);
 
-		ImGuiIO& io = ImGui::GetIO();
 		const ImGuiKey imguiKey = KeyToImGuiKey(key);
 		io.AddKeyEvent(imguiKey, (state == TRAP::Input::KeyState::Pressed));
 	}
@@ -487,13 +550,13 @@ namespace
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-		const ImGuiTRAPData* const bd = GetBackendData();
+		const ImGuiTRAPData* const bd = GetBackendData(window);
         TRAP_ASSERT(bd, "ImGuiWindowing::CharCallback(): Backend data is nullptr!");
 
-		if (bd->PrevUserCallbackChar != nullptr && TRAP::INTERNAL::ImGuiWindowing::ShouldChainCallback(window))
+		if (bd->PrevUserCallbackChar != nullptr && ShouldChainCallback(*bd, window))
 			bd->PrevUserCallbackChar(window, codePoint);
 
-		ImGuiIO& io = ImGui::GetIO();
+		ImGuiIO& io = ImGui::GetIO(bd->Context);
 		io.AddInputCharacter(codePoint);
 	}
 
@@ -506,6 +569,26 @@ namespace
 	                     [[maybe_unused]] const bool connected)
 	{
 		//This function is technically part of the API even if we stopped using the callback, so leaving it around.
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	// - On Windows the process needs to be marked DPI-aware!!
+	// - Some accessibility applications are declaring virtual monitors with a DPI of 0.0f, see #7902. We preserve this value for caller to handle.
+	[[maybe_unused]] [[nodiscard]] f32 GetContentScaleForWindow(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window)
+	{
+		f32 xScale = 0.0f, yScale = 0.0f;
+		TRAP::INTERNAL::WindowingAPI::GetWindowContentScale(window, xScale, yScale);
+		return xScale;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] f32 GetContentScaleForMonitor(const TRAP::INTERNAL::WindowingAPI::InternalMonitor& monitor)
+	{
+		f32 xScale = 0.0f, yScale = 0.0f;
+		TRAP::INTERNAL::WindowingAPI::GetMonitorContentScale(monitor, xScale, yScale);
+		return xScale;
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -757,14 +840,11 @@ namespace
 				monitor.WorkSize = ImVec2(NumericCast<f32>(width), NumericCast<f32>(height));
 			}
 
-			//Warning: The validity of monitor DPI information on Windows depends on the application
-			//DPI awareness settings,
-			//which generally needs to be set in the manifest or at runtime.
-			f32 xScale = 0.0f, yScale = 0.0f;
-			TRAP::INTERNAL::WindowingAPI::GetMonitorContentScale(*n, xScale, yScale);
-			if(xScale == 0.0f)
+			const f32 scale = GetContentScaleForMonitor(*n);
+			if(scale == 0.0f)
 				continue; //Some accessibility applications are declaring virtual monitors with a DPI of 0, see #7902.
-			monitor.DpiScale = xScale;
+			monitor.DpiScale = scale;
+			monitor.PlatformHandle = static_cast<void*>(n);
 
 			platformIO.Monitors.push_back(monitor);
 		}
@@ -889,10 +969,12 @@ namespace
 		vd->Window = TRAP::INTERNAL::WindowingAPI::CreateWindow(NumericCast<u32>(viewport->Size.x),
 												                NumericCast<u32>(viewport->Size.y), "No Title Yet", nullptr);
 		vd->WindowOwned = true;
+		ImGuiWindowToContext::Add(*vd->Window, *bd->Context);
 		viewport->PlatformHandle = static_cast<void*>(vd->Window);
-	#ifdef TRAP_PLATFORM_WINDOWS
+#ifdef TRAP_PLATFORM_WINDOWS
 		viewport->PlatformHandleRaw = TRAP::INTERNAL::WindowingAPI::GetWin32Window(*vd->Window);
-	#endif /*TRAP_PLATFORM_WINDOWS*/
+		::SetPropA(static_cast<HWND>(viewport->PlatformHandleRaw, "IMGUI_BACKEND_DATA", bd));
+#endif /*TRAP_PLATFORM_WINDOWS*/
 		TRAP::INTERNAL::WindowingAPI::SetWindowPos(*vd->Window, NumericCast<i32>(viewport->Pos.x),
 								                   NumericCast<i32>(viewport->Pos.y));
 
@@ -934,6 +1016,7 @@ namespace
 						KeyCallback(*vd->Window, static_cast<TRAP::Input::Key>(i), TRAP::Input::KeyState::Released); //Later params are only used for main viewport, on which this function is never called.
 				}
 
+				ImGuiWindowToContext::Remove(*vd->Window);
 				TRAP::INTERNAL::WindowingAPI::DestroyWindow(vd->Window);
 			}
 			vd->Window = nullptr;
@@ -1277,8 +1360,11 @@ namespace
 	io.BackendFlags |= ImGuiBackendFlags_PlatformHasViewports; //We can create multi-viewports on the Platform side (optional)
 	io.BackendFlags |= ImGuiBackendFlags_HasMouseHoveredViewport; //We can set io.MouseHoveredViewport correctly (optional, not easy)
 
+	bd->Context = ImGui::GetCurrentContext();
 	bd->Window = &window;
 	bd->Time = 0.0;
+	TRAP_ASSERT(bd->Context != nullptr, "ImGuiWindowing::Init(): Current context is nullptr!");
+	ImGuiWindowToContext::Add(window, *bd->Context);
 
 	ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
 	platformIO.Platform_SetClipboardTextFn = SetClipboardText;
@@ -1361,6 +1447,10 @@ void TRAP::INTERNAL::ImGuiWindowing::Shutdown()
 
 	io.BackendPlatformName = nullptr;
 	io.BackendPlatformUserData = nullptr;
+	io.BackendFlags &= ~(ImGuiBackendFlags_HasMouseCursors | ImGuiBackendFlags_HasSetMousePos |
+		                 ImGuiBackendFlags_HasGamepad | ImGuiBackendFlags_PlatformHasViewports |
+						 ImGuiBackendFlags_HasMouseHoveredViewport);
+	ImGuiWindowToContext::Remove(*bd->Window);
 	IM_DELETE(bd);
 }
 
@@ -1423,7 +1513,7 @@ void TRAP::INTERNAL::ImGuiWindowing::InstallCallbacks(WindowingAPI::InternalWind
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-	ImGuiTRAPData* const bd = GetBackendData();
+	ImGuiTRAPData* const bd = GetBackendData(window);
 	TRAP_ASSERT(bd, "ImGuiWindowing::InstallCallbacks(): Backend data is nullptr!");
 	TRAP_ASSERT(bd->InstalledCallbacks == false, "ImGuiWindowing::InstallCallbacks(): Callbacks are already initialized!");
 	TRAP_ASSERT(bd->Window == &window, "ImGuiWindowing::InstallCallbacks(): window and bd->Window aren't the same!");
@@ -1461,7 +1551,7 @@ void TRAP::INTERNAL::ImGuiWindowing::RestoreCallbacks(WindowingAPI::InternalWind
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
 
-	ImGuiTRAPData* const bd = GetBackendData();
+	ImGuiTRAPData* const bd = GetBackendData(window);
 	TRAP_ASSERT(bd, "ImGuiWindowing::RestoreCallbacks(): Backend data is nullptr!");
 	TRAP_ASSERT(bd->InstalledCallbacks == true, "ImGuiWindowing::RestoreCallbacks(): Callbacks are not installed!");
 	TRAP_ASSERT(bd->Window == &window, "ImGuiWindowing::RestoreCallbacks(): window and bd->Window are not the same!");
@@ -1483,18 +1573,6 @@ void TRAP::INTERNAL::ImGuiWindowing::RestoreCallbacks(WindowingAPI::InternalWind
 	bd->PrevUserCallbackKey = nullptr;
 	bd->PrevUserCallbackChar = nullptr;
 	bd->PrevUserCallbackMonitor = nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::ImGuiWindowing::ShouldChainCallback(const WindowingAPI::InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::Brown, (GetTRAPProfileSystems() & ProfileSystems::Layers) != ProfileSystems::None);
-
-	const ImGuiTRAPData* const bd = GetBackendData();
-	TRAP_ASSERT(bd, "ImGuiWindowing::ShouldChainCallback(): Backend data is nullptr!");
-
-	return bd->CallbacksChainForAllWindows ? true : (&window == bd->Window);
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

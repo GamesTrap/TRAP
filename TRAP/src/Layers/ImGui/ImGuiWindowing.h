@@ -76,11 +76,6 @@ namespace TRAP::INTERNAL
 		/// @brief Restore old callbacks.
 		/// @param window Window to restore callbacks for.
 		static void RestoreCallbacks(WindowingAPI::InternalWindow& window);
-
-		/// @brief Check if the given window should chain callbacks.
-		/// @param window Window to check for chaining.
-		/// @return True or false.
-		static bool ShouldChainCallback(const WindowingAPI::InternalWindow& window);
 	};
 }
 
