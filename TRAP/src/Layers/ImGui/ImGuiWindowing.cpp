@@ -973,7 +973,7 @@ namespace
 		viewport->PlatformHandle = static_cast<void*>(vd->Window);
 #ifdef TRAP_PLATFORM_WINDOWS
 		viewport->PlatformHandleRaw = TRAP::INTERNAL::WindowingAPI::GetWin32Window(*vd->Window);
-		::SetPropA(static_cast<HWND>(viewport->PlatformHandleRaw, "IMGUI_BACKEND_DATA", bd));
+		::SetPropA(static_cast<HWND>(viewport->PlatformHandleRaw), "IMGUI_BACKEND_DATA", bd);
 #endif /*TRAP_PLATFORM_WINDOWS*/
 		TRAP::INTERNAL::WindowingAPI::SetWindowPos(*vd->Window, NumericCast<i32>(viewport->Pos.x),
 								                   NumericCast<i32>(viewport->Pos.y));
