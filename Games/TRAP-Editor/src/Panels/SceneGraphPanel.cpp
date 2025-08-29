@@ -28,7 +28,7 @@ namespace
 		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
-		const f32 lineHeight = GImGui->Font->FontSize + (GImGui->Style.FramePadding.y * 2.0f);
+		const f32 lineHeight = GImGui->Font->LegacySize + (GImGui->Style.FramePadding.y * 2.0f);
 		const ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.1f, 0.15f, 1.0f));
@@ -116,7 +116,7 @@ namespace
 		const ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4.0f, 4.0f });
-		const f32 lineHeight = GImGui->Font->FontSize + (GImGui->Style.FramePadding.y * 2.0f);
+		const f32 lineHeight = GImGui->Font->LegacySize + (GImGui->Style.FramePadding.y * 2.0f);
 		ImGui::Separator();
 		const bool open = ImGui::TreeNodeEx(reinterpret_cast<void*>(typeid(T).hash_code()), treeNodeFlags, "%s", name.c_str());
 		ImGui::PopStyleVar();

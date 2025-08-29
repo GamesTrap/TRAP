@@ -5692,3 +5692,15 @@ SITREP 06/02/2025|25w23a1
 SITREP 08/01/2025|25w31a1
     - Changed TRAP Engine version to 25w31a1(0.11.98)
     - FileSystem Changed GetDocumentsFolderPath() for Linux (use "$HOME" when xdg user-dirs file is not available) ~<5 mins
+
+SITREP 08/24/2025|25w34a1
+    - Changed TRAP Engine version to 25w34a1(0.11.99)
+    - Update ImGuiWindowing ~<15 mins
+
+SITREP 08/29/2025|25w35a1
+    - Changed TRAP Engine version to 25w35a1(0.11.100)
+    - ImGui temporarily disabled IMGUI_DISABLE_OBSOLETE_FUNCTIONS flag ~<5 mins
+
+SITREP 08/30/2025|25w35a2
+    - Changed TRAP Engine version to 25w35a2(0.11.101)
+    - ImGuiWindowing Fixed MSVC compiler error ~<5 mins
