@@ -19,7 +19,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 327
+#define VULKANLOADER_HEADER_VERSION 328
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -35,7 +35,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 327
+#define VULKANLOADER_HEADER_VERSION_PATCH 328
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -726,6 +726,10 @@ struct VkDeviceTable
 	PFN_vkCmdCopyImageToBuffer2KHR vkCmdCopyImageToBuffer2KHR;
 	PFN_vkCmdResolveImage2KHR vkCmdResolveImage2KHR;
 #endif /* defined(VK_KHR_copy_commands2) */
+#if defined(VK_KHR_copy_memory_indirect)
+	PFN_vkCmdCopyMemoryIndirectKHR vkCmdCopyMemoryIndirectKHR;
+	PFN_vkCmdCopyMemoryToImageIndirectKHR vkCmdCopyMemoryToImageIndirectKHR;
+#endif /* defined(VK_KHR_copy_memory_indirect) */
 #if defined(VK_KHR_create_renderpass2)
 	PFN_vkCmdBeginRenderPass2KHR vkCmdBeginRenderPass2KHR;
 	PFN_vkCmdEndRenderPass2KHR vkCmdEndRenderPass2KHR;
@@ -1793,6 +1797,10 @@ extern PFN_vkCmdCopyImage2KHR vkCmdCopyImage2KHR;
 extern PFN_vkCmdCopyImageToBuffer2KHR vkCmdCopyImageToBuffer2KHR;
 extern PFN_vkCmdResolveImage2KHR vkCmdResolveImage2KHR;
 #endif /* defined(VK_KHR_copy_commands2) */
+#if defined(VK_KHR_copy_memory_indirect)
+extern PFN_vkCmdCopyMemoryIndirectKHR vkCmdCopyMemoryIndirectKHR;
+extern PFN_vkCmdCopyMemoryToImageIndirectKHR vkCmdCopyMemoryToImageIndirectKHR;
+#endif /* defined(VK_KHR_copy_memory_indirect) */
 #if defined(VK_KHR_create_renderpass2)
 extern PFN_vkCmdBeginRenderPass2KHR vkCmdBeginRenderPass2KHR;
 extern PFN_vkCmdEndRenderPass2KHR vkCmdEndRenderPass2KHR;
@@ -3261,6 +3269,10 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkCmdCopyImageToBuffer2KHR = reinterpret_cast<PFN_vkCmdCopyImageToBuffer2KHR>(load(context, "vkCmdCopyImageToBuffer2KHR"));
 	vkCmdResolveImage2KHR = reinterpret_cast<PFN_vkCmdResolveImage2KHR>(load(context, "vkCmdResolveImage2KHR"));
 #endif /* defined(VK_KHR_copy_commands2) */
+#if defined(VK_KHR_copy_memory_indirect)
+	vkCmdCopyMemoryIndirectKHR = reinterpret_cast<PFN_vkCmdCopyMemoryIndirectKHR>(load(context, "vkCmdCopyMemoryIndirectKHR"));
+	vkCmdCopyMemoryToImageIndirectKHR = reinterpret_cast<PFN_vkCmdCopyMemoryToImageIndirectKHR>(load(context, "vkCmdCopyMemoryToImageIndirectKHR"));
+#endif /* defined(VK_KHR_copy_memory_indirect) */
 #if defined(VK_KHR_create_renderpass2)
 	vkCmdBeginRenderPass2KHR = reinterpret_cast<PFN_vkCmdBeginRenderPass2KHR>(load(context, "vkCmdBeginRenderPass2KHR"));
 	vkCmdEndRenderPass2KHR = reinterpret_cast<PFN_vkCmdEndRenderPass2KHR>(load(context, "vkCmdEndRenderPass2KHR"));
@@ -4236,6 +4248,10 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkCmdCopyImageToBuffer2KHR = reinterpret_cast<PFN_vkCmdCopyImageToBuffer2KHR>(load(device, "vkCmdCopyImageToBuffer2KHR"));
 	table.vkCmdResolveImage2KHR = reinterpret_cast<PFN_vkCmdResolveImage2KHR>(load(device, "vkCmdResolveImage2KHR"));
 #endif /* defined(VK_KHR_copy_commands2) */
+#if defined(VK_KHR_copy_memory_indirect)
+	table.vkCmdCopyMemoryIndirectKHR = reinterpret_cast<PFN_vkCmdCopyMemoryIndirectKHR>(load(device, "vkCmdCopyMemoryIndirectKHR"));
+	table.vkCmdCopyMemoryToImageIndirectKHR = reinterpret_cast<PFN_vkCmdCopyMemoryToImageIndirectKHR>(load(device, "vkCmdCopyMemoryToImageIndirectKHR"));
+#endif /* defined(VK_KHR_copy_memory_indirect) */
 #if defined(VK_KHR_create_renderpass2)
 	table.vkCmdBeginRenderPass2KHR = reinterpret_cast<PFN_vkCmdBeginRenderPass2KHR>(load(device, "vkCmdBeginRenderPass2KHR"));
 	table.vkCmdEndRenderPass2KHR = reinterpret_cast<PFN_vkCmdEndRenderPass2KHR>(load(device, "vkCmdEndRenderPass2KHR"));
@@ -5311,6 +5327,10 @@ inline PFN_vkCmdCopyImage2KHR vkCmdCopyImage2KHR;
 inline PFN_vkCmdCopyImageToBuffer2KHR vkCmdCopyImageToBuffer2KHR;
 inline PFN_vkCmdResolveImage2KHR vkCmdResolveImage2KHR;
 #endif /* defined(VK_KHR_copy_commands2) */
+#if defined(VK_KHR_copy_memory_indirect)
+inline PFN_vkCmdCopyMemoryIndirectKHR vkCmdCopyMemoryIndirectKHR;
+inline PFN_vkCmdCopyMemoryToImageIndirectKHR vkCmdCopyMemoryToImageIndirectKHR;
+#endif /* defined(VK_KHR_copy_memory_indirect) */
 #if defined(VK_KHR_create_renderpass2)
 inline PFN_vkCmdBeginRenderPass2KHR vkCmdBeginRenderPass2KHR;
 inline PFN_vkCmdEndRenderPass2KHR vkCmdEndRenderPass2KHR;
