@@ -19,7 +19,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 329
+#define VULKANLOADER_HEADER_VERSION 330
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -35,7 +35,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 329
+#define VULKANLOADER_HEADER_VERSION_PATCH 330
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -199,153 +199,153 @@ void VkLoadDeviceTable(VkDeviceTable& table, VkDevice device);
 struct VkDeviceTable
 {
 	/* VULKANLOADER_GENERATE_DEVICE_TABLE */
-#if defined(VK_VERSION_1_0)
+#if defined(VK_BASE_VERSION_1_0)
 	PFN_vkAllocateCommandBuffers vkAllocateCommandBuffers;
-	PFN_vkAllocateDescriptorSets vkAllocateDescriptorSets;
 	PFN_vkAllocateMemory vkAllocateMemory;
 	PFN_vkBeginCommandBuffer vkBeginCommandBuffer;
 	PFN_vkBindBufferMemory vkBindBufferMemory;
 	PFN_vkBindImageMemory vkBindImageMemory;
 	PFN_vkCmdBeginQuery vkCmdBeginQuery;
-	PFN_vkCmdBeginRenderPass vkCmdBeginRenderPass;
-	PFN_vkCmdBindDescriptorSets vkCmdBindDescriptorSets;
-	PFN_vkCmdBindIndexBuffer vkCmdBindIndexBuffer;
-	PFN_vkCmdBindPipeline vkCmdBindPipeline;
-	PFN_vkCmdBindVertexBuffers vkCmdBindVertexBuffers;
-	PFN_vkCmdBlitImage vkCmdBlitImage;
-	PFN_vkCmdClearAttachments vkCmdClearAttachments;
-	PFN_vkCmdClearColorImage vkCmdClearColorImage;
-	PFN_vkCmdClearDepthStencilImage vkCmdClearDepthStencilImage;
 	PFN_vkCmdCopyBuffer vkCmdCopyBuffer;
 	PFN_vkCmdCopyBufferToImage vkCmdCopyBufferToImage;
 	PFN_vkCmdCopyImage vkCmdCopyImage;
 	PFN_vkCmdCopyImageToBuffer vkCmdCopyImageToBuffer;
 	PFN_vkCmdCopyQueryPoolResults vkCmdCopyQueryPoolResults;
+	PFN_vkCmdEndQuery vkCmdEndQuery;
+	PFN_vkCmdExecuteCommands vkCmdExecuteCommands;
+	PFN_vkCmdFillBuffer vkCmdFillBuffer;
+	PFN_vkCmdPipelineBarrier vkCmdPipelineBarrier;
+	PFN_vkCmdResetQueryPool vkCmdResetQueryPool;
+	PFN_vkCmdUpdateBuffer vkCmdUpdateBuffer;
+	PFN_vkCmdWriteTimestamp vkCmdWriteTimestamp;
+	PFN_vkCreateBuffer vkCreateBuffer;
+	PFN_vkCreateCommandPool vkCreateCommandPool;
+	PFN_vkCreateFence vkCreateFence;
+	PFN_vkCreateImage vkCreateImage;
+	PFN_vkCreateImageView vkCreateImageView;
+	PFN_vkCreateQueryPool vkCreateQueryPool;
+	PFN_vkCreateSemaphore vkCreateSemaphore;
+	PFN_vkDestroyBuffer vkDestroyBuffer;
+	PFN_vkDestroyCommandPool vkDestroyCommandPool;
+	PFN_vkDestroyDevice vkDestroyDevice;
+	PFN_vkDestroyFence vkDestroyFence;
+	PFN_vkDestroyImage vkDestroyImage;
+	PFN_vkDestroyImageView vkDestroyImageView;
+	PFN_vkDestroyQueryPool vkDestroyQueryPool;
+	PFN_vkDestroySemaphore vkDestroySemaphore;
+	PFN_vkDeviceWaitIdle vkDeviceWaitIdle;
+	PFN_vkEndCommandBuffer vkEndCommandBuffer;
+	PFN_vkFlushMappedMemoryRanges vkFlushMappedMemoryRanges;
+	PFN_vkFreeCommandBuffers vkFreeCommandBuffers;
+	PFN_vkFreeMemory vkFreeMemory;
+	PFN_vkGetBufferMemoryRequirements vkGetBufferMemoryRequirements;
+	PFN_vkGetDeviceMemoryCommitment vkGetDeviceMemoryCommitment;
+	PFN_vkGetDeviceQueue vkGetDeviceQueue;
+	PFN_vkGetFenceStatus vkGetFenceStatus;
+	PFN_vkGetImageMemoryRequirements vkGetImageMemoryRequirements;
+	PFN_vkGetImageSparseMemoryRequirements vkGetImageSparseMemoryRequirements;
+	PFN_vkGetImageSubresourceLayout vkGetImageSubresourceLayout;
+	PFN_vkGetQueryPoolResults vkGetQueryPoolResults;
+	PFN_vkInvalidateMappedMemoryRanges vkInvalidateMappedMemoryRanges;
+	PFN_vkMapMemory vkMapMemory;
+	PFN_vkQueueBindSparse vkQueueBindSparse;
+	PFN_vkQueueSubmit vkQueueSubmit;
+	PFN_vkQueueWaitIdle vkQueueWaitIdle;
+	PFN_vkResetCommandBuffer vkResetCommandBuffer;
+	PFN_vkResetCommandPool vkResetCommandPool;
+	PFN_vkResetFences vkResetFences;
+	PFN_vkUnmapMemory vkUnmapMemory;
+	PFN_vkWaitForFences vkWaitForFences;
+#endif /* defined(VK_BASE_VERSION_1_0) */
+#if defined(VK_COMPUTE_VERSION_1_0)
+	PFN_vkAllocateDescriptorSets vkAllocateDescriptorSets;
+	PFN_vkCmdBindDescriptorSets vkCmdBindDescriptorSets;
+	PFN_vkCmdBindPipeline vkCmdBindPipeline;
+	PFN_vkCmdClearColorImage vkCmdClearColorImage;
 	PFN_vkCmdDispatch vkCmdDispatch;
 	PFN_vkCmdDispatchIndirect vkCmdDispatchIndirect;
+	PFN_vkCmdPushConstants vkCmdPushConstants;
+	PFN_vkCmdResetEvent vkCmdResetEvent;
+	PFN_vkCmdSetEvent vkCmdSetEvent;
+	PFN_vkCmdWaitEvents vkCmdWaitEvents;
+	PFN_vkCreateBufferView vkCreateBufferView;
+	PFN_vkCreateComputePipelines vkCreateComputePipelines;
+	PFN_vkCreateDescriptorPool vkCreateDescriptorPool;
+	PFN_vkCreateDescriptorSetLayout vkCreateDescriptorSetLayout;
+	PFN_vkCreateEvent vkCreateEvent;
+	PFN_vkCreatePipelineCache vkCreatePipelineCache;
+	PFN_vkCreatePipelineLayout vkCreatePipelineLayout;
+	PFN_vkCreateSampler vkCreateSampler;
+	PFN_vkCreateShaderModule vkCreateShaderModule;
+	PFN_vkDestroyBufferView vkDestroyBufferView;
+	PFN_vkDestroyDescriptorPool vkDestroyDescriptorPool;
+	PFN_vkDestroyDescriptorSetLayout vkDestroyDescriptorSetLayout;
+	PFN_vkDestroyEvent vkDestroyEvent;
+	PFN_vkDestroyPipeline vkDestroyPipeline;
+	PFN_vkDestroyPipelineCache vkDestroyPipelineCache;
+	PFN_vkDestroyPipelineLayout vkDestroyPipelineLayout;
+	PFN_vkDestroySampler vkDestroySampler;
+	PFN_vkDestroyShaderModule vkDestroyShaderModule;
+	PFN_vkFreeDescriptorSets vkFreeDescriptorSets;
+	PFN_vkGetEventStatus vkGetEventStatus;
+	PFN_vkGetPipelineCacheData vkGetPipelineCacheData;
+	PFN_vkMergePipelineCaches vkMergePipelineCaches;
+	PFN_vkResetDescriptorPool vkResetDescriptorPool;
+	PFN_vkResetEvent vkResetEvent;
+	PFN_vkSetEvent vkSetEvent;
+	PFN_vkUpdateDescriptorSets vkUpdateDescriptorSets;
+#endif /* defined(VK_COMPUTE_VERSION_1_0) */
+#if defined(VK_GRAPHICS_VERSION_1_0)
+	PFN_vkCmdBeginRenderPass vkCmdBeginRenderPass;
+	PFN_vkCmdBindIndexBuffer vkCmdBindIndexBuffer;
+	PFN_vkCmdBindVertexBuffers vkCmdBindVertexBuffers;
+	PFN_vkCmdBlitImage vkCmdBlitImage;
+	PFN_vkCmdClearAttachments vkCmdClearAttachments;
+	PFN_vkCmdClearDepthStencilImage vkCmdClearDepthStencilImage;
 	PFN_vkCmdDraw vkCmdDraw;
 	PFN_vkCmdDrawIndexed vkCmdDrawIndexed;
 	PFN_vkCmdDrawIndexedIndirect vkCmdDrawIndexedIndirect;
 	PFN_vkCmdDrawIndirect vkCmdDrawIndirect;
-	PFN_vkCmdEndQuery vkCmdEndQuery;
 	PFN_vkCmdEndRenderPass vkCmdEndRenderPass;
-	PFN_vkCmdExecuteCommands vkCmdExecuteCommands;
-	PFN_vkCmdFillBuffer vkCmdFillBuffer;
 	PFN_vkCmdNextSubpass vkCmdNextSubpass;
-	PFN_vkCmdPipelineBarrier vkCmdPipelineBarrier;
-	PFN_vkCmdPushConstants vkCmdPushConstants;
-	PFN_vkCmdResetEvent vkCmdResetEvent;
-	PFN_vkCmdResetQueryPool vkCmdResetQueryPool;
 	PFN_vkCmdResolveImage vkCmdResolveImage;
 	PFN_vkCmdSetBlendConstants vkCmdSetBlendConstants;
 	PFN_vkCmdSetDepthBias vkCmdSetDepthBias;
 	PFN_vkCmdSetDepthBounds vkCmdSetDepthBounds;
-	PFN_vkCmdSetEvent vkCmdSetEvent;
 	PFN_vkCmdSetLineWidth vkCmdSetLineWidth;
 	PFN_vkCmdSetScissor vkCmdSetScissor;
 	PFN_vkCmdSetStencilCompareMask vkCmdSetStencilCompareMask;
 	PFN_vkCmdSetStencilReference vkCmdSetStencilReference;
 	PFN_vkCmdSetStencilWriteMask vkCmdSetStencilWriteMask;
 	PFN_vkCmdSetViewport vkCmdSetViewport;
-	PFN_vkCmdUpdateBuffer vkCmdUpdateBuffer;
-	PFN_vkCmdWaitEvents vkCmdWaitEvents;
-	PFN_vkCmdWriteTimestamp vkCmdWriteTimestamp;
-	PFN_vkCreateBuffer vkCreateBuffer;
-	PFN_vkCreateBufferView vkCreateBufferView;
-	PFN_vkCreateCommandPool vkCreateCommandPool;
-	PFN_vkCreateComputePipelines vkCreateComputePipelines;
-	PFN_vkCreateDescriptorPool vkCreateDescriptorPool;
-	PFN_vkCreateDescriptorSetLayout vkCreateDescriptorSetLayout;
-	PFN_vkCreateEvent vkCreateEvent;
-	PFN_vkCreateFence vkCreateFence;
 	PFN_vkCreateFramebuffer vkCreateFramebuffer;
 	PFN_vkCreateGraphicsPipelines vkCreateGraphicsPipelines;
-	PFN_vkCreateImage vkCreateImage;
-	PFN_vkCreateImageView vkCreateImageView;
-	PFN_vkCreatePipelineCache vkCreatePipelineCache;
-	PFN_vkCreatePipelineLayout vkCreatePipelineLayout;
-	PFN_vkCreateQueryPool vkCreateQueryPool;
 	PFN_vkCreateRenderPass vkCreateRenderPass;
-	PFN_vkCreateSampler vkCreateSampler;
-	PFN_vkCreateSemaphore vkCreateSemaphore;
-	PFN_vkCreateShaderModule vkCreateShaderModule;
-	PFN_vkDestroyBuffer vkDestroyBuffer;
-	PFN_vkDestroyBufferView vkDestroyBufferView;
-	PFN_vkDestroyCommandPool vkDestroyCommandPool;
-	PFN_vkDestroyDescriptorPool vkDestroyDescriptorPool;
-	PFN_vkDestroyDescriptorSetLayout vkDestroyDescriptorSetLayout;
-	PFN_vkDestroyDevice vkDestroyDevice;
-	PFN_vkDestroyEvent vkDestroyEvent;
-	PFN_vkDestroyFence vkDestroyFence;
 	PFN_vkDestroyFramebuffer vkDestroyFramebuffer;
-	PFN_vkDestroyImage vkDestroyImage;
-	PFN_vkDestroyImageView vkDestroyImageView;
-	PFN_vkDestroyPipeline vkDestroyPipeline;
-	PFN_vkDestroyPipelineCache vkDestroyPipelineCache;
-	PFN_vkDestroyPipelineLayout vkDestroyPipelineLayout;
-	PFN_vkDestroyQueryPool vkDestroyQueryPool;
 	PFN_vkDestroyRenderPass vkDestroyRenderPass;
-	PFN_vkDestroySampler vkDestroySampler;
-	PFN_vkDestroySemaphore vkDestroySemaphore;
-	PFN_vkDestroyShaderModule vkDestroyShaderModule;
-	PFN_vkDeviceWaitIdle vkDeviceWaitIdle;
-	PFN_vkEndCommandBuffer vkEndCommandBuffer;
-	PFN_vkFlushMappedMemoryRanges vkFlushMappedMemoryRanges;
-	PFN_vkFreeCommandBuffers vkFreeCommandBuffers;
-	PFN_vkFreeDescriptorSets vkFreeDescriptorSets;
-	PFN_vkFreeMemory vkFreeMemory;
-	PFN_vkGetBufferMemoryRequirements vkGetBufferMemoryRequirements;
-	PFN_vkGetDeviceMemoryCommitment vkGetDeviceMemoryCommitment;
-	PFN_vkGetDeviceQueue vkGetDeviceQueue;
-	PFN_vkGetEventStatus vkGetEventStatus;
-	PFN_vkGetFenceStatus vkGetFenceStatus;
-	PFN_vkGetImageMemoryRequirements vkGetImageMemoryRequirements;
-	PFN_vkGetImageSparseMemoryRequirements vkGetImageSparseMemoryRequirements;
-	PFN_vkGetImageSubresourceLayout vkGetImageSubresourceLayout;
-	PFN_vkGetPipelineCacheData vkGetPipelineCacheData;
-	PFN_vkGetQueryPoolResults vkGetQueryPoolResults;
 	PFN_vkGetRenderAreaGranularity vkGetRenderAreaGranularity;
-	PFN_vkInvalidateMappedMemoryRanges vkInvalidateMappedMemoryRanges;
-	PFN_vkMapMemory vkMapMemory;
-	PFN_vkMergePipelineCaches vkMergePipelineCaches;
-	PFN_vkQueueBindSparse vkQueueBindSparse;
-	PFN_vkQueueSubmit vkQueueSubmit;
-	PFN_vkQueueWaitIdle vkQueueWaitIdle;
-	PFN_vkResetCommandBuffer vkResetCommandBuffer;
-	PFN_vkResetCommandPool vkResetCommandPool;
-	PFN_vkResetDescriptorPool vkResetDescriptorPool;
-	PFN_vkResetEvent vkResetEvent;
-	PFN_vkResetFences vkResetFences;
-	PFN_vkSetEvent vkSetEvent;
-	PFN_vkUnmapMemory vkUnmapMemory;
-	PFN_vkUpdateDescriptorSets vkUpdateDescriptorSets;
-	PFN_vkWaitForFences vkWaitForFences;
-#endif /* defined(VK_VERSION_1_0) */
-#if defined(VK_VERSION_1_1)
+#endif /* defined(VK_GRAPHICS_VERSION_1_0) */
+#if defined(VK_BASE_VERSION_1_1)
 	PFN_vkBindBufferMemory2 vkBindBufferMemory2;
 	PFN_vkBindImageMemory2 vkBindImageMemory2;
-	PFN_vkCmdDispatchBase vkCmdDispatchBase;
 	PFN_vkCmdSetDeviceMask vkCmdSetDeviceMask;
-	PFN_vkCreateDescriptorUpdateTemplate vkCreateDescriptorUpdateTemplate;
-	PFN_vkCreateSamplerYcbcrConversion vkCreateSamplerYcbcrConversion;
-	PFN_vkDestroyDescriptorUpdateTemplate vkDestroyDescriptorUpdateTemplate;
-	PFN_vkDestroySamplerYcbcrConversion vkDestroySamplerYcbcrConversion;
 	PFN_vkGetBufferMemoryRequirements2 vkGetBufferMemoryRequirements2;
-	PFN_vkGetDescriptorSetLayoutSupport vkGetDescriptorSetLayoutSupport;
 	PFN_vkGetDeviceGroupPeerMemoryFeatures vkGetDeviceGroupPeerMemoryFeatures;
 	PFN_vkGetDeviceQueue2 vkGetDeviceQueue2;
 	PFN_vkGetImageMemoryRequirements2 vkGetImageMemoryRequirements2;
 	PFN_vkGetImageSparseMemoryRequirements2 vkGetImageSparseMemoryRequirements2;
 	PFN_vkTrimCommandPool vkTrimCommandPool;
+#endif /* defined(VK_BASE_VERSION_1_1) */
+#if defined(VK_COMPUTE_VERSION_1_1)
+	PFN_vkCmdDispatchBase vkCmdDispatchBase;
+	PFN_vkCreateDescriptorUpdateTemplate vkCreateDescriptorUpdateTemplate;
+	PFN_vkCreateSamplerYcbcrConversion vkCreateSamplerYcbcrConversion;
+	PFN_vkDestroyDescriptorUpdateTemplate vkDestroyDescriptorUpdateTemplate;
+	PFN_vkDestroySamplerYcbcrConversion vkDestroySamplerYcbcrConversion;
+	PFN_vkGetDescriptorSetLayoutSupport vkGetDescriptorSetLayoutSupport;
 	PFN_vkUpdateDescriptorSetWithTemplate vkUpdateDescriptorSetWithTemplate;
-#endif /* defined(VK_VERSION_1_1) */
-#if defined(VK_VERSION_1_2)
-	PFN_vkCmdBeginRenderPass2 vkCmdBeginRenderPass2;
-	PFN_vkCmdDrawIndexedIndirectCount vkCmdDrawIndexedIndirectCount;
-	PFN_vkCmdDrawIndirectCount vkCmdDrawIndirectCount;
-	PFN_vkCmdEndRenderPass2 vkCmdEndRenderPass2;
-	PFN_vkCmdNextSubpass2 vkCmdNextSubpass2;
-	PFN_vkCreateRenderPass2 vkCreateRenderPass2;
+#endif /* defined(VK_COMPUTE_VERSION_1_1) */
+#if defined(VK_BASE_VERSION_1_2)
 	PFN_vkGetBufferDeviceAddress vkGetBufferDeviceAddress;
 	PFN_vkGetBufferOpaqueCaptureAddress vkGetBufferOpaqueCaptureAddress;
 	PFN_vkGetDeviceMemoryOpaqueCaptureAddress vkGetDeviceMemoryOpaqueCaptureAddress;
@@ -353,35 +353,21 @@ struct VkDeviceTable
 	PFN_vkResetQueryPool vkResetQueryPool;
 	PFN_vkSignalSemaphore vkSignalSemaphore;
 	PFN_vkWaitSemaphores vkWaitSemaphores;
-#endif /* defined(VK_VERSION_1_2) */
-#if defined(VK_VERSION_1_3)
-	PFN_vkCmdBeginRendering vkCmdBeginRendering;
-	PFN_vkCmdBindVertexBuffers2 vkCmdBindVertexBuffers2;
-	PFN_vkCmdBlitImage2 vkCmdBlitImage2;
+#endif /* defined(VK_BASE_VERSION_1_2) */
+#if defined(VK_GRAPHICS_VERSION_1_2)
+	PFN_vkCmdBeginRenderPass2 vkCmdBeginRenderPass2;
+	PFN_vkCmdDrawIndexedIndirectCount vkCmdDrawIndexedIndirectCount;
+	PFN_vkCmdDrawIndirectCount vkCmdDrawIndirectCount;
+	PFN_vkCmdEndRenderPass2 vkCmdEndRenderPass2;
+	PFN_vkCmdNextSubpass2 vkCmdNextSubpass2;
+	PFN_vkCreateRenderPass2 vkCreateRenderPass2;
+#endif /* defined(VK_GRAPHICS_VERSION_1_2) */
+#if defined(VK_BASE_VERSION_1_3)
 	PFN_vkCmdCopyBuffer2 vkCmdCopyBuffer2;
 	PFN_vkCmdCopyBufferToImage2 vkCmdCopyBufferToImage2;
 	PFN_vkCmdCopyImage2 vkCmdCopyImage2;
 	PFN_vkCmdCopyImageToBuffer2 vkCmdCopyImageToBuffer2;
-	PFN_vkCmdEndRendering vkCmdEndRendering;
 	PFN_vkCmdPipelineBarrier2 vkCmdPipelineBarrier2;
-	PFN_vkCmdResetEvent2 vkCmdResetEvent2;
-	PFN_vkCmdResolveImage2 vkCmdResolveImage2;
-	PFN_vkCmdSetCullMode vkCmdSetCullMode;
-	PFN_vkCmdSetDepthBiasEnable vkCmdSetDepthBiasEnable;
-	PFN_vkCmdSetDepthBoundsTestEnable vkCmdSetDepthBoundsTestEnable;
-	PFN_vkCmdSetDepthCompareOp vkCmdSetDepthCompareOp;
-	PFN_vkCmdSetDepthTestEnable vkCmdSetDepthTestEnable;
-	PFN_vkCmdSetDepthWriteEnable vkCmdSetDepthWriteEnable;
-	PFN_vkCmdSetEvent2 vkCmdSetEvent2;
-	PFN_vkCmdSetFrontFace vkCmdSetFrontFace;
-	PFN_vkCmdSetPrimitiveRestartEnable vkCmdSetPrimitiveRestartEnable;
-	PFN_vkCmdSetPrimitiveTopology vkCmdSetPrimitiveTopology;
-	PFN_vkCmdSetRasterizerDiscardEnable vkCmdSetRasterizerDiscardEnable;
-	PFN_vkCmdSetScissorWithCount vkCmdSetScissorWithCount;
-	PFN_vkCmdSetStencilOp vkCmdSetStencilOp;
-	PFN_vkCmdSetStencilTestEnable vkCmdSetStencilTestEnable;
-	PFN_vkCmdSetViewportWithCount vkCmdSetViewportWithCount;
-	PFN_vkCmdWaitEvents2 vkCmdWaitEvents2;
 	PFN_vkCmdWriteTimestamp2 vkCmdWriteTimestamp2;
 	PFN_vkCreatePrivateDataSlot vkCreatePrivateDataSlot;
 	PFN_vkDestroyPrivateDataSlot vkDestroyPrivateDataSlot;
@@ -391,28 +377,58 @@ struct VkDeviceTable
 	PFN_vkGetPrivateData vkGetPrivateData;
 	PFN_vkQueueSubmit2 vkQueueSubmit2;
 	PFN_vkSetPrivateData vkSetPrivateData;
-#endif /* defined(VK_VERSION_1_3) */
-#if defined(VK_VERSION_1_4)
-	PFN_vkCmdBindDescriptorSets2 vkCmdBindDescriptorSets2;
-	PFN_vkCmdBindIndexBuffer2 vkCmdBindIndexBuffer2;
-	PFN_vkCmdPushConstants2 vkCmdPushConstants2;
-	PFN_vkCmdPushDescriptorSet vkCmdPushDescriptorSet;
-	PFN_vkCmdPushDescriptorSet2 vkCmdPushDescriptorSet2;
-	PFN_vkCmdPushDescriptorSetWithTemplate vkCmdPushDescriptorSetWithTemplate;
-	PFN_vkCmdPushDescriptorSetWithTemplate2 vkCmdPushDescriptorSetWithTemplate2;
-	PFN_vkCmdSetLineStipple vkCmdSetLineStipple;
-	PFN_vkCmdSetRenderingAttachmentLocations vkCmdSetRenderingAttachmentLocations;
-	PFN_vkCmdSetRenderingInputAttachmentIndices vkCmdSetRenderingInputAttachmentIndices;
+#endif /* defined(VK_BASE_VERSION_1_3) */
+#if defined(VK_COMPUTE_VERSION_1_3)
+	PFN_vkCmdResetEvent2 vkCmdResetEvent2;
+	PFN_vkCmdSetEvent2 vkCmdSetEvent2;
+	PFN_vkCmdWaitEvents2 vkCmdWaitEvents2;
+#endif /* defined(VK_COMPUTE_VERSION_1_3) */
+#if defined(VK_GRAPHICS_VERSION_1_3)
+	PFN_vkCmdBeginRendering vkCmdBeginRendering;
+	PFN_vkCmdBindVertexBuffers2 vkCmdBindVertexBuffers2;
+	PFN_vkCmdBlitImage2 vkCmdBlitImage2;
+	PFN_vkCmdEndRendering vkCmdEndRendering;
+	PFN_vkCmdResolveImage2 vkCmdResolveImage2;
+	PFN_vkCmdSetCullMode vkCmdSetCullMode;
+	PFN_vkCmdSetDepthBiasEnable vkCmdSetDepthBiasEnable;
+	PFN_vkCmdSetDepthBoundsTestEnable vkCmdSetDepthBoundsTestEnable;
+	PFN_vkCmdSetDepthCompareOp vkCmdSetDepthCompareOp;
+	PFN_vkCmdSetDepthTestEnable vkCmdSetDepthTestEnable;
+	PFN_vkCmdSetDepthWriteEnable vkCmdSetDepthWriteEnable;
+	PFN_vkCmdSetFrontFace vkCmdSetFrontFace;
+	PFN_vkCmdSetPrimitiveRestartEnable vkCmdSetPrimitiveRestartEnable;
+	PFN_vkCmdSetPrimitiveTopology vkCmdSetPrimitiveTopology;
+	PFN_vkCmdSetRasterizerDiscardEnable vkCmdSetRasterizerDiscardEnable;
+	PFN_vkCmdSetScissorWithCount vkCmdSetScissorWithCount;
+	PFN_vkCmdSetStencilOp vkCmdSetStencilOp;
+	PFN_vkCmdSetStencilTestEnable vkCmdSetStencilTestEnable;
+	PFN_vkCmdSetViewportWithCount vkCmdSetViewportWithCount;
+#endif /* defined(VK_GRAPHICS_VERSION_1_3) */
+#if defined(VK_BASE_VERSION_1_4)
 	PFN_vkCopyImageToImage vkCopyImageToImage;
 	PFN_vkCopyImageToMemory vkCopyImageToMemory;
 	PFN_vkCopyMemoryToImage vkCopyMemoryToImage;
 	PFN_vkGetDeviceImageSubresourceLayout vkGetDeviceImageSubresourceLayout;
 	PFN_vkGetImageSubresourceLayout2 vkGetImageSubresourceLayout2;
-	PFN_vkGetRenderingAreaGranularity vkGetRenderingAreaGranularity;
 	PFN_vkMapMemory2 vkMapMemory2;
 	PFN_vkTransitionImageLayout vkTransitionImageLayout;
 	PFN_vkUnmapMemory2 vkUnmapMemory2;
-#endif /* defined(VK_VERSION_1_4) */
+#endif /* defined(VK_BASE_VERSION_1_4) */
+#if defined(VK_COMPUTE_VERSION_1_4)
+	PFN_vkCmdBindDescriptorSets2 vkCmdBindDescriptorSets2;
+	PFN_vkCmdPushConstants2 vkCmdPushConstants2;
+	PFN_vkCmdPushDescriptorSet vkCmdPushDescriptorSet;
+	PFN_vkCmdPushDescriptorSet2 vkCmdPushDescriptorSet2;
+	PFN_vkCmdPushDescriptorSetWithTemplate vkCmdPushDescriptorSetWithTemplate;
+	PFN_vkCmdPushDescriptorSetWithTemplate2 vkCmdPushDescriptorSetWithTemplate2;
+#endif /* defined(VK_COMPUTE_VERSION_1_4) */
+#if defined(VK_GRAPHICS_VERSION_1_4)
+	PFN_vkCmdBindIndexBuffer2 vkCmdBindIndexBuffer2;
+	PFN_vkCmdSetLineStipple vkCmdSetLineStipple;
+	PFN_vkCmdSetRenderingAttachmentLocations vkCmdSetRenderingAttachmentLocations;
+	PFN_vkCmdSetRenderingInputAttachmentIndices vkCmdSetRenderingInputAttachmentIndices;
+	PFN_vkGetRenderingAreaGranularity vkGetRenderingAreaGranularity;
+#endif /* defined(VK_GRAPHICS_VERSION_1_4) */
 #if defined(VK_AMDX_shader_enqueue)
 	PFN_vkCmdDispatchGraphAMDX vkCmdDispatchGraphAMDX;
 	PFN_vkCmdDispatchGraphIndirectAMDX vkCmdDispatchGraphIndirectAMDX;
@@ -573,6 +589,10 @@ struct VkDeviceTable
 #if defined(VK_EXT_line_rasterization)
 	PFN_vkCmdSetLineStippleEXT vkCmdSetLineStippleEXT;
 #endif /* defined(VK_EXT_line_rasterization) */
+#if defined(VK_EXT_memory_decompression)
+	PFN_vkCmdDecompressMemoryEXT vkCmdDecompressMemoryEXT;
+	PFN_vkCmdDecompressMemoryIndirectCountEXT vkCmdDecompressMemoryIndirectCountEXT;
+#endif /* defined(VK_EXT_memory_decompression) */
 #if defined(VK_EXT_mesh_shader)
 	PFN_vkCmdDrawMeshTasksEXT vkCmdDrawMeshTasksEXT;
 	PFN_vkCmdDrawMeshTasksIndirectEXT vkCmdDrawMeshTasksIndirectEXT;
@@ -806,6 +826,9 @@ struct VkDeviceTable
 #if defined(VK_KHR_maintenance1)
 	PFN_vkTrimCommandPoolKHR vkTrimCommandPoolKHR;
 #endif /* defined(VK_KHR_maintenance1) */
+#if defined(VK_KHR_maintenance10)
+	PFN_vkCmdEndRendering2KHR vkCmdEndRendering2KHR;
+#endif /* defined(VK_KHR_maintenance10) */
 #if defined(VK_KHR_maintenance3)
 	PFN_vkGetDescriptorSetLayoutSupportKHR vkGetDescriptorSetLayoutSupportKHR;
 #endif /* defined(VK_KHR_maintenance3) */
@@ -1048,6 +1071,11 @@ struct VkDeviceTable
 	PFN_vkCmdSetCoarseSampleOrderNV vkCmdSetCoarseSampleOrderNV;
 	PFN_vkCmdSetViewportShadingRatePaletteNV vkCmdSetViewportShadingRatePaletteNV;
 #endif /* defined(VK_NV_shading_rate_image) */
+#if defined(VK_OHOS_native_buffer)
+	PFN_vkAcquireImageOHOS vkAcquireImageOHOS;
+	PFN_vkGetSwapchainGrallocUsageOHOS vkGetSwapchainGrallocUsageOHOS;
+	PFN_vkQueueSignalReleaseImageOHOS vkQueueSignalReleaseImageOHOS;
+#endif /* defined(VK_OHOS_native_buffer) */
 #if defined(VK_QCOM_tile_memory_heap)
 	PFN_vkCmdBindTileMemoryQCOM vkCmdBindTileMemoryQCOM;
 #endif /* defined(VK_QCOM_tile_memory_heap) */
@@ -1176,98 +1204,43 @@ struct VkDeviceTable
 };
 
 /* VULKANLOADER_GENERATE_PROTOTYPES_H */
-#if defined(VK_VERSION_1_0)
+#if defined(VK_BASE_VERSION_1_0)
 extern PFN_vkAllocateCommandBuffers vkAllocateCommandBuffers;
-extern PFN_vkAllocateDescriptorSets vkAllocateDescriptorSets;
 extern PFN_vkAllocateMemory vkAllocateMemory;
 extern PFN_vkBeginCommandBuffer vkBeginCommandBuffer;
 extern PFN_vkBindBufferMemory vkBindBufferMemory;
 extern PFN_vkBindImageMemory vkBindImageMemory;
 extern PFN_vkCmdBeginQuery vkCmdBeginQuery;
-extern PFN_vkCmdBeginRenderPass vkCmdBeginRenderPass;
-extern PFN_vkCmdBindDescriptorSets vkCmdBindDescriptorSets;
-extern PFN_vkCmdBindIndexBuffer vkCmdBindIndexBuffer;
-extern PFN_vkCmdBindPipeline vkCmdBindPipeline;
-extern PFN_vkCmdBindVertexBuffers vkCmdBindVertexBuffers;
-extern PFN_vkCmdBlitImage vkCmdBlitImage;
-extern PFN_vkCmdClearAttachments vkCmdClearAttachments;
-extern PFN_vkCmdClearColorImage vkCmdClearColorImage;
-extern PFN_vkCmdClearDepthStencilImage vkCmdClearDepthStencilImage;
 extern PFN_vkCmdCopyBuffer vkCmdCopyBuffer;
 extern PFN_vkCmdCopyBufferToImage vkCmdCopyBufferToImage;
 extern PFN_vkCmdCopyImage vkCmdCopyImage;
 extern PFN_vkCmdCopyImageToBuffer vkCmdCopyImageToBuffer;
 extern PFN_vkCmdCopyQueryPoolResults vkCmdCopyQueryPoolResults;
-extern PFN_vkCmdDispatch vkCmdDispatch;
-extern PFN_vkCmdDispatchIndirect vkCmdDispatchIndirect;
-extern PFN_vkCmdDraw vkCmdDraw;
-extern PFN_vkCmdDrawIndexed vkCmdDrawIndexed;
-extern PFN_vkCmdDrawIndexedIndirect vkCmdDrawIndexedIndirect;
-extern PFN_vkCmdDrawIndirect vkCmdDrawIndirect;
 extern PFN_vkCmdEndQuery vkCmdEndQuery;
-extern PFN_vkCmdEndRenderPass vkCmdEndRenderPass;
 extern PFN_vkCmdExecuteCommands vkCmdExecuteCommands;
 extern PFN_vkCmdFillBuffer vkCmdFillBuffer;
-extern PFN_vkCmdNextSubpass vkCmdNextSubpass;
 extern PFN_vkCmdPipelineBarrier vkCmdPipelineBarrier;
-extern PFN_vkCmdPushConstants vkCmdPushConstants;
-extern PFN_vkCmdResetEvent vkCmdResetEvent;
 extern PFN_vkCmdResetQueryPool vkCmdResetQueryPool;
-extern PFN_vkCmdResolveImage vkCmdResolveImage;
-extern PFN_vkCmdSetBlendConstants vkCmdSetBlendConstants;
-extern PFN_vkCmdSetDepthBias vkCmdSetDepthBias;
-extern PFN_vkCmdSetDepthBounds vkCmdSetDepthBounds;
-extern PFN_vkCmdSetEvent vkCmdSetEvent;
-extern PFN_vkCmdSetLineWidth vkCmdSetLineWidth;
-extern PFN_vkCmdSetScissor vkCmdSetScissor;
-extern PFN_vkCmdSetStencilCompareMask vkCmdSetStencilCompareMask;
-extern PFN_vkCmdSetStencilReference vkCmdSetStencilReference;
-extern PFN_vkCmdSetStencilWriteMask vkCmdSetStencilWriteMask;
-extern PFN_vkCmdSetViewport vkCmdSetViewport;
 extern PFN_vkCmdUpdateBuffer vkCmdUpdateBuffer;
-extern PFN_vkCmdWaitEvents vkCmdWaitEvents;
 extern PFN_vkCmdWriteTimestamp vkCmdWriteTimestamp;
 extern PFN_vkCreateBuffer vkCreateBuffer;
-extern PFN_vkCreateBufferView vkCreateBufferView;
 extern PFN_vkCreateCommandPool vkCreateCommandPool;
-extern PFN_vkCreateComputePipelines vkCreateComputePipelines;
-extern PFN_vkCreateDescriptorPool vkCreateDescriptorPool;
-extern PFN_vkCreateDescriptorSetLayout vkCreateDescriptorSetLayout;
 extern PFN_vkCreateDevice vkCreateDevice;
-extern PFN_vkCreateEvent vkCreateEvent;
 extern PFN_vkCreateFence vkCreateFence;
-extern PFN_vkCreateFramebuffer vkCreateFramebuffer;
-extern PFN_vkCreateGraphicsPipelines vkCreateGraphicsPipelines;
 extern PFN_vkCreateImage vkCreateImage;
 extern PFN_vkCreateImageView vkCreateImageView;
 extern PFN_vkCreateInstance vkCreateInstance;
-extern PFN_vkCreatePipelineCache vkCreatePipelineCache;
-extern PFN_vkCreatePipelineLayout vkCreatePipelineLayout;
 extern PFN_vkCreateQueryPool vkCreateQueryPool;
-extern PFN_vkCreateRenderPass vkCreateRenderPass;
-extern PFN_vkCreateSampler vkCreateSampler;
 extern PFN_vkCreateSemaphore vkCreateSemaphore;
-extern PFN_vkCreateShaderModule vkCreateShaderModule;
 extern PFN_vkDestroyBuffer vkDestroyBuffer;
-extern PFN_vkDestroyBufferView vkDestroyBufferView;
 extern PFN_vkDestroyCommandPool vkDestroyCommandPool;
-extern PFN_vkDestroyDescriptorPool vkDestroyDescriptorPool;
-extern PFN_vkDestroyDescriptorSetLayout vkDestroyDescriptorSetLayout;
 extern PFN_vkDestroyDevice vkDestroyDevice;
-extern PFN_vkDestroyEvent vkDestroyEvent;
 extern PFN_vkDestroyFence vkDestroyFence;
-extern PFN_vkDestroyFramebuffer vkDestroyFramebuffer;
 extern PFN_vkDestroyImage vkDestroyImage;
 extern PFN_vkDestroyImageView vkDestroyImageView;
 extern PFN_vkDestroyInstance vkDestroyInstance;
-extern PFN_vkDestroyPipeline vkDestroyPipeline;
-extern PFN_vkDestroyPipelineCache vkDestroyPipelineCache;
-extern PFN_vkDestroyPipelineLayout vkDestroyPipelineLayout;
 extern PFN_vkDestroyQueryPool vkDestroyQueryPool;
-extern PFN_vkDestroyRenderPass vkDestroyRenderPass;
-extern PFN_vkDestroySampler vkDestroySampler;
 extern PFN_vkDestroySemaphore vkDestroySemaphore;
-extern PFN_vkDestroyShaderModule vkDestroyShaderModule;
 extern PFN_vkDeviceWaitIdle vkDeviceWaitIdle;
 extern PFN_vkEndCommandBuffer vkEndCommandBuffer;
 extern PFN_vkEnumerateDeviceExtensionProperties vkEnumerateDeviceExtensionProperties;
@@ -1277,13 +1250,11 @@ extern PFN_vkEnumerateInstanceLayerProperties vkEnumerateInstanceLayerProperties
 extern PFN_vkEnumeratePhysicalDevices vkEnumeratePhysicalDevices;
 extern PFN_vkFlushMappedMemoryRanges vkFlushMappedMemoryRanges;
 extern PFN_vkFreeCommandBuffers vkFreeCommandBuffers;
-extern PFN_vkFreeDescriptorSets vkFreeDescriptorSets;
 extern PFN_vkFreeMemory vkFreeMemory;
 extern PFN_vkGetBufferMemoryRequirements vkGetBufferMemoryRequirements;
 extern PFN_vkGetDeviceMemoryCommitment vkGetDeviceMemoryCommitment;
 extern PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr;
 extern PFN_vkGetDeviceQueue vkGetDeviceQueue;
-extern PFN_vkGetEventStatus vkGetEventStatus;
 extern PFN_vkGetFenceStatus vkGetFenceStatus;
 extern PFN_vkGetImageMemoryRequirements vkGetImageMemoryRequirements;
 extern PFN_vkGetImageSparseMemoryRequirements vkGetImageSparseMemoryRequirements;
@@ -1296,38 +1267,93 @@ extern PFN_vkGetPhysicalDeviceMemoryProperties vkGetPhysicalDeviceMemoryProperti
 extern PFN_vkGetPhysicalDeviceProperties vkGetPhysicalDeviceProperties;
 extern PFN_vkGetPhysicalDeviceQueueFamilyProperties vkGetPhysicalDeviceQueueFamilyProperties;
 extern PFN_vkGetPhysicalDeviceSparseImageFormatProperties vkGetPhysicalDeviceSparseImageFormatProperties;
-extern PFN_vkGetPipelineCacheData vkGetPipelineCacheData;
 extern PFN_vkGetQueryPoolResults vkGetQueryPoolResults;
-extern PFN_vkGetRenderAreaGranularity vkGetRenderAreaGranularity;
 extern PFN_vkInvalidateMappedMemoryRanges vkInvalidateMappedMemoryRanges;
 extern PFN_vkMapMemory vkMapMemory;
-extern PFN_vkMergePipelineCaches vkMergePipelineCaches;
 extern PFN_vkQueueBindSparse vkQueueBindSparse;
 extern PFN_vkQueueSubmit vkQueueSubmit;
 extern PFN_vkQueueWaitIdle vkQueueWaitIdle;
 extern PFN_vkResetCommandBuffer vkResetCommandBuffer;
 extern PFN_vkResetCommandPool vkResetCommandPool;
+extern PFN_vkResetFences vkResetFences;
+extern PFN_vkUnmapMemory vkUnmapMemory;
+extern PFN_vkWaitForFences vkWaitForFences;
+#endif /* defined(VK_BASE_VERSION_1_0) */
+#if defined(VK_COMPUTE_VERSION_1_0)
+extern PFN_vkAllocateDescriptorSets vkAllocateDescriptorSets;
+extern PFN_vkCmdBindDescriptorSets vkCmdBindDescriptorSets;
+extern PFN_vkCmdBindPipeline vkCmdBindPipeline;
+extern PFN_vkCmdClearColorImage vkCmdClearColorImage;
+extern PFN_vkCmdDispatch vkCmdDispatch;
+extern PFN_vkCmdDispatchIndirect vkCmdDispatchIndirect;
+extern PFN_vkCmdPushConstants vkCmdPushConstants;
+extern PFN_vkCmdResetEvent vkCmdResetEvent;
+extern PFN_vkCmdSetEvent vkCmdSetEvent;
+extern PFN_vkCmdWaitEvents vkCmdWaitEvents;
+extern PFN_vkCreateBufferView vkCreateBufferView;
+extern PFN_vkCreateComputePipelines vkCreateComputePipelines;
+extern PFN_vkCreateDescriptorPool vkCreateDescriptorPool;
+extern PFN_vkCreateDescriptorSetLayout vkCreateDescriptorSetLayout;
+extern PFN_vkCreateEvent vkCreateEvent;
+extern PFN_vkCreatePipelineCache vkCreatePipelineCache;
+extern PFN_vkCreatePipelineLayout vkCreatePipelineLayout;
+extern PFN_vkCreateSampler vkCreateSampler;
+extern PFN_vkCreateShaderModule vkCreateShaderModule;
+extern PFN_vkDestroyBufferView vkDestroyBufferView;
+extern PFN_vkDestroyDescriptorPool vkDestroyDescriptorPool;
+extern PFN_vkDestroyDescriptorSetLayout vkDestroyDescriptorSetLayout;
+extern PFN_vkDestroyEvent vkDestroyEvent;
+extern PFN_vkDestroyPipeline vkDestroyPipeline;
+extern PFN_vkDestroyPipelineCache vkDestroyPipelineCache;
+extern PFN_vkDestroyPipelineLayout vkDestroyPipelineLayout;
+extern PFN_vkDestroySampler vkDestroySampler;
+extern PFN_vkDestroyShaderModule vkDestroyShaderModule;
+extern PFN_vkFreeDescriptorSets vkFreeDescriptorSets;
+extern PFN_vkGetEventStatus vkGetEventStatus;
+extern PFN_vkGetPipelineCacheData vkGetPipelineCacheData;
+extern PFN_vkMergePipelineCaches vkMergePipelineCaches;
 extern PFN_vkResetDescriptorPool vkResetDescriptorPool;
 extern PFN_vkResetEvent vkResetEvent;
-extern PFN_vkResetFences vkResetFences;
 extern PFN_vkSetEvent vkSetEvent;
-extern PFN_vkUnmapMemory vkUnmapMemory;
 extern PFN_vkUpdateDescriptorSets vkUpdateDescriptorSets;
-extern PFN_vkWaitForFences vkWaitForFences;
-#endif /* defined(VK_VERSION_1_0) */
-#if defined(VK_VERSION_1_1)
+#endif /* defined(VK_COMPUTE_VERSION_1_0) */
+#if defined(VK_GRAPHICS_VERSION_1_0)
+extern PFN_vkCmdBeginRenderPass vkCmdBeginRenderPass;
+extern PFN_vkCmdBindIndexBuffer vkCmdBindIndexBuffer;
+extern PFN_vkCmdBindVertexBuffers vkCmdBindVertexBuffers;
+extern PFN_vkCmdBlitImage vkCmdBlitImage;
+extern PFN_vkCmdClearAttachments vkCmdClearAttachments;
+extern PFN_vkCmdClearDepthStencilImage vkCmdClearDepthStencilImage;
+extern PFN_vkCmdDraw vkCmdDraw;
+extern PFN_vkCmdDrawIndexed vkCmdDrawIndexed;
+extern PFN_vkCmdDrawIndexedIndirect vkCmdDrawIndexedIndirect;
+extern PFN_vkCmdDrawIndirect vkCmdDrawIndirect;
+extern PFN_vkCmdEndRenderPass vkCmdEndRenderPass;
+extern PFN_vkCmdNextSubpass vkCmdNextSubpass;
+extern PFN_vkCmdResolveImage vkCmdResolveImage;
+extern PFN_vkCmdSetBlendConstants vkCmdSetBlendConstants;
+extern PFN_vkCmdSetDepthBias vkCmdSetDepthBias;
+extern PFN_vkCmdSetDepthBounds vkCmdSetDepthBounds;
+extern PFN_vkCmdSetLineWidth vkCmdSetLineWidth;
+extern PFN_vkCmdSetScissor vkCmdSetScissor;
+extern PFN_vkCmdSetStencilCompareMask vkCmdSetStencilCompareMask;
+extern PFN_vkCmdSetStencilReference vkCmdSetStencilReference;
+extern PFN_vkCmdSetStencilWriteMask vkCmdSetStencilWriteMask;
+extern PFN_vkCmdSetViewport vkCmdSetViewport;
+extern PFN_vkCreateFramebuffer vkCreateFramebuffer;
+extern PFN_vkCreateGraphicsPipelines vkCreateGraphicsPipelines;
+extern PFN_vkCreateRenderPass vkCreateRenderPass;
+extern PFN_vkDestroyFramebuffer vkDestroyFramebuffer;
+extern PFN_vkDestroyRenderPass vkDestroyRenderPass;
+extern PFN_vkGetRenderAreaGranularity vkGetRenderAreaGranularity;
+#endif /* defined(VK_GRAPHICS_VERSION_1_0) */
+#if defined(VK_BASE_VERSION_1_1)
 extern PFN_vkBindBufferMemory2 vkBindBufferMemory2;
 extern PFN_vkBindImageMemory2 vkBindImageMemory2;
-extern PFN_vkCmdDispatchBase vkCmdDispatchBase;
 extern PFN_vkCmdSetDeviceMask vkCmdSetDeviceMask;
-extern PFN_vkCreateDescriptorUpdateTemplate vkCreateDescriptorUpdateTemplate;
-extern PFN_vkCreateSamplerYcbcrConversion vkCreateSamplerYcbcrConversion;
-extern PFN_vkDestroyDescriptorUpdateTemplate vkDestroyDescriptorUpdateTemplate;
-extern PFN_vkDestroySamplerYcbcrConversion vkDestroySamplerYcbcrConversion;
 extern PFN_vkEnumerateInstanceVersion vkEnumerateInstanceVersion;
 extern PFN_vkEnumeratePhysicalDeviceGroups vkEnumeratePhysicalDeviceGroups;
 extern PFN_vkGetBufferMemoryRequirements2 vkGetBufferMemoryRequirements2;
-extern PFN_vkGetDescriptorSetLayoutSupport vkGetDescriptorSetLayoutSupport;
 extern PFN_vkGetDeviceGroupPeerMemoryFeatures vkGetDeviceGroupPeerMemoryFeatures;
 extern PFN_vkGetDeviceQueue2 vkGetDeviceQueue2;
 extern PFN_vkGetImageMemoryRequirements2 vkGetImageMemoryRequirements2;
@@ -1343,15 +1369,17 @@ extern PFN_vkGetPhysicalDeviceProperties2 vkGetPhysicalDeviceProperties2;
 extern PFN_vkGetPhysicalDeviceQueueFamilyProperties2 vkGetPhysicalDeviceQueueFamilyProperties2;
 extern PFN_vkGetPhysicalDeviceSparseImageFormatProperties2 vkGetPhysicalDeviceSparseImageFormatProperties2;
 extern PFN_vkTrimCommandPool vkTrimCommandPool;
+#endif /* defined(VK_BASE_VERSION_1_1) */
+#if defined(VK_COMPUTE_VERSION_1_1)
+extern PFN_vkCmdDispatchBase vkCmdDispatchBase;
+extern PFN_vkCreateDescriptorUpdateTemplate vkCreateDescriptorUpdateTemplate;
+extern PFN_vkCreateSamplerYcbcrConversion vkCreateSamplerYcbcrConversion;
+extern PFN_vkDestroyDescriptorUpdateTemplate vkDestroyDescriptorUpdateTemplate;
+extern PFN_vkDestroySamplerYcbcrConversion vkDestroySamplerYcbcrConversion;
+extern PFN_vkGetDescriptorSetLayoutSupport vkGetDescriptorSetLayoutSupport;
 extern PFN_vkUpdateDescriptorSetWithTemplate vkUpdateDescriptorSetWithTemplate;
-#endif /* defined(VK_VERSION_1_1) */
-#if defined(VK_VERSION_1_2)
-extern PFN_vkCmdBeginRenderPass2 vkCmdBeginRenderPass2;
-extern PFN_vkCmdDrawIndexedIndirectCount vkCmdDrawIndexedIndirectCount;
-extern PFN_vkCmdDrawIndirectCount vkCmdDrawIndirectCount;
-extern PFN_vkCmdEndRenderPass2 vkCmdEndRenderPass2;
-extern PFN_vkCmdNextSubpass2 vkCmdNextSubpass2;
-extern PFN_vkCreateRenderPass2 vkCreateRenderPass2;
+#endif /* defined(VK_COMPUTE_VERSION_1_1) */
+#if defined(VK_BASE_VERSION_1_2)
 extern PFN_vkGetBufferDeviceAddress vkGetBufferDeviceAddress;
 extern PFN_vkGetBufferOpaqueCaptureAddress vkGetBufferOpaqueCaptureAddress;
 extern PFN_vkGetDeviceMemoryOpaqueCaptureAddress vkGetDeviceMemoryOpaqueCaptureAddress;
@@ -1359,35 +1387,21 @@ extern PFN_vkGetSemaphoreCounterValue vkGetSemaphoreCounterValue;
 extern PFN_vkResetQueryPool vkResetQueryPool;
 extern PFN_vkSignalSemaphore vkSignalSemaphore;
 extern PFN_vkWaitSemaphores vkWaitSemaphores;
-#endif /* defined(VK_VERSION_1_2) */
-#if defined(VK_VERSION_1_3)
-extern PFN_vkCmdBeginRendering vkCmdBeginRendering;
-extern PFN_vkCmdBindVertexBuffers2 vkCmdBindVertexBuffers2;
-extern PFN_vkCmdBlitImage2 vkCmdBlitImage2;
+#endif /* defined(VK_BASE_VERSION_1_2) */
+#if defined(VK_GRAPHICS_VERSION_1_2)
+extern PFN_vkCmdBeginRenderPass2 vkCmdBeginRenderPass2;
+extern PFN_vkCmdDrawIndexedIndirectCount vkCmdDrawIndexedIndirectCount;
+extern PFN_vkCmdDrawIndirectCount vkCmdDrawIndirectCount;
+extern PFN_vkCmdEndRenderPass2 vkCmdEndRenderPass2;
+extern PFN_vkCmdNextSubpass2 vkCmdNextSubpass2;
+extern PFN_vkCreateRenderPass2 vkCreateRenderPass2;
+#endif /* defined(VK_GRAPHICS_VERSION_1_2) */
+#if defined(VK_BASE_VERSION_1_3)
 extern PFN_vkCmdCopyBuffer2 vkCmdCopyBuffer2;
 extern PFN_vkCmdCopyBufferToImage2 vkCmdCopyBufferToImage2;
 extern PFN_vkCmdCopyImage2 vkCmdCopyImage2;
 extern PFN_vkCmdCopyImageToBuffer2 vkCmdCopyImageToBuffer2;
-extern PFN_vkCmdEndRendering vkCmdEndRendering;
 extern PFN_vkCmdPipelineBarrier2 vkCmdPipelineBarrier2;
-extern PFN_vkCmdResetEvent2 vkCmdResetEvent2;
-extern PFN_vkCmdResolveImage2 vkCmdResolveImage2;
-extern PFN_vkCmdSetCullMode vkCmdSetCullMode;
-extern PFN_vkCmdSetDepthBiasEnable vkCmdSetDepthBiasEnable;
-extern PFN_vkCmdSetDepthBoundsTestEnable vkCmdSetDepthBoundsTestEnable;
-extern PFN_vkCmdSetDepthCompareOp vkCmdSetDepthCompareOp;
-extern PFN_vkCmdSetDepthTestEnable vkCmdSetDepthTestEnable;
-extern PFN_vkCmdSetDepthWriteEnable vkCmdSetDepthWriteEnable;
-extern PFN_vkCmdSetEvent2 vkCmdSetEvent2;
-extern PFN_vkCmdSetFrontFace vkCmdSetFrontFace;
-extern PFN_vkCmdSetPrimitiveRestartEnable vkCmdSetPrimitiveRestartEnable;
-extern PFN_vkCmdSetPrimitiveTopology vkCmdSetPrimitiveTopology;
-extern PFN_vkCmdSetRasterizerDiscardEnable vkCmdSetRasterizerDiscardEnable;
-extern PFN_vkCmdSetScissorWithCount vkCmdSetScissorWithCount;
-extern PFN_vkCmdSetStencilOp vkCmdSetStencilOp;
-extern PFN_vkCmdSetStencilTestEnable vkCmdSetStencilTestEnable;
-extern PFN_vkCmdSetViewportWithCount vkCmdSetViewportWithCount;
-extern PFN_vkCmdWaitEvents2 vkCmdWaitEvents2;
 extern PFN_vkCmdWriteTimestamp2 vkCmdWriteTimestamp2;
 extern PFN_vkCreatePrivateDataSlot vkCreatePrivateDataSlot;
 extern PFN_vkDestroyPrivateDataSlot vkDestroyPrivateDataSlot;
@@ -1398,28 +1412,58 @@ extern PFN_vkGetPhysicalDeviceToolProperties vkGetPhysicalDeviceToolProperties;
 extern PFN_vkGetPrivateData vkGetPrivateData;
 extern PFN_vkQueueSubmit2 vkQueueSubmit2;
 extern PFN_vkSetPrivateData vkSetPrivateData;
-#endif /* defined(VK_VERSION_1_3) */
-#if defined(VK_VERSION_1_4)
-extern PFN_vkCmdBindDescriptorSets2 vkCmdBindDescriptorSets2;
-extern PFN_vkCmdBindIndexBuffer2 vkCmdBindIndexBuffer2;
-extern PFN_vkCmdPushConstants2 vkCmdPushConstants2;
-extern PFN_vkCmdPushDescriptorSet vkCmdPushDescriptorSet;
-extern PFN_vkCmdPushDescriptorSet2 vkCmdPushDescriptorSet2;
-extern PFN_vkCmdPushDescriptorSetWithTemplate vkCmdPushDescriptorSetWithTemplate;
-extern PFN_vkCmdPushDescriptorSetWithTemplate2 vkCmdPushDescriptorSetWithTemplate2;
-extern PFN_vkCmdSetLineStipple vkCmdSetLineStipple;
-extern PFN_vkCmdSetRenderingAttachmentLocations vkCmdSetRenderingAttachmentLocations;
-extern PFN_vkCmdSetRenderingInputAttachmentIndices vkCmdSetRenderingInputAttachmentIndices;
+#endif /* defined(VK_BASE_VERSION_1_3) */
+#if defined(VK_COMPUTE_VERSION_1_3)
+extern PFN_vkCmdResetEvent2 vkCmdResetEvent2;
+extern PFN_vkCmdSetEvent2 vkCmdSetEvent2;
+extern PFN_vkCmdWaitEvents2 vkCmdWaitEvents2;
+#endif /* defined(VK_COMPUTE_VERSION_1_3) */
+#if defined(VK_GRAPHICS_VERSION_1_3)
+extern PFN_vkCmdBeginRendering vkCmdBeginRendering;
+extern PFN_vkCmdBindVertexBuffers2 vkCmdBindVertexBuffers2;
+extern PFN_vkCmdBlitImage2 vkCmdBlitImage2;
+extern PFN_vkCmdEndRendering vkCmdEndRendering;
+extern PFN_vkCmdResolveImage2 vkCmdResolveImage2;
+extern PFN_vkCmdSetCullMode vkCmdSetCullMode;
+extern PFN_vkCmdSetDepthBiasEnable vkCmdSetDepthBiasEnable;
+extern PFN_vkCmdSetDepthBoundsTestEnable vkCmdSetDepthBoundsTestEnable;
+extern PFN_vkCmdSetDepthCompareOp vkCmdSetDepthCompareOp;
+extern PFN_vkCmdSetDepthTestEnable vkCmdSetDepthTestEnable;
+extern PFN_vkCmdSetDepthWriteEnable vkCmdSetDepthWriteEnable;
+extern PFN_vkCmdSetFrontFace vkCmdSetFrontFace;
+extern PFN_vkCmdSetPrimitiveRestartEnable vkCmdSetPrimitiveRestartEnable;
+extern PFN_vkCmdSetPrimitiveTopology vkCmdSetPrimitiveTopology;
+extern PFN_vkCmdSetRasterizerDiscardEnable vkCmdSetRasterizerDiscardEnable;
+extern PFN_vkCmdSetScissorWithCount vkCmdSetScissorWithCount;
+extern PFN_vkCmdSetStencilOp vkCmdSetStencilOp;
+extern PFN_vkCmdSetStencilTestEnable vkCmdSetStencilTestEnable;
+extern PFN_vkCmdSetViewportWithCount vkCmdSetViewportWithCount;
+#endif /* defined(VK_GRAPHICS_VERSION_1_3) */
+#if defined(VK_BASE_VERSION_1_4)
 extern PFN_vkCopyImageToImage vkCopyImageToImage;
 extern PFN_vkCopyImageToMemory vkCopyImageToMemory;
 extern PFN_vkCopyMemoryToImage vkCopyMemoryToImage;
 extern PFN_vkGetDeviceImageSubresourceLayout vkGetDeviceImageSubresourceLayout;
 extern PFN_vkGetImageSubresourceLayout2 vkGetImageSubresourceLayout2;
-extern PFN_vkGetRenderingAreaGranularity vkGetRenderingAreaGranularity;
 extern PFN_vkMapMemory2 vkMapMemory2;
 extern PFN_vkTransitionImageLayout vkTransitionImageLayout;
 extern PFN_vkUnmapMemory2 vkUnmapMemory2;
-#endif /* defined(VK_VERSION_1_4) */
+#endif /* defined(VK_BASE_VERSION_1_4) */
+#if defined(VK_COMPUTE_VERSION_1_4)
+extern PFN_vkCmdBindDescriptorSets2 vkCmdBindDescriptorSets2;
+extern PFN_vkCmdPushConstants2 vkCmdPushConstants2;
+extern PFN_vkCmdPushDescriptorSet vkCmdPushDescriptorSet;
+extern PFN_vkCmdPushDescriptorSet2 vkCmdPushDescriptorSet2;
+extern PFN_vkCmdPushDescriptorSetWithTemplate vkCmdPushDescriptorSetWithTemplate;
+extern PFN_vkCmdPushDescriptorSetWithTemplate2 vkCmdPushDescriptorSetWithTemplate2;
+#endif /* defined(VK_COMPUTE_VERSION_1_4) */
+#if defined(VK_GRAPHICS_VERSION_1_4)
+extern PFN_vkCmdBindIndexBuffer2 vkCmdBindIndexBuffer2;
+extern PFN_vkCmdSetLineStipple vkCmdSetLineStipple;
+extern PFN_vkCmdSetRenderingAttachmentLocations vkCmdSetRenderingAttachmentLocations;
+extern PFN_vkCmdSetRenderingInputAttachmentIndices vkCmdSetRenderingInputAttachmentIndices;
+extern PFN_vkGetRenderingAreaGranularity vkGetRenderingAreaGranularity;
+#endif /* defined(VK_GRAPHICS_VERSION_1_4) */
 #if defined(VK_AMDX_shader_enqueue)
 extern PFN_vkCmdDispatchGraphAMDX vkCmdDispatchGraphAMDX;
 extern PFN_vkCmdDispatchGraphIndirectAMDX vkCmdDispatchGraphIndirectAMDX;
@@ -1624,6 +1668,10 @@ extern PFN_vkGetImageDrmFormatModifierPropertiesEXT vkGetImageDrmFormatModifierP
 #if defined(VK_EXT_line_rasterization)
 extern PFN_vkCmdSetLineStippleEXT vkCmdSetLineStippleEXT;
 #endif /* defined(VK_EXT_line_rasterization) */
+#if defined(VK_EXT_memory_decompression)
+extern PFN_vkCmdDecompressMemoryEXT vkCmdDecompressMemoryEXT;
+extern PFN_vkCmdDecompressMemoryIndirectCountEXT vkCmdDecompressMemoryIndirectCountEXT;
+#endif /* defined(VK_EXT_memory_decompression) */
 #if defined(VK_EXT_mesh_shader)
 extern PFN_vkCmdDrawMeshTasksEXT vkCmdDrawMeshTasksEXT;
 extern PFN_vkCmdDrawMeshTasksIndirectEXT vkCmdDrawMeshTasksIndirectEXT;
@@ -1918,6 +1966,9 @@ extern PFN_vkCmdSetLineStippleKHR vkCmdSetLineStippleKHR;
 #if defined(VK_KHR_maintenance1)
 extern PFN_vkTrimCommandPoolKHR vkTrimCommandPoolKHR;
 #endif /* defined(VK_KHR_maintenance1) */
+#if defined(VK_KHR_maintenance10)
+extern PFN_vkCmdEndRendering2KHR vkCmdEndRendering2KHR;
+#endif /* defined(VK_KHR_maintenance10) */
 #if defined(VK_KHR_maintenance3)
 extern PFN_vkGetDescriptorSetLayoutSupportKHR vkGetDescriptorSetLayoutSupportKHR;
 #endif /* defined(VK_KHR_maintenance3) */
@@ -2215,6 +2266,11 @@ extern PFN_vkCmdBindShadingRateImageNV vkCmdBindShadingRateImageNV;
 extern PFN_vkCmdSetCoarseSampleOrderNV vkCmdSetCoarseSampleOrderNV;
 extern PFN_vkCmdSetViewportShadingRatePaletteNV vkCmdSetViewportShadingRatePaletteNV;
 #endif /* defined(VK_NV_shading_rate_image) */
+#if defined(VK_OHOS_native_buffer)
+extern PFN_vkAcquireImageOHOS vkAcquireImageOHOS;
+extern PFN_vkGetSwapchainGrallocUsageOHOS vkGetSwapchainGrallocUsageOHOS;
+extern PFN_vkQueueSignalReleaseImageOHOS vkQueueSignalReleaseImageOHOS;
+#endif /* defined(VK_OHOS_native_buffer) */
 #if defined(VK_OHOS_surface)
 extern PFN_vkCreateSurfaceOHOS vkCreateSurfaceOHOS;
 #endif /* defined(VK_OHOS_surface) */
@@ -2497,21 +2553,21 @@ void VkLoadDeviceTable(VkDeviceTable& table, VkDevice device)
 static void VkGenLoadLoader(void* const context, VkGenLoaderFunction load)
 {
 	/* VULKANLOADER_GENERATE_LOAD_LOADER */
-#if defined(VK_VERSION_1_0)
+#if defined(VK_BASE_VERSION_1_0)
 	vkCreateInstance = reinterpret_cast<PFN_vkCreateInstance>(load(context, "vkCreateInstance"));
 	vkEnumerateInstanceExtensionProperties = reinterpret_cast<PFN_vkEnumerateInstanceExtensionProperties>(load(context, "vkEnumerateInstanceExtensionProperties"));
 	vkEnumerateInstanceLayerProperties = reinterpret_cast<PFN_vkEnumerateInstanceLayerProperties>(load(context, "vkEnumerateInstanceLayerProperties"));
-#endif /* defined(VK_VERSION_1_0) */
-#if defined(VK_VERSION_1_1)
+#endif /* defined(VK_BASE_VERSION_1_0) */
+#if defined(VK_BASE_VERSION_1_1)
 	vkEnumerateInstanceVersion = reinterpret_cast<PFN_vkEnumerateInstanceVersion>(load(context, "vkEnumerateInstanceVersion"));
-#endif /* defined(VK_VERSION_1_1) */
+#endif /* defined(VK_BASE_VERSION_1_1) */
 	/* VULKANLOADER_GENERATE_LOAD_LOADER */
 }
 
 static void VkGenLoadInstance(VkInstance instance, VkGenLoaderFunction load)
 {
 	/* VULKANLOADER_GENERATE_LOAD_INSTANCE */
-#if defined(VK_VERSION_1_0)
+#if defined(VK_BASE_VERSION_1_0)
 	vkCreateDevice = reinterpret_cast<PFN_vkCreateDevice>(load(instance, "vkCreateDevice"));
 	vkDestroyInstance = reinterpret_cast<PFN_vkDestroyInstance>(load(instance, "vkDestroyInstance"));
 	vkEnumerateDeviceExtensionProperties = reinterpret_cast<PFN_vkEnumerateDeviceExtensionProperties>(load(instance, "vkEnumerateDeviceExtensionProperties"));
@@ -2525,8 +2581,8 @@ static void VkGenLoadInstance(VkInstance instance, VkGenLoaderFunction load)
 	vkGetPhysicalDeviceProperties = reinterpret_cast<PFN_vkGetPhysicalDeviceProperties>(load(instance, "vkGetPhysicalDeviceProperties"));
 	vkGetPhysicalDeviceQueueFamilyProperties = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyProperties>(load(instance, "vkGetPhysicalDeviceQueueFamilyProperties"));
 	vkGetPhysicalDeviceSparseImageFormatProperties = reinterpret_cast<PFN_vkGetPhysicalDeviceSparseImageFormatProperties>(load(instance, "vkGetPhysicalDeviceSparseImageFormatProperties"));
-#endif /* defined(VK_VERSION_1_0) */
-#if defined(VK_VERSION_1_1)
+#endif /* defined(VK_BASE_VERSION_1_0) */
+#if defined(VK_BASE_VERSION_1_1)
 	vkEnumeratePhysicalDeviceGroups = reinterpret_cast<PFN_vkEnumeratePhysicalDeviceGroups>(load(instance, "vkEnumeratePhysicalDeviceGroups"));
 	vkGetPhysicalDeviceExternalBufferProperties = reinterpret_cast<PFN_vkGetPhysicalDeviceExternalBufferProperties>(load(instance, "vkGetPhysicalDeviceExternalBufferProperties"));
 	vkGetPhysicalDeviceExternalFenceProperties = reinterpret_cast<PFN_vkGetPhysicalDeviceExternalFenceProperties>(load(instance, "vkGetPhysicalDeviceExternalFenceProperties"));
@@ -2538,10 +2594,10 @@ static void VkGenLoadInstance(VkInstance instance, VkGenLoaderFunction load)
 	vkGetPhysicalDeviceProperties2 = reinterpret_cast<PFN_vkGetPhysicalDeviceProperties2>(load(instance, "vkGetPhysicalDeviceProperties2"));
 	vkGetPhysicalDeviceQueueFamilyProperties2 = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyProperties2>(load(instance, "vkGetPhysicalDeviceQueueFamilyProperties2"));
 	vkGetPhysicalDeviceSparseImageFormatProperties2 = reinterpret_cast<PFN_vkGetPhysicalDeviceSparseImageFormatProperties2>(load(instance, "vkGetPhysicalDeviceSparseImageFormatProperties2"));
-#endif /* defined(VK_VERSION_1_1) */
-#if defined(VK_VERSION_1_3)
+#endif /* defined(VK_BASE_VERSION_1_1) */
+#if defined(VK_BASE_VERSION_1_3)
 	vkGetPhysicalDeviceToolProperties = reinterpret_cast<PFN_vkGetPhysicalDeviceToolProperties>(load(instance, "vkGetPhysicalDeviceToolProperties"));
-#endif /* defined(VK_VERSION_1_3) */
+#endif /* defined(VK_BASE_VERSION_1_3) */
 #if defined(VK_ARM_data_graph)
 	vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM>(load(instance, "vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM"));
 	vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM>(load(instance, "vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM"));
@@ -2742,153 +2798,153 @@ static void VkGenLoadInstance(VkInstance instance, VkGenLoaderFunction load)
 static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 {
 	/* VULKANLOADER_GENERATE_LOAD_DEVICE */
-#if defined(VK_VERSION_1_0)
+#if defined(VK_BASE_VERSION_1_0)
 	vkAllocateCommandBuffers = reinterpret_cast<PFN_vkAllocateCommandBuffers>(load(context, "vkAllocateCommandBuffers"));
-	vkAllocateDescriptorSets = reinterpret_cast<PFN_vkAllocateDescriptorSets>(load(context, "vkAllocateDescriptorSets"));
 	vkAllocateMemory = reinterpret_cast<PFN_vkAllocateMemory>(load(context, "vkAllocateMemory"));
 	vkBeginCommandBuffer = reinterpret_cast<PFN_vkBeginCommandBuffer>(load(context, "vkBeginCommandBuffer"));
 	vkBindBufferMemory = reinterpret_cast<PFN_vkBindBufferMemory>(load(context, "vkBindBufferMemory"));
 	vkBindImageMemory = reinterpret_cast<PFN_vkBindImageMemory>(load(context, "vkBindImageMemory"));
 	vkCmdBeginQuery = reinterpret_cast<PFN_vkCmdBeginQuery>(load(context, "vkCmdBeginQuery"));
-	vkCmdBeginRenderPass = reinterpret_cast<PFN_vkCmdBeginRenderPass>(load(context, "vkCmdBeginRenderPass"));
-	vkCmdBindDescriptorSets = reinterpret_cast<PFN_vkCmdBindDescriptorSets>(load(context, "vkCmdBindDescriptorSets"));
-	vkCmdBindIndexBuffer = reinterpret_cast<PFN_vkCmdBindIndexBuffer>(load(context, "vkCmdBindIndexBuffer"));
-	vkCmdBindPipeline = reinterpret_cast<PFN_vkCmdBindPipeline>(load(context, "vkCmdBindPipeline"));
-	vkCmdBindVertexBuffers = reinterpret_cast<PFN_vkCmdBindVertexBuffers>(load(context, "vkCmdBindVertexBuffers"));
-	vkCmdBlitImage = reinterpret_cast<PFN_vkCmdBlitImage>(load(context, "vkCmdBlitImage"));
-	vkCmdClearAttachments = reinterpret_cast<PFN_vkCmdClearAttachments>(load(context, "vkCmdClearAttachments"));
-	vkCmdClearColorImage = reinterpret_cast<PFN_vkCmdClearColorImage>(load(context, "vkCmdClearColorImage"));
-	vkCmdClearDepthStencilImage = reinterpret_cast<PFN_vkCmdClearDepthStencilImage>(load(context, "vkCmdClearDepthStencilImage"));
 	vkCmdCopyBuffer = reinterpret_cast<PFN_vkCmdCopyBuffer>(load(context, "vkCmdCopyBuffer"));
 	vkCmdCopyBufferToImage = reinterpret_cast<PFN_vkCmdCopyBufferToImage>(load(context, "vkCmdCopyBufferToImage"));
 	vkCmdCopyImage = reinterpret_cast<PFN_vkCmdCopyImage>(load(context, "vkCmdCopyImage"));
 	vkCmdCopyImageToBuffer = reinterpret_cast<PFN_vkCmdCopyImageToBuffer>(load(context, "vkCmdCopyImageToBuffer"));
 	vkCmdCopyQueryPoolResults = reinterpret_cast<PFN_vkCmdCopyQueryPoolResults>(load(context, "vkCmdCopyQueryPoolResults"));
+	vkCmdEndQuery = reinterpret_cast<PFN_vkCmdEndQuery>(load(context, "vkCmdEndQuery"));
+	vkCmdExecuteCommands = reinterpret_cast<PFN_vkCmdExecuteCommands>(load(context, "vkCmdExecuteCommands"));
+	vkCmdFillBuffer = reinterpret_cast<PFN_vkCmdFillBuffer>(load(context, "vkCmdFillBuffer"));
+	vkCmdPipelineBarrier = reinterpret_cast<PFN_vkCmdPipelineBarrier>(load(context, "vkCmdPipelineBarrier"));
+	vkCmdResetQueryPool = reinterpret_cast<PFN_vkCmdResetQueryPool>(load(context, "vkCmdResetQueryPool"));
+	vkCmdUpdateBuffer = reinterpret_cast<PFN_vkCmdUpdateBuffer>(load(context, "vkCmdUpdateBuffer"));
+	vkCmdWriteTimestamp = reinterpret_cast<PFN_vkCmdWriteTimestamp>(load(context, "vkCmdWriteTimestamp"));
+	vkCreateBuffer = reinterpret_cast<PFN_vkCreateBuffer>(load(context, "vkCreateBuffer"));
+	vkCreateCommandPool = reinterpret_cast<PFN_vkCreateCommandPool>(load(context, "vkCreateCommandPool"));
+	vkCreateFence = reinterpret_cast<PFN_vkCreateFence>(load(context, "vkCreateFence"));
+	vkCreateImage = reinterpret_cast<PFN_vkCreateImage>(load(context, "vkCreateImage"));
+	vkCreateImageView = reinterpret_cast<PFN_vkCreateImageView>(load(context, "vkCreateImageView"));
+	vkCreateQueryPool = reinterpret_cast<PFN_vkCreateQueryPool>(load(context, "vkCreateQueryPool"));
+	vkCreateSemaphore = reinterpret_cast<PFN_vkCreateSemaphore>(load(context, "vkCreateSemaphore"));
+	vkDestroyBuffer = reinterpret_cast<PFN_vkDestroyBuffer>(load(context, "vkDestroyBuffer"));
+	vkDestroyCommandPool = reinterpret_cast<PFN_vkDestroyCommandPool>(load(context, "vkDestroyCommandPool"));
+	vkDestroyDevice = reinterpret_cast<PFN_vkDestroyDevice>(load(context, "vkDestroyDevice"));
+	vkDestroyFence = reinterpret_cast<PFN_vkDestroyFence>(load(context, "vkDestroyFence"));
+	vkDestroyImage = reinterpret_cast<PFN_vkDestroyImage>(load(context, "vkDestroyImage"));
+	vkDestroyImageView = reinterpret_cast<PFN_vkDestroyImageView>(load(context, "vkDestroyImageView"));
+	vkDestroyQueryPool = reinterpret_cast<PFN_vkDestroyQueryPool>(load(context, "vkDestroyQueryPool"));
+	vkDestroySemaphore = reinterpret_cast<PFN_vkDestroySemaphore>(load(context, "vkDestroySemaphore"));
+	vkDeviceWaitIdle = reinterpret_cast<PFN_vkDeviceWaitIdle>(load(context, "vkDeviceWaitIdle"));
+	vkEndCommandBuffer = reinterpret_cast<PFN_vkEndCommandBuffer>(load(context, "vkEndCommandBuffer"));
+	vkFlushMappedMemoryRanges = reinterpret_cast<PFN_vkFlushMappedMemoryRanges>(load(context, "vkFlushMappedMemoryRanges"));
+	vkFreeCommandBuffers = reinterpret_cast<PFN_vkFreeCommandBuffers>(load(context, "vkFreeCommandBuffers"));
+	vkFreeMemory = reinterpret_cast<PFN_vkFreeMemory>(load(context, "vkFreeMemory"));
+	vkGetBufferMemoryRequirements = reinterpret_cast<PFN_vkGetBufferMemoryRequirements>(load(context, "vkGetBufferMemoryRequirements"));
+	vkGetDeviceMemoryCommitment = reinterpret_cast<PFN_vkGetDeviceMemoryCommitment>(load(context, "vkGetDeviceMemoryCommitment"));
+	vkGetDeviceQueue = reinterpret_cast<PFN_vkGetDeviceQueue>(load(context, "vkGetDeviceQueue"));
+	vkGetFenceStatus = reinterpret_cast<PFN_vkGetFenceStatus>(load(context, "vkGetFenceStatus"));
+	vkGetImageMemoryRequirements = reinterpret_cast<PFN_vkGetImageMemoryRequirements>(load(context, "vkGetImageMemoryRequirements"));
+	vkGetImageSparseMemoryRequirements = reinterpret_cast<PFN_vkGetImageSparseMemoryRequirements>(load(context, "vkGetImageSparseMemoryRequirements"));
+	vkGetImageSubresourceLayout = reinterpret_cast<PFN_vkGetImageSubresourceLayout>(load(context, "vkGetImageSubresourceLayout"));
+	vkGetQueryPoolResults = reinterpret_cast<PFN_vkGetQueryPoolResults>(load(context, "vkGetQueryPoolResults"));
+	vkInvalidateMappedMemoryRanges = reinterpret_cast<PFN_vkInvalidateMappedMemoryRanges>(load(context, "vkInvalidateMappedMemoryRanges"));
+	vkMapMemory = reinterpret_cast<PFN_vkMapMemory>(load(context, "vkMapMemory"));
+	vkQueueBindSparse = reinterpret_cast<PFN_vkQueueBindSparse>(load(context, "vkQueueBindSparse"));
+	vkQueueSubmit = reinterpret_cast<PFN_vkQueueSubmit>(load(context, "vkQueueSubmit"));
+	vkQueueWaitIdle = reinterpret_cast<PFN_vkQueueWaitIdle>(load(context, "vkQueueWaitIdle"));
+	vkResetCommandBuffer = reinterpret_cast<PFN_vkResetCommandBuffer>(load(context, "vkResetCommandBuffer"));
+	vkResetCommandPool = reinterpret_cast<PFN_vkResetCommandPool>(load(context, "vkResetCommandPool"));
+	vkResetFences = reinterpret_cast<PFN_vkResetFences>(load(context, "vkResetFences"));
+	vkUnmapMemory = reinterpret_cast<PFN_vkUnmapMemory>(load(context, "vkUnmapMemory"));
+	vkWaitForFences = reinterpret_cast<PFN_vkWaitForFences>(load(context, "vkWaitForFences"));
+#endif /* defined(VK_BASE_VERSION_1_0) */
+#if defined(VK_COMPUTE_VERSION_1_0)
+	vkAllocateDescriptorSets = reinterpret_cast<PFN_vkAllocateDescriptorSets>(load(context, "vkAllocateDescriptorSets"));
+	vkCmdBindDescriptorSets = reinterpret_cast<PFN_vkCmdBindDescriptorSets>(load(context, "vkCmdBindDescriptorSets"));
+	vkCmdBindPipeline = reinterpret_cast<PFN_vkCmdBindPipeline>(load(context, "vkCmdBindPipeline"));
+	vkCmdClearColorImage = reinterpret_cast<PFN_vkCmdClearColorImage>(load(context, "vkCmdClearColorImage"));
 	vkCmdDispatch = reinterpret_cast<PFN_vkCmdDispatch>(load(context, "vkCmdDispatch"));
 	vkCmdDispatchIndirect = reinterpret_cast<PFN_vkCmdDispatchIndirect>(load(context, "vkCmdDispatchIndirect"));
+	vkCmdPushConstants = reinterpret_cast<PFN_vkCmdPushConstants>(load(context, "vkCmdPushConstants"));
+	vkCmdResetEvent = reinterpret_cast<PFN_vkCmdResetEvent>(load(context, "vkCmdResetEvent"));
+	vkCmdSetEvent = reinterpret_cast<PFN_vkCmdSetEvent>(load(context, "vkCmdSetEvent"));
+	vkCmdWaitEvents = reinterpret_cast<PFN_vkCmdWaitEvents>(load(context, "vkCmdWaitEvents"));
+	vkCreateBufferView = reinterpret_cast<PFN_vkCreateBufferView>(load(context, "vkCreateBufferView"));
+	vkCreateComputePipelines = reinterpret_cast<PFN_vkCreateComputePipelines>(load(context, "vkCreateComputePipelines"));
+	vkCreateDescriptorPool = reinterpret_cast<PFN_vkCreateDescriptorPool>(load(context, "vkCreateDescriptorPool"));
+	vkCreateDescriptorSetLayout = reinterpret_cast<PFN_vkCreateDescriptorSetLayout>(load(context, "vkCreateDescriptorSetLayout"));
+	vkCreateEvent = reinterpret_cast<PFN_vkCreateEvent>(load(context, "vkCreateEvent"));
+	vkCreatePipelineCache = reinterpret_cast<PFN_vkCreatePipelineCache>(load(context, "vkCreatePipelineCache"));
+	vkCreatePipelineLayout = reinterpret_cast<PFN_vkCreatePipelineLayout>(load(context, "vkCreatePipelineLayout"));
+	vkCreateSampler = reinterpret_cast<PFN_vkCreateSampler>(load(context, "vkCreateSampler"));
+	vkCreateShaderModule = reinterpret_cast<PFN_vkCreateShaderModule>(load(context, "vkCreateShaderModule"));
+	vkDestroyBufferView = reinterpret_cast<PFN_vkDestroyBufferView>(load(context, "vkDestroyBufferView"));
+	vkDestroyDescriptorPool = reinterpret_cast<PFN_vkDestroyDescriptorPool>(load(context, "vkDestroyDescriptorPool"));
+	vkDestroyDescriptorSetLayout = reinterpret_cast<PFN_vkDestroyDescriptorSetLayout>(load(context, "vkDestroyDescriptorSetLayout"));
+	vkDestroyEvent = reinterpret_cast<PFN_vkDestroyEvent>(load(context, "vkDestroyEvent"));
+	vkDestroyPipeline = reinterpret_cast<PFN_vkDestroyPipeline>(load(context, "vkDestroyPipeline"));
+	vkDestroyPipelineCache = reinterpret_cast<PFN_vkDestroyPipelineCache>(load(context, "vkDestroyPipelineCache"));
+	vkDestroyPipelineLayout = reinterpret_cast<PFN_vkDestroyPipelineLayout>(load(context, "vkDestroyPipelineLayout"));
+	vkDestroySampler = reinterpret_cast<PFN_vkDestroySampler>(load(context, "vkDestroySampler"));
+	vkDestroyShaderModule = reinterpret_cast<PFN_vkDestroyShaderModule>(load(context, "vkDestroyShaderModule"));
+	vkFreeDescriptorSets = reinterpret_cast<PFN_vkFreeDescriptorSets>(load(context, "vkFreeDescriptorSets"));
+	vkGetEventStatus = reinterpret_cast<PFN_vkGetEventStatus>(load(context, "vkGetEventStatus"));
+	vkGetPipelineCacheData = reinterpret_cast<PFN_vkGetPipelineCacheData>(load(context, "vkGetPipelineCacheData"));
+	vkMergePipelineCaches = reinterpret_cast<PFN_vkMergePipelineCaches>(load(context, "vkMergePipelineCaches"));
+	vkResetDescriptorPool = reinterpret_cast<PFN_vkResetDescriptorPool>(load(context, "vkResetDescriptorPool"));
+	vkResetEvent = reinterpret_cast<PFN_vkResetEvent>(load(context, "vkResetEvent"));
+	vkSetEvent = reinterpret_cast<PFN_vkSetEvent>(load(context, "vkSetEvent"));
+	vkUpdateDescriptorSets = reinterpret_cast<PFN_vkUpdateDescriptorSets>(load(context, "vkUpdateDescriptorSets"));
+#endif /* defined(VK_COMPUTE_VERSION_1_0) */
+#if defined(VK_GRAPHICS_VERSION_1_0)
+	vkCmdBeginRenderPass = reinterpret_cast<PFN_vkCmdBeginRenderPass>(load(context, "vkCmdBeginRenderPass"));
+	vkCmdBindIndexBuffer = reinterpret_cast<PFN_vkCmdBindIndexBuffer>(load(context, "vkCmdBindIndexBuffer"));
+	vkCmdBindVertexBuffers = reinterpret_cast<PFN_vkCmdBindVertexBuffers>(load(context, "vkCmdBindVertexBuffers"));
+	vkCmdBlitImage = reinterpret_cast<PFN_vkCmdBlitImage>(load(context, "vkCmdBlitImage"));
+	vkCmdClearAttachments = reinterpret_cast<PFN_vkCmdClearAttachments>(load(context, "vkCmdClearAttachments"));
+	vkCmdClearDepthStencilImage = reinterpret_cast<PFN_vkCmdClearDepthStencilImage>(load(context, "vkCmdClearDepthStencilImage"));
 	vkCmdDraw = reinterpret_cast<PFN_vkCmdDraw>(load(context, "vkCmdDraw"));
 	vkCmdDrawIndexed = reinterpret_cast<PFN_vkCmdDrawIndexed>(load(context, "vkCmdDrawIndexed"));
 	vkCmdDrawIndexedIndirect = reinterpret_cast<PFN_vkCmdDrawIndexedIndirect>(load(context, "vkCmdDrawIndexedIndirect"));
 	vkCmdDrawIndirect = reinterpret_cast<PFN_vkCmdDrawIndirect>(load(context, "vkCmdDrawIndirect"));
-	vkCmdEndQuery = reinterpret_cast<PFN_vkCmdEndQuery>(load(context, "vkCmdEndQuery"));
 	vkCmdEndRenderPass = reinterpret_cast<PFN_vkCmdEndRenderPass>(load(context, "vkCmdEndRenderPass"));
-	vkCmdExecuteCommands = reinterpret_cast<PFN_vkCmdExecuteCommands>(load(context, "vkCmdExecuteCommands"));
-	vkCmdFillBuffer = reinterpret_cast<PFN_vkCmdFillBuffer>(load(context, "vkCmdFillBuffer"));
 	vkCmdNextSubpass = reinterpret_cast<PFN_vkCmdNextSubpass>(load(context, "vkCmdNextSubpass"));
-	vkCmdPipelineBarrier = reinterpret_cast<PFN_vkCmdPipelineBarrier>(load(context, "vkCmdPipelineBarrier"));
-	vkCmdPushConstants = reinterpret_cast<PFN_vkCmdPushConstants>(load(context, "vkCmdPushConstants"));
-	vkCmdResetEvent = reinterpret_cast<PFN_vkCmdResetEvent>(load(context, "vkCmdResetEvent"));
-	vkCmdResetQueryPool = reinterpret_cast<PFN_vkCmdResetQueryPool>(load(context, "vkCmdResetQueryPool"));
 	vkCmdResolveImage = reinterpret_cast<PFN_vkCmdResolveImage>(load(context, "vkCmdResolveImage"));
 	vkCmdSetBlendConstants = reinterpret_cast<PFN_vkCmdSetBlendConstants>(load(context, "vkCmdSetBlendConstants"));
 	vkCmdSetDepthBias = reinterpret_cast<PFN_vkCmdSetDepthBias>(load(context, "vkCmdSetDepthBias"));
 	vkCmdSetDepthBounds = reinterpret_cast<PFN_vkCmdSetDepthBounds>(load(context, "vkCmdSetDepthBounds"));
-	vkCmdSetEvent = reinterpret_cast<PFN_vkCmdSetEvent>(load(context, "vkCmdSetEvent"));
 	vkCmdSetLineWidth = reinterpret_cast<PFN_vkCmdSetLineWidth>(load(context, "vkCmdSetLineWidth"));
 	vkCmdSetScissor = reinterpret_cast<PFN_vkCmdSetScissor>(load(context, "vkCmdSetScissor"));
 	vkCmdSetStencilCompareMask = reinterpret_cast<PFN_vkCmdSetStencilCompareMask>(load(context, "vkCmdSetStencilCompareMask"));
 	vkCmdSetStencilReference = reinterpret_cast<PFN_vkCmdSetStencilReference>(load(context, "vkCmdSetStencilReference"));
 	vkCmdSetStencilWriteMask = reinterpret_cast<PFN_vkCmdSetStencilWriteMask>(load(context, "vkCmdSetStencilWriteMask"));
 	vkCmdSetViewport = reinterpret_cast<PFN_vkCmdSetViewport>(load(context, "vkCmdSetViewport"));
-	vkCmdUpdateBuffer = reinterpret_cast<PFN_vkCmdUpdateBuffer>(load(context, "vkCmdUpdateBuffer"));
-	vkCmdWaitEvents = reinterpret_cast<PFN_vkCmdWaitEvents>(load(context, "vkCmdWaitEvents"));
-	vkCmdWriteTimestamp = reinterpret_cast<PFN_vkCmdWriteTimestamp>(load(context, "vkCmdWriteTimestamp"));
-	vkCreateBuffer = reinterpret_cast<PFN_vkCreateBuffer>(load(context, "vkCreateBuffer"));
-	vkCreateBufferView = reinterpret_cast<PFN_vkCreateBufferView>(load(context, "vkCreateBufferView"));
-	vkCreateCommandPool = reinterpret_cast<PFN_vkCreateCommandPool>(load(context, "vkCreateCommandPool"));
-	vkCreateComputePipelines = reinterpret_cast<PFN_vkCreateComputePipelines>(load(context, "vkCreateComputePipelines"));
-	vkCreateDescriptorPool = reinterpret_cast<PFN_vkCreateDescriptorPool>(load(context, "vkCreateDescriptorPool"));
-	vkCreateDescriptorSetLayout = reinterpret_cast<PFN_vkCreateDescriptorSetLayout>(load(context, "vkCreateDescriptorSetLayout"));
-	vkCreateEvent = reinterpret_cast<PFN_vkCreateEvent>(load(context, "vkCreateEvent"));
-	vkCreateFence = reinterpret_cast<PFN_vkCreateFence>(load(context, "vkCreateFence"));
 	vkCreateFramebuffer = reinterpret_cast<PFN_vkCreateFramebuffer>(load(context, "vkCreateFramebuffer"));
 	vkCreateGraphicsPipelines = reinterpret_cast<PFN_vkCreateGraphicsPipelines>(load(context, "vkCreateGraphicsPipelines"));
-	vkCreateImage = reinterpret_cast<PFN_vkCreateImage>(load(context, "vkCreateImage"));
-	vkCreateImageView = reinterpret_cast<PFN_vkCreateImageView>(load(context, "vkCreateImageView"));
-	vkCreatePipelineCache = reinterpret_cast<PFN_vkCreatePipelineCache>(load(context, "vkCreatePipelineCache"));
-	vkCreatePipelineLayout = reinterpret_cast<PFN_vkCreatePipelineLayout>(load(context, "vkCreatePipelineLayout"));
-	vkCreateQueryPool = reinterpret_cast<PFN_vkCreateQueryPool>(load(context, "vkCreateQueryPool"));
 	vkCreateRenderPass = reinterpret_cast<PFN_vkCreateRenderPass>(load(context, "vkCreateRenderPass"));
-	vkCreateSampler = reinterpret_cast<PFN_vkCreateSampler>(load(context, "vkCreateSampler"));
-	vkCreateSemaphore = reinterpret_cast<PFN_vkCreateSemaphore>(load(context, "vkCreateSemaphore"));
-	vkCreateShaderModule = reinterpret_cast<PFN_vkCreateShaderModule>(load(context, "vkCreateShaderModule"));
-	vkDestroyBuffer = reinterpret_cast<PFN_vkDestroyBuffer>(load(context, "vkDestroyBuffer"));
-	vkDestroyBufferView = reinterpret_cast<PFN_vkDestroyBufferView>(load(context, "vkDestroyBufferView"));
-	vkDestroyCommandPool = reinterpret_cast<PFN_vkDestroyCommandPool>(load(context, "vkDestroyCommandPool"));
-	vkDestroyDescriptorPool = reinterpret_cast<PFN_vkDestroyDescriptorPool>(load(context, "vkDestroyDescriptorPool"));
-	vkDestroyDescriptorSetLayout = reinterpret_cast<PFN_vkDestroyDescriptorSetLayout>(load(context, "vkDestroyDescriptorSetLayout"));
-	vkDestroyDevice = reinterpret_cast<PFN_vkDestroyDevice>(load(context, "vkDestroyDevice"));
-	vkDestroyEvent = reinterpret_cast<PFN_vkDestroyEvent>(load(context, "vkDestroyEvent"));
-	vkDestroyFence = reinterpret_cast<PFN_vkDestroyFence>(load(context, "vkDestroyFence"));
 	vkDestroyFramebuffer = reinterpret_cast<PFN_vkDestroyFramebuffer>(load(context, "vkDestroyFramebuffer"));
-	vkDestroyImage = reinterpret_cast<PFN_vkDestroyImage>(load(context, "vkDestroyImage"));
-	vkDestroyImageView = reinterpret_cast<PFN_vkDestroyImageView>(load(context, "vkDestroyImageView"));
-	vkDestroyPipeline = reinterpret_cast<PFN_vkDestroyPipeline>(load(context, "vkDestroyPipeline"));
-	vkDestroyPipelineCache = reinterpret_cast<PFN_vkDestroyPipelineCache>(load(context, "vkDestroyPipelineCache"));
-	vkDestroyPipelineLayout = reinterpret_cast<PFN_vkDestroyPipelineLayout>(load(context, "vkDestroyPipelineLayout"));
-	vkDestroyQueryPool = reinterpret_cast<PFN_vkDestroyQueryPool>(load(context, "vkDestroyQueryPool"));
 	vkDestroyRenderPass = reinterpret_cast<PFN_vkDestroyRenderPass>(load(context, "vkDestroyRenderPass"));
-	vkDestroySampler = reinterpret_cast<PFN_vkDestroySampler>(load(context, "vkDestroySampler"));
-	vkDestroySemaphore = reinterpret_cast<PFN_vkDestroySemaphore>(load(context, "vkDestroySemaphore"));
-	vkDestroyShaderModule = reinterpret_cast<PFN_vkDestroyShaderModule>(load(context, "vkDestroyShaderModule"));
-	vkDeviceWaitIdle = reinterpret_cast<PFN_vkDeviceWaitIdle>(load(context, "vkDeviceWaitIdle"));
-	vkEndCommandBuffer = reinterpret_cast<PFN_vkEndCommandBuffer>(load(context, "vkEndCommandBuffer"));
-	vkFlushMappedMemoryRanges = reinterpret_cast<PFN_vkFlushMappedMemoryRanges>(load(context, "vkFlushMappedMemoryRanges"));
-	vkFreeCommandBuffers = reinterpret_cast<PFN_vkFreeCommandBuffers>(load(context, "vkFreeCommandBuffers"));
-	vkFreeDescriptorSets = reinterpret_cast<PFN_vkFreeDescriptorSets>(load(context, "vkFreeDescriptorSets"));
-	vkFreeMemory = reinterpret_cast<PFN_vkFreeMemory>(load(context, "vkFreeMemory"));
-	vkGetBufferMemoryRequirements = reinterpret_cast<PFN_vkGetBufferMemoryRequirements>(load(context, "vkGetBufferMemoryRequirements"));
-	vkGetDeviceMemoryCommitment = reinterpret_cast<PFN_vkGetDeviceMemoryCommitment>(load(context, "vkGetDeviceMemoryCommitment"));
-	vkGetDeviceQueue = reinterpret_cast<PFN_vkGetDeviceQueue>(load(context, "vkGetDeviceQueue"));
-	vkGetEventStatus = reinterpret_cast<PFN_vkGetEventStatus>(load(context, "vkGetEventStatus"));
-	vkGetFenceStatus = reinterpret_cast<PFN_vkGetFenceStatus>(load(context, "vkGetFenceStatus"));
-	vkGetImageMemoryRequirements = reinterpret_cast<PFN_vkGetImageMemoryRequirements>(load(context, "vkGetImageMemoryRequirements"));
-	vkGetImageSparseMemoryRequirements = reinterpret_cast<PFN_vkGetImageSparseMemoryRequirements>(load(context, "vkGetImageSparseMemoryRequirements"));
-	vkGetImageSubresourceLayout = reinterpret_cast<PFN_vkGetImageSubresourceLayout>(load(context, "vkGetImageSubresourceLayout"));
-	vkGetPipelineCacheData = reinterpret_cast<PFN_vkGetPipelineCacheData>(load(context, "vkGetPipelineCacheData"));
-	vkGetQueryPoolResults = reinterpret_cast<PFN_vkGetQueryPoolResults>(load(context, "vkGetQueryPoolResults"));
 	vkGetRenderAreaGranularity = reinterpret_cast<PFN_vkGetRenderAreaGranularity>(load(context, "vkGetRenderAreaGranularity"));
-	vkInvalidateMappedMemoryRanges = reinterpret_cast<PFN_vkInvalidateMappedMemoryRanges>(load(context, "vkInvalidateMappedMemoryRanges"));
-	vkMapMemory = reinterpret_cast<PFN_vkMapMemory>(load(context, "vkMapMemory"));
-	vkMergePipelineCaches = reinterpret_cast<PFN_vkMergePipelineCaches>(load(context, "vkMergePipelineCaches"));
-	vkQueueBindSparse = reinterpret_cast<PFN_vkQueueBindSparse>(load(context, "vkQueueBindSparse"));
-	vkQueueSubmit = reinterpret_cast<PFN_vkQueueSubmit>(load(context, "vkQueueSubmit"));
-	vkQueueWaitIdle = reinterpret_cast<PFN_vkQueueWaitIdle>(load(context, "vkQueueWaitIdle"));
-	vkResetCommandBuffer = reinterpret_cast<PFN_vkResetCommandBuffer>(load(context, "vkResetCommandBuffer"));
-	vkResetCommandPool = reinterpret_cast<PFN_vkResetCommandPool>(load(context, "vkResetCommandPool"));
-	vkResetDescriptorPool = reinterpret_cast<PFN_vkResetDescriptorPool>(load(context, "vkResetDescriptorPool"));
-	vkResetEvent = reinterpret_cast<PFN_vkResetEvent>(load(context, "vkResetEvent"));
-	vkResetFences = reinterpret_cast<PFN_vkResetFences>(load(context, "vkResetFences"));
-	vkSetEvent = reinterpret_cast<PFN_vkSetEvent>(load(context, "vkSetEvent"));
-	vkUnmapMemory = reinterpret_cast<PFN_vkUnmapMemory>(load(context, "vkUnmapMemory"));
-	vkUpdateDescriptorSets = reinterpret_cast<PFN_vkUpdateDescriptorSets>(load(context, "vkUpdateDescriptorSets"));
-	vkWaitForFences = reinterpret_cast<PFN_vkWaitForFences>(load(context, "vkWaitForFences"));
-#endif /* defined(VK_VERSION_1_0) */
-#if defined(VK_VERSION_1_1)
+#endif /* defined(VK_GRAPHICS_VERSION_1_0) */
+#if defined(VK_BASE_VERSION_1_1)
 	vkBindBufferMemory2 = reinterpret_cast<PFN_vkBindBufferMemory2>(load(context, "vkBindBufferMemory2"));
 	vkBindImageMemory2 = reinterpret_cast<PFN_vkBindImageMemory2>(load(context, "vkBindImageMemory2"));
-	vkCmdDispatchBase = reinterpret_cast<PFN_vkCmdDispatchBase>(load(context, "vkCmdDispatchBase"));
 	vkCmdSetDeviceMask = reinterpret_cast<PFN_vkCmdSetDeviceMask>(load(context, "vkCmdSetDeviceMask"));
-	vkCreateDescriptorUpdateTemplate = reinterpret_cast<PFN_vkCreateDescriptorUpdateTemplate>(load(context, "vkCreateDescriptorUpdateTemplate"));
-	vkCreateSamplerYcbcrConversion = reinterpret_cast<PFN_vkCreateSamplerYcbcrConversion>(load(context, "vkCreateSamplerYcbcrConversion"));
-	vkDestroyDescriptorUpdateTemplate = reinterpret_cast<PFN_vkDestroyDescriptorUpdateTemplate>(load(context, "vkDestroyDescriptorUpdateTemplate"));
-	vkDestroySamplerYcbcrConversion = reinterpret_cast<PFN_vkDestroySamplerYcbcrConversion>(load(context, "vkDestroySamplerYcbcrConversion"));
 	vkGetBufferMemoryRequirements2 = reinterpret_cast<PFN_vkGetBufferMemoryRequirements2>(load(context, "vkGetBufferMemoryRequirements2"));
-	vkGetDescriptorSetLayoutSupport = reinterpret_cast<PFN_vkGetDescriptorSetLayoutSupport>(load(context, "vkGetDescriptorSetLayoutSupport"));
 	vkGetDeviceGroupPeerMemoryFeatures = reinterpret_cast<PFN_vkGetDeviceGroupPeerMemoryFeatures>(load(context, "vkGetDeviceGroupPeerMemoryFeatures"));
 	vkGetDeviceQueue2 = reinterpret_cast<PFN_vkGetDeviceQueue2>(load(context, "vkGetDeviceQueue2"));
 	vkGetImageMemoryRequirements2 = reinterpret_cast<PFN_vkGetImageMemoryRequirements2>(load(context, "vkGetImageMemoryRequirements2"));
 	vkGetImageSparseMemoryRequirements2 = reinterpret_cast<PFN_vkGetImageSparseMemoryRequirements2>(load(context, "vkGetImageSparseMemoryRequirements2"));
 	vkTrimCommandPool = reinterpret_cast<PFN_vkTrimCommandPool>(load(context, "vkTrimCommandPool"));
+#endif /* defined(VK_BASE_VERSION_1_1) */
+#if defined(VK_COMPUTE_VERSION_1_1)
+	vkCmdDispatchBase = reinterpret_cast<PFN_vkCmdDispatchBase>(load(context, "vkCmdDispatchBase"));
+	vkCreateDescriptorUpdateTemplate = reinterpret_cast<PFN_vkCreateDescriptorUpdateTemplate>(load(context, "vkCreateDescriptorUpdateTemplate"));
+	vkCreateSamplerYcbcrConversion = reinterpret_cast<PFN_vkCreateSamplerYcbcrConversion>(load(context, "vkCreateSamplerYcbcrConversion"));
+	vkDestroyDescriptorUpdateTemplate = reinterpret_cast<PFN_vkDestroyDescriptorUpdateTemplate>(load(context, "vkDestroyDescriptorUpdateTemplate"));
+	vkDestroySamplerYcbcrConversion = reinterpret_cast<PFN_vkDestroySamplerYcbcrConversion>(load(context, "vkDestroySamplerYcbcrConversion"));
+	vkGetDescriptorSetLayoutSupport = reinterpret_cast<PFN_vkGetDescriptorSetLayoutSupport>(load(context, "vkGetDescriptorSetLayoutSupport"));
 	vkUpdateDescriptorSetWithTemplate = reinterpret_cast<PFN_vkUpdateDescriptorSetWithTemplate>(load(context, "vkUpdateDescriptorSetWithTemplate"));
-#endif /* defined(VK_VERSION_1_1) */
-#if defined(VK_VERSION_1_2)
-	vkCmdBeginRenderPass2 = reinterpret_cast<PFN_vkCmdBeginRenderPass2>(load(context, "vkCmdBeginRenderPass2"));
-	vkCmdDrawIndexedIndirectCount = reinterpret_cast<PFN_vkCmdDrawIndexedIndirectCount>(load(context, "vkCmdDrawIndexedIndirectCount"));
-	vkCmdDrawIndirectCount = reinterpret_cast<PFN_vkCmdDrawIndirectCount>(load(context, "vkCmdDrawIndirectCount"));
-	vkCmdEndRenderPass2 = reinterpret_cast<PFN_vkCmdEndRenderPass2>(load(context, "vkCmdEndRenderPass2"));
-	vkCmdNextSubpass2 = reinterpret_cast<PFN_vkCmdNextSubpass2>(load(context, "vkCmdNextSubpass2"));
-	vkCreateRenderPass2 = reinterpret_cast<PFN_vkCreateRenderPass2>(load(context, "vkCreateRenderPass2"));
+#endif /* defined(VK_COMPUTE_VERSION_1_1) */
+#if defined(VK_BASE_VERSION_1_2)
 	vkGetBufferDeviceAddress = reinterpret_cast<PFN_vkGetBufferDeviceAddress>(load(context, "vkGetBufferDeviceAddress"));
 	vkGetBufferOpaqueCaptureAddress = reinterpret_cast<PFN_vkGetBufferOpaqueCaptureAddress>(load(context, "vkGetBufferOpaqueCaptureAddress"));
 	vkGetDeviceMemoryOpaqueCaptureAddress = reinterpret_cast<PFN_vkGetDeviceMemoryOpaqueCaptureAddress>(load(context, "vkGetDeviceMemoryOpaqueCaptureAddress"));
@@ -2896,35 +2952,21 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkResetQueryPool = reinterpret_cast<PFN_vkResetQueryPool>(load(context, "vkResetQueryPool"));
 	vkSignalSemaphore = reinterpret_cast<PFN_vkSignalSemaphore>(load(context, "vkSignalSemaphore"));
 	vkWaitSemaphores = reinterpret_cast<PFN_vkWaitSemaphores>(load(context, "vkWaitSemaphores"));
-#endif /* defined(VK_VERSION_1_2) */
-#if defined(VK_VERSION_1_3)
-	vkCmdBeginRendering = reinterpret_cast<PFN_vkCmdBeginRendering>(load(context, "vkCmdBeginRendering"));
-	vkCmdBindVertexBuffers2 = reinterpret_cast<PFN_vkCmdBindVertexBuffers2>(load(context, "vkCmdBindVertexBuffers2"));
-	vkCmdBlitImage2 = reinterpret_cast<PFN_vkCmdBlitImage2>(load(context, "vkCmdBlitImage2"));
+#endif /* defined(VK_BASE_VERSION_1_2) */
+#if defined(VK_GRAPHICS_VERSION_1_2)
+	vkCmdBeginRenderPass2 = reinterpret_cast<PFN_vkCmdBeginRenderPass2>(load(context, "vkCmdBeginRenderPass2"));
+	vkCmdDrawIndexedIndirectCount = reinterpret_cast<PFN_vkCmdDrawIndexedIndirectCount>(load(context, "vkCmdDrawIndexedIndirectCount"));
+	vkCmdDrawIndirectCount = reinterpret_cast<PFN_vkCmdDrawIndirectCount>(load(context, "vkCmdDrawIndirectCount"));
+	vkCmdEndRenderPass2 = reinterpret_cast<PFN_vkCmdEndRenderPass2>(load(context, "vkCmdEndRenderPass2"));
+	vkCmdNextSubpass2 = reinterpret_cast<PFN_vkCmdNextSubpass2>(load(context, "vkCmdNextSubpass2"));
+	vkCreateRenderPass2 = reinterpret_cast<PFN_vkCreateRenderPass2>(load(context, "vkCreateRenderPass2"));
+#endif /* defined(VK_GRAPHICS_VERSION_1_2) */
+#if defined(VK_BASE_VERSION_1_3)
 	vkCmdCopyBuffer2 = reinterpret_cast<PFN_vkCmdCopyBuffer2>(load(context, "vkCmdCopyBuffer2"));
 	vkCmdCopyBufferToImage2 = reinterpret_cast<PFN_vkCmdCopyBufferToImage2>(load(context, "vkCmdCopyBufferToImage2"));
 	vkCmdCopyImage2 = reinterpret_cast<PFN_vkCmdCopyImage2>(load(context, "vkCmdCopyImage2"));
 	vkCmdCopyImageToBuffer2 = reinterpret_cast<PFN_vkCmdCopyImageToBuffer2>(load(context, "vkCmdCopyImageToBuffer2"));
-	vkCmdEndRendering = reinterpret_cast<PFN_vkCmdEndRendering>(load(context, "vkCmdEndRendering"));
 	vkCmdPipelineBarrier2 = reinterpret_cast<PFN_vkCmdPipelineBarrier2>(load(context, "vkCmdPipelineBarrier2"));
-	vkCmdResetEvent2 = reinterpret_cast<PFN_vkCmdResetEvent2>(load(context, "vkCmdResetEvent2"));
-	vkCmdResolveImage2 = reinterpret_cast<PFN_vkCmdResolveImage2>(load(context, "vkCmdResolveImage2"));
-	vkCmdSetCullMode = reinterpret_cast<PFN_vkCmdSetCullMode>(load(context, "vkCmdSetCullMode"));
-	vkCmdSetDepthBiasEnable = reinterpret_cast<PFN_vkCmdSetDepthBiasEnable>(load(context, "vkCmdSetDepthBiasEnable"));
-	vkCmdSetDepthBoundsTestEnable = reinterpret_cast<PFN_vkCmdSetDepthBoundsTestEnable>(load(context, "vkCmdSetDepthBoundsTestEnable"));
-	vkCmdSetDepthCompareOp = reinterpret_cast<PFN_vkCmdSetDepthCompareOp>(load(context, "vkCmdSetDepthCompareOp"));
-	vkCmdSetDepthTestEnable = reinterpret_cast<PFN_vkCmdSetDepthTestEnable>(load(context, "vkCmdSetDepthTestEnable"));
-	vkCmdSetDepthWriteEnable = reinterpret_cast<PFN_vkCmdSetDepthWriteEnable>(load(context, "vkCmdSetDepthWriteEnable"));
-	vkCmdSetEvent2 = reinterpret_cast<PFN_vkCmdSetEvent2>(load(context, "vkCmdSetEvent2"));
-	vkCmdSetFrontFace = reinterpret_cast<PFN_vkCmdSetFrontFace>(load(context, "vkCmdSetFrontFace"));
-	vkCmdSetPrimitiveRestartEnable = reinterpret_cast<PFN_vkCmdSetPrimitiveRestartEnable>(load(context, "vkCmdSetPrimitiveRestartEnable"));
-	vkCmdSetPrimitiveTopology = reinterpret_cast<PFN_vkCmdSetPrimitiveTopology>(load(context, "vkCmdSetPrimitiveTopology"));
-	vkCmdSetRasterizerDiscardEnable = reinterpret_cast<PFN_vkCmdSetRasterizerDiscardEnable>(load(context, "vkCmdSetRasterizerDiscardEnable"));
-	vkCmdSetScissorWithCount = reinterpret_cast<PFN_vkCmdSetScissorWithCount>(load(context, "vkCmdSetScissorWithCount"));
-	vkCmdSetStencilOp = reinterpret_cast<PFN_vkCmdSetStencilOp>(load(context, "vkCmdSetStencilOp"));
-	vkCmdSetStencilTestEnable = reinterpret_cast<PFN_vkCmdSetStencilTestEnable>(load(context, "vkCmdSetStencilTestEnable"));
-	vkCmdSetViewportWithCount = reinterpret_cast<PFN_vkCmdSetViewportWithCount>(load(context, "vkCmdSetViewportWithCount"));
-	vkCmdWaitEvents2 = reinterpret_cast<PFN_vkCmdWaitEvents2>(load(context, "vkCmdWaitEvents2"));
 	vkCmdWriteTimestamp2 = reinterpret_cast<PFN_vkCmdWriteTimestamp2>(load(context, "vkCmdWriteTimestamp2"));
 	vkCreatePrivateDataSlot = reinterpret_cast<PFN_vkCreatePrivateDataSlot>(load(context, "vkCreatePrivateDataSlot"));
 	vkDestroyPrivateDataSlot = reinterpret_cast<PFN_vkDestroyPrivateDataSlot>(load(context, "vkDestroyPrivateDataSlot"));
@@ -2934,28 +2976,58 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkGetPrivateData = reinterpret_cast<PFN_vkGetPrivateData>(load(context, "vkGetPrivateData"));
 	vkQueueSubmit2 = reinterpret_cast<PFN_vkQueueSubmit2>(load(context, "vkQueueSubmit2"));
 	vkSetPrivateData = reinterpret_cast<PFN_vkSetPrivateData>(load(context, "vkSetPrivateData"));
-#endif /* defined(VK_VERSION_1_3) */
-#if defined(VK_VERSION_1_4)
-	vkCmdBindDescriptorSets2 = reinterpret_cast<PFN_vkCmdBindDescriptorSets2>(load(context, "vkCmdBindDescriptorSets2"));
-	vkCmdBindIndexBuffer2 = reinterpret_cast<PFN_vkCmdBindIndexBuffer2>(load(context, "vkCmdBindIndexBuffer2"));
-	vkCmdPushConstants2 = reinterpret_cast<PFN_vkCmdPushConstants2>(load(context, "vkCmdPushConstants2"));
-	vkCmdPushDescriptorSet = reinterpret_cast<PFN_vkCmdPushDescriptorSet>(load(context, "vkCmdPushDescriptorSet"));
-	vkCmdPushDescriptorSet2 = reinterpret_cast<PFN_vkCmdPushDescriptorSet2>(load(context, "vkCmdPushDescriptorSet2"));
-	vkCmdPushDescriptorSetWithTemplate = reinterpret_cast<PFN_vkCmdPushDescriptorSetWithTemplate>(load(context, "vkCmdPushDescriptorSetWithTemplate"));
-	vkCmdPushDescriptorSetWithTemplate2 = reinterpret_cast<PFN_vkCmdPushDescriptorSetWithTemplate2>(load(context, "vkCmdPushDescriptorSetWithTemplate2"));
-	vkCmdSetLineStipple = reinterpret_cast<PFN_vkCmdSetLineStipple>(load(context, "vkCmdSetLineStipple"));
-	vkCmdSetRenderingAttachmentLocations = reinterpret_cast<PFN_vkCmdSetRenderingAttachmentLocations>(load(context, "vkCmdSetRenderingAttachmentLocations"));
-	vkCmdSetRenderingInputAttachmentIndices = reinterpret_cast<PFN_vkCmdSetRenderingInputAttachmentIndices>(load(context, "vkCmdSetRenderingInputAttachmentIndices"));
+#endif /* defined(VK_BASE_VERSION_1_3) */
+#if defined(VK_COMPUTE_VERSION_1_3)
+	vkCmdResetEvent2 = reinterpret_cast<PFN_vkCmdResetEvent2>(load(context, "vkCmdResetEvent2"));
+	vkCmdSetEvent2 = reinterpret_cast<PFN_vkCmdSetEvent2>(load(context, "vkCmdSetEvent2"));
+	vkCmdWaitEvents2 = reinterpret_cast<PFN_vkCmdWaitEvents2>(load(context, "vkCmdWaitEvents2"));
+#endif /* defined(VK_COMPUTE_VERSION_1_3) */
+#if defined(VK_GRAPHICS_VERSION_1_3)
+	vkCmdBeginRendering = reinterpret_cast<PFN_vkCmdBeginRendering>(load(context, "vkCmdBeginRendering"));
+	vkCmdBindVertexBuffers2 = reinterpret_cast<PFN_vkCmdBindVertexBuffers2>(load(context, "vkCmdBindVertexBuffers2"));
+	vkCmdBlitImage2 = reinterpret_cast<PFN_vkCmdBlitImage2>(load(context, "vkCmdBlitImage2"));
+	vkCmdEndRendering = reinterpret_cast<PFN_vkCmdEndRendering>(load(context, "vkCmdEndRendering"));
+	vkCmdResolveImage2 = reinterpret_cast<PFN_vkCmdResolveImage2>(load(context, "vkCmdResolveImage2"));
+	vkCmdSetCullMode = reinterpret_cast<PFN_vkCmdSetCullMode>(load(context, "vkCmdSetCullMode"));
+	vkCmdSetDepthBiasEnable = reinterpret_cast<PFN_vkCmdSetDepthBiasEnable>(load(context, "vkCmdSetDepthBiasEnable"));
+	vkCmdSetDepthBoundsTestEnable = reinterpret_cast<PFN_vkCmdSetDepthBoundsTestEnable>(load(context, "vkCmdSetDepthBoundsTestEnable"));
+	vkCmdSetDepthCompareOp = reinterpret_cast<PFN_vkCmdSetDepthCompareOp>(load(context, "vkCmdSetDepthCompareOp"));
+	vkCmdSetDepthTestEnable = reinterpret_cast<PFN_vkCmdSetDepthTestEnable>(load(context, "vkCmdSetDepthTestEnable"));
+	vkCmdSetDepthWriteEnable = reinterpret_cast<PFN_vkCmdSetDepthWriteEnable>(load(context, "vkCmdSetDepthWriteEnable"));
+	vkCmdSetFrontFace = reinterpret_cast<PFN_vkCmdSetFrontFace>(load(context, "vkCmdSetFrontFace"));
+	vkCmdSetPrimitiveRestartEnable = reinterpret_cast<PFN_vkCmdSetPrimitiveRestartEnable>(load(context, "vkCmdSetPrimitiveRestartEnable"));
+	vkCmdSetPrimitiveTopology = reinterpret_cast<PFN_vkCmdSetPrimitiveTopology>(load(context, "vkCmdSetPrimitiveTopology"));
+	vkCmdSetRasterizerDiscardEnable = reinterpret_cast<PFN_vkCmdSetRasterizerDiscardEnable>(load(context, "vkCmdSetRasterizerDiscardEnable"));
+	vkCmdSetScissorWithCount = reinterpret_cast<PFN_vkCmdSetScissorWithCount>(load(context, "vkCmdSetScissorWithCount"));
+	vkCmdSetStencilOp = reinterpret_cast<PFN_vkCmdSetStencilOp>(load(context, "vkCmdSetStencilOp"));
+	vkCmdSetStencilTestEnable = reinterpret_cast<PFN_vkCmdSetStencilTestEnable>(load(context, "vkCmdSetStencilTestEnable"));
+	vkCmdSetViewportWithCount = reinterpret_cast<PFN_vkCmdSetViewportWithCount>(load(context, "vkCmdSetViewportWithCount"));
+#endif /* defined(VK_GRAPHICS_VERSION_1_3) */
+#if defined(VK_BASE_VERSION_1_4)
 	vkCopyImageToImage = reinterpret_cast<PFN_vkCopyImageToImage>(load(context, "vkCopyImageToImage"));
 	vkCopyImageToMemory = reinterpret_cast<PFN_vkCopyImageToMemory>(load(context, "vkCopyImageToMemory"));
 	vkCopyMemoryToImage = reinterpret_cast<PFN_vkCopyMemoryToImage>(load(context, "vkCopyMemoryToImage"));
 	vkGetDeviceImageSubresourceLayout = reinterpret_cast<PFN_vkGetDeviceImageSubresourceLayout>(load(context, "vkGetDeviceImageSubresourceLayout"));
 	vkGetImageSubresourceLayout2 = reinterpret_cast<PFN_vkGetImageSubresourceLayout2>(load(context, "vkGetImageSubresourceLayout2"));
-	vkGetRenderingAreaGranularity = reinterpret_cast<PFN_vkGetRenderingAreaGranularity>(load(context, "vkGetRenderingAreaGranularity"));
 	vkMapMemory2 = reinterpret_cast<PFN_vkMapMemory2>(load(context, "vkMapMemory2"));
 	vkTransitionImageLayout = reinterpret_cast<PFN_vkTransitionImageLayout>(load(context, "vkTransitionImageLayout"));
 	vkUnmapMemory2 = reinterpret_cast<PFN_vkUnmapMemory2>(load(context, "vkUnmapMemory2"));
-#endif /* defined(VK_VERSION_1_4) */
+#endif /* defined(VK_BASE_VERSION_1_4) */
+#if defined(VK_COMPUTE_VERSION_1_4)
+	vkCmdBindDescriptorSets2 = reinterpret_cast<PFN_vkCmdBindDescriptorSets2>(load(context, "vkCmdBindDescriptorSets2"));
+	vkCmdPushConstants2 = reinterpret_cast<PFN_vkCmdPushConstants2>(load(context, "vkCmdPushConstants2"));
+	vkCmdPushDescriptorSet = reinterpret_cast<PFN_vkCmdPushDescriptorSet>(load(context, "vkCmdPushDescriptorSet"));
+	vkCmdPushDescriptorSet2 = reinterpret_cast<PFN_vkCmdPushDescriptorSet2>(load(context, "vkCmdPushDescriptorSet2"));
+	vkCmdPushDescriptorSetWithTemplate = reinterpret_cast<PFN_vkCmdPushDescriptorSetWithTemplate>(load(context, "vkCmdPushDescriptorSetWithTemplate"));
+	vkCmdPushDescriptorSetWithTemplate2 = reinterpret_cast<PFN_vkCmdPushDescriptorSetWithTemplate2>(load(context, "vkCmdPushDescriptorSetWithTemplate2"));
+#endif /* defined(VK_COMPUTE_VERSION_1_4) */
+#if defined(VK_GRAPHICS_VERSION_1_4)
+	vkCmdBindIndexBuffer2 = reinterpret_cast<PFN_vkCmdBindIndexBuffer2>(load(context, "vkCmdBindIndexBuffer2"));
+	vkCmdSetLineStipple = reinterpret_cast<PFN_vkCmdSetLineStipple>(load(context, "vkCmdSetLineStipple"));
+	vkCmdSetRenderingAttachmentLocations = reinterpret_cast<PFN_vkCmdSetRenderingAttachmentLocations>(load(context, "vkCmdSetRenderingAttachmentLocations"));
+	vkCmdSetRenderingInputAttachmentIndices = reinterpret_cast<PFN_vkCmdSetRenderingInputAttachmentIndices>(load(context, "vkCmdSetRenderingInputAttachmentIndices"));
+	vkGetRenderingAreaGranularity = reinterpret_cast<PFN_vkGetRenderingAreaGranularity>(load(context, "vkGetRenderingAreaGranularity"));
+#endif /* defined(VK_GRAPHICS_VERSION_1_4) */
 #if defined(VK_AMDX_shader_enqueue)
 	vkCmdDispatchGraphAMDX = reinterpret_cast<PFN_vkCmdDispatchGraphAMDX>(load(context, "vkCmdDispatchGraphAMDX"));
 	vkCmdDispatchGraphIndirectAMDX = reinterpret_cast<PFN_vkCmdDispatchGraphIndirectAMDX>(load(context, "vkCmdDispatchGraphIndirectAMDX"));
@@ -3116,6 +3188,10 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 #if defined(VK_EXT_line_rasterization)
 	vkCmdSetLineStippleEXT = reinterpret_cast<PFN_vkCmdSetLineStippleEXT>(load(context, "vkCmdSetLineStippleEXT"));
 #endif /* defined(VK_EXT_line_rasterization) */
+#if defined(VK_EXT_memory_decompression)
+	vkCmdDecompressMemoryEXT = reinterpret_cast<PFN_vkCmdDecompressMemoryEXT>(load(context, "vkCmdDecompressMemoryEXT"));
+	vkCmdDecompressMemoryIndirectCountEXT = reinterpret_cast<PFN_vkCmdDecompressMemoryIndirectCountEXT>(load(context, "vkCmdDecompressMemoryIndirectCountEXT"));
+#endif /* defined(VK_EXT_memory_decompression) */
 #if defined(VK_EXT_mesh_shader)
 	vkCmdDrawMeshTasksEXT = reinterpret_cast<PFN_vkCmdDrawMeshTasksEXT>(load(context, "vkCmdDrawMeshTasksEXT"));
 	vkCmdDrawMeshTasksIndirectEXT = reinterpret_cast<PFN_vkCmdDrawMeshTasksIndirectEXT>(load(context, "vkCmdDrawMeshTasksIndirectEXT"));
@@ -3349,6 +3425,9 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 #if defined(VK_KHR_maintenance1)
 	vkTrimCommandPoolKHR = reinterpret_cast<PFN_vkTrimCommandPoolKHR>(load(context, "vkTrimCommandPoolKHR"));
 #endif /* defined(VK_KHR_maintenance1) */
+#if defined(VK_KHR_maintenance10)
+	vkCmdEndRendering2KHR = reinterpret_cast<PFN_vkCmdEndRendering2KHR>(load(context, "vkCmdEndRendering2KHR"));
+#endif /* defined(VK_KHR_maintenance10) */
 #if defined(VK_KHR_maintenance3)
 	vkGetDescriptorSetLayoutSupportKHR = reinterpret_cast<PFN_vkGetDescriptorSetLayoutSupportKHR>(load(context, "vkGetDescriptorSetLayoutSupportKHR"));
 #endif /* defined(VK_KHR_maintenance3) */
@@ -3591,6 +3670,11 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkCmdSetCoarseSampleOrderNV = reinterpret_cast<PFN_vkCmdSetCoarseSampleOrderNV>(load(context, "vkCmdSetCoarseSampleOrderNV"));
 	vkCmdSetViewportShadingRatePaletteNV = reinterpret_cast<PFN_vkCmdSetViewportShadingRatePaletteNV>(load(context, "vkCmdSetViewportShadingRatePaletteNV"));
 #endif /* defined(VK_NV_shading_rate_image) */
+#if defined(VK_OHOS_native_buffer)
+	vkAcquireImageOHOS = reinterpret_cast<PFN_vkAcquireImageOHOS>(load(context, "vkAcquireImageOHOS"));
+	vkGetSwapchainGrallocUsageOHOS = reinterpret_cast<PFN_vkGetSwapchainGrallocUsageOHOS>(load(context, "vkGetSwapchainGrallocUsageOHOS"));
+	vkQueueSignalReleaseImageOHOS = reinterpret_cast<PFN_vkQueueSignalReleaseImageOHOS>(load(context, "vkQueueSignalReleaseImageOHOS"));
+#endif /* defined(VK_OHOS_native_buffer) */
 #if defined(VK_QCOM_tile_memory_heap)
 	vkCmdBindTileMemoryQCOM = reinterpret_cast<PFN_vkCmdBindTileMemoryQCOM>(load(context, "vkCmdBindTileMemoryQCOM"));
 #endif /* defined(VK_QCOM_tile_memory_heap) */
@@ -3721,153 +3805,153 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoaderFunction load)
 {
 	/* VULKANLOADER_GENERATE_LOAD_DEVICE_TABLE */
-#if defined(VK_VERSION_1_0)
+#if defined(VK_BASE_VERSION_1_0)
 	table.vkAllocateCommandBuffers = reinterpret_cast<PFN_vkAllocateCommandBuffers>(load(device, "vkAllocateCommandBuffers"));
-	table.vkAllocateDescriptorSets = reinterpret_cast<PFN_vkAllocateDescriptorSets>(load(device, "vkAllocateDescriptorSets"));
 	table.vkAllocateMemory = reinterpret_cast<PFN_vkAllocateMemory>(load(device, "vkAllocateMemory"));
 	table.vkBeginCommandBuffer = reinterpret_cast<PFN_vkBeginCommandBuffer>(load(device, "vkBeginCommandBuffer"));
 	table.vkBindBufferMemory = reinterpret_cast<PFN_vkBindBufferMemory>(load(device, "vkBindBufferMemory"));
 	table.vkBindImageMemory = reinterpret_cast<PFN_vkBindImageMemory>(load(device, "vkBindImageMemory"));
 	table.vkCmdBeginQuery = reinterpret_cast<PFN_vkCmdBeginQuery>(load(device, "vkCmdBeginQuery"));
-	table.vkCmdBeginRenderPass = reinterpret_cast<PFN_vkCmdBeginRenderPass>(load(device, "vkCmdBeginRenderPass"));
-	table.vkCmdBindDescriptorSets = reinterpret_cast<PFN_vkCmdBindDescriptorSets>(load(device, "vkCmdBindDescriptorSets"));
-	table.vkCmdBindIndexBuffer = reinterpret_cast<PFN_vkCmdBindIndexBuffer>(load(device, "vkCmdBindIndexBuffer"));
-	table.vkCmdBindPipeline = reinterpret_cast<PFN_vkCmdBindPipeline>(load(device, "vkCmdBindPipeline"));
-	table.vkCmdBindVertexBuffers = reinterpret_cast<PFN_vkCmdBindVertexBuffers>(load(device, "vkCmdBindVertexBuffers"));
-	table.vkCmdBlitImage = reinterpret_cast<PFN_vkCmdBlitImage>(load(device, "vkCmdBlitImage"));
-	table.vkCmdClearAttachments = reinterpret_cast<PFN_vkCmdClearAttachments>(load(device, "vkCmdClearAttachments"));
-	table.vkCmdClearColorImage = reinterpret_cast<PFN_vkCmdClearColorImage>(load(device, "vkCmdClearColorImage"));
-	table.vkCmdClearDepthStencilImage = reinterpret_cast<PFN_vkCmdClearDepthStencilImage>(load(device, "vkCmdClearDepthStencilImage"));
 	table.vkCmdCopyBuffer = reinterpret_cast<PFN_vkCmdCopyBuffer>(load(device, "vkCmdCopyBuffer"));
 	table.vkCmdCopyBufferToImage = reinterpret_cast<PFN_vkCmdCopyBufferToImage>(load(device, "vkCmdCopyBufferToImage"));
 	table.vkCmdCopyImage = reinterpret_cast<PFN_vkCmdCopyImage>(load(device, "vkCmdCopyImage"));
 	table.vkCmdCopyImageToBuffer = reinterpret_cast<PFN_vkCmdCopyImageToBuffer>(load(device, "vkCmdCopyImageToBuffer"));
 	table.vkCmdCopyQueryPoolResults = reinterpret_cast<PFN_vkCmdCopyQueryPoolResults>(load(device, "vkCmdCopyQueryPoolResults"));
+	table.vkCmdEndQuery = reinterpret_cast<PFN_vkCmdEndQuery>(load(device, "vkCmdEndQuery"));
+	table.vkCmdExecuteCommands = reinterpret_cast<PFN_vkCmdExecuteCommands>(load(device, "vkCmdExecuteCommands"));
+	table.vkCmdFillBuffer = reinterpret_cast<PFN_vkCmdFillBuffer>(load(device, "vkCmdFillBuffer"));
+	table.vkCmdPipelineBarrier = reinterpret_cast<PFN_vkCmdPipelineBarrier>(load(device, "vkCmdPipelineBarrier"));
+	table.vkCmdResetQueryPool = reinterpret_cast<PFN_vkCmdResetQueryPool>(load(device, "vkCmdResetQueryPool"));
+	table.vkCmdUpdateBuffer = reinterpret_cast<PFN_vkCmdUpdateBuffer>(load(device, "vkCmdUpdateBuffer"));
+	table.vkCmdWriteTimestamp = reinterpret_cast<PFN_vkCmdWriteTimestamp>(load(device, "vkCmdWriteTimestamp"));
+	table.vkCreateBuffer = reinterpret_cast<PFN_vkCreateBuffer>(load(device, "vkCreateBuffer"));
+	table.vkCreateCommandPool = reinterpret_cast<PFN_vkCreateCommandPool>(load(device, "vkCreateCommandPool"));
+	table.vkCreateFence = reinterpret_cast<PFN_vkCreateFence>(load(device, "vkCreateFence"));
+	table.vkCreateImage = reinterpret_cast<PFN_vkCreateImage>(load(device, "vkCreateImage"));
+	table.vkCreateImageView = reinterpret_cast<PFN_vkCreateImageView>(load(device, "vkCreateImageView"));
+	table.vkCreateQueryPool = reinterpret_cast<PFN_vkCreateQueryPool>(load(device, "vkCreateQueryPool"));
+	table.vkCreateSemaphore = reinterpret_cast<PFN_vkCreateSemaphore>(load(device, "vkCreateSemaphore"));
+	table.vkDestroyBuffer = reinterpret_cast<PFN_vkDestroyBuffer>(load(device, "vkDestroyBuffer"));
+	table.vkDestroyCommandPool = reinterpret_cast<PFN_vkDestroyCommandPool>(load(device, "vkDestroyCommandPool"));
+	table.vkDestroyDevice = reinterpret_cast<PFN_vkDestroyDevice>(load(device, "vkDestroyDevice"));
+	table.vkDestroyFence = reinterpret_cast<PFN_vkDestroyFence>(load(device, "vkDestroyFence"));
+	table.vkDestroyImage = reinterpret_cast<PFN_vkDestroyImage>(load(device, "vkDestroyImage"));
+	table.vkDestroyImageView = reinterpret_cast<PFN_vkDestroyImageView>(load(device, "vkDestroyImageView"));
+	table.vkDestroyQueryPool = reinterpret_cast<PFN_vkDestroyQueryPool>(load(device, "vkDestroyQueryPool"));
+	table.vkDestroySemaphore = reinterpret_cast<PFN_vkDestroySemaphore>(load(device, "vkDestroySemaphore"));
+	table.vkDeviceWaitIdle = reinterpret_cast<PFN_vkDeviceWaitIdle>(load(device, "vkDeviceWaitIdle"));
+	table.vkEndCommandBuffer = reinterpret_cast<PFN_vkEndCommandBuffer>(load(device, "vkEndCommandBuffer"));
+	table.vkFlushMappedMemoryRanges = reinterpret_cast<PFN_vkFlushMappedMemoryRanges>(load(device, "vkFlushMappedMemoryRanges"));
+	table.vkFreeCommandBuffers = reinterpret_cast<PFN_vkFreeCommandBuffers>(load(device, "vkFreeCommandBuffers"));
+	table.vkFreeMemory = reinterpret_cast<PFN_vkFreeMemory>(load(device, "vkFreeMemory"));
+	table.vkGetBufferMemoryRequirements = reinterpret_cast<PFN_vkGetBufferMemoryRequirements>(load(device, "vkGetBufferMemoryRequirements"));
+	table.vkGetDeviceMemoryCommitment = reinterpret_cast<PFN_vkGetDeviceMemoryCommitment>(load(device, "vkGetDeviceMemoryCommitment"));
+	table.vkGetDeviceQueue = reinterpret_cast<PFN_vkGetDeviceQueue>(load(device, "vkGetDeviceQueue"));
+	table.vkGetFenceStatus = reinterpret_cast<PFN_vkGetFenceStatus>(load(device, "vkGetFenceStatus"));
+	table.vkGetImageMemoryRequirements = reinterpret_cast<PFN_vkGetImageMemoryRequirements>(load(device, "vkGetImageMemoryRequirements"));
+	table.vkGetImageSparseMemoryRequirements = reinterpret_cast<PFN_vkGetImageSparseMemoryRequirements>(load(device, "vkGetImageSparseMemoryRequirements"));
+	table.vkGetImageSubresourceLayout = reinterpret_cast<PFN_vkGetImageSubresourceLayout>(load(device, "vkGetImageSubresourceLayout"));
+	table.vkGetQueryPoolResults = reinterpret_cast<PFN_vkGetQueryPoolResults>(load(device, "vkGetQueryPoolResults"));
+	table.vkInvalidateMappedMemoryRanges = reinterpret_cast<PFN_vkInvalidateMappedMemoryRanges>(load(device, "vkInvalidateMappedMemoryRanges"));
+	table.vkMapMemory = reinterpret_cast<PFN_vkMapMemory>(load(device, "vkMapMemory"));
+	table.vkQueueBindSparse = reinterpret_cast<PFN_vkQueueBindSparse>(load(device, "vkQueueBindSparse"));
+	table.vkQueueSubmit = reinterpret_cast<PFN_vkQueueSubmit>(load(device, "vkQueueSubmit"));
+	table.vkQueueWaitIdle = reinterpret_cast<PFN_vkQueueWaitIdle>(load(device, "vkQueueWaitIdle"));
+	table.vkResetCommandBuffer = reinterpret_cast<PFN_vkResetCommandBuffer>(load(device, "vkResetCommandBuffer"));
+	table.vkResetCommandPool = reinterpret_cast<PFN_vkResetCommandPool>(load(device, "vkResetCommandPool"));
+	table.vkResetFences = reinterpret_cast<PFN_vkResetFences>(load(device, "vkResetFences"));
+	table.vkUnmapMemory = reinterpret_cast<PFN_vkUnmapMemory>(load(device, "vkUnmapMemory"));
+	table.vkWaitForFences = reinterpret_cast<PFN_vkWaitForFences>(load(device, "vkWaitForFences"));
+#endif /* defined(VK_BASE_VERSION_1_0) */
+#if defined(VK_COMPUTE_VERSION_1_0)
+	table.vkAllocateDescriptorSets = reinterpret_cast<PFN_vkAllocateDescriptorSets>(load(device, "vkAllocateDescriptorSets"));
+	table.vkCmdBindDescriptorSets = reinterpret_cast<PFN_vkCmdBindDescriptorSets>(load(device, "vkCmdBindDescriptorSets"));
+	table.vkCmdBindPipeline = reinterpret_cast<PFN_vkCmdBindPipeline>(load(device, "vkCmdBindPipeline"));
+	table.vkCmdClearColorImage = reinterpret_cast<PFN_vkCmdClearColorImage>(load(device, "vkCmdClearColorImage"));
 	table.vkCmdDispatch = reinterpret_cast<PFN_vkCmdDispatch>(load(device, "vkCmdDispatch"));
 	table.vkCmdDispatchIndirect = reinterpret_cast<PFN_vkCmdDispatchIndirect>(load(device, "vkCmdDispatchIndirect"));
+	table.vkCmdPushConstants = reinterpret_cast<PFN_vkCmdPushConstants>(load(device, "vkCmdPushConstants"));
+	table.vkCmdResetEvent = reinterpret_cast<PFN_vkCmdResetEvent>(load(device, "vkCmdResetEvent"));
+	table.vkCmdSetEvent = reinterpret_cast<PFN_vkCmdSetEvent>(load(device, "vkCmdSetEvent"));
+	table.vkCmdWaitEvents = reinterpret_cast<PFN_vkCmdWaitEvents>(load(device, "vkCmdWaitEvents"));
+	table.vkCreateBufferView = reinterpret_cast<PFN_vkCreateBufferView>(load(device, "vkCreateBufferView"));
+	table.vkCreateComputePipelines = reinterpret_cast<PFN_vkCreateComputePipelines>(load(device, "vkCreateComputePipelines"));
+	table.vkCreateDescriptorPool = reinterpret_cast<PFN_vkCreateDescriptorPool>(load(device, "vkCreateDescriptorPool"));
+	table.vkCreateDescriptorSetLayout = reinterpret_cast<PFN_vkCreateDescriptorSetLayout>(load(device, "vkCreateDescriptorSetLayout"));
+	table.vkCreateEvent = reinterpret_cast<PFN_vkCreateEvent>(load(device, "vkCreateEvent"));
+	table.vkCreatePipelineCache = reinterpret_cast<PFN_vkCreatePipelineCache>(load(device, "vkCreatePipelineCache"));
+	table.vkCreatePipelineLayout = reinterpret_cast<PFN_vkCreatePipelineLayout>(load(device, "vkCreatePipelineLayout"));
+	table.vkCreateSampler = reinterpret_cast<PFN_vkCreateSampler>(load(device, "vkCreateSampler"));
+	table.vkCreateShaderModule = reinterpret_cast<PFN_vkCreateShaderModule>(load(device, "vkCreateShaderModule"));
+	table.vkDestroyBufferView = reinterpret_cast<PFN_vkDestroyBufferView>(load(device, "vkDestroyBufferView"));
+	table.vkDestroyDescriptorPool = reinterpret_cast<PFN_vkDestroyDescriptorPool>(load(device, "vkDestroyDescriptorPool"));
+	table.vkDestroyDescriptorSetLayout = reinterpret_cast<PFN_vkDestroyDescriptorSetLayout>(load(device, "vkDestroyDescriptorSetLayout"));
+	table.vkDestroyEvent = reinterpret_cast<PFN_vkDestroyEvent>(load(device, "vkDestroyEvent"));
+	table.vkDestroyPipeline = reinterpret_cast<PFN_vkDestroyPipeline>(load(device, "vkDestroyPipeline"));
+	table.vkDestroyPipelineCache = reinterpret_cast<PFN_vkDestroyPipelineCache>(load(device, "vkDestroyPipelineCache"));
+	table.vkDestroyPipelineLayout = reinterpret_cast<PFN_vkDestroyPipelineLayout>(load(device, "vkDestroyPipelineLayout"));
+	table.vkDestroySampler = reinterpret_cast<PFN_vkDestroySampler>(load(device, "vkDestroySampler"));
+	table.vkDestroyShaderModule = reinterpret_cast<PFN_vkDestroyShaderModule>(load(device, "vkDestroyShaderModule"));
+	table.vkFreeDescriptorSets = reinterpret_cast<PFN_vkFreeDescriptorSets>(load(device, "vkFreeDescriptorSets"));
+	table.vkGetEventStatus = reinterpret_cast<PFN_vkGetEventStatus>(load(device, "vkGetEventStatus"));
+	table.vkGetPipelineCacheData = reinterpret_cast<PFN_vkGetPipelineCacheData>(load(device, "vkGetPipelineCacheData"));
+	table.vkMergePipelineCaches = reinterpret_cast<PFN_vkMergePipelineCaches>(load(device, "vkMergePipelineCaches"));
+	table.vkResetDescriptorPool = reinterpret_cast<PFN_vkResetDescriptorPool>(load(device, "vkResetDescriptorPool"));
+	table.vkResetEvent = reinterpret_cast<PFN_vkResetEvent>(load(device, "vkResetEvent"));
+	table.vkSetEvent = reinterpret_cast<PFN_vkSetEvent>(load(device, "vkSetEvent"));
+	table.vkUpdateDescriptorSets = reinterpret_cast<PFN_vkUpdateDescriptorSets>(load(device, "vkUpdateDescriptorSets"));
+#endif /* defined(VK_COMPUTE_VERSION_1_0) */
+#if defined(VK_GRAPHICS_VERSION_1_0)
+	table.vkCmdBeginRenderPass = reinterpret_cast<PFN_vkCmdBeginRenderPass>(load(device, "vkCmdBeginRenderPass"));
+	table.vkCmdBindIndexBuffer = reinterpret_cast<PFN_vkCmdBindIndexBuffer>(load(device, "vkCmdBindIndexBuffer"));
+	table.vkCmdBindVertexBuffers = reinterpret_cast<PFN_vkCmdBindVertexBuffers>(load(device, "vkCmdBindVertexBuffers"));
+	table.vkCmdBlitImage = reinterpret_cast<PFN_vkCmdBlitImage>(load(device, "vkCmdBlitImage"));
+	table.vkCmdClearAttachments = reinterpret_cast<PFN_vkCmdClearAttachments>(load(device, "vkCmdClearAttachments"));
+	table.vkCmdClearDepthStencilImage = reinterpret_cast<PFN_vkCmdClearDepthStencilImage>(load(device, "vkCmdClearDepthStencilImage"));
 	table.vkCmdDraw = reinterpret_cast<PFN_vkCmdDraw>(load(device, "vkCmdDraw"));
 	table.vkCmdDrawIndexed = reinterpret_cast<PFN_vkCmdDrawIndexed>(load(device, "vkCmdDrawIndexed"));
 	table.vkCmdDrawIndexedIndirect = reinterpret_cast<PFN_vkCmdDrawIndexedIndirect>(load(device, "vkCmdDrawIndexedIndirect"));
 	table.vkCmdDrawIndirect = reinterpret_cast<PFN_vkCmdDrawIndirect>(load(device, "vkCmdDrawIndirect"));
-	table.vkCmdEndQuery = reinterpret_cast<PFN_vkCmdEndQuery>(load(device, "vkCmdEndQuery"));
 	table.vkCmdEndRenderPass = reinterpret_cast<PFN_vkCmdEndRenderPass>(load(device, "vkCmdEndRenderPass"));
-	table.vkCmdExecuteCommands = reinterpret_cast<PFN_vkCmdExecuteCommands>(load(device, "vkCmdExecuteCommands"));
-	table.vkCmdFillBuffer = reinterpret_cast<PFN_vkCmdFillBuffer>(load(device, "vkCmdFillBuffer"));
 	table.vkCmdNextSubpass = reinterpret_cast<PFN_vkCmdNextSubpass>(load(device, "vkCmdNextSubpass"));
-	table.vkCmdPipelineBarrier = reinterpret_cast<PFN_vkCmdPipelineBarrier>(load(device, "vkCmdPipelineBarrier"));
-	table.vkCmdPushConstants = reinterpret_cast<PFN_vkCmdPushConstants>(load(device, "vkCmdPushConstants"));
-	table.vkCmdResetEvent = reinterpret_cast<PFN_vkCmdResetEvent>(load(device, "vkCmdResetEvent"));
-	table.vkCmdResetQueryPool = reinterpret_cast<PFN_vkCmdResetQueryPool>(load(device, "vkCmdResetQueryPool"));
 	table.vkCmdResolveImage = reinterpret_cast<PFN_vkCmdResolveImage>(load(device, "vkCmdResolveImage"));
 	table.vkCmdSetBlendConstants = reinterpret_cast<PFN_vkCmdSetBlendConstants>(load(device, "vkCmdSetBlendConstants"));
 	table.vkCmdSetDepthBias = reinterpret_cast<PFN_vkCmdSetDepthBias>(load(device, "vkCmdSetDepthBias"));
 	table.vkCmdSetDepthBounds = reinterpret_cast<PFN_vkCmdSetDepthBounds>(load(device, "vkCmdSetDepthBounds"));
-	table.vkCmdSetEvent = reinterpret_cast<PFN_vkCmdSetEvent>(load(device, "vkCmdSetEvent"));
 	table.vkCmdSetLineWidth = reinterpret_cast<PFN_vkCmdSetLineWidth>(load(device, "vkCmdSetLineWidth"));
 	table.vkCmdSetScissor = reinterpret_cast<PFN_vkCmdSetScissor>(load(device, "vkCmdSetScissor"));
 	table.vkCmdSetStencilCompareMask = reinterpret_cast<PFN_vkCmdSetStencilCompareMask>(load(device, "vkCmdSetStencilCompareMask"));
 	table.vkCmdSetStencilReference = reinterpret_cast<PFN_vkCmdSetStencilReference>(load(device, "vkCmdSetStencilReference"));
 	table.vkCmdSetStencilWriteMask = reinterpret_cast<PFN_vkCmdSetStencilWriteMask>(load(device, "vkCmdSetStencilWriteMask"));
 	table.vkCmdSetViewport = reinterpret_cast<PFN_vkCmdSetViewport>(load(device, "vkCmdSetViewport"));
-	table.vkCmdUpdateBuffer = reinterpret_cast<PFN_vkCmdUpdateBuffer>(load(device, "vkCmdUpdateBuffer"));
-	table.vkCmdWaitEvents = reinterpret_cast<PFN_vkCmdWaitEvents>(load(device, "vkCmdWaitEvents"));
-	table.vkCmdWriteTimestamp = reinterpret_cast<PFN_vkCmdWriteTimestamp>(load(device, "vkCmdWriteTimestamp"));
-	table.vkCreateBuffer = reinterpret_cast<PFN_vkCreateBuffer>(load(device, "vkCreateBuffer"));
-	table.vkCreateBufferView = reinterpret_cast<PFN_vkCreateBufferView>(load(device, "vkCreateBufferView"));
-	table.vkCreateCommandPool = reinterpret_cast<PFN_vkCreateCommandPool>(load(device, "vkCreateCommandPool"));
-	table.vkCreateComputePipelines = reinterpret_cast<PFN_vkCreateComputePipelines>(load(device, "vkCreateComputePipelines"));
-	table.vkCreateDescriptorPool = reinterpret_cast<PFN_vkCreateDescriptorPool>(load(device, "vkCreateDescriptorPool"));
-	table.vkCreateDescriptorSetLayout = reinterpret_cast<PFN_vkCreateDescriptorSetLayout>(load(device, "vkCreateDescriptorSetLayout"));
-	table.vkCreateEvent = reinterpret_cast<PFN_vkCreateEvent>(load(device, "vkCreateEvent"));
-	table.vkCreateFence = reinterpret_cast<PFN_vkCreateFence>(load(device, "vkCreateFence"));
 	table.vkCreateFramebuffer = reinterpret_cast<PFN_vkCreateFramebuffer>(load(device, "vkCreateFramebuffer"));
 	table.vkCreateGraphicsPipelines = reinterpret_cast<PFN_vkCreateGraphicsPipelines>(load(device, "vkCreateGraphicsPipelines"));
-	table.vkCreateImage = reinterpret_cast<PFN_vkCreateImage>(load(device, "vkCreateImage"));
-	table.vkCreateImageView = reinterpret_cast<PFN_vkCreateImageView>(load(device, "vkCreateImageView"));
-	table.vkCreatePipelineCache = reinterpret_cast<PFN_vkCreatePipelineCache>(load(device, "vkCreatePipelineCache"));
-	table.vkCreatePipelineLayout = reinterpret_cast<PFN_vkCreatePipelineLayout>(load(device, "vkCreatePipelineLayout"));
-	table.vkCreateQueryPool = reinterpret_cast<PFN_vkCreateQueryPool>(load(device, "vkCreateQueryPool"));
 	table.vkCreateRenderPass = reinterpret_cast<PFN_vkCreateRenderPass>(load(device, "vkCreateRenderPass"));
-	table.vkCreateSampler = reinterpret_cast<PFN_vkCreateSampler>(load(device, "vkCreateSampler"));
-	table.vkCreateSemaphore = reinterpret_cast<PFN_vkCreateSemaphore>(load(device, "vkCreateSemaphore"));
-	table.vkCreateShaderModule = reinterpret_cast<PFN_vkCreateShaderModule>(load(device, "vkCreateShaderModule"));
-	table.vkDestroyBuffer = reinterpret_cast<PFN_vkDestroyBuffer>(load(device, "vkDestroyBuffer"));
-	table.vkDestroyBufferView = reinterpret_cast<PFN_vkDestroyBufferView>(load(device, "vkDestroyBufferView"));
-	table.vkDestroyCommandPool = reinterpret_cast<PFN_vkDestroyCommandPool>(load(device, "vkDestroyCommandPool"));
-	table.vkDestroyDescriptorPool = reinterpret_cast<PFN_vkDestroyDescriptorPool>(load(device, "vkDestroyDescriptorPool"));
-	table.vkDestroyDescriptorSetLayout = reinterpret_cast<PFN_vkDestroyDescriptorSetLayout>(load(device, "vkDestroyDescriptorSetLayout"));
-	table.vkDestroyDevice = reinterpret_cast<PFN_vkDestroyDevice>(load(device, "vkDestroyDevice"));
-	table.vkDestroyEvent = reinterpret_cast<PFN_vkDestroyEvent>(load(device, "vkDestroyEvent"));
-	table.vkDestroyFence = reinterpret_cast<PFN_vkDestroyFence>(load(device, "vkDestroyFence"));
 	table.vkDestroyFramebuffer = reinterpret_cast<PFN_vkDestroyFramebuffer>(load(device, "vkDestroyFramebuffer"));
-	table.vkDestroyImage = reinterpret_cast<PFN_vkDestroyImage>(load(device, "vkDestroyImage"));
-	table.vkDestroyImageView = reinterpret_cast<PFN_vkDestroyImageView>(load(device, "vkDestroyImageView"));
-	table.vkDestroyPipeline = reinterpret_cast<PFN_vkDestroyPipeline>(load(device, "vkDestroyPipeline"));
-	table.vkDestroyPipelineCache = reinterpret_cast<PFN_vkDestroyPipelineCache>(load(device, "vkDestroyPipelineCache"));
-	table.vkDestroyPipelineLayout = reinterpret_cast<PFN_vkDestroyPipelineLayout>(load(device, "vkDestroyPipelineLayout"));
-	table.vkDestroyQueryPool = reinterpret_cast<PFN_vkDestroyQueryPool>(load(device, "vkDestroyQueryPool"));
 	table.vkDestroyRenderPass = reinterpret_cast<PFN_vkDestroyRenderPass>(load(device, "vkDestroyRenderPass"));
-	table.vkDestroySampler = reinterpret_cast<PFN_vkDestroySampler>(load(device, "vkDestroySampler"));
-	table.vkDestroySemaphore = reinterpret_cast<PFN_vkDestroySemaphore>(load(device, "vkDestroySemaphore"));
-	table.vkDestroyShaderModule = reinterpret_cast<PFN_vkDestroyShaderModule>(load(device, "vkDestroyShaderModule"));
-	table.vkDeviceWaitIdle = reinterpret_cast<PFN_vkDeviceWaitIdle>(load(device, "vkDeviceWaitIdle"));
-	table.vkEndCommandBuffer = reinterpret_cast<PFN_vkEndCommandBuffer>(load(device, "vkEndCommandBuffer"));
-	table.vkFlushMappedMemoryRanges = reinterpret_cast<PFN_vkFlushMappedMemoryRanges>(load(device, "vkFlushMappedMemoryRanges"));
-	table.vkFreeCommandBuffers = reinterpret_cast<PFN_vkFreeCommandBuffers>(load(device, "vkFreeCommandBuffers"));
-	table.vkFreeDescriptorSets = reinterpret_cast<PFN_vkFreeDescriptorSets>(load(device, "vkFreeDescriptorSets"));
-	table.vkFreeMemory = reinterpret_cast<PFN_vkFreeMemory>(load(device, "vkFreeMemory"));
-	table.vkGetBufferMemoryRequirements = reinterpret_cast<PFN_vkGetBufferMemoryRequirements>(load(device, "vkGetBufferMemoryRequirements"));
-	table.vkGetDeviceMemoryCommitment = reinterpret_cast<PFN_vkGetDeviceMemoryCommitment>(load(device, "vkGetDeviceMemoryCommitment"));
-	table.vkGetDeviceQueue = reinterpret_cast<PFN_vkGetDeviceQueue>(load(device, "vkGetDeviceQueue"));
-	table.vkGetEventStatus = reinterpret_cast<PFN_vkGetEventStatus>(load(device, "vkGetEventStatus"));
-	table.vkGetFenceStatus = reinterpret_cast<PFN_vkGetFenceStatus>(load(device, "vkGetFenceStatus"));
-	table.vkGetImageMemoryRequirements = reinterpret_cast<PFN_vkGetImageMemoryRequirements>(load(device, "vkGetImageMemoryRequirements"));
-	table.vkGetImageSparseMemoryRequirements = reinterpret_cast<PFN_vkGetImageSparseMemoryRequirements>(load(device, "vkGetImageSparseMemoryRequirements"));
-	table.vkGetImageSubresourceLayout = reinterpret_cast<PFN_vkGetImageSubresourceLayout>(load(device, "vkGetImageSubresourceLayout"));
-	table.vkGetPipelineCacheData = reinterpret_cast<PFN_vkGetPipelineCacheData>(load(device, "vkGetPipelineCacheData"));
-	table.vkGetQueryPoolResults = reinterpret_cast<PFN_vkGetQueryPoolResults>(load(device, "vkGetQueryPoolResults"));
 	table.vkGetRenderAreaGranularity = reinterpret_cast<PFN_vkGetRenderAreaGranularity>(load(device, "vkGetRenderAreaGranularity"));
-	table.vkInvalidateMappedMemoryRanges = reinterpret_cast<PFN_vkInvalidateMappedMemoryRanges>(load(device, "vkInvalidateMappedMemoryRanges"));
-	table.vkMapMemory = reinterpret_cast<PFN_vkMapMemory>(load(device, "vkMapMemory"));
-	table.vkMergePipelineCaches = reinterpret_cast<PFN_vkMergePipelineCaches>(load(device, "vkMergePipelineCaches"));
-	table.vkQueueBindSparse = reinterpret_cast<PFN_vkQueueBindSparse>(load(device, "vkQueueBindSparse"));
-	table.vkQueueSubmit = reinterpret_cast<PFN_vkQueueSubmit>(load(device, "vkQueueSubmit"));
-	table.vkQueueWaitIdle = reinterpret_cast<PFN_vkQueueWaitIdle>(load(device, "vkQueueWaitIdle"));
-	table.vkResetCommandBuffer = reinterpret_cast<PFN_vkResetCommandBuffer>(load(device, "vkResetCommandBuffer"));
-	table.vkResetCommandPool = reinterpret_cast<PFN_vkResetCommandPool>(load(device, "vkResetCommandPool"));
-	table.vkResetDescriptorPool = reinterpret_cast<PFN_vkResetDescriptorPool>(load(device, "vkResetDescriptorPool"));
-	table.vkResetEvent = reinterpret_cast<PFN_vkResetEvent>(load(device, "vkResetEvent"));
-	table.vkResetFences = reinterpret_cast<PFN_vkResetFences>(load(device, "vkResetFences"));
-	table.vkSetEvent = reinterpret_cast<PFN_vkSetEvent>(load(device, "vkSetEvent"));
-	table.vkUnmapMemory = reinterpret_cast<PFN_vkUnmapMemory>(load(device, "vkUnmapMemory"));
-	table.vkUpdateDescriptorSets = reinterpret_cast<PFN_vkUpdateDescriptorSets>(load(device, "vkUpdateDescriptorSets"));
-	table.vkWaitForFences = reinterpret_cast<PFN_vkWaitForFences>(load(device, "vkWaitForFences"));
-#endif /* defined(VK_VERSION_1_0) */
-#if defined(VK_VERSION_1_1)
+#endif /* defined(VK_GRAPHICS_VERSION_1_0) */
+#if defined(VK_BASE_VERSION_1_1)
 	table.vkBindBufferMemory2 = reinterpret_cast<PFN_vkBindBufferMemory2>(load(device, "vkBindBufferMemory2"));
 	table.vkBindImageMemory2 = reinterpret_cast<PFN_vkBindImageMemory2>(load(device, "vkBindImageMemory2"));
-	table.vkCmdDispatchBase = reinterpret_cast<PFN_vkCmdDispatchBase>(load(device, "vkCmdDispatchBase"));
 	table.vkCmdSetDeviceMask = reinterpret_cast<PFN_vkCmdSetDeviceMask>(load(device, "vkCmdSetDeviceMask"));
-	table.vkCreateDescriptorUpdateTemplate = reinterpret_cast<PFN_vkCreateDescriptorUpdateTemplate>(load(device, "vkCreateDescriptorUpdateTemplate"));
-	table.vkCreateSamplerYcbcrConversion = reinterpret_cast<PFN_vkCreateSamplerYcbcrConversion>(load(device, "vkCreateSamplerYcbcrConversion"));
-	table.vkDestroyDescriptorUpdateTemplate = reinterpret_cast<PFN_vkDestroyDescriptorUpdateTemplate>(load(device, "vkDestroyDescriptorUpdateTemplate"));
-	table.vkDestroySamplerYcbcrConversion = reinterpret_cast<PFN_vkDestroySamplerYcbcrConversion>(load(device, "vkDestroySamplerYcbcrConversion"));
 	table.vkGetBufferMemoryRequirements2 = reinterpret_cast<PFN_vkGetBufferMemoryRequirements2>(load(device, "vkGetBufferMemoryRequirements2"));
-	table.vkGetDescriptorSetLayoutSupport = reinterpret_cast<PFN_vkGetDescriptorSetLayoutSupport>(load(device, "vkGetDescriptorSetLayoutSupport"));
 	table.vkGetDeviceGroupPeerMemoryFeatures = reinterpret_cast<PFN_vkGetDeviceGroupPeerMemoryFeatures>(load(device, "vkGetDeviceGroupPeerMemoryFeatures"));
 	table.vkGetDeviceQueue2 = reinterpret_cast<PFN_vkGetDeviceQueue2>(load(device, "vkGetDeviceQueue2"));
 	table.vkGetImageMemoryRequirements2 = reinterpret_cast<PFN_vkGetImageMemoryRequirements2>(load(device, "vkGetImageMemoryRequirements2"));
 	table.vkGetImageSparseMemoryRequirements2 = reinterpret_cast<PFN_vkGetImageSparseMemoryRequirements2>(load(device, "vkGetImageSparseMemoryRequirements2"));
 	table.vkTrimCommandPool = reinterpret_cast<PFN_vkTrimCommandPool>(load(device, "vkTrimCommandPool"));
+#endif /* defined(VK_BASE_VERSION_1_1) */
+#if defined(VK_COMPUTE_VERSION_1_1)
+	table.vkCmdDispatchBase = reinterpret_cast<PFN_vkCmdDispatchBase>(load(device, "vkCmdDispatchBase"));
+	table.vkCreateDescriptorUpdateTemplate = reinterpret_cast<PFN_vkCreateDescriptorUpdateTemplate>(load(device, "vkCreateDescriptorUpdateTemplate"));
+	table.vkCreateSamplerYcbcrConversion = reinterpret_cast<PFN_vkCreateSamplerYcbcrConversion>(load(device, "vkCreateSamplerYcbcrConversion"));
+	table.vkDestroyDescriptorUpdateTemplate = reinterpret_cast<PFN_vkDestroyDescriptorUpdateTemplate>(load(device, "vkDestroyDescriptorUpdateTemplate"));
+	table.vkDestroySamplerYcbcrConversion = reinterpret_cast<PFN_vkDestroySamplerYcbcrConversion>(load(device, "vkDestroySamplerYcbcrConversion"));
+	table.vkGetDescriptorSetLayoutSupport = reinterpret_cast<PFN_vkGetDescriptorSetLayoutSupport>(load(device, "vkGetDescriptorSetLayoutSupport"));
 	table.vkUpdateDescriptorSetWithTemplate = reinterpret_cast<PFN_vkUpdateDescriptorSetWithTemplate>(load(device, "vkUpdateDescriptorSetWithTemplate"));
-#endif /* defined(VK_VERSION_1_1) */
-#if defined(VK_VERSION_1_2)
-	table.vkCmdBeginRenderPass2 = reinterpret_cast<PFN_vkCmdBeginRenderPass2>(load(device, "vkCmdBeginRenderPass2"));
-	table.vkCmdDrawIndexedIndirectCount = reinterpret_cast<PFN_vkCmdDrawIndexedIndirectCount>(load(device, "vkCmdDrawIndexedIndirectCount"));
-	table.vkCmdDrawIndirectCount = reinterpret_cast<PFN_vkCmdDrawIndirectCount>(load(device, "vkCmdDrawIndirectCount"));
-	table.vkCmdEndRenderPass2 = reinterpret_cast<PFN_vkCmdEndRenderPass2>(load(device, "vkCmdEndRenderPass2"));
-	table.vkCmdNextSubpass2 = reinterpret_cast<PFN_vkCmdNextSubpass2>(load(device, "vkCmdNextSubpass2"));
-	table.vkCreateRenderPass2 = reinterpret_cast<PFN_vkCreateRenderPass2>(load(device, "vkCreateRenderPass2"));
+#endif /* defined(VK_COMPUTE_VERSION_1_1) */
+#if defined(VK_BASE_VERSION_1_2)
 	table.vkGetBufferDeviceAddress = reinterpret_cast<PFN_vkGetBufferDeviceAddress>(load(device, "vkGetBufferDeviceAddress"));
 	table.vkGetBufferOpaqueCaptureAddress = reinterpret_cast<PFN_vkGetBufferOpaqueCaptureAddress>(load(device, "vkGetBufferOpaqueCaptureAddress"));
 	table.vkGetDeviceMemoryOpaqueCaptureAddress = reinterpret_cast<PFN_vkGetDeviceMemoryOpaqueCaptureAddress>(load(device, "vkGetDeviceMemoryOpaqueCaptureAddress"));
@@ -3875,35 +3959,21 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkResetQueryPool = reinterpret_cast<PFN_vkResetQueryPool>(load(device, "vkResetQueryPool"));
 	table.vkSignalSemaphore = reinterpret_cast<PFN_vkSignalSemaphore>(load(device, "vkSignalSemaphore"));
 	table.vkWaitSemaphores = reinterpret_cast<PFN_vkWaitSemaphores>(load(device, "vkWaitSemaphores"));
-#endif /* defined(VK_VERSION_1_2) */
-#if defined(VK_VERSION_1_3)
-	table.vkCmdBeginRendering = reinterpret_cast<PFN_vkCmdBeginRendering>(load(device, "vkCmdBeginRendering"));
-	table.vkCmdBindVertexBuffers2 = reinterpret_cast<PFN_vkCmdBindVertexBuffers2>(load(device, "vkCmdBindVertexBuffers2"));
-	table.vkCmdBlitImage2 = reinterpret_cast<PFN_vkCmdBlitImage2>(load(device, "vkCmdBlitImage2"));
+#endif /* defined(VK_BASE_VERSION_1_2) */
+#if defined(VK_GRAPHICS_VERSION_1_2)
+	table.vkCmdBeginRenderPass2 = reinterpret_cast<PFN_vkCmdBeginRenderPass2>(load(device, "vkCmdBeginRenderPass2"));
+	table.vkCmdDrawIndexedIndirectCount = reinterpret_cast<PFN_vkCmdDrawIndexedIndirectCount>(load(device, "vkCmdDrawIndexedIndirectCount"));
+	table.vkCmdDrawIndirectCount = reinterpret_cast<PFN_vkCmdDrawIndirectCount>(load(device, "vkCmdDrawIndirectCount"));
+	table.vkCmdEndRenderPass2 = reinterpret_cast<PFN_vkCmdEndRenderPass2>(load(device, "vkCmdEndRenderPass2"));
+	table.vkCmdNextSubpass2 = reinterpret_cast<PFN_vkCmdNextSubpass2>(load(device, "vkCmdNextSubpass2"));
+	table.vkCreateRenderPass2 = reinterpret_cast<PFN_vkCreateRenderPass2>(load(device, "vkCreateRenderPass2"));
+#endif /* defined(VK_GRAPHICS_VERSION_1_2) */
+#if defined(VK_BASE_VERSION_1_3)
 	table.vkCmdCopyBuffer2 = reinterpret_cast<PFN_vkCmdCopyBuffer2>(load(device, "vkCmdCopyBuffer2"));
 	table.vkCmdCopyBufferToImage2 = reinterpret_cast<PFN_vkCmdCopyBufferToImage2>(load(device, "vkCmdCopyBufferToImage2"));
 	table.vkCmdCopyImage2 = reinterpret_cast<PFN_vkCmdCopyImage2>(load(device, "vkCmdCopyImage2"));
 	table.vkCmdCopyImageToBuffer2 = reinterpret_cast<PFN_vkCmdCopyImageToBuffer2>(load(device, "vkCmdCopyImageToBuffer2"));
-	table.vkCmdEndRendering = reinterpret_cast<PFN_vkCmdEndRendering>(load(device, "vkCmdEndRendering"));
 	table.vkCmdPipelineBarrier2 = reinterpret_cast<PFN_vkCmdPipelineBarrier2>(load(device, "vkCmdPipelineBarrier2"));
-	table.vkCmdResetEvent2 = reinterpret_cast<PFN_vkCmdResetEvent2>(load(device, "vkCmdResetEvent2"));
-	table.vkCmdResolveImage2 = reinterpret_cast<PFN_vkCmdResolveImage2>(load(device, "vkCmdResolveImage2"));
-	table.vkCmdSetCullMode = reinterpret_cast<PFN_vkCmdSetCullMode>(load(device, "vkCmdSetCullMode"));
-	table.vkCmdSetDepthBiasEnable = reinterpret_cast<PFN_vkCmdSetDepthBiasEnable>(load(device, "vkCmdSetDepthBiasEnable"));
-	table.vkCmdSetDepthBoundsTestEnable = reinterpret_cast<PFN_vkCmdSetDepthBoundsTestEnable>(load(device, "vkCmdSetDepthBoundsTestEnable"));
-	table.vkCmdSetDepthCompareOp = reinterpret_cast<PFN_vkCmdSetDepthCompareOp>(load(device, "vkCmdSetDepthCompareOp"));
-	table.vkCmdSetDepthTestEnable = reinterpret_cast<PFN_vkCmdSetDepthTestEnable>(load(device, "vkCmdSetDepthTestEnable"));
-	table.vkCmdSetDepthWriteEnable = reinterpret_cast<PFN_vkCmdSetDepthWriteEnable>(load(device, "vkCmdSetDepthWriteEnable"));
-	table.vkCmdSetEvent2 = reinterpret_cast<PFN_vkCmdSetEvent2>(load(device, "vkCmdSetEvent2"));
-	table.vkCmdSetFrontFace = reinterpret_cast<PFN_vkCmdSetFrontFace>(load(device, "vkCmdSetFrontFace"));
-	table.vkCmdSetPrimitiveRestartEnable = reinterpret_cast<PFN_vkCmdSetPrimitiveRestartEnable>(load(device, "vkCmdSetPrimitiveRestartEnable"));
-	table.vkCmdSetPrimitiveTopology = reinterpret_cast<PFN_vkCmdSetPrimitiveTopology>(load(device, "vkCmdSetPrimitiveTopology"));
-	table.vkCmdSetRasterizerDiscardEnable = reinterpret_cast<PFN_vkCmdSetRasterizerDiscardEnable>(load(device, "vkCmdSetRasterizerDiscardEnable"));
-	table.vkCmdSetScissorWithCount = reinterpret_cast<PFN_vkCmdSetScissorWithCount>(load(device, "vkCmdSetScissorWithCount"));
-	table.vkCmdSetStencilOp = reinterpret_cast<PFN_vkCmdSetStencilOp>(load(device, "vkCmdSetStencilOp"));
-	table.vkCmdSetStencilTestEnable = reinterpret_cast<PFN_vkCmdSetStencilTestEnable>(load(device, "vkCmdSetStencilTestEnable"));
-	table.vkCmdSetViewportWithCount = reinterpret_cast<PFN_vkCmdSetViewportWithCount>(load(device, "vkCmdSetViewportWithCount"));
-	table.vkCmdWaitEvents2 = reinterpret_cast<PFN_vkCmdWaitEvents2>(load(device, "vkCmdWaitEvents2"));
 	table.vkCmdWriteTimestamp2 = reinterpret_cast<PFN_vkCmdWriteTimestamp2>(load(device, "vkCmdWriteTimestamp2"));
 	table.vkCreatePrivateDataSlot = reinterpret_cast<PFN_vkCreatePrivateDataSlot>(load(device, "vkCreatePrivateDataSlot"));
 	table.vkDestroyPrivateDataSlot = reinterpret_cast<PFN_vkDestroyPrivateDataSlot>(load(device, "vkDestroyPrivateDataSlot"));
@@ -3913,28 +3983,58 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkGetPrivateData = reinterpret_cast<PFN_vkGetPrivateData>(load(device, "vkGetPrivateData"));
 	table.vkQueueSubmit2 = reinterpret_cast<PFN_vkQueueSubmit2>(load(device, "vkQueueSubmit2"));
 	table.vkSetPrivateData = reinterpret_cast<PFN_vkSetPrivateData>(load(device, "vkSetPrivateData"));
-#endif /* defined(VK_VERSION_1_3) */
-#if defined(VK_VERSION_1_4)
-	table.vkCmdBindDescriptorSets2 = reinterpret_cast<PFN_vkCmdBindDescriptorSets2>(load(device, "vkCmdBindDescriptorSets2"));
-	table.vkCmdBindIndexBuffer2 = reinterpret_cast<PFN_vkCmdBindIndexBuffer2>(load(device, "vkCmdBindIndexBuffer2"));
-	table.vkCmdPushConstants2 = reinterpret_cast<PFN_vkCmdPushConstants2>(load(device, "vkCmdPushConstants2"));
-	table.vkCmdPushDescriptorSet = reinterpret_cast<PFN_vkCmdPushDescriptorSet>(load(device, "vkCmdPushDescriptorSet"));
-	table.vkCmdPushDescriptorSet2 = reinterpret_cast<PFN_vkCmdPushDescriptorSet2>(load(device, "vkCmdPushDescriptorSet2"));
-	table.vkCmdPushDescriptorSetWithTemplate = reinterpret_cast<PFN_vkCmdPushDescriptorSetWithTemplate>(load(device, "vkCmdPushDescriptorSetWithTemplate"));
-	table.vkCmdPushDescriptorSetWithTemplate2 = reinterpret_cast<PFN_vkCmdPushDescriptorSetWithTemplate2>(load(device, "vkCmdPushDescriptorSetWithTemplate2"));
-	table.vkCmdSetLineStipple = reinterpret_cast<PFN_vkCmdSetLineStipple>(load(device, "vkCmdSetLineStipple"));
-	table.vkCmdSetRenderingAttachmentLocations = reinterpret_cast<PFN_vkCmdSetRenderingAttachmentLocations>(load(device, "vkCmdSetRenderingAttachmentLocations"));
-	table.vkCmdSetRenderingInputAttachmentIndices = reinterpret_cast<PFN_vkCmdSetRenderingInputAttachmentIndices>(load(device, "vkCmdSetRenderingInputAttachmentIndices"));
+#endif /* defined(VK_BASE_VERSION_1_3) */
+#if defined(VK_COMPUTE_VERSION_1_3)
+	table.vkCmdResetEvent2 = reinterpret_cast<PFN_vkCmdResetEvent2>(load(device, "vkCmdResetEvent2"));
+	table.vkCmdSetEvent2 = reinterpret_cast<PFN_vkCmdSetEvent2>(load(device, "vkCmdSetEvent2"));
+	table.vkCmdWaitEvents2 = reinterpret_cast<PFN_vkCmdWaitEvents2>(load(device, "vkCmdWaitEvents2"));
+#endif /* defined(VK_COMPUTE_VERSION_1_3) */
+#if defined(VK_GRAPHICS_VERSION_1_3)
+	table.vkCmdBeginRendering = reinterpret_cast<PFN_vkCmdBeginRendering>(load(device, "vkCmdBeginRendering"));
+	table.vkCmdBindVertexBuffers2 = reinterpret_cast<PFN_vkCmdBindVertexBuffers2>(load(device, "vkCmdBindVertexBuffers2"));
+	table.vkCmdBlitImage2 = reinterpret_cast<PFN_vkCmdBlitImage2>(load(device, "vkCmdBlitImage2"));
+	table.vkCmdEndRendering = reinterpret_cast<PFN_vkCmdEndRendering>(load(device, "vkCmdEndRendering"));
+	table.vkCmdResolveImage2 = reinterpret_cast<PFN_vkCmdResolveImage2>(load(device, "vkCmdResolveImage2"));
+	table.vkCmdSetCullMode = reinterpret_cast<PFN_vkCmdSetCullMode>(load(device, "vkCmdSetCullMode"));
+	table.vkCmdSetDepthBiasEnable = reinterpret_cast<PFN_vkCmdSetDepthBiasEnable>(load(device, "vkCmdSetDepthBiasEnable"));
+	table.vkCmdSetDepthBoundsTestEnable = reinterpret_cast<PFN_vkCmdSetDepthBoundsTestEnable>(load(device, "vkCmdSetDepthBoundsTestEnable"));
+	table.vkCmdSetDepthCompareOp = reinterpret_cast<PFN_vkCmdSetDepthCompareOp>(load(device, "vkCmdSetDepthCompareOp"));
+	table.vkCmdSetDepthTestEnable = reinterpret_cast<PFN_vkCmdSetDepthTestEnable>(load(device, "vkCmdSetDepthTestEnable"));
+	table.vkCmdSetDepthWriteEnable = reinterpret_cast<PFN_vkCmdSetDepthWriteEnable>(load(device, "vkCmdSetDepthWriteEnable"));
+	table.vkCmdSetFrontFace = reinterpret_cast<PFN_vkCmdSetFrontFace>(load(device, "vkCmdSetFrontFace"));
+	table.vkCmdSetPrimitiveRestartEnable = reinterpret_cast<PFN_vkCmdSetPrimitiveRestartEnable>(load(device, "vkCmdSetPrimitiveRestartEnable"));
+	table.vkCmdSetPrimitiveTopology = reinterpret_cast<PFN_vkCmdSetPrimitiveTopology>(load(device, "vkCmdSetPrimitiveTopology"));
+	table.vkCmdSetRasterizerDiscardEnable = reinterpret_cast<PFN_vkCmdSetRasterizerDiscardEnable>(load(device, "vkCmdSetRasterizerDiscardEnable"));
+	table.vkCmdSetScissorWithCount = reinterpret_cast<PFN_vkCmdSetScissorWithCount>(load(device, "vkCmdSetScissorWithCount"));
+	table.vkCmdSetStencilOp = reinterpret_cast<PFN_vkCmdSetStencilOp>(load(device, "vkCmdSetStencilOp"));
+	table.vkCmdSetStencilTestEnable = reinterpret_cast<PFN_vkCmdSetStencilTestEnable>(load(device, "vkCmdSetStencilTestEnable"));
+	table.vkCmdSetViewportWithCount = reinterpret_cast<PFN_vkCmdSetViewportWithCount>(load(device, "vkCmdSetViewportWithCount"));
+#endif /* defined(VK_GRAPHICS_VERSION_1_3) */
+#if defined(VK_BASE_VERSION_1_4)
 	table.vkCopyImageToImage = reinterpret_cast<PFN_vkCopyImageToImage>(load(device, "vkCopyImageToImage"));
 	table.vkCopyImageToMemory = reinterpret_cast<PFN_vkCopyImageToMemory>(load(device, "vkCopyImageToMemory"));
 	table.vkCopyMemoryToImage = reinterpret_cast<PFN_vkCopyMemoryToImage>(load(device, "vkCopyMemoryToImage"));
 	table.vkGetDeviceImageSubresourceLayout = reinterpret_cast<PFN_vkGetDeviceImageSubresourceLayout>(load(device, "vkGetDeviceImageSubresourceLayout"));
 	table.vkGetImageSubresourceLayout2 = reinterpret_cast<PFN_vkGetImageSubresourceLayout2>(load(device, "vkGetImageSubresourceLayout2"));
-	table.vkGetRenderingAreaGranularity = reinterpret_cast<PFN_vkGetRenderingAreaGranularity>(load(device, "vkGetRenderingAreaGranularity"));
 	table.vkMapMemory2 = reinterpret_cast<PFN_vkMapMemory2>(load(device, "vkMapMemory2"));
 	table.vkTransitionImageLayout = reinterpret_cast<PFN_vkTransitionImageLayout>(load(device, "vkTransitionImageLayout"));
 	table.vkUnmapMemory2 = reinterpret_cast<PFN_vkUnmapMemory2>(load(device, "vkUnmapMemory2"));
-#endif /* defined(VK_VERSION_1_4) */
+#endif /* defined(VK_BASE_VERSION_1_4) */
+#if defined(VK_COMPUTE_VERSION_1_4)
+	table.vkCmdBindDescriptorSets2 = reinterpret_cast<PFN_vkCmdBindDescriptorSets2>(load(device, "vkCmdBindDescriptorSets2"));
+	table.vkCmdPushConstants2 = reinterpret_cast<PFN_vkCmdPushConstants2>(load(device, "vkCmdPushConstants2"));
+	table.vkCmdPushDescriptorSet = reinterpret_cast<PFN_vkCmdPushDescriptorSet>(load(device, "vkCmdPushDescriptorSet"));
+	table.vkCmdPushDescriptorSet2 = reinterpret_cast<PFN_vkCmdPushDescriptorSet2>(load(device, "vkCmdPushDescriptorSet2"));
+	table.vkCmdPushDescriptorSetWithTemplate = reinterpret_cast<PFN_vkCmdPushDescriptorSetWithTemplate>(load(device, "vkCmdPushDescriptorSetWithTemplate"));
+	table.vkCmdPushDescriptorSetWithTemplate2 = reinterpret_cast<PFN_vkCmdPushDescriptorSetWithTemplate2>(load(device, "vkCmdPushDescriptorSetWithTemplate2"));
+#endif /* defined(VK_COMPUTE_VERSION_1_4) */
+#if defined(VK_GRAPHICS_VERSION_1_4)
+	table.vkCmdBindIndexBuffer2 = reinterpret_cast<PFN_vkCmdBindIndexBuffer2>(load(device, "vkCmdBindIndexBuffer2"));
+	table.vkCmdSetLineStipple = reinterpret_cast<PFN_vkCmdSetLineStipple>(load(device, "vkCmdSetLineStipple"));
+	table.vkCmdSetRenderingAttachmentLocations = reinterpret_cast<PFN_vkCmdSetRenderingAttachmentLocations>(load(device, "vkCmdSetRenderingAttachmentLocations"));
+	table.vkCmdSetRenderingInputAttachmentIndices = reinterpret_cast<PFN_vkCmdSetRenderingInputAttachmentIndices>(load(device, "vkCmdSetRenderingInputAttachmentIndices"));
+	table.vkGetRenderingAreaGranularity = reinterpret_cast<PFN_vkGetRenderingAreaGranularity>(load(device, "vkGetRenderingAreaGranularity"));
+#endif /* defined(VK_GRAPHICS_VERSION_1_4) */
 #if defined(VK_AMDX_shader_enqueue)
 	table.vkCmdDispatchGraphAMDX = reinterpret_cast<PFN_vkCmdDispatchGraphAMDX>(load(device, "vkCmdDispatchGraphAMDX"));
 	table.vkCmdDispatchGraphIndirectAMDX = reinterpret_cast<PFN_vkCmdDispatchGraphIndirectAMDX>(load(device, "vkCmdDispatchGraphIndirectAMDX"));
@@ -4095,6 +4195,10 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 #if defined(VK_EXT_line_rasterization)
 	table.vkCmdSetLineStippleEXT = reinterpret_cast<PFN_vkCmdSetLineStippleEXT>(load(device, "vkCmdSetLineStippleEXT"));
 #endif /* defined(VK_EXT_line_rasterization) */
+#if defined(VK_EXT_memory_decompression)
+	table.vkCmdDecompressMemoryEXT = reinterpret_cast<PFN_vkCmdDecompressMemoryEXT>(load(device, "vkCmdDecompressMemoryEXT"));
+	table.vkCmdDecompressMemoryIndirectCountEXT = reinterpret_cast<PFN_vkCmdDecompressMemoryIndirectCountEXT>(load(device, "vkCmdDecompressMemoryIndirectCountEXT"));
+#endif /* defined(VK_EXT_memory_decompression) */
 #if defined(VK_EXT_mesh_shader)
 	table.vkCmdDrawMeshTasksEXT = reinterpret_cast<PFN_vkCmdDrawMeshTasksEXT>(load(device, "vkCmdDrawMeshTasksEXT"));
 	table.vkCmdDrawMeshTasksIndirectEXT = reinterpret_cast<PFN_vkCmdDrawMeshTasksIndirectEXT>(load(device, "vkCmdDrawMeshTasksIndirectEXT"));
@@ -4328,6 +4432,9 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 #if defined(VK_KHR_maintenance1)
 	table.vkTrimCommandPoolKHR = reinterpret_cast<PFN_vkTrimCommandPoolKHR>(load(device, "vkTrimCommandPoolKHR"));
 #endif /* defined(VK_KHR_maintenance1) */
+#if defined(VK_KHR_maintenance10)
+	table.vkCmdEndRendering2KHR = reinterpret_cast<PFN_vkCmdEndRendering2KHR>(load(device, "vkCmdEndRendering2KHR"));
+#endif /* defined(VK_KHR_maintenance10) */
 #if defined(VK_KHR_maintenance3)
 	table.vkGetDescriptorSetLayoutSupportKHR = reinterpret_cast<PFN_vkGetDescriptorSetLayoutSupportKHR>(load(device, "vkGetDescriptorSetLayoutSupportKHR"));
 #endif /* defined(VK_KHR_maintenance3) */
@@ -4570,6 +4677,11 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkCmdSetCoarseSampleOrderNV = reinterpret_cast<PFN_vkCmdSetCoarseSampleOrderNV>(load(device, "vkCmdSetCoarseSampleOrderNV"));
 	table.vkCmdSetViewportShadingRatePaletteNV = reinterpret_cast<PFN_vkCmdSetViewportShadingRatePaletteNV>(load(device, "vkCmdSetViewportShadingRatePaletteNV"));
 #endif /* defined(VK_NV_shading_rate_image) */
+#if defined(VK_OHOS_native_buffer)
+	table.vkAcquireImageOHOS = reinterpret_cast<PFN_vkAcquireImageOHOS>(load(device, "vkAcquireImageOHOS"));
+	table.vkGetSwapchainGrallocUsageOHOS = reinterpret_cast<PFN_vkGetSwapchainGrallocUsageOHOS>(load(device, "vkGetSwapchainGrallocUsageOHOS"));
+	table.vkQueueSignalReleaseImageOHOS = reinterpret_cast<PFN_vkQueueSignalReleaseImageOHOS>(load(device, "vkQueueSignalReleaseImageOHOS"));
+#endif /* defined(VK_OHOS_native_buffer) */
 #if defined(VK_QCOM_tile_memory_heap)
 	table.vkCmdBindTileMemoryQCOM = reinterpret_cast<PFN_vkCmdBindTileMemoryQCOM>(load(device, "vkCmdBindTileMemoryQCOM"));
 #endif /* defined(VK_QCOM_tile_memory_heap) */
@@ -4706,98 +4818,43 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 #endif /*__GNUC__*/
 
 /* VULKANLOADER_GENERATE_PROTOTYPES_C */
-#if defined(VK_VERSION_1_0)
+#if defined(VK_BASE_VERSION_1_0)
 inline PFN_vkAllocateCommandBuffers vkAllocateCommandBuffers;
-inline PFN_vkAllocateDescriptorSets vkAllocateDescriptorSets;
 inline PFN_vkAllocateMemory vkAllocateMemory;
 inline PFN_vkBeginCommandBuffer vkBeginCommandBuffer;
 inline PFN_vkBindBufferMemory vkBindBufferMemory;
 inline PFN_vkBindImageMemory vkBindImageMemory;
 inline PFN_vkCmdBeginQuery vkCmdBeginQuery;
-inline PFN_vkCmdBeginRenderPass vkCmdBeginRenderPass;
-inline PFN_vkCmdBindDescriptorSets vkCmdBindDescriptorSets;
-inline PFN_vkCmdBindIndexBuffer vkCmdBindIndexBuffer;
-inline PFN_vkCmdBindPipeline vkCmdBindPipeline;
-inline PFN_vkCmdBindVertexBuffers vkCmdBindVertexBuffers;
-inline PFN_vkCmdBlitImage vkCmdBlitImage;
-inline PFN_vkCmdClearAttachments vkCmdClearAttachments;
-inline PFN_vkCmdClearColorImage vkCmdClearColorImage;
-inline PFN_vkCmdClearDepthStencilImage vkCmdClearDepthStencilImage;
 inline PFN_vkCmdCopyBuffer vkCmdCopyBuffer;
 inline PFN_vkCmdCopyBufferToImage vkCmdCopyBufferToImage;
 inline PFN_vkCmdCopyImage vkCmdCopyImage;
 inline PFN_vkCmdCopyImageToBuffer vkCmdCopyImageToBuffer;
 inline PFN_vkCmdCopyQueryPoolResults vkCmdCopyQueryPoolResults;
-inline PFN_vkCmdDispatch vkCmdDispatch;
-inline PFN_vkCmdDispatchIndirect vkCmdDispatchIndirect;
-inline PFN_vkCmdDraw vkCmdDraw;
-inline PFN_vkCmdDrawIndexed vkCmdDrawIndexed;
-inline PFN_vkCmdDrawIndexedIndirect vkCmdDrawIndexedIndirect;
-inline PFN_vkCmdDrawIndirect vkCmdDrawIndirect;
 inline PFN_vkCmdEndQuery vkCmdEndQuery;
-inline PFN_vkCmdEndRenderPass vkCmdEndRenderPass;
 inline PFN_vkCmdExecuteCommands vkCmdExecuteCommands;
 inline PFN_vkCmdFillBuffer vkCmdFillBuffer;
-inline PFN_vkCmdNextSubpass vkCmdNextSubpass;
 inline PFN_vkCmdPipelineBarrier vkCmdPipelineBarrier;
-inline PFN_vkCmdPushConstants vkCmdPushConstants;
-inline PFN_vkCmdResetEvent vkCmdResetEvent;
 inline PFN_vkCmdResetQueryPool vkCmdResetQueryPool;
-inline PFN_vkCmdResolveImage vkCmdResolveImage;
-inline PFN_vkCmdSetBlendConstants vkCmdSetBlendConstants;
-inline PFN_vkCmdSetDepthBias vkCmdSetDepthBias;
-inline PFN_vkCmdSetDepthBounds vkCmdSetDepthBounds;
-inline PFN_vkCmdSetEvent vkCmdSetEvent;
-inline PFN_vkCmdSetLineWidth vkCmdSetLineWidth;
-inline PFN_vkCmdSetScissor vkCmdSetScissor;
-inline PFN_vkCmdSetStencilCompareMask vkCmdSetStencilCompareMask;
-inline PFN_vkCmdSetStencilReference vkCmdSetStencilReference;
-inline PFN_vkCmdSetStencilWriteMask vkCmdSetStencilWriteMask;
-inline PFN_vkCmdSetViewport vkCmdSetViewport;
 inline PFN_vkCmdUpdateBuffer vkCmdUpdateBuffer;
-inline PFN_vkCmdWaitEvents vkCmdWaitEvents;
 inline PFN_vkCmdWriteTimestamp vkCmdWriteTimestamp;
 inline PFN_vkCreateBuffer vkCreateBuffer;
-inline PFN_vkCreateBufferView vkCreateBufferView;
 inline PFN_vkCreateCommandPool vkCreateCommandPool;
-inline PFN_vkCreateComputePipelines vkCreateComputePipelines;
-inline PFN_vkCreateDescriptorPool vkCreateDescriptorPool;
-inline PFN_vkCreateDescriptorSetLayout vkCreateDescriptorSetLayout;
 inline PFN_vkCreateDevice vkCreateDevice;
-inline PFN_vkCreateEvent vkCreateEvent;
 inline PFN_vkCreateFence vkCreateFence;
-inline PFN_vkCreateFramebuffer vkCreateFramebuffer;
-inline PFN_vkCreateGraphicsPipelines vkCreateGraphicsPipelines;
 inline PFN_vkCreateImage vkCreateImage;
 inline PFN_vkCreateImageView vkCreateImageView;
 inline PFN_vkCreateInstance vkCreateInstance;
-inline PFN_vkCreatePipelineCache vkCreatePipelineCache;
-inline PFN_vkCreatePipelineLayout vkCreatePipelineLayout;
 inline PFN_vkCreateQueryPool vkCreateQueryPool;
-inline PFN_vkCreateRenderPass vkCreateRenderPass;
-inline PFN_vkCreateSampler vkCreateSampler;
 inline PFN_vkCreateSemaphore vkCreateSemaphore;
-inline PFN_vkCreateShaderModule vkCreateShaderModule;
 inline PFN_vkDestroyBuffer vkDestroyBuffer;
-inline PFN_vkDestroyBufferView vkDestroyBufferView;
 inline PFN_vkDestroyCommandPool vkDestroyCommandPool;
-inline PFN_vkDestroyDescriptorPool vkDestroyDescriptorPool;
-inline PFN_vkDestroyDescriptorSetLayout vkDestroyDescriptorSetLayout;
 inline PFN_vkDestroyDevice vkDestroyDevice;
-inline PFN_vkDestroyEvent vkDestroyEvent;
 inline PFN_vkDestroyFence vkDestroyFence;
-inline PFN_vkDestroyFramebuffer vkDestroyFramebuffer;
 inline PFN_vkDestroyImage vkDestroyImage;
 inline PFN_vkDestroyImageView vkDestroyImageView;
 inline PFN_vkDestroyInstance vkDestroyInstance;
-inline PFN_vkDestroyPipeline vkDestroyPipeline;
-inline PFN_vkDestroyPipelineCache vkDestroyPipelineCache;
-inline PFN_vkDestroyPipelineLayout vkDestroyPipelineLayout;
 inline PFN_vkDestroyQueryPool vkDestroyQueryPool;
-inline PFN_vkDestroyRenderPass vkDestroyRenderPass;
-inline PFN_vkDestroySampler vkDestroySampler;
 inline PFN_vkDestroySemaphore vkDestroySemaphore;
-inline PFN_vkDestroyShaderModule vkDestroyShaderModule;
 inline PFN_vkDeviceWaitIdle vkDeviceWaitIdle;
 inline PFN_vkEndCommandBuffer vkEndCommandBuffer;
 inline PFN_vkEnumerateDeviceExtensionProperties vkEnumerateDeviceExtensionProperties;
@@ -4807,13 +4864,11 @@ inline PFN_vkEnumerateInstanceLayerProperties vkEnumerateInstanceLayerProperties
 inline PFN_vkEnumeratePhysicalDevices vkEnumeratePhysicalDevices;
 inline PFN_vkFlushMappedMemoryRanges vkFlushMappedMemoryRanges;
 inline PFN_vkFreeCommandBuffers vkFreeCommandBuffers;
-inline PFN_vkFreeDescriptorSets vkFreeDescriptorSets;
 inline PFN_vkFreeMemory vkFreeMemory;
 inline PFN_vkGetBufferMemoryRequirements vkGetBufferMemoryRequirements;
 inline PFN_vkGetDeviceMemoryCommitment vkGetDeviceMemoryCommitment;
 inline PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr;
 inline PFN_vkGetDeviceQueue vkGetDeviceQueue;
-inline PFN_vkGetEventStatus vkGetEventStatus;
 inline PFN_vkGetFenceStatus vkGetFenceStatus;
 inline PFN_vkGetImageMemoryRequirements vkGetImageMemoryRequirements;
 inline PFN_vkGetImageSparseMemoryRequirements vkGetImageSparseMemoryRequirements;
@@ -4826,38 +4881,93 @@ inline PFN_vkGetPhysicalDeviceMemoryProperties vkGetPhysicalDeviceMemoryProperti
 inline PFN_vkGetPhysicalDeviceProperties vkGetPhysicalDeviceProperties;
 inline PFN_vkGetPhysicalDeviceQueueFamilyProperties vkGetPhysicalDeviceQueueFamilyProperties;
 inline PFN_vkGetPhysicalDeviceSparseImageFormatProperties vkGetPhysicalDeviceSparseImageFormatProperties;
-inline PFN_vkGetPipelineCacheData vkGetPipelineCacheData;
 inline PFN_vkGetQueryPoolResults vkGetQueryPoolResults;
-inline PFN_vkGetRenderAreaGranularity vkGetRenderAreaGranularity;
 inline PFN_vkInvalidateMappedMemoryRanges vkInvalidateMappedMemoryRanges;
 inline PFN_vkMapMemory vkMapMemory;
-inline PFN_vkMergePipelineCaches vkMergePipelineCaches;
 inline PFN_vkQueueBindSparse vkQueueBindSparse;
 inline PFN_vkQueueSubmit vkQueueSubmit;
 inline PFN_vkQueueWaitIdle vkQueueWaitIdle;
 inline PFN_vkResetCommandBuffer vkResetCommandBuffer;
 inline PFN_vkResetCommandPool vkResetCommandPool;
+inline PFN_vkResetFences vkResetFences;
+inline PFN_vkUnmapMemory vkUnmapMemory;
+inline PFN_vkWaitForFences vkWaitForFences;
+#endif /* defined(VK_BASE_VERSION_1_0) */
+#if defined(VK_COMPUTE_VERSION_1_0)
+inline PFN_vkAllocateDescriptorSets vkAllocateDescriptorSets;
+inline PFN_vkCmdBindDescriptorSets vkCmdBindDescriptorSets;
+inline PFN_vkCmdBindPipeline vkCmdBindPipeline;
+inline PFN_vkCmdClearColorImage vkCmdClearColorImage;
+inline PFN_vkCmdDispatch vkCmdDispatch;
+inline PFN_vkCmdDispatchIndirect vkCmdDispatchIndirect;
+inline PFN_vkCmdPushConstants vkCmdPushConstants;
+inline PFN_vkCmdResetEvent vkCmdResetEvent;
+inline PFN_vkCmdSetEvent vkCmdSetEvent;
+inline PFN_vkCmdWaitEvents vkCmdWaitEvents;
+inline PFN_vkCreateBufferView vkCreateBufferView;
+inline PFN_vkCreateComputePipelines vkCreateComputePipelines;
+inline PFN_vkCreateDescriptorPool vkCreateDescriptorPool;
+inline PFN_vkCreateDescriptorSetLayout vkCreateDescriptorSetLayout;
+inline PFN_vkCreateEvent vkCreateEvent;
+inline PFN_vkCreatePipelineCache vkCreatePipelineCache;
+inline PFN_vkCreatePipelineLayout vkCreatePipelineLayout;
+inline PFN_vkCreateSampler vkCreateSampler;
+inline PFN_vkCreateShaderModule vkCreateShaderModule;
+inline PFN_vkDestroyBufferView vkDestroyBufferView;
+inline PFN_vkDestroyDescriptorPool vkDestroyDescriptorPool;
+inline PFN_vkDestroyDescriptorSetLayout vkDestroyDescriptorSetLayout;
+inline PFN_vkDestroyEvent vkDestroyEvent;
+inline PFN_vkDestroyPipeline vkDestroyPipeline;
+inline PFN_vkDestroyPipelineCache vkDestroyPipelineCache;
+inline PFN_vkDestroyPipelineLayout vkDestroyPipelineLayout;
+inline PFN_vkDestroySampler vkDestroySampler;
+inline PFN_vkDestroyShaderModule vkDestroyShaderModule;
+inline PFN_vkFreeDescriptorSets vkFreeDescriptorSets;
+inline PFN_vkGetEventStatus vkGetEventStatus;
+inline PFN_vkGetPipelineCacheData vkGetPipelineCacheData;
+inline PFN_vkMergePipelineCaches vkMergePipelineCaches;
 inline PFN_vkResetDescriptorPool vkResetDescriptorPool;
 inline PFN_vkResetEvent vkResetEvent;
-inline PFN_vkResetFences vkResetFences;
 inline PFN_vkSetEvent vkSetEvent;
-inline PFN_vkUnmapMemory vkUnmapMemory;
 inline PFN_vkUpdateDescriptorSets vkUpdateDescriptorSets;
-inline PFN_vkWaitForFences vkWaitForFences;
-#endif /* defined(VK_VERSION_1_0) */
-#if defined(VK_VERSION_1_1)
+#endif /* defined(VK_COMPUTE_VERSION_1_0) */
+#if defined(VK_GRAPHICS_VERSION_1_0)
+inline PFN_vkCmdBeginRenderPass vkCmdBeginRenderPass;
+inline PFN_vkCmdBindIndexBuffer vkCmdBindIndexBuffer;
+inline PFN_vkCmdBindVertexBuffers vkCmdBindVertexBuffers;
+inline PFN_vkCmdBlitImage vkCmdBlitImage;
+inline PFN_vkCmdClearAttachments vkCmdClearAttachments;
+inline PFN_vkCmdClearDepthStencilImage vkCmdClearDepthStencilImage;
+inline PFN_vkCmdDraw vkCmdDraw;
+inline PFN_vkCmdDrawIndexed vkCmdDrawIndexed;
+inline PFN_vkCmdDrawIndexedIndirect vkCmdDrawIndexedIndirect;
+inline PFN_vkCmdDrawIndirect vkCmdDrawIndirect;
+inline PFN_vkCmdEndRenderPass vkCmdEndRenderPass;
+inline PFN_vkCmdNextSubpass vkCmdNextSubpass;
+inline PFN_vkCmdResolveImage vkCmdResolveImage;
+inline PFN_vkCmdSetBlendConstants vkCmdSetBlendConstants;
+inline PFN_vkCmdSetDepthBias vkCmdSetDepthBias;
+inline PFN_vkCmdSetDepthBounds vkCmdSetDepthBounds;
+inline PFN_vkCmdSetLineWidth vkCmdSetLineWidth;
+inline PFN_vkCmdSetScissor vkCmdSetScissor;
+inline PFN_vkCmdSetStencilCompareMask vkCmdSetStencilCompareMask;
+inline PFN_vkCmdSetStencilReference vkCmdSetStencilReference;
+inline PFN_vkCmdSetStencilWriteMask vkCmdSetStencilWriteMask;
+inline PFN_vkCmdSetViewport vkCmdSetViewport;
+inline PFN_vkCreateFramebuffer vkCreateFramebuffer;
+inline PFN_vkCreateGraphicsPipelines vkCreateGraphicsPipelines;
+inline PFN_vkCreateRenderPass vkCreateRenderPass;
+inline PFN_vkDestroyFramebuffer vkDestroyFramebuffer;
+inline PFN_vkDestroyRenderPass vkDestroyRenderPass;
+inline PFN_vkGetRenderAreaGranularity vkGetRenderAreaGranularity;
+#endif /* defined(VK_GRAPHICS_VERSION_1_0) */
+#if defined(VK_BASE_VERSION_1_1)
 inline PFN_vkBindBufferMemory2 vkBindBufferMemory2;
 inline PFN_vkBindImageMemory2 vkBindImageMemory2;
-inline PFN_vkCmdDispatchBase vkCmdDispatchBase;
 inline PFN_vkCmdSetDeviceMask vkCmdSetDeviceMask;
-inline PFN_vkCreateDescriptorUpdateTemplate vkCreateDescriptorUpdateTemplate;
-inline PFN_vkCreateSamplerYcbcrConversion vkCreateSamplerYcbcrConversion;
-inline PFN_vkDestroyDescriptorUpdateTemplate vkDestroyDescriptorUpdateTemplate;
-inline PFN_vkDestroySamplerYcbcrConversion vkDestroySamplerYcbcrConversion;
 inline PFN_vkEnumerateInstanceVersion vkEnumerateInstanceVersion;
 inline PFN_vkEnumeratePhysicalDeviceGroups vkEnumeratePhysicalDeviceGroups;
 inline PFN_vkGetBufferMemoryRequirements2 vkGetBufferMemoryRequirements2;
-inline PFN_vkGetDescriptorSetLayoutSupport vkGetDescriptorSetLayoutSupport;
 inline PFN_vkGetDeviceGroupPeerMemoryFeatures vkGetDeviceGroupPeerMemoryFeatures;
 inline PFN_vkGetDeviceQueue2 vkGetDeviceQueue2;
 inline PFN_vkGetImageMemoryRequirements2 vkGetImageMemoryRequirements2;
@@ -4873,15 +4983,17 @@ inline PFN_vkGetPhysicalDeviceProperties2 vkGetPhysicalDeviceProperties2;
 inline PFN_vkGetPhysicalDeviceQueueFamilyProperties2 vkGetPhysicalDeviceQueueFamilyProperties2;
 inline PFN_vkGetPhysicalDeviceSparseImageFormatProperties2 vkGetPhysicalDeviceSparseImageFormatProperties2;
 inline PFN_vkTrimCommandPool vkTrimCommandPool;
+#endif /* defined(VK_BASE_VERSION_1_1) */
+#if defined(VK_COMPUTE_VERSION_1_1)
+inline PFN_vkCmdDispatchBase vkCmdDispatchBase;
+inline PFN_vkCreateDescriptorUpdateTemplate vkCreateDescriptorUpdateTemplate;
+inline PFN_vkCreateSamplerYcbcrConversion vkCreateSamplerYcbcrConversion;
+inline PFN_vkDestroyDescriptorUpdateTemplate vkDestroyDescriptorUpdateTemplate;
+inline PFN_vkDestroySamplerYcbcrConversion vkDestroySamplerYcbcrConversion;
+inline PFN_vkGetDescriptorSetLayoutSupport vkGetDescriptorSetLayoutSupport;
 inline PFN_vkUpdateDescriptorSetWithTemplate vkUpdateDescriptorSetWithTemplate;
-#endif /* defined(VK_VERSION_1_1) */
-#if defined(VK_VERSION_1_2)
-inline PFN_vkCmdBeginRenderPass2 vkCmdBeginRenderPass2;
-inline PFN_vkCmdDrawIndexedIndirectCount vkCmdDrawIndexedIndirectCount;
-inline PFN_vkCmdDrawIndirectCount vkCmdDrawIndirectCount;
-inline PFN_vkCmdEndRenderPass2 vkCmdEndRenderPass2;
-inline PFN_vkCmdNextSubpass2 vkCmdNextSubpass2;
-inline PFN_vkCreateRenderPass2 vkCreateRenderPass2;
+#endif /* defined(VK_COMPUTE_VERSION_1_1) */
+#if defined(VK_BASE_VERSION_1_2)
 inline PFN_vkGetBufferDeviceAddress vkGetBufferDeviceAddress;
 inline PFN_vkGetBufferOpaqueCaptureAddress vkGetBufferOpaqueCaptureAddress;
 inline PFN_vkGetDeviceMemoryOpaqueCaptureAddress vkGetDeviceMemoryOpaqueCaptureAddress;
@@ -4889,35 +5001,21 @@ inline PFN_vkGetSemaphoreCounterValue vkGetSemaphoreCounterValue;
 inline PFN_vkResetQueryPool vkResetQueryPool;
 inline PFN_vkSignalSemaphore vkSignalSemaphore;
 inline PFN_vkWaitSemaphores vkWaitSemaphores;
-#endif /* defined(VK_VERSION_1_2) */
-#if defined(VK_VERSION_1_3)
-inline PFN_vkCmdBeginRendering vkCmdBeginRendering;
-inline PFN_vkCmdBindVertexBuffers2 vkCmdBindVertexBuffers2;
-inline PFN_vkCmdBlitImage2 vkCmdBlitImage2;
+#endif /* defined(VK_BASE_VERSION_1_2) */
+#if defined(VK_GRAPHICS_VERSION_1_2)
+inline PFN_vkCmdBeginRenderPass2 vkCmdBeginRenderPass2;
+inline PFN_vkCmdDrawIndexedIndirectCount vkCmdDrawIndexedIndirectCount;
+inline PFN_vkCmdDrawIndirectCount vkCmdDrawIndirectCount;
+inline PFN_vkCmdEndRenderPass2 vkCmdEndRenderPass2;
+inline PFN_vkCmdNextSubpass2 vkCmdNextSubpass2;
+inline PFN_vkCreateRenderPass2 vkCreateRenderPass2;
+#endif /* defined(VK_GRAPHICS_VERSION_1_2) */
+#if defined(VK_BASE_VERSION_1_3)
 inline PFN_vkCmdCopyBuffer2 vkCmdCopyBuffer2;
 inline PFN_vkCmdCopyBufferToImage2 vkCmdCopyBufferToImage2;
 inline PFN_vkCmdCopyImage2 vkCmdCopyImage2;
 inline PFN_vkCmdCopyImageToBuffer2 vkCmdCopyImageToBuffer2;
-inline PFN_vkCmdEndRendering vkCmdEndRendering;
 inline PFN_vkCmdPipelineBarrier2 vkCmdPipelineBarrier2;
-inline PFN_vkCmdResetEvent2 vkCmdResetEvent2;
-inline PFN_vkCmdResolveImage2 vkCmdResolveImage2;
-inline PFN_vkCmdSetCullMode vkCmdSetCullMode;
-inline PFN_vkCmdSetDepthBiasEnable vkCmdSetDepthBiasEnable;
-inline PFN_vkCmdSetDepthBoundsTestEnable vkCmdSetDepthBoundsTestEnable;
-inline PFN_vkCmdSetDepthCompareOp vkCmdSetDepthCompareOp;
-inline PFN_vkCmdSetDepthTestEnable vkCmdSetDepthTestEnable;
-inline PFN_vkCmdSetDepthWriteEnable vkCmdSetDepthWriteEnable;
-inline PFN_vkCmdSetEvent2 vkCmdSetEvent2;
-inline PFN_vkCmdSetFrontFace vkCmdSetFrontFace;
-inline PFN_vkCmdSetPrimitiveRestartEnable vkCmdSetPrimitiveRestartEnable;
-inline PFN_vkCmdSetPrimitiveTopology vkCmdSetPrimitiveTopology;
-inline PFN_vkCmdSetRasterizerDiscardEnable vkCmdSetRasterizerDiscardEnable;
-inline PFN_vkCmdSetScissorWithCount vkCmdSetScissorWithCount;
-inline PFN_vkCmdSetStencilOp vkCmdSetStencilOp;
-inline PFN_vkCmdSetStencilTestEnable vkCmdSetStencilTestEnable;
-inline PFN_vkCmdSetViewportWithCount vkCmdSetViewportWithCount;
-inline PFN_vkCmdWaitEvents2 vkCmdWaitEvents2;
 inline PFN_vkCmdWriteTimestamp2 vkCmdWriteTimestamp2;
 inline PFN_vkCreatePrivateDataSlot vkCreatePrivateDataSlot;
 inline PFN_vkDestroyPrivateDataSlot vkDestroyPrivateDataSlot;
@@ -4928,28 +5026,58 @@ inline PFN_vkGetPhysicalDeviceToolProperties vkGetPhysicalDeviceToolProperties;
 inline PFN_vkGetPrivateData vkGetPrivateData;
 inline PFN_vkQueueSubmit2 vkQueueSubmit2;
 inline PFN_vkSetPrivateData vkSetPrivateData;
-#endif /* defined(VK_VERSION_1_3) */
-#if defined(VK_VERSION_1_4)
-inline PFN_vkCmdBindDescriptorSets2 vkCmdBindDescriptorSets2;
-inline PFN_vkCmdBindIndexBuffer2 vkCmdBindIndexBuffer2;
-inline PFN_vkCmdPushConstants2 vkCmdPushConstants2;
-inline PFN_vkCmdPushDescriptorSet vkCmdPushDescriptorSet;
-inline PFN_vkCmdPushDescriptorSet2 vkCmdPushDescriptorSet2;
-inline PFN_vkCmdPushDescriptorSetWithTemplate vkCmdPushDescriptorSetWithTemplate;
-inline PFN_vkCmdPushDescriptorSetWithTemplate2 vkCmdPushDescriptorSetWithTemplate2;
-inline PFN_vkCmdSetLineStipple vkCmdSetLineStipple;
-inline PFN_vkCmdSetRenderingAttachmentLocations vkCmdSetRenderingAttachmentLocations;
-inline PFN_vkCmdSetRenderingInputAttachmentIndices vkCmdSetRenderingInputAttachmentIndices;
+#endif /* defined(VK_BASE_VERSION_1_3) */
+#if defined(VK_COMPUTE_VERSION_1_3)
+inline PFN_vkCmdResetEvent2 vkCmdResetEvent2;
+inline PFN_vkCmdSetEvent2 vkCmdSetEvent2;
+inline PFN_vkCmdWaitEvents2 vkCmdWaitEvents2;
+#endif /* defined(VK_COMPUTE_VERSION_1_3) */
+#if defined(VK_GRAPHICS_VERSION_1_3)
+inline PFN_vkCmdBeginRendering vkCmdBeginRendering;
+inline PFN_vkCmdBindVertexBuffers2 vkCmdBindVertexBuffers2;
+inline PFN_vkCmdBlitImage2 vkCmdBlitImage2;
+inline PFN_vkCmdEndRendering vkCmdEndRendering;
+inline PFN_vkCmdResolveImage2 vkCmdResolveImage2;
+inline PFN_vkCmdSetCullMode vkCmdSetCullMode;
+inline PFN_vkCmdSetDepthBiasEnable vkCmdSetDepthBiasEnable;
+inline PFN_vkCmdSetDepthBoundsTestEnable vkCmdSetDepthBoundsTestEnable;
+inline PFN_vkCmdSetDepthCompareOp vkCmdSetDepthCompareOp;
+inline PFN_vkCmdSetDepthTestEnable vkCmdSetDepthTestEnable;
+inline PFN_vkCmdSetDepthWriteEnable vkCmdSetDepthWriteEnable;
+inline PFN_vkCmdSetFrontFace vkCmdSetFrontFace;
+inline PFN_vkCmdSetPrimitiveRestartEnable vkCmdSetPrimitiveRestartEnable;
+inline PFN_vkCmdSetPrimitiveTopology vkCmdSetPrimitiveTopology;
+inline PFN_vkCmdSetRasterizerDiscardEnable vkCmdSetRasterizerDiscardEnable;
+inline PFN_vkCmdSetScissorWithCount vkCmdSetScissorWithCount;
+inline PFN_vkCmdSetStencilOp vkCmdSetStencilOp;
+inline PFN_vkCmdSetStencilTestEnable vkCmdSetStencilTestEnable;
+inline PFN_vkCmdSetViewportWithCount vkCmdSetViewportWithCount;
+#endif /* defined(VK_GRAPHICS_VERSION_1_3) */
+#if defined(VK_BASE_VERSION_1_4)
 inline PFN_vkCopyImageToImage vkCopyImageToImage;
 inline PFN_vkCopyImageToMemory vkCopyImageToMemory;
 inline PFN_vkCopyMemoryToImage vkCopyMemoryToImage;
 inline PFN_vkGetDeviceImageSubresourceLayout vkGetDeviceImageSubresourceLayout;
 inline PFN_vkGetImageSubresourceLayout2 vkGetImageSubresourceLayout2;
-inline PFN_vkGetRenderingAreaGranularity vkGetRenderingAreaGranularity;
 inline PFN_vkMapMemory2 vkMapMemory2;
 inline PFN_vkTransitionImageLayout vkTransitionImageLayout;
 inline PFN_vkUnmapMemory2 vkUnmapMemory2;
-#endif /* defined(VK_VERSION_1_4) */
+#endif /* defined(VK_BASE_VERSION_1_4) */
+#if defined(VK_COMPUTE_VERSION_1_4)
+inline PFN_vkCmdBindDescriptorSets2 vkCmdBindDescriptorSets2;
+inline PFN_vkCmdPushConstants2 vkCmdPushConstants2;
+inline PFN_vkCmdPushDescriptorSet vkCmdPushDescriptorSet;
+inline PFN_vkCmdPushDescriptorSet2 vkCmdPushDescriptorSet2;
+inline PFN_vkCmdPushDescriptorSetWithTemplate vkCmdPushDescriptorSetWithTemplate;
+inline PFN_vkCmdPushDescriptorSetWithTemplate2 vkCmdPushDescriptorSetWithTemplate2;
+#endif /* defined(VK_COMPUTE_VERSION_1_4) */
+#if defined(VK_GRAPHICS_VERSION_1_4)
+inline PFN_vkCmdBindIndexBuffer2 vkCmdBindIndexBuffer2;
+inline PFN_vkCmdSetLineStipple vkCmdSetLineStipple;
+inline PFN_vkCmdSetRenderingAttachmentLocations vkCmdSetRenderingAttachmentLocations;
+inline PFN_vkCmdSetRenderingInputAttachmentIndices vkCmdSetRenderingInputAttachmentIndices;
+inline PFN_vkGetRenderingAreaGranularity vkGetRenderingAreaGranularity;
+#endif /* defined(VK_GRAPHICS_VERSION_1_4) */
 #if defined(VK_AMDX_shader_enqueue)
 inline PFN_vkCmdDispatchGraphAMDX vkCmdDispatchGraphAMDX;
 inline PFN_vkCmdDispatchGraphIndirectAMDX vkCmdDispatchGraphIndirectAMDX;
@@ -5154,6 +5282,10 @@ inline PFN_vkGetImageDrmFormatModifierPropertiesEXT vkGetImageDrmFormatModifierP
 #if defined(VK_EXT_line_rasterization)
 inline PFN_vkCmdSetLineStippleEXT vkCmdSetLineStippleEXT;
 #endif /* defined(VK_EXT_line_rasterization) */
+#if defined(VK_EXT_memory_decompression)
+inline PFN_vkCmdDecompressMemoryEXT vkCmdDecompressMemoryEXT;
+inline PFN_vkCmdDecompressMemoryIndirectCountEXT vkCmdDecompressMemoryIndirectCountEXT;
+#endif /* defined(VK_EXT_memory_decompression) */
 #if defined(VK_EXT_mesh_shader)
 inline PFN_vkCmdDrawMeshTasksEXT vkCmdDrawMeshTasksEXT;
 inline PFN_vkCmdDrawMeshTasksIndirectEXT vkCmdDrawMeshTasksIndirectEXT;
@@ -5448,6 +5580,9 @@ inline PFN_vkCmdSetLineStippleKHR vkCmdSetLineStippleKHR;
 #if defined(VK_KHR_maintenance1)
 inline PFN_vkTrimCommandPoolKHR vkTrimCommandPoolKHR;
 #endif /* defined(VK_KHR_maintenance1) */
+#if defined(VK_KHR_maintenance10)
+inline PFN_vkCmdEndRendering2KHR vkCmdEndRendering2KHR;
+#endif /* defined(VK_KHR_maintenance10) */
 #if defined(VK_KHR_maintenance3)
 inline PFN_vkGetDescriptorSetLayoutSupportKHR vkGetDescriptorSetLayoutSupportKHR;
 #endif /* defined(VK_KHR_maintenance3) */
@@ -5745,6 +5880,11 @@ inline PFN_vkCmdBindShadingRateImageNV vkCmdBindShadingRateImageNV;
 inline PFN_vkCmdSetCoarseSampleOrderNV vkCmdSetCoarseSampleOrderNV;
 inline PFN_vkCmdSetViewportShadingRatePaletteNV vkCmdSetViewportShadingRatePaletteNV;
 #endif /* defined(VK_NV_shading_rate_image) */
+#if defined(VK_OHOS_native_buffer)
+inline PFN_vkAcquireImageOHOS vkAcquireImageOHOS;
+inline PFN_vkGetSwapchainGrallocUsageOHOS vkGetSwapchainGrallocUsageOHOS;
+inline PFN_vkQueueSignalReleaseImageOHOS vkQueueSignalReleaseImageOHOS;
+#endif /* defined(VK_OHOS_native_buffer) */
 #if defined(VK_OHOS_surface)
 inline PFN_vkCreateSurfaceOHOS vkCreateSurfaceOHOS;
 #endif /* defined(VK_OHOS_surface) */
