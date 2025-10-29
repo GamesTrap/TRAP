@@ -8,6 +8,7 @@ import urllib
 import xml.etree.ElementTree as etree
 import urllib.request
 import re
+import zlib
 
 cmdversions = {
 	"vkCmdSetDiscardRectangleEnableEXT": 2,
@@ -19,7 +20,7 @@ cmdversions = {
 }
 
 def parse_xml(path):
-	file = urllib.request.urlopen(path)
+	file = urllib.request.urlopen(path) if path.startswith("http") else open(path, "r")
 	with file:
 		tree = etree.parse(file)
 		return tree
@@ -65,9 +66,12 @@ def cdepends(key):
 if __name__ == "__main__":
 	specpath = "https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/main/xml/vk.xml"
 
+	if len(sys.argv) > 1:
+		specpath = sys.argv[1]
+
 	spec = parse_xml(specpath)
 
-	block_keys = ('DEVICE_TABLE', 'PROTOTYPES_H', 'PROTOTYPES_C', 'LOAD_LOADER', 'LOAD_INSTANCE', 'LOAD_DEVICE', 'LOAD_DEVICE_TABLE')
+	block_keys = ('INSTANCE_TABLE', 'DEVICE_TABLE', 'PROTOTYPES_H', 'PROTOTYPES_H_DEVICE', 'PROTOTYPES_C', 'LOAD_LOADER', 'LOAD_INSTANCE', 'LOAD_INSTANCE_TABLE', 'LOAD_DEVICE', 'LOAD_DEVICE_TABLE')
 
 	blocks = {}
 
@@ -92,9 +96,11 @@ if __name__ == "__main__":
 		api = feature.get('api')
 		if 'vulkan' not in api.split(','):
 			continue
-		key = defined(feature.get('name'))
+		name = feature.get('name')
+		name = re.sub(r'VK_(BASE|COMPUTE|GRAPHICS)_VERSION_', 'VK_VERSION_', name) # strip Vulkan Base prefixes for compatibility
+		key = defined(name)
 		cmdrefs = feature.findall('require/command')
-		command_groups[key] = [cmdref.get('name') for cmdref in cmdrefs]
+		command_groups.setdefault(key, []).extend([cmdref.get('name') for cmdref in cmdrefs])
 
 	for ext in sorted(spec.findall('extensions/extension'), key=lambda ext: ext.get('name')):
 		supported = ext.get('supported')
@@ -161,11 +167,19 @@ if __name__ == "__main__":
 	for key in block_keys:
 		blocks[key] = ''
 
+	devp = {}
+	instp = {}
+
 	for (group, cmdnames) in command_groups.items():
 		ifdef = '#if ' + group + '\n'
 
 		for key in block_keys:
 			blocks[key] += ifdef
+
+		devt = 0
+		devo = len(blocks['DEVICE_TABLE'])
+		instt = 0
+		insto = len(blocks['INSTANCE_TABLE'])
 
 		for name in sorted(cmdnames):
 			cmd = commands[name]
@@ -176,21 +190,53 @@ if __name__ == "__main__":
 			if name == 'vkGetDeviceProcAddr':
 				type = 'VkInstance'
 
-			if is_descendant_type(types, type, 'VkDevice') and name not in instance_commands:
-				blocks['LOAD_DEVICE'] += '\t' + name + ' = reinterpret_cast<PFN_' + name + '>(load(context, "' + name + '"));\n'
-				blocks['DEVICE_TABLE'] += '\tPFN_' + name + ' ' + name + ';\n'
-				blocks['LOAD_DEVICE_TABLE'] += '\ttable.' + name + ' = reinterpret_cast<PFN_' + name + '>(load(device, "' + name + '"));\n'
-			elif is_descendant_type(types, type, 'VkInstance'):
-				blocks['LOAD_INSTANCE'] += '\t' + name + ' = reinterpret_cast<PFN_' + name + '>(load(instance, "' + name + '"));\n'
-			elif type != '':
-				blocks['LOAD_LOADER'] += '\t' + name + ' = reinterpret_cast<PFN_' + name + '>(load(context, "' + name + '"));\n'
+			externFn = 'extern PFN_' + name + ' ' + name + ';\n'
+			loadFn = '\t' + name + ' = reinterpret_cast<PFN_' + name + '>(load(context, "' + name + '"));\n'
+			defTable = '\tPFN_' + name + ' ' + name + ';\n'
 
-			blocks['PROTOTYPES_H'] += 'extern PFN_' + name + ' ' + name + ';\n'
+			if is_descendant_type(types, type, 'VkDevice') and name not in instance_commands:
+				loadTable = '\ttable.' + name + ' = reinterpret_cast<PFN_' + name + '>(load(device, "' + name + '"));\n'
+
+				blocks['LOAD_DEVICE'] += loadFn
+				blocks['DEVICE_TABLE'] += defTable
+				blocks['LOAD_DEVICE_TABLE'] += loadTable
+				blocks['PROTOTYPES_H_DEVICE'] += externFn
+				devt += 1
+			elif is_descendant_type(types, type, 'VkInstance'):
+				loadTable = '\ttable.' + name + ' = reinterpret_cast<PFN_' + name + '>(load(instance, "' + name + '"));\n'
+
+				blocks['LOAD_INSTANCE'] += loadFn
+				blocks['PROTOTYPES_H'] += externFn
+				blocks['INSTANCE_TABLE'] += defTable
+				blocks['LOAD_INSTANCE_TABLE'] += loadTable
+				instt += 1
+			elif type != '':
+				blocks['LOAD_LOADER'] += loadFn
+				blocks['PROTOTYPES_H'] += externFn
+			else:
+				blocks['PROTOTYPES_H'] += externFn
+
 			blocks['PROTOTYPES_C'] += 'inline PFN_' + name + ' ' + name + ';\n'
 
 		for key in block_keys:
 			if blocks[key].endswith(ifdef):
 				blocks[key] = blocks[key][:-len(ifdef)]
+			elif key == 'DEVICE_TABLE':
+				devh = zlib.crc32(blocks[key][devo:].encode())
+				assert(devh not in devp)
+				devp[devh] = True
+
+				blocks[key] += '#else\n'
+				blocks[key] += f'\tstd::array<PFN_vkVoidFunction, {devt}u> padding_{devh:x};\n'
+				blocks[key] += '#endif /* ' + group + ' */\n'
+			elif key == 'INSTANCE_TABLE':
+				insth = zlib.crc32(blocks[key][insto:].encode())
+				assert(insth not in instp)
+				instp[insth] = True
+
+				blocks[key] += '#else\n'
+				blocks[key] += f'\tstd::array<PFN_vkVoidFunction, {instt}u> padding_{insth:x};\n'
+				blocks[key] += '#endif /* ' + group + ' */\n'
 			else:
 				blocks[key] += '#endif /* ' + group + ' */\n'
 
