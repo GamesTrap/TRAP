@@ -11,6 +11,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_VULKANLOADER_H
 #define TRAP_VULKANLOADER_H
 
+#include <array>
+
 #include "Core/Types.h"
 #include "Utils/Optional.h"
 
@@ -19,7 +21,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 308
+#define VULKANLOADER_HEADER_VERSION 330
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -35,7 +37,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 308
+#define VULKANLOADER_HEADER_VERSION_PATCH 330
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -52,6 +54,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 	#pragma warning(push, 0)
 #endif /*_MSC_VER*/
 
+struct VkInstanceTable;
 struct VkDeviceTable;
 
 /// @brief Initialize library by loading Vulkan loader; call this function before creating the Vulkan instance.
@@ -93,6 +96,12 @@ void VkLoadDevice(VkDevice device);
 /// @brief Retrieve the last VkDevice for which global function pointers have been loaded via VkLoadDevice().
 /// @return VkDevice, or VK_NULL_HANDLE if VkLoadDevice() has not been called.
 [[nodiscard]] VkDevice VkGetLoadedDevice() noexcept;
+
+/// @brief Load function pointers using application-created VkInstance into a table.
+///        Application should use function pointers from that table instead of using global function pointers.
+/// @param table Table where to store loaded functions into.
+/// @param instance Instance from which function pointers should be loaded.
+void VkLoadInstanceTable(VkInstanceTable& table, VkInstance instance);
 
 /// @brief Load function pointers using application-created VkDevice into a table.
 ///        Application should use function pointers from that table instead of using global function pointers.
@@ -195,6 +204,13 @@ void VkLoadDeviceTable(VkDeviceTable& table, VkDevice device);
 	#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 #endif /*!defined(VULKAN_H_)*/
 
+//Instance-specific function pointer table
+struct VkInstanceTable
+{
+	/* VULKANLOADER_GENERATE_INSTANCE_TABLE */
+	/* VULKANLOADER_GENERATE_INSTANCE_TABLE */
+};
+
 //Device-specific function pointer table
 struct VkDeviceTable
 {
@@ -204,6 +220,13 @@ struct VkDeviceTable
 
 /* VULKANLOADER_GENERATE_PROTOTYPES_H */
 /* VULKANLOADER_GENERATE_PROTOTYPES_H */
+
+#ifndef VULKANLOADER_NO_DEVICE_PROTOTYPES
+
+/* VULKANLOADER_GENERATE_PROTOTYPES_H_DEVICE */
+/* VULKANLOADER_GENERATE_PROTOTYPES_H_DEVICE */
+
+#endif /*VULKANLOADER_NO_DEVICE_PROTOTYPES*/
 
 #endif /*TRAP_VULKANLOADER_H*/
 
@@ -239,7 +262,8 @@ static VkDevice loadedDevice = VK_NULL_HANDLE;
 using VkGenLoaderFunction = PFN_vkVoidFunction (*)(void* const, const std::string&);
 
 static void VkGenLoadLoader(void* const context, VkGenLoaderFunction load);
-static void VkGenLoadInstance(VkInstance instance, VkGenLoaderFunction load);
+static void VkGenLoadInstance(void* const context, VkGenLoaderFunction load);
+static void VkGenLoadInstanceTable(VkInstanceTable& table, VkInstance instance, VkGenLoaderFunction load);
 static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load);
 static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoaderFunction load);
 
@@ -253,7 +277,7 @@ static PFN_vkVoidFunction vkGetDeviceProcAddrStub(void* const context, const std
 	return vkGetDeviceProcAddr(static_cast<VkDevice>(context), name.c_str());
 }
 
-static PFN_vkVoidFunction nullProcAddrStub([[maybe_unused]] void* const context, [[maybe_unused]] const std::string& name) noexcept
+static constexpr PFN_vkVoidFunction nullProcAddrStub([[maybe_unused]] void* const context, [[maybe_unused]] const std::string& name) noexcept
 {
 	return nullptr;
 }
@@ -345,8 +369,18 @@ void VkLoadDevice(VkDevice device)
 	return loadedDevice;
 }
 
+void VkLoadInstanceTable(VkInstanceTable& table, VkInstance instance)
+{
+	//vkGetDeviceProcAddr is used by VkLoadDeviceTable; for now we load this global pointer even though it might be instance-specific
+	vkGetDeviceProcAddr = reinterpret_cast<PFN_vkGetDeviceProcAddr>(vkGetInstanceProcAddr(instance, "vkGetDeviceProcAddr"));
+
+	table = {};
+	VkGenLoadInstanceTable(table, instance, vkGetDeviceProcAddrStub);
+}
+
 void VkLoadDeviceTable(VkDeviceTable& table, VkDevice device)
 {
+	table = {};
 	VkGenLoadDeviceTable(table, device, vkGetDeviceProcAddrStub);
 }
 
@@ -356,7 +390,7 @@ static void VkGenLoadLoader(void* const context, VkGenLoaderFunction load)
 	/* VULKANLOADER_GENERATE_LOAD_LOADER */
 }
 
-static void VkGenLoadInstance(VkInstance instance, VkGenLoaderFunction load)
+static void VkGenLoadInstance(void* const context, VkGenLoaderFunction load)
 {
 	/* VULKANLOADER_GENERATE_LOAD_INSTANCE */
 	/* VULKANLOADER_GENERATE_LOAD_INSTANCE */
@@ -366,6 +400,12 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 {
 	/* VULKANLOADER_GENERATE_LOAD_DEVICE */
 	/* VULKANLOADER_GENERATE_LOAD_DEVICE */
+}
+
+static void VkGenLoadInstanceTable(VkInstanceTable& table, VkInstance instance, VkGenLoaderFunction load)
+{
+	/* VULKANLOADER_GENERATE_LOAD_INSTANCE_TABLE */
+	/* VULKANLOADER_GENERATE_LOAD_INSTANCE_TABLE */
 }
 
 static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoaderFunction load)
@@ -396,7 +436,7 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 #endif /*VULKANLOADER_IMPLEMENTATION*/
 
 /*
-Copyright (c) 2018-2024 Arseny Kapoulkine
+Copyright (c) 2018-2025 Arseny Kapoulkine
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

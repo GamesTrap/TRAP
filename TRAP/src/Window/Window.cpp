@@ -648,7 +648,7 @@ void TRAP::Window::SetOpacity(const f32 opacity) const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (GetTRAPProfileSystems() & ProfileSystems::Window) != ProfileSystems::None);
 
-	if(opacity >= 0.0f || opacity <= 1.0f)
+	if(opacity >= 0.0f && opacity <= 1.0f)
 		INTERNAL::WindowingAPI::SetWindowOpacity(*m_window, opacity);
 	else
 		TP_ERROR(Log::WindowPrefix, "Invalid window opacity: ", opacity, "! Valid range: 0.0 - 1.0f");
