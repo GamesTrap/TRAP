@@ -21,7 +21,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 330
+#define VULKANLOADER_HEADER_VERSION 331
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -37,7 +37,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 330
+#define VULKANLOADER_HEADER_VERSION_PATCH 331
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -251,6 +251,11 @@ struct VkInstanceTable
 #else
 	std::array<PFN_vkVoidFunction, 2u> padding_15920a35;
 #endif /* defined(VK_ARM_data_graph) */
+#if defined(VK_ARM_performance_counters_by_region)
+	PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM;
+#else
+	std::array<PFN_vkVoidFunction, 1u> padding_4fd09193;
+#endif /* defined(VK_ARM_performance_counters_by_region) */
 #if defined(VK_ARM_tensors)
 	PFN_vkGetPhysicalDeviceExternalTensorPropertiesARM vkGetPhysicalDeviceExternalTensorPropertiesARM;
 #else
@@ -1682,6 +1687,12 @@ struct VkDeviceTable
 #else
 	std::array<PFN_vkVoidFunction, 3u> padding_92a0767f;
 #endif /* defined(VK_NV_shading_rate_image) */
+#if defined(VK_OHOS_external_memory)
+	PFN_vkGetMemoryNativeBufferOHOS vkGetMemoryNativeBufferOHOS;
+	PFN_vkGetNativeBufferPropertiesOHOS vkGetNativeBufferPropertiesOHOS;
+#else
+	std::array<PFN_vkVoidFunction, 2u> padding_9c703846;
+#endif /* defined(VK_OHOS_external_memory) */
 #if defined(VK_OHOS_native_buffer)
 	PFN_vkAcquireImageOHOS vkAcquireImageOHOS;
 	PFN_vkGetSwapchainGrallocUsageOHOS vkGetSwapchainGrallocUsageOHOS;
@@ -1917,6 +1928,9 @@ extern PFN_vkGetPhysicalDeviceToolProperties vkGetPhysicalDeviceToolProperties;
 extern PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM;
 extern PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM;
 #endif /* defined(VK_ARM_data_graph) */
+#if defined(VK_ARM_performance_counters_by_region)
+extern PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM;
+#endif /* defined(VK_ARM_performance_counters_by_region) */
 #if defined(VK_ARM_tensors)
 extern PFN_vkGetPhysicalDeviceExternalTensorPropertiesARM vkGetPhysicalDeviceExternalTensorPropertiesARM;
 #endif /* defined(VK_ARM_tensors) */
@@ -2968,6 +2982,10 @@ extern PFN_vkCmdBindShadingRateImageNV vkCmdBindShadingRateImageNV;
 extern PFN_vkCmdSetCoarseSampleOrderNV vkCmdSetCoarseSampleOrderNV;
 extern PFN_vkCmdSetViewportShadingRatePaletteNV vkCmdSetViewportShadingRatePaletteNV;
 #endif /* defined(VK_NV_shading_rate_image) */
+#if defined(VK_OHOS_external_memory)
+extern PFN_vkGetMemoryNativeBufferOHOS vkGetMemoryNativeBufferOHOS;
+extern PFN_vkGetNativeBufferPropertiesOHOS vkGetNativeBufferPropertiesOHOS;
+#endif /* defined(VK_OHOS_external_memory) */
 #if defined(VK_OHOS_native_buffer)
 extern PFN_vkAcquireImageOHOS vkAcquireImageOHOS;
 extern PFN_vkGetSwapchainGrallocUsageOHOS vkGetSwapchainGrallocUsageOHOS;
@@ -3309,6 +3327,9 @@ static void VkGenLoadInstance(void* const context, VkGenLoaderFunction load)
 	vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM>(load(context, "vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM"));
 	vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM>(load(context, "vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM"));
 #endif /* defined(VK_ARM_data_graph) */
+#if defined(VK_ARM_performance_counters_by_region)
+	vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = reinterpret_cast<PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM>(load(context, "vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM"));
+#endif /* defined(VK_ARM_performance_counters_by_region) */
 #if defined(VK_ARM_tensors)
 	vkGetPhysicalDeviceExternalTensorPropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceExternalTensorPropertiesARM>(load(context, "vkGetPhysicalDeviceExternalTensorPropertiesARM"));
 #endif /* defined(VK_ARM_tensors) */
@@ -4361,6 +4382,10 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkCmdSetCoarseSampleOrderNV = reinterpret_cast<PFN_vkCmdSetCoarseSampleOrderNV>(load(context, "vkCmdSetCoarseSampleOrderNV"));
 	vkCmdSetViewportShadingRatePaletteNV = reinterpret_cast<PFN_vkCmdSetViewportShadingRatePaletteNV>(load(context, "vkCmdSetViewportShadingRatePaletteNV"));
 #endif /* defined(VK_NV_shading_rate_image) */
+#if defined(VK_OHOS_external_memory)
+	vkGetMemoryNativeBufferOHOS = reinterpret_cast<PFN_vkGetMemoryNativeBufferOHOS>(load(context, "vkGetMemoryNativeBufferOHOS"));
+	vkGetNativeBufferPropertiesOHOS = reinterpret_cast<PFN_vkGetNativeBufferPropertiesOHOS>(load(context, "vkGetNativeBufferPropertiesOHOS"));
+#endif /* defined(VK_OHOS_external_memory) */
 #if defined(VK_OHOS_native_buffer)
 	vkAcquireImageOHOS = reinterpret_cast<PFN_vkAcquireImageOHOS>(load(context, "vkAcquireImageOHOS"));
 	vkGetSwapchainGrallocUsageOHOS = reinterpret_cast<PFN_vkGetSwapchainGrallocUsageOHOS>(load(context, "vkGetSwapchainGrallocUsageOHOS"));
@@ -4531,6 +4556,9 @@ static void VkGenLoadInstanceTable(VkInstanceTable& table, VkInstance instance, 
 	table.vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM>(load(instance, "vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM"));
 	table.vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM>(load(instance, "vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM"));
 #endif /* defined(VK_ARM_data_graph) */
+#if defined(VK_ARM_performance_counters_by_region)
+	table.vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = reinterpret_cast<PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM>(load(instance, "vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM"));
+#endif /* defined(VK_ARM_performance_counters_by_region) */
 #if defined(VK_ARM_tensors)
 	table.vkGetPhysicalDeviceExternalTensorPropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceExternalTensorPropertiesARM>(load(instance, "vkGetPhysicalDeviceExternalTensorPropertiesARM"));
 #endif /* defined(VK_ARM_tensors) */
@@ -5583,6 +5611,10 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkCmdSetCoarseSampleOrderNV = reinterpret_cast<PFN_vkCmdSetCoarseSampleOrderNV>(load(device, "vkCmdSetCoarseSampleOrderNV"));
 	table.vkCmdSetViewportShadingRatePaletteNV = reinterpret_cast<PFN_vkCmdSetViewportShadingRatePaletteNV>(load(device, "vkCmdSetViewportShadingRatePaletteNV"));
 #endif /* defined(VK_NV_shading_rate_image) */
+#if defined(VK_OHOS_external_memory)
+	table.vkGetMemoryNativeBufferOHOS = reinterpret_cast<PFN_vkGetMemoryNativeBufferOHOS>(load(device, "vkGetMemoryNativeBufferOHOS"));
+	table.vkGetNativeBufferPropertiesOHOS = reinterpret_cast<PFN_vkGetNativeBufferPropertiesOHOS>(load(device, "vkGetNativeBufferPropertiesOHOS"));
+#endif /* defined(VK_OHOS_external_memory) */
 #if defined(VK_OHOS_native_buffer)
 	table.vkAcquireImageOHOS = reinterpret_cast<PFN_vkAcquireImageOHOS>(load(device, "vkAcquireImageOHOS"));
 	table.vkGetSwapchainGrallocUsageOHOS = reinterpret_cast<PFN_vkGetSwapchainGrallocUsageOHOS>(load(device, "vkGetSwapchainGrallocUsageOHOS"));
@@ -6013,6 +6045,9 @@ inline PFN_vkGetDataGraphPipelineSessionMemoryRequirementsARM vkGetDataGraphPipe
 inline PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM;
 inline PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM;
 #endif /* defined(VK_ARM_data_graph) */
+#if defined(VK_ARM_performance_counters_by_region)
+inline PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM;
+#endif /* defined(VK_ARM_performance_counters_by_region) */
 #if defined(VK_ARM_tensors)
 inline PFN_vkBindTensorMemoryARM vkBindTensorMemoryARM;
 inline PFN_vkCmdCopyTensorARM vkCmdCopyTensorARM;
@@ -6770,6 +6805,10 @@ inline PFN_vkCmdBindShadingRateImageNV vkCmdBindShadingRateImageNV;
 inline PFN_vkCmdSetCoarseSampleOrderNV vkCmdSetCoarseSampleOrderNV;
 inline PFN_vkCmdSetViewportShadingRatePaletteNV vkCmdSetViewportShadingRatePaletteNV;
 #endif /* defined(VK_NV_shading_rate_image) */
+#if defined(VK_OHOS_external_memory)
+inline PFN_vkGetMemoryNativeBufferOHOS vkGetMemoryNativeBufferOHOS;
+inline PFN_vkGetNativeBufferPropertiesOHOS vkGetNativeBufferPropertiesOHOS;
+#endif /* defined(VK_OHOS_external_memory) */
 #if defined(VK_OHOS_native_buffer)
 inline PFN_vkAcquireImageOHOS vkAcquireImageOHOS;
 inline PFN_vkGetSwapchainGrallocUsageOHOS vkGetSwapchainGrallocUsageOHOS;
