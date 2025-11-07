@@ -164,8 +164,8 @@ jobs:
         uses: ./.github/composite/update-git-dependency
         with:
           dependency-path: ".modules/vscode"
-          update-method: "latest-commit"
-          branch: "main"
+          update-method: "latest-tag"
+          tag-regex: '^v[0-9]+(\.[0-9]+)*$' #vX.X.X SemVer
           pr-title: "Premake-VSCodeGen"
           pr-branch-name: "premake-vscodegen-update"
           pr-token: ${{steps.generate-token.outputs.token}}

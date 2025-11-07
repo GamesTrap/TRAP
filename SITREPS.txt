@@ -5708,3 +5708,6 @@ SITREP 08/30/2025|25w35a2
 SITREP 10/29/2025|25w44a1
     - Changed TRAP Engine version to 25w44a1(0.11.102)
     - Updated VulkanLoader ~>30 mins
+
+SITREP 11/07/2025|25w45
+    - Changed Premake-VSCodeGen update method to latest tag ~<5 mins
