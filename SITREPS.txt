@@ -5711,3 +5711,6 @@ SITREP 10/29/2025|25w44a1
 
 SITREP 11/07/2025|25w45
     - Changed Premake-VSCodeGen update method to latest tag ~<5 mins
+
+SITREP 11/12/2025|25w46
+    - Changed Premake-Ninja update method to latest tag ~<5 mins

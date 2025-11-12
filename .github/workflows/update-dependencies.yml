@@ -174,8 +174,8 @@ jobs:
         uses: ./.github/composite/update-git-dependency
         with:
           dependency-path: ".modules/ninja"
-          update-method: "latest-commit"
-          branch: "master"
+          update-method: "latest-tag"
+          tag-regex: '^v[0-9]+(\.[0-9]+)*$' #vX.X.X SemVer
           pr-title: "Premake-Ninja"
           pr-branch-name: "premake-ninja-update"
           pr-token: ${{steps.generate-token.outputs.token}}
