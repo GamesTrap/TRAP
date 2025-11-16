@@ -21,7 +21,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 332
+#define VULKANLOADER_HEADER_VERSION 333
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -37,7 +37,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 332
+#define VULKANLOADER_HEADER_VERSION_PATCH 333
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -880,6 +880,11 @@ struct VkDeviceTable
 #else
 	std::array<PFN_vkVoidFunction, 2u> padding_ab532c18;
 #endif /* defined(VK_EXT_conditional_rendering) */
+#if defined(VK_EXT_custom_resolve) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3))
+	PFN_vkCmdBeginCustomResolveEXT vkCmdBeginCustomResolveEXT;
+#else
+	std::array<PFN_vkVoidFunction, 1u> padding_962e418a;
+#endif /* defined(VK_EXT_custom_resolve) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3)) */
 #if defined(VK_EXT_debug_marker)
 	PFN_vkCmdDebugMarkerBeginEXT vkCmdDebugMarkerBeginEXT;
 	PFN_vkCmdDebugMarkerEndEXT vkCmdDebugMarkerEndEXT;
@@ -2413,6 +2418,9 @@ extern PFN_vkCmdSetColorWriteEnableEXT vkCmdSetColorWriteEnableEXT;
 extern PFN_vkCmdBeginConditionalRenderingEXT vkCmdBeginConditionalRenderingEXT;
 extern PFN_vkCmdEndConditionalRenderingEXT vkCmdEndConditionalRenderingEXT;
 #endif /* defined(VK_EXT_conditional_rendering) */
+#if defined(VK_EXT_custom_resolve) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3))
+extern PFN_vkCmdBeginCustomResolveEXT vkCmdBeginCustomResolveEXT;
+#endif /* defined(VK_EXT_custom_resolve) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3)) */
 #if defined(VK_EXT_debug_marker)
 extern PFN_vkCmdDebugMarkerBeginEXT vkCmdDebugMarkerBeginEXT;
 extern PFN_vkCmdDebugMarkerEndEXT vkCmdDebugMarkerEndEXT;
@@ -3813,6 +3821,9 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkCmdBeginConditionalRenderingEXT = reinterpret_cast<PFN_vkCmdBeginConditionalRenderingEXT>(load(context, "vkCmdBeginConditionalRenderingEXT"));
 	vkCmdEndConditionalRenderingEXT = reinterpret_cast<PFN_vkCmdEndConditionalRenderingEXT>(load(context, "vkCmdEndConditionalRenderingEXT"));
 #endif /* defined(VK_EXT_conditional_rendering) */
+#if defined(VK_EXT_custom_resolve) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3))
+	vkCmdBeginCustomResolveEXT = reinterpret_cast<PFN_vkCmdBeginCustomResolveEXT>(load(context, "vkCmdBeginCustomResolveEXT"));
+#endif /* defined(VK_EXT_custom_resolve) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3)) */
 #if defined(VK_EXT_debug_marker)
 	vkCmdDebugMarkerBeginEXT = reinterpret_cast<PFN_vkCmdDebugMarkerBeginEXT>(load(context, "vkCmdDebugMarkerBeginEXT"));
 	vkCmdDebugMarkerEndEXT = reinterpret_cast<PFN_vkCmdDebugMarkerEndEXT>(load(context, "vkCmdDebugMarkerEndEXT"));
@@ -5042,6 +5053,9 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkCmdBeginConditionalRenderingEXT = reinterpret_cast<PFN_vkCmdBeginConditionalRenderingEXT>(load(device, "vkCmdBeginConditionalRenderingEXT"));
 	table.vkCmdEndConditionalRenderingEXT = reinterpret_cast<PFN_vkCmdEndConditionalRenderingEXT>(load(device, "vkCmdEndConditionalRenderingEXT"));
 #endif /* defined(VK_EXT_conditional_rendering) */
+#if defined(VK_EXT_custom_resolve) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3))
+	table.vkCmdBeginCustomResolveEXT = reinterpret_cast<PFN_vkCmdBeginCustomResolveEXT>(load(device, "vkCmdBeginCustomResolveEXT"));
+#endif /* defined(VK_EXT_custom_resolve) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3)) */
 #if defined(VK_EXT_debug_marker)
 	table.vkCmdDebugMarkerBeginEXT = reinterpret_cast<PFN_vkCmdDebugMarkerBeginEXT>(load(device, "vkCmdDebugMarkerBeginEXT"));
 	table.vkCmdDebugMarkerEndEXT = reinterpret_cast<PFN_vkCmdDebugMarkerEndEXT>(load(device, "vkCmdDebugMarkerEndEXT"));
@@ -6088,6 +6102,9 @@ inline PFN_vkCmdSetColorWriteEnableEXT vkCmdSetColorWriteEnableEXT;
 inline PFN_vkCmdBeginConditionalRenderingEXT vkCmdBeginConditionalRenderingEXT;
 inline PFN_vkCmdEndConditionalRenderingEXT vkCmdEndConditionalRenderingEXT;
 #endif /* defined(VK_EXT_conditional_rendering) */
+#if defined(VK_EXT_custom_resolve) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3))
+inline PFN_vkCmdBeginCustomResolveEXT vkCmdBeginCustomResolveEXT;
+#endif /* defined(VK_EXT_custom_resolve) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3)) */
 #if defined(VK_EXT_debug_marker)
 inline PFN_vkCmdDebugMarkerBeginEXT vkCmdDebugMarkerBeginEXT;
 inline PFN_vkCmdDebugMarkerEndEXT vkCmdDebugMarkerEndEXT;
