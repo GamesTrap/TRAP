@@ -21,7 +21,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 334
+#define VULKANLOADER_HEADER_VERSION 335
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -37,7 +37,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 334
+#define VULKANLOADER_HEADER_VERSION_PATCH 335
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -1066,6 +1066,14 @@ struct VkDeviceTable
 #else
 	std::array<PFN_vkVoidFunction, 1u> padding_11313020;
 #endif /* defined(VK_EXT_pipeline_properties) */
+#if defined(VK_EXT_present_timing)
+	PFN_vkGetPastPresentationTimingEXT vkGetPastPresentationTimingEXT;
+	PFN_vkGetSwapchainTimeDomainPropertiesEXT vkGetSwapchainTimeDomainPropertiesEXT;
+	PFN_vkGetSwapchainTimingPropertiesEXT vkGetSwapchainTimingPropertiesEXT;
+	PFN_vkSetSwapchainPresentTimingQueueSizeEXT vkSetSwapchainPresentTimingQueueSizeEXT;
+#else
+	std::array<PFN_vkVoidFunction, 4u> padding_8751feb5;
+#endif /* defined(VK_EXT_present_timing) */
 #if defined(VK_EXT_private_data)
 	PFN_vkCreatePrivateDataSlotEXT vkCreatePrivateDataSlotEXT;
 	PFN_vkDestroyPrivateDataSlotEXT vkDestroyPrivateDataSlotEXT;
@@ -2548,6 +2556,12 @@ extern PFN_vkSetDeviceMemoryPriorityEXT vkSetDeviceMemoryPriorityEXT;
 #if defined(VK_EXT_pipeline_properties)
 extern PFN_vkGetPipelinePropertiesEXT vkGetPipelinePropertiesEXT;
 #endif /* defined(VK_EXT_pipeline_properties) */
+#if defined(VK_EXT_present_timing)
+extern PFN_vkGetPastPresentationTimingEXT vkGetPastPresentationTimingEXT;
+extern PFN_vkGetSwapchainTimeDomainPropertiesEXT vkGetSwapchainTimeDomainPropertiesEXT;
+extern PFN_vkGetSwapchainTimingPropertiesEXT vkGetSwapchainTimingPropertiesEXT;
+extern PFN_vkSetSwapchainPresentTimingQueueSizeEXT vkSetSwapchainPresentTimingQueueSizeEXT;
+#endif /* defined(VK_EXT_present_timing) */
 #if defined(VK_EXT_private_data)
 extern PFN_vkCreatePrivateDataSlotEXT vkCreatePrivateDataSlotEXT;
 extern PFN_vkDestroyPrivateDataSlotEXT vkDestroyPrivateDataSlotEXT;
@@ -3951,6 +3965,12 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 #if defined(VK_EXT_pipeline_properties)
 	vkGetPipelinePropertiesEXT = reinterpret_cast<PFN_vkGetPipelinePropertiesEXT>(load(context, "vkGetPipelinePropertiesEXT"));
 #endif /* defined(VK_EXT_pipeline_properties) */
+#if defined(VK_EXT_present_timing)
+	vkGetPastPresentationTimingEXT = reinterpret_cast<PFN_vkGetPastPresentationTimingEXT>(load(context, "vkGetPastPresentationTimingEXT"));
+	vkGetSwapchainTimeDomainPropertiesEXT = reinterpret_cast<PFN_vkGetSwapchainTimeDomainPropertiesEXT>(load(context, "vkGetSwapchainTimeDomainPropertiesEXT"));
+	vkGetSwapchainTimingPropertiesEXT = reinterpret_cast<PFN_vkGetSwapchainTimingPropertiesEXT>(load(context, "vkGetSwapchainTimingPropertiesEXT"));
+	vkSetSwapchainPresentTimingQueueSizeEXT = reinterpret_cast<PFN_vkSetSwapchainPresentTimingQueueSizeEXT>(load(context, "vkSetSwapchainPresentTimingQueueSizeEXT"));
+#endif /* defined(VK_EXT_present_timing) */
 #if defined(VK_EXT_private_data)
 	vkCreatePrivateDataSlotEXT = reinterpret_cast<PFN_vkCreatePrivateDataSlotEXT>(load(context, "vkCreatePrivateDataSlotEXT"));
 	vkDestroyPrivateDataSlotEXT = reinterpret_cast<PFN_vkDestroyPrivateDataSlotEXT>(load(context, "vkDestroyPrivateDataSlotEXT"));
@@ -5183,6 +5203,12 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 #if defined(VK_EXT_pipeline_properties)
 	table.vkGetPipelinePropertiesEXT = reinterpret_cast<PFN_vkGetPipelinePropertiesEXT>(load(device, "vkGetPipelinePropertiesEXT"));
 #endif /* defined(VK_EXT_pipeline_properties) */
+#if defined(VK_EXT_present_timing)
+	table.vkGetPastPresentationTimingEXT = reinterpret_cast<PFN_vkGetPastPresentationTimingEXT>(load(device, "vkGetPastPresentationTimingEXT"));
+	table.vkGetSwapchainTimeDomainPropertiesEXT = reinterpret_cast<PFN_vkGetSwapchainTimeDomainPropertiesEXT>(load(device, "vkGetSwapchainTimeDomainPropertiesEXT"));
+	table.vkGetSwapchainTimingPropertiesEXT = reinterpret_cast<PFN_vkGetSwapchainTimingPropertiesEXT>(load(device, "vkGetSwapchainTimingPropertiesEXT"));
+	table.vkSetSwapchainPresentTimingQueueSizeEXT = reinterpret_cast<PFN_vkSetSwapchainPresentTimingQueueSizeEXT>(load(device, "vkSetSwapchainPresentTimingQueueSizeEXT"));
+#endif /* defined(VK_EXT_present_timing) */
 #if defined(VK_EXT_private_data)
 	table.vkCreatePrivateDataSlotEXT = reinterpret_cast<PFN_vkCreatePrivateDataSlotEXT>(load(device, "vkCreatePrivateDataSlotEXT"));
 	table.vkDestroyPrivateDataSlotEXT = reinterpret_cast<PFN_vkDestroyPrivateDataSlotEXT>(load(device, "vkDestroyPrivateDataSlotEXT"));
@@ -6267,6 +6293,12 @@ inline PFN_vkSetDeviceMemoryPriorityEXT vkSetDeviceMemoryPriorityEXT;
 #if defined(VK_EXT_pipeline_properties)
 inline PFN_vkGetPipelinePropertiesEXT vkGetPipelinePropertiesEXT;
 #endif /* defined(VK_EXT_pipeline_properties) */
+#if defined(VK_EXT_present_timing)
+inline PFN_vkGetPastPresentationTimingEXT vkGetPastPresentationTimingEXT;
+inline PFN_vkGetSwapchainTimeDomainPropertiesEXT vkGetSwapchainTimeDomainPropertiesEXT;
+inline PFN_vkGetSwapchainTimingPropertiesEXT vkGetSwapchainTimingPropertiesEXT;
+inline PFN_vkSetSwapchainPresentTimingQueueSizeEXT vkSetSwapchainPresentTimingQueueSizeEXT;
+#endif /* defined(VK_EXT_present_timing) */
 #if defined(VK_EXT_private_data)
 inline PFN_vkCreatePrivateDataSlotEXT vkCreatePrivateDataSlotEXT;
 inline PFN_vkDestroyPrivateDataSlotEXT vkDestroyPrivateDataSlotEXT;
