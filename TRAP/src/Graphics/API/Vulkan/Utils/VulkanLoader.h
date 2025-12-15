@@ -21,7 +21,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 335
+#define VULKANLOADER_HEADER_VERSION 336
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -37,7 +37,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 335
+#define VULKANLOADER_HEADER_VERSION_PATCH 336
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -1555,6 +1555,11 @@ struct VkDeviceTable
 #else
 	std::array<PFN_vkVoidFunction, 2u> padding_60e35395;
 #endif /* defined(VK_NV_cluster_acceleration_structure) */
+#if defined(VK_NV_compute_occupancy_priority)
+	PFN_vkCmdSetComputeOccupancyPriorityNV vkCmdSetComputeOccupancyPriorityNV;
+#else
+	std::array<PFN_vkVoidFunction, 1u> padding_488584ea;
+#endif /* defined(VK_NV_compute_occupancy_priority) */
 #if defined(VK_NV_cooperative_vector)
 	PFN_vkCmdConvertCooperativeVectorMatrixNV vkCmdConvertCooperativeVectorMatrixNV;
 	PFN_vkConvertCooperativeVectorMatrixNV vkConvertCooperativeVectorMatrixNV;
@@ -2901,6 +2906,9 @@ extern PFN_vkCmdSetViewportWScalingNV vkCmdSetViewportWScalingNV;
 extern PFN_vkCmdBuildClusterAccelerationStructureIndirectNV vkCmdBuildClusterAccelerationStructureIndirectNV;
 extern PFN_vkGetClusterAccelerationStructureBuildSizesNV vkGetClusterAccelerationStructureBuildSizesNV;
 #endif /* defined(VK_NV_cluster_acceleration_structure) */
+#if defined(VK_NV_compute_occupancy_priority)
+extern PFN_vkCmdSetComputeOccupancyPriorityNV vkCmdSetComputeOccupancyPriorityNV;
+#endif /* defined(VK_NV_compute_occupancy_priority) */
 #if defined(VK_NV_cooperative_vector)
 extern PFN_vkCmdConvertCooperativeVectorMatrixNV vkCmdConvertCooperativeVectorMatrixNV;
 extern PFN_vkConvertCooperativeVectorMatrixNV vkConvertCooperativeVectorMatrixNV;
@@ -4310,6 +4318,9 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkCmdBuildClusterAccelerationStructureIndirectNV = reinterpret_cast<PFN_vkCmdBuildClusterAccelerationStructureIndirectNV>(load(context, "vkCmdBuildClusterAccelerationStructureIndirectNV"));
 	vkGetClusterAccelerationStructureBuildSizesNV = reinterpret_cast<PFN_vkGetClusterAccelerationStructureBuildSizesNV>(load(context, "vkGetClusterAccelerationStructureBuildSizesNV"));
 #endif /* defined(VK_NV_cluster_acceleration_structure) */
+#if defined(VK_NV_compute_occupancy_priority)
+	vkCmdSetComputeOccupancyPriorityNV = reinterpret_cast<PFN_vkCmdSetComputeOccupancyPriorityNV>(load(context, "vkCmdSetComputeOccupancyPriorityNV"));
+#endif /* defined(VK_NV_compute_occupancy_priority) */
 #if defined(VK_NV_cooperative_vector)
 	vkCmdConvertCooperativeVectorMatrixNV = reinterpret_cast<PFN_vkCmdConvertCooperativeVectorMatrixNV>(load(context, "vkCmdConvertCooperativeVectorMatrixNV"));
 	vkConvertCooperativeVectorMatrixNV = reinterpret_cast<PFN_vkConvertCooperativeVectorMatrixNV>(load(context, "vkConvertCooperativeVectorMatrixNV"));
@@ -5548,6 +5559,9 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkCmdBuildClusterAccelerationStructureIndirectNV = reinterpret_cast<PFN_vkCmdBuildClusterAccelerationStructureIndirectNV>(load(device, "vkCmdBuildClusterAccelerationStructureIndirectNV"));
 	table.vkGetClusterAccelerationStructureBuildSizesNV = reinterpret_cast<PFN_vkGetClusterAccelerationStructureBuildSizesNV>(load(device, "vkGetClusterAccelerationStructureBuildSizesNV"));
 #endif /* defined(VK_NV_cluster_acceleration_structure) */
+#if defined(VK_NV_compute_occupancy_priority)
+	table.vkCmdSetComputeOccupancyPriorityNV = reinterpret_cast<PFN_vkCmdSetComputeOccupancyPriorityNV>(load(device, "vkCmdSetComputeOccupancyPriorityNV"));
+#endif /* defined(VK_NV_compute_occupancy_priority) */
 #if defined(VK_NV_cooperative_vector)
 	table.vkCmdConvertCooperativeVectorMatrixNV = reinterpret_cast<PFN_vkCmdConvertCooperativeVectorMatrixNV>(load(device, "vkCmdConvertCooperativeVectorMatrixNV"));
 	table.vkConvertCooperativeVectorMatrixNV = reinterpret_cast<PFN_vkConvertCooperativeVectorMatrixNV>(load(device, "vkConvertCooperativeVectorMatrixNV"));
@@ -6737,6 +6751,9 @@ inline PFN_vkCmdSetViewportWScalingNV vkCmdSetViewportWScalingNV;
 inline PFN_vkCmdBuildClusterAccelerationStructureIndirectNV vkCmdBuildClusterAccelerationStructureIndirectNV;
 inline PFN_vkGetClusterAccelerationStructureBuildSizesNV vkGetClusterAccelerationStructureBuildSizesNV;
 #endif /* defined(VK_NV_cluster_acceleration_structure) */
+#if defined(VK_NV_compute_occupancy_priority)
+inline PFN_vkCmdSetComputeOccupancyPriorityNV vkCmdSetComputeOccupancyPriorityNV;
+#endif /* defined(VK_NV_compute_occupancy_priority) */
 #if defined(VK_NV_cooperative_matrix)
 inline PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV vkGetPhysicalDeviceCooperativeMatrixPropertiesNV;
 #endif /* defined(VK_NV_cooperative_matrix) */
