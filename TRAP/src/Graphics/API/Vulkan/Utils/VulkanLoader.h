@@ -21,7 +21,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 336
+#define VULKANLOADER_HEADER_VERSION 337
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -37,7 +37,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 336
+#define VULKANLOADER_HEADER_VERSION_PATCH 337
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -1711,13 +1711,6 @@ struct VkDeviceTable
 #else
 	std::array<PFN_vkVoidFunction, 2u> padding_9c703846;
 #endif /* defined(VK_OHOS_external_memory) */
-#if defined(VK_OHOS_native_buffer)
-	PFN_vkAcquireImageOHOS vkAcquireImageOHOS;
-	PFN_vkGetSwapchainGrallocUsageOHOS vkGetSwapchainGrallocUsageOHOS;
-	PFN_vkQueueSignalReleaseImageOHOS vkQueueSignalReleaseImageOHOS;
-#else
-	std::array<PFN_vkVoidFunction, 3u> padding_a26c9a3d;
-#endif /* defined(VK_OHOS_native_buffer) */
 #if defined(VK_QCOM_tile_memory_heap)
 	PFN_vkCmdBindTileMemoryQCOM vkCmdBindTileMemoryQCOM;
 #else
@@ -3016,11 +3009,6 @@ extern PFN_vkCmdSetViewportShadingRatePaletteNV vkCmdSetViewportShadingRatePalet
 extern PFN_vkGetMemoryNativeBufferOHOS vkGetMemoryNativeBufferOHOS;
 extern PFN_vkGetNativeBufferPropertiesOHOS vkGetNativeBufferPropertiesOHOS;
 #endif /* defined(VK_OHOS_external_memory) */
-#if defined(VK_OHOS_native_buffer)
-extern PFN_vkAcquireImageOHOS vkAcquireImageOHOS;
-extern PFN_vkGetSwapchainGrallocUsageOHOS vkGetSwapchainGrallocUsageOHOS;
-extern PFN_vkQueueSignalReleaseImageOHOS vkQueueSignalReleaseImageOHOS;
-#endif /* defined(VK_OHOS_native_buffer) */
 #if defined(VK_QCOM_tile_memory_heap)
 extern PFN_vkCmdBindTileMemoryQCOM vkCmdBindTileMemoryQCOM;
 #endif /* defined(VK_QCOM_tile_memory_heap) */
@@ -4428,11 +4416,6 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkGetMemoryNativeBufferOHOS = reinterpret_cast<PFN_vkGetMemoryNativeBufferOHOS>(load(context, "vkGetMemoryNativeBufferOHOS"));
 	vkGetNativeBufferPropertiesOHOS = reinterpret_cast<PFN_vkGetNativeBufferPropertiesOHOS>(load(context, "vkGetNativeBufferPropertiesOHOS"));
 #endif /* defined(VK_OHOS_external_memory) */
-#if defined(VK_OHOS_native_buffer)
-	vkAcquireImageOHOS = reinterpret_cast<PFN_vkAcquireImageOHOS>(load(context, "vkAcquireImageOHOS"));
-	vkGetSwapchainGrallocUsageOHOS = reinterpret_cast<PFN_vkGetSwapchainGrallocUsageOHOS>(load(context, "vkGetSwapchainGrallocUsageOHOS"));
-	vkQueueSignalReleaseImageOHOS = reinterpret_cast<PFN_vkQueueSignalReleaseImageOHOS>(load(context, "vkQueueSignalReleaseImageOHOS"));
-#endif /* defined(VK_OHOS_native_buffer) */
 #if defined(VK_QCOM_tile_memory_heap)
 	vkCmdBindTileMemoryQCOM = reinterpret_cast<PFN_vkCmdBindTileMemoryQCOM>(load(context, "vkCmdBindTileMemoryQCOM"));
 #endif /* defined(VK_QCOM_tile_memory_heap) */
@@ -5669,11 +5652,6 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkGetMemoryNativeBufferOHOS = reinterpret_cast<PFN_vkGetMemoryNativeBufferOHOS>(load(device, "vkGetMemoryNativeBufferOHOS"));
 	table.vkGetNativeBufferPropertiesOHOS = reinterpret_cast<PFN_vkGetNativeBufferPropertiesOHOS>(load(device, "vkGetNativeBufferPropertiesOHOS"));
 #endif /* defined(VK_OHOS_external_memory) */
-#if defined(VK_OHOS_native_buffer)
-	table.vkAcquireImageOHOS = reinterpret_cast<PFN_vkAcquireImageOHOS>(load(device, "vkAcquireImageOHOS"));
-	table.vkGetSwapchainGrallocUsageOHOS = reinterpret_cast<PFN_vkGetSwapchainGrallocUsageOHOS>(load(device, "vkGetSwapchainGrallocUsageOHOS"));
-	table.vkQueueSignalReleaseImageOHOS = reinterpret_cast<PFN_vkQueueSignalReleaseImageOHOS>(load(device, "vkQueueSignalReleaseImageOHOS"));
-#endif /* defined(VK_OHOS_native_buffer) */
 #if defined(VK_QCOM_tile_memory_heap)
 	table.vkCmdBindTileMemoryQCOM = reinterpret_cast<PFN_vkCmdBindTileMemoryQCOM>(load(device, "vkCmdBindTileMemoryQCOM"));
 #endif /* defined(VK_QCOM_tile_memory_heap) */
@@ -6875,11 +6853,6 @@ inline PFN_vkCmdSetViewportShadingRatePaletteNV vkCmdSetViewportShadingRatePalet
 inline PFN_vkGetMemoryNativeBufferOHOS vkGetMemoryNativeBufferOHOS;
 inline PFN_vkGetNativeBufferPropertiesOHOS vkGetNativeBufferPropertiesOHOS;
 #endif /* defined(VK_OHOS_external_memory) */
-#if defined(VK_OHOS_native_buffer)
-inline PFN_vkAcquireImageOHOS vkAcquireImageOHOS;
-inline PFN_vkGetSwapchainGrallocUsageOHOS vkGetSwapchainGrallocUsageOHOS;
-inline PFN_vkQueueSignalReleaseImageOHOS vkQueueSignalReleaseImageOHOS;
-#endif /* defined(VK_OHOS_native_buffer) */
 #if defined(VK_OHOS_surface)
 inline PFN_vkCreateSurfaceOHOS vkCreateSurfaceOHOS;
 #endif /* defined(VK_OHOS_surface) */
