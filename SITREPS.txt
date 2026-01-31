@@ -5714,3 +5714,7 @@ SITREP 11/07/2025|25w45
 
 SITREP 11/12/2025|25w46
     - Changed Premake-Ninja update method to latest tag ~<5 mins
+
+SITREP 01/31/2026|26w05a1
+    - Changed TRAP Engine version to 26w05a1(0.11.103)
+    - Updated VulkanLoader ~<5 mins

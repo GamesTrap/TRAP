@@ -21,7 +21,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 341
+#define VULKANLOADER_HEADER_VERSION 342
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -37,7 +37,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 341
+#define VULKANLOADER_HEADER_VERSION_PATCH 342
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -1556,10 +1556,9 @@ struct VkDeviceTable
 	std::array<PFN_vkVoidFunction, 5u> padding_eb54309b;
 #endif /* defined(VK_NVX_binary_import) */
 #if defined(VK_NVX_image_view_handle)
-	PFN_vkGetDeviceCombinedImageSamplerIndexNVX vkGetDeviceCombinedImageSamplerIndexNVX;
 	PFN_vkGetImageViewHandleNVX vkGetImageViewHandleNVX;
 #else
-	std::array<PFN_vkVoidFunction, 2u> padding_ef09c5c;
+	std::array<PFN_vkVoidFunction, 1u> padding_887f6736;
 #endif /* defined(VK_NVX_image_view_handle) */
 #if defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 3
 	PFN_vkGetImageViewHandle64NVX vkGetImageViewHandle64NVX;
@@ -1571,6 +1570,11 @@ struct VkDeviceTable
 #else
 	std::array<PFN_vkVoidFunction, 1u> padding_d290479a;
 #endif /* defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 2 */
+#if defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 4
+	PFN_vkGetDeviceCombinedImageSamplerIndexNVX vkGetDeviceCombinedImageSamplerIndexNVX;
+#else
+	std::array<PFN_vkVoidFunction, 1u> padding_a980205b;
+#endif /* defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 4 */
 #if defined(VK_NV_clip_space_w_scaling)
 	PFN_vkCmdSetViewportWScalingNV vkCmdSetViewportWScalingNV;
 #else
@@ -2929,7 +2933,6 @@ extern PFN_vkDestroyCuFunctionNVX vkDestroyCuFunctionNVX;
 extern PFN_vkDestroyCuModuleNVX vkDestroyCuModuleNVX;
 #endif /* defined(VK_NVX_binary_import) */
 #if defined(VK_NVX_image_view_handle)
-extern PFN_vkGetDeviceCombinedImageSamplerIndexNVX vkGetDeviceCombinedImageSamplerIndexNVX;
 extern PFN_vkGetImageViewHandleNVX vkGetImageViewHandleNVX;
 #endif /* defined(VK_NVX_image_view_handle) */
 #if defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 3
@@ -2938,6 +2941,9 @@ extern PFN_vkGetImageViewHandle64NVX vkGetImageViewHandle64NVX;
 #if defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 2
 extern PFN_vkGetImageViewAddressNVX vkGetImageViewAddressNVX;
 #endif /* defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 2 */
+#if defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 4
+extern PFN_vkGetDeviceCombinedImageSamplerIndexNVX vkGetDeviceCombinedImageSamplerIndexNVX;
+#endif /* defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 4 */
 #if defined(VK_NV_clip_space_w_scaling)
 extern PFN_vkCmdSetViewportWScalingNV vkCmdSetViewportWScalingNV;
 #endif /* defined(VK_NV_clip_space_w_scaling) */
@@ -4355,7 +4361,6 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkDestroyCuModuleNVX = reinterpret_cast<PFN_vkDestroyCuModuleNVX>(load(context, "vkDestroyCuModuleNVX"));
 #endif /* defined(VK_NVX_binary_import) */
 #if defined(VK_NVX_image_view_handle)
-	vkGetDeviceCombinedImageSamplerIndexNVX = reinterpret_cast<PFN_vkGetDeviceCombinedImageSamplerIndexNVX>(load(context, "vkGetDeviceCombinedImageSamplerIndexNVX"));
 	vkGetImageViewHandleNVX = reinterpret_cast<PFN_vkGetImageViewHandleNVX>(load(context, "vkGetImageViewHandleNVX"));
 #endif /* defined(VK_NVX_image_view_handle) */
 #if defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 3
@@ -4364,6 +4369,9 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 #if defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 2
 	vkGetImageViewAddressNVX = reinterpret_cast<PFN_vkGetImageViewAddressNVX>(load(context, "vkGetImageViewAddressNVX"));
 #endif /* defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 2 */
+#if defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 4
+	vkGetDeviceCombinedImageSamplerIndexNVX = reinterpret_cast<PFN_vkGetDeviceCombinedImageSamplerIndexNVX>(load(context, "vkGetDeviceCombinedImageSamplerIndexNVX"));
+#endif /* defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 4 */
 #if defined(VK_NV_clip_space_w_scaling)
 	vkCmdSetViewportWScalingNV = reinterpret_cast<PFN_vkCmdSetViewportWScalingNV>(load(context, "vkCmdSetViewportWScalingNV"));
 #endif /* defined(VK_NV_clip_space_w_scaling) */
@@ -5610,7 +5618,6 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkDestroyCuModuleNVX = reinterpret_cast<PFN_vkDestroyCuModuleNVX>(load(device, "vkDestroyCuModuleNVX"));
 #endif /* defined(VK_NVX_binary_import) */
 #if defined(VK_NVX_image_view_handle)
-	table.vkGetDeviceCombinedImageSamplerIndexNVX = reinterpret_cast<PFN_vkGetDeviceCombinedImageSamplerIndexNVX>(load(device, "vkGetDeviceCombinedImageSamplerIndexNVX"));
 	table.vkGetImageViewHandleNVX = reinterpret_cast<PFN_vkGetImageViewHandleNVX>(load(device, "vkGetImageViewHandleNVX"));
 #endif /* defined(VK_NVX_image_view_handle) */
 #if defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 3
@@ -5619,6 +5626,9 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 #if defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 2
 	table.vkGetImageViewAddressNVX = reinterpret_cast<PFN_vkGetImageViewAddressNVX>(load(device, "vkGetImageViewAddressNVX"));
 #endif /* defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 2 */
+#if defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 4
+	table.vkGetDeviceCombinedImageSamplerIndexNVX = reinterpret_cast<PFN_vkGetDeviceCombinedImageSamplerIndexNVX>(load(device, "vkGetDeviceCombinedImageSamplerIndexNVX"));
+#endif /* defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 4 */
 #if defined(VK_NV_clip_space_w_scaling)
 	table.vkCmdSetViewportWScalingNV = reinterpret_cast<PFN_vkCmdSetViewportWScalingNV>(load(device, "vkCmdSetViewportWScalingNV"));
 #endif /* defined(VK_NV_clip_space_w_scaling) */
@@ -6810,7 +6820,6 @@ inline PFN_vkDestroyCuFunctionNVX vkDestroyCuFunctionNVX;
 inline PFN_vkDestroyCuModuleNVX vkDestroyCuModuleNVX;
 #endif /* defined(VK_NVX_binary_import) */
 #if defined(VK_NVX_image_view_handle)
-inline PFN_vkGetDeviceCombinedImageSamplerIndexNVX vkGetDeviceCombinedImageSamplerIndexNVX;
 inline PFN_vkGetImageViewHandleNVX vkGetImageViewHandleNVX;
 #endif /* defined(VK_NVX_image_view_handle) */
 #if defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 3
@@ -6819,6 +6828,9 @@ inline PFN_vkGetImageViewHandle64NVX vkGetImageViewHandle64NVX;
 #if defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 2
 inline PFN_vkGetImageViewAddressNVX vkGetImageViewAddressNVX;
 #endif /* defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 2 */
+#if defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 4
+inline PFN_vkGetDeviceCombinedImageSamplerIndexNVX vkGetDeviceCombinedImageSamplerIndexNVX;
+#endif /* defined(VK_NVX_image_view_handle) && VK_NVX_IMAGE_VIEW_HANDLE_SPEC_VERSION >= 4 */
 #if defined(VK_NV_acquire_winrt_display)
 inline PFN_vkAcquireWinrtDisplayNV vkAcquireWinrtDisplayNV;
 inline PFN_vkGetWinrtDisplayNV vkGetWinrtDisplayNV;
