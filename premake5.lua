@@ -30,7 +30,7 @@ workspace "TRAP"
 	{
 		".",
 		"%{cfg.targetdir}",
-		"$ORIGIN"
+		"$$ORIGIN/$ORIGIN"
 	}
 
 	defines

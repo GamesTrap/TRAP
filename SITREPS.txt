@@ -5723,3 +5723,4 @@ SITREP 02/01/2026|26w05a2
     - Changed TRAP Engine version to 26w05a2(0.11.104)
     - Updated Premake ~<10 mins
     - Added support for Visual Studio 2026 ~<10 mins
+    - Fix linker errors ~<5 mins
