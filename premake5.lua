@@ -19,11 +19,8 @@ workspace "TRAP"
 	warnings "Extra"
 	fatalwarnings "All"
 	externalwarnings "Off"
-
-	flags
-	{
-		"MultiProcessorCompile",
-	}
+	multiprocessorcompile "On"
+	conformancemode "On"
 
 	outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")

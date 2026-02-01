@@ -5718,3 +5718,7 @@ SITREP 11/12/2025|25w46
 SITREP 01/31/2026|26w05a1
     - Changed TRAP Engine version to 26w05a1(0.11.103)
     - Updated VulkanLoader ~<5 mins
+
+SITREP 02/01/2026|26w05a2
+    - Changed TRAP Engine version to 26w05a2(0.11.104)
+    - Updated Premake ~<10 mins
