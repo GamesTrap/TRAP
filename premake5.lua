@@ -153,7 +153,7 @@ workspace "TRAP"
 	filter { "toolset:clang"}
 		buildoptions "-fcolor-diagnostics"
 
-	filter { "language:C or C++", "toolset:msc-v143"}
+	filter { "language:C or C++", "toolset:msc*"}
 		buildoptions "/utf-8 /wd4996"
 
 --Include directories relative to root folder(solution folder)

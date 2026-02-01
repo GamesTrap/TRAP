@@ -56,7 +56,7 @@ end
 function IncludeTRAPShared()
     filter {}
 
-    filter {"toolset:msc-v143"}
+    filter {"toolset:msc*"}
         disablewarnings
         {
             "4996",

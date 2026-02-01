@@ -211,3 +211,4 @@ docs/
 **.ninja_deps
 **.ninja_lock
 **.cap
+**.slnx

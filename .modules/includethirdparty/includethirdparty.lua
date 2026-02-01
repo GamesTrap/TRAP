@@ -34,7 +34,7 @@ function m.IncludeDiscordGameSDK()
 
     filter {}
 
-    filter {"toolset:msc-v143"}
+    filter {"toolset:msc*"}
         disablewarnings "4828"
 
     filter {}
@@ -113,7 +113,7 @@ function m.IncludeNsightAftermathSDK()
     externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
     defines "NSIGHT_AFTERMATH_AVAILABLE"
 
-    filter {"toolset:msc-v143"}
+    filter {"toolset:msc*"}
         disablewarnings "4828"
 
     filter {}
@@ -172,7 +172,7 @@ function m.IncludeSteamworksSDK()
     externalincludedirs "%{IncludeDir.STEAMWORKSSDK}"
     defines "USE_STEAMWORKS_SDK"
 
-    filter {"toolset:msc-v143"}
+    filter {"toolset:msc*"}
         disablewarnings
         {
             "4828",
