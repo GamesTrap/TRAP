@@ -21,7 +21,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 342
+#define VULKANLOADER_HEADER_VERSION 343
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -37,7 +37,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 342
+#define VULKANLOADER_HEADER_VERSION_PATCH 343
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -544,6 +544,12 @@ struct VkInstanceTable
 #else
 	std::array<PFN_vkVoidFunction, 2u> padding_9b43b57c;
 #endif /* defined(VK_QNX_screen_surface) */
+#if defined(VK_SEC_ubm_surface)
+	PFN_vkCreateUbmSurfaceSEC vkCreateUbmSurfaceSEC;
+	PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC vkGetPhysicalDeviceUbmPresentationSupportSEC;
+#else
+	std::array<PFN_vkVoidFunction, 2u> padding_bdcf11f9;
+#endif /* defined(VK_SEC_ubm_surface) */
 #if (defined(VK_KHR_device_group) && defined(VK_KHR_surface)) || (defined(VK_KHR_swapchain) && defined(VK_VERSION_1_1))
 	PFN_vkGetPhysicalDevicePresentRectanglesKHR vkGetPhysicalDevicePresentRectanglesKHR;
 #else
@@ -2163,6 +2169,10 @@ extern PFN_vkCreateSurfaceOHOS vkCreateSurfaceOHOS;
 extern PFN_vkCreateScreenSurfaceQNX vkCreateScreenSurfaceQNX;
 extern PFN_vkGetPhysicalDeviceScreenPresentationSupportQNX vkGetPhysicalDeviceScreenPresentationSupportQNX;
 #endif /* defined(VK_QNX_screen_surface) */
+#if defined(VK_SEC_ubm_surface)
+extern PFN_vkCreateUbmSurfaceSEC vkCreateUbmSurfaceSEC;
+extern PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC vkGetPhysicalDeviceUbmPresentationSupportSEC;
+#endif /* defined(VK_SEC_ubm_surface) */
 #if (defined(VK_KHR_device_group) && defined(VK_KHR_surface)) || (defined(VK_KHR_swapchain) && defined(VK_VERSION_1_1))
 extern PFN_vkGetPhysicalDevicePresentRectanglesKHR vkGetPhysicalDevicePresentRectanglesKHR;
 #endif /* (defined(VK_KHR_device_group) && defined(VK_KHR_surface)) || (defined(VK_KHR_swapchain) && defined(VK_VERSION_1_1)) */
@@ -3590,6 +3600,10 @@ static void VkGenLoadInstance(void* const context, VkGenLoaderFunction load)
 	vkCreateScreenSurfaceQNX = reinterpret_cast<PFN_vkCreateScreenSurfaceQNX>(load(context, "vkCreateScreenSurfaceQNX"));
 	vkGetPhysicalDeviceScreenPresentationSupportQNX = reinterpret_cast<PFN_vkGetPhysicalDeviceScreenPresentationSupportQNX>(load(context, "vkGetPhysicalDeviceScreenPresentationSupportQNX"));
 #endif /* defined(VK_QNX_screen_surface) */
+#if defined(VK_SEC_ubm_surface)
+	vkCreateUbmSurfaceSEC = reinterpret_cast<PFN_vkCreateUbmSurfaceSEC>(load(context, "vkCreateUbmSurfaceSEC"));
+	vkGetPhysicalDeviceUbmPresentationSupportSEC = reinterpret_cast<PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC>(load(context, "vkGetPhysicalDeviceUbmPresentationSupportSEC"));
+#endif /* defined(VK_SEC_ubm_surface) */
 #if (defined(VK_KHR_device_group) && defined(VK_KHR_surface)) || (defined(VK_KHR_swapchain) && defined(VK_VERSION_1_1))
 	vkGetPhysicalDevicePresentRectanglesKHR = reinterpret_cast<PFN_vkGetPhysicalDevicePresentRectanglesKHR>(load(context, "vkGetPhysicalDevicePresentRectanglesKHR"));
 #endif /* (defined(VK_KHR_device_group) && defined(VK_KHR_surface)) || (defined(VK_KHR_swapchain) && defined(VK_VERSION_1_1)) */
@@ -4847,6 +4861,10 @@ static void VkGenLoadInstanceTable(VkInstanceTable& table, VkInstance instance, 
 	table.vkCreateScreenSurfaceQNX = reinterpret_cast<PFN_vkCreateScreenSurfaceQNX>(load(instance, "vkCreateScreenSurfaceQNX"));
 	table.vkGetPhysicalDeviceScreenPresentationSupportQNX = reinterpret_cast<PFN_vkGetPhysicalDeviceScreenPresentationSupportQNX>(load(instance, "vkGetPhysicalDeviceScreenPresentationSupportQNX"));
 #endif /* defined(VK_QNX_screen_surface) */
+#if defined(VK_SEC_ubm_surface)
+	table.vkCreateUbmSurfaceSEC = reinterpret_cast<PFN_vkCreateUbmSurfaceSEC>(load(instance, "vkCreateUbmSurfaceSEC"));
+	table.vkGetPhysicalDeviceUbmPresentationSupportSEC = reinterpret_cast<PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC>(load(instance, "vkGetPhysicalDeviceUbmPresentationSupportSEC"));
+#endif /* defined(VK_SEC_ubm_surface) */
 #if (defined(VK_KHR_device_group) && defined(VK_KHR_surface)) || (defined(VK_KHR_swapchain) && defined(VK_VERSION_1_1))
 	table.vkGetPhysicalDevicePresentRectanglesKHR = reinterpret_cast<PFN_vkGetPhysicalDevicePresentRectanglesKHR>(load(instance, "vkGetPhysicalDevicePresentRectanglesKHR"));
 #endif /* (defined(VK_KHR_device_group) && defined(VK_KHR_surface)) || (defined(VK_KHR_swapchain) && defined(VK_VERSION_1_1)) */
@@ -6988,6 +7006,10 @@ inline PFN_vkGetScreenBufferPropertiesQNX vkGetScreenBufferPropertiesQNX;
 inline PFN_vkCreateScreenSurfaceQNX vkCreateScreenSurfaceQNX;
 inline PFN_vkGetPhysicalDeviceScreenPresentationSupportQNX vkGetPhysicalDeviceScreenPresentationSupportQNX;
 #endif /* defined(VK_QNX_screen_surface) */
+#if defined(VK_SEC_ubm_surface)
+inline PFN_vkCreateUbmSurfaceSEC vkCreateUbmSurfaceSEC;
+inline PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC vkGetPhysicalDeviceUbmPresentationSupportSEC;
+#endif /* defined(VK_SEC_ubm_surface) */
 #if defined(VK_VALVE_descriptor_set_host_mapping)
 inline PFN_vkGetDescriptorSetHostMappingVALVE vkGetDescriptorSetHostMappingVALVE;
 inline PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE vkGetDescriptorSetLayoutHostMappingInfoVALVE;
