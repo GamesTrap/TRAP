@@ -5724,3 +5724,8 @@ SITREP 02/01/2026|26w05a2
     - Updated Premake ~<10 mins
     - Added support for Visual Studio 2026 ~<10 mins
     - Fix linker errors ~<5 mins
+
+SITREP 02/24/2026|26w09a1
+    - Changed TRAP Engine version to 26w09a1(0.11.105)
+    - Added Premake-CMake to generate CMake build files ~<5 mins
+    - Added support for compiling TRAP with CLion (via Premake-CMake)

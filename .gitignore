@@ -212,3 +212,7 @@ docs/
 **.ninja_lock
 **.cap
 **.slnx
+CMakeLists.txt
+**.CMakeLists
+**.cmake
+build/

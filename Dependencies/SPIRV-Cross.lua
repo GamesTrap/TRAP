@@ -10,7 +10,6 @@ project "SPIRV-Cross"
 
         "SPIRV-Cross/spirv_cross.hpp",
         "SPIRV-Cross/spirv_parser.hpp",
-        "SPIRV-Cross/spirv_parsed_ir.hpp",
         "SPIRV-Cross/spirv_cfg.hpp",
 
         "SPIRV-Cross/spirv_cross.cpp",

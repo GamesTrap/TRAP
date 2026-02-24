@@ -1,6 +1,7 @@
 require "ecc"
 require "vscode"
 require "ninja"
+require "cmake"
 
 newoption
 {

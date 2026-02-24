@@ -23,7 +23,7 @@ project "UnitTests"
 		"%{wks.location}",
 	}
 
-	postbuildcommands ("{COPYDIR} " .. path.join(_MAIN_SCRIPT_DIR, "UnitTests/Testfiles") .. " %{cfg.targetdir}/Testfiles")
+	postbuildcommands ("{COPYDIR} %[" .. path.join(_MAIN_SCRIPT_DIR, "UnitTests/Testfiles") .. "] %[%{cfg.targetdir}/Testfiles]")
 
 	filter { "options:gencodecoverage" }
 		defines "CATCH_CONFIG_RUNTIME_STATIC_REQUIRE"

@@ -75,3 +75,6 @@
 	path = Dependencies/QuiteOKImage
 	url = https://github.com/phoboslab/qoi
 	ignore = dirty
+[submodule ".modules/cmake"]
+	path = .modules/cmake
+	url = https://github.com/GamesTrap/Premake-CMake

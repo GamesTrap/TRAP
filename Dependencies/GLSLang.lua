@@ -89,7 +89,6 @@ project "GLSLang"
 
         "GLSLang/SPIRV/GlslangToSpv.h",
         "GLSLang/SPIRV/Logger.h",
-        "GLSLang/SPIRV/SPVRemapper.h",
         "GLSLang/SPIRV/SpvBuilder.h",
         "GLSLang/SPIRV/SpvTools.h",
         "GLSLang/SPIRV/bitutils.h",
@@ -102,7 +101,7 @@ project "GLSLang"
         "GLSLang/SPIRV/GLSL.ext.EXT.h",
         "GLSLang/SPIRV/GLSL.ext.KHR.h",
         "GLSLang/SPIRV/GLSL.ext.NV.h",
-        "GLSLang/SPIRV/GLSL.ext.450.h",
+        "GLSLang/SPIRV/GLSL.std.450.h",
         "GLSLang/SPIRV/NonSemanticDebugPrintf.h",
         "GLSLang/SPIRV/spirv.hpp11",
 
