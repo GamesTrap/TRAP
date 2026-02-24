@@ -5729,3 +5729,5 @@ SITREP 02/24/2026|26w09a1
     - Changed TRAP Engine version to 26w09a1(0.11.105)
     - Added Premake-CMake to generate CMake build files ~<5 mins
     - Added support for compiling TRAP with CLion (via Premake-CMake)
+    - Updated Premake-Ninja ~<5 mins
+    - Replaced COPYDIR with COPYFILE for single file copying ~<5 mins

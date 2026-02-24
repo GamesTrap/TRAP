@@ -63,7 +63,7 @@ function m.LinkDiscordGameSDK()
             "DiscordGameSDK",
             "%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll.lib",
         }
-        postbuildcommands "{COPYDIR} %[%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll] %[%{cfg.targetdir}]"
+        postbuildcommands "{COPYFILE} %[%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll] %[%{cfg.targetdir}]"
 
     filter {"system:linux", "kind:ConsoleApp or WindowedApp"}
         libdirs "%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64"
@@ -129,7 +129,7 @@ function m.LinkNsightAftermathSDK()
     filter {}
 
     filter {"system:windows", "kind:ConsoleApp or WindowedApp"}
-        postbuildcommands "{COPYDIR} %[%{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/GFSDK_Aftermath_Lib.x64.dll] %[%{cfg.targetdir}]"
+        postbuildcommands "{COPYFILE} %[%{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/GFSDK_Aftermath_Lib.x64.dll] %[%{cfg.targetdir}]"
 
     filter {"system:linux", "kind:ConsoleApp or WindowedApp"}
         postbuildcommands "{COPYFILE} %[%{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/libGFSDK_Aftermath_Lib.x64.so] %[%{cfg.targetdir}]"
@@ -193,7 +193,7 @@ function m.LinkSteamworksSDK()
 
     filter {"system:windows", "kind:ConsoleApp or WindowedApp"}
         links "%{IncludeDir.STEAMWORKSSDK}/../../redistributable_bin/win64/steam_api64.lib"
-        postbuildcommands "{COPYDIR} %[%{IncludeDir.STEAMWORKSSDK}/../../redistributable_bin/win64/steam_api64.dll] %[%{cfg.targetdir}]"
+        postbuildcommands "{COPYFILE} %[%{IncludeDir.STEAMWORKSSDK}/../../redistributable_bin/win64/steam_api64.dll] %[%{cfg.targetdir}]"
 
     filter {"system:linux", "kind:ConsoleApp or WindowedApp"}
         links "steam_api"
