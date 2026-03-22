@@ -21,7 +21,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 346
+#define VULKANLOADER_HEADER_VERSION 347
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -37,7 +37,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 346
+#define VULKANLOADER_HEADER_VERSION_PATCH 347
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -1364,6 +1364,12 @@ struct VkDeviceTable
 #else
 	std::array<PFN_vkVoidFunction, 1u> padding_2564889a;
 #endif /* defined(VK_KHR_device_address_commands) && defined(VK_KHR_acceleration_structure) */
+#if defined(VK_KHR_device_fault)
+	PFN_vkGetDeviceFaultDebugInfoKHR vkGetDeviceFaultDebugInfoKHR;
+	PFN_vkGetDeviceFaultReportsKHR vkGetDeviceFaultReportsKHR;
+#else
+	std::array<PFN_vkVoidFunction, 2u> padding_d83e9289;
+#endif /* defined(VK_KHR_device_fault) */
 #if defined(VK_KHR_device_group)
 	PFN_vkCmdDispatchBaseKHR vkCmdDispatchBaseKHR;
 	PFN_vkCmdSetDeviceMaskKHR vkCmdSetDeviceMaskKHR;
@@ -2876,6 +2882,10 @@ extern PFN_vkCmdWriteMarkerToMemoryAMD vkCmdWriteMarkerToMemoryAMD;
 #if defined(VK_KHR_device_address_commands) && defined(VK_KHR_acceleration_structure)
 extern PFN_vkCreateAccelerationStructure2KHR vkCreateAccelerationStructure2KHR;
 #endif /* defined(VK_KHR_device_address_commands) && defined(VK_KHR_acceleration_structure) */
+#if defined(VK_KHR_device_fault)
+extern PFN_vkGetDeviceFaultDebugInfoKHR vkGetDeviceFaultDebugInfoKHR;
+extern PFN_vkGetDeviceFaultReportsKHR vkGetDeviceFaultReportsKHR;
+#endif /* defined(VK_KHR_device_fault) */
 #if defined(VK_KHR_device_group)
 extern PFN_vkCmdDispatchBaseKHR vkCmdDispatchBaseKHR;
 extern PFN_vkCmdSetDeviceMaskKHR vkCmdSetDeviceMaskKHR;
@@ -4357,6 +4367,10 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 #if defined(VK_KHR_device_address_commands) && defined(VK_KHR_acceleration_structure)
 	vkCreateAccelerationStructure2KHR = reinterpret_cast<PFN_vkCreateAccelerationStructure2KHR>(load(context, "vkCreateAccelerationStructure2KHR"));
 #endif /* defined(VK_KHR_device_address_commands) && defined(VK_KHR_acceleration_structure) */
+#if defined(VK_KHR_device_fault)
+	vkGetDeviceFaultDebugInfoKHR = reinterpret_cast<PFN_vkGetDeviceFaultDebugInfoKHR>(load(context, "vkGetDeviceFaultDebugInfoKHR"));
+	vkGetDeviceFaultReportsKHR = reinterpret_cast<PFN_vkGetDeviceFaultReportsKHR>(load(context, "vkGetDeviceFaultReportsKHR"));
+#endif /* defined(VK_KHR_device_fault) */
 #if defined(VK_KHR_device_group)
 	vkCmdDispatchBaseKHR = reinterpret_cast<PFN_vkCmdDispatchBaseKHR>(load(context, "vkCmdDispatchBaseKHR"));
 	vkCmdSetDeviceMaskKHR = reinterpret_cast<PFN_vkCmdSetDeviceMaskKHR>(load(context, "vkCmdSetDeviceMaskKHR"));
@@ -5667,6 +5681,10 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 #if defined(VK_KHR_device_address_commands) && defined(VK_KHR_acceleration_structure)
 	table.vkCreateAccelerationStructure2KHR = reinterpret_cast<PFN_vkCreateAccelerationStructure2KHR>(load(device, "vkCreateAccelerationStructure2KHR"));
 #endif /* defined(VK_KHR_device_address_commands) && defined(VK_KHR_acceleration_structure) */
+#if defined(VK_KHR_device_fault)
+	table.vkGetDeviceFaultDebugInfoKHR = reinterpret_cast<PFN_vkGetDeviceFaultDebugInfoKHR>(load(device, "vkGetDeviceFaultDebugInfoKHR"));
+	table.vkGetDeviceFaultReportsKHR = reinterpret_cast<PFN_vkGetDeviceFaultReportsKHR>(load(device, "vkGetDeviceFaultReportsKHR"));
+#endif /* defined(VK_KHR_device_fault) */
 #if defined(VK_KHR_device_group)
 	table.vkCmdDispatchBaseKHR = reinterpret_cast<PFN_vkCmdDispatchBaseKHR>(load(device, "vkCmdDispatchBaseKHR"));
 	table.vkCmdSetDeviceMaskKHR = reinterpret_cast<PFN_vkCmdSetDeviceMaskKHR>(load(device, "vkCmdSetDeviceMaskKHR"));
@@ -6838,6 +6856,10 @@ inline PFN_vkCmdWriteMarkerToMemoryAMD vkCmdWriteMarkerToMemoryAMD;
 #if defined(VK_KHR_device_address_commands) && defined(VK_KHR_acceleration_structure)
 inline PFN_vkCreateAccelerationStructure2KHR vkCreateAccelerationStructure2KHR;
 #endif /* defined(VK_KHR_device_address_commands) && defined(VK_KHR_acceleration_structure) */
+#if defined(VK_KHR_device_fault)
+inline PFN_vkGetDeviceFaultDebugInfoKHR vkGetDeviceFaultDebugInfoKHR;
+inline PFN_vkGetDeviceFaultReportsKHR vkGetDeviceFaultReportsKHR;
+#endif /* defined(VK_KHR_device_fault) */
 #if defined(VK_KHR_device_group)
 inline PFN_vkCmdDispatchBaseKHR vkCmdDispatchBaseKHR;
 inline PFN_vkCmdSetDeviceMaskKHR vkCmdSetDeviceMaskKHR;
