@@ -21,7 +21,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 347
+#define VULKANLOADER_HEADER_VERSION 348
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -37,7 +37,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 347
+#define VULKANLOADER_HEADER_VERSION_PATCH 348
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -251,6 +251,11 @@ struct VkInstanceTable
 #else
 	std::array<PFN_vkVoidFunction, 2u> padding_15920a35;
 #endif /* defined(VK_ARM_data_graph) */
+#if defined(VK_ARM_data_graph_instruction_set_tosa)
+	PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM;
+#else
+	std::array<PFN_vkVoidFunction, 1u> padding_d3dcb1f3;
+#endif /* defined(VK_ARM_data_graph_instruction_set_tosa) */
 #if defined(VK_ARM_performance_counters_by_region)
 	PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM;
 #else
@@ -852,6 +857,11 @@ struct VkDeviceTable
 #else
 	std::array<PFN_vkVoidFunction, 9u> padding_894d85d8;
 #endif /* defined(VK_ARM_data_graph) */
+#if defined(VK_ARM_scheduling_controls)
+	PFN_vkCmdSetDispatchParametersARM vkCmdSetDispatchParametersARM;
+#else
+	std::array<PFN_vkVoidFunction, 1u> padding_4702b278;
+#endif /* defined(VK_ARM_scheduling_controls) */
 #if defined(VK_ARM_shader_instrumentation)
 	PFN_vkClearShaderInstrumentationMetricsARM vkClearShaderInstrumentationMetricsARM;
 	PFN_vkCmdBeginShaderInstrumentationARM vkCmdBeginShaderInstrumentationARM;
@@ -1121,6 +1131,11 @@ struct VkDeviceTable
 #else
 	std::array<PFN_vkVoidFunction, 4u> padding_8751feb5;
 #endif /* defined(VK_EXT_present_timing) */
+#if defined(VK_EXT_primitive_restart_index)
+	PFN_vkCmdSetPrimitiveRestartIndexEXT vkCmdSetPrimitiveRestartIndexEXT;
+#else
+	std::array<PFN_vkVoidFunction, 1u> padding_a1770b32;
+#endif /* defined(VK_EXT_primitive_restart_index) */
 #if defined(VK_EXT_private_data)
 	PFN_vkCreatePrivateDataSlotEXT vkCreatePrivateDataSlotEXT;
 	PFN_vkDestroyPrivateDataSlotEXT vkDestroyPrivateDataSlotEXT;
@@ -1823,6 +1838,11 @@ struct VkDeviceTable
 #else
 	std::array<PFN_vkVoidFunction, 2u> padding_9c703846;
 #endif /* defined(VK_OHOS_external_memory) */
+#if defined(VK_QCOM_queue_perf_hint)
+	PFN_vkQueueSetPerfHintQCOM vkQueueSetPerfHintQCOM;
+#else
+	std::array<PFN_vkVoidFunction, 1u> padding_98b80534;
+#endif /* defined(VK_QCOM_queue_perf_hint) */
 #if defined(VK_QCOM_tile_memory_heap)
 	PFN_vkCmdBindTileMemoryQCOM vkCmdBindTileMemoryQCOM;
 #else
@@ -2051,6 +2071,9 @@ extern PFN_vkGetPhysicalDeviceToolProperties vkGetPhysicalDeviceToolProperties;
 extern PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM;
 extern PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM;
 #endif /* defined(VK_ARM_data_graph) */
+#if defined(VK_ARM_data_graph_instruction_set_tosa)
+extern PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM;
+#endif /* defined(VK_ARM_data_graph_instruction_set_tosa) */
 #if defined(VK_ARM_performance_counters_by_region)
 extern PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM;
 #endif /* defined(VK_ARM_performance_counters_by_region) */
@@ -2516,6 +2539,9 @@ extern PFN_vkGetDataGraphPipelinePropertiesARM vkGetDataGraphPipelinePropertiesA
 extern PFN_vkGetDataGraphPipelineSessionBindPointRequirementsARM vkGetDataGraphPipelineSessionBindPointRequirementsARM;
 extern PFN_vkGetDataGraphPipelineSessionMemoryRequirementsARM vkGetDataGraphPipelineSessionMemoryRequirementsARM;
 #endif /* defined(VK_ARM_data_graph) */
+#if defined(VK_ARM_scheduling_controls)
+extern PFN_vkCmdSetDispatchParametersARM vkCmdSetDispatchParametersARM;
+#endif /* defined(VK_ARM_scheduling_controls) */
 #if defined(VK_ARM_shader_instrumentation)
 extern PFN_vkClearShaderInstrumentationMetricsARM vkClearShaderInstrumentationMetricsARM;
 extern PFN_vkCmdBeginShaderInstrumentationARM vkCmdBeginShaderInstrumentationARM;
@@ -2705,6 +2731,9 @@ extern PFN_vkGetSwapchainTimeDomainPropertiesEXT vkGetSwapchainTimeDomainPropert
 extern PFN_vkGetSwapchainTimingPropertiesEXT vkGetSwapchainTimingPropertiesEXT;
 extern PFN_vkSetSwapchainPresentTimingQueueSizeEXT vkSetSwapchainPresentTimingQueueSizeEXT;
 #endif /* defined(VK_EXT_present_timing) */
+#if defined(VK_EXT_primitive_restart_index)
+extern PFN_vkCmdSetPrimitiveRestartIndexEXT vkCmdSetPrimitiveRestartIndexEXT;
+#endif /* defined(VK_EXT_primitive_restart_index) */
 #if defined(VK_EXT_private_data)
 extern PFN_vkCreatePrivateDataSlotEXT vkCreatePrivateDataSlotEXT;
 extern PFN_vkDestroyPrivateDataSlotEXT vkDestroyPrivateDataSlotEXT;
@@ -3199,6 +3228,9 @@ extern PFN_vkCmdSetViewportShadingRatePaletteNV vkCmdSetViewportShadingRatePalet
 extern PFN_vkGetMemoryNativeBufferOHOS vkGetMemoryNativeBufferOHOS;
 extern PFN_vkGetNativeBufferPropertiesOHOS vkGetNativeBufferPropertiesOHOS;
 #endif /* defined(VK_OHOS_external_memory) */
+#if defined(VK_QCOM_queue_perf_hint)
+extern PFN_vkQueueSetPerfHintQCOM vkQueueSetPerfHintQCOM;
+#endif /* defined(VK_QCOM_queue_perf_hint) */
 #if defined(VK_QCOM_tile_memory_heap)
 extern PFN_vkCmdBindTileMemoryQCOM vkCmdBindTileMemoryQCOM;
 #endif /* defined(VK_QCOM_tile_memory_heap) */
@@ -3535,6 +3567,9 @@ static void VkGenLoadInstance(void* const context, VkGenLoaderFunction load)
 	vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM>(load(context, "vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM"));
 	vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM>(load(context, "vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM"));
 #endif /* defined(VK_ARM_data_graph) */
+#if defined(VK_ARM_data_graph_instruction_set_tosa)
+	vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM>(load(context, "vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM"));
+#endif /* defined(VK_ARM_data_graph_instruction_set_tosa) */
 #if defined(VK_ARM_performance_counters_by_region)
 	vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = reinterpret_cast<PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM>(load(context, "vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM"));
 #endif /* defined(VK_ARM_performance_counters_by_region) */
@@ -4001,6 +4036,9 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkGetDataGraphPipelineSessionBindPointRequirementsARM = reinterpret_cast<PFN_vkGetDataGraphPipelineSessionBindPointRequirementsARM>(load(context, "vkGetDataGraphPipelineSessionBindPointRequirementsARM"));
 	vkGetDataGraphPipelineSessionMemoryRequirementsARM = reinterpret_cast<PFN_vkGetDataGraphPipelineSessionMemoryRequirementsARM>(load(context, "vkGetDataGraphPipelineSessionMemoryRequirementsARM"));
 #endif /* defined(VK_ARM_data_graph) */
+#if defined(VK_ARM_scheduling_controls)
+	vkCmdSetDispatchParametersARM = reinterpret_cast<PFN_vkCmdSetDispatchParametersARM>(load(context, "vkCmdSetDispatchParametersARM"));
+#endif /* defined(VK_ARM_scheduling_controls) */
 #if defined(VK_ARM_shader_instrumentation)
 	vkClearShaderInstrumentationMetricsARM = reinterpret_cast<PFN_vkClearShaderInstrumentationMetricsARM>(load(context, "vkClearShaderInstrumentationMetricsARM"));
 	vkCmdBeginShaderInstrumentationARM = reinterpret_cast<PFN_vkCmdBeginShaderInstrumentationARM>(load(context, "vkCmdBeginShaderInstrumentationARM"));
@@ -4190,6 +4228,9 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkGetSwapchainTimingPropertiesEXT = reinterpret_cast<PFN_vkGetSwapchainTimingPropertiesEXT>(load(context, "vkGetSwapchainTimingPropertiesEXT"));
 	vkSetSwapchainPresentTimingQueueSizeEXT = reinterpret_cast<PFN_vkSetSwapchainPresentTimingQueueSizeEXT>(load(context, "vkSetSwapchainPresentTimingQueueSizeEXT"));
 #endif /* defined(VK_EXT_present_timing) */
+#if defined(VK_EXT_primitive_restart_index)
+	vkCmdSetPrimitiveRestartIndexEXT = reinterpret_cast<PFN_vkCmdSetPrimitiveRestartIndexEXT>(load(context, "vkCmdSetPrimitiveRestartIndexEXT"));
+#endif /* defined(VK_EXT_primitive_restart_index) */
 #if defined(VK_EXT_private_data)
 	vkCreatePrivateDataSlotEXT = reinterpret_cast<PFN_vkCreatePrivateDataSlotEXT>(load(context, "vkCreatePrivateDataSlotEXT"));
 	vkDestroyPrivateDataSlotEXT = reinterpret_cast<PFN_vkDestroyPrivateDataSlotEXT>(load(context, "vkDestroyPrivateDataSlotEXT"));
@@ -4684,6 +4725,9 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkGetMemoryNativeBufferOHOS = reinterpret_cast<PFN_vkGetMemoryNativeBufferOHOS>(load(context, "vkGetMemoryNativeBufferOHOS"));
 	vkGetNativeBufferPropertiesOHOS = reinterpret_cast<PFN_vkGetNativeBufferPropertiesOHOS>(load(context, "vkGetNativeBufferPropertiesOHOS"));
 #endif /* defined(VK_OHOS_external_memory) */
+#if defined(VK_QCOM_queue_perf_hint)
+	vkQueueSetPerfHintQCOM = reinterpret_cast<PFN_vkQueueSetPerfHintQCOM>(load(context, "vkQueueSetPerfHintQCOM"));
+#endif /* defined(VK_QCOM_queue_perf_hint) */
 #if defined(VK_QCOM_tile_memory_heap)
 	vkCmdBindTileMemoryQCOM = reinterpret_cast<PFN_vkCmdBindTileMemoryQCOM>(load(context, "vkCmdBindTileMemoryQCOM"));
 #endif /* defined(VK_QCOM_tile_memory_heap) */
@@ -4849,6 +4893,9 @@ static void VkGenLoadInstanceTable(VkInstanceTable& table, VkInstance instance, 
 	table.vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM>(load(instance, "vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM"));
 	table.vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM>(load(instance, "vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM"));
 #endif /* defined(VK_ARM_data_graph) */
+#if defined(VK_ARM_data_graph_instruction_set_tosa)
+	table.vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM>(load(instance, "vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM"));
+#endif /* defined(VK_ARM_data_graph_instruction_set_tosa) */
 #if defined(VK_ARM_performance_counters_by_region)
 	table.vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = reinterpret_cast<PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM>(load(instance, "vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM"));
 #endif /* defined(VK_ARM_performance_counters_by_region) */
@@ -5315,6 +5362,9 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkGetDataGraphPipelineSessionBindPointRequirementsARM = reinterpret_cast<PFN_vkGetDataGraphPipelineSessionBindPointRequirementsARM>(load(device, "vkGetDataGraphPipelineSessionBindPointRequirementsARM"));
 	table.vkGetDataGraphPipelineSessionMemoryRequirementsARM = reinterpret_cast<PFN_vkGetDataGraphPipelineSessionMemoryRequirementsARM>(load(device, "vkGetDataGraphPipelineSessionMemoryRequirementsARM"));
 #endif /* defined(VK_ARM_data_graph) */
+#if defined(VK_ARM_scheduling_controls)
+	table.vkCmdSetDispatchParametersARM = reinterpret_cast<PFN_vkCmdSetDispatchParametersARM>(load(device, "vkCmdSetDispatchParametersARM"));
+#endif /* defined(VK_ARM_scheduling_controls) */
 #if defined(VK_ARM_shader_instrumentation)
 	table.vkClearShaderInstrumentationMetricsARM = reinterpret_cast<PFN_vkClearShaderInstrumentationMetricsARM>(load(device, "vkClearShaderInstrumentationMetricsARM"));
 	table.vkCmdBeginShaderInstrumentationARM = reinterpret_cast<PFN_vkCmdBeginShaderInstrumentationARM>(load(device, "vkCmdBeginShaderInstrumentationARM"));
@@ -5504,6 +5554,9 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkGetSwapchainTimingPropertiesEXT = reinterpret_cast<PFN_vkGetSwapchainTimingPropertiesEXT>(load(device, "vkGetSwapchainTimingPropertiesEXT"));
 	table.vkSetSwapchainPresentTimingQueueSizeEXT = reinterpret_cast<PFN_vkSetSwapchainPresentTimingQueueSizeEXT>(load(device, "vkSetSwapchainPresentTimingQueueSizeEXT"));
 #endif /* defined(VK_EXT_present_timing) */
+#if defined(VK_EXT_primitive_restart_index)
+	table.vkCmdSetPrimitiveRestartIndexEXT = reinterpret_cast<PFN_vkCmdSetPrimitiveRestartIndexEXT>(load(device, "vkCmdSetPrimitiveRestartIndexEXT"));
+#endif /* defined(VK_EXT_primitive_restart_index) */
 #if defined(VK_EXT_private_data)
 	table.vkCreatePrivateDataSlotEXT = reinterpret_cast<PFN_vkCreatePrivateDataSlotEXT>(load(device, "vkCreatePrivateDataSlotEXT"));
 	table.vkDestroyPrivateDataSlotEXT = reinterpret_cast<PFN_vkDestroyPrivateDataSlotEXT>(load(device, "vkDestroyPrivateDataSlotEXT"));
@@ -5998,6 +6051,9 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkGetMemoryNativeBufferOHOS = reinterpret_cast<PFN_vkGetMemoryNativeBufferOHOS>(load(device, "vkGetMemoryNativeBufferOHOS"));
 	table.vkGetNativeBufferPropertiesOHOS = reinterpret_cast<PFN_vkGetNativeBufferPropertiesOHOS>(load(device, "vkGetNativeBufferPropertiesOHOS"));
 #endif /* defined(VK_OHOS_external_memory) */
+#if defined(VK_QCOM_queue_perf_hint)
+	table.vkQueueSetPerfHintQCOM = reinterpret_cast<PFN_vkQueueSetPerfHintQCOM>(load(device, "vkQueueSetPerfHintQCOM"));
+#endif /* defined(VK_QCOM_queue_perf_hint) */
 #if defined(VK_QCOM_tile_memory_heap)
 	table.vkCmdBindTileMemoryQCOM = reinterpret_cast<PFN_vkCmdBindTileMemoryQCOM>(load(device, "vkCmdBindTileMemoryQCOM"));
 #endif /* defined(VK_QCOM_tile_memory_heap) */
@@ -6423,9 +6479,15 @@ inline PFN_vkGetDataGraphPipelineSessionMemoryRequirementsARM vkGetDataGraphPipe
 inline PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM;
 inline PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM;
 #endif /* defined(VK_ARM_data_graph) */
+#if defined(VK_ARM_data_graph_instruction_set_tosa)
+inline PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM;
+#endif /* defined(VK_ARM_data_graph_instruction_set_tosa) */
 #if defined(VK_ARM_performance_counters_by_region)
 inline PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM;
 #endif /* defined(VK_ARM_performance_counters_by_region) */
+#if defined(VK_ARM_scheduling_controls)
+inline PFN_vkCmdSetDispatchParametersARM vkCmdSetDispatchParametersARM;
+#endif /* defined(VK_ARM_scheduling_controls) */
 #if defined(VK_ARM_shader_instrumentation)
 inline PFN_vkClearShaderInstrumentationMetricsARM vkClearShaderInstrumentationMetricsARM;
 inline PFN_vkCmdBeginShaderInstrumentationARM vkCmdBeginShaderInstrumentationARM;
@@ -6662,6 +6724,9 @@ inline PFN_vkGetSwapchainTimeDomainPropertiesEXT vkGetSwapchainTimeDomainPropert
 inline PFN_vkGetSwapchainTimingPropertiesEXT vkGetSwapchainTimingPropertiesEXT;
 inline PFN_vkSetSwapchainPresentTimingQueueSizeEXT vkSetSwapchainPresentTimingQueueSizeEXT;
 #endif /* defined(VK_EXT_present_timing) */
+#if defined(VK_EXT_primitive_restart_index)
+inline PFN_vkCmdSetPrimitiveRestartIndexEXT vkCmdSetPrimitiveRestartIndexEXT;
+#endif /* defined(VK_EXT_primitive_restart_index) */
 #if defined(VK_EXT_private_data)
 inline PFN_vkCreatePrivateDataSlotEXT vkCreatePrivateDataSlotEXT;
 inline PFN_vkDestroyPrivateDataSlotEXT vkDestroyPrivateDataSlotEXT;
@@ -7272,6 +7337,9 @@ inline PFN_vkGetNativeBufferPropertiesOHOS vkGetNativeBufferPropertiesOHOS;
 #if defined(VK_OHOS_surface)
 inline PFN_vkCreateSurfaceOHOS vkCreateSurfaceOHOS;
 #endif /* defined(VK_OHOS_surface) */
+#if defined(VK_QCOM_queue_perf_hint)
+inline PFN_vkQueueSetPerfHintQCOM vkQueueSetPerfHintQCOM;
+#endif /* defined(VK_QCOM_queue_perf_hint) */
 #if defined(VK_QCOM_tile_memory_heap)
 inline PFN_vkCmdBindTileMemoryQCOM vkCmdBindTileMemoryQCOM;
 #endif /* defined(VK_QCOM_tile_memory_heap) */
