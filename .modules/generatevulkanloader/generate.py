@@ -18,6 +18,7 @@ cmdversions = {
 	"vkGetImageViewHandle64NVX": 3,
 	"vkGetDeviceCombinedImageSamplerIndexNVX": 4,
 	"vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI": 2,
+	"vkCmdSetDispatchParametersARM": 2,
 }
 
 def parse_xml(path):
