@@ -21,7 +21,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 348
+#define VULKANLOADER_HEADER_VERSION 349
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -37,7 +37,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 348
+#define VULKANLOADER_HEADER_VERSION_PATCH 349
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -251,11 +251,11 @@ struct VkInstanceTable
 #else
 	std::array<PFN_vkVoidFunction, 2u> padding_15920a35;
 #endif /* defined(VK_ARM_data_graph) */
-#if defined(VK_ARM_data_graph_instruction_set_tosa)
-	PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM;
+#if defined(VK_ARM_data_graph_optical_flow)
+	PFN_vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM;
 #else
-	std::array<PFN_vkVoidFunction, 1u> padding_d3dcb1f3;
-#endif /* defined(VK_ARM_data_graph_instruction_set_tosa) */
+	std::array<PFN_vkVoidFunction, 1u> padding_4da6b74b;
+#endif /* defined(VK_ARM_data_graph_optical_flow) */
 #if defined(VK_ARM_performance_counters_by_region)
 	PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM;
 #else
@@ -560,6 +560,11 @@ struct VkInstanceTable
 #else
 	std::array<PFN_vkVoidFunction, 2u> padding_bdcf11f9;
 #endif /* defined(VK_SEC_ubm_surface) */
+#if (defined(VK_ARM_data_graph_instruction_set_tosa)) || (defined(VK_ARM_data_graph_optical_flow))
+	PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM;
+#else
+	std::array<PFN_vkVoidFunction, 1u> padding_d3dcb1f3;
+#endif /* (defined(VK_ARM_data_graph_instruction_set_tosa)) || (defined(VK_ARM_data_graph_optical_flow)) */
 #if (defined(VK_KHR_device_group) && defined(VK_KHR_surface)) || (defined(VK_KHR_swapchain) && defined(VK_VERSION_1_1))
 	PFN_vkGetPhysicalDevicePresentRectanglesKHR vkGetPhysicalDevicePresentRectanglesKHR;
 #else
@@ -857,11 +862,11 @@ struct VkDeviceTable
 #else
 	std::array<PFN_vkVoidFunction, 9u> padding_894d85d8;
 #endif /* defined(VK_ARM_data_graph) */
-#if defined(VK_ARM_scheduling_controls)
+#if defined(VK_ARM_scheduling_controls) && VK_ARM_SCHEDULING_CONTROLS_SPEC_VERSION >= 2
 	PFN_vkCmdSetDispatchParametersARM vkCmdSetDispatchParametersARM;
 #else
 	std::array<PFN_vkVoidFunction, 1u> padding_4702b278;
-#endif /* defined(VK_ARM_scheduling_controls) */
+#endif /* defined(VK_ARM_scheduling_controls) && VK_ARM_SCHEDULING_CONTROLS_SPEC_VERSION >= 2 */
 #if defined(VK_ARM_shader_instrumentation)
 	PFN_vkClearShaderInstrumentationMetricsARM vkClearShaderInstrumentationMetricsARM;
 	PFN_vkCmdBeginShaderInstrumentationARM vkCmdBeginShaderInstrumentationARM;
@@ -2071,9 +2076,9 @@ extern PFN_vkGetPhysicalDeviceToolProperties vkGetPhysicalDeviceToolProperties;
 extern PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM;
 extern PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM;
 #endif /* defined(VK_ARM_data_graph) */
-#if defined(VK_ARM_data_graph_instruction_set_tosa)
-extern PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM;
-#endif /* defined(VK_ARM_data_graph_instruction_set_tosa) */
+#if defined(VK_ARM_data_graph_optical_flow)
+extern PFN_vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM;
+#endif /* defined(VK_ARM_data_graph_optical_flow) */
 #if defined(VK_ARM_performance_counters_by_region)
 extern PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM;
 #endif /* defined(VK_ARM_performance_counters_by_region) */
@@ -2274,6 +2279,9 @@ extern PFN_vkGetPhysicalDeviceScreenPresentationSupportQNX vkGetPhysicalDeviceSc
 extern PFN_vkCreateUbmSurfaceSEC vkCreateUbmSurfaceSEC;
 extern PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC vkGetPhysicalDeviceUbmPresentationSupportSEC;
 #endif /* defined(VK_SEC_ubm_surface) */
+#if (defined(VK_ARM_data_graph_instruction_set_tosa)) || (defined(VK_ARM_data_graph_optical_flow))
+extern PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM;
+#endif /* (defined(VK_ARM_data_graph_instruction_set_tosa)) || (defined(VK_ARM_data_graph_optical_flow)) */
 #if (defined(VK_KHR_device_group) && defined(VK_KHR_surface)) || (defined(VK_KHR_swapchain) && defined(VK_VERSION_1_1))
 extern PFN_vkGetPhysicalDevicePresentRectanglesKHR vkGetPhysicalDevicePresentRectanglesKHR;
 #endif /* (defined(VK_KHR_device_group) && defined(VK_KHR_surface)) || (defined(VK_KHR_swapchain) && defined(VK_VERSION_1_1)) */
@@ -2539,9 +2547,9 @@ extern PFN_vkGetDataGraphPipelinePropertiesARM vkGetDataGraphPipelinePropertiesA
 extern PFN_vkGetDataGraphPipelineSessionBindPointRequirementsARM vkGetDataGraphPipelineSessionBindPointRequirementsARM;
 extern PFN_vkGetDataGraphPipelineSessionMemoryRequirementsARM vkGetDataGraphPipelineSessionMemoryRequirementsARM;
 #endif /* defined(VK_ARM_data_graph) */
-#if defined(VK_ARM_scheduling_controls)
+#if defined(VK_ARM_scheduling_controls) && VK_ARM_SCHEDULING_CONTROLS_SPEC_VERSION >= 2
 extern PFN_vkCmdSetDispatchParametersARM vkCmdSetDispatchParametersARM;
-#endif /* defined(VK_ARM_scheduling_controls) */
+#endif /* defined(VK_ARM_scheduling_controls) && VK_ARM_SCHEDULING_CONTROLS_SPEC_VERSION >= 2 */
 #if defined(VK_ARM_shader_instrumentation)
 extern PFN_vkClearShaderInstrumentationMetricsARM vkClearShaderInstrumentationMetricsARM;
 extern PFN_vkCmdBeginShaderInstrumentationARM vkCmdBeginShaderInstrumentationARM;
@@ -3567,9 +3575,9 @@ static void VkGenLoadInstance(void* const context, VkGenLoaderFunction load)
 	vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM>(load(context, "vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM"));
 	vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM>(load(context, "vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM"));
 #endif /* defined(VK_ARM_data_graph) */
-#if defined(VK_ARM_data_graph_instruction_set_tosa)
-	vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM>(load(context, "vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM"));
-#endif /* defined(VK_ARM_data_graph_instruction_set_tosa) */
+#if defined(VK_ARM_data_graph_optical_flow)
+	vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM>(load(context, "vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM"));
+#endif /* defined(VK_ARM_data_graph_optical_flow) */
 #if defined(VK_ARM_performance_counters_by_region)
 	vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = reinterpret_cast<PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM>(load(context, "vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM"));
 #endif /* defined(VK_ARM_performance_counters_by_region) */
@@ -3770,6 +3778,9 @@ static void VkGenLoadInstance(void* const context, VkGenLoaderFunction load)
 	vkCreateUbmSurfaceSEC = reinterpret_cast<PFN_vkCreateUbmSurfaceSEC>(load(context, "vkCreateUbmSurfaceSEC"));
 	vkGetPhysicalDeviceUbmPresentationSupportSEC = reinterpret_cast<PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC>(load(context, "vkGetPhysicalDeviceUbmPresentationSupportSEC"));
 #endif /* defined(VK_SEC_ubm_surface) */
+#if (defined(VK_ARM_data_graph_instruction_set_tosa)) || (defined(VK_ARM_data_graph_optical_flow))
+	vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM>(load(context, "vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM"));
+#endif /* (defined(VK_ARM_data_graph_instruction_set_tosa)) || (defined(VK_ARM_data_graph_optical_flow)) */
 #if (defined(VK_KHR_device_group) && defined(VK_KHR_surface)) || (defined(VK_KHR_swapchain) && defined(VK_VERSION_1_1))
 	vkGetPhysicalDevicePresentRectanglesKHR = reinterpret_cast<PFN_vkGetPhysicalDevicePresentRectanglesKHR>(load(context, "vkGetPhysicalDevicePresentRectanglesKHR"));
 #endif /* (defined(VK_KHR_device_group) && defined(VK_KHR_surface)) || (defined(VK_KHR_swapchain) && defined(VK_VERSION_1_1)) */
@@ -4036,9 +4047,9 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 	vkGetDataGraphPipelineSessionBindPointRequirementsARM = reinterpret_cast<PFN_vkGetDataGraphPipelineSessionBindPointRequirementsARM>(load(context, "vkGetDataGraphPipelineSessionBindPointRequirementsARM"));
 	vkGetDataGraphPipelineSessionMemoryRequirementsARM = reinterpret_cast<PFN_vkGetDataGraphPipelineSessionMemoryRequirementsARM>(load(context, "vkGetDataGraphPipelineSessionMemoryRequirementsARM"));
 #endif /* defined(VK_ARM_data_graph) */
-#if defined(VK_ARM_scheduling_controls)
+#if defined(VK_ARM_scheduling_controls) && VK_ARM_SCHEDULING_CONTROLS_SPEC_VERSION >= 2
 	vkCmdSetDispatchParametersARM = reinterpret_cast<PFN_vkCmdSetDispatchParametersARM>(load(context, "vkCmdSetDispatchParametersARM"));
-#endif /* defined(VK_ARM_scheduling_controls) */
+#endif /* defined(VK_ARM_scheduling_controls) && VK_ARM_SCHEDULING_CONTROLS_SPEC_VERSION >= 2 */
 #if defined(VK_ARM_shader_instrumentation)
 	vkClearShaderInstrumentationMetricsARM = reinterpret_cast<PFN_vkClearShaderInstrumentationMetricsARM>(load(context, "vkClearShaderInstrumentationMetricsARM"));
 	vkCmdBeginShaderInstrumentationARM = reinterpret_cast<PFN_vkCmdBeginShaderInstrumentationARM>(load(context, "vkCmdBeginShaderInstrumentationARM"));
@@ -4893,9 +4904,9 @@ static void VkGenLoadInstanceTable(VkInstanceTable& table, VkInstance instance, 
 	table.vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM>(load(instance, "vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM"));
 	table.vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM>(load(instance, "vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM"));
 #endif /* defined(VK_ARM_data_graph) */
-#if defined(VK_ARM_data_graph_instruction_set_tosa)
-	table.vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM>(load(instance, "vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM"));
-#endif /* defined(VK_ARM_data_graph_instruction_set_tosa) */
+#if defined(VK_ARM_data_graph_optical_flow)
+	table.vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM>(load(instance, "vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM"));
+#endif /* defined(VK_ARM_data_graph_optical_flow) */
 #if defined(VK_ARM_performance_counters_by_region)
 	table.vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = reinterpret_cast<PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM>(load(instance, "vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM"));
 #endif /* defined(VK_ARM_performance_counters_by_region) */
@@ -5096,6 +5107,9 @@ static void VkGenLoadInstanceTable(VkInstanceTable& table, VkInstance instance, 
 	table.vkCreateUbmSurfaceSEC = reinterpret_cast<PFN_vkCreateUbmSurfaceSEC>(load(instance, "vkCreateUbmSurfaceSEC"));
 	table.vkGetPhysicalDeviceUbmPresentationSupportSEC = reinterpret_cast<PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC>(load(instance, "vkGetPhysicalDeviceUbmPresentationSupportSEC"));
 #endif /* defined(VK_SEC_ubm_surface) */
+#if (defined(VK_ARM_data_graph_instruction_set_tosa)) || (defined(VK_ARM_data_graph_optical_flow))
+	table.vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM = reinterpret_cast<PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM>(load(instance, "vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM"));
+#endif /* (defined(VK_ARM_data_graph_instruction_set_tosa)) || (defined(VK_ARM_data_graph_optical_flow)) */
 #if (defined(VK_KHR_device_group) && defined(VK_KHR_surface)) || (defined(VK_KHR_swapchain) && defined(VK_VERSION_1_1))
 	table.vkGetPhysicalDevicePresentRectanglesKHR = reinterpret_cast<PFN_vkGetPhysicalDevicePresentRectanglesKHR>(load(instance, "vkGetPhysicalDevicePresentRectanglesKHR"));
 #endif /* (defined(VK_KHR_device_group) && defined(VK_KHR_surface)) || (defined(VK_KHR_swapchain) && defined(VK_VERSION_1_1)) */
@@ -5362,9 +5376,9 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 	table.vkGetDataGraphPipelineSessionBindPointRequirementsARM = reinterpret_cast<PFN_vkGetDataGraphPipelineSessionBindPointRequirementsARM>(load(device, "vkGetDataGraphPipelineSessionBindPointRequirementsARM"));
 	table.vkGetDataGraphPipelineSessionMemoryRequirementsARM = reinterpret_cast<PFN_vkGetDataGraphPipelineSessionMemoryRequirementsARM>(load(device, "vkGetDataGraphPipelineSessionMemoryRequirementsARM"));
 #endif /* defined(VK_ARM_data_graph) */
-#if defined(VK_ARM_scheduling_controls)
+#if defined(VK_ARM_scheduling_controls) && VK_ARM_SCHEDULING_CONTROLS_SPEC_VERSION >= 2
 	table.vkCmdSetDispatchParametersARM = reinterpret_cast<PFN_vkCmdSetDispatchParametersARM>(load(device, "vkCmdSetDispatchParametersARM"));
-#endif /* defined(VK_ARM_scheduling_controls) */
+#endif /* defined(VK_ARM_scheduling_controls) && VK_ARM_SCHEDULING_CONTROLS_SPEC_VERSION >= 2 */
 #if defined(VK_ARM_shader_instrumentation)
 	table.vkClearShaderInstrumentationMetricsARM = reinterpret_cast<PFN_vkClearShaderInstrumentationMetricsARM>(load(device, "vkClearShaderInstrumentationMetricsARM"));
 	table.vkCmdBeginShaderInstrumentationARM = reinterpret_cast<PFN_vkCmdBeginShaderInstrumentationARM>(load(device, "vkCmdBeginShaderInstrumentationARM"));
@@ -6479,15 +6493,15 @@ inline PFN_vkGetDataGraphPipelineSessionMemoryRequirementsARM vkGetDataGraphPipe
 inline PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM;
 inline PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM;
 #endif /* defined(VK_ARM_data_graph) */
-#if defined(VK_ARM_data_graph_instruction_set_tosa)
-inline PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM;
-#endif /* defined(VK_ARM_data_graph_instruction_set_tosa) */
+#if defined(VK_ARM_data_graph_optical_flow)
+inline PFN_vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM;
+#endif /* defined(VK_ARM_data_graph_optical_flow) */
 #if defined(VK_ARM_performance_counters_by_region)
 inline PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM;
 #endif /* defined(VK_ARM_performance_counters_by_region) */
-#if defined(VK_ARM_scheduling_controls)
+#if defined(VK_ARM_scheduling_controls) && VK_ARM_SCHEDULING_CONTROLS_SPEC_VERSION >= 2
 inline PFN_vkCmdSetDispatchParametersARM vkCmdSetDispatchParametersARM;
-#endif /* defined(VK_ARM_scheduling_controls) */
+#endif /* defined(VK_ARM_scheduling_controls) && VK_ARM_SCHEDULING_CONTROLS_SPEC_VERSION >= 2 */
 #if defined(VK_ARM_shader_instrumentation)
 inline PFN_vkClearShaderInstrumentationMetricsARM vkClearShaderInstrumentationMetricsARM;
 inline PFN_vkCmdBeginShaderInstrumentationARM vkCmdBeginShaderInstrumentationARM;
@@ -7367,6 +7381,9 @@ inline PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC vkGetPhysicalDeviceUbmPr
 inline PFN_vkGetDescriptorSetHostMappingVALVE vkGetDescriptorSetHostMappingVALVE;
 inline PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE vkGetDescriptorSetLayoutHostMappingInfoVALVE;
 #endif /* defined(VK_VALVE_descriptor_set_host_mapping) */
+#if (defined(VK_ARM_data_graph_instruction_set_tosa)) || (defined(VK_ARM_data_graph_optical_flow))
+inline PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM;
+#endif /* (defined(VK_ARM_data_graph_instruction_set_tosa)) || (defined(VK_ARM_data_graph_optical_flow)) */
 #if (defined(VK_EXT_depth_clamp_control)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clamp_control))
 inline PFN_vkCmdSetDepthClampRangeEXT vkCmdSetDepthClampRangeEXT;
 #endif /* (defined(VK_EXT_depth_clamp_control)) || (defined(VK_EXT_shader_object) && defined(VK_EXT_depth_clamp_control)) */
