@@ -5731,3 +5731,7 @@ SITREP 02/24/2026|26w09a1
     - Added support for compiling TRAP with CLion (via Premake-CMake)
     - Updated Premake-Ninja ~<5 mins
     - Replaced COPYDIR with COPYFILE for single file copying ~<5 mins
+
+SITREP 04/11/2026|26w15a1
+    - Changed TRAP Engine version to 26w15a1(0.11.106)
+    - Updated Steamworks SDK support to v1.64 ~<5 mins

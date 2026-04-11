@@ -309,19 +309,6 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] ISteamMusicRemote* TRAP::Utils::Steam::GetSteamMusicRemote()
-{
-    if(!steamClientInitialized)
-    {
-        TRAP_ASSERT(false, "Steam::GetSteamMusicRemote(): Steamworks SDK is not initialized!");
-        return nullptr;
-    }
-
-    return SteamMusicRemote();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] ISteamNetworkingMessages* TRAP::Utils::Steam::GetSteamClientNetworkingMessages()
 {
     if(!steamClientInitialized)

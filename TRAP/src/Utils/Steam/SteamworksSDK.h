@@ -111,11 +111,6 @@ namespace TRAP::Utils::Steam
     /// @return Pointer to the SteamMusic interface.
     [[nodiscard]] ISteamMusic* GetSteamMusic();
 
-    /// @brief Retrieve the SteamMusicRemote interface.
-    ///        Allows direct interaction with the Steam Music player.
-    /// @return Pointer to the SteamMusicRemote interface.
-    [[nodiscard]] ISteamMusicRemote* GetSteamMusicRemote();
-
     /// @brief Retrieve the SteamNetworkingMessages interface from the client.
     /// @return Pointer to the SteamNetworkingMessages interface.
     [[nodiscard]] ISteamNetworkingMessages* GetSteamClientNetworkingMessages();
