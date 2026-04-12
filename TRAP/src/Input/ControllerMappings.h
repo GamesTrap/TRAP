@@ -34,7 +34,7 @@ freely, subject to the following restrictions:
 namespace TRAP::Embed
 {
 #ifdef TRAP_BUILD_WIN32_MAPPINGS
-	constexpr usize ControllerMappingsSize = 859;
+	constexpr usize ControllerMappingsSize = 861;
 #endif /*TRAP_BUILD_WIN32_MAPPINGS*/
 
 #ifdef TRAP_BUILD_LINUX_MAPPINGS
@@ -90,7 +90,7 @@ namespace TRAP::Embed
 		"03000000c82d00002038000000000000,8BitDo NES30 Pro,a:b1,b:b0,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b2,leftshoulder:b6,leftstick:b13,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b14,righttrigger:b9,rightx:a3,righty:a4,start:b11,x:b4,y:b3,platform:Windows,",
 		"03000000c82d00000751000000000000,8BitDo P30,a:b0,b:b1,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b6,lefttrigger:b8,leftx:a0,lefty:a2,rightshoulder:b7,righttrigger:b9,rightx:a3,righty:a5,start:b11,x:b3,y:b4,platform:Windows,",
 		"03000000c82d00000851000000000000,8BitDo P30,a:b0,b:b1,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b6,lefttrigger:b8,leftx:a0,lefty:a2,rightshoulder:b7,righttrigger:b9,rightx:a3,righty:a5,start:b11,x:b3,y:b4,platform:Windows,",
-		"03000000c82d00000360000000000000,8BitDo Pro 2,a:b1,b:b0,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b6,leftstick:b13,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b14,righttrigger:b9,rightx:a3,righty:a4,start:b11,x:b4,y:b3,platform:Windows,",
+		"03000000c82d00000360000000000000,8BitDo Pro 2,a:b1,b:b0,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b6,leftstick:b13,lefttrigger:b8,leftx:a0,lefty:a1,paddle1:b2,paddle2:b5,rightshoulder:b7,rightstick:b14,righttrigger:b9,rightx:a3,righty:a4,start:b11,x:b4,y:b3,platform:Windows,",
 		"03000000c82d00000361000000000000,8BitDo Pro 2,a:b1,b:b0,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b6,leftstick:b13,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b14,righttrigger:b9,rightx:a3,righty:a4,start:b11,x:b4,y:b3,platform:Windows,",
 		"03000000c82d00000660000000000000,8BitDo Pro 2,a:b1,b:b0,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b6,leftstick:b13,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b14,righttrigger:b9,rightx:a3,righty:a4,start:b11,x:b4,y:b3,platform:Windows,",
 		"03000000c82d00000960000000000000,8BitDo Pro 3,a:b1,b:b0,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b6,leftstick:b13,lefttrigger:b8,leftx:a0,lefty:a1,paddle1:b17,paddle2:b16,paddle3:b2,paddle4:b5,rightshoulder:b7,rightstick:b14,righttrigger:b9,rightx:a3,righty:a4,start:b11,x:b4,y:b3,platform:Windows,",
@@ -732,6 +732,7 @@ namespace TRAP::Embed
 		"03000000730700000401000000000000,Sanwa PlayOnline Mobile,a:b0,b:b1,back:b2,dpdown:+a1,dpleft:-a0,dpright:+a0,dpup:-a1,start:b3,platform:Windows,",
 		"030000009d0d00001130000000000000,Sanwa PlayStation Adapter,a:b0,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b5,leftx:a0,lefty:a1,rightshoulder:b6,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b2,y:b3,platform:Windows,",
 		"03000000830500006120000000000000,Sanwa Smart Grip II,a:b0,b:b2,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,righttrigger:b7,x:b1,y:b3,platform:Windows,",
+		"03000000630600000201000000000000,Sanwa Virtua Grip,+leftx:h0.2,+lefty:h0.4,-leftx:h0.8,-lefty:h0.1,a:b2,b:b3,dpdown:+a1,dpleft:-a0,dpright:+a0,dpup:-a1,leftshoulder:b4,lefttrigger:b6,rightshoulder:b5,righttrigger:b7,x:b0,y:b1,platform:Windows,",
 		"03000000c01100000051000000000000,Satechi Controller,a:b0,b:b1,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b6,leftstick:b13,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b14,righttrigger:b9,rightx:a2,righty:a5,start:b11,x:b3,y:b4,platform:Windows,",
 		"030000004f04000028b3000000000000,Score A,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a5,start:b9,x:b0,y:b3,platform:Windows,",
 		"03000000952e00002577000000000000,Scuf PS4 Controller,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:a3,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:a4,rightx:a2,righty:a5,start:b9,touchpad:b13,x:b0,y:b3,platform:Windows,",
@@ -811,6 +812,7 @@ namespace TRAP::Embed
 		"03000000571d00002000000000000000,Tomee SNES Adapter,a:b0,b:b1,back:b6,dpdown:+a4,dpleft:-a0,dpright:+a0,dpup:-a4,leftshoulder:b4,rightshoulder:b5,start:b7,x:b2,y:b3,platform:Windows,",
 		"03000000d62000006000000000000000,Tournament PS3 Controller,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b0,y:b3,platform:Windows,",
 		"03000000c01100000055000000000000,Tronsmart,a:b2,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b3,y:b0,platform:Windows,",
+		"03000000d60600002a00000000000000,Trust 850F,a:b0,b:b1,dpdown:+a1,dpleft:-a0,dpright:+a0,dpup:-a1,leftshoulder:b6,lefttrigger:b7,rightshoulder:b5,righttrigger:b2,x:b3,y:b4,platform:Windows,",
 		"030000005f140000c501000000000000,Trust Gamepad,a:b2,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b3,y:b0,platform:Windows,",
 		"03000000b80500000210000000000000,Trust Gamepad,a:b2,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b3,y:b0,platform:Windows,",
 		"030000004f04000087b6000000000000,TWCS Throttle,dpdown:b8,dpleft:b9,dpright:b7,dpup:b6,leftstick:b5,lefttrigger:-a5,leftx:a0,lefty:a1,righttrigger:+a5,platform:Windows,",
