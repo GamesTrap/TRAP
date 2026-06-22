@@ -5735,3 +5735,6 @@ SITREP 02/24/2026|26w09a1
 SITREP 04/11/2026|26w15a1
     - Changed TRAP Engine version to 26w15a1(0.11.106)
     - Updated Steamworks SDK support to v1.64 ~<5 mins
+
+SITREP 06/22/2026|26w26a1
+    - Updated GHA runners to Ubuntu 26.04 with gcc-16 and clang-22 ~<10 mins

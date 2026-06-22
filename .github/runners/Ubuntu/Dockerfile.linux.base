@@ -1,6 +1,6 @@
 # Shared basis for all linux based action runner images
 
-FROM ubuntu:24.10
+FROM ubuntu:26.04
 LABEL maintainer="gamestrap@trappedgames.de"
 
 ENV LANG=en_US.UTF-8
@@ -51,9 +51,9 @@ RUN echo en_US.UTF-8 UTF-8 >> /etc/locale.gen \
     xz-utils \
     doxygen \
     graphviz \
-    g++-14 \
-    clang-19 \
-    llvm-19 \
+    g++-16 \
+    clang-22 \
+    llvm-22 \
     mold \
     cmake \
     xorg-dev \
