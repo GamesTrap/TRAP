@@ -5145,3 +5145,6 @@ SITREP 07/21/2024|24w29b1
     - Changed TRAP Engine version to 24w29b1(0.10.93)
     - TRAP_ASSERT Fixed assertion failures didnt trigger debug break ~<5 mins
     - VulkanRenderer Depth/Stencil RenderTarget now uses the same MSAA sample count as color RenderTargets ~<15 mins
+
+SITREP 06/22/2026|26w26a1
+    - Updated GHA runners to Ubuntu 26.04 with gcc-16 and clang-22 ~<10 mins
