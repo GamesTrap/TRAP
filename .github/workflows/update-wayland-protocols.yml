@@ -1,4 +1,4 @@
-name: Update Controller Mappings
+name: Update Wayland Protocols
 
 on:
   schedule:
@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-vulkan-loader:
-    name: Update Controller Mappings
+  update-wayland-protocols:
+    name: Update Wayland Protocols
     if: github.repository == 'GamesTrap/TRAP'
     runs-on: [self-hosted, Linux, X64, ubuntu, "26.04", cpu]
     steps:
@@ -38,11 +38,11 @@ jobs:
       - name: Make scripts and premake executable
         run: |
           chmod +x libs/premake5/linux/premake5
-          chmod +x GeneratorScripts/GenerateControllerMappings.sh
-      - name: Update Controller Mappings
+          chmod +x GeneratorScripts/GenerateWaylandProtocols.sh
+      - name: Update Wayland Protocols
         run: |
           cd GeneratorScripts/
-          ./GenerateControllerMappings.sh
+          ./GenerateWaylandProtocols.sh
           cd ..
       - name: Retrieve todays date
         id: get-date
@@ -51,10 +51,10 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           base: dev
-          branch: controller-mappings-update/${{steps.get-date.outputs.CURRENT_DATE}}
+          branch: wayland-protocols-update/${{steps.get-date.outputs.CURRENT_DATE}}
           delete-branch: true
-          commit-message: "Update Controller Mappings to ${{steps.get-date.outputs.CURRENT_DATE}}"
-          title: "Update Controller Mappings to ${{steps.get-date.outputs.CURRENT_DATE}}"
+          commit-message: "Update Wayland Protocols to ${{steps.get-date.outputs.CURRENT_DATE}}"
+          title: "Update Wayland Protocols to ${{steps.get-date.outputs.CURRENT_DATE}}"
           labels: "CI/CD, Input, Update"
           assignees: "GamesTrap"
           milestone: 5
