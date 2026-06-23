@@ -26,9 +26,9 @@ jobs:
     steps:
     - name: Cleanup workspace
       if: ${{ always() }}
-      uses: gamestrap/gha-workspace-cleanup@v1.2.5
+      uses: gamestrap/gha-workspace-cleanup@6f5b53f54cfae9e5e5e7e720861377855fb56d89 #v1.2.5
     - name: Checkout repository and submodules
-      uses: actions/checkout@v4
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
       with:
         submodules: 'true'
         ref: 'dev' #Nightly Build is always run on dev branch
@@ -139,7 +139,7 @@ jobs:
       env:
         artifact_hostname: ${{secrets.ARTIFACT_HOST}}
       if: env.artifact_hostname == null
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
       with:
         name: Linux ${{matrix.compiler}} ${{matrix.configuration}} Executables
         path: |
@@ -159,9 +159,9 @@ jobs:
     steps:
       - name: Cleanup workspace
         if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.5
+        uses: gamestrap/gha-workspace-cleanup@6f5b53f54cfae9e5e5e7e720861377855fb56d89 #v1.2.5
       - name: Checkout repository and submodules
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
         with:
           submodules: 'true'
           ref: 'dev' #Nightly Build is always run on dev branch
@@ -199,7 +199,7 @@ jobs:
           git pull origin main
           cd ../..
       - name: Setup developer console
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 #v1.13.0
         with:
           arch: x64
       - name: Generate Ninja files
@@ -247,7 +247,7 @@ jobs:
         env:
           artifact_hostname: ${{secrets.ARTIFACT_HOST}}
         if: env.artifact_hostname == null
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
         with:
           name: Windows MSVC ${{matrix.configuration}} Executables
           path: |
@@ -268,12 +268,12 @@ jobs:
     steps:
       - name: Cleanup workspace
         if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.5
+        uses: gamestrap/gha-workspace-cleanup@6f5b53f54cfae9e5e5e7e720861377855fb56d89 #v1.2.5
       - name: Download artifact (TrappedGames)
         env:
           artifact_hostname: ${{secrets.ARTIFACT_HOST}}
         if: env.artifact_hostname != null
-        uses: gamestrap/gha-download-artifact@v1.0.5
+        uses: gamestrap/gha-download-artifact@ed04b8e83a34e86c6bec2a999a4fce223b296560 #v1.0.5
         with:
           server-hostname: ${{ secrets.ARTIFACT_HOST }}
           server-share: "artifacts"
@@ -284,7 +284,7 @@ jobs:
         env:
           artifact_hostname: ${{secrets.ARTIFACT_HOST}}
         if: env.artifact_hostname == null
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
         with:
           name: Linux ${{matrix.compiler}} ${{matrix.configuration}} Executables
       - name: Run Tests
@@ -303,12 +303,12 @@ jobs:
     steps:
       - name: Cleanup workspace
         if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.5
+        uses: gamestrap/gha-workspace-cleanup@6f5b53f54cfae9e5e5e7e720861377855fb56d89 #v1.2.5
       - name: Download artifact (TrappedGames)
         env:
           artifact_hostname: ${{secrets.ARTIFACT_HOST}}
         if: env.artifact_hostname != null
-        uses: gamestrap/gha-download-artifact@v1.0.5
+        uses: gamestrap/gha-download-artifact@ed04b8e83a34e86c6bec2a999a4fce223b296560 #v1.0.5
         with:
           server-hostname: ${{ secrets.ARTIFACT_HOST }}
           server-share: "artifacts"
@@ -319,7 +319,7 @@ jobs:
         env:
           artifact_hostname: ${{secrets.ARTIFACT_HOST}}
         if: env.artifact_hostname == null
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
         with:
           name: Windows MSVC ${{matrix.configuration}} Executables
       - name: Run Tests
