@@ -5741,3 +5741,4 @@ SITREP 06/22/2026|26w26a1
 
 SITREP 06/23/2026|26w26a2
     - Updated GHA runners to Windows 2025 LTSC with Visual Studio 2026 ~<10 mins
+    - Updated GHA workflows to use gcc-16, clang-22, msvc 2026 ~<15 mins

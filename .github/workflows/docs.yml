@@ -14,7 +14,7 @@ on:
 jobs:
   build-docs-linux:
     name: Build Docs Linux
-    runs-on: [self-hosted, Linux, X64, ubuntu, "24.10", cpu]
+    runs-on: [self-hosted, Linux, X64, ubuntu, "26.04", cpu]
     steps:
     - name: Cleanup workspace
       if: ${{ always() }}

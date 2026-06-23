@@ -9,7 +9,7 @@ jobs:
   update-wayland-protocols:
     name: Update Wayland Protocols
     if: github.repository == 'GamesTrap/TRAP'
-    runs-on: [self-hosted, Linux, X64, ubuntu, cpu]
+    runs-on: [self-hosted, Linux, X64, ubuntu, "26.04", cpu]
     steps:
       - name: Cleanup workspace
         if: ${{ always() }}

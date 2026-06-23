@@ -13,13 +13,13 @@ on:
 jobs:
   build-linux:
     name: Build Linux
-    runs-on: [self-hosted, Linux, X64, ubuntu, "24.10", cpu]
+    runs-on: [self-hosted, Linux, X64, ubuntu, "26.04", cpu]
     strategy:
       matrix:
         compiler: [clang, gcc]
         configuration: [Debug, Release, RelWithDebInfo, Profiling, ASan_LSan_UBSan, TSan]
-        clang_version: [19]
-        gcc_version: [14]
+        clang_version: [22]
+        gcc_version: [16]
     env:
       CONFIGURATION: ${{matrix.configuration}}
       COMPILER: ${{matrix.compiler}}
@@ -155,8 +155,8 @@ jobs:
           bin/${{matrix.configuration}}-linux-x86_64/Licenses
 
   build-windows:
-    name: Build Windows MSVC 2022
-    runs-on: [self-hosted, windows, X64, cpu]
+    name: Build Windows MSVC 2025
+    runs-on: [self-hosted, windows, "2025", X64, cpu]
     strategy:
       matrix:
         configuration: [Debug, Release, RelWithDebInfo, Profiling]
@@ -245,7 +245,7 @@ jobs:
         if: env.artifact_hostname != null
         uses: ./.github/composite/artifact-upload
         with:
-          target-filename: Windows MSVC 2022 ${{matrix.configuration}} Executables
+          target-filename: Windows MSVC ${{matrix.configuration}} Executables
           server-hostname: ${{ secrets.ARTIFACT_HOST }}
           server-share: "artifacts"
           server-username: ${{ secrets.ARTIFACT_USERNAME }}
@@ -262,7 +262,7 @@ jobs:
         if: env.artifact_hostname == null
         uses: actions/upload-artifact@v4
         with:
-          name: Windows MSVC 2022 ${{matrix.configuration}} Executables
+          name: Windows MSVC ${{matrix.configuration}} Executables
           path: |
             bin/${{matrix.configuration}}-windows-x86_64/Games
             bin/${{matrix.configuration}}-windows-x86_64/Utility
@@ -272,7 +272,7 @@ jobs:
 
   test-linux:
     name: Unit-Test Linux
-    runs-on: [self-hosted, Linux, X64, ubuntu, cpu]
+    runs-on: [self-hosted, Linux, X64, ubuntu, "26.04", cpu]
     strategy:
       matrix:
         compiler: [clang, gcc]
@@ -308,7 +308,7 @@ jobs:
 
   test-windows:
     name: Unit-Test Windows
-    runs-on: [self-hosted, windows, X64, cpu]
+    runs-on: [self-hosted, windows, "2025", X64, cpu]
     strategy:
       matrix:
         configuration: [Debug, Release, RelWithDebInfo, Profiling]
@@ -327,14 +327,14 @@ jobs:
           server-share: "artifacts"
           server-username: ${{ secrets.ARTIFACT_USERNAME }}
           server-password: ${{ secrets.ARTIFACT_PASSWORD }}
-          artifact-name: "Windows MSVC 2022 ${{matrix.configuration}} Executables"
+          artifact-name: "Windows MSVC ${{matrix.configuration}} Executables"
       - name: Download artifact (GitHub)
         env:
           artifact_hostname: ${{secrets.ARTIFACT_HOST}}
         if: env.artifact_hostname == null
         uses: actions/download-artifact@v4
         with:
-          name: Windows MSVC 2022 ${{matrix.configuration}} Executables
+          name: Windows MSVC ${{matrix.configuration}} Executables
       - name: Run Tests
         run: |
           cd UnitTests
