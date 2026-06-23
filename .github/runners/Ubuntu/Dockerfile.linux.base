@@ -9,6 +9,7 @@ ENV LC_ALL=en_US.UTF-8
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
 RUN echo en_US.UTF-8 UTF-8 >> /etc/locale.gen \
+  && add-apt-repository --yes ppa:ubuntu-toolchain-r/ppa \
   && apt update \
   && apt upgrade -y \
   && apt install -y --no-install-recommends \
@@ -60,6 +61,7 @@ RUN echo en_US.UTF-8 UTF-8 >> /etc/locale.gen \
     libwayland-dev \
     libxkbcommon-dev \
     wayland-protocols \
+  && wget https://launchpad.net/ubuntu/+archive/primary/+files/mold_2.41.0+dfsg-1_amd64.deb && dpkg -i mold_2.41.0+dfsg-1_amd64.deb \
   && DPKG_ARCH="$(dpkg --print-architecture)" \
   && LSB_RELEASE_CODENAME="$(lsb_release --codename | cut -f2)" \
   && sed -e 's/Defaults.*env_reset/Defaults env_keep = "HTTP_PROXY HTTPS_PROXY NO_PROXY FTP_PROXY http_proxy https_proxy no_proxy ftp_proxy"/' -i /etc/sudoers \
