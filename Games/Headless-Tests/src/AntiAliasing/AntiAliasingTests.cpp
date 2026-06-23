@@ -40,7 +40,7 @@ void AntiAliasingTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& d
 
 	static constexpr f32 angle = 22.8f;
 
-	static constexpr f32 aspectRatio = NumericCast<f32>(resolution.x()) / resolution.y();
+	static constexpr f32 aspectRatio = NumericCast<f32>(resolution.x()) / NumericCast<f32>(resolution.y());
 	static constexpr TRAP::Graphics::OrthographicCamera camera{-(aspectRatio), aspectRatio, -1.0f, 1.0f, -1.0f, 1.0f};
 
 	TRAP::Graphics::Renderer2D::BeginScene(camera);

@@ -5744,3 +5744,4 @@ SITREP 06/23/2026|26w26a2
     - Updated GHA workflows to use gcc-16, clang-22, msvc 2026 ~<15 mins
     - Updated all GHA actions dependencies ~<10 mins
     - Pinned all GHA action dependencies to specific commits instead of tags ~<10 mins
+    - Fixed compiler errors from gcc-16 ~<5 mins
