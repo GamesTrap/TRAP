@@ -26,7 +26,7 @@ jobs:
     steps:
     - name: Cleanup workspace
       if: ${{ always() }}
-      uses: gamestrap/gha-workspace-cleanup@6f5b53f54cfae9e5e5e7e720861377855fb56d89 #v1.2.5
+      uses: gamestrap/gha-workspace-cleanup@a4ba9185d186048c239232b7164d5215aa544974 #v2.0.0
     - name: Checkout repository and submodules
       uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
       with:
@@ -165,7 +165,7 @@ jobs:
     steps:
       - name: Cleanup workspace
         if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@6f5b53f54cfae9e5e5e7e720861377855fb56d89 #v1.2.5
+        uses: gamestrap/gha-workspace-cleanup@a4ba9185d186048c239232b7164d5215aa544974 #v2.0.0
       - name: Checkout repository and submodules
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
         with:
@@ -281,7 +281,7 @@ jobs:
     steps:
       - name: Cleanup workspace
         if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@6f5b53f54cfae9e5e5e7e720861377855fb56d89 #v1.2.5
+        uses: gamestrap/gha-workspace-cleanup@a4ba9185d186048c239232b7164d5215aa544974 #v2.0.0
       - name: Download artifact (TrappedGames)
         env:
           artifact_hostname: ${{secrets.ARTIFACT_HOST}}
@@ -316,7 +316,7 @@ jobs:
     steps:
       - name: Cleanup workspace
         if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@6f5b53f54cfae9e5e5e7e720861377855fb56d89 #v1.2.5
+        uses: gamestrap/gha-workspace-cleanup@a4ba9185d186048c239232b7164d5215aa544974 #v2.0.0
       - name: Download artifact (TrappedGames)
         env:
           artifact_hostname: ${{secrets.ARTIFACT_HOST}}
