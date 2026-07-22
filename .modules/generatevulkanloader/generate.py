@@ -11,15 +11,34 @@ import re
 import zlib
 
 cmdversions = {
-	"vkCmdSetDiscardRectangleEnableEXT": 2,
-	"vkCmdSetDiscardRectangleModeEXT": 2,
-	"vkCmdSetExclusiveScissorEnableNV": 2,
-	"vkGetImageViewAddressNVX": 2,
-	"vkGetImageViewHandle64NVX": 3,
-	"vkGetDeviceCombinedImageSamplerIndexNVX": 4,
-	"vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI": 2,
-	"vkCmdSetDispatchParametersARM": 2,
+	"VK_ARM_scheduling_controls": {
+		"vkCmdSetDispatchParametersARM": 2,
+	},
+	"VK_EXT_discard_rectangles": {
+		"vkCmdSetDiscardRectangleEnableEXT": 2,
+		"vkCmdSetDiscardRectangleModeEXT": 2,
+	},
+	"VK_HUAWEI_subpass_shading": {
+		"vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI": 2,
+	},
+	"VK_NVX_image_view_handle": {
+		"vkGetImageViewAddressNVX": 2,
+		"vkGetImageViewHandle64NVX": 3,
+		"vkGetDeviceCombinedImageSamplerIndexNVX": 4,
+	},
+	"VK_NV_low_latency": {
+		r"vk.*LegacyNV": 2,
+	},
+	"VK_NV_scissor_exclusive": {
+		"vkCmdSetExclusiveScissorEnableNV": 2,
+	},
 }
+
+def get_command_version(extension, command):
+	for pattern, version in cmdversions.get(extension, {}).items():
+		if re.fullmatch(pattern, command):
+			return version
+	return None
 
 def parse_xml(path):
 	file = urllib.request.urlopen(path) if path.startswith("http") else open(path, "r")
@@ -123,7 +142,7 @@ if __name__ == "__main__":
 				key += ' && ' + ('(' + dep + ')' if '||' in dep else dep)
 			cmdrefs = req.findall('command')
 			for cmdref in cmdrefs:
-				ver = cmdversions.get(cmdref.get('name'))
+				ver = get_command_version(name, cmdref.get('name'))
 				if ver:
 					command_groups.setdefault(key + ' && ' + name.upper() + '_SPEC_VERSION >= ' + str(ver), []).append(cmdref.get('name'))
 				else:

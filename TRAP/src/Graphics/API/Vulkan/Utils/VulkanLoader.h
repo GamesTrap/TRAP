@@ -21,7 +21,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 356
+#define VULKANLOADER_HEADER_VERSION 357
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_COMPLETE_VERSION_DEFINE */
@@ -37,7 +37,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 /* VULKANLOADER_GENERATE_MINOR_VERSION_DEFINE */
 
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION_PATCH 356
+#define VULKANLOADER_HEADER_VERSION_PATCH 357
 /* VULKANLOADER_GENERATE_PATCH_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -1780,6 +1780,17 @@ struct VkDeviceTable
 #else
 	std::array<PFN_vkVoidFunction, 1u> padding_4979ca14;
 #endif /* defined(VK_NV_fragment_shading_rate_enums) */
+#if defined(VK_NV_low_latency) && VK_NV_LOW_LATENCY_SPEC_VERSION >= 2
+	PFN_vkGetLatencyTimingsLegacyNV vkGetLatencyTimingsLegacyNV;
+	PFN_vkGetSleepStatusLegacyNV vkGetSleepStatusLegacyNV;
+	PFN_vkLatencySleepLegacyNV vkLatencySleepLegacyNV;
+	PFN_vkQueueNotifyOutOfBandLegacyNV vkQueueNotifyOutOfBandLegacyNV;
+	PFN_vkSetLatencyMarkerLegacyNV vkSetLatencyMarkerLegacyNV;
+	PFN_vkSetLatencySleepModeLegacyNV vkSetLatencySleepModeLegacyNV;
+	PFN_vkShutdownLatencyDeviceLegacyNV vkShutdownLatencyDeviceLegacyNV;
+#else
+	std::array<PFN_vkVoidFunction, 7u> padding_f08173c;
+#endif /* defined(VK_NV_low_latency) && VK_NV_LOW_LATENCY_SPEC_VERSION >= 2 */
 #if defined(VK_NV_low_latency2)
 	PFN_vkGetLatencyTimingsNV vkGetLatencyTimingsNV;
 	PFN_vkLatencySleepNV vkLatencySleepNV;
@@ -3209,6 +3220,15 @@ extern PFN_vkGetMemoryWin32HandleNV vkGetMemoryWin32HandleNV;
 #if defined(VK_NV_fragment_shading_rate_enums)
 extern PFN_vkCmdSetFragmentShadingRateEnumNV vkCmdSetFragmentShadingRateEnumNV;
 #endif /* defined(VK_NV_fragment_shading_rate_enums) */
+#if defined(VK_NV_low_latency) && VK_NV_LOW_LATENCY_SPEC_VERSION >= 2
+extern PFN_vkGetLatencyTimingsLegacyNV vkGetLatencyTimingsLegacyNV;
+extern PFN_vkGetSleepStatusLegacyNV vkGetSleepStatusLegacyNV;
+extern PFN_vkLatencySleepLegacyNV vkLatencySleepLegacyNV;
+extern PFN_vkQueueNotifyOutOfBandLegacyNV vkQueueNotifyOutOfBandLegacyNV;
+extern PFN_vkSetLatencyMarkerLegacyNV vkSetLatencyMarkerLegacyNV;
+extern PFN_vkSetLatencySleepModeLegacyNV vkSetLatencySleepModeLegacyNV;
+extern PFN_vkShutdownLatencyDeviceLegacyNV vkShutdownLatencyDeviceLegacyNV;
+#endif /* defined(VK_NV_low_latency) && VK_NV_LOW_LATENCY_SPEC_VERSION >= 2 */
 #if defined(VK_NV_low_latency2)
 extern PFN_vkGetLatencyTimingsNV vkGetLatencyTimingsNV;
 extern PFN_vkLatencySleepNV vkLatencySleepNV;
@@ -4723,6 +4743,15 @@ static void VkGenLoadDevice(void* const context, VkGenLoaderFunction load)
 #if defined(VK_NV_fragment_shading_rate_enums)
 	vkCmdSetFragmentShadingRateEnumNV = reinterpret_cast<PFN_vkCmdSetFragmentShadingRateEnumNV>(load(context, "vkCmdSetFragmentShadingRateEnumNV"));
 #endif /* defined(VK_NV_fragment_shading_rate_enums) */
+#if defined(VK_NV_low_latency) && VK_NV_LOW_LATENCY_SPEC_VERSION >= 2
+	vkGetLatencyTimingsLegacyNV = reinterpret_cast<PFN_vkGetLatencyTimingsLegacyNV>(load(context, "vkGetLatencyTimingsLegacyNV"));
+	vkGetSleepStatusLegacyNV = reinterpret_cast<PFN_vkGetSleepStatusLegacyNV>(load(context, "vkGetSleepStatusLegacyNV"));
+	vkLatencySleepLegacyNV = reinterpret_cast<PFN_vkLatencySleepLegacyNV>(load(context, "vkLatencySleepLegacyNV"));
+	vkQueueNotifyOutOfBandLegacyNV = reinterpret_cast<PFN_vkQueueNotifyOutOfBandLegacyNV>(load(context, "vkQueueNotifyOutOfBandLegacyNV"));
+	vkSetLatencyMarkerLegacyNV = reinterpret_cast<PFN_vkSetLatencyMarkerLegacyNV>(load(context, "vkSetLatencyMarkerLegacyNV"));
+	vkSetLatencySleepModeLegacyNV = reinterpret_cast<PFN_vkSetLatencySleepModeLegacyNV>(load(context, "vkSetLatencySleepModeLegacyNV"));
+	vkShutdownLatencyDeviceLegacyNV = reinterpret_cast<PFN_vkShutdownLatencyDeviceLegacyNV>(load(context, "vkShutdownLatencyDeviceLegacyNV"));
+#endif /* defined(VK_NV_low_latency) && VK_NV_LOW_LATENCY_SPEC_VERSION >= 2 */
 #if defined(VK_NV_low_latency2)
 	vkGetLatencyTimingsNV = reinterpret_cast<PFN_vkGetLatencyTimingsNV>(load(context, "vkGetLatencyTimingsNV"));
 	vkLatencySleepNV = reinterpret_cast<PFN_vkLatencySleepNV>(load(context, "vkLatencySleepNV"));
@@ -6066,6 +6095,15 @@ static void VkGenLoadDeviceTable(VkDeviceTable& table, VkDevice device, VkGenLoa
 #if defined(VK_NV_fragment_shading_rate_enums)
 	table.vkCmdSetFragmentShadingRateEnumNV = reinterpret_cast<PFN_vkCmdSetFragmentShadingRateEnumNV>(load(device, "vkCmdSetFragmentShadingRateEnumNV"));
 #endif /* defined(VK_NV_fragment_shading_rate_enums) */
+#if defined(VK_NV_low_latency) && VK_NV_LOW_LATENCY_SPEC_VERSION >= 2
+	table.vkGetLatencyTimingsLegacyNV = reinterpret_cast<PFN_vkGetLatencyTimingsLegacyNV>(load(device, "vkGetLatencyTimingsLegacyNV"));
+	table.vkGetSleepStatusLegacyNV = reinterpret_cast<PFN_vkGetSleepStatusLegacyNV>(load(device, "vkGetSleepStatusLegacyNV"));
+	table.vkLatencySleepLegacyNV = reinterpret_cast<PFN_vkLatencySleepLegacyNV>(load(device, "vkLatencySleepLegacyNV"));
+	table.vkQueueNotifyOutOfBandLegacyNV = reinterpret_cast<PFN_vkQueueNotifyOutOfBandLegacyNV>(load(device, "vkQueueNotifyOutOfBandLegacyNV"));
+	table.vkSetLatencyMarkerLegacyNV = reinterpret_cast<PFN_vkSetLatencyMarkerLegacyNV>(load(device, "vkSetLatencyMarkerLegacyNV"));
+	table.vkSetLatencySleepModeLegacyNV = reinterpret_cast<PFN_vkSetLatencySleepModeLegacyNV>(load(device, "vkSetLatencySleepModeLegacyNV"));
+	table.vkShutdownLatencyDeviceLegacyNV = reinterpret_cast<PFN_vkShutdownLatencyDeviceLegacyNV>(load(device, "vkShutdownLatencyDeviceLegacyNV"));
+#endif /* defined(VK_NV_low_latency) && VK_NV_LOW_LATENCY_SPEC_VERSION >= 2 */
 #if defined(VK_NV_low_latency2)
 	table.vkGetLatencyTimingsNV = reinterpret_cast<PFN_vkGetLatencyTimingsNV>(load(device, "vkGetLatencyTimingsNV"));
 	table.vkLatencySleepNV = reinterpret_cast<PFN_vkLatencySleepNV>(load(device, "vkLatencySleepNV"));
@@ -7362,6 +7400,15 @@ inline PFN_vkGetMemoryWin32HandleNV vkGetMemoryWin32HandleNV;
 #if defined(VK_NV_fragment_shading_rate_enums)
 inline PFN_vkCmdSetFragmentShadingRateEnumNV vkCmdSetFragmentShadingRateEnumNV;
 #endif /* defined(VK_NV_fragment_shading_rate_enums) */
+#if defined(VK_NV_low_latency) && VK_NV_LOW_LATENCY_SPEC_VERSION >= 2
+inline PFN_vkGetLatencyTimingsLegacyNV vkGetLatencyTimingsLegacyNV;
+inline PFN_vkGetSleepStatusLegacyNV vkGetSleepStatusLegacyNV;
+inline PFN_vkLatencySleepLegacyNV vkLatencySleepLegacyNV;
+inline PFN_vkQueueNotifyOutOfBandLegacyNV vkQueueNotifyOutOfBandLegacyNV;
+inline PFN_vkSetLatencyMarkerLegacyNV vkSetLatencyMarkerLegacyNV;
+inline PFN_vkSetLatencySleepModeLegacyNV vkSetLatencySleepModeLegacyNV;
+inline PFN_vkShutdownLatencyDeviceLegacyNV vkShutdownLatencyDeviceLegacyNV;
+#endif /* defined(VK_NV_low_latency) && VK_NV_LOW_LATENCY_SPEC_VERSION >= 2 */
 #if defined(VK_NV_low_latency2)
 inline PFN_vkGetLatencyTimingsNV vkGetLatencyTimingsNV;
 inline PFN_vkLatencySleepNV vkLatencySleepNV;

@@ -5745,3 +5745,6 @@ SITREP 06/23/2026|26w26a2
     - Updated all GHA actions dependencies ~<10 mins
     - Pinned all GHA action dependencies to specific commits instead of tags ~<10 mins
     - Fixed compiler errors from gcc-16 ~<5 mins
+
+SITREP 07/22/2026|26w30a1
+    - Updated VulkanLoader ~<10 mins
