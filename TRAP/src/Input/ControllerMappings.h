@@ -34,11 +34,11 @@ freely, subject to the following restrictions:
 namespace TRAP::Embed
 {
 #ifdef TRAP_BUILD_WIN32_MAPPINGS
-	constexpr usize ControllerMappingsSize = 876;
+	constexpr usize ControllerMappingsSize = 879;
 #endif /*TRAP_BUILD_WIN32_MAPPINGS*/
 
 #ifdef TRAP_BUILD_LINUX_MAPPINGS
-	constexpr usize ControllerMappingsSize = 747;
+	constexpr usize ControllerMappingsSize = 751;
 #endif /*TRAP_BUILD_LINUX_MAPPINGS*/
 
 	constexpr std::array<std::string_view, ControllerMappingsSize> ControllerMappings =
@@ -271,6 +271,7 @@ namespace TRAP::Embed
 		"03000000151900004000000000000000,Flydigi Vader 2,a:b27,b:b26,back:b19,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b6,leftshoulder:b23,leftstick:b17,lefttrigger:b21,leftx:a0,lefty:a1,rightshoulder:b22,rightstick:b16,righttrigger:b20,rightx:a3,righty:a4,start:b18,x:b25,y:b24,platform:Windows,",
 		"03000000b40400001124000000000000,Flydigi Vader 2,a:b0,b:b1,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b6,leftstick:b12,lefttrigger:b8,leftx:a0,lefty:a1,misc1:b14,paddle1:b4,paddle2:b5,paddle3:b16,paddle4:b17,rightshoulder:b7,rightstick:b13,righttrigger:b9,rightx:a3,righty:a4,start:b11,x:b2,y:b3,platform:Windows,",
 		"03000000b40400001224000000000000,Flydigi Vader 2,a:b0,b:b1,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b6,leftstick:b12,lefttrigger:b8,leftx:a0,lefty:a1,misc1:b2,paddle1:b16,paddle2:b17,paddle3:b14,paddle4:b15,rightshoulder:b7,rightstick:b13,righttrigger:b9,rightx:a3,righty:a4,start:b11,x:b3,y:b4,platform:Windows,",
+		"03000000d73700001628000000000000,Flydigi Vader 5S Pro,a:b11,b:b10,back:b3,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b7,leftstick:b1,lefttrigger:b5,leftx:a0,lefty:a1,misc1:b15,misc2:b21,misc3:b20,paddle1:b19,paddle2:b18,paddle3:b16,paddle4:b17,rightshoulder:b6,rightstick:b0,righttrigger:b4,rightx:a3,righty:a4,start:b2,x:b9,y:b8,platform:Windows,",
 		"0300000066f700000100000000000000,Game VIB Joystick,a:b2,b:b3,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b8,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b9,righttrigger:b7,rightx:a3,righty:a2,start:b11,x:b0,y:b1,platform:Windows,",
 		"03000000790000004618000000000000,GameCube Adapter,a:b1,b:b0,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,lefttrigger:a3,leftx:a0,lefty:a1,rightshoulder:b7,righttrigger:a4,rightx:a5,righty:a2,start:b9,x:b2,y:b3,platform:Windows,",
 		"03000000260900002625000000000000,GameCube Controller,a:b0,b:b1,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b6,lefttrigger:a4,leftx:a0,lefty:a1,righttrigger:a5,rightx:a2,righty:a3,start:b7,x:b2,y:b3,platform:Windows,",
@@ -684,8 +685,10 @@ namespace TRAP::Embed
 		"03000000790000001100000000000000,Retro Controller,a:b1,b:b2,back:b8,dpdown:+a4,dpleft:-a3,dpright:+a3,dpup:-a4,leftshoulder:b6,lefttrigger:b7,rightshoulder:b4,righttrigger:b5,start:b9,x:b0,y:b3,platform:Windows,",
 		"03000000830500006020000000000000,Retro Controller,a:b0,b:b1,back:b6,dpdown:+a1,dpleft:-a0,dpright:+a0,dpup:-a1,leftshoulder:b4,lefttrigger:b5,rightshoulder:b8,righttrigger:b9,start:b7,x:b2,y:b3,platform:Windows,",
 		"03000000632500007805000000000000,Retro Fighters D6,a:b2,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,lefttrigger:b6,leftx:a0,lefty:a1,misc1:b10,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b3,y:b0,platform:Windows,",
-		"03000000790000001600000000000000,Retro Fighters D6,a:b1,b:b2,back:b8,dpdown:+a1,dpleft:-a0,dpright:+a0,dpup:-a1,leftshoulder:b4,lefttrigger:b6,rightshoulder:b5,righttrigger:b7,start:b9,x:b0,y:b3,platform:Windows,",
+		"03000000790000001600000000000000,Retro Fighters D6,a:b1,b:b2,back:b8,dpdown:+a4,dpleft:-a3,dpright:+a3,dpup:-a4,leftshoulder:b4,lefttrigger:b6,rightshoulder:b5,righttrigger:b7,start:b9,x:b0,y:b3,platform:Windows,",
 		"0300000003040000c197000000000000,Retrode Adapter,a:b0,b:b4,back:b2,dpdown:+a1,dpleft:-a0,dpright:+a0,dpup:-a1,leftshoulder:b6,rightshoulder:b7,start:b3,x:b1,y:b5,platform:Windows,",
+		"03000000600e00001011000000000000,RetroFighters Brawler64 Pro,+rightx:b10,+righty:b3,-rightx:b0,-righty:b11,a:b2,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,righttrigger:b7,start:b9,platform:Windows,",
+		"03000000602500007005000000000000,RetroFighters Brawler64 Pro,+rightx:b10,+righty:b3,-rightx:b0,-righty:b11,a:b2,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,righttrigger:b7,start:b9,platform:Windows,",
 		"03000000bd12000013d0000000000000,Retrolink Sega Saturn Classic Controller,a:b0,b:b1,dpdown:+a1,dpleft:-a0,dpright:+a0,dpup:-a1,leftshoulder:b5,lefttrigger:b6,rightshoulder:b2,righttrigger:b7,start:b8,x:b3,y:b4,platform:Windows,",
 		"03000000bd12000015d0000000000000,Retrolink SNES Controller,a:b2,b:b1,back:b8,dpdown:+a1,dpleft:-a0,dpright:+a0,dpup:-a1,leftshoulder:b4,rightshoulder:b5,start:b9,x:b3,y:b0,platform:Windows,",
 		"03000000341200000400000000000000,RetroUSB N64 RetroPort,+rightx:b8,+righty:b10,-rightx:b9,-righty:b11,a:b7,b:b6,dpdown:b2,dpleft:b1,dpright:b0,dpup:b3,leftshoulder:b13,lefttrigger:b5,leftx:a0,lefty:a1,rightshoulder:b12,start:b4,platform:Windows,",
@@ -937,6 +940,7 @@ namespace TRAP::Embed
 		"05000000c82d00001251000000010000,8BitDo Lite 2,a:b1,b:b0,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b6,leftstick:b13,lefttrigger:a5,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b14,righttrigger:a4,rightx:a2,righty:a3,start:b11,x:b4,y:b3,platform:Linux,",
 		"03000000c82d00001151000011010000,8BitDo Lite SE,a:b1,b:b0,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b6,leftstick:b13,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b14,righttrigger:b9,rightx:a2,righty:a3,start:b11,x:b4,y:b3,platform:Linux,",
 		"05000000c82d00001151000000010000,8BitDo Lite SE,a:b1,b:b0,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b6,leftstick:b13,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b14,righttrigger:b9,rightx:a2,righty:a3,start:b11,x:b4,y:b3,platform:Linux,",
+		"03000000a30c00002400000011010000,8BitDo M30,a:b2,b:b1,guide:b8,leftshoulder:b6,lefttrigger:b7,leftx:a0,lefty:a1,rightshoulder:b4,righttrigger:b5,start:b9,x:b3,y:b0,platform:Linux,",
 		"03000000c82d00000151000000010000,8BitDo M30,a:b0,b:b1,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftx:a0,lefty:a1,rightshoulder:b6,righttrigger:b7,rightx:a2,righty:a3,start:b11,x:b3,y:b4,platform:Linux,",
 		"03000000c82d00000650000011010000,8BitDo M30,a:b0,b:b1,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b2,leftshoulder:b6,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,righttrigger:b9,rightx:a2,righty:a3,start:b11,x:b3,y:b4,platform:Linux,",
 		"05000000c82d00005106000000010000,8BitDo M30,a:b0,b:b1,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b8,lefttrigger:b9,leftx:a0,lefty:a1,rightshoulder:b6,righttrigger:b7,start:b11,x:b3,y:b4,platform:Linux,",
@@ -1384,7 +1388,7 @@ namespace TRAP::Embed
 		"03000000d62000006520000002010000,PowerA Xbox Series Controller,a:b0,b:b1,back:b6,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b8,leftshoulder:b4,leftstick:b9,lefttrigger:a2,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b10,righttrigger:a5,rightx:a3,righty:a4,start:b7,x:b2,y:b3,platform:Linux,",
 		"030000006d040000d2ca000011010000,Precision Controller,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b0,y:b3,platform:Linux,",
 		"03000000250900000017000010010000,PS SS N64 Adapter,a:b1,b:b2,dpdown:b14,dpleft:b15,dpright:b13,dpup:b12,leftshoulder:b5,lefttrigger:b9,leftx:a0,lefty:a1,rightshoulder:b7,rightx:a2~,righty:a3,start:b8,platform:Linux,",
-		"03000000ff1100004133000010010000,PS2 Controller,a:b2,b:b1,back:b8,leftshoulder:b6,lefttrigger:b4,leftx:a0,lefty:a1,rightshoulder:b7,righttrigger:b5,start:b9,x:b3,y:b0,platform:Linux,",
+		"03000000ff1100004133000010010000,PS2 Controller,a:b2,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b6,leftstick:b10,lefttrigger:b4,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b11,righttrigger:b5,rightx:a3,righty:a2,start:b9,x:b3,y:b0,platform:Linux,",
 		"03000000120c0000160e000011010000,PS3 Controller,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a5,start:b9,x:b0,y:b3,platform:Linux,",
 		"03000000341a00003608000011010000,PS3 Controller,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b0,y:b3,platform:Linux,",
 		"030000004c0500006802000010010000,PS3 Controller,a:b14,b:b13,back:b0,dpdown:b6,dpleft:b7,dpright:b5,dpup:b4,guide:b16,leftshoulder:b10,leftstick:b1,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b11,rightstick:b2,righttrigger:b9,rightx:a2,righty:a3,start:b3,x:b15,y:b12,platform:Linux,",
@@ -1469,6 +1473,8 @@ namespace TRAP::Embed
 		"03000000632500007805000011010000,Retro Fighters D6,a:b2,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b3,y:b0,platform:Linux,",
 		"03000000790000001600000011010000,Retro Fighters D6,a:b1,b:b2,back:b8,leftshoulder:b4,lefttrigger:b6,leftx:a0,lefty:a1,misc1:b10,rightshoulder:b5,righttrigger:b7,start:b9,x:b0,y:b3,platform:Linux,",
 		"0300000003040000c197000011010000,Retrode Adapter,a:b0,b:b4,back:b2,dpdown:+a1,dpleft:-a0,dpright:+a0,dpup:-a1,leftshoulder:b6,rightshoulder:b7,start:b3,x:b1,y:b5,platform:Linux,",
+		"03000000600e00001011000011010000,RetroFighters Brawler64 Pro,+rightx:b10,+righty:b3,-rightx:b0,-righty:b11,a:b2,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,righttrigger:b7,start:b9,platform:Linux,",
+		"03000000602500007005000011010000,RetroFighters Brawler64 Pro,+rightx:b10,+righty:b3,-rightx:b0,-righty:b11,a:b2,b:b1,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,righttrigger:b7,start:b9,platform:Linux,",
 		"190000004b4800000111000000010000,RetroGame Joypad,a:b1,b:b0,back:b8,dpdown:b14,dpleft:b15,dpright:b16,dpup:b13,leftshoulder:b4,leftstick:b11,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b12,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b2,y:b3,platform:Linux,",
 		"0300000081170000990a000001010000,Retronic Adapter,a:b0,leftx:a0,lefty:a1,platform:Linux,",
 		"0300000000f000000300000000010000,RetroPad,a:b1,b:b5,back:b2,leftshoulder:b6,leftx:a0,lefty:a1,rightshoulder:b7,start:b3,x:b0,y:b4,platform:Linux,",
@@ -1549,6 +1555,7 @@ namespace TRAP::Embed
 		"030000004f04000020b3000010010000,Thrustmaster Dual Trigger,a:b0,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b5,leftx:a0,lefty:a1,rightshoulder:b6,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b1,y:b3,platform:Linux,",
 		"030000004f04000023b3000000010000,Thrustmaster Dual Trigger PlayStation Controller,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a5,start:b9,x:b0,y:b3,platform:Linux,",
 		"030000004f0400000ed0000011010000,Thrustmaster eSwap Pro Controller,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:a3,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:a4,rightx:a2,righty:a5,start:b9,x:b0,y:b3,platform:Linux,",
+		"030000004f04000055b6000000010000,Thrustmaster FGT Rumble,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:a1~,leftx:a0,paddle1:b7,paddle2:b6,rightshoulder:b5,rightstick:b11,righttrigger:a2~,start:b9,x:b0,y:b3,platform:Linux,",
 		"03000000b50700000399000000010000,Thrustmaster Firestorm Digital 2,a:b2,b:b4,back:b11,leftshoulder:b6,leftstick:b10,lefttrigger:b7,leftx:a0,lefty:a1,rightshoulder:b8,rightstick:b0,righttrigger:b9,start:b1,x:b3,y:b5,platform:Linux,",
 		"030000004f04000003b3000010010000,Thrustmaster Firestorm Dual Analog 2,a:b0,b:b2,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b4,leftstick:b10,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b6,rightstick:b11,righttrigger:b9,rightx:a2,righty:a3,x:b1,y:b3,platform:Linux,",
 		"030000004f04000000b3000010010000,Thrustmaster Firestorm Dual Power,a:b0,b:b2,back:b9,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b8,leftshoulder:b4,leftstick:b11,lefttrigger:b5,leftx:a0,lefty:a1,rightshoulder:b6,rightstick:b12,righttrigger:b7,rightx:a2,righty:a3,start:b10,x:b1,y:b3,platform:Linux,",
